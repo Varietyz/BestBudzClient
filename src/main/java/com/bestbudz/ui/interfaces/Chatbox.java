@@ -69,8 +69,8 @@ public class Chatbox {
 	public static final String[] chatMessages = new String[500];
 	public static int cButtonHPos;
 	public static int cButtonCPos;
-	private static final String[] chatTitles = new String[500];
-	private static final String[] chatColors = new String[500];
+	public static final String[] chatTitles = new String[500];
+	public static final String[] chatColors = new String[500];
 	public static int[] chatTypes = new int[500];
 	public static int[] chatRights = new int[500];
 	public static int publicChatMode;
