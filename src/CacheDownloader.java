@@ -21,8 +21,8 @@ import javax.swing.plaf.basic.BasicProgressBarUI;
 @SuppressWarnings("all")
 public class CacheDownloader implements Runnable {
 
-	public static final String ZIP_URL = "https://onedrive.live.com/download?cid=F9ED8B0E6B92618E&resid=F9ED8B0E6B92618E%217921&authkey=ACOm1ZKvDbAzUVw";
-	public static final String VERSION_URL = "https://onedrive.live.com/download?cid=F9ED8B0E6B92618E&resid=F9ED8B0E6B92618E%217922&authkey=AN0RpeJSE09piwU";
+	public static final String ZIP_URL = "https://onedrive.live.com/download?cid=F9ED8B0E6B92618E&resid=F9ED8B0E6B92618E%21219134&authkey=AMUAUamKTlmB3PM";
+	public static final String VERSION_URL = "https://onedrive.live.com/download?cid=F9ED8B0E6B92618E&resid=F9ED8B0E6B92618E%21213750&authkey=AIProd0KztQvjQs";
 	public static final String VERSION_FILE = ClientConstants.CACHE_LOCATION + "cacheVersion.dat";
 	private Client client;
 	private Client frame;

@@ -25,10 +25,12 @@ import java.awt.event.WindowListener;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-public class ClientEngine extends Applet implements Runnable, ActionListener, MouseListener, MouseMotionListener, MouseWheelListener, KeyListener, FocusListener, WindowListener {
+public class ClientEngine extends Applet implements Runnable, ActionListener, MouseListener, MouseMotionListener,
+		MouseWheelListener, KeyListener, FocusListener, WindowListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -69,53 +71,58 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 	public boolean isApplet;
 	protected int screenGliding;
 	public boolean resized;
-	
-    public void setSystemTray() throws IOException, AWTException {
-//		if (SystemTray.isSupported()) {
-//			final SystemTray systemTray = SystemTray.getSystemTray();
-//			BufferedImage image = ImageIO.read(new URL("http://www.BestBudz.com/Media/icon.png"));
-//			final PopupMenu popupMenu = new PopupMenu();
-//			if (!isApplet) {
-//				final MenuItem displayItem = new MenuItem("Hide Client");
-//				displayItem.addActionListener(new ActionListener() {
-//					@Override
-//					public void actionPerformed(ActionEvent e) {
-//						if ((gameFrame == null ? ClientEngine.this : gameFrame).isVisible()) {
-//							(gameFrame == null ? ClientEngine.this : gameFrame).setVisible(false);
-//							displayItem.setLabel("Show Client");
-//						} else {
-//							(gameFrame == null ? ClientEngine.this : gameFrame).setVisible(true);
-//							displayItem.setLabel("Hide Client");
-//						}
-//					}
-//				});
-//				popupMenu.add(displayItem);
-//			}
-//			popupMenu.addSeparator();
-//			MenuItem menu = new MenuItem("Exit");
-//			menu.addActionListener(new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					exitOption();
-//				}
-//			});
-//			popupMenu.add(menu);
-//			if (image != null) {
-//				final TrayIcon trayIcon = new TrayIcon(image, ClientConstants.CLIENT_NAME, popupMenu);
-//				trayIcon.setImageAutoSize(true);
-//				systemTray.add(trayIcon);
-//				trayIcon.displayMessage(ClientConstants.CLIENT_NAME, "Best Budz client has been started!", MessageType.INFO);
-//			}
-//		}
+
+	public void setSystemTray() throws IOException, AWTException {
+		// if (SystemTray.isSupported()) {
+		// final SystemTray systemTray = SystemTray.getSystemTray();
+		// BufferedImage image = ImageIO.read(new
+		// URL("http://www.BestBudz.com/Media/icon.png"));
+		// final PopupMenu popupMenu = new PopupMenu();
+		// if (!isApplet) {
+		// final MenuItem displayItem = new MenuItem("Hide Client");
+		// displayItem.addActionListener(new ActionListener() {
+		// @Override
+		// public void actionPerformed(ActionEvent e) {
+		// if ((gameFrame == null ? ClientEngine.this : gameFrame).isVisible()) {
+		// (gameFrame == null ? ClientEngine.this : gameFrame).setVisible(false);
+		// displayItem.setLabel("Show Client");
+		// } else {
+		// (gameFrame == null ? ClientEngine.this : gameFrame).setVisible(true);
+		// displayItem.setLabel("Hide Client");
+		// }
+		// }
+		// });
+		// popupMenu.add(displayItem);
+		// }
+		// popupMenu.addSeparator();
+		// MenuItem menu = new MenuItem("Exit");
+		// menu.addActionListener(new ActionListener() {
+		// @Override
+		// public void actionPerformed(ActionEvent e) {
+		// exitOption();
+		// }
+		// });
+		// popupMenu.add(menu);
+		// if (image != null) {
+		// final TrayIcon trayIcon = new TrayIcon(image, ClientConstants.CLIENT_NAME,
+		// popupMenu);
+		// trayIcon.setImageAutoSize(true);
+		// systemTray.add(trayIcon);
+		// trayIcon.displayMessage(ClientConstants.CLIENT_NAME, "Best Budz client has
+		// been started!", MessageType.INFO);
+		// }
+		// }
 	}
-    
-    public void createMenuBar() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+
+	public void createMenuBar() throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+			UnsupportedLookAndFeelException {
 		if (gameFrame == null) {
 			return;
 		}
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		final Menu fileMenu = new Menu(ClientConstants.CLIENT_NAME);
-		String[] mainButtons = new String[] { "Order weed in BENELUX", "Origins of 420", "History of weed", "Discord stoner community", "Search item IDs" };
+		String[] mainButtons = new String[] { "Order weed in BENELUX", "Origins of 420", "History of weed",
+				"Discord stoner community", "Search item IDs" };
 		for (String name : mainButtons) {
 			MenuItem menuItem = new MenuItem(name);
 			menuItem.addActionListener(this);
@@ -124,7 +131,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		final MenuBar menuBar = new MenuBar();
 		menuBar.add(fileMenu);
 		gameFrame.setMenuBar(menuBar);
-    }
+	}
 
 	public void refreshFrameSize(boolean undecorated, int width, int height, boolean resizable, boolean full) {
 		boolean createdByApplet = (isApplet && !undecorated);
@@ -135,13 +142,15 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 			gameFrame.dispose();
 		}
 		if (!createdByApplet) {
-			gameFrame = new ClientFrame(this, width, height + (!resizable && !undecorated ? 20 : 0), resizable, undecorated);
+			gameFrame = new ClientFrame(this, width, height + (!resizable && !undecorated ? 20 : 0), resizable,
+					undecorated);
 			gameFrame.setLocationRelativeTo(null);
 			gameFrame.addWindowListener(this);
 			if (!undecorated) {
 				try {
 					createMenuBar();
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+						| UnsupportedLookAndFeelException e) {
 					e.printStackTrace();
 				}
 			}
@@ -159,29 +168,33 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 	public boolean appletClient() {
 		return gameFrame == null && isApplet == true;
 	}
-	
-	//private void setTheme() {
-	//	try {
-			//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			/*org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel lookAndFeel = new org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel();
-			UIManager.setLookAndFeel(lookAndFeel);
-			SubstanceLookAndFeel.setCurrentWatermark(new SubstanceNoneWatermark());
-			JDialog.setDefaultLookAndFeelDecorated(true);
-			System.out.println("refguhfgds");*/
-	//	} catch (Exception e2) {
-	//		try {
-	//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-	//	} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-	//			e.printStackTrace();
-	//		}
-	//	}
-	//}
+
+	// private void setTheme() {
+	// try {
+	// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	/*
+	 * org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel lookAndFeel = new
+	 * org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel();
+	 * UIManager.setLookAndFeel(lookAndFeel);
+	 * SubstanceLookAndFeel.setCurrentWatermark(new SubstanceNoneWatermark());
+	 * JDialog.setDefaultLookAndFeelDecorated(true);
+	 * System.out.println("refguhfgds");
+	 */
+	// } catch (Exception e2) {
+	// try {
+	// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	// } catch (ClassNotFoundException | InstantiationException |
+	// IllegalAccessException | UnsupportedLookAndFeelException e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// }
 
 	final void createClientFrame(int w, int h) {
 		isApplet = false;
 		myWidth = w;
 		myHeight = h;
-		//setTheme();
+		// setTheme();
 		try {
 			setSystemTray();
 		} catch (IOException | AWTException e) {
@@ -189,15 +202,16 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		}
 		try {
 			createMenuBar();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		gameFrame = new ClientFrame(this, myWidth, myHeight, Client.frameMode == Client.ScreenMode.RESIZABLE, Client.frameMode == Client.ScreenMode.FULLSCREEN);
+		gameFrame = new ClientFrame(this, myWidth, myHeight, Client.frameMode == Client.ScreenMode.RESIZABLE,
+				Client.frameMode == Client.ScreenMode.FULLSCREEN);
 		graphics = getGameComponent().getGraphics();
 		fullGameScreen = new ImageProducer(myWidth, myHeight);
 		startRunnable(this, 1);
 	}
-
 
 	final void initClientFrame(int w, int h) {
 		isApplet = true;
@@ -295,12 +309,16 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 				System.out.println((new StringBuilder()).append("ntime:").append(l2).toString());
 				for (int k2 = 0; k2 < 10; k2++) {
 					int i3 = ((i - k2 - 1) + 20) % 10;
-					System.out.println((new StringBuilder()).append("otim").append(i3).append(":").append(aLongArray7[i3]).toString());
+					System.out.println((new StringBuilder()).append("otim").append(i3).append(":")
+							.append(aLongArray7[i3]).toString());
 				}
 
-				System.out.println((new StringBuilder()).append("fps:").append(fps).append(" ratio:").append(j).append(" count:").append(l).toString());
-				System.out.println((new StringBuilder()).append("del:").append(k).append(" deltime:").append(delayTime).append(" mindel:").append(minDelay).toString());
-				System.out.println((new StringBuilder()).append("intex:").append(i1).append(" opos:").append(i).toString());
+				System.out.println((new StringBuilder()).append("fps:").append(fps).append(" ratio:").append(j)
+						.append(" count:").append(l).toString());
+				System.out.println((new StringBuilder()).append("del:").append(k).append(" deltime:").append(delayTime)
+						.append(" mindel:").append(minDelay).toString());
+				System.out.println(
+						(new StringBuilder()).append("intex:").append(i1).append(" opos:").append(i).toString());
 				shouldDebug = false;
 				i1 = 0;
 			}
@@ -309,18 +327,21 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 			exit();
 		}
 	}
-	
+
 	public final void exitOption() {
-		int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit " + ClientConstants.CLIENT_NAME + "?", "Confirm Exit", JOptionPane.YES_NO_OPTION);
+		int option = JOptionPane.showConfirmDialog(null,
+				"Are you sure you want to exit " + ClientConstants.CLIENT_NAME + "?", "Confirm Exit",
+				JOptionPane.YES_NO_OPTION);
 		if (option == 0) {
 			gameFrame.setTitle("Please wait, " + ClientConstants.CLIENT_NAME + " is exiting...");
 			if (gameFrame != null) {
-	            exit();
-	            try {
-	                Thread.sleep(1000L);
-	            } catch (Exception ex) {}
-	        }
-	        System.exit(0);
+				exit();
+				try {
+					Thread.sleep(1000L);
+				} catch (Exception ex) {
+				}
+			}
+			System.exit(0);
 		}
 	}
 
@@ -385,7 +406,8 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 	public void mouseWheelMoved(MouseWheelEvent event) {
 		int rotation = event.getWheelRotation();
 		handleInterfaceScrolling(event);
-		if (mouseX > 0 && mouseX < 512 && mouseY > Client.frameHeight - 165 - Client.extendChatArea && mouseY < Client.frameHeight - 25) {
+		if (mouseX > 0 && mouseX < 512 && mouseY > Client.frameHeight - 165 - Client.extendChatArea
+				&& mouseY < Client.frameHeight - 25) {
 			int scrollPos = Client.anInt1089;
 			scrollPos -= rotation * 30;
 			if (scrollPos < 0)
@@ -422,8 +444,11 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		int tabInterfaceID = Client.tabInterfaceIDs[Client.tabID];
 		if (tabInterfaceID != -1) {
 			RSInterface tab = RSInterface.interfaceCache[tabInterfaceID];
-			offsetX = Client.frameMode == Client.ScreenMode.FIXED ? Client.frameWidth - 218 : (Client.frameMode == Client.ScreenMode.FIXED ? 28 : Client.frameWidth - 197);
-			offsetY = Client.frameMode == Client.ScreenMode.FIXED ? Client.frameHeight - 298 : (Client.frameMode == Client.ScreenMode.FIXED ? 37 : Client.frameHeight - (Client.frameWidth >= 1000 ? 37 : 74) - 267);
+			offsetX = Client.frameMode == Client.ScreenMode.FIXED ? Client.frameWidth - 218
+					: (Client.frameMode == Client.ScreenMode.FIXED ? 28 : Client.frameWidth - 197);
+			offsetY = Client.frameMode == Client.ScreenMode.FIXED ? Client.frameHeight - 298
+					: (Client.frameMode == Client.ScreenMode.FIXED ? 37
+							: Client.frameHeight - (Client.frameWidth >= 1000 ? 37 : 74) - 267);
 			if (tab.children == null) {
 				return;
 			}
@@ -437,7 +462,8 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 					break;
 				}
 			}
-			if ((mouseX > (offsetX + positionX)) && (mouseY > (offsetY + positionY)) && (mouseX < (offsetX + positionX + width)) && (mouseY < (offsetY + positionY + height))) {
+			if ((mouseX > (offsetX + positionX)) && (mouseY > (offsetY + positionY))
+					&& (mouseX < (offsetX + positionX + width)) && (mouseY < (offsetY + positionY + height))) {
 				if (RSInterface.interfaceCache[tab.children[childID]].scrollPosition > 0) {
 					RSInterface.interfaceCache[tab.children[childID]].scrollPosition += rotation * 30;
 					return;
@@ -488,7 +514,8 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 					break;
 				}
 			}
-			if ((mouseX > (offsetX + positionX)) && (mouseY > (offsetY + positionY)) && (mouseX < (offsetX + positionX + width)) && (mouseY < (offsetY + positionY + height))) {
+			if ((mouseX > (offsetX + positionX)) && (mouseY > (offsetY + positionY))
+					&& (mouseX < (offsetX + positionX + width)) && (mouseY < (offsetY + positionY + height))) {
 				if (RSInterface.interfaceCache[rsi.children[childID]].scrollPosition > 0) {
 					RSInterface.interfaceCache[rsi.children[childID]].scrollPosition += rotation * 30;
 					return;
@@ -525,17 +552,17 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		clickX = x;
 		clickY = y;
 		aLong29 = System.currentTimeMillis();
-		if (type == 2) {
+		if (SwingUtilities.isMiddleMouseButton(e)) {
 			mouseWheelDown = true;
 			mouseWheelX = x;
 			mouseWheelY = y;
 			return;
 		}
-		if (e.isMetaDown()) {
+		if (SwingUtilities.isRightMouseButton(e)) {
 			clickType = RIGHT;
 			clickMode1 = 2;
 			clickMode2 = 2;
-		} else {
+		} else if (SwingUtilities.isLeftMouseButton(e)) {
 			clickType = LEFT;
 			clickMode1 = 1;
 			clickMode2 = 1;
@@ -582,11 +609,12 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 			x -= insets.left;
 			y -= insets.top;
 		}
-	     if (System.currentTimeMillis() - aLong29 >= 250L || Math.abs(saveClickX - x) > 5 || Math.abs(saveClickY - y) > 5) {
-	         idleTime = 0;
-	         mouseX = x;
-	         mouseY = y;
-	     }
+		if (System.currentTimeMillis() - aLong29 >= 250L || Math.abs(saveClickX - x) > 5
+				|| Math.abs(saveClickY - y) > 5) {
+			idleTime = 0;
+			mouseX = x;
+			mouseY = y;
+		}
 		if (mouseWheelDown) {
 			y = mouseWheelX - e.getX();
 			int k = mouseWheelY - e.getY();
@@ -613,11 +641,12 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 			x -= insets.left;// 4
 			y -= insets.top;// 22
 		}
-	     if (System.currentTimeMillis() - aLong29 >= 250L || Math.abs(saveClickX - x) > 5 || Math.abs(saveClickY - y) > 5) {
-	         idleTime = 0;
-	         mouseX = x;
-	         mouseY = y;
-	     }
+		if (System.currentTimeMillis() - aLong29 >= 250L || Math.abs(saveClickX - x) > 5
+				|| Math.abs(saveClickY - y) > 5) {
+			idleTime = 0;
+			mouseX = x;
+			mouseY = y;
+		}
 		idleTime = 0;
 		mouseX = x;
 		mouseY = y;
@@ -848,7 +877,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if (cmd != null) {
-			//Best Budz
+			// Best Budz
 			if (cmd.equalsIgnoreCase("Order weed in BENELUX")) {
 				Client.instance.launchURL("https://wiet-forum.nl/");
 			} else if (cmd.equalsIgnoreCase("Origins of 420")) {
