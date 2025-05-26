@@ -7,9 +7,9 @@ import com.bestbudz.engine.Client;
 
 import java.awt.image.BufferedImage;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+	import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
+	import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -36,10 +36,21 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	private static Color XP_TEXT = new Color(150, 150, 255); // Made non-final for color customization
 	private static final Color GOLD_COLOR = new Color(255, 215, 0);
 
+	// Advancement level colors (1-5+ grading system)
+	private static final Color[] ADVANCE_COLORS = {
+		new Color(100, 100, 100),    // Level 0 (shouldn't show, but just in case)
+		new Color(46, 125, 50),      // Level 1 - Green (Bronze equivalent)
+		new Color(183, 28, 28),      // Level 2 - Red (Iron equivalent)
+		new Color(245, 127, 23),     // Level 3 - Orange (Gold equivalent)
+		new Color(123, 31, 162),     // Level 4 - Purple (Platinum equivalent)
+		new Color(13, 71, 161),      // Level 5+ - Blue (Diamond equivalent)
+	};
+
 	private boolean truncateXP = true;
-	private boolean autoSort = false;
+	private boolean autoSort = true;
 	private long[] lastUpdateTimes = new long[Skills.SKILLS_COUNT];
 	private long[] lastXpValues = new long[Skills.SKILLS_COUNT];
+	private int[] lastAdvanceValues = new int[Skills.SKILLS_COUNT]; // Track advancement changes
 	private JSlider colorSlider;
 	private static long lastClickTime = 0;
 
@@ -214,10 +225,10 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		});
 
 		// Toggle buttons
-		JButton sortToggleButton = createToggleButton(autoSort ? "Default" : "Auto Sort");
+		JButton sortToggleButton = createToggleButton(autoSort ? "Fixed" : "Auto-sort");
 		sortToggleButton.addActionListener(e -> {
 			autoSort = !autoSort;
-			sortToggleButton.setText(autoSort ? "Default" : "Auto Sort");
+			sortToggleButton.setText(autoSort ? "Fixed" : "Auto-sort");
 			refreshSkillOrder();
 		});
 
@@ -302,9 +313,9 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 				totalGrades += Client.currentStats[i];
 				totalExp += Client.currentExp[i] & 0xFFFFFFFFL;
 				// Add advancement tracking when available
-				// if (Client.currentAdvances != null) {
-				//     totalAdvances += Client.currentAdvances[i];
-				// }
+				if (Client.currentAdvances != null) {
+					totalAdvances += Client.currentAdvances[i];
+				}
 			}
 		}
 
@@ -324,7 +335,13 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		// Multi-line tooltip for total stats
 		String totalTooltip = "<html>Total Statistics<br>" +
 			"Combined Grades: " + totalGrades + "<br>" +
-			"Combined Experience: " + formatter.format(totalExp) + "</html>";
+			"Combined Experience: " + formatter.format(totalExp);
+
+		if (totalAdvances > 0) {
+			totalTooltip += "<br>Combined Advances: " + totalAdvances;
+		}
+		totalTooltip += "</html>";
+
 		tile.setToolTipText(totalTooltip);
 
 		// Total icon from file
@@ -419,16 +436,11 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		layeredPane.add(totalOverlayButton, JLayeredPane.MODAL_LAYER);
 
 		// Add advancement indicator when available
-		// if (totalAdvances > 0) {
-		//     JLabel advanceLabel = new JLabel(String.valueOf(totalAdvances));
-		//     advanceLabel.setFont(new Font("Segoe UI", Font.BOLD, 10));
-		//     advanceLabel.setForeground(GOLD_COLOR);
-		//     advanceLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		//     advanceLabel.setBounds(108, 2, 20, 16);
-		//     advanceLabel.setOpaque(true);
-		//     advanceLabel.setBackground(new Color(0, 0, 0, 150));
-		//     layeredPane.add(advanceLabel, JLayeredPane.PALETTE_LAYER);
-		// }
+		if (totalAdvances > 0) {
+			JLabel advanceLabel = createAdvancementBadge(totalAdvances);
+			advanceLabel.setBounds(114, -2, 18, 16); // Repositioned slightly left for better overlap balance
+			layeredPane.add(advanceLabel, JLayeredPane.PALETTE_LAYER);
+		}
 
 		wrapperPanel.add(layeredPane, BorderLayout.CENTER);
 		return wrapperPanel;
@@ -447,6 +459,7 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		int grade = Client.currentStats[id];
 		long xp = Client.currentExp[id] & 0xFFFFFFFFL;
 		String name = capitalize(Skills.SKILL_NAMES[id]);
+		int advance = (Client.currentAdvances != null) ? Client.currentAdvances[id] : 0;
 
 		// Create wrapper panel
 		JPanel wrapperPanel = new JPanel(new BorderLayout());
@@ -466,7 +479,12 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		String multiLineTooltip = "<html>" + name + "<br>" +
 			"Grade: " + grade + "<br>" +
 			"Experience: " + formatter.format(xp) + "<br>" +
-			"Progress: " + progressionInfo + "</html>";
+			"Progress: " + progressionInfo;
+
+		if (advance > 0) {
+			multiLineTooltip += "<br>Advance Level: " + advance;
+		}
+		multiLineTooltip += "</html>";
 
 		tile.setToolTipText(multiLineTooltip);
 
@@ -555,21 +573,17 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		layeredPane.add(overlayButton, JLayeredPane.MODAL_LAYER);
 
 		// Add advancement indicator when available
-		// if (Client.currentAdvances != null && Client.currentAdvances[id] > 0) {
-		//     JLabel advanceLabel = new JLabel(String.valueOf(Client.currentAdvances[id]));
-		//     advanceLabel.setFont(new Font("Segoe UI", Font.BOLD, 10));
-		//     advanceLabel.setForeground(GOLD_COLOR);
-		//     advanceLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		//     advanceLabel.setBounds(108, 2, 20, 16);
-		//     advanceLabel.setOpaque(true);
-		//     advanceLabel.setBackground(new Color(0, 0, 0, 150));
-		//     layeredPane.add(advanceLabel, JLayeredPane.PALETTE_LAYER);
-		// }
+		JLabel advanceLabel = null;
+		if (advance > 0) {
+			advanceLabel = createAdvancementBadge(advance);
+			layeredPane.add(advanceLabel, JLayeredPane.PALETTE_LAYER);
+		}
 
 		wrapperPanel.add(layeredPane, BorderLayout.CENTER);
 
-		skills[id] = new SkillComponent(tile, iconLabel, gradeLabel, xpLabel, overlayButton);
+		skills[id] = new SkillComponent(tile, iconLabel, gradeLabel, xpLabel, overlayButton, advanceLabel);
 		lastXpValues[id] = xp;
+		lastAdvanceValues[id] = advance;
 
 		return wrapperPanel;
 	}
@@ -664,9 +678,9 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 				totalGrades += Client.currentStats[i];
 				totalExp += Client.currentExp[i] & 0xFFFFFFFFL;
 				// Add advancement tracking when available
-				// if (Client.currentAdvances != null) {
-				//     totalAdvances += Client.currentAdvances[i];
-				// }
+				if (Client.currentAdvances != null) {
+					totalAdvances += Client.currentAdvances[i];
+				}
 			}
 		}
 
@@ -683,7 +697,13 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		if (totalOverlayButton != null) {
 			String updatedTooltip = "<html>Total Statistics<br>" +
 				"Combined Grades: " + totalGrades + "<br>" +
-				"Combined Experience: " + formatter.format(totalExp) + "</html>";
+				"Combined Experience: " + formatter.format(totalExp);
+
+			if (totalAdvances > 0) {
+				updatedTooltip += "<br>Combined Advances: " + totalAdvances;
+			}
+			updatedTooltip += "</html>";
+
 			totalOverlayButton.setToolTipText(updatedTooltip);
 
 			if (totalGradesLabel != null) {
@@ -759,19 +779,59 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 			int grade = Client.currentStats[id];
 			long xp = Client.currentExp[id] & 0xFFFFFFFFL;
 			String name = capitalize(Skills.SKILL_NAMES[id]);
+			int advance = (Client.currentAdvances != null) ? Client.currentAdvances[id] : 0;
 
 			boolean xpChanged = lastXpValues[id] != xp;
+			boolean advanceChanged = lastAdvanceValues[id] != advance;
 			lastXpValues[id] = xp;
+			lastAdvanceValues[id] = advance;
 
 			skills[id].gradeLabel.setText(String.valueOf(grade));
 			skills[id].xpLabel.setText(formatXP(xp));
+
+			// Update advancement label
+			if (skills[id].advanceLabel != null) {
+				if (advance > 0) {
+					// Update existing label with new styling
+					JLabel newAdvanceLabel = createAdvancementBadge(advance);
+
+					// Find the layered pane and replace the old label
+					Component parent = skills[id].tile.getParent();
+					if (parent instanceof JLayeredPane) {
+						JLayeredPane layeredPane = (JLayeredPane) parent;
+						layeredPane.remove(skills[id].advanceLabel);
+						layeredPane.add(newAdvanceLabel, JLayeredPane.PALETTE_LAYER);
+						skills[id].advanceLabel = newAdvanceLabel;
+						layeredPane.revalidate();
+						layeredPane.repaint();
+					}
+				} else {
+					skills[id].advanceLabel.setVisible(false);
+				}
+			} else if (advance > 0) {
+				// Create advancement label if it doesn't exist but should
+				JLabel advanceLabel = createAdvancementBadge(advance);
+
+				// Find the layered pane and add the advance label
+				Component parent = skills[id].tile.getParent();
+				if (parent instanceof JLayeredPane) {
+					JLayeredPane layeredPane = (JLayeredPane) parent;
+					layeredPane.add(advanceLabel, JLayeredPane.PALETTE_LAYER);
+					skills[id].advanceLabel = advanceLabel;
+				}
+			}
 
 			// Update tooltips with new values including XP progression for all components
 			String progressionInfo = getXpToNextLevel(xp, grade);
 			String updatedTooltip = "<html>" + name + "<br>" +
 				"Grade: " + grade + "<br>" +
 				"Experience: " + formatter.format(xp) + "<br>" +
-				"Progress: " + progressionInfo + "</html>";
+				"Progress: " + progressionInfo;
+
+			if (advance > 0) {
+				updatedTooltip += "<br>Advance Level: " + advance;
+			}
+			updatedTooltip += "</html>";
 
 			skills[id].gradeLabel.setToolTipText(updatedTooltip);
 			skills[id].iconLabel.setToolTipText(updatedTooltip);
@@ -779,7 +839,7 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 			skills[id].tile.setToolTipText(updatedTooltip);
 			skills[id].overlayButton.setToolTipText(updatedTooltip); // Update overlay button directly
 
-			if (xpChanged && autoSort) {
+			if ((xpChanged || advanceChanged) && autoSort) {
 				boolean wasInTopThree = isInTopThree(id);
 				lastUpdateTimes[id] = System.currentTimeMillis();
 
@@ -798,14 +858,16 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		JLabel iconLabel;
 		JLabel gradeLabel;
 		JLabel xpLabel;
-		JButton overlayButton; // Add reference to overlay button
+		JButton overlayButton;
+		JLabel advanceLabel; // Add reference to advancement label
 
-		SkillComponent(JPanel tile, JLabel iconLabel, JLabel gradeLabel, JLabel xpLabel, JButton overlayButton) {
+		SkillComponent(JPanel tile, JLabel iconLabel, JLabel gradeLabel, JLabel xpLabel, JButton overlayButton, JLabel advanceLabel) {
 			this.tile = tile;
 			this.iconLabel = iconLabel;
 			this.gradeLabel = gradeLabel;
 			this.xpLabel = xpLabel;
 			this.overlayButton = overlayButton;
+			this.advanceLabel = advanceLabel;
 		}
 	}
 
@@ -842,6 +904,8 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		updateText();
 	}
 
+
+
 	@Override
 	public void onDeactivate() {
 		// No-op
@@ -849,6 +913,164 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 	@Override
 	public void updateDockText(int index, String text) {
-		// No-op
+		// Advancement data comes from packet 134 (SendProfession), not interface tooltips
+		// This method is for interface text updates only
+		// No-op for advancement parsing
+	}
+
+	/**
+	 * Parses advancement level from server text
+	 * @param text Server text like "Assault lv: @dre@5@bla@/@dre@10\nAdvance lv: @dre@3"
+	 * @return advancement level or -1 if not found/parseable
+	 */
+	private int parseAdvancementLevel(String text) {
+		if (text == null || text.isEmpty()) {
+			System.out.println("parseAdvancementLevel: text is null or empty");
+			return 0; // No advancement if no text
+		}
+
+		System.out.println("parseAdvancementLevel: parsing text: '" + text + "'");
+
+		try {
+			// Look for "Advance lv: @dre@" pattern
+			String advancePattern = "Advance lv: @dre@";
+			int advanceIndex = text.indexOf(advancePattern);
+
+			System.out.println("parseAdvancementLevel: advancePattern found at index: " + advanceIndex);
+
+			if (advanceIndex != -1) {
+				// Extract the number after "@dre@"
+				int startIndex = advanceIndex + advancePattern.length();
+				int endIndex = startIndex;
+
+				// Find where the number ends (look for non-digit character)
+				while (endIndex < text.length() && Character.isDigit(text.charAt(endIndex))) {
+					endIndex++;
+				}
+
+				if (endIndex > startIndex) {
+					String advanceStr = text.substring(startIndex, endIndex);
+					int result = Integer.parseInt(advanceStr);
+					System.out.println("parseAdvancementLevel: successfully parsed: " + result);
+					return result;
+				} else {
+					System.out.println("parseAdvancementLevel: no digits found after pattern");
+				}
+			} else {
+				// Try alternative patterns in case the format is different
+				String[] alternativePatterns = {
+					"Advance lv: ",
+					"\\nAdvance lv: @dre@",
+					"Advance grade: @dre@",
+					"\\nAdvance grade: @dre@"
+				};
+
+				for (String pattern : alternativePatterns) {
+					int patternIndex = text.indexOf(pattern);
+					if (patternIndex != -1) {
+						System.out.println("parseAdvancementLevel: found alternative pattern: " + pattern + " at index: " + patternIndex);
+						int startIndex = patternIndex + pattern.length();
+						int endIndex = startIndex;
+
+						while (endIndex < text.length() && Character.isDigit(text.charAt(endIndex))) {
+							endIndex++;
+						}
+
+						if (endIndex > startIndex) {
+							String advanceStr = text.substring(startIndex, endIndex);
+							int result = Integer.parseInt(advanceStr);
+							System.out.println("parseAdvancementLevel: successfully parsed with alternative pattern: " + result);
+							return result;
+						}
+					}
+				}
+
+				System.out.println("parseAdvancementLevel: no advancement pattern found");
+			}
+
+			return 0; // Default to 0 if no advancement found
+		} catch (NumberFormatException e) {
+			System.out.println("parseAdvancementLevel: NumberFormatException parsing: " + text);
+			return 0;
+		}
+	}
+
+	/**
+	 * Gets the appropriate color for an advancement level
+	 */
+	private Color getAdvancementColor(int level) {
+		if (level <= 0) return ADVANCE_COLORS[0];
+		if (level >= ADVANCE_COLORS.length) return ADVANCE_COLORS[ADVANCE_COLORS.length - 1];
+		return ADVANCE_COLORS[Math.min(level, ADVANCE_COLORS.length - 1)];
+	}
+
+	/**
+	 * Creates a styled advancement badge
+	 */
+	private JLabel createAdvancementBadge(int advanceLevel) {
+		JLabel badge = new JLabel(String.valueOf(advanceLevel)) {
+			@Override
+			protected void paintComponent(Graphics g) {
+				Graphics2D g2d = (Graphics2D) g.create();
+				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+				// Get advancement color with transparency
+				Color advanceColor = getAdvancementColor(advanceLevel);
+				Color transparentColor = new Color(
+					advanceColor.getRed(),
+					advanceColor.getGreen(),
+					advanceColor.getBlue(),
+					140 // 55% opacity for subtle appearance
+				);
+				Color transparentDarker = new Color(
+					advanceColor.darker().getRed(),
+					advanceColor.darker().getGreen(),
+					advanceColor.darker().getBlue(),
+					140
+				);
+
+				// Draw background with subtle gradient - no border, overlapping style
+				GradientPaint gradient = new GradientPaint(
+					0, 0, transparentColor,
+					0, getHeight(), transparentDarker
+				);
+				g2d.setPaint(gradient);
+				g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 6, 6);
+
+				// Draw subtle inner highlight
+				g2d.setColor(new Color(255, 255, 255, 30)); // Slightly more visible highlight
+				g2d.fillRoundRect(1, 1, getWidth() - 2, getHeight() / 3, 4, 4);
+
+				g2d.dispose();
+				super.paintComponent(g);
+			}
+		};
+
+		badge.setFont(new Font("Segoe UI", Font.BOLD, 9));
+		badge.setForeground(Color.WHITE);
+		badge.setHorizontalAlignment(SwingConstants.CENTER);
+		badge.setVerticalAlignment(SwingConstants.CENTER);
+		badge.setBounds(114, -2, 18, 16); // Repositioned slightly left for better overlap balance
+		badge.setOpaque(false);
+
+		// Enhanced tooltip
+		String levelName = getAdvancementLevelName(advanceLevel);
+		badge.setToolTipText("<html><b>Advancement Level " + advanceLevel + "</b><br>" + levelName + "</html>");
+
+		return badge;
+	}
+
+	/**
+	 * Gets a descriptive name for advancement levels
+	 */
+	private String getAdvancementLevelName(int level) {
+		switch (level) {
+			case 1: return "Novice";
+			case 2: return "Adept";
+			case 3: return "Expert";
+			case 4: return "Master";
+			case 5: return "Grandmaster";
+			default: return level > 5 ? "Legendary" : "None";
+		}
 	}
 }

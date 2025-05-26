@@ -8,7 +8,6 @@ import com.bestbudz.client.ui.panel.UIPanel;
 public enum DockPanelMapping {
 	QUEST_TAB(29501, 29601, "Info Tab", QuestTabPanel.class),
 	ACHIEVEMENTS(31006, 31086, "Achievements", AchievementsPanel.class),
-	EQUIPMENT(15106, 15150, "Equipment", com.bestbudz.client.ui.panel.EquipmentPanel.class),
 	STONERS(5065, 5100, "Stoners", StonersPanel.class);
 
 	public final int startFrame;

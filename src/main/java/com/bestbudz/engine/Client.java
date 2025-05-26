@@ -139,9 +139,10 @@ public class Client extends ClientEngine
 	private int fps = 0;
 	private long lastFpsTime = System.currentTimeMillis();
 
-	private boolean loginInProgress = false;
+	public boolean loginInProgress = false;
 	private boolean loginComplete = false;
 
+	public static int[] currentAdvances = new int[Skills.SKILLS_COUNT];
 
 	public static final int[][] anIntArrayArray1003 = {
 		{6798, 107, 10283, 16, 4797, 7744, 5799, 4634, 33697, 22433, 2983, 54193, 1000, 7114, 6873, 6400, 6837, 6850, 350, 400, 325, 375, 660, 21662, 5738, 675, 1075, 2130, 1050, 8776, 7833, 3700, 36133, 4960, 19860, 86933, 27831, 33, 17350, 38693, 8759, 13860, 35321, 43297, 167550, 5938, 96993, 49863, 49500, 54783, 58933, 689484, 50000, 61093, 5652, 926, 79839683, 2219, 7114, 3982, 6073, 49823, 689385, 67832, 33823, 271833, 869308091, 12821, 23421, 9583, 123456, 28131},
@@ -411,7 +412,7 @@ public class Client extends ClientEngine
 	private NodeList[][][] groundArray;
 	private volatile boolean aBoolean831;
 	private Socket aSocket832;
-	private Stream aStream_834;
+	public static Stream aStream_834;
 	private static Npc[] npcArray;
 	private int npcCount;
 	private int[] npcIndices;
@@ -587,7 +588,7 @@ public class Client extends ClientEngine
 	public boolean aBoolean1160;
 	private ImageProducer aRSImageProducer_1164;
 	private static int daysSinceRecovChange;
-	private RSSocket socketStream;
+	public static RSSocket socketStream;
 	private int anInt1169;
 	private static int minimapInt3;
 	public static int reportAbuseInterfaceID;
@@ -12812,6 +12813,7 @@ public class Client extends ClientEngine
 
 					currentExp[pid]   = pExp;
 					currentStats[pid] = pGrade;
+					currentAdvances[pid] = pAdvance;
 
 					maxStats[pid] = 1;
 					for (int lvl = 0; lvl < Skills.EXP_FOR_LEVEL.length; lvl++)

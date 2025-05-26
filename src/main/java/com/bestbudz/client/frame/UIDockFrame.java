@@ -3,12 +3,9 @@ package com.bestbudz.client.frame;
 import com.bestbudz.client.ui.manager.UIPanelManager;
 import com.bestbudz.client.ui.panel.*;
 import com.bestbudz.client.ui.panel.UIPanel;
-import com.bestbudz.config.Configuration;
-import com.bestbudz.config.SettingHandler;
 
 import com.bestbudz.engine.Client;
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -17,6 +14,7 @@ import java.util.Map;
 
 public class UIDockFrame extends JDialog {
 
+	private Client client;
 	private String lastActivePanelID;
 	private String topVisiblePanelID;
 	private String bottomVisiblePanelID;
@@ -103,7 +101,7 @@ public class UIDockFrame extends JDialog {
 		mainLayeredPane.add(contentPanel, JLayeredPane.DEFAULT_LAYER);
 
 		// Create and add login overlay to top layer (spans entire frame)
-		loginOverlay = new LoginOverlayPanel();
+		loginOverlay = new LoginOverlayPanel(client);
 		mainLayeredPane.add(loginOverlay, JLayeredPane.PALETTE_LAYER);
 
 		// Handle resizing for all components
@@ -195,7 +193,7 @@ public class UIDockFrame extends JDialog {
 		registerPanel(new SettingsPanel());
 		registerPanel(new QuestTabPanel());
 		registerPanel(new AchievementsPanel());
-		registerPanel(new EquipmentPanel());
+		registerPanel(new ChatPanel());
 		registerPanel(new StonersPanel());
 		registerPanel(new SkillsPanel());
 
