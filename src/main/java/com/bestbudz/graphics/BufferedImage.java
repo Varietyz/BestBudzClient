@@ -1,5 +1,3 @@
 package com.bestbudz.graphics;
 
-public class BufferedImage {
-
-}
+public class BufferedImage {}

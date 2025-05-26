@@ -1,10 +1,26 @@
 package com.bestbudz.world;
 
 import com.bestbudz.config.Configuration;
-import com.bestbudz.network.StreamLoader;
 import com.bestbudz.network.Stream;
+import com.bestbudz.network.StreamLoader;
 
 public final class Floor {
+
+	public static Floor[] cache;
+	public int anInt390;
+	public int anInt391;
+	public boolean aBoolean393;
+	public int anInt394;
+	public int anInt395;
+	public int anInt396;
+	public int anInt397;
+	public int anInt398;
+	public int anInt399;
+	private Floor()
+	{
+		anInt391 = -1;
+		aBoolean393 = true;
+	}
 
 	public static void unpackConfig(StreamLoader streamLoader) {
 		Stream stream = new Stream(streamLoader.getDataForName("flo.dat"));
@@ -30,13 +46,13 @@ public final class Floor {
 			} else if(i == 1) {
 				anInt390 = stream.read3Bytes();
 				if (Configuration.snow) {
-					anInt390 = 0xffffff;						
+					anInt390 = 0xffffff;
 				}
 				method262(anInt390);
 			} else if(i == 2)
 				anInt391 = stream.readUnsignedByte();
 			else if (i == 3) {
-				
+
 			} else if(i == 5)
 			 aBoolean393 = false;
 			else if (i == 6)
@@ -122,21 +138,4 @@ public final class Floor {
 			j /= 2;
 		return (i / 4 << 10) + (j / 32 << 7) + k / 2;
 	}
-
-	private Floor()
-	{
-		anInt391 = -1;
-		aBoolean393 = true;
-	}
-
-	public static Floor cache[];
-	public int anInt390;
-	public int anInt391;
-	public boolean aBoolean393;
-	public int anInt394;
-	public int anInt395;
-	public int anInt396;
-	public int anInt397;
-	public int anInt398;
-	public int anInt399;
 }

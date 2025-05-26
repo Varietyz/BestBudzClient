@@ -6,6 +6,40 @@ import com.bestbudz.rendering.animation.Class29;
 public final class Class6
 {
 
+	private static final int[] anIntArray118 = new int[5];
+	private static final int[] anIntArray119 = new int[5];
+	private static final int[] anIntArray120 = new int[5];
+	private static final int[] anIntArray121 = new int[5];
+	private static final int[] anIntArray122 = new int[5];
+	private static int[] anIntArray115;
+	private static int[] anIntArray116;
+	private static int[] anIntArray117;
+	private final int[] anIntArray106;
+	private final int[] anIntArray107;
+	private final int[] anIntArray108;
+	public int anInt113;
+	public int anInt114;
+	private Class29 aClass29_98;
+	private Class29 aClass29_99;
+	private Class29 aClass29_100;
+	private Class29 aClass29_101;
+	private Class29 aClass29_102;
+	private Class29 aClass29_103;
+	private Class29 aClass29_104;
+	private Class29 aClass29_105;
+	private int anInt109;
+	private int anInt110;
+	private Class39 aClass39_111;
+	private Class29 aClass29_112;
+	public Class6()
+	{
+		anIntArray106 = new int[5];
+		anIntArray107 = new int[5];
+		anIntArray108 = new int[5];
+		anInt110 = 100;
+		anInt113 = 500;
+	}
+
 	public static void method166()
 	{
 		anIntArray116 = new int[32768];
@@ -268,40 +302,5 @@ public final class Class6
 		aClass29_112 = new Class29();
 		aClass39_111.method545(stream, aClass29_112);
 	}
-
-	public Class6()
-	{
-		anIntArray106 = new int[5];
-		anIntArray107 = new int[5];
-		anIntArray108 = new int[5];
-		anInt110 = 100;
-		anInt113 = 500;
-	}
-
-	private Class29 aClass29_98;
-	private Class29 aClass29_99;
-	private Class29 aClass29_100;
-	private Class29 aClass29_101;
-	private Class29 aClass29_102;
-	private Class29 aClass29_103;
-	private Class29 aClass29_104;
-	private Class29 aClass29_105;
-	private final int[] anIntArray106;
-	private final int[] anIntArray107;
-	private final int[] anIntArray108;
-	private int anInt109;
-	private int anInt110;
-	private Class39 aClass39_111;
-	private Class29 aClass29_112;
-	public int anInt113;
-	public int anInt114;
-	private static int[] anIntArray115;
-	private static int[] anIntArray116;
-	private static int[] anIntArray117;
-	private static final int[] anIntArray118 = new int[5];
-	private static final int[] anIntArray119 = new int[5];
-	private static final int[] anIntArray120 = new int[5];
-	private static final int[] anIntArray121 = new int[5];
-	private static final int[] anIntArray122 = new int[5];
 
 }

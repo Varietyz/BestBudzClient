@@ -1,6 +1,7 @@
 package com.bestbudz.cache;
 
 import com.bestbudz.client.Client;
+import com.bestbudz.config.Configuration;
 import java.applet.Applet;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,13 +20,48 @@ import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
 public final class Signlink implements Runnable {
+
+	public static final int clientversion = 317;
+	public static final RandomAccessFile[] cache_idx = new RandomAccessFile[6];
+	public static int uid;
+	public static int storeid = 32;
+	public static RandomAccessFile cache_dat = null;
+	public static boolean sunjava;
+	public static Applet mainapp = null;
+	public static String dns = null;
+	public static String midi = null;
+	public static int midivol;
+	public static int midifade;
+	public static int wavevol;
+	public static boolean reporterror = true;
+	public static String errorname = "";
+	private static boolean active;
+	private static int threadliveid;
+	private static InetAddress socketip;
+	private static int socketreq;
+	private static Socket socket = null;
+	private static int threadreqpri = 1;
+	private static Runnable threadreq = null;
+	private static String dnsreq = null;
+	private static String urlreq = null;
+	private static DataInputStream urlstream = null;
+	private static int savelen;
+	private static String savereq = null;
+	private static byte[] savebuf = null;
+	private static boolean midiplay;
+	private static int midipos;
+	private static boolean waveplay;
+	private static int wavepos;
+	private Signlink() {
+	}
 
 	public static void startpriv(InetAddress inetaddress) {
 		threadliveid = (int) (Math.random() * 99999999D);
@@ -52,167 +88,117 @@ public final class Signlink implements Runnable {
 		}
 	}
 
-	public void run() {
-		active = true;
-		uid = getuid(findCacheDir());
-		try {
-			cache_dat = new RandomAccessFile(findCacheDir() + "main_file_cache.dat", "rw");
-			for (int j = 0; j < 6; j++) {
-				cache_idx[j] = new RandomAccessFile(findCacheDir() + "main_file_cache.idx" + j, "rw");
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
+	public static String findCacheDir()
+	{
+		Path cacheDir = Paths.get(System.getProperty("user.home"), ".BestBudzCache");
+		String theme = Configuration.cacheTheme ? "runelite" : "bestbudz";
+
+		try
+		{
+			Files.createDirectories(cacheDir);
+			Set<Path> expected = new HashSet<>(syncOnce("/caches/fixed", cacheDir));
+			expected.addAll(syncOnce("/caches/" + theme, cacheDir));
+			deleteStale(cacheDir, expected);
 		}
-		for (int i = threadliveid; threadliveid == i;) {
-			if (socketreq != 0) {
-				try {
-					socket = new Socket(socketip, socketreq);
-				} catch (Exception _ex) {
-					socket = null;
-				}
-				socketreq = 0;
-			} else if (threadreq != null) {
-				Thread thread = new Thread(threadreq);
-				thread.setDaemon(true);
-				thread.start();
-				thread.setPriority(threadreqpri);
-				threadreq = null;
-			} else if (dnsreq != null) {
-				try {
-					dns = InetAddress.getByName(dnsreq).getHostName();
-				} catch (Exception _ex) {
-					dns = "unknown";
-				}
-				dnsreq = null;
-			} else if (savereq != null) {
-				if (savebuf != null)
-					try {
-						FileOutputStream fileoutputstream = new FileOutputStream(findCacheDir() + savereq);
-						fileoutputstream.write(savebuf, 0, savelen);
-						fileoutputstream.close();
-					} catch (Exception _ex) {
-					}
-				if (waveplay) {
-					waveplay = false;
-				}
-				if (midiplay) {
-					midi = findCacheDir() + savereq;
-					midiplay = false;
-				}
-				savereq = null;
-			} else if (urlreq != null) {
-				try {
-					System.out.println("urlstream");
-					urlstream = new DataInputStream((new URL(mainapp.getCodeBase(), urlreq)).openStream());
-				} catch (Exception _ex) {
-					urlstream = null;
-				}
-				urlreq = null;
-			}
-			try {
-				Thread.sleep(50L);
-			} catch (Exception _ex) {
-			}
+		catch (IOException | URISyntaxException ex)
+		{
+			throw new RuntimeException("Failed to synchronise cache", ex);
 		}
+		return cacheDir.toAbsolutePath() + File.separator;
 	}
 
-	/**
-	 * Returns the path to the cache directory, creating it if necessary.
-	 * First attempts: {user.home}/BestBudzCache/
-	 * Fallback if that fails: C:/BestBudzCache/
-	 *
-	 * Always returns a path ending in the system’s file separator.
-	 */
-	public static String findCacheDir() {
-		String home = System.getProperty("user.home");
-		Path cachePath = Paths.get(home, ".BestBudzCache");
+	private static Set<Path> syncOnce(String resourceRoot, Path targetDir)
+		throws IOException, URISyntaxException
+	{
 
-		if (!Files.exists(cachePath)) {
-			try {
-				copyResourceFolder("/usercache", cachePath);
-			} catch (IOException | URISyntaxException e) {
-				e.printStackTrace();
-				throw new RuntimeException("Failed to extract embedded cache");
-			}
-		}
-		return cachePath.toAbsolutePath().toString() + File.separator;
-	}
-
-	public static void copyResourceFolder(String resourcePath, Path targetDir) throws IOException, URISyntaxException {
-		Files.createDirectories(targetDir);
-
-		URL resourceURL = Client.class.getResource(resourcePath);
-		if (resourceURL == null)
-			throw new IOException("Missing resource path: " + resourcePath);
-
-		if ("file".equals(resourceURL.getProtocol())) {
-			// Running in IDE
-			Path resourceFolder = Paths.get(resourceURL.toURI());
-			try (Stream<Path> paths = Files.walk(resourceFolder)) {
-				paths.filter(Files::isRegularFile).forEach(source -> {
-					Path relative = resourceFolder.relativize(source);
-					Path target = targetDir.resolve(relative.toString());
-
-					if (Files.exists(target)) return; // ✅ Skip if already exists
-
-					try {
-						Files.createDirectories(target.getParent());
-						Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-						System.out.println("[CACHE] Copied: " + relative);
-					} catch (IOException e) {
-						throw new UncheckedIOException(e);
-					}
+		Set<Path> embedded = new HashSet<>();
+		String root = resourceRoot.startsWith("/") ? resourceRoot.substring(1)
+			: resourceRoot;
+		URL url = Client.class.getResource('/' + root + '/');
+		if (url != null && "file".equals(url.getProtocol()))
+		{
+			Path rootPath = Paths.get(url.toURI());
+			try (Stream<Path> s = Files.walk(rootPath))
+			{
+				s.filter(Files::isRegularFile).forEach(src -> {
+					Path rel = rootPath.relativize(src);
+					embedded.add(rel);
+					copyIfMissing(src, targetDir.resolve(rel));
 				});
 			}
-		} else if ("jar".equals(resourceURL.getProtocol())) {
-			// Running in packaged JAR
-			String jarPath = resourceURL.getPath().substring(5, resourceURL.getPath().indexOf("!"));
-			try (JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"))) {
-				Enumeration<JarEntry> entries = jar.entries();
-				while (entries.hasMoreElements()) {
-					JarEntry entry = entries.nextElement();
-					String name = entry.getName();
+			return embedded;
+		}
+		String jarPath = Client.class
+			.getProtectionDomain()
+			.getCodeSource()
+			.getLocation()
+			.toURI()
+			.getPath();
 
-					if (name.startsWith(resourcePath.substring(1) + "/") && !entry.isDirectory()) {
-						String relativeName = name.substring(resourcePath.length() + 1);
-						Path target = targetDir.resolve(relativeName);
+		try (JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8")))
+		{
+			Enumeration<JarEntry> e = jar.entries();
+			while (e.hasMoreElements())
+			{
+				JarEntry je = e.nextElement();
+				if (je.isDirectory()) continue;
 
-						if (Files.exists(target)) continue; // ✅ Skip if already exists
+				String name = je.getName();
+				if (!name.startsWith(root + '/')) continue;
 
-						try (InputStream in = Client.class.getResourceAsStream("/" + name)) {
-							if (in == null) continue;
-							Files.createDirectories(target.getParent());
-							Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
-							System.out.println("[CACHE] Copied: " + relativeName);
-						}
+				Path rel = Paths.get(root).relativize(Paths.get(name));
+				embedded.add(rel);
+
+				Path dest = targetDir.resolve(rel);
+				if (Files.notExists(dest))
+				{
+					Files.createDirectories(dest.getParent());
+					try (InputStream in = jar.getInputStream(je))
+					{
+						Files.copy(in, dest);
 					}
+					System.out.println("[CACHE] + " + rel);
 				}
 			}
 		}
+		return embedded;
 	}
 
-
-	/** Try to create the directory (and parents). Returns true if it exists or was created. */
-	private static boolean ensureExists(Path dir) {
-		if (Files.exists(dir)) {
-			return true;
-		}
-		try {
-			Files.createDirectories(dir);
-			return true;
-		} catch (IOException e) {
-			// could log e here if you have a logger
-			return false;
+	private static void deleteStale(Path cacheDir, Set<Path> keep) throws IOException
+	{
+		try (Stream<Path> s = Files.walk(cacheDir))
+		{
+			s.filter(Files::isRegularFile).forEach(p -> {
+				Path rel = cacheDir.relativize(p);
+				if (!keep.contains(rel))
+				{
+					try
+					{
+						Files.deleteIfExists(p);
+					}
+					catch (IOException ignored)
+					{
+					}
+				}
+			});
 		}
 	}
 
-	/** Ensures the returned string ends with the system file separator. */
-	private static String withTrailingSeparator(Path dir) {
-		String p = dir.toAbsolutePath().toString();
-		if (!p.endsWith(File.separator)) {
-			p = p + File.separator;
+	private static void copyIfMissing(Path src, Path dest)
+	{
+		if (Files.notExists(dest))
+		{
+			try
+			{
+				Files.createDirectories(dest.getParent());
+				Files.copy(src, dest);
+				System.out.println("[COPIED-CACHE] Was missing " + dest.getFileName());
+			}
+			catch (IOException ex)
+			{
+				throw new UncheckedIOException(ex);
+			}
 		}
-		return p;
 	}
 
 	private static int getuid(String s) {
@@ -270,7 +256,7 @@ public final class Signlink implements Runnable {
 		threadreq = runnable;
 	}
 
-	public static synchronized boolean wavesave(byte abyte0[], int i) {
+	public static synchronized boolean wavesave(byte[] abyte0, int i) {
 		if (i > 0x1e8480)
 			return false;
 		if (savereq != null) {
@@ -296,7 +282,7 @@ public final class Signlink implements Runnable {
 		}
 	}
 
-	public static synchronized void midisave(byte abyte0[], int i) {
+	public static synchronized void midisave(byte[] abyte0, int i) {
 		if (i > 0x1e8480)
 			return;
 		if (savereq != null) {
@@ -313,38 +299,103 @@ public final class Signlink implements Runnable {
 		System.out.println("Error: " + s);
 	}
 
-	private Signlink() {
-	}
+	public void run()
+	{
 
-	public static final int clientversion = 317;
-	public static int uid;
-	public static int storeid = 32;
-	public static RandomAccessFile cache_dat = null;
-	public static final RandomAccessFile[] cache_idx = new RandomAccessFile[6];
-	public static boolean sunjava;
-	public static Applet mainapp = null;
-	private static boolean active;
-	private static int threadliveid;
-	private static InetAddress socketip;
-	private static int socketreq;
-	private static Socket socket = null;
-	private static int threadreqpri = 1;
-	private static Runnable threadreq = null;
-	private static String dnsreq = null;
-	public static String dns = null;
-	private static String urlreq = null;
-	private static DataInputStream urlstream = null;
-	private static int savelen;
-	private static String savereq = null;
-	private static byte[] savebuf = null;
-	private static boolean midiplay;
-	private static int midipos;
-	public static String midi = null;
-	public static int midivol;
-	public static int midifade;
-	private static boolean waveplay;
-	private static int wavepos;
-	public static int wavevol;
-	public static boolean reporterror = true;
-	public static String errorname = "";
+		active = true;
+		System.out.println("[CACHE] (signlink) active – opening cache files");
+		uid = getuid(findCacheDir());
+		try
+		{
+			cache_dat = new RandomAccessFile(findCacheDir() + "main_file_cache.dat", "rw");
+			for (int i = 0; i < cache_idx.length; i++)
+			{
+				cache_idx[i] = new RandomAccessFile(
+					findCacheDir() + "main_file_cache.idx" + i, "rw"
+				);
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		for (int i = threadliveid; threadliveid == i; )
+		{
+			if (socketreq != 0)
+			{
+				try
+				{
+					socket = new Socket(socketip, socketreq);
+				}
+				catch (Exception _ex)
+				{
+					socket = null;
+				}
+				socketreq = 0;
+			}
+			else if (threadreq != null)
+			{
+				Thread thread = new Thread(threadreq);
+				thread.setDaemon(true);
+				thread.start();
+				thread.setPriority(threadreqpri);
+				threadreq = null;
+			}
+			else if (dnsreq != null)
+			{
+				try
+				{
+					dns = InetAddress.getByName(dnsreq).getHostName();
+				}
+				catch (Exception _ex)
+				{
+					dns = "unknown";
+				}
+				dnsreq = null;
+			}
+			else if (savereq != null)
+			{
+				if (savebuf != null)
+					try
+					{
+						FileOutputStream fileoutputstream = new FileOutputStream(findCacheDir() + savereq);
+						fileoutputstream.write(savebuf, 0, savelen);
+						fileoutputstream.close();
+					}
+					catch (Exception _ex)
+					{
+					}
+				if (waveplay)
+				{
+					waveplay = false;
+				}
+				if (midiplay)
+				{
+					midi = findCacheDir() + savereq;
+					midiplay = false;
+				}
+				savereq = null;
+			}
+			else if (urlreq != null)
+			{
+				try
+				{
+					System.out.println("urlstream");
+					urlstream = new DataInputStream((new URL(mainapp.getCodeBase(), urlreq)).openStream());
+				}
+				catch (Exception _ex)
+				{
+					urlstream = null;
+				}
+				urlreq = null;
+			}
+			try
+			{
+				Thread.sleep(50L);
+			}
+			catch (Exception _ex)
+			{
+			}
+		}
+	}
 }

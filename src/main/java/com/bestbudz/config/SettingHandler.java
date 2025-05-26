@@ -1,39 +1,29 @@
 package com.bestbudz.config;
 
-import com.bestbudz.client.Client;
 import com.bestbudz.cache.Signlink;
+import com.bestbudz.client.Client;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
-/**
- * Handles changing, loading, and saving settings
- * 
- * @author Daniel
- *
- */
-public class SettingHandler {
+public class SettingHandler
+{
 
-	/**
-	 * String identification
-	 */
+	public final static String[] strings = {
+		"Tweening", "Fog", "HD Minimap", "Mip Mapping", "Ground Decoration", "Moving Textures", "Status Orbs",
+		"Roofs", "Debit Card", "Kill Feed", "Hover Menus", "Entity Feed", "RuneLITE", "HP Bars",
+		"Hitmarkers",
+		"x10 Damage", "Camera Gliding", "Attack Priority", "Time Stamps", "Ground Blend", "Advance Colors",
+	};
 	private final static int STRING_ID = 28450;
-
-	/**
-	 * Path to stoner setting file
-	 */
 	private final static String PATH = Signlink.findCacheDir() + "/settings.dat";
 
-	/**
-	 * Handles changing settings
-	 * 
-	 * @param button
-	 * @return
-	 */
-	public static boolean handle(int button) {
-		switch (button) {
+	public static boolean handle(int button)
+	{
+		switch (button)
+		{
 			case 28420:
 				Configuration.enableTweening = !Configuration.enableTweening;
 				updateText();
@@ -87,7 +77,7 @@ public class SettingHandler {
 				updateText();
 				return true;
 			case 28432:
-				Configuration.enableNewMenus = !Configuration.enableNewMenus;
+				Configuration.cacheTheme = !Configuration.cacheTheme;
 				updateText();
 				return true;
 			case 28433:
@@ -122,21 +112,9 @@ public class SettingHandler {
 		return false;
 	}
 
-	/**
-	 * List of settings available
-	 */
-	public final static String[] strings = {
-			"Tweening", "Fog", "HD Minimap", "Mip Mapping", "Ground Decoration", "Moving Textures", "Status Orbs",
-			"Roofs", "Debit Card", "Kill Feed", "Hover Menus", "Entity Feed", "Context Menu", "HP Bars",
-			"Hitmarkers",
-			"x10 Damage", "Camera Gliding", "Attack Priority", "Time Stamps", "Ground Blend", "Advance Colors",
-	};
-
-	/**
-	 * Updates all the text
-	 */
-	public static void updateText() {
-		Client.sendFrame126(prefix(Configuration.enableTweening) + strings[0], STRING_ID + 0);
+	public static void updateText()
+	{
+		Client.sendFrame126(prefix(Configuration.enableTweening) + strings[0], STRING_ID);
 		Client.sendFrame126(prefix(Configuration.enableDistanceFog) + strings[1], STRING_ID + 1);
 		Client.sendFrame126(prefix(Configuration.enableHDMinimap) + strings[2], STRING_ID + 2);
 		Client.sendFrame126(prefix(Configuration.enableMipMapping) + strings[3], STRING_ID + 3);
@@ -146,11 +124,11 @@ public class SettingHandler {
 		Client.sendFrame126(prefix(Configuration.enableRoofs) + strings[7], STRING_ID + 7);
 		Client.sendFrame126(prefix(Configuration.enablePouch) + strings[8], STRING_ID + 8);
 		Client.sendFrame126(prefix(Configuration.showKillFeed) + strings[9],
-				STRING_ID + 9);
+			STRING_ID + 9);
 		Client.sendFrame126(prefix(Configuration.menuHovers) + strings[10], STRING_ID + 10);
 		Client.sendFrame126(prefix(Configuration.drawEntityFeed) + strings[11],
-				STRING_ID + 11);
-		Client.sendFrame126(prefix(Configuration.enableNewMenus) + strings[12], STRING_ID + 12);
+			STRING_ID + 11);
+		Client.sendFrame126(prefix(Configuration.cacheTheme) + strings[12], STRING_ID + 12);
 		Client.sendFrame126(prefix(Configuration.enableNewHpBars) + strings[13], STRING_ID + 13);
 		Client.sendFrame126(prefix(Configuration.enableNewHitmarks) + strings[14], STRING_ID + 14);
 		Client.sendFrame126(prefix(Configuration.enable10xDamage) + strings[15], STRING_ID + 15);
@@ -161,20 +139,13 @@ public class SettingHandler {
 		Client.sendFrame126(prefix(Configuration.enableAdvanceColors) + strings[20], STRING_ID + 20);
 	}
 
-	/**
-	 * Prefix of text
-	 * 
-	 * @param paramBoolean
-	 * @return
-	 */
-	public static String prefix(boolean paramBoolean) {
+	public static String prefix(boolean paramBoolean)
+	{
 		return paramBoolean ? "<col=4DE024>" : "<col=D61E30>";
 	}
 
-	/**
-	 * Default settings
-	 */
-	public static void defaultSettings() {
+	public static void defaultSettings()
+	{
 		Configuration.enableTweening = true;
 		Configuration.enableDistanceFog = true;
 		Configuration.enableHDMinimap = true;
@@ -187,7 +158,7 @@ public class SettingHandler {
 		Configuration.showKillFeed = false;
 		Configuration.menuHovers = true;
 		Configuration.drawEntityFeed = false;
-		Configuration.enableNewMenus = true;
+		Configuration.cacheTheme = false;
 		Configuration.enableNewHpBars = false;
 		Configuration.enableNewHitmarks = false;
 		Configuration.enable10xDamage = false;
@@ -201,11 +172,10 @@ public class SettingHandler {
 		Client.minimapImage.method343();
 	}
 
-	/**
-	 * Saves all the settings
-	 */
-	public static void save() {
-		try {
+	public static void save()
+	{
+		try
+		{
 			File file = new File(PATH);
 			DataOutputStream out = new DataOutputStream(new FileOutputStream(file));
 			out.writeUTF(Client.myUsername);
@@ -224,7 +194,7 @@ public class SettingHandler {
 			out.writeBoolean(Configuration.showKillFeed);
 			out.writeBoolean(Configuration.menuHovers);
 			out.writeBoolean(Configuration.drawEntityFeed);
-			out.writeBoolean(Configuration.enableNewMenus);
+			out.writeBoolean(Configuration.cacheTheme);
 			out.writeBoolean(Configuration.enableNewHpBars);
 			out.writeBoolean(Configuration.enableNewHitmarks);
 			out.writeBoolean(Configuration.enable10xDamage);
@@ -235,18 +205,20 @@ public class SettingHandler {
 			out.writeBoolean(Configuration.enableAdvanceColors);
 			out.close();
 			System.out.println("Successfully saved " + strings.length + " settings.");
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * Loads all the settings
-	 */
-	public static void load() {
-		try {
+	public static void load()
+	{
+		try
+		{
 			File file = new File(PATH);
-			if (!file.exists()) {
+			if (!file.exists())
+			{
 				return;
 			}
 			DataInputStream in = new DataInputStream(new FileInputStream(file));
@@ -266,7 +238,7 @@ public class SettingHandler {
 			Configuration.showKillFeed = in.readBoolean();
 			Configuration.menuHovers = in.readBoolean();
 			Configuration.drawEntityFeed = in.readBoolean();
-			Configuration.enableNewMenus = in.readBoolean();
+			Configuration.cacheTheme = in.readBoolean();
 			Configuration.enableNewHpBars = in.readBoolean();
 			Configuration.enableNewHitmarks = in.readBoolean();
 			Configuration.enable10xDamage = in.readBoolean();
@@ -277,7 +249,9 @@ public class SettingHandler {
 			Configuration.enableAdvanceColors = in.readBoolean();
 			in.close();
 			System.out.println("Settings loaded: " + strings.length);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}

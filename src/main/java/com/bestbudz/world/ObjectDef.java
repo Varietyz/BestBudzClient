@@ -3,15 +3,66 @@ package com.bestbudz.world;
 import com.bestbudz.client.Client;
 import com.bestbudz.config.ClientConstants;
 import com.bestbudz.network.OnDemandFetcher;
-import com.bestbudz.network.StreamLoader;
-import com.bestbudz.rendering.model.Model;
-import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.network.Stream;
+import com.bestbudz.network.StreamLoader;
+import com.bestbudz.rendering.SequenceFrame;
+import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
 
 public final class ObjectDef {
 
-	public static ObjectDef forID(int i) {
+	public static final Model[] aModelArray741s = new Model[4];
+	public static boolean lowMem;
+	public static Stream stream;
+	public static int[] streamIndices;
+	public static Client clientInstance;
+	public static int cacheIndex;
+	public static MRUNodes mruNodes2 = new MRUNodes(30);
+	public static ObjectDef[] cache;
+	public static MRUNodes mruNodes1 = new MRUNodes(500);
+	public boolean aBoolean736;
+	public byte aByte737;
+	public int anInt738;
+	public String name;
+	public int anInt740;
+	public byte aByte742;
+	public int anInt744;
+	public int anInt745;
+	public int anInt746;
+	public int[] originalModelColors;
+	public int anInt748;
+	public int anInt749;
+	public boolean aBoolean751;
+	public int type;
+	public boolean aBoolean757;
+	public int anInt758;
+	public int[] childrenIDs;
+	public int anInt760;
+	public int anInt761;
+	public boolean aBoolean762;
+	public boolean aBoolean764;
+	public boolean aBoolean766;
+	public boolean aBoolean767;
+	public int anInt768;
+	public boolean aBoolean769;
+	public int anInt772;
+	public int[] anIntArray773;
+	public int anInt774;
+	public int anInt775;
+	public int[] anIntArray776;
+	public byte[] description;
+	public boolean hasActions;
+	public boolean aBoolean779;
+	public int anInt781;
+	public int anInt783;
+	public int[] modifiedModelColors;
+	public String[] actions;
+	public ObjectDef() {
+		type = -1;
+	}
+
+	public static ObjectDef forID(int i)
+	{
 		if (i > streamIndices.length)
 			i = streamIndices.length - 1;
 		for (int j = 0; j < 20; j++)
@@ -23,21 +74,21 @@ public final class ObjectDef {
 		class46.type = i;
 		class46.setDefaults();
 		class46.readValues(stream);
-		// Start of custom or modified objects
 
-		if (i == 11407 || i == 11408) {
+		if (i == 11407 || i == 11408)
+		{
 			class46 = forID(11404);
 			class46.type = i;
-			class46.modifiedModelColors = new int[] { 7105, 8137, 7130, 5043, 7082 };
+			class46.modifiedModelColors = new int[]{7105, 8137, 7130, 5043, 7082};
 			if (i == 11407)
-				class46.originalModelColors = new int[] { 51126, 51149, 51149, 51113, 51113 };
+				class46.originalModelColors = new int[]{51126, 51149, 51149, 51113, 51113};
 			else
-				class46.originalModelColors = new int[] { 117, 127, 127, 96, 96 };
+				class46.originalModelColors = new int[]{117, 127, 127, 96, 96};
 			return class46;
 		}
 
-		switch (i) {
-			// hardcode objects that don't have any actions.
+		switch (i)
+		{
 			case 26621:
 			case 26620:
 			case 26619:
@@ -84,7 +135,7 @@ public final class ObjectDef {
 			case 26602:
 				class46.hasActions = true;
 				break;
-			case 22472:// Tab Creation
+			case 22472:
 				class46.name = "Tablet";
 				class46.actions = new String[5];
 				class46.actions[0] = "Create";
@@ -124,13 +175,13 @@ public final class ObjectDef {
 				class46.hasActions = true;
 				break;
 
-			case 2072:// Weapon Game Crate
+			case 2072:
 				class46.name = "Game Crate";
 				class46.actions = new String[5];
 				class46.actions[0] = "Search";
 				break;
 
-			case 9472:// Shop Exchange
+			case 9472:
 			case 9371:
 				class46.name = "Stoner Market";
 				class46.actions = new String[5];
@@ -139,18 +190,16 @@ public final class ObjectDef {
 				class46.actions[2] = "Explore Shops";
 				break;
 
-			case 18772:// Misery Box
+			case 18772:
 				class46.name = "Misery Box";
 				class46.actions = new String[5];
 				class46.actions[0] = "Open";
 				break;
 
-			case 5249:// Fires
+			case 5249:
 				class46.name = "Fyah";
 				class46.description = "Bun dem!".getBytes();
 				break;
-
-			// ORES QUARRYING
 			case 13712:
 				class46.name = "Tin";
 				class46.description = "It's a Tin ore.".getBytes();
@@ -244,12 +293,37 @@ public final class ObjectDef {
 				break;
 
 		}
-		if (ClientConstants.DEBUG_MODE) {
-			if (class46.name == null || class46.name.equalsIgnoreCase("null")) {
+		if (ClientConstants.DEBUG_MODE)
+		{
+			if (class46.name == null || class46.name.equalsIgnoreCase("null"))
+			{
 				class46.hasActions = true;
 			}
 		}
 		return class46;
+	}
+
+	public static void nullLoader() {
+		mruNodes1 = null;
+		mruNodes2 = null;
+		streamIndices = null;
+		cache = null;
+		stream = null;
+	}
+
+	public static void unpackConfig(StreamLoader streamLoader) {
+		stream = new Stream(streamLoader.getDataForName("loc.dat"));
+		Stream stream = new Stream(streamLoader.getDataForName("loc.idx"));
+		int totalObjects = stream.readUnsignedWord();
+		streamIndices = new int[totalObjects];
+		int i = 2;
+		for (int j = 0; j < totalObjects; j++) {
+			streamIndices[j] = i;
+			i += stream.readUnsignedWord();
+		}
+		cache = new ObjectDef[20];
+		for (int k = 0; k < 20; k++)
+			cache[k] = new ObjectDef();
 	}
 
 	public void setDefaults() {
@@ -296,29 +370,6 @@ public final class ObjectDef {
 			return;
 		for (int j = 0; j < anIntArray773.length; j++)
 			class42_sub1.method560(anIntArray773[j] & 0xffff, 0);
-	}
-
-	public static void nullLoader() {
-		mruNodes1 = null;
-		mruNodes2 = null;
-		streamIndices = null;
-		cache = null;
-		stream = null;
-	}
-
-	public static void unpackConfig(StreamLoader streamLoader) {
-		stream = new Stream(streamLoader.getDataForName("loc.dat"));
-		Stream stream = new Stream(streamLoader.getDataForName("loc.idx"));
-		int totalObjects = stream.readUnsignedWord();
-		streamIndices = new int[totalObjects];
-		int i = 2;
-		for (int j = 0; j < totalObjects; j++) {
-			streamIndices[j] = i;
-			i += stream.readUnsignedWord();
-		}
-		cache = new ObjectDef[20];
-		for (int k = 0; k < 20; k++)
-			cache[k] = new ObjectDef();
 	}
 
 	public boolean method577(int i) {
@@ -380,9 +431,7 @@ public final class ObjectDef {
 			int l = varBit.anInt650;
 			int i1 = Client.anIntArray1232[l - k];
 			i = clientInstance.variousSettings[j] >> k & i1;
-			// System.out.println(j + " " + k + " " + i1 + " " +
-			// clientInstance.variousSettings[j] + " " + i);
-			// System.out.println(Arrays.toString(childrenIDs));
+
 		} else if (anInt749 != -1)
 			i = clientInstance.variousSettings[anInt749];
 		if (i < 0 || i >= childrenIDs.length || childrenIDs[i] == -1)
@@ -397,7 +446,7 @@ public final class ObjectDef {
 		if (anIntArray776 == null) {
 			if (j != 10)
 				return null;
-			l1 = (long) ((type << 8) + l) + ((long) (k + 1) << 32);
+			l1 = (long) (((long) type << 8) + l) + ((long) (k + 1) << 32);
 			Model model_1 = (Model) mruNodes2.insertFromCache(l1);
 			if (model_1 != null)
 				return model_1;
@@ -411,7 +460,7 @@ public final class ObjectDef {
 					l2 += 0x10000;
 				model = (Model) mruNodes1.insertFromCache(l2);
 				if (model == null) {
-					model = Model.method462(l2 & 0xffff);
+					model = Model.loadModelFromCache(l2 & 0xffff);
 					if (model == null)
 						return null;
 					if (flag1)
@@ -435,7 +484,7 @@ public final class ObjectDef {
 
 			if (i1 == -1)
 				return null;
-			l1 = (long) ((type << 8) + (i1 << 3) + l) + ((long) (k + 1) << 32);
+			l1 = (long) (((long) type << 8) + ((long) i1 << 3) + l) + ((long) (k + 1) << 32);
 			Model model_2 = (Model) mruNodes2.insertFromCache(l1);
 			if (model_2 != null)
 				return model_2;
@@ -445,7 +494,7 @@ public final class ObjectDef {
 				j2 += 0x10000;
 			model = (Model) mruNodes1.insertFromCache(j2);
 			if (model == null) {
-				model = Model.method462(j2 & 0xffff);
+				model = Model.loadModelFromCache(j2 & 0xffff);
 				if (model == null)
 					return null;
 				if (flag3)
@@ -460,7 +509,7 @@ public final class ObjectDef {
 		Model model_3 = new Model(modifiedModelColors == null, SequenceFrame.method532(k),
 				l == 0 && k == -1 && !flag && !flag2, model);
 		if (k != -1) {
-			model_3.method469();
+			model_3.calculateNormals();
 			model_3.method470(k);
 			model_3.anIntArrayArray1658 = null;
 			model_3.anIntArrayArray1657 = null;
@@ -469,14 +518,14 @@ public final class ObjectDef {
 			model_3.method473();
 		if (modifiedModelColors != null) {
 			for (int k2 = 0; k2 < modifiedModelColors.length; k2++)
-				model_3.method476(modifiedModelColors[k2], originalModelColors[k2]);
+				model_3.replaceColor(modifiedModelColors[k2], originalModelColors[k2]);
 
 		}
 		if (flag)
-			model_3.method478(anInt748, anInt740, anInt772);
+			model_3.modelScale(anInt748, anInt740, anInt772);
 		if (flag2)
-			model_3.method475(anInt738, anInt745, anInt783);
-		model_3.method479(74, 1000, -90, -580, -90, !aBoolean769);
+			model_3.translateCoords(anInt738, anInt745, anInt783);
+		model_3.applyLighting(74, 1000, -90, -580, -90, !aBoolean769);
 		if (anInt760 == 1)
 			model_3.anInt1654 = model_3.modelHeight;
 		mruNodes2.removeFromCache(model_3, l1);
@@ -616,56 +665,5 @@ public final class ObjectDef {
 		if (anInt760 == -1)
 			anInt760 = aBoolean767 ? 1 : 0;
 	}
-
-	public ObjectDef() {
-		type = -1;
-	}
-
-	public boolean aBoolean736;
-	public byte aByte737;
-	public int anInt738;
-	public String name;
-	public int anInt740;
-	public static final Model[] aModelArray741s = new Model[4];
-	public byte aByte742;
-	public int anInt744;
-	public int anInt745;
-	public int anInt746;
-	public int[] originalModelColors;
-	public int anInt748;
-	public int anInt749;
-	public boolean aBoolean751;
-	public static boolean lowMem;
-	public static Stream stream;
-	public int type;
-	public static int[] streamIndices;
-	public boolean aBoolean757;
-	public int anInt758;
-	public int childrenIDs[];
-	public int anInt760;
-	public int anInt761;
-	public boolean aBoolean762;
-	public boolean aBoolean764;
-	public static Client clientInstance;
-	public boolean aBoolean766;
-	public boolean aBoolean767;
-	public int anInt768;
-	public boolean aBoolean769;
-	public static int cacheIndex;
-	public int anInt772;
-	public int[] anIntArray773;
-	public int anInt774;
-	public int anInt775;
-	public int[] anIntArray776;
-	public byte description[];
-	public boolean hasActions;
-	public boolean aBoolean779;
-	public static MRUNodes mruNodes2 = new MRUNodes(30);
-	public int anInt781;
-	public static ObjectDef[] cache;
-	public int anInt783;
-	public int[] modifiedModelColors;
-	public static MRUNodes mruNodes1 = new MRUNodes(500);
-	public String actions[];
 
 }

@@ -1,45 +1,19 @@
 package com.bestbudz.util;
 
-import com.bestbudz.graphics.text.RSFont;
 import com.bestbudz.cache.Signlink;
 
 public final class TextClass {
-	
-	public static String[] splitString(RSFont font, String prefix, String string, int maxWidth, boolean ranked) {
-		maxWidth -= font.getTextWidth(prefix) + (ranked ? 14 : 0);
-		if (font.getTextWidth(prefix + string) + (ranked ? 14 : 0) <= maxWidth) {
-			return new String[]{ string };
-		}
-		String line = "";
-		String[] cut = new String[2];
-		boolean split = false;
-		char[] characters = string.toCharArray();
-		int space = -1;
-		for (int index = 0; index < characters.length; index++) {
-			char c = characters[index];
-			line += c;
-			if (c == ' ') {
-				space = index;
-			}
-			if (!split) {
-				if (font.getTextWidth(line) + 10 > maxWidth) {
-					if (space != -1 && characters[index - 1] != ' ') {
-						cut[0] = line.substring(0, space);
-						line = line.substring(space);
-					} else {
-						cut[0] = line;
-						line = "";
-					}
-					split = true;
-				}
-			}
-		}
-		if (line.length() > 0) {
-			cut[1] = line;
-		}
-		return cut;
-	}
 
+	private static final char[] validChars = {
+		' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+		'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+		't', 'u', 'v', 'w', 'x', 'y', 'z',
+		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+		'!', '?', '.', ',', ':', ';', '(', ')', '-', '&',
+		'*', '\\', '\'', '@', '#', '+', '=', '\243', '$',
+		'%', '"', '[', ']', '>', '<', '_', '^'
+	};
+	
 	public static long longForName(String s) {
 		long l = 0L;
 		for (int i = 0; i < s.length() && i < 12; i++) {
@@ -56,7 +30,7 @@ public final class TextClass {
 		for (; l % 37L == 0L && l != 0L; l /= 37L);
 		return l;
 	}
-	
+
 	public static String capitalize(String s) {
         for (int i = 0; i < s.length(); i++) {
             if (i == 0) {
@@ -78,7 +52,7 @@ public final class TextClass {
 			if (l % 37L == 0L)
 				return "invalid_name";
 			int i = 0;
-			char ac[] = new char[12];
+			char[] ac = new char[12];
 			while (l != 0L) {
 				long l1 = l;
 				l /= 37L;
@@ -86,7 +60,7 @@ public final class TextClass {
 			}
 			return new String(ac, 12 - i, i);
 		} catch (RuntimeException runtimeexception) {
-			Signlink.reporterror("81570, " + l + ", " + (byte) -99 + ", " + runtimeexception.toString());
+			Signlink.reporterror("81570, " + l + ", " + (byte) -99 + ", " + runtimeexception);
 		}
 		throw new RuntimeException();
 	}
@@ -107,7 +81,7 @@ public final class TextClass {
 
 	public static String fixName(String s) {
 		if (s.length() > 0) {
-			char ac[] = s.toCharArray();
+			char[] ac = s.toCharArray();
 			for (int j = 0; j < ac.length; j++)
 				if (ac[j] == '_') {
 					ac[j] = ' ';
@@ -129,15 +103,5 @@ public final class TextClass {
 			stringbuffer.append("*");
 		return stringbuffer.toString();
 	}
-
-	private static final char[] validChars = {
-		' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
-		'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
-		't', 'u', 'v', 'w', 'x', 'y', 'z',
-		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-		'!', '?', '.', ',', ':', ';', '(', ')', '-', '&',
-		'*', '\\', '\'', '@', '#', '+', '=', '\243', '$',
-		'%', '"', '[', ']', '>', '<', '_', '^'
-	};
 
 }

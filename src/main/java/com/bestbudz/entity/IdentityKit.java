@@ -1,22 +1,39 @@
-package com.bestbudz.entity;// Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
+package com.bestbudz.entity;
 
-import com.bestbudz.rendering.model.Model;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
+import com.bestbudz.rendering.model.Model;
 
-public final class IdentityKit {
+public final class IdentityKit
+{
+
+	public static int length;
+	public static IdentityKit[] cache;
+	private final int[] anIntArray659;
+	private final int[] anIntArray660;
+	private final int[] anIntArray661 = {
+		-1, -1, -1, -1, -1
+	};
+	public int anInt657;
+	public boolean aBoolean662;
+	private int[] anIntArray658;
+	private IdentityKit()
+	{
+		anInt657 = -1;
+		anIntArray659 = new int[6];
+		anIntArray660 = new int[6];
+		aBoolean662 = false;
+	}
 
 	public static void unpackConfig(StreamLoader streamLoader)
 	{
 		Stream stream = new Stream(streamLoader.getDataForName("idk.dat"));
 		length = stream.readUnsignedWord();
-		if(cache == null)
+		if (cache == null)
 			cache = new IdentityKit[length];
-		for(int j = 0; j < length; j++)
+		for (int j = 0; j < length; j++)
 		{
-			if(cache[j] == null)
+			if (cache[j] == null)
 				cache[j] = new IdentityKit();
 			cache[j].readValues(stream);
 		}
@@ -27,42 +44,38 @@ public final class IdentityKit {
 		do
 		{
 			int i = stream.readUnsignedByte();
-			if(i == 0)
+			if (i == 0)
 				return;
-			if(i == 1)
+			if (i == 1)
 				anInt657 = stream.readUnsignedByte();
-			else
-			if(i == 2)
+			else if (i == 2)
 			{
 				int j = stream.readUnsignedByte();
 				anIntArray658 = new int[j];
-				for(int k = 0; k < j; k++)
+				for (int k = 0; k < j; k++)
 					anIntArray658[k] = stream.readUnsignedWord();
 
-			} else
-			if(i == 3)
+			}
+			else if (i == 3)
 				aBoolean662 = true;
-			else
-			if(i >= 40 && i < 50)
+			else if (i >= 40 && i < 50)
 				anIntArray659[i - 40] = stream.readUnsignedWord();
-			else
-			if(i >= 50 && i < 60)
+			else if (i >= 50 && i < 60)
 				anIntArray660[i - 50] = stream.readUnsignedWord();
-			else
-			if(i >= 60 && i < 70)
+			else if (i >= 60 && i < 70)
 				anIntArray661[i - 60] = stream.readUnsignedWord();
 			else
 				System.out.println("Error unrecognised config code: " + i);
-		} while(true);
+		} while (true);
 	}
 
 	public boolean method537()
 	{
-		if(anIntArray658 == null)
+		if (anIntArray658 == null)
 			return true;
 		boolean flag = true;
-		for(int j = 0; j < anIntArray658.length; j++)
-			if(!Model.method463(anIntArray658[j]))
+		for (int j = 0; j < anIntArray658.length; j++)
+			if (!Model.method463(anIntArray658[j]))
 				flag = false;
 
 		return flag;
@@ -70,22 +83,22 @@ public final class IdentityKit {
 
 	public Model method538()
 	{
-		if(anIntArray658 == null)
+		if (anIntArray658 == null)
 			return null;
-		Model aclass30_sub2_sub4_sub6s[] = new Model[anIntArray658.length];
-		for(int i = 0; i < anIntArray658.length; i++)
-			aclass30_sub2_sub4_sub6s[i] = Model.method462(anIntArray658[i]);
+		Model[] aclass30_sub2_sub4_sub6s = new Model[anIntArray658.length];
+		for (int i = 0; i < anIntArray658.length; i++)
+			aclass30_sub2_sub4_sub6s[i] = Model.loadModelFromCache(anIntArray658[i]);
 
 		Model model;
-		if(aclass30_sub2_sub4_sub6s.length == 1)
+		if (aclass30_sub2_sub4_sub6s.length == 1)
 			model = aclass30_sub2_sub4_sub6s[0];
 		else
 			model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
-		for(int j = 0; j < 6; j++)
+		for (int j = 0; j < 6; j++)
 		{
-			if(anIntArray659[j] == 0)
+			if (anIntArray659[j] == 0)
 				break;
-			model.method476(anIntArray659[j], anIntArray660[j]);
+			model.replaceColor(anIntArray659[j], anIntArray660[j]);
 		}
 
 		return model;
@@ -94,8 +107,8 @@ public final class IdentityKit {
 	public boolean method539()
 	{
 		boolean flag1 = true;
-		for(int i = 0; i < 5; i++)
-			if(anIntArray661[i] != -1 && !Model.method463(anIntArray661[i]))
+		for (int i = 0; i < 5; i++)
+			if (anIntArray661[i] != -1 && !Model.method463(anIntArray661[i]))
 				flag1 = false;
 
 		return flag1;
@@ -103,39 +116,20 @@ public final class IdentityKit {
 
 	public Model method540()
 	{
-		Model aclass30_sub2_sub4_sub6s[] = new Model[5];
+		Model[] aclass30_sub2_sub4_sub6s = new Model[5];
 		int j = 0;
-		for(int k = 0; k < 5; k++)
-			if(anIntArray661[k] != -1)
-				aclass30_sub2_sub4_sub6s[j++] = Model.method462(anIntArray661[k]);
+		for (int k = 0; k < 5; k++)
+			if (anIntArray661[k] != -1)
+				aclass30_sub2_sub4_sub6s[j++] = Model.loadModelFromCache(anIntArray661[k]);
 
 		Model model = new Model(j, aclass30_sub2_sub4_sub6s);
-		for(int l = 0; l < 6; l++)
+		for (int l = 0; l < 6; l++)
 		{
-			if(anIntArray659[l] == 0)
+			if (anIntArray659[l] == 0)
 				break;
-			model.method476(anIntArray659[l], anIntArray660[l]);
+			model.replaceColor(anIntArray659[l], anIntArray660[l]);
 		}
 
 		return model;
 	}
-
-	private IdentityKit()
-	{
-		anInt657 = -1;
-		anIntArray659 = new int[6];
-		anIntArray660 = new int[6];
-		aBoolean662 = false;
-	}
-
-	public static int length;
-	public static IdentityKit cache[];
-	public int anInt657;
-	private int[] anIntArray658;
-	private final int[] anIntArray659;
-	private final int[] anIntArray660;
-	private final int[] anIntArray661 = {
-		-1, -1, -1, -1, -1
-	};
-	public boolean aBoolean662;
 }

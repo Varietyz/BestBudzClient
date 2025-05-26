@@ -1,12 +1,33 @@
 package com.bestbudz.rendering;
 
+import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
-import com.bestbudz.network.Stream;
 
 public final class SpotAnim {
+
+	public static SpotAnim[] cache;
+	public static MRUNodes aMRUNodes_415 = new MRUNodes(30);
+	private final int[] anIntArray408;
+	private final int[] anIntArray409;
+	public Animation aAnimation_407;
+	public int anInt410;
+	public int anInt411;
+	public int anInt412;
+	public int anInt413;
+	public int anInt414;
+	private int anInt404;
+	private int anInt405;
+	private int anInt406;
+	private SpotAnim() {
+		anInt406 = -1;
+		anIntArray408 = new int[6];
+		anIntArray409 = new int[6];
+		anInt410 = 128;
+		anInt411 = 128;
+	}
 
 	public static void unpackConfig(StreamLoader streamLoader) {
 		Stream stream = new Stream(streamLoader.getDataForName("spotanim.dat"));
@@ -60,37 +81,15 @@ public final class SpotAnim {
 		Model model = (Model) aMRUNodes_415.insertFromCache(anInt404);
 		if (model != null)
 			return model;
-		model = Model.method462(anInt405);
+		model = Model.loadModelFromCache(anInt405);
 		if (model == null)
 			return null;
 		for (int i = 0; i < 6; i++)
 			if (anIntArray408[0] != 0)
-				model.method476(anIntArray408[i], anIntArray409[i]);
+				model.replaceColor(anIntArray408[i], anIntArray409[i]);
 
 		aMRUNodes_415.removeFromCache(model, anInt404);
 		return model;
 	}
-
-	private SpotAnim() {
-		anInt406 = -1;
-		anIntArray408 = new int[6];
-		anIntArray409 = new int[6];
-		anInt410 = 128;
-		anInt411 = 128;
-	}
-
-	public static SpotAnim cache[];
-	private int anInt404;
-	private int anInt405;
-	private int anInt406;
-	public Animation aAnimation_407;
-	private final int[] anIntArray408;
-	private final int[] anIntArray409;
-	public int anInt410;
-	public int anInt411;
-	public int anInt412;
-	public int anInt413;
-	public int anInt414;
-	public static MRUNodes aMRUNodes_415 = new MRUNodes(30);
 
 }

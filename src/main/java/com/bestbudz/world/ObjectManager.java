@@ -2,17 +2,41 @@ package com.bestbudz.world;
 
 import com.bestbudz.config.Configuration;
 import com.bestbudz.network.OnDemandFetcher;
+import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.Animable;
 import com.bestbudz.rendering.Animable_Sub5;
-import com.bestbudz.rendering.model.Model;
 import com.bestbudz.rendering.OverlayFloor;
 import com.bestbudz.rendering.Rasterizer;
-import com.bestbudz.network.Stream;
+import com.bestbudz.rendering.model.Model;
 import java.util.ArrayList;
 
 public final class ObjectManager {
 
-	public ObjectManager(byte abyte0[][][], int ai[][][]) {
+	private static final int[] anIntArray137 = { 1, 0, -1, 0 };
+	private static final int[] anIntArray140 = { 16, 32, 64, 128 };
+	private static final int[] anIntArray144 = { 0, -1, 0, 1 };
+	private static final int[] anIntArray152 = { 1, 2, 4, 8 };
+	public static int anInt131;
+	public static int anInt145 = 99;
+	public static boolean lowMem = true;
+	public final ArrayList<Integer> colors = new ArrayList<Integer>();
+	private final int[] anIntArray124;
+	private final int[] anIntArray125;
+	private final int[] anIntArray126;
+	private final int[] anIntArray127;
+	private final int[] anIntArray128;
+	private final int[][][] anIntArrayArrayArray129;
+	private final byte[][][] aByteArrayArrayArray130;
+	private final byte[][][] aByteArrayArrayArray134;
+	private final int[][][] anIntArrayArrayArray135;
+	private final byte[][][] aByteArrayArrayArray136;
+	private final int[][] anIntArrayArray139;
+	private final byte[][][] aByteArrayArrayArray142;
+	private final int anInt146;
+	private final int anInt147;
+	private final byte[][][] aByteArrayArrayArray148;
+	private final byte[][][] aByteArrayArrayArray149;
+	public ObjectManager(byte[][][] abyte0, int[][][] ai) {
 		anInt145 = 99;
 		anInt146 = 104;
 		anInt147 = 104;
@@ -39,8 +63,321 @@ public final class ObjectManager {
 		return l >> 19 & 0xff;
 	}
 
-	public final void method171(Class11 aclass11[],
-								WorldController worldController) {
+	private static int method172(int i, int j) {
+		int k = (method176(i + 45365, j + 0x16713, 4) - 128) + (method176(i + 10294, j + 37821, 2) - 128 >> 1) + (method176(i, j, 1) - 128 >> 2);
+		k = (int) ((double) k * 0.29999999999999999D) + 35;
+		if (k < 10)
+			k = 10;
+		else if (k > 60)
+			k = 60;
+		return k;
+	}
+
+	public static void method173(Stream stream, OnDemandFetcher class42_sub1) {
+		label0: {
+			int i = -1;
+			do {
+				int j = stream.readUSmart2();
+				if (j == 0)
+					break label0;
+				i += j;
+				ObjectDef class46 = ObjectDef.forID(i);
+				class46.method574(class42_sub1);
+				do {
+					int k = stream.method422();
+					if (k == 0)
+						break;
+					stream.readUnsignedByte();
+				} while (true);
+			} while (true);
+		}
+	}
+
+	private static int method176(int i, int j, int k) {
+		int l = i / k;
+		int i1 = i & k - 1;
+		int j1 = j / k;
+		int k1 = j & k - 1;
+		int l1 = method186(l, j1);
+		int i2 = method186(l + 1, j1);
+		int j2 = method186(l, j1 + 1);
+		int k2 = method186(l + 1, j1 + 1);
+		int l2 = method184(l1, i2, i1, k);
+		int i3 = method184(j2, k2, i1, k);
+		return method184(l2, i3, k1, k);
+	}
+
+	public static boolean method178(int i, int j) {
+		ObjectDef class46 = ObjectDef.forID(i);
+		if (j == 11)
+			j = 10;
+		if (j >= 5 && j <= 8)
+			j = 4;
+		return class46.method577(j);
+	}
+
+	private static int method184(int i, int j, int k, int l) {
+		int i1 = 0x10000 - Rasterizer.anIntArray1471[(k * 1024) / l] >> 1;
+		return (i * (0x10000 - i1) >> 16) + (j * i1 >> 16);
+	}
+
+	private static int method186(int i, int j) {
+		int k = method170(i - 1, j - 1) + method170(i + 1, j - 1) + method170(i - 1, j + 1) + method170(i + 1, j + 1);
+		int l = method170(i - 1, j) + method170(i + 1, j) + method170(i, j - 1) + method170(i, j + 1);
+		int i1 = method170(i, j);
+		return k / 16 + l / 8 + i1 / 4;
+	}
+
+	private static int method187(int i, int j) {
+		if (i == -1)
+			return 0xbc614e;
+		j = (j * (i & 0x7f)) / 128;
+		if (j < 2)
+			j = 2;
+		else if (j > 126)
+			j = 126;
+		return (i & 0xff80) + j;
+	}
+
+	public static void method188(WorldController worldController, int i, int j, int k, int l, Class11 class11, int[][][] ai, int i1, int j1, int k1) {
+		int l1 = ai[l][i1][j];
+		int i2 = ai[l][i1 + 1][j];
+		int j2 = ai[l][i1 + 1][j + 1];
+		int k2 = ai[l][i1][j + 1];
+		int l2 = l1 + i2 + j2 + k2 >> 2;
+		ObjectDef class46 = ObjectDef.forID(j1);
+		int i3 = i1 + (j << 7) + (j1 << 14) + 0x40000000;
+		if (!class46.hasActions)
+			i3 += 0x80000000;
+		byte byte1 = (byte) ((i << 6) + k);
+		if (k == 22) {
+			Object obj;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj = class46.method578(22, i, l1, i2, j2, k2, -1);
+			else
+				obj = new Animable_Sub5(j1, i, 22, i2, j2, l1, k2, class46.anInt781, true);
+			worldController.method280(k1, l2, j, ((Animable) (obj)), byte1, i3, i1);
+			if (class46.aBoolean767 && class46.hasActions)
+				class11.method213(j, i1);
+			return;
+		}
+		if (k == 10 || k == 11) {
+			Object obj1;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj1 = class46.method578(10, i, l1, i2, j2, k2, -1);
+			else
+				obj1 = new Animable_Sub5(j1, i, 10, i2, j2, l1, k2, class46.anInt781, true);
+			if (obj1 != null) {
+				int j5 = 0;
+				if (k == 11)
+					j5 += 256;
+				int k4;
+				int i5;
+				if (i == 1 || i == 3) {
+					k4 = class46.anInt761;
+					i5 = class46.anInt744;
+				} else {
+					k4 = class46.anInt744;
+					i5 = class46.anInt761;
+				}
+				worldController.method284(i3, byte1, l2, i5, ((Animable) (obj1)), k4, k1, j5, j, i1);
+			}
+			if (class46.aBoolean767)
+				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
+			return;
+		}
+		if (k >= 12) {
+			Object obj2;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj2 = class46.method578(k, i, l1, i2, j2, k2, -1);
+			else
+				obj2 = new Animable_Sub5(j1, i, k, i2, j2, l1, k2, class46.anInt781, true);
+			worldController.method284(i3, byte1, l2, 1, ((Animable) (obj2)), 1, k1, 0, j, i1);
+			if (class46.aBoolean767)
+				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
+			return;
+		}
+		if (k == 0) {
+			Object obj3;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj3 = class46.method578(0, i, l1, i2, j2, k2, -1);
+			else
+				obj3 = new Animable_Sub5(j1, i, 0, i2, j2, l1, k2, class46.anInt781, true);
+			worldController.method282(anIntArray152[i], ((Animable) (obj3)), i3, j, byte1, i1, null, l2, 0, k1);
+			if (class46.aBoolean767)
+				class11.method211(j, i, i1, k, class46.aBoolean757);
+			return;
+		}
+		if (k == 1) {
+			Object obj4;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj4 = class46.method578(1, i, l1, i2, j2, k2, -1);
+			else
+				obj4 = new Animable_Sub5(j1, i, 1, i2, j2, l1, k2, class46.anInt781, true);
+			worldController.method282(anIntArray140[i], ((Animable) (obj4)), i3, j, byte1, i1, null, l2, 0, k1);
+			if (class46.aBoolean767)
+				class11.method211(j, i, i1, k, class46.aBoolean757);
+			return;
+		}
+		if (k == 2) {
+			int j3 = i + 1 & 3;
+			Object obj11;
+			Object obj12;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null) {
+				obj11 = class46.method578(2, 4 + i, l1, i2, j2, k2, -1);
+				obj12 = class46.method578(2, j3, l1, i2, j2, k2, -1);
+			} else {
+				obj11 = new Animable_Sub5(j1, 4 + i, 2, i2, j2, l1, k2, class46.anInt781, true);
+				obj12 = new Animable_Sub5(j1, j3, 2, i2, j2, l1, k2, class46.anInt781, true);
+			}
+			worldController.method282(anIntArray152[i], ((Animable) (obj11)), i3, j, byte1, i1, ((Animable) (obj12)), l2, anIntArray152[j3], k1);
+			if (class46.aBoolean767)
+				class11.method211(j, i, i1, k, class46.aBoolean757);
+			return;
+		}
+		if (k == 3) {
+			Object obj5;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj5 = class46.method578(3, i, l1, i2, j2, k2, -1);
+			else
+				obj5 = new Animable_Sub5(j1, i, 3, i2, j2, l1, k2, class46.anInt781, true);
+			worldController.method282(anIntArray140[i], ((Animable) (obj5)), i3, j, byte1, i1, null, l2, 0, k1);
+			if (class46.aBoolean767)
+				class11.method211(j, i, i1, k, class46.aBoolean757);
+			return;
+		}
+		if (k == 9) {
+			Object obj6;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj6 = class46.method578(k, i, l1, i2, j2, k2, -1);
+			else
+				obj6 = new Animable_Sub5(j1, i, k, i2, j2, l1, k2, class46.anInt781, true);
+			worldController.method284(i3, byte1, l2, 1, ((Animable) (obj6)), 1, k1, 0, j, i1);
+			if (class46.aBoolean767)
+				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
+			return;
+		}
+		if (class46.aBoolean762)
+			if (i == 1) {
+				int k3 = k2;
+				k2 = j2;
+				j2 = i2;
+				i2 = l1;
+				l1 = k3;
+			} else if (i == 2) {
+				int l3 = k2;
+				k2 = i2;
+				i2 = l3;
+				l3 = j2;
+				j2 = l1;
+				l1 = l3;
+			} else if (i == 3) {
+				int i4 = k2;
+				k2 = l1;
+				l1 = i2;
+				i2 = j2;
+				j2 = i4;
+			}
+		if (k == 4) {
+			Object obj7;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj7 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			else
+				obj7 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
+			worldController.method283(i3, j, i * 512, k1, 0, l2, ((Animable) (obj7)), i1, byte1, 0, anIntArray152[i]);
+			return;
+		}
+		if (k == 5) {
+			int j4 = 16;
+			int l4 = worldController.method300(k1, i1, j);
+			if (l4 > 0)
+				j4 = ObjectDef.forID(l4 >> 14 & 0x7fff).anInt775;
+			Object obj13;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj13 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			else
+				obj13 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
+			worldController.method283(i3, j, i * 512, k1, anIntArray137[i] * j4, l2, ((Animable) (obj13)), i1, byte1, anIntArray144[i] * j4, anIntArray152[i]);
+			return;
+		}
+		if (k == 6) {
+			Object obj8;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj8 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			else
+				obj8 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
+			worldController.method283(i3, j, i, k1, 0, l2, ((Animable) (obj8)), i1, byte1, 0, 256);
+			return;
+		}
+		if (k == 7) {
+			Object obj9;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj9 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			else
+				obj9 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
+			worldController.method283(i3, j, i, k1, 0, l2, ((Animable) (obj9)), i1, byte1, 0, 512);
+			return;
+		}
+		if (k == 8) {
+			Object obj10;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj10 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			else
+				obj10 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
+			worldController.method283(i3, j, i, k1, 0, l2, ((Animable) (obj10)), i1, byte1, 0, 768);
+		}
+	}
+
+	public static boolean method189(int i, byte[] is, int i_250_)
+	{
+		boolean bool = true;
+		Stream stream = new Stream(is);
+		int i_252_ = -1;
+		for (; ; )
+		{
+			int i_253_ = stream.method422();
+			if (i_253_ == 0)
+				break;
+			i_252_ += i_253_;
+			int i_254_ = 0;
+			boolean bool_255_ = false;
+			for (; ; )
+			{
+				if (bool_255_)
+				{
+					int i_256_ = stream.method422();
+					if (i_256_ == 0)
+						break;
+					stream.readUnsignedByte();
+				}
+				else
+				{
+					int i_257_ = stream.method422();
+					if (i_257_ == 0)
+						break;
+					i_254_ += i_257_ - 1;
+					int i_258_ = i_254_ & 0x3f;
+					int i_259_ = i_254_ >> 6 & 0x3f;
+					int i_260_ = stream.readUnsignedByte() >> 2;
+					int i_261_ = i_259_ + i;
+					int i_262_ = i_258_ + i_250_;
+					if (i_261_ > 0 && i_262_ > 0 && i_261_ < 103 && i_262_ < 103)
+					{
+						ObjectDef class46 = ObjectDef.forID(i_252_);
+						if (i_260_ != 22 || Configuration.enableGroundDecors || class46.hasActions || class46.aBoolean736)
+						{
+							bool &= class46.method579();
+							bool_255_ = true;
+						}
+					}
+				}
+			}
+		}
+		return bool;
+	}
+
+	public void method171(Class11[] aclass11,
+						  WorldController worldController) {
 		for (int j = 0; j < 4; j++) {
 			for (int k = 0; k < 104; k++) {
 				for (int i1 = 0; i1 < 104; i1++)
@@ -59,10 +396,10 @@ public final class ObjectManager {
 		}
 
 		 for (int l = 0; l < 4; l++) {
-             byte shadowIntensity[][] = aByteArrayArrayArray134[l];
+             byte[][] shadowIntensity = aByteArrayArrayArray134[l];
              byte directional_light_initial_intensity = 96;
-             char specular_distribution_factor = '\u0300'; 
-             byte directional_light_x = -50; 
+             char specular_distribution_factor = '\u0300';
+             byte directional_light_x = -50;
              byte directional_light_z = -10;
              byte directional_light_y = -50;
              int directional_light_length = (int) Math.sqrt(directional_light_x * directional_light_x + directional_light_z * directional_light_z + directional_light_y * directional_light_y);
@@ -168,7 +505,7 @@ public final class ObjectManager {
 								int j22 = j13 / k16;
 								int l22 = j14 / k16;
 								j21 = method177(l21, j22, l22);
-		
+
 								if (l22 < 0)
 									l22 = 0;
 								else if (l22 > 255)
@@ -176,10 +513,8 @@ public final class ObjectManager {
 								k21 = method177(l21, j22, l22);
 							}
 							if (l > 0) {
-								boolean flag = true;
-								if (l18 == 0
-										&& aByteArrayArrayArray136[l][l6][k17] != 0)
-									flag = false;
+								boolean flag = l18 != 0
+									|| aByteArrayArrayArray136[l][l6][k17] == 0;
 								if (i19 > 0
 										&& !OverlayFloor.overlayFloor[i19 - 1].aBoolean393)
 									flag = false;
@@ -199,77 +534,99 @@ public final class ObjectManager {
 										method187(j21, l20),
 										method187(j21, i21), 0, 0, 0, 0,
 										i22, 0, false);
-							} else {
+							} else
+							{
 								int k22 = aByteArrayArrayArray136[l][l6][k17] + 1;
 								byte byte4 = aByteArrayArrayArray148[l][l6][k17];
-								//Flo2 flo_2 = Flo2.flo2[i19 - 1];
 								OverlayFloor overlay_flo = OverlayFloor.overlayFloor[i19 - 1];
-                                int textureId = overlay_flo.textureId;
-                                int j23;
-                                int k23;
-								if (textureId > 50) {
+								int textureId = overlay_flo.textureId;
+								int j23;
+								int k23;
+								if (textureId > 50)
+								{
 									textureId = -1;
 								}
-								if (textureId >= 0) {
-                                    k23 = Rasterizer.method369(textureId);
-                                    j23 = -1;
-                                } else if (overlay_flo.rgb == 0xff00ff) {
-                                    k23 = 0;
-                                    j23 = -2;
-                                    textureId = -1;
-                                } else if(overlay_flo.rgb == 0x333333) {
-                                    k23 = Rasterizer.anIntArray1482[method185(overlay_flo.anInt399, 96)];                                
-                                    j23 = -2;
-                                    textureId = -1;
-                                } else if((i19-1) == 63) {
-                                    k23 = overlay_flo.rgb = 0x767676;
-                                    j23 = -2;
-                                    textureId = -1;
-                                } else {
-                                    j23 = method177(overlay_flo.anInt394, overlay_flo.anInt395, overlay_flo.anInt396);
-                                    k23 = Rasterizer.anIntArray1482[method185(overlay_flo.anInt399, 96)];
-                                }
-								if((i19-1) == 111) {
+								if (textureId >= 0)
+								{
+									k23 = Rasterizer.method369(textureId);
+									j23 = -1;
+								}
+								else if (overlay_flo.rgb == 0xff00ff)
+								{
+									k23 = 0;
+									j23 = -2;
+									textureId = -1;
+								}
+								else if (overlay_flo.rgb == 0x333333)
+								{
+									k23 = Rasterizer.anIntArray1482[method185(overlay_flo.anInt399, 96)];
+									j23 = -2;
+									textureId = -1;
+								}
+								else if ((i19 - 1) == 63)
+								{
+									k23 = overlay_flo.rgb = 0x767676;
+									j23 = -2;
+									textureId = -1;
+								}
+								else
+								{
+									j23 = method177(overlay_flo.anInt394, overlay_flo.anInt395, overlay_flo.anInt396);
+									k23 = Rasterizer.anIntArray1482[method185(overlay_flo.anInt399, 96)];
+								}
+								if ((i19 - 1) == 111)
+								{
 									k23 = Rasterizer.method369(1);
 									j23 = -1;
-                                    textureId = 1;
-                                } else if (j23 == 6363) {
+									textureId = 1;
+								}
+								else if (j23 == 6363)
+								{
 									k23 = 0x483B21;
-									j23 = method177(25,146,24);
-                                } else if((i19-1) == 64) {
-                                	k23 = overlay_flo.rgb;
-                                	j23 = -2;
-	                                textureId = -1;
-                                } else if((i19-1) == 63) {
-                                    k23 = overlay_flo.rgb = 0x767676;
-                                    j23 = -2;
-                                    textureId = -1;
-                                } else if((i19-1) == 54 ||(i19-1) == 15) {
+									j23 = method177(25, 146, 24);
+								}
+								else if ((i19 - 1) == 64)
+								{
 									k23 = overlay_flo.rgb;
 									j23 = -2;
-                                    textureId = -1;
-                                } else if((i19-1) == 151) {
-                                    k23 = 0xfad83d;
-                                }
-								if (overlay_flo.rgb == 0x000000 || (i19-1) == 28 || (i19-1) == 113 || (i19-1) == 6) {
+									textureId = -1;
+								}
+								else if ((i19 - 1) == 63)
+								{
+									k23 = overlay_flo.rgb = 0x767676;
+									j23 = -2;
+									textureId = -1;
+								}
+								else if ((i19 - 1) == 54 || (i19 - 1) == 15)
+								{
+									k23 = overlay_flo.rgb;
+									j23 = -2;
+									textureId = -1;
+								}
+								else if ((i19 - 1) == 151)
+								{
+									k23 = 0xfad83d;
+								}
+								if (overlay_flo.rgb == 0x000000 || (i19 - 1) == 28 || (i19 - 1) == 113 || (i19 - 1) == 6)
+								{
 									textureId = 25;
 									k23 = Rasterizer.method369(25);
-            						j23 = -1;
+									j23 = -1;
 								}
 								colors.add(k23);
 								worldController.method279(l, l6, k17, k22,
-										byte4, textureId, 154, j19, k19,
-										l19, i20, method187(j21, j20),
-										method187(j21, k20),
-										method187(j21, l20),
-										method187(j21, i21),
-										method185(j23, j20),
-										method185(j23, k20),
-										method185(j23, l20),
-										method185(j23, i21), i22,
-										k23, textureId >= 0
-												&& textureId <= 50);
-                                }
+									byte4, textureId, 154, j19, k19,
+									l19, i20, method187(j21, j20),
+									method187(j21, k20),
+									method187(j21, l20),
+									method187(j21, i21),
+									method185(j23, j20),
+									method185(j23, k20),
+									method185(j23, l20),
+									method185(j23, i21), i22,
+									k23, textureId >= 0
+										&& textureId <= 50);
+							}
 						}
 					}
 				}
@@ -455,37 +812,7 @@ public final class ObjectManager {
 		}
 	}
 
-	private static int method172(int i, int j) {
-		int k = (method176(i + 45365, j + 0x16713, 4) - 128) + (method176(i + 10294, j + 37821, 2) - 128 >> 1) + (method176(i, j, 1) - 128 >> 2);
-		k = (int) ((double) k * 0.29999999999999999D) + 35;
-		if (k < 10)
-			k = 10;
-		else if (k > 60)
-			k = 60;
-		return k;
-	}
-
-	public static void method173(Stream stream, OnDemandFetcher class42_sub1) {
-		label0: {
-			int i = -1;
-			do {
-				int j = stream.readUSmart2();
-				if (j == 0)
-					break label0;
-				i += j;
-				ObjectDef class46 = ObjectDef.forID(i);
-				class46.method574(class42_sub1);
-				do {
-					int k = stream.method422();
-					if (k == 0)
-						break;
-					stream.readUnsignedByte();
-				} while (true);
-			} while (true);
-		}
-	}
-
-	public final void method174(int i, int j, int l, int i1) {
+	public void method174(int i, int j, int l, int i1) {
 		for (int j1 = i; j1 <= i + j; j1++) {
 			for (int k1 = i1; k1 <= i1 + l; k1++)
 				if (k1 >= 0 && k1 < anInt146 && j1 >= 0 && j1 < anInt147) {
@@ -788,20 +1115,6 @@ public final class ObjectManager {
 		}
 	}
 
-	private static int method176(int i, int j, int k) {
-		int l = i / k;
-		int i1 = i & k - 1;
-		int j1 = j / k;
-		int k1 = j & k - 1;
-		int l1 = method186(l, j1);
-		int i2 = method186(l + 1, j1);
-		int j2 = method186(l, j1 + 1);
-		int k2 = method186(l + 1, j1 + 1);
-		int l2 = method184(l1, i2, i1, k);
-		int i3 = method184(j2, k2, i1, k);
-		return method184(l2, i3, k1, k);
-	}
-
 	private int method177(int i, int j, int k) {
 		if (k > 179)
 			j /= 2;
@@ -814,16 +1127,7 @@ public final class ObjectManager {
 		return (i / 4 << 10) + (j / 32 << 7) + k / 2;
 	}
 
-	public static boolean method178(int i, int j) {
-		ObjectDef class46 = ObjectDef.forID(i);
-		if (j == 11)
-			j = 10;
-		if (j >= 5 && j <= 8)
-			j = 4;
-		return class46.method577(j);
-	}
-
-	public final void method179(int i, int j, Class11 aclass11[], int l, int i1, byte abyte0[], int j1, int k1, int l1) {
+	public void method179(int i, int j, Class11[] aclass11, int l, int i1, byte[] abyte0, int j1, int k1, int l1) {
 		for (int i2 = 0; i2 < 8; i2++) {
 			for (int j2 = 0; j2 < 8; j2++)
 				if (l + i2 > 0 && l + i2 < 103 && l1 + j2 > 0 && l1 + j2 < 103)
@@ -845,7 +1149,7 @@ public final class ObjectManager {
 
 	}
 
-	public final void method180(byte abyte0[], int i, int j, int k, int l, Class11 aclass11[]) {
+	public void method180(byte[] abyte0, int i, int j, int k, int l, Class11[] aclass11) {
 		for (int i1 = 0; i1 < 4; i1++) {
 			for (int j1 = 0; j1 < 64; j1++) {
 				for (int k1 = 0; k1 < 64; k1++)
@@ -927,7 +1231,7 @@ public final class ObjectManager {
 			return j;
 	}
 
-	public final void method183(Class11 aclass11[], WorldController worldController, int i, int j, int k, int l, byte abyte0[], int i1, int j1, int k1) {
+	public void method183(Class11[] aclass11, WorldController worldController, int i, int j, int k, int l, byte[] abyte0, int i1, int j1, int k1) {
 		label0: {
 			Stream stream = new Stream(abyte0);
 			int l1 = -1;
@@ -967,11 +1271,6 @@ public final class ObjectManager {
 		}
 	}
 
-	private static int method184(int i, int j, int k, int l) {
-		int i1 = 0x10000 - Rasterizer.anIntArray1471[(k * 1024) / l] >> 1;
-		return (i * (0x10000 - i1) >> 16) + (j * i1 >> 16);
-	}
-
 	private int method185(int i, int j) {
 		if (i == -2)
 			return 0xbc614e;
@@ -991,258 +1290,7 @@ public final class ObjectManager {
 		return (i & 0xff80) + j;
 	}
 
-	private static int method186(int i, int j) {
-		int k = method170(i - 1, j - 1) + method170(i + 1, j - 1) + method170(i - 1, j + 1) + method170(i + 1, j + 1);
-		int l = method170(i - 1, j) + method170(i + 1, j) + method170(i, j - 1) + method170(i, j + 1);
-		int i1 = method170(i, j);
-		return k / 16 + l / 8 + i1 / 4;
-	}
-
-	private static int method187(int i, int j) {
-		if (i == -1)
-			return 0xbc614e;
-		j = (j * (i & 0x7f)) / 128;
-		if (j < 2)
-			j = 2;
-		else if (j > 126)
-			j = 126;
-		return (i & 0xff80) + j;
-	}
-
-	public static void method188(WorldController worldController, int i, int j, int k, int l, Class11 class11, int ai[][][], int i1, int j1, int k1) {
-		int l1 = ai[l][i1][j];
-		int i2 = ai[l][i1 + 1][j];
-		int j2 = ai[l][i1 + 1][j + 1];
-		int k2 = ai[l][i1][j + 1];
-		int l2 = l1 + i2 + j2 + k2 >> 2;
-		ObjectDef class46 = ObjectDef.forID(j1);
-		int i3 = i1 + (j << 7) + (j1 << 14) + 0x40000000;
-		if (!class46.hasActions)
-			i3 += 0x80000000;
-		byte byte1 = (byte) ((i << 6) + k);
-		if (k == 22) {
-			Object obj;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj = class46.method578(22, i, l1, i2, j2, k2, -1);
-			else
-				obj = new Animable_Sub5(j1, i, 22, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method280(k1, l2, j, ((Animable) (obj)), byte1, i3, i1);
-			if (class46.aBoolean767 && class46.hasActions)
-				class11.method213(j, i1);
-			return;
-		}
-		if (k == 10 || k == 11) {
-			Object obj1;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj1 = class46.method578(10, i, l1, i2, j2, k2, -1);
-			else
-				obj1 = new Animable_Sub5(j1, i, 10, i2, j2, l1, k2, class46.anInt781, true);
-			if (obj1 != null) {
-				int j5 = 0;
-				if (k == 11)
-					j5 += 256;
-				int k4;
-				int i5;
-				if (i == 1 || i == 3) {
-					k4 = class46.anInt761;
-					i5 = class46.anInt744;
-				} else {
-					k4 = class46.anInt744;
-					i5 = class46.anInt761;
-				}
-				worldController.method284(i3, byte1, l2, i5, ((Animable) (obj1)), k4, k1, j5, j, i1);
-			}
-			if (class46.aBoolean767)
-				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
-			return;
-		}
-		if (k >= 12) {
-			Object obj2;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj2 = class46.method578(k, i, l1, i2, j2, k2, -1);
-			else
-				obj2 = new Animable_Sub5(j1, i, k, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method284(i3, byte1, l2, 1, ((Animable) (obj2)), 1, k1, 0, j, i1);
-			if (class46.aBoolean767)
-				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
-			return;
-		}
-		if (k == 0) {
-			Object obj3;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj3 = class46.method578(0, i, l1, i2, j2, k2, -1);
-			else
-				obj3 = new Animable_Sub5(j1, i, 0, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method282(anIntArray152[i], ((Animable) (obj3)), i3, j, byte1, i1, null, l2, 0, k1);
-			if (class46.aBoolean767)
-				class11.method211(j, i, i1, k, class46.aBoolean757);
-			return;
-		}
-		if (k == 1) {
-			Object obj4;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj4 = class46.method578(1, i, l1, i2, j2, k2, -1);
-			else
-				obj4 = new Animable_Sub5(j1, i, 1, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method282(anIntArray140[i], ((Animable) (obj4)), i3, j, byte1, i1, null, l2, 0, k1);
-			if (class46.aBoolean767)
-				class11.method211(j, i, i1, k, class46.aBoolean757);
-			return;
-		}
-		if (k == 2) {
-			int j3 = i + 1 & 3;
-			Object obj11;
-			Object obj12;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj11 = class46.method578(2, 4 + i, l1, i2, j2, k2, -1);
-				obj12 = class46.method578(2, j3, l1, i2, j2, k2, -1);
-			} else {
-				obj11 = new Animable_Sub5(j1, 4 + i, 2, i2, j2, l1, k2, class46.anInt781, true);
-				obj12 = new Animable_Sub5(j1, j3, 2, i2, j2, l1, k2, class46.anInt781, true);
-			}
-			worldController.method282(anIntArray152[i], ((Animable) (obj11)), i3, j, byte1, i1, ((Animable) (obj12)), l2, anIntArray152[j3], k1);
-			if (class46.aBoolean767)
-				class11.method211(j, i, i1, k, class46.aBoolean757);
-			return;
-		}
-		if (k == 3) {
-			Object obj5;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj5 = class46.method578(3, i, l1, i2, j2, k2, -1);
-			else
-				obj5 = new Animable_Sub5(j1, i, 3, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method282(anIntArray140[i], ((Animable) (obj5)), i3, j, byte1, i1, null, l2, 0, k1);
-			if (class46.aBoolean767)
-				class11.method211(j, i, i1, k, class46.aBoolean757);
-			return;
-		}
-		if (k == 9) {
-			Object obj6;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj6 = class46.method578(k, i, l1, i2, j2, k2, -1);
-			else
-				obj6 = new Animable_Sub5(j1, i, k, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method284(i3, byte1, l2, 1, ((Animable) (obj6)), 1, k1, 0, j, i1);
-			if (class46.aBoolean767)
-				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
-			return;
-		}
-		if (class46.aBoolean762)
-			if (i == 1) {
-				int k3 = k2;
-				k2 = j2;
-				j2 = i2;
-				i2 = l1;
-				l1 = k3;
-			} else if (i == 2) {
-				int l3 = k2;
-				k2 = i2;
-				i2 = l3;
-				l3 = j2;
-				j2 = l1;
-				l1 = l3;
-			} else if (i == 3) {
-				int i4 = k2;
-				k2 = l1;
-				l1 = i2;
-				i2 = j2;
-				j2 = i4;
-			}
-		if (k == 4) {
-			Object obj7;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj7 = class46.method578(4, 0, l1, i2, j2, k2, -1);
-			else
-				obj7 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i * 512, k1, 0, l2, ((Animable) (obj7)), i1, byte1, 0, anIntArray152[i]);
-			return;
-		}
-		if (k == 5) {
-			int j4 = 16;
-			int l4 = worldController.method300(k1, i1, j);
-			if (l4 > 0)
-				j4 = ObjectDef.forID(l4 >> 14 & 0x7fff).anInt775;
-			Object obj13;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj13 = class46.method578(4, 0, l1, i2, j2, k2, -1);
-			else
-				obj13 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i * 512, k1, anIntArray137[i] * j4, l2, ((Animable) (obj13)), i1, byte1, anIntArray144[i] * j4, anIntArray152[i]);
-			return;
-		}
-		if (k == 6) {
-			Object obj8;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj8 = class46.method578(4, 0, l1, i2, j2, k2, -1);
-			else
-				obj8 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i, k1, 0, l2, ((Animable) (obj8)), i1, byte1, 0, 256);
-			return;
-		}
-		if (k == 7) {
-			Object obj9;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj9 = class46.method578(4, 0, l1, i2, j2, k2, -1);
-			else
-				obj9 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i, k1, 0, l2, ((Animable) (obj9)), i1, byte1, 0, 512);
-			return;
-		}
-		if (k == 8) {
-			Object obj10;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj10 = class46.method578(4, 0, l1, i2, j2, k2, -1);
-			else
-				obj10 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i, k1, 0, l2, ((Animable) (obj10)), i1, byte1, 0, 768);
-		}
-	}
-
-	public static boolean method189(int i, byte[] is, int i_250_) // xxx bad
-																	// method,
-																	// decompiled
-																	// with JODE
-	{
-		boolean bool = true;
-		Stream stream = new Stream(is);
-		int i_252_ = -1;
-		for (;;) {
-			int i_253_ = stream.method422();
-			if (i_253_ == 0)
-				break;
-			i_252_ += i_253_;
-			int i_254_ = 0;
-			boolean bool_255_ = false;
-			for (;;) {
-				if (bool_255_) {
-					int i_256_ = stream.method422();
-					if (i_256_ == 0)
-						break;
-					stream.readUnsignedByte();
-				} else {
-					int i_257_ = stream.method422();
-					if (i_257_ == 0)
-						break;
-					i_254_ += i_257_ - 1;
-					int i_258_ = i_254_ & 0x3f;
-					int i_259_ = i_254_ >> 6 & 0x3f;
-					int i_260_ = stream.readUnsignedByte() >> 2;
-					int i_261_ = i_259_ + i;
-					int i_262_ = i_258_ + i_250_;
-					if (i_261_ > 0 && i_262_ > 0 && i_261_ < 103 && i_262_ < 103) {
-						ObjectDef class46 = ObjectDef.forID(i_252_);
-						if (i_260_ != 22 || Configuration.enableGroundDecors || class46.hasActions || class46.aBoolean736) {
-							bool &= class46.method579();
-							bool_255_ = true;
-						}
-					}
-				}
-			}
-		}
-		return bool;
-	}
-
-	public final void method190(int i, Class11 aclass11[], int j, WorldController worldController, byte abyte0[]) {
+	public void method190(int i, Class11[] aclass11, int j, WorldController worldController, byte[] abyte0) {
 		label0: {
 			Stream stream = new Stream(abyte0);
 			int l = -1;
@@ -1278,29 +1326,4 @@ public final class ObjectManager {
 			} while (true);
 		}
 	}
-
-	private final int[] anIntArray124;
-	private final int[] anIntArray125;
-	private final int[] anIntArray126;
-	private final int[] anIntArray127;
-	private final int[] anIntArray128;
-	private final int[][][] anIntArrayArrayArray129;
-	private final byte[][][] aByteArrayArrayArray130;
-	public static int anInt131;
-	private final byte[][][] aByteArrayArrayArray134;
-	private final int[][][] anIntArrayArrayArray135;
-	private final byte[][][] aByteArrayArrayArray136;
-	private static final int anIntArray137[] = { 1, 0, -1, 0 };
-	private final int[][] anIntArrayArray139;
-	private static final int anIntArray140[] = { 16, 32, 64, 128 };
-	private final byte[][][] aByteArrayArrayArray142;
-	private static final int anIntArray144[] = { 0, -1, 0, 1 };
-	public static int anInt145 = 99;
-	private final int anInt146;
-	private final int anInt147;
-	private final byte[][][] aByteArrayArrayArray148;
-	private final byte[][][] aByteArrayArrayArray149;
-	public static boolean lowMem = true;
-	private static final int anIntArray152[] = { 1, 2, 4, 8 };
-	public final ArrayList<Integer> colors = new ArrayList<Integer>();
 }

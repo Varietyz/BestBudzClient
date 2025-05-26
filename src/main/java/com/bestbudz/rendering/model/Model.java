@@ -3,30 +3,467 @@ package com.bestbudz.rendering.model;
 import com.bestbudz.config.Configuration;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.network.OnDemandFetcherParent;
+import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.Animable;
 import com.bestbudz.rendering.Rasterizer;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.animation.Class18;
 import com.bestbudz.util.compression.Class21;
-import com.bestbudz.network.Stream;
 import com.bestbudz.world.WorldController;
 
 public class Model extends Animable
 {
 	
-	private final void removeColor(int color) {
-        if (anIntArray1640 != null) {
-            for (int triangle = 0; triangle < anInt1630; triangle++) {
-                if (triangle < anIntArray1640.length) {
-                    if (anIntArray1640[triangle] == color) {
-                    	anIntArray1631[triangle] = 0;
-                    	anIntArray1632[triangle] = 0;
-                    	anIntArray1633[triangle] = 0;
-                    }
-                }
-            }
-        }
-    }
+	public static boolean[] newmodel;
+	public static int anInt1620;
+	public static Model aModel_1621 = new Model(true);
+	public static boolean aBoolean1684;
+	public static int anInt1685;
+	public static int anInt1686;
+	public static int anInt1687;
+	public static int[] anIntArray1688 = new int[1000];
+	public static int[] modelIntArray1;
+	public static int[] modelIntArray2;
+	static Class21[] aClass21Array1661;
+	static OnDemandFetcherParent aOnDemandFetcherParent_1662;
+	static boolean[] aBooleanArray1663 = new boolean[8000];
+	static boolean[] aBooleanArray1664 = new boolean[8000];
+	static int[] anIntArray1665 = new int[8000];
+	static int[] anIntArray1666 = new int[8000];
+	static int[] anIntArray1667 = new int[8000];
+	static int[] anIntArray1668 = new int[8000];
+	static int[] anIntArray1669 = new int[8000];
+	static int[] anIntArray1670 = new int[8000];
+	static int[] anIntArray1671 = new int[1500];
+	static int[][] anIntArrayArray1672 = new int[1500][512];
+	static int[] anIntArray1673 = new int[12];
+	static int[][] anIntArrayArray1674 = new int[12][2000];
+	static int[] anIntArray1675 = new int[2000];
+	static int[] anIntArray1676 = new int[2000];
+	static int[] anIntArray1677 = new int[12];
+	static int[] anIntArray1678 = new int[10];
+	static int[] anIntArray1679 = new int[10];
+	static int[] anIntArray1680 = new int[10];
+	static int anInt1681;
+	static int anInt1682;
+	static int anInt1683;
+	static int[] modelIntArray3;
+	static int[] modelIntArray4;
+	private static int[] anIntArray1622 = new int[2000];
+	private static int[] anIntArray1623 = new int[2000];
+	private static int[] anIntArray1624 = new int[2000];
+	private static int[] anIntArray1625 = new int[2000];
+
+	static {
+		modelIntArray1 = Rasterizer.anIntArray1470;
+		modelIntArray2 = Rasterizer.anIntArray1471;
+		modelIntArray3 = Rasterizer.anIntArray1482;
+		modelIntArray4 = Rasterizer.anIntArray1469;
+	}
+
+	public int anInt1626;
+	public int[] anIntArray1627;
+	public int[] anIntArray1628;
+	public int[] anIntArray1629;
+	public int anInt1630;
+	public int[] anIntArray1631;
+	public int[] anIntArray1632;
+	public int[] anIntArray1633;
+	public int[] anIntArray1634;
+	public int[] anIntArray1635;
+	public int[] anIntArray1636;
+	public int[] anIntArray1637;
+	public int[] anIntArray1638;
+	public int[] anIntArray1639;
+	public int[] anIntArray1640;
+	public int anInt1641;
+	public int anInt1642;
+	public int[] anIntArray1643;
+	public int[] anIntArray1644;
+	public int[] anIntArray1645;
+	public int anInt1646;
+	public int anInt1647;
+	public int anInt1648;
+	public int anInt1649;
+	public int anInt1650;
+	public int anInt1651;
+	public int anInt1652;
+	public int anInt1653;
+	public int anInt1654;
+	public int[] anIntArray1655;
+	public int[] anIntArray1656;
+	public int[][] anIntArrayArray1657;
+	public int[][] anIntArrayArray1658;
+	public boolean aBoolean1659;
+	public Class33[] aClass33Array1660;
+	private boolean aBoolean1618;
+	public Model(int modelId) {
+		byte[] is = aClass21Array1661[modelId].aByteArray368;
+		if (is[is.length - 1] == -1 && is[is.length - 2] == -1)
+			read622Model(is, modelId);
+		else
+			readOldModel(modelId);
+		if (newmodel[modelId]) {
+			if (anIntArray1638 != null) {
+				if (modelId >= 1 && modelId <= 65535) {
+					for (int index = 0; index < anIntArray1638.length; index++) {
+						anIntArray1638[index] = 10;
+					}
+				}
+			}
+		}
+	}
+	private Model(boolean flag) {
+		aBoolean1618 = true;
+		aBoolean1659 = false;
+		if (!flag)
+			aBoolean1618 = !aBoolean1618;
+	}
+	public Model(int i, Model[] amodel) {
+		aBoolean1618 = true;
+		aBoolean1659 = false;
+		anInt1620++;
+		boolean flag = false;
+		boolean flag1 = false;
+		boolean flag2 = false;
+		boolean flag3 = false;
+		anInt1626 = 0;
+		anInt1630 = 0;
+		anInt1642 = 0;
+		anInt1641 = -1;
+		for (int k = 0; k < i; k++) {
+			Model model = amodel[k];
+			if (model != null) {
+				anInt1626 += model.anInt1626;
+				anInt1630 += model.anInt1630;
+				anInt1642 += model.anInt1642;
+				flag |= model.anIntArray1637 != null;
+				if (model.anIntArray1638 != null) {
+					flag1 = true;
+				} else {
+					if (anInt1641 == -1)
+						anInt1641 = model.anInt1641;
+					if (anInt1641 != model.anInt1641)
+						flag1 = true;
+				}
+				flag2 |= model.anIntArray1639 != null;
+				flag3 |= model.anIntArray1656 != null;
+			}
+		}
+
+		anIntArray1627 = new int[anInt1626];
+		anIntArray1628 = new int[anInt1626];
+		anIntArray1629 = new int[anInt1626];
+		anIntArray1655 = new int[anInt1626];
+		anIntArray1631 = new int[anInt1630];
+		anIntArray1632 = new int[anInt1630];
+		anIntArray1633 = new int[anInt1630];
+		anIntArray1643 = new int[anInt1642];
+		anIntArray1644 = new int[anInt1642];
+		anIntArray1645 = new int[anInt1642];
+		if (flag)
+			anIntArray1637 = new int[anInt1630];
+		if (flag1)
+			anIntArray1638 = new int[anInt1630];
+		if (flag2)
+			anIntArray1639 = new int[anInt1630];
+		if (flag3)
+			anIntArray1656 = new int[anInt1630];
+		anIntArray1640 = new int[anInt1630];
+		anInt1626 = 0;
+		anInt1630 = 0;
+		anInt1642 = 0;
+		int l = 0;
+		for (int i1 = 0; i1 < i; i1++) {
+			Model model_1 = amodel[i1];
+			if (model_1 != null) {
+				for (int j1 = 0; j1 < model_1.anInt1630; j1++) {
+					if (flag)
+						if (model_1.anIntArray1637 == null) {
+							anIntArray1637[anInt1630] = 0;
+						} else {
+							int k1 = model_1.anIntArray1637[j1];
+							if ((k1 & 2) == 2)
+								k1 += l << 2;
+							anIntArray1637[anInt1630] = k1;
+						}
+					if (flag1)
+						if (model_1.anIntArray1638 == null)
+							anIntArray1638[anInt1630] = model_1.anInt1641;
+						else
+							anIntArray1638[anInt1630] = model_1.anIntArray1638[j1];
+					if (flag2)
+						if (model_1.anIntArray1639 == null)
+							anIntArray1639[anInt1630] = 0;
+						else
+							anIntArray1639[anInt1630] = model_1.anIntArray1639[j1];
+
+					if (flag3 && model_1.anIntArray1656 != null)
+						anIntArray1656[anInt1630] = model_1.anIntArray1656[j1];
+					anIntArray1640[anInt1630] = model_1.anIntArray1640[j1];
+					anIntArray1631[anInt1630] = method465(model_1,
+							model_1.anIntArray1631[j1]);
+					anIntArray1632[anInt1630] = method465(model_1,
+							model_1.anIntArray1632[j1]);
+					anIntArray1633[anInt1630] = method465(model_1,
+							model_1.anIntArray1633[j1]);
+					anInt1630++;
+				}
+
+				for (int l1 = 0; l1 < model_1.anInt1642; l1++) {
+					anIntArray1643[anInt1642] = method465(model_1,
+							model_1.anIntArray1643[l1]);
+					anIntArray1644[anInt1642] = method465(model_1,
+							model_1.anIntArray1644[l1]);
+					anIntArray1645[anInt1642] = method465(model_1,
+							model_1.anIntArray1645[l1]);
+					anInt1642++;
+				}
+
+				l += model_1.anInt1642;
+			}
+		}
+
+	}
+	public Model(Model[] amodel) {
+		int i = 2;
+		aBoolean1618 = true;
+		aBoolean1659 = false;
+		anInt1620++;
+		boolean flag1 = false;
+		boolean flag2 = false;
+		boolean flag3 = false;
+		boolean flag4 = false;
+		anInt1626 = 0;
+		anInt1630 = 0;
+		anInt1642 = 0;
+		anInt1641 = -1;
+		for (int k = 0; k < i; k++) {
+			Model model = amodel[k];
+			if (model != null) {
+				anInt1626 += model.anInt1626;
+				anInt1630 += model.anInt1630;
+				anInt1642 += model.anInt1642;
+				flag1 |= model.anIntArray1637 != null;
+				if (model.anIntArray1638 != null) {
+					flag2 = true;
+				} else {
+					if (anInt1641 == -1)
+						anInt1641 = model.anInt1641;
+					if (anInt1641 != model.anInt1641)
+						flag2 = true;
+				}
+				flag3 |= model.anIntArray1639 != null;
+				flag4 |= model.anIntArray1640 != null;
+			}
+		}
+
+		anIntArray1627 = new int[anInt1626];
+		anIntArray1628 = new int[anInt1626];
+		anIntArray1629 = new int[anInt1626];
+		anIntArray1631 = new int[anInt1630];
+		anIntArray1632 = new int[anInt1630];
+		anIntArray1633 = new int[anInt1630];
+		anIntArray1634 = new int[anInt1630];
+		anIntArray1635 = new int[anInt1630];
+		anIntArray1636 = new int[anInt1630];
+		anIntArray1643 = new int[anInt1642];
+		anIntArray1644 = new int[anInt1642];
+		anIntArray1645 = new int[anInt1642];
+		if (flag1)
+			anIntArray1637 = new int[anInt1630];
+		if (flag2)
+			anIntArray1638 = new int[anInt1630];
+		if (flag3)
+			anIntArray1639 = new int[anInt1630];
+		if (flag4)
+			anIntArray1640 = new int[anInt1630];
+		anInt1626 = 0;
+		anInt1630 = 0;
+		anInt1642 = 0;
+		int i1 = 0;
+		for (int j1 = 0; j1 < i; j1++) {
+			Model model_1 = amodel[j1];
+			if (model_1 != null) {
+				int k1 = anInt1626;
+				for (int l1 = 0; l1 < model_1.anInt1626; l1++) {
+					anIntArray1627[anInt1626] = model_1.anIntArray1627[l1];
+					anIntArray1628[anInt1626] = model_1.anIntArray1628[l1];
+					anIntArray1629[anInt1626] = model_1.anIntArray1629[l1];
+					anInt1626++;
+				}
+
+				for (int i2 = 0; i2 < model_1.anInt1630; i2++) {
+					anIntArray1631[anInt1630] = model_1.anIntArray1631[i2] + k1;
+					anIntArray1632[anInt1630] = model_1.anIntArray1632[i2] + k1;
+					anIntArray1633[anInt1630] = model_1.anIntArray1633[i2] + k1;
+					anIntArray1634[anInt1630] = model_1.anIntArray1634[i2];
+					anIntArray1635[anInt1630] = model_1.anIntArray1635[i2];
+					anIntArray1636[anInt1630] = model_1.anIntArray1636[i2];
+					if (flag1)
+						if (model_1.anIntArray1637 == null) {
+							anIntArray1637[anInt1630] = 0;
+						} else {
+							int j2 = model_1.anIntArray1637[i2];
+							if ((j2 & 2) == 2)
+								j2 += i1 << 2;
+							anIntArray1637[anInt1630] = j2;
+						}
+					if (flag2)
+						if (model_1.anIntArray1638 == null)
+							anIntArray1638[anInt1630] = model_1.anInt1641;
+						else
+							anIntArray1638[anInt1630] = model_1.anIntArray1638[i2];
+					if (flag3)
+						if (model_1.anIntArray1639 == null)
+							anIntArray1639[anInt1630] = 0;
+						else
+							anIntArray1639[anInt1630] = model_1.anIntArray1639[i2];
+					if (flag4 && model_1.anIntArray1640 != null)
+						anIntArray1640[anInt1630] = model_1.anIntArray1640[i2];
+
+					anInt1630++;
+				}
+
+				for (int k2 = 0; k2 < model_1.anInt1642; k2++) {
+					anIntArray1643[anInt1642] = model_1.anIntArray1643[k2] + k1;
+					anIntArray1644[anInt1642] = model_1.anIntArray1644[k2] + k1;
+					anIntArray1645[anInt1642] = model_1.anIntArray1645[k2] + k1;
+					anInt1642++;
+				}
+
+				i1 += model_1.anInt1642;
+			}
+		}
+
+		method466();
+	}
+	public Model(boolean flag, boolean flag1, boolean flag2, Model model) {
+		aBoolean1618 = true;
+		aBoolean1659 = false;
+		anInt1620++;
+		anInt1626 = model.anInt1626;
+		anInt1630 = model.anInt1630;
+		anInt1642 = model.anInt1642;
+		if (flag2) {
+			anIntArray1627 = model.anIntArray1627;
+			anIntArray1628 = model.anIntArray1628;
+			anIntArray1629 = model.anIntArray1629;
+		} else {
+			anIntArray1627 = new int[anInt1626];
+			anIntArray1628 = new int[anInt1626];
+			anIntArray1629 = new int[anInt1626];
+			for (int j = 0; j < anInt1626; j++) {
+				anIntArray1627[j] = model.anIntArray1627[j];
+				anIntArray1628[j] = model.anIntArray1628[j];
+				anIntArray1629[j] = model.anIntArray1629[j];
+			}
+
+		}
+		if (flag) {
+			anIntArray1640 = model.anIntArray1640;
+		} else {
+			anIntArray1640 = new int[anInt1630];
+			System.arraycopy(model.anIntArray1640, 0, anIntArray1640, 0, anInt1630);
+
+		}
+		if (flag1) {
+			anIntArray1639 = model.anIntArray1639;
+		} else {
+			anIntArray1639 = new int[anInt1630];
+			if (model.anIntArray1639 == null) {
+				for (int l = 0; l < anInt1630; l++)
+					anIntArray1639[l] = 0;
+
+			} else {
+				System.arraycopy(model.anIntArray1639, 0, anIntArray1639, 0, anInt1630);
+
+			}
+		}
+		anIntArray1655 = model.anIntArray1655;
+		anIntArray1656 = model.anIntArray1656;
+		anIntArray1637 = model.anIntArray1637;
+		anIntArray1631 = model.anIntArray1631;
+		anIntArray1632 = model.anIntArray1632;
+		anIntArray1633 = model.anIntArray1633;
+		anIntArray1638 = model.anIntArray1638;
+		anInt1641 = model.anInt1641;
+		anIntArray1643 = model.anIntArray1643;
+		anIntArray1644 = model.anIntArray1644;
+		anIntArray1645 = model.anIntArray1645;
+	}
+	public Model(boolean flag, boolean flag1, Model model) {
+		aBoolean1618 = true;
+		aBoolean1659 = false;
+		anInt1620++;
+		anInt1626 = model.anInt1626;
+		anInt1630 = model.anInt1630;
+		anInt1642 = model.anInt1642;
+		if (flag) {
+			anIntArray1628 = new int[anInt1626];
+			System.arraycopy(model.anIntArray1628, 0, anIntArray1628, 0, anInt1626);
+
+		} else {
+			anIntArray1628 = model.anIntArray1628;
+		}
+		if (flag1) {
+			anIntArray1634 = new int[anInt1630];
+			anIntArray1635 = new int[anInt1630];
+			anIntArray1636 = new int[anInt1630];
+			for (int k = 0; k < anInt1630; k++) {
+				anIntArray1634[k] = model.anIntArray1634[k];
+				anIntArray1635[k] = model.anIntArray1635[k];
+				anIntArray1636[k] = model.anIntArray1636[k];
+			}
+
+			anIntArray1637 = new int[anInt1630];
+			if (model.anIntArray1637 == null) {
+				for (int l = 0; l < anInt1630; l++)
+					anIntArray1637[l] = 0;
+
+			} else {
+				System.arraycopy(model.anIntArray1637, 0, anIntArray1637, 0, anInt1630);
+
+			}
+			super.aClass33Array1425 = new Class33[anInt1626];
+			for (int j1 = 0; j1 < anInt1626; j1++) {
+				Class33 class33 = super.aClass33Array1425[j1] = new Class33();
+				Class33 class33_1 = model.aClass33Array1425[j1];
+				class33.anInt602 = class33_1.anInt602;
+				class33.anInt603 = class33_1.anInt603;
+				class33.anInt604 = class33_1.anInt604;
+				class33.anInt605 = class33_1.anInt605;
+			}
+
+			aClass33Array1660 = model.aClass33Array1660;
+		} else {
+			anIntArray1634 = model.anIntArray1634;
+			anIntArray1635 = model.anIntArray1635;
+			anIntArray1636 = model.anIntArray1636;
+			anIntArray1637 = model.anIntArray1637;
+		}
+		anIntArray1627 = model.anIntArray1627;
+		anIntArray1629 = model.anIntArray1629;
+		anIntArray1640 = model.anIntArray1640;
+		anIntArray1639 = model.anIntArray1639;
+		anIntArray1638 = model.anIntArray1638;
+		anInt1641 = model.anInt1641;
+		anIntArray1631 = model.anIntArray1631;
+		anIntArray1632 = model.anIntArray1632;
+		anIntArray1633 = model.anIntArray1633;
+		anIntArray1643 = model.anIntArray1643;
+		anIntArray1644 = model.anIntArray1644;
+		anIntArray1645 = model.anIntArray1645;
+		super.modelHeight = model.modelHeight;
+
+		anInt1650 = model.anInt1650;
+		anInt1653 = model.anInt1653;
+		anInt1652 = model.anInt1652;
+		anInt1646 = model.anInt1646;
+		anInt1648 = model.anInt1648;
+		anInt1649 = model.anInt1649;
+		anInt1647 = model.anInt1647;
+	}
 
 	public static void nullLoader() {
 		aClass21Array1661 = null;
@@ -50,7 +487,148 @@ public class Model extends Animable
 		modelIntArray4 = null;
 	}
 
-	public void read525Model(byte abyte0[], int modelID) {
+	public static void method460(byte[] abyte0, int j) {
+	try {
+		if (abyte0 == null) {
+			Class21 class21 = aClass21Array1661[j] = new Class21();
+			class21.anInt369 = 0;
+			class21.anInt370 = 0;
+			class21.anInt371 = 0;
+			return;
+		}
+		Stream stream = new Stream(abyte0);
+		stream.currentOffset = abyte0.length - 18;
+		Class21 class21_1 = aClass21Array1661[j] = new Class21();
+		class21_1.aByteArray368 = abyte0;
+		class21_1.anInt369 = stream.readUnsignedWord();
+		class21_1.anInt370 = stream.readUnsignedWord();
+		class21_1.anInt371 = stream.readUnsignedByte();
+		int k = stream.readUnsignedByte();
+		int l = stream.readUnsignedByte();
+		int i1 = stream.readUnsignedByte();
+		int j1 = stream.readUnsignedByte();
+		int k1 = stream.readUnsignedByte();
+		int l1 = stream.readUnsignedWord();
+		int i2 = stream.readUnsignedWord();
+		int j2 = stream.readUnsignedWord();
+		int k2 = stream.readUnsignedWord();
+		int l2 = 0;
+		class21_1.anInt372 = l2;
+		l2 += class21_1.anInt369;
+		class21_1.anInt378 = l2;
+		l2 += class21_1.anInt370;
+		class21_1.anInt381 = l2;
+		if (l == 255)
+			l2 += class21_1.anInt370;
+		else
+			class21_1.anInt381 = -l - 1;
+		class21_1.anInt383 = l2;
+		if (j1 == 1)
+			l2 += class21_1.anInt370;
+		else
+			class21_1.anInt383 = -1;
+		class21_1.anInt380 = l2;
+		if (k == 1)
+			l2 += class21_1.anInt370;
+		else
+			class21_1.anInt380 = -1;
+		class21_1.anInt376 = l2;
+		if (k1 == 1)
+			l2 += class21_1.anInt369;
+		else
+			class21_1.anInt376 = -1;
+		class21_1.anInt382 = l2;
+		if (i1 == 1)
+			l2 += class21_1.anInt370;
+		else
+			class21_1.anInt382 = -1;
+		class21_1.anInt377 = l2;
+		l2 += k2;
+		class21_1.anInt379 = l2;
+		l2 += class21_1.anInt370 * 2;
+		class21_1.anInt384 = l2;
+		l2 += class21_1.anInt371 * 6;
+		class21_1.anInt373 = l2;
+		l2 += l1;
+		class21_1.anInt374 = l2;
+		l2 += i2;
+		class21_1.anInt375 = l2;
+		l2 += j2;
+		} catch (Exception _ex) {
+		}
+	}
+
+	public static void method459(int i,
+			OnDemandFetcherParent onDemandFetcherParent) {
+		aClass21Array1661 = new Class21[80000];
+		newmodel = new boolean[100000];
+		aOnDemandFetcherParent_1662 = onDemandFetcherParent;
+	}
+
+	public static void method461(int j) {
+		aClass21Array1661[j] = null;
+	}
+
+	public static Model loadModelFromCache(int id) {
+		if (aClass21Array1661 == null)
+			return null;
+		Class21 class21 = aClass21Array1661[id];
+		if (class21 == null) {
+			aOnDemandFetcherParent_1662.method548(id);
+			return null;
+		} else {
+			return new Model(id);
+		}
+	}
+
+	public static boolean method463(int i) {
+		if (aClass21Array1661 == null)
+			return false;
+
+		Class21 class21 = aClass21Array1661[i];
+		if (class21 == null) {
+			aOnDemandFetcherParent_1662.method548(i);
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public static final int method481(int i, int j, int k) {
+		if (i == 65535)
+			return 0;
+		if ((k & 2) == 2) {
+			if (j < 0)
+				j = 0;
+			else if (j > 127)
+				j = 127;
+			j = 127 - j;
+			return j;
+		}
+
+		j = j * (i & 0x7f) >> 7;
+			if (j < 2)
+				j = 2;
+			else if (j > 126)
+				j = 126;
+			return (i & 0xff80) + j;
+	}
+
+	private final void removeColor(int color) {
+        if (anIntArray1640 != null) {
+            for (int triangle = 0; triangle < anInt1630; triangle++) {
+                if (triangle < anIntArray1640.length) {
+                    if (anIntArray1640[triangle] == color) {
+                    	anIntArray1631[triangle] = 0;
+                    	anIntArray1632[triangle] = 0;
+                    	anIntArray1633[triangle] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+	public void read525Model(byte[] abyte0, int modelID) {
 		Stream nc1 = new Stream(abyte0);
 		Stream nc2 = new Stream(abyte0);
 		Stream nc3 = new Stream(abyte0);
@@ -373,23 +951,6 @@ public class Model extends Animable
 		anIntArray1633 = facePoint3;
 	}
 
-	public Model(int modelId) {
-		byte[] is = aClass21Array1661[modelId].aByteArray368;
-		if (is[is.length - 1] == -1 && is[is.length - 2] == -1)
-			read622Model(is, modelId);
-		else
-			readOldModel(modelId);
-		if (newmodel[modelId]) {
-			if (anIntArray1638 != null) {
-				if (modelId >= 1 && modelId <= 65535) {
-					for (int index = 0; index < anIntArray1638.length; index++) {
-						anIntArray1638[index] = 10;
-					}
-				}
-			}
-		}
-	}
-
 	public void scale2(int i) {
 		for (int i1 = 0; i1 < anInt1626; i1++) {
 			anIntArray1627[i1] = anIntArray1627[i1] / i;
@@ -398,7 +959,7 @@ public class Model extends Animable
 		}
 	}
 
-	public void read622Model(byte abyte0[], int modelID) {
+	public void read622Model(byte[] abyte0, int modelID) {
 		Stream nc1 = new Stream(abyte0);
 		Stream nc2 = new Stream(abyte0);
 		Stream nc3 = new Stream(abyte0);
@@ -907,475 +1468,6 @@ public class Model extends Animable
 		}
 	}
 
-	public static void method460(byte abyte0[], int j) {
-	try {
-		if (abyte0 == null) {
-			Class21 class21 = aClass21Array1661[j] = new Class21();
-			class21.anInt369 = 0;
-			class21.anInt370 = 0;
-			class21.anInt371 = 0;
-			return;
-		}
-		Stream stream = new Stream(abyte0);
-		stream.currentOffset = abyte0.length - 18;
-		Class21 class21_1 = aClass21Array1661[j] = new Class21();
-		class21_1.aByteArray368 = abyte0;
-		class21_1.anInt369 = stream.readUnsignedWord();
-		class21_1.anInt370 = stream.readUnsignedWord();
-		class21_1.anInt371 = stream.readUnsignedByte();
-		int k = stream.readUnsignedByte();
-		int l = stream.readUnsignedByte();
-		int i1 = stream.readUnsignedByte();
-		int j1 = stream.readUnsignedByte();
-		int k1 = stream.readUnsignedByte();
-		int l1 = stream.readUnsignedWord();
-		int i2 = stream.readUnsignedWord();
-		int j2 = stream.readUnsignedWord();
-		int k2 = stream.readUnsignedWord();
-		int l2 = 0;
-		class21_1.anInt372 = l2;
-		l2 += class21_1.anInt369;
-		class21_1.anInt378 = l2;
-		l2 += class21_1.anInt370;
-		class21_1.anInt381 = l2;
-		if (l == 255)
-			l2 += class21_1.anInt370;
-		else
-			class21_1.anInt381 = -l - 1;
-		class21_1.anInt383 = l2;
-		if (j1 == 1)
-			l2 += class21_1.anInt370;
-		else
-			class21_1.anInt383 = -1;
-		class21_1.anInt380 = l2;
-		if (k == 1)
-			l2 += class21_1.anInt370;
-		else
-			class21_1.anInt380 = -1;
-		class21_1.anInt376 = l2;
-		if (k1 == 1)
-			l2 += class21_1.anInt369;
-		else
-			class21_1.anInt376 = -1;
-		class21_1.anInt382 = l2;
-		if (i1 == 1)
-			l2 += class21_1.anInt370;
-		else
-			class21_1.anInt382 = -1;
-		class21_1.anInt377 = l2;
-		l2 += k2;
-		class21_1.anInt379 = l2;
-		l2 += class21_1.anInt370 * 2;
-		class21_1.anInt384 = l2;
-		l2 += class21_1.anInt371 * 6;
-		class21_1.anInt373 = l2;
-		l2 += l1;
-		class21_1.anInt374 = l2;
-		l2 += i2;
-		class21_1.anInt375 = l2;
-		l2 += j2;
-		} catch (Exception _ex) {
-		}
-	}
-
-	public static boolean newmodel[];
-
-	public static void method459(int i,
-			OnDemandFetcherParent onDemandFetcherParent) {
-		aClass21Array1661 = new Class21[80000];
-		newmodel = new boolean[100000];
-		aOnDemandFetcherParent_1662 = onDemandFetcherParent;
-	}
-
-	public static void method461(int j) {
-		aClass21Array1661[j] = null;
-	}
-
-	public static Model method462(int j) {
-		if (aClass21Array1661 == null)
-			return null;
-		Class21 class21 = aClass21Array1661[j];
-		if (class21 == null) {
-			aOnDemandFetcherParent_1662.method548(j);
-			return null;
-		} else {
-			return new Model(j);
-		}
-	}
-
-	public static boolean method463(int i) {
-		if (aClass21Array1661 == null)
-			return false;
-
-		Class21 class21 = aClass21Array1661[i];
-		if (class21 == null) {
-			aOnDemandFetcherParent_1662.method548(i);
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	private Model(boolean flag) {
-		aBoolean1618 = true;
-		aBoolean1659 = false;
-		if (!flag)
-			aBoolean1618 = !aBoolean1618;
-	}
-
-	public Model(int i, Model amodel[]) {
-		aBoolean1618 = true;
-		aBoolean1659 = false;
-		anInt1620++;
-		boolean flag = false;
-		boolean flag1 = false;
-		boolean flag2 = false;
-		boolean flag3 = false;
-		anInt1626 = 0;
-		anInt1630 = 0;
-		anInt1642 = 0;
-		anInt1641 = -1;
-		for (int k = 0; k < i; k++) {
-			Model model = amodel[k];
-			if (model != null) {
-				anInt1626 += model.anInt1626;
-				anInt1630 += model.anInt1630;
-				anInt1642 += model.anInt1642;
-				flag |= model.anIntArray1637 != null;
-				if (model.anIntArray1638 != null) {
-					flag1 = true;
-				} else {
-					if (anInt1641 == -1)
-						anInt1641 = model.anInt1641;
-					if (anInt1641 != model.anInt1641)
-						flag1 = true;
-				}
-				flag2 |= model.anIntArray1639 != null;
-				flag3 |= model.anIntArray1656 != null;
-			}
-		}
-
-		anIntArray1627 = new int[anInt1626];
-		anIntArray1628 = new int[anInt1626];
-		anIntArray1629 = new int[anInt1626];
-		anIntArray1655 = new int[anInt1626];
-		anIntArray1631 = new int[anInt1630];
-		anIntArray1632 = new int[anInt1630];
-		anIntArray1633 = new int[anInt1630];
-		anIntArray1643 = new int[anInt1642];
-		anIntArray1644 = new int[anInt1642];
-		anIntArray1645 = new int[anInt1642];
-		if (flag)
-			anIntArray1637 = new int[anInt1630];
-		if (flag1)
-			anIntArray1638 = new int[anInt1630];
-		if (flag2)
-			anIntArray1639 = new int[anInt1630];
-		if (flag3)
-			anIntArray1656 = new int[anInt1630];
-		anIntArray1640 = new int[anInt1630];
-		anInt1626 = 0;
-		anInt1630 = 0;
-		anInt1642 = 0;
-		int l = 0;
-		for (int i1 = 0; i1 < i; i1++) {
-			Model model_1 = amodel[i1];
-			if (model_1 != null) {
-				for (int j1 = 0; j1 < model_1.anInt1630; j1++) {
-					if (flag)
-						if (model_1.anIntArray1637 == null) {
-							anIntArray1637[anInt1630] = 0;
-						} else {
-							int k1 = model_1.anIntArray1637[j1];
-							if ((k1 & 2) == 2)
-								k1 += l << 2;
-							anIntArray1637[anInt1630] = k1;
-						}
-					if (flag1)
-						if (model_1.anIntArray1638 == null)
-							anIntArray1638[anInt1630] = model_1.anInt1641;
-						else
-							anIntArray1638[anInt1630] = model_1.anIntArray1638[j1];
-					if (flag2)
-						if (model_1.anIntArray1639 == null)
-							anIntArray1639[anInt1630] = 0;
-						else
-							anIntArray1639[anInt1630] = model_1.anIntArray1639[j1];
-
-					if (flag3 && model_1.anIntArray1656 != null)
-						anIntArray1656[anInt1630] = model_1.anIntArray1656[j1];
-					anIntArray1640[anInt1630] = model_1.anIntArray1640[j1];
-					anIntArray1631[anInt1630] = method465(model_1,
-							model_1.anIntArray1631[j1]);
-					anIntArray1632[anInt1630] = method465(model_1,
-							model_1.anIntArray1632[j1]);
-					anIntArray1633[anInt1630] = method465(model_1,
-							model_1.anIntArray1633[j1]);
-					anInt1630++;
-				}
-
-				for (int l1 = 0; l1 < model_1.anInt1642; l1++) {
-					anIntArray1643[anInt1642] = method465(model_1,
-							model_1.anIntArray1643[l1]);
-					anIntArray1644[anInt1642] = method465(model_1,
-							model_1.anIntArray1644[l1]);
-					anIntArray1645[anInt1642] = method465(model_1,
-							model_1.anIntArray1645[l1]);
-					anInt1642++;
-				}
-
-				l += model_1.anInt1642;
-			}
-		}
-
-	}
-
-	public Model(Model amodel[]) {
-		int i = 2;
-		aBoolean1618 = true;
-		aBoolean1659 = false;
-		anInt1620++;
-		boolean flag1 = false;
-		boolean flag2 = false;
-		boolean flag3 = false;
-		boolean flag4 = false;
-		anInt1626 = 0;
-		anInt1630 = 0;
-		anInt1642 = 0;
-		anInt1641 = -1;
-		for (int k = 0; k < i; k++) {
-			Model model = amodel[k];
-			if (model != null) {
-				anInt1626 += model.anInt1626;
-				anInt1630 += model.anInt1630;
-				anInt1642 += model.anInt1642;
-				flag1 |= model.anIntArray1637 != null;
-				if (model.anIntArray1638 != null) {
-					flag2 = true;
-				} else {
-					if (anInt1641 == -1)
-						anInt1641 = model.anInt1641;
-					if (anInt1641 != model.anInt1641)
-						flag2 = true;
-				}
-				flag3 |= model.anIntArray1639 != null;
-				flag4 |= model.anIntArray1640 != null;
-			}
-		}
-
-		anIntArray1627 = new int[anInt1626];
-		anIntArray1628 = new int[anInt1626];
-		anIntArray1629 = new int[anInt1626];
-		anIntArray1631 = new int[anInt1630];
-		anIntArray1632 = new int[anInt1630];
-		anIntArray1633 = new int[anInt1630];
-		anIntArray1634 = new int[anInt1630];
-		anIntArray1635 = new int[anInt1630];
-		anIntArray1636 = new int[anInt1630];
-		anIntArray1643 = new int[anInt1642];
-		anIntArray1644 = new int[anInt1642];
-		anIntArray1645 = new int[anInt1642];
-		if (flag1)
-			anIntArray1637 = new int[anInt1630];
-		if (flag2)
-			anIntArray1638 = new int[anInt1630];
-		if (flag3)
-			anIntArray1639 = new int[anInt1630];
-		if (flag4)
-			anIntArray1640 = new int[anInt1630];
-		anInt1626 = 0;
-		anInt1630 = 0;
-		anInt1642 = 0;
-		int i1 = 0;
-		for (int j1 = 0; j1 < i; j1++) {
-			Model model_1 = amodel[j1];
-			if (model_1 != null) {
-				int k1 = anInt1626;
-				for (int l1 = 0; l1 < model_1.anInt1626; l1++) {
-					anIntArray1627[anInt1626] = model_1.anIntArray1627[l1];
-					anIntArray1628[anInt1626] = model_1.anIntArray1628[l1];
-					anIntArray1629[anInt1626] = model_1.anIntArray1629[l1];
-					anInt1626++;
-				}
-
-				for (int i2 = 0; i2 < model_1.anInt1630; i2++) {
-					anIntArray1631[anInt1630] = model_1.anIntArray1631[i2] + k1;
-					anIntArray1632[anInt1630] = model_1.anIntArray1632[i2] + k1;
-					anIntArray1633[anInt1630] = model_1.anIntArray1633[i2] + k1;
-					anIntArray1634[anInt1630] = model_1.anIntArray1634[i2];
-					anIntArray1635[anInt1630] = model_1.anIntArray1635[i2];
-					anIntArray1636[anInt1630] = model_1.anIntArray1636[i2];
-					if (flag1)
-						if (model_1.anIntArray1637 == null) {
-							anIntArray1637[anInt1630] = 0;
-						} else {
-							int j2 = model_1.anIntArray1637[i2];
-							if ((j2 & 2) == 2)
-								j2 += i1 << 2;
-							anIntArray1637[anInt1630] = j2;
-						}
-					if (flag2)
-						if (model_1.anIntArray1638 == null)
-							anIntArray1638[anInt1630] = model_1.anInt1641;
-						else
-							anIntArray1638[anInt1630] = model_1.anIntArray1638[i2];
-					if (flag3)
-						if (model_1.anIntArray1639 == null)
-							anIntArray1639[anInt1630] = 0;
-						else
-							anIntArray1639[anInt1630] = model_1.anIntArray1639[i2];
-					if (flag4 && model_1.anIntArray1640 != null)
-						anIntArray1640[anInt1630] = model_1.anIntArray1640[i2];
-
-					anInt1630++;
-				}
-
-				for (int k2 = 0; k2 < model_1.anInt1642; k2++) {
-					anIntArray1643[anInt1642] = model_1.anIntArray1643[k2] + k1;
-					anIntArray1644[anInt1642] = model_1.anIntArray1644[k2] + k1;
-					anIntArray1645[anInt1642] = model_1.anIntArray1645[k2] + k1;
-					anInt1642++;
-				}
-
-				i1 += model_1.anInt1642;
-			}
-		}
-
-		method466();
-	}
-
-	public Model(boolean flag, boolean flag1, boolean flag2, Model model) {
-		aBoolean1618 = true;
-		aBoolean1659 = false;
-		anInt1620++;
-		anInt1626 = model.anInt1626;
-		anInt1630 = model.anInt1630;
-		anInt1642 = model.anInt1642;
-		if (flag2) {
-			anIntArray1627 = model.anIntArray1627;
-			anIntArray1628 = model.anIntArray1628;
-			anIntArray1629 = model.anIntArray1629;
-		} else {
-			anIntArray1627 = new int[anInt1626];
-			anIntArray1628 = new int[anInt1626];
-			anIntArray1629 = new int[anInt1626];
-			for (int j = 0; j < anInt1626; j++) {
-				anIntArray1627[j] = model.anIntArray1627[j];
-				anIntArray1628[j] = model.anIntArray1628[j];
-				anIntArray1629[j] = model.anIntArray1629[j];
-			}
-
-		}
-		if (flag) {
-			anIntArray1640 = model.anIntArray1640;
-		} else {
-			anIntArray1640 = new int[anInt1630];
-			for (int k = 0; k < anInt1630; k++)
-				anIntArray1640[k] = model.anIntArray1640[k];
-
-		}
-		if (flag1) {
-			anIntArray1639 = model.anIntArray1639;
-		} else {
-			anIntArray1639 = new int[anInt1630];
-			if (model.anIntArray1639 == null) {
-				for (int l = 0; l < anInt1630; l++)
-					anIntArray1639[l] = 0;
-
-			} else {
-				for (int i1 = 0; i1 < anInt1630; i1++)
-					anIntArray1639[i1] = model.anIntArray1639[i1];
-
-			}
-		}
-		anIntArray1655 = model.anIntArray1655;
-		anIntArray1656 = model.anIntArray1656;
-		anIntArray1637 = model.anIntArray1637;
-		anIntArray1631 = model.anIntArray1631;
-		anIntArray1632 = model.anIntArray1632;
-		anIntArray1633 = model.anIntArray1633;
-		anIntArray1638 = model.anIntArray1638;
-		anInt1641 = model.anInt1641;
-		anIntArray1643 = model.anIntArray1643;
-		anIntArray1644 = model.anIntArray1644;
-		anIntArray1645 = model.anIntArray1645;
-	}
-
-	public Model(boolean flag, boolean flag1, Model model) {
-		aBoolean1618 = true;
-		aBoolean1659 = false;
-		anInt1620++;
-		anInt1626 = model.anInt1626;
-		anInt1630 = model.anInt1630;
-		anInt1642 = model.anInt1642;
-		if (flag) {
-			anIntArray1628 = new int[anInt1626];
-			for (int j = 0; j < anInt1626; j++)
-				anIntArray1628[j] = model.anIntArray1628[j];
-
-		} else {
-			anIntArray1628 = model.anIntArray1628;
-		}
-		if (flag1) {
-			anIntArray1634 = new int[anInt1630];
-			anIntArray1635 = new int[anInt1630];
-			anIntArray1636 = new int[anInt1630];
-			for (int k = 0; k < anInt1630; k++) {
-				anIntArray1634[k] = model.anIntArray1634[k];
-				anIntArray1635[k] = model.anIntArray1635[k];
-				anIntArray1636[k] = model.anIntArray1636[k];
-			}
-
-			anIntArray1637 = new int[anInt1630];
-			if (model.anIntArray1637 == null) {
-				for (int l = 0; l < anInt1630; l++)
-					anIntArray1637[l] = 0;
-
-			} else {
-				for (int i1 = 0; i1 < anInt1630; i1++)
-					anIntArray1637[i1] = model.anIntArray1637[i1];
-
-			}
-			super.aClass33Array1425 = new Class33[anInt1626];
-			for (int j1 = 0; j1 < anInt1626; j1++) {
-				Class33 class33 = super.aClass33Array1425[j1] = new Class33();
-				Class33 class33_1 = model.aClass33Array1425[j1];
-				class33.anInt602 = class33_1.anInt602;
-				class33.anInt603 = class33_1.anInt603;
-				class33.anInt604 = class33_1.anInt604;
-				class33.anInt605 = class33_1.anInt605;
-			}
-
-			aClass33Array1660 = model.aClass33Array1660;
-		} else {
-			anIntArray1634 = model.anIntArray1634;
-			anIntArray1635 = model.anIntArray1635;
-			anIntArray1636 = model.anIntArray1636;
-			anIntArray1637 = model.anIntArray1637;
-		}
-		anIntArray1627 = model.anIntArray1627;
-		anIntArray1629 = model.anIntArray1629;
-		anIntArray1640 = model.anIntArray1640;
-		anIntArray1639 = model.anIntArray1639;
-		anIntArray1638 = model.anIntArray1638;
-		anInt1641 = model.anInt1641;
-		anIntArray1631 = model.anIntArray1631;
-		anIntArray1632 = model.anIntArray1632;
-		anIntArray1633 = model.anIntArray1633;
-		anIntArray1643 = model.anIntArray1643;
-		anIntArray1644 = model.anIntArray1644;
-		anIntArray1645 = model.anIntArray1645;
-		super.modelHeight = model.modelHeight;
-
-		anInt1650 = model.anInt1650;
-		anInt1653 = model.anInt1653;
-		anInt1652 = model.anInt1652;
-		anInt1646 = model.anInt1646;
-		anInt1648 = model.anInt1648;
-		anInt1649 = model.anInt1649;
-		anInt1647 = model.anInt1647;
-	}
-
 	public void method464(Model model, boolean flag) {
 		anInt1626 = model.anInt1626;
 		anInt1630 = model.anInt1630;
@@ -1405,8 +1497,7 @@ public class Model extends Animable
 					anIntArray1639[l] = 0;
 
 			} else {
-				for (int i1 = 0; i1 < anInt1630; i1++)
-					anIntArray1639[i1] = model.anIntArray1639[i1];
+				if (anInt1630 >= 0) System.arraycopy(model.anIntArray1639, 0, anIntArray1639, 0, anInt1630);
 
 			}
 		}
@@ -1526,18 +1617,16 @@ public class Model extends Animable
 		anInt1653 = (int) Math.sqrt(anInt1650 * anInt1650 + super.modelHeight
 				* super.modelHeight);
 		if (i != 21073) {
-			return;
 		} else {
 			anInt1652 = anInt1653
 			+ (int) Math.sqrt(anInt1650 * anInt1650 + anInt1651
 					* anInt1651);
-			return;
 		}
 	}
 
-	public void method469() {
+	public void calculateNormals() {
 		if (anIntArray1655 != null) {
-			int ai[] = new int[256];
+			int[] ai = new int[256];
 			int j = 0;
 			for (int l = 0; l < anInt1626; l++) {
 				int j1 = anIntArray1655[l];
@@ -1560,7 +1649,7 @@ public class Model extends Animable
 			anIntArray1655 = null;
 		}
 		if (anIntArray1656 != null) {
-			int ai1[] = new int[256];
+			int[] ai1 = new int[256];
 			int k = 0;
 			for (int i1 = 0; i1 < anInt1630; i1++) {
 				int l1 = anIntArray1656[i1];
@@ -1583,7 +1672,7 @@ public class Model extends Animable
 			anIntArray1656 = null;
 		}
 	}
-	
+
 	public void interpolateFrames(int frame, int nextFrame, int cycle, int length) {
 		if (!Configuration.enableTweening) {
 			method470(frame);
@@ -1619,15 +1708,9 @@ public class Model extends Animable
 	    	int currFrameId = 0;
 	    	int nextFrameId = 0;
 		    for (int index = 0; index < skinList.length; index++) {
-  		    	boolean interpolate = false;
-		    	if (currFrameId < currAnim.anInt638 && currAnim.anIntArray639[currFrameId] == index) {
-		    		interpolate = true;
-		    	}
-		    	boolean interpolate2 = false;
-		    	if (nextFrameId < nextAnim.anInt638 && nextAnim.anIntArray639[nextFrameId] == index) {
-		    		interpolate2 = true;
-		    	}
-		    	if (interpolate || interpolate2) {
+  		    	boolean interpolate = currFrameId < currAnim.anInt638 && currAnim.anIntArray639[currFrameId] == index;
+				boolean interpolate2 = nextFrameId < nextAnim.anInt638 && nextAnim.anIntArray639[nextFrameId] == index;
+				if (interpolate || interpolate2) {
 					int defaultModifier = 0;
 					int opcode = skinList.anIntArray342[index];
 					if (opcode == 3) {
@@ -1710,7 +1793,7 @@ public class Model extends Animable
 
 	}
 
-	public void method471(int ai[], int j, int k) {
+	public void method471(int[] ai, int j, int k) {
 		if (k == -1)
 			return;
 		if (ai == null || j == -1) {
@@ -1761,7 +1844,7 @@ public class Model extends Animable
 
 	}
 
-	private void method472(int i, int ai[], int j, int k, int l) {
+	private void method472(int i, int[] ai, int j, int k, int l) {
 
 		int i1 = ai.length;
 		if (i == 0) {
@@ -1772,7 +1855,7 @@ public class Model extends Animable
 			for (int k2 = 0; k2 < i1; k2++) {
 				int l3 = ai[k2];
 				if (l3 < anIntArrayArray1657.length) {
-					int ai5[] = anIntArrayArray1657[l3];
+					int[] ai5 = anIntArrayArray1657[l3];
 					for (int i5 = 0; i5 < ai5.length; i5++) {
 						int j6 = ai5[i5];
 						anInt1681 += anIntArray1627[j6];
@@ -1800,7 +1883,7 @@ public class Model extends Animable
 			for (int k1 = 0; k1 < i1; k1++) {
 				int l2 = ai[k1];
 				if (l2 < anIntArrayArray1657.length) {
-					int ai1[] = anIntArrayArray1657[l2];
+					int[] ai1 = anIntArrayArray1657[l2];
 					for (int i4 = 0; i4 < ai1.length; i4++) {
 						int j5 = ai1[i4];
 						anIntArray1627[j5] += j;
@@ -1817,7 +1900,7 @@ public class Model extends Animable
 			for (int l1 = 0; l1 < i1; l1++) {
 				int i3 = ai[l1];
 				if (i3 < anIntArrayArray1657.length) {
-					int ai2[] = anIntArrayArray1657[i3];
+					int[] ai2 = anIntArrayArray1657[i3];
 					for (int j4 = 0; j4 < ai2.length; j4++) {
 						int k5 = ai2[j4];
 						anIntArray1627[k5] -= anInt1681;
@@ -1860,7 +1943,7 @@ public class Model extends Animable
 			for (int i2 = 0; i2 < i1; i2++) {
 				int j3 = ai[i2];
 				if (j3 < anIntArrayArray1657.length) {
-					int ai3[] = anIntArrayArray1657[j3];
+					int[] ai3 = anIntArrayArray1657[j3];
 					for (int k4 = 0; k4 < ai3.length; k4++) {
 						int l5 = ai3[k4];
 						anIntArray1627[l5] -= anInt1681;
@@ -1881,7 +1964,7 @@ public class Model extends Animable
 			for (int j2 = 0; j2 < i1; j2++) {
 				int k3 = ai[j2];
 				if (k3 < anIntArrayArray1658.length) {
-					int ai4[] = anIntArrayArray1658[k3];
+					int[] ai4 = anIntArrayArray1658[k3];
 					for (int l4 = 0; l4 < ai4.length; l4++) {
 						int i6 = ai4[l4];
 						anIntArray1639[i6] += j * 8;
@@ -1913,18 +1996,18 @@ public class Model extends Animable
 		}
 	}
 
-	public void method475(int i, int j, int l) {
+	public void translateCoords(int x, int y, int z) {
 		for (int i1 = 0; i1 < anInt1626; i1++) {
-			anIntArray1627[i1] += i;
-			anIntArray1628[i1] += j;
-			anIntArray1629[i1] += l;
+			anIntArray1627[i1] += x;
+			anIntArray1628[i1] += y;
+			anIntArray1629[i1] += z;
 		}
 	}
 
-	public void method476(int i, int j) {
+	public void replaceColor(int og, int mod) {
 		for (int k = 0; k < anInt1630; k++)
-			if (anIntArray1640[k] == i)
-				anIntArray1640[k] = j;
+			if (anIntArray1640[k] == og)
+				anIntArray1640[k] = mod;
 	}
 
 	public void method477() {
@@ -1937,16 +2020,16 @@ public class Model extends Animable
 		}
 	}
 
-	public void method478(int i, int j, int l) {
+	public void modelScale(int x, int y, int z) {
 		for (int i1 = 0; i1 < anInt1626; i1++) {
-			anIntArray1627[i1] = (anIntArray1627[i1] * i) / 128;
-			anIntArray1628[i1] = (anIntArray1628[i1] * l) / 128;
-			anIntArray1629[i1] = (anIntArray1629[i1] * j) / 128;
+			anIntArray1627[i1] = (anIntArray1627[i1] * x) / 128;
+			anIntArray1628[i1] = (anIntArray1628[i1] * y) / 128;
+			anIntArray1629[i1] = (anIntArray1629[i1] * z) / 128;
 		}
 
 	}
 
-	public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
+	public final void applyLighting(int i, int j, int k, int l, int i1, boolean flag) {
 		int j1 = (int) Math.sqrt(k * k + l * l + i1 * i1);
 		int k1 = j * j1 >> 8;
 		if (anIntArray1634 == null) {
@@ -2035,18 +2118,10 @@ public class Model extends Animable
 		}
 		if (flag) {
 			method466();
-			return;
 		} else {
 			method468(21073);
-			return;
 		}
 	}
-
-	public static String ccString = "Cla";
-	public static String xxString = "at Cl";
-	public static String vvString = "nt";
-	public static String aString9_9 = "" + ccString + "n Ch" + xxString + "ie"
-	+ vvString + " ";
 
 	public final void method480(int i, int j, int k, int l, int i1) {
 		for (int j1 = 0; j1 < anInt1630; j1++) {
@@ -2107,26 +2182,6 @@ public class Model extends Animable
 		anIntArray1640 = null;
 	}
 
-	public static final int method481(int i, int j, int k) {
-		if (i == 65535)
-			return 0;
-		if ((k & 2) == 2) {
-			if (j < 0)
-				j = 0;
-			else if (j > 127)
-				j = 127;
-			j = 127 - j;
-			return j;
-		}
-
-		j = j * (i & 0x7f) >> 7;
-			if (j < 2)
-				j = 2;
-			else if (j > 126)
-				j = 126;
-			return (i & 0xff80) + j;
-	}
-
 	public final void method482(int j, int k, int l, int i1, int j1, int k1) {
 		int i = 0;
 		int l1 = Rasterizer.centerX;
@@ -2179,9 +2234,7 @@ public class Model extends Animable
 
 			try {
 				method483(false, false, 0);
-				return;
 			} catch (Exception _ex) {
-				return;
 			}
 	}
 
@@ -2210,10 +2263,8 @@ public class Model extends Animable
 				if (i5 / i3 >= DrawingArea.anInt1387)
 					return;
 				int j5 = l2 + (super.modelHeight * j >> 16);
-				boolean flag = false;
-				if (k2 - j5 <= 50)
-					flag = true;
-				boolean flag1 = false;
+				boolean flag = k2 - j5 <= 50;
+		boolean flag1 = false;
 				if (i2 > 0 && aBoolean1684) {
 					int k5 = k2 - l2;
 					if (k5 <= 50)
@@ -2285,9 +2336,7 @@ public class Model extends Animable
 
 				try {
 					method483(flag, flag1, i2);
-					return;
 				} catch (Exception _ex) {
-					return;
 				}
 	}
 
@@ -2320,13 +2369,10 @@ public class Model extends Animable
 							- (anIntArray1666[l] - anIntArray1666[k1])
 							* (k4 - l3) > 0) {
 						aBooleanArray1664[k] = false;
-						if (i3 < 0 || l3 < 0 || k4 < 0
-								|| i3 > DrawingArea.centerX
-								|| l3 > DrawingArea.centerX
-								|| k4 > DrawingArea.centerX)
-							aBooleanArray1663[k] = true;
-						else
-							aBooleanArray1663[k] = false;
+						aBooleanArray1663[k] = i3 < 0 || l3 < 0 || k4 < 0
+							|| i3 > DrawingArea.centerX
+							|| l3 > DrawingArea.centerX
+							|| k4 > DrawingArea.centerX;
 						int k5 = (anIntArray1667[l] + anIntArray1667[k1] + anIntArray1667[j2])
 						/ 3 + anInt1653;
 						anIntArrayArray1672[k5][anIntArray1671[k5]++] = k;
@@ -2338,7 +2384,7 @@ public class Model extends Animable
 			for (int i1 = anInt1652 - 1; i1 >= 0; i1--) {
 				int l1 = anIntArray1671[i1];
 				if (l1 > 0) {
-					int ai[] = anIntArrayArray1672[i1];
+					int[] ai = anIntArrayArray1672[i1];
 					for (int j3 = 0; j3 < l1; j3++)
 						method484(ai[j3]);
 
@@ -2355,7 +2401,7 @@ public class Model extends Animable
 		for (int i2 = anInt1652 - 1; i2 >= 0; i2--) {
 			int k2 = anIntArray1671[i2];
 			if (k2 > 0) {
-				int ai1[] = anIntArrayArray1672[i2];
+				int[] ai1 = anIntArrayArray1672[i2];
 				for (int i4 = 0; i4 < k2; i4++) {
 					int l4 = ai1[i4];
 					int l5 = anIntArray1638[l4];
@@ -2386,8 +2432,8 @@ public class Model extends Animable
 			/ (anIntArray1673[6] + anIntArray1673[8]);
 		int i6 = 0;
 		int k6 = anIntArray1673[10];
-		int ai2[] = anIntArrayArray1674[10];
-		int ai3[] = anIntArray1675;
+		int[] ai2 = anIntArrayArray1674[10];
+		int[] ai3 = anIntArray1675;
 		if (i6 == k6) {
 			i6 = 0;
 			k6 = anIntArray1673[11];
@@ -2440,7 +2486,7 @@ public class Model extends Animable
 					i5 = -1000;
 			}
 			int i7 = anIntArray1673[l6];
-			int ai4[] = anIntArrayArray1674[l6];
+			int[] ai4 = anIntArrayArray1674[l6];
 			for (int j7 = 0; j7 < i7; j7++)
 				method484(ai4[j7]);
 
@@ -2712,87 +2758,5 @@ public class Model extends Animable
 		if (i < j1 && i < k1 && i < l1)
 			return false;
 		return i <= j1 || i <= k1 || i <= l1;
-	}
-
-	private boolean aBoolean1618;
-	public static int anInt1620;
-	public static Model aModel_1621 = new Model(true);
-	private static int anIntArray1622[] = new int[2000];
-	private static int anIntArray1623[] = new int[2000];
-	private static int anIntArray1624[] = new int[2000];
-	private static int anIntArray1625[] = new int[2000];
-	public int anInt1626;
-	public int anIntArray1627[];
-	public int anIntArray1628[];
-	public int anIntArray1629[];
-	public int anInt1630;
-	public int anIntArray1631[];
-	public int anIntArray1632[];
-	public int anIntArray1633[];
-	public int anIntArray1634[];
-	public int anIntArray1635[];
-	public int anIntArray1636[];
-	public int anIntArray1637[];
-	public int anIntArray1638[];
-	public int anIntArray1639[];
-	public int anIntArray1640[];
-	public int anInt1641;
-	public int anInt1642;
-	public int anIntArray1643[];
-	public int anIntArray1644[];
-	public int anIntArray1645[];
-	public int anInt1646;
-	public int anInt1647;
-	public int anInt1648;
-	public int anInt1649;
-	public int anInt1650;
-	public int anInt1651;
-	public int anInt1652;
-	public int anInt1653;
-	public int anInt1654;
-	public int anIntArray1655[];
-	public int anIntArray1656[];
-	public int anIntArrayArray1657[][];
-	public int anIntArrayArray1658[][];
-	public boolean aBoolean1659;
-	public Class33[] aClass33Array1660;
-	static Class21 aClass21Array1661[];
-	static OnDemandFetcherParent aOnDemandFetcherParent_1662;
-	static boolean aBooleanArray1663[] = new boolean[8000];
-	static boolean aBooleanArray1664[] = new boolean[8000];
-	static int anIntArray1665[] = new int[8000];
-	static int anIntArray1666[] = new int[8000];
-	static int anIntArray1667[] = new int[8000];
-	static int anIntArray1668[] = new int[8000];
-	static int anIntArray1669[] = new int[8000];
-	static int anIntArray1670[] = new int[8000];
-	static int anIntArray1671[] = new int[1500];
-	static int anIntArrayArray1672[][] = new int[1500][512];
-	static int anIntArray1673[] = new int[12];
-	static int anIntArrayArray1674[][] = new int[12][2000];
-	static int anIntArray1675[] = new int[2000];
-	static int anIntArray1676[] = new int[2000];
-	static int anIntArray1677[] = new int[12];
-	static int anIntArray1678[] = new int[10];
-	static int anIntArray1679[] = new int[10];
-	static int anIntArray1680[] = new int[10];
-	static int anInt1681;
-	static int anInt1682;
-	static int anInt1683;
-	public static boolean aBoolean1684;
-	public static int anInt1685;
-	public static int anInt1686;
-	public static int anInt1687;
-	public static int anIntArray1688[] = new int[1000];
-	public static int modelIntArray1[];
-	public static int modelIntArray2[];
-	static int modelIntArray3[];
-	static int modelIntArray4[];
-
-	static {
-		modelIntArray1 = Rasterizer.anIntArray1470;
-		modelIntArray2 = Rasterizer.anIntArray1471;
-		modelIntArray3 = Rasterizer.anIntArray1482;
-		modelIntArray4 = Rasterizer.anIntArray1469;
 	}
 }

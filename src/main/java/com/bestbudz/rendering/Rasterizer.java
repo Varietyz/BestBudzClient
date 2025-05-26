@@ -10,6 +10,49 @@ import com.bestbudz.world.WorldController;
 public final class Rasterizer extends DrawingArea
 {
 
+	public static final int[] anIntArray1469;
+	public static int textureAmount = 51;
+	public static boolean lowMem = true;
+	public static boolean aBoolean1462;
+	public static boolean aBoolean1464 = true;
+	public static int anInt1465;
+	public static int centerX;
+	public static int centerY;
+	public static int[] anIntArray1470;
+	public static int[] anIntArray1471;
+	public static int[] anIntArray1472;
+	public static Background[] aBackgroundArray1474s = new Background[textureAmount];
+	public static int[] anIntArray1480 = new int[textureAmount];
+	public static int anInt1481;
+	public static int[] anIntArray1482 = new int[0x10000];
+	private static int mipMapLevel;
+	private static boolean aBoolean1463;
+	private static int[] anIntArray1468;
+	private static int anInt1473;
+	private static boolean[] aBooleanArray1475 = new boolean[textureAmount];
+	private static int[] anIntArray1476 = new int[textureAmount];
+	private static int anInt1477;
+	private static int[][][] anIntArrayArray1478;
+	private static int[][][] anIntArrayArray1479 = new int[textureAmount][][];
+	private static int[][] anIntArrayArray1483 = new int[textureAmount][];
+
+	static {
+		anIntArray1468 = new int[512];
+		anIntArray1469 = new int[2048];
+		anIntArray1470 = new int[2048];
+		anIntArray1471 = new int[2048];
+		for (int i = 1; i < 512; i++) {
+			anIntArray1468[i] = 32768 / i;
+		}
+		for (int j = 1; j < 2048; j++) {
+			anIntArray1469[j] = 0x10000 / j;
+		}
+		for (int k = 0; k < 2048; k++) {
+			anIntArray1470[k] = (int) (65536D * Math.sin((double) k * 0.0030679614999999999D));
+			anIntArray1471[k] = (int) (65536D * Math.cos((double) k * 0.0030679614999999999D));
+		}
+	}
+
 	public static void nullLoader() {
 		anIntArray1468 = null;
 		anIntArray1468 = null;
@@ -93,18 +136,18 @@ public final class Rasterizer extends DrawingArea
 		}
 
 		int l1 = (k / j1 << 16) + (l / j1 << 8) + i1 / j1;
-		l1 = method373(l1, 1.3999999999999999D);
+		l1 = adjustColorBrightness(l1, 1.3999999999999999D);
 		if (l1 == 0)
 			l1 = 1;
 		anIntArray1476[i] = l1;
 		return l1;
 	}
 
-	public static void method370(int i) {
-		if (anIntArrayArray1479[i] == null)
+	public static void applyTexture(int textureId) {
+		if (anIntArrayArray1479[textureId] == null)
 			return;
-		anIntArrayArray1478[anInt1477++] = anIntArrayArray1479[i];
-		anIntArrayArray1479[i] = null;
+		anIntArrayArray1478[anInt1477++] = anIntArrayArray1479[textureId];
+		anIntArrayArray1479[textureId] = null;
 	}
 
 	private static int[][] method371(int textureId) {
@@ -129,7 +172,7 @@ public final class Rasterizer extends DrawingArea
 		}
 		anIntArrayArray1479[textureId] = texels;
 		Background background = aBackgroundArray1474s[textureId];
-		int texturePalette[] = anIntArrayArray1483[textureId];
+		int[] texturePalette = anIntArrayArray1483[textureId];
 
 		if (background.anInt1452 == 64) {
 			for (int j1 = 0; j1 < 128; j1++) {
@@ -153,7 +196,7 @@ public final class Rasterizer extends DrawingArea
 
 		for (int level = 1, size = 64; level < 8; level++) {
 			int[] src = texels[level - 1];
-			int[] dst = texels[level];// = new int[size * size];
+			int[] dst = texels[level];
 			for (int x = 0; x < size; x++) {
 				for (int y = 0; y < size; y++) {
 					double r = 0, g = 0, b = 0;
@@ -187,12 +230,29 @@ public final class Rasterizer extends DrawingArea
 		return texels;
 	}
 
-	public static void method372(double d) {
-		d += Math.random() * 0.029999999999999999D - 0.014999999999999999D;
+	private static final double GLOBAL_HUE_SHIFT = 0.3; // shift hue by +10%
+	public static void generateColorPalette(double hueShift) {
+		//d += Math.random() * 0.029999999999999999D - 0.014999999999999999D;
 		int j = 0;
 		for (int k = 0; k < 512; k++) {
 			double d1 = (double) (k / 8) / 64D + 0.0078125D;
+			double originalHue = d1;
+
+			boolean skipHueShift = originalHue >= 0.05D && originalHue <= 0.16D;
+
+			if (originalHue <= 0.05D || originalHue >= 0.97D) {
+				d1 = 0.30D; // lime
+			} else if (!skipHueShift) {
+				d1 += GLOBAL_HUE_SHIFT;
+				if (d1 > 1.0D) d1 -= 1.0D;
+			}
+
+
+
 			double d2 = (double) (k & 7) / 8D + 0.0625D;
+			d2 *= 0.8D; // 🟨 saturation
+			if (d2 > 1.0D) d2 = 1.0D;
+
 			for (int k1 = 0; k1 < 128; k1++) {
 				double d3 = (double) k1 / 128D;
 				double d4 = d3;
@@ -241,7 +301,7 @@ public final class Rasterizer extends DrawingArea
 				int i2 = (int) (d5 * 256D);
 				int j2 = (int) (d6 * 256D);
 				int k2 = (l1 << 16) + (i2 << 8) + j2;
-				k2 = method373(k2, d);
+				k2 = adjustColorBrightness(k2, hueShift);
 				if (k2 == 0)
 					k2 = 1;
 				anIntArray1482[j++] = k2;
@@ -251,10 +311,10 @@ public final class Rasterizer extends DrawingArea
 
 		for (int l = 0; l < textureAmount; l++)
 			if (aBackgroundArray1474s[l] != null) {
-				int ai[] = aBackgroundArray1474s[l].anIntArray1451;
+				int[] ai = aBackgroundArray1474s[l].anIntArray1451;
 				anIntArrayArray1483[l] = new int[ai.length];
 				for (int j1 = 0; j1 < ai.length; j1++) {
-					anIntArrayArray1483[l][j1] = method373(ai[j1], d);
+					anIntArrayArray1483[l][j1] = adjustColorBrightness(ai[j1], hueShift);
 					if ((anIntArrayArray1483[l][j1] & 0xf8f8ff) == 0 && j1 != 0)
 						anIntArrayArray1483[l][j1] = 1;
 				}
@@ -262,11 +322,11 @@ public final class Rasterizer extends DrawingArea
 			}
 
 		for (int i1 = 0; i1 < textureAmount; i1++)
-			method370(i1);
+			applyTexture(i1);
 
 	}
 
-	private static int method373(int i, double d) {
+	private static int adjustColorBrightness(int i, double d) {
 		double d1 = (double) (i >> 16) / 256D;
 		double d2 = (double) (i >> 8 & 0xff) / 256D;
 		double d3 = (double) (i & 0xff) / 256D;
@@ -920,8 +980,8 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
-	private static void drawMaterializedScanline(int dst[], int src[], int off, int x1, int x2, int hsl1, int hsl2,
-			int l1, int i2, int j2, int k2, int l2, int i3, float depth, float depth_slope) {
+	private static void drawMaterializedScanline(int[] dst, int[] src, int off, int x1, int x2, int hsl1, int hsl2,
+												 int l1, int i2, int j2, int k2, int l2, int i3, float depth, float depth_slope) {
 		int i = 0;
 		int j = 0;
 		if (x1 >= x2) {
@@ -2136,8 +2196,8 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
-	private static void method377(int dest[], int offset, int loops, int start_x, int end_x, float depth,
-			float depth_slope) {
+	private static void method377(int[] dest, int offset, int loops, int start_x, int end_x, float depth,
+								  float depth_slope) {
 		int rgb;
 		if (aBoolean1462) {
 			if (end_x > DrawingArea.centerX) {
@@ -2214,7 +2274,7 @@ public final class Rasterizer extends DrawingArea
 			l2 = 0x7f - l2 << 1;
 			l3 = 0x7f - l3 << 1;
 			setMipmapLevel(y_a, y_b, y_c, x_a, x_b, x_c, tex);
-			int ai[] = method371(tex)[mipMapLevel];
+			int[] ai = method371(tex)[mipMapLevel];
 			aBoolean1463 = !aBooleanArray1475[tex];
 			tx2 = tx1 - tx2;
 			ty2 = ty1 - ty2;
@@ -2791,8 +2851,8 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
-	private static void method379(int dest[], int texture[], int dest_off, int start_x, int end_x, int shadeValue,
-			int gradient, int a1, int i2, int j2, int k2, int a2, int i3, float depth, float depth_slope) {
+	private static void method379(int[] dest, int[] texture, int dest_off, int start_x, int end_x, int shadeValue,
+								  int gradient, int a1, int i2, int j2, int k2, int a2, int i3, float depth, float depth_slope) {
 		int i = 0;
 		int j = 0;
 		if (start_x >= end_x)
@@ -2970,7 +3030,7 @@ public final class Rasterizer extends DrawingArea
 		while (n-- > 0) {
 			int i9;
 			int l;
-			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0 && true) {
+			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0) {
 				l = shadeValue >> 16;
 				dest[dest_off] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
 				DrawingArea.depthBuffer[dest_off] = depth;
@@ -2980,7 +3040,7 @@ public final class Rasterizer extends DrawingArea
 			i += j7;
 			j += l7;
 			shadeValue += dl;
-			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0 && true) {
+			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0) {
 				l = shadeValue >> 16;
 				dest[dest_off] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
 				DrawingArea.depthBuffer[dest_off] = depth;
@@ -2990,7 +3050,7 @@ public final class Rasterizer extends DrawingArea
 			i += j7;
 			j += l7;
 			shadeValue += dl;
-			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0 && true) {
+			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0) {
 				l = shadeValue >> 16;
 				dest[dest_off] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
 				DrawingArea.depthBuffer[dest_off] = depth;
@@ -3000,7 +3060,7 @@ public final class Rasterizer extends DrawingArea
 			i += j7;
 			j += l7;
 			shadeValue += dl;
-			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0 && true) {
+			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0) {
 				l = shadeValue >> 16;
 				dest[dest_off] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
 				DrawingArea.depthBuffer[dest_off] = depth;
@@ -3010,7 +3070,7 @@ public final class Rasterizer extends DrawingArea
 			i += j7;
 			j += l7;
 			shadeValue += dl;
-			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0 && true) {
+			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0) {
 				l = shadeValue >> 16;
 				dest[dest_off] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
 				DrawingArea.depthBuffer[dest_off] = depth;
@@ -3020,7 +3080,7 @@ public final class Rasterizer extends DrawingArea
 			i += j7;
 			j += l7;
 			shadeValue += dl;
-			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0 && true) {
+			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0) {
 				l = shadeValue >> 16;
 				dest[dest_off] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
 				DrawingArea.depthBuffer[dest_off] = depth;
@@ -3030,7 +3090,7 @@ public final class Rasterizer extends DrawingArea
 			i += j7;
 			j += l7;
 			shadeValue += dl;
-			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0 && true) {
+			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0) {
 				l = shadeValue >> 16;
 				dest[dest_off] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
 				DrawingArea.depthBuffer[dest_off] = depth;
@@ -3040,7 +3100,7 @@ public final class Rasterizer extends DrawingArea
 			i += j7;
 			j += l7;
 			shadeValue += dl;
-			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0 && true) {
+			if ((i9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0) {
 				l = shadeValue >> 16;
 				dest[dest_off] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
 				DrawingArea.depthBuffer[dest_off] = depth;
@@ -3068,7 +3128,7 @@ public final class Rasterizer extends DrawingArea
 		for (int l3 = end_x - start_x & 7; l3-- > 0;) {
 			int j9;
 			int l;
-			if ((j9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0 && true) {
+			if ((j9 = texture[texelPos((j & 0x3f80) + (i >> 7))]) != 0) {
 				l = shadeValue >> 16;
 				dest[dest_off] = ((j9 & 0xff00ff) * l & ~0xff00ff) + ((j9 & 0xff00) * l & 0xff0000) >> 8;
 				DrawingArea.depthBuffer[dest_off] = depth;
@@ -3088,7 +3148,7 @@ public final class Rasterizer extends DrawingArea
 			l1 = 0x7f - l1;
 			i2 = 0x7f - i2;
 			setMipmapLevel(i, j, k, l, i1, j1, k4);
-			int ai[] = method371(k4)[mipMapLevel];
+			int[] ai = method371(k4)[mipMapLevel];
 			aBoolean1463 = !aBooleanArray1475[k4];
 			k2 = j2 - k2;
 			j3 = i3 - j3;
@@ -3598,10 +3658,10 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
-	private static void method379_2(int ai[], int ai1[], int k, int x1, int x2, int lig1, int lig2, int l1, int i2,
-			int j2, int k2, int l2, int i3) {
-		int i = 0;// was parameter
-		int j = 0;// was parameter
+	private static void method379_2(int[] ai, int[] ai1, int k, int x1, int x2, int lig1, int lig2, int l1, int i2,
+									int j2, int k2, int l2, int i3) {
+		int i = 0;
+		int j = 0;
 		if (x1 >= x2)
 			return;
 		int dlig = (lig2 - lig1) / (x2 - x1);
@@ -3826,49 +3886,6 @@ public final class Rasterizer extends DrawingArea
 			i += j7;
 			j += l7;
 			lig1 += dlig;
-		}
-	}
-
-	public static int textureAmount = 51;
-	public static boolean lowMem = true;
-	public static boolean aBoolean1462;
-	private static int mipMapLevel;
-	private static boolean aBoolean1463;
-	public static boolean aBoolean1464 = true;
-	public static int anInt1465;
-	public static int centerX;
-	public static int centerY;
-	private static int[] anIntArray1468;
-	public static final int[] anIntArray1469;
-	public static int anIntArray1470[];
-	public static int anIntArray1471[];
-	public static int anIntArray1472[];
-	private static int anInt1473;
-	public static Background aBackgroundArray1474s[] = new Background[textureAmount];
-	private static boolean[] aBooleanArray1475 = new boolean[textureAmount];
-	private static int[] anIntArray1476 = new int[textureAmount];
-	private static int anInt1477;
-	private static int[][][] anIntArrayArray1478;
-	private static int[][][] anIntArrayArray1479 = new int[textureAmount][][];
-	public static int anIntArray1480[] = new int[textureAmount];
-	public static int anInt1481;
-	public static int anIntArray1482[] = new int[0x10000];
-	private static int[][] anIntArrayArray1483 = new int[textureAmount][];
-
-	static {
-		anIntArray1468 = new int[512];
-		anIntArray1469 = new int[2048];
-		anIntArray1470 = new int[2048];
-		anIntArray1471 = new int[2048];
-		for (int i = 1; i < 512; i++) {
-			anIntArray1468[i] = 32768 / i;
-		}
-		for (int j = 1; j < 2048; j++) {
-			anIntArray1469[j] = 0x10000 / j;
-		}
-		for (int k = 0; k < 2048; k++) {
-			anIntArray1470[k] = (int) (65536D * Math.sin((double) k * 0.0030679614999999999D));
-			anIntArray1471[k] = (int) (65536D * Math.cos((double) k * 0.0030679614999999999D));
 		}
 	}
 }

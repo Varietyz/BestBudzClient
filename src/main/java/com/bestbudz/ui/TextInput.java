@@ -4,10 +4,22 @@ import com.bestbudz.network.Stream;
 
 public final class TextInput {
 
+	private static final char[] aCharArray631 = new char[100];
+	private static final Stream stream = new Stream(new byte[100]);
+	private static final char[] validChars = {
+		' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+		'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+		't', 'u', 'v', 'w', 'x', 'y', 'z',
+		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+		'!', '?', '.', ',', ':', ';', '(', ')', '-', '&',
+		'*', '\\', '\'', '@', '#', '+', '=', '\243', '$',
+		'%', '"', '[', ']', '>', '<', '_', '^'
+	};
+
 	public static String method525(int i, Stream stream) {
 		int j = 0;
 		for (int l = 0; l < i; l++) {
-			int i1 = stream.readUnsignedByte();// recieved from server
+			int i1 = stream.readUnsignedByte();
 			aCharArray631[j++] = validChars[i1];
 		}
 
@@ -38,10 +50,10 @@ public final class TextInput {
 				k = l;
 				break;
 			}
-			stream.writeWordBigEndian(k);// sending to server
+			stream.writeWordBigEndian(k);
 		}
 	}
-
+	
 	public static String processText(String s) {
 		stream.currentOffset = 0;
 		method526(s, stream);
@@ -50,18 +62,5 @@ public final class TextInput {
 		String s1 = method525(j, stream);
 		return s1;
 	}
-
-	private static final char[] aCharArray631 = new char[100];
-	private static final Stream stream = new Stream(new byte[100]);
-	
-	private static final char[] validChars = {
-		' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
-		'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
-		't', 'u', 'v', 'w', 'x', 'y', 'z',
-		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-		'!', '?', '.', ',', ':', ';', '(', ')', '-', '&',
-		'*', '\\', '\'', '@', '#', '+', '=', '\243', '$',
-		'%', '"', '[', ']', '>', '<', '_', '^'
-	};
 
 }

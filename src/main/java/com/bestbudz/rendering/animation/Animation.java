@@ -1,10 +1,37 @@
 package com.bestbudz.rendering.animation;
 
-import com.bestbudz.network.StreamLoader;
 import com.bestbudz.network.Stream;
+import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.SequenceFrame;
 
 public final class Animation {
+
+    public static Animation[] anims;
+    public int anInt352;
+    public int[] anIntArray353;
+    public int[] anIntArray354;
+    public int[] anIntArray355;
+    public int anInt356;
+    public int[] anIntArray357;
+    public boolean aBoolean358;
+    public int anInt359;
+    public int anInt360;
+    public int anInt361;
+    public int anInt362;
+    public int anInt363;
+    public int anInt364;
+    public int anInt365;
+    private Animation() {
+        anInt356 = -1;
+        aBoolean358 = false;
+        anInt359 = 5;
+		anInt360 = -1;
+		anInt361 = -1;
+		anInt362 = 99;
+		anInt363 = -1;
+		anInt364 = -1;
+        anInt365 = 1;
+    }
 
     public static void unpackConfig(StreamLoader streamLoader)
     {
@@ -17,7 +44,7 @@ public final class Animation {
             if(anims[j] == null)
                 anims[j] = new Animation();
             anims[j].readValues(stream);
-			
+
         }
     }
 
@@ -37,8 +64,8 @@ public final class Animation {
 private void readValues(Stream stream) {
 			int i;
 			while ((i = stream.readUnsignedByte()) != 0){
-				
-			
+
+
 			if (i == 1) {
 				anInt352 = stream.readUnsignedWord();
 				anIntArray353 = new int[anInt352];
@@ -48,11 +75,11 @@ private void readValues(Stream stream) {
 						anIntArray353[j] = stream.readDWord();
 						anIntArray354[j] = -1;
 					}
-				
+
 
 					for (int j = 0; j < anInt352; j++)
 						anIntArray355[j] = stream.readUnsignedByte();
-				
+
 			} else if (i == 2)
 				anInt356 = stream.readUnsignedWord();
 			else if (i == 3) {
@@ -104,33 +131,4 @@ private void readValues(Stream stream) {
 			anInt364 = 0;
 		}
 	}
-
-    private Animation() {
-        anInt356 = -1;
-        aBoolean358 = false;
-        anInt359 = 5;
-        anInt360 = -1; //Removes shield
-        anInt361 = -1; //Removes weapon
-        anInt362 = 99;
-        anInt363 = -1; //Stops character from moving
-        anInt364 = -1;
-        anInt365 = 1; 
-    }
-
-    public static Animation anims[];
-    public int anInt352;
-    public int anIntArray353[];
-    public int anIntArray354[];
-    public int[] anIntArray355;
-    public int anInt356;
-    public int anIntArray357[];
-    public boolean aBoolean358;
-    public int anInt359;
-    public int anInt360;
-    public int anInt361;
-    public int anInt362;
-    public int anInt363;
-    public int anInt364;
-    public int anInt365;
-    public static int anInt367;
 }

@@ -4,20 +4,104 @@ import com.bestbudz.client.Client;
 import com.bestbudz.config.Configuration;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.rendering.Animable;
-import com.bestbudz.rendering.model.Model;
 import com.bestbudz.rendering.Rasterizer;
-import com.bestbudz.rendering.model.Class33;
 import com.bestbudz.rendering.animation.Class40;
+import com.bestbudz.rendering.model.Class33;
 import com.bestbudz.rendering.model.Class43;
 import com.bestbudz.rendering.model.Class47;
+import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.NodeList;
 
 public final class WorldController {
 
-	public WorldController(int ai[][][]) {
-		int i = 104;// was parameter
-		int j = 104;// was parameter
-		int k = 4;// was parameter
+	private static final int[] anIntArray463 = { 53, -53, -53, 53 };
+	private static final int[] anIntArray464 = { -53, -53, 53, 53 };
+	private static final int[] anIntArray465 = { -45, 45, 45, -45 };
+	private static final int[] anIntArray466 = { 45, 45, -45, -45 };
+	private static final int anInt472;
+	private static final Class47[] aClass47Array476 = new Class47[500];
+	private static final int[] anIntArray478 = { 19, 55, 38, 155, 255, 110, 137, 205, 76 };
+	private static final int[] anIntArray479 = { 160, 192, 80, 96, 0, 144, 80, 48, 160 };
+	private static final int[] anIntArray480 = { 76, 8, 137, 4, 0, 1, 38, 2, 19 };
+	private static final int[] anIntArray481 = { 0, 0, 2, 0, 0, 2, 1, 1, 0 };
+	private static final int[] anIntArray482 = { 2, 0, 0, 2, 0, 0, 0, 4, 4 };
+	private static final int[] anIntArray483 = { 0, 4, 4, 8, 0, 0, 8, 0, 0 };
+	private static final int[] anIntArray484 = { 1, 1, 0, 0, 0, 8, 0, 0, 8 };
+	private static final int[] anIntArray485 = { 41, 39248, 41, 4643, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 43086,
+			41, 41, 41, 41, 41, 41, 41, 8602, 41, 28992, 41, 41, 41, 41, 41, 5056, 41, 41, 41, 7079, 41, 41, 41, 41, 41,
+			41, 41, 41, 41, 41, 3131, 41, 41, 41 };
+	public static boolean lowMem = true;
+	public static int anInt470 = -1;
+	public static int anInt471 = -1;
+	public static int viewDistance = 18; // default ~9; try 10, 11, 12
+
+	private static int anInt446;
+	private static int anInt447;
+	private static int anInt448;
+	private static int anInt449;
+	private static int anInt450;
+	private static int anInt451;
+	private static int anInt452;
+	private static int anInt453;
+	private static int anInt454;
+	private static int anInt455;
+	private static int anInt456;
+	private static int anInt457;
+	private static int anInt458;
+	private static int anInt459;
+	private static int anInt460;
+	private static int anInt461;
+	private static Object5[] aClass28Array462 = new Object5[100];
+	private static boolean aBoolean467;
+	private static int anInt468;
+	private static int anInt469;
+	private static int[] anIntArray473;
+	private static Class47[][] aClass47ArrayArray474;
+	private static int anInt475;
+	private static NodeList aClass19_477 = new NodeList();
+	private static boolean[][][][] aBooleanArrayArrayArrayArray491 = new boolean[8][32][51][51];
+	private static boolean[][] aBooleanArrayArray492;
+	private static int anInt493;
+	private static int anInt494;
+	private static int anInt495;
+	private static int anInt496;
+	private static int anInt497;
+	private static int anInt498;
+
+	static {
+		anInt472 = 4;
+		anIntArray473 = new int[anInt472];
+		aClass47ArrayArray474 = new Class47[anInt472][500];
+	}
+
+	private final int anInt437;
+	private final int anInt438;
+	private final int anInt439;
+	private final int[][][] anIntArrayArrayArray440;
+	private final Ground[][][] groundArray;
+	private final Object5[] obj5Cache;
+	private final int[][][] anIntArrayArrayArray445;
+	private final int[] anIntArray486;
+	private final int[] anIntArray487;
+	private final int[][] anIntArrayArray489 = { new int[16], { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+			{ 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1 }, { 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 },
+			{ 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1 }, { 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+			{ 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1 }, { 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0 },
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0 }, { 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1 },
+			{ 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1 },
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1 } };
+	private final int[][] anIntArrayArray490 = { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
+			{ 12, 8, 4, 0, 13, 9, 5, 1, 14, 10, 6, 2, 15, 11, 7, 3 },
+			{ 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 },
+			{ 3, 7, 11, 15, 2, 6, 10, 14, 1, 5, 9, 13, 0, 4, 8, 12 } };
+	private boolean aBoolean434;
+	private int anInt442;
+	private int obj5CacheCurrPos;
+	private int anInt488;
+	public WorldController(int[][][] ai) {
+		int i = 104;
+		int j = 104;
+		int k = 4;
 		aBoolean434 = true;
 		obj5Cache = new Object5[5000];
 		anIntArray486 = new int[10000];
@@ -38,6 +122,105 @@ public final class WorldController {
 		aClass19_477 = null;
 		aBooleanArrayArrayArrayArray491 = null;
 		aBooleanArrayArray492 = null;
+	}
+
+	public static void method277(int i, int j, int k, int l, int i1, int j1, int l1, int i2) {
+		Class47 class47 = new Class47();
+		class47.anInt787 = j / 128;
+		class47.anInt788 = l / 128;
+		class47.anInt789 = l1 / 128;
+		class47.anInt790 = i1 / 128;
+		class47.anInt791 = i2;
+		class47.anInt792 = j;
+		class47.anInt793 = l;
+		class47.anInt794 = l1;
+		class47.anInt795 = i1;
+		class47.anInt796 = j1;
+		class47.anInt797 = k;
+		aClass47ArrayArray474[i][anIntArray473[i]++] = class47;
+	}
+
+	public static void method310(int i, int j, int k, int l, int[] ai) {
+		anInt495 = 0;
+		anInt496 = 0;
+		anInt497 = k;
+		anInt498 = l;
+		anInt493 = k / 2;
+		anInt494 = l / 2;
+		boolean[][][][] aflag = new boolean[9][32][53][53];
+		for (int i1 = 128; i1 <= 384; i1 += 32) {
+			for (int j1 = 0; j1 < 2048; j1 += 64) {
+				anInt458 = Model.modelIntArray1[i1];
+				anInt459 = Model.modelIntArray2[i1];
+				anInt460 = Model.modelIntArray1[j1];
+				anInt461 = Model.modelIntArray2[j1];
+				int l1 = (i1 - 128) / 32;
+				int j2 = j1 / 64;
+				for (int l2 = -26; l2 <= 26; l2++) {
+					for (int j3 = -26; j3 <= 26; j3++) {
+						int k3 = l2 * 128;
+						int i4 = j3 * 128;
+						boolean flag2 = false;
+						for (int k4 = -i; k4 <= j; k4 += 128) {
+							if (!method311(ai[l1] + k4, i4, k3))
+								continue;
+							flag2 = true;
+							break;
+						}
+
+						aflag[l1][j2][l2 + 25 + 1][j3 + 25 + 1] = flag2;
+					}
+
+				}
+
+			}
+
+		}
+
+		for (int k1 = 0; k1 < 8; k1++) {
+			for (int i2 = 0; i2 < 32; i2++) {
+				for (int k2 = -25; k2 < 25; k2++) {
+					for (int i3 = -25; i3 < 25; i3++) {
+						boolean flag1 = false;
+						label0: for (int l3 = -1; l3 <= 1; l3++) {
+							for (int j4 = -1; j4 <= 1; j4++) {
+								if (aflag[k1][i2][k2 + l3 + 25 + 1][i3 + j4 + 25 + 1])
+									flag1 = true;
+								else if (aflag[k1][(i2 + 1) % 31][k2 + l3 + 25 + 1][i3 + j4 + 25 + 1])
+									flag1 = true;
+								else if (aflag[k1 + 1][i2][k2 + l3 + 25 + 1][i3 + j4 + 25 + 1]) {
+									flag1 = true;
+								} else {
+									if (!aflag[k1 + 1][(i2 + 1) % 31][k2 + l3 + 25 + 1][i3 + j4 + 25 + 1])
+										continue;
+									flag1 = true;
+								}
+								break label0;
+							}
+
+						}
+
+						aBooleanArrayArrayArrayArray491[k1][i2][k2 + 25][i3 + 25] = flag1;
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	private static boolean method311(int i, int j, int k) {
+		int l = j * anInt460 + k * anInt461 >> 16;
+		int i1 = j * anInt461 - k * anInt460 >> 16;
+		int j1 = i * anInt458 + i1 * anInt459 >> 16;
+		int k1 = i * anInt459 - i1 * anInt458 >> 16;
+		if (j1 < 50 || j1 > 3500)
+			return false;
+		int l1 = anInt493 + (l << viewDistance) / j1;
+		int i2 = anInt494 + (k1 << viewDistance) / j1;
+		return l1 >= anInt495 && l1 <= anInt497 && i2 >= anInt496 && i2 <= anInt498;
 	}
 
 	public void initToNull() {
@@ -94,22 +277,6 @@ public final class WorldController {
 			groundArray[0][j][i] = new Ground(0, j, i);
 		groundArray[0][j][i].aClass30_Sub3_1329 = class30_sub3;
 		groundArray[3][j][i] = null;
-	}
-
-	public static void method277(int i, int j, int k, int l, int i1, int j1, int l1, int i2) {
-		Class47 class47 = new Class47();
-		class47.anInt787 = j / 128;
-		class47.anInt788 = l / 128;
-		class47.anInt789 = l1 / 128;
-		class47.anInt790 = i1 / 128;
-		class47.anInt791 = i2;
-		class47.anInt792 = j;
-		class47.anInt793 = l;
-		class47.anInt794 = l1;
-		class47.anInt795 = i1;
-		class47.anInt796 = j1;
-		class47.anInt797 = k;
-		aClass47ArrayArray474[i][anIntArray473[i]++] = class47;
 	}
 
 	public void method278(int i, int j, int k, int l) {
@@ -530,8 +697,8 @@ public final class WorldController {
 	}
 
 	public void method305(int i, int k, int i1) {
-		int j = 64;// was parameter
-		int l = 768;// was parameter
+		int j = 64;
+		int l = 768;
 		int j1 = (int) Math.sqrt(k * k + i * i + i1 * i1);
 		int k1 = l * j1 >> 8;
 		for (int l1 = 0; l1 < anInt437; l1++) {
@@ -662,7 +829,7 @@ public final class WorldController {
 	private void method308(Model model, Model model_1, int i, int j, int k, boolean flag) {
 		anInt488++;
 		int l = 0;
-		int ai[] = model_1.anIntArray1627;
+		int[] ai = model_1.anIntArray1627;
 		int i1 = model_1.anInt1626;
 		for (int j1 = 0; j1 < model.anInt1626; j1++) {
 			Class33 class33 = model.aClass33Array1425[j1];
@@ -715,7 +882,7 @@ public final class WorldController {
 
 	}
 
-	public void method309(int pixels[], int pixelOffset, int z, int x, int y) {
+	public void method309(int[] pixels, int pixelOffset, int z, int x, int y) {
 		if (Configuration.enableHDMinimap) {
 			Ground class30_sub3 = groundArray[z][x][y];
 			if (class30_sub3 == null) {
@@ -782,8 +949,8 @@ public final class WorldController {
 			int i2 = class40.anInt685;
 			int j2 = class40.anInt686;
 			int k2 = class40.anInt687;
-			int ai1[] = anIntArrayArray489[l1];
-			int ai2[] = anIntArrayArray490[i2];
+			int[] ai1 = anIntArrayArray489[l1];
+			int[] ai2 = anIntArrayArray490[i2];
 			int l2 = 0;
 			if (class40.color62 != 12345678) {
 				int hs1 = class40.color62 & ~0x7f;
@@ -890,7 +1057,7 @@ public final class WorldController {
 				pixelOffset += 512;
 			}
 		} else {
-			int j = 512;// was parameter
+			int j = 512;
 			Ground class30_sub3 = groundArray[z][x][y];
 			if (class30_sub3 == null)
 				return;
@@ -916,8 +1083,8 @@ public final class WorldController {
 			int i2 = class40.anInt685;
 			int j2 = class40.anInt686;
 			int k2 = class40.anInt687;
-			int ai1[] = anIntArrayArray489[l1];
-			int ai2[] = anIntArrayArray490[i2];
+			int[] ai1 = anIntArrayArray489[l1];
+			int[] ai2 = anIntArrayArray490[i2];
 			int l2 = 0;
 			if (j2 != 0) {
 				for (int i3 = 0; i3 < 4; i3++) {
@@ -942,89 +1109,6 @@ public final class WorldController {
 				pixelOffset += j;
 			}
 		}
-	}
-
-	public static void method310(int i, int j, int k, int l, int ai[]) {
-		anInt495 = 0;
-		anInt496 = 0;
-		anInt497 = k;
-		anInt498 = l;
-		anInt493 = k / 2;
-		anInt494 = l / 2;
-		boolean aflag[][][][] = new boolean[9][32][53][53];
-		for (int i1 = 128; i1 <= 384; i1 += 32) {
-			for (int j1 = 0; j1 < 2048; j1 += 64) {
-				anInt458 = Model.modelIntArray1[i1];
-				anInt459 = Model.modelIntArray2[i1];
-				anInt460 = Model.modelIntArray1[j1];
-				anInt461 = Model.modelIntArray2[j1];
-				int l1 = (i1 - 128) / 32;
-				int j2 = j1 / 64;
-				for (int l2 = -26; l2 <= 26; l2++) {
-					for (int j3 = -26; j3 <= 26; j3++) {
-						int k3 = l2 * 128;
-						int i4 = j3 * 128;
-						boolean flag2 = false;
-						for (int k4 = -i; k4 <= j; k4 += 128) {
-							if (!method311(ai[l1] + k4, i4, k3))
-								continue;
-							flag2 = true;
-							break;
-						}
-
-						aflag[l1][j2][l2 + 25 + 1][j3 + 25 + 1] = flag2;
-					}
-
-				}
-
-			}
-
-		}
-
-		for (int k1 = 0; k1 < 8; k1++) {
-			for (int i2 = 0; i2 < 32; i2++) {
-				for (int k2 = -25; k2 < 25; k2++) {
-					for (int i3 = -25; i3 < 25; i3++) {
-						boolean flag1 = false;
-						label0: for (int l3 = -1; l3 <= 1; l3++) {
-							for (int j4 = -1; j4 <= 1; j4++) {
-								if (aflag[k1][i2][k2 + l3 + 25 + 1][i3 + j4 + 25 + 1])
-									flag1 = true;
-								else if (aflag[k1][(i2 + 1) % 31][k2 + l3 + 25 + 1][i3 + j4 + 25 + 1])
-									flag1 = true;
-								else if (aflag[k1 + 1][i2][k2 + l3 + 25 + 1][i3 + j4 + 25 + 1]) {
-									flag1 = true;
-								} else {
-									if (!aflag[k1 + 1][(i2 + 1) % 31][k2 + l3 + 25 + 1][i3 + j4 + 25 + 1])
-										continue;
-									flag1 = true;
-								}
-								break label0;
-							}
-
-						}
-
-						aBooleanArrayArrayArrayArray491[k1][i2][k2 + 25][i3 + 25] = flag1;
-					}
-
-				}
-
-			}
-
-		}
-
-	}
-
-	private static boolean method311(int i, int j, int k) {
-		int l = j * anInt460 + k * anInt461 >> 16;
-		int i1 = j * anInt461 - k * anInt460 >> 16;
-		int j1 = i * anInt458 + i1 * anInt459 >> 16;
-		int k1 = i * anInt459 - i1 * anInt458 >> 16;
-		if (j1 < 50 || j1 > 3500)
-			return false;
-		int l1 = anInt493 + (l << viewDistance) / j1;
-		int i2 = anInt494 + (k1 << viewDistance) / j1;
-		return l1 >= anInt495 && l1 <= anInt497 && i2 >= anInt496 && i2 <= anInt498;
 	}
 
 	public void method312(int i, int j) {
@@ -1071,7 +1155,7 @@ public final class WorldController {
 		method319();
 		anInt446 = 0;
 		for (int k1 = anInt442; k1 < anInt437; k1++) {
-			Ground aclass30_sub3[][] = groundArray[k1];
+			Ground[][] aclass30_sub3 = groundArray[k1];
 			for (int i2 = anInt449; i2 < anInt450; i2++) {
 				for (int k2 = anInt451; k2 < anInt452; k2++) {
 					Ground class30_sub3 = aclass30_sub3[i2][k2];
@@ -1095,7 +1179,7 @@ public final class WorldController {
 		}
 
 		for (int l1 = anInt442; l1 < anInt437; l1++) {
-			Ground aclass30_sub3_1[][] = groundArray[l1];
+			Ground[][] aclass30_sub3_1 = groundArray[l1];
 			for (int l2 = -25; l2 <= 0; l2++) {
 				int i3 = anInt453 + l2;
 				int k3 = anInt453 - l2;
@@ -1139,7 +1223,7 @@ public final class WorldController {
 		}
 
 		for (int j2 = anInt442; j2 < anInt437; j2++) {
-			Ground aclass30_sub3_2[][] = groundArray[j2];
+			Ground[][] aclass30_sub3_2 = groundArray[j2];
 			for (int j3 = -25; j3 <= 0; j3++) {
 				int l3 = anInt453 + j3;
 				int j4 = anInt453 - j3;
@@ -1198,7 +1282,7 @@ public final class WorldController {
 			int j = class30_sub3_1.anInt1309;
 			int k = class30_sub3_1.anInt1307;
 			int l = class30_sub3_1.anInt1310;
-			Ground aclass30_sub3[][] = groundArray[k];
+			Ground[][] aclass30_sub3 = groundArray[k];
 			if (class30_sub3_1.aBoolean1322) {
 				if (flag) {
 					if (k > 0) {
@@ -1868,7 +1952,7 @@ public final class WorldController {
 
 	private void method319() {
 		int j = anIntArray473[anInt447];
-		Class47 aclass47[] = aClass47ArrayArray474[anInt447];
+		Class47[] aclass47 = aClass47ArrayArray474[anInt447];
 		anInt475 = 0;
 		for (int k = 0; k < j; k++) {
 			Class47 class47 = aclass47[k];
@@ -2185,88 +2269,5 @@ public final class WorldController {
 		}
 
 		return false;
-	}
-
-	private boolean aBoolean434;
-	public static boolean lowMem = true;
-	private final int anInt437;
-	private final int anInt438;
-	private final int anInt439;
-	private final int[][][] anIntArrayArrayArray440;
-	private final Ground[][][] groundArray;
-	private int anInt442;
-	private int obj5CacheCurrPos;
-	private final Object5[] obj5Cache;
-	private final int[][][] anIntArrayArrayArray445;
-	private static int anInt446;
-	private static int anInt447;
-	private static int anInt448;
-	private static int anInt449;
-	private static int anInt450;
-	private static int anInt451;
-	private static int anInt452;
-	private static int anInt453;
-	private static int anInt454;
-	private static int anInt455;
-	private static int anInt456;
-	private static int anInt457;
-	private static int anInt458;
-	private static int anInt459;
-	private static int anInt460;
-	private static int anInt461;
-	private static Object5[] aClass28Array462 = new Object5[100];
-	private static final int[] anIntArray463 = { 53, -53, -53, 53 };
-	private static final int[] anIntArray464 = { -53, -53, 53, 53 };
-	private static final int[] anIntArray465 = { -45, 45, 45, -45 };
-	private static final int[] anIntArray466 = { 45, 45, -45, -45 };
-	private static boolean aBoolean467;
-	private static int anInt468;
-	private static int anInt469;
-	public static int anInt470 = -1;
-	public static int anInt471 = -1;
-	private static final int anInt472;
-	private static int[] anIntArray473;
-	private static Class47[][] aClass47ArrayArray474;
-	private static int anInt475;
-	private static final Class47[] aClass47Array476 = new Class47[500];
-	private static NodeList aClass19_477 = new NodeList();
-	private static final int[] anIntArray478 = { 19, 55, 38, 155, 255, 110, 137, 205, 76 };
-	private static final int[] anIntArray479 = { 160, 192, 80, 96, 0, 144, 80, 48, 160 };
-	private static final int[] anIntArray480 = { 76, 8, 137, 4, 0, 1, 38, 2, 19 };
-	private static final int[] anIntArray481 = { 0, 0, 2, 0, 0, 2, 1, 1, 0 };
-	private static final int[] anIntArray482 = { 2, 0, 0, 2, 0, 0, 0, 4, 4 };
-	private static final int[] anIntArray483 = { 0, 4, 4, 8, 0, 0, 8, 0, 0 };
-	private static final int[] anIntArray484 = { 1, 1, 0, 0, 0, 8, 0, 0, 8 };
-	private static final int[] anIntArray485 = { 41, 39248, 41, 4643, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 43086,
-			41, 41, 41, 41, 41, 41, 41, 8602, 41, 28992, 41, 41, 41, 41, 41, 5056, 41, 41, 41, 7079, 41, 41, 41, 41, 41,
-			41, 41, 41, 41, 41, 3131, 41, 41, 41 };
-	private final int[] anIntArray486;
-	private final int[] anIntArray487;
-	private int anInt488;
-	private final int[][] anIntArrayArray489 = { new int[16], { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-			{ 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1 }, { 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 },
-			{ 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1 }, { 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-			{ 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1 }, { 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0 },
-			{ 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0 }, { 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1 },
-			{ 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1 },
-			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1 } };
-	private final int[][] anIntArrayArray490 = { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
-			{ 12, 8, 4, 0, 13, 9, 5, 1, 14, 10, 6, 2, 15, 11, 7, 3 },
-			{ 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 },
-			{ 3, 7, 11, 15, 2, 6, 10, 14, 1, 5, 9, 13, 0, 4, 8, 12 } };
-	private static boolean[][][][] aBooleanArrayArrayArrayArray491 = new boolean[8][32][51][51];
-	private static boolean[][] aBooleanArrayArray492;
-	private static int anInt493;
-	private static int anInt494;
-	private static int anInt495;
-	private static int anInt496;
-	private static int anInt497;
-	private static int anInt498;
-	public static int viewDistance = (int) (Math.log(Client.frameWidth) / Math.log(2));
-
-	static {
-		anInt472 = 4;
-		anIntArray473 = new int[anInt472];
-		aClass47ArrayArray474 = new Class47[anInt472][500];
 	}
 }

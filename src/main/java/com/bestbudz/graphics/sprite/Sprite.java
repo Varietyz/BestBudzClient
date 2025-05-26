@@ -1,10 +1,10 @@
 package com.bestbudz.graphics.sprite;
 
+import com.bestbudz.cache.Signlink;
 import com.bestbudz.client.Client;
 import com.bestbudz.config.Configuration;
 import com.bestbudz.graphics.Background;
 import com.bestbudz.graphics.DrawingArea;
-import com.bestbudz.cache.Signlink;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
 import com.bestbudz.util.FileUtility;
@@ -22,12 +22,20 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.net.URL;
-
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 public final class Sprite extends DrawingArea
 {
+
+	public String location = Signlink.findCacheDir() + "Sprites/";
+	public int[] myPixels;
+	public int myWidth;
+	public int myHeight;
+	public int drawOffsetX;
+	public int cropWidth;
+	public int anInt1445;
+	int drawOffsetY;
 
 	public Sprite(int i, int j) {
 		myPixels = new int[i * j];
@@ -36,9 +44,7 @@ public final class Sprite extends DrawingArea
 		drawOffsetX = drawOffsetY = 0;
 	}
 
-	public String location = Signlink.findCacheDir() + "Sprites/";
-
-	public Sprite(byte abyte0[], Component component) {
+	public Sprite(byte[] abyte0, Component component) {
 		try {
 			Image image = Toolkit.getDefaultToolkit().createImage(abyte0);
 			MediaTracker mediatracker = new MediaTracker(component);
@@ -117,52 +123,89 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-	public void drawHoverSprite(int x, int y, int offsetX, int offsetY, Sprite hover) {
-		this.drawSprite(x, y);
-		if (Client.instance.mouseX >= offsetX + x && Client.instance.mouseX <= offsetX + x + this.myWidth
-				&& Client.instance.mouseY >= offsetY + y && Client.instance.mouseY <= offsetY + y + this.myHeight) {
-			hover.drawSprite(x, y);
+	public Sprite(Sprite sprite_a, int x, int y, int w, int h) {
+		try {
+			ImageIcon Sprite = new ImageIcon(getSprite(sprite_a));
+			BufferedImage bi = toBufferedImage(Sprite.getImage()).getSubimage(x, y, w, h);
+			ImageIcon b = new ImageIcon(bi);
+			Image image = b.getImage();
+			ImageIcon sprite = new ImageIcon(image);
+			myWidth = sprite.getIconWidth();
+			myHeight = sprite.getIconHeight();
+			cropWidth = myWidth;
+			anInt1445 = myHeight;
+			drawOffsetX = 0;
+			drawOffsetY = 0;
+			myPixels = new int[myWidth * myHeight];
+			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
+			pixelgrabber.grabPixels();
+			setTransparency(0, 0, 0);
+			image = null;
+		} catch (Exception _ex) {
+			System.out.println(_ex);
 		}
 	}
 
-	public void draw24BitSprite(int x, int y) {
-		int alpha = 256;
-		x += drawOffsetX;// offsetX
-		y += drawOffsetY;// offsetY
-		int destOffset = x + y * DrawingArea.width;
-		int srcOffset = 0;
-		int height = myHeight;
-		int width = myWidth;
-		int destStep = DrawingArea.width - width;
-		int srcStep = 0;
-		if (y < DrawingArea.topY) {
-			int trimHeight = DrawingArea.topY - y;
-			height -= trimHeight;
-			y = DrawingArea.topY;
-			srcOffset += trimHeight * width;
-			destOffset += trimHeight * DrawingArea.width;
+	public Sprite(StreamLoader streamLoader, String s, int i) {
+		Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
+		Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
+		stream_1.currentOffset = stream.readUnsignedWord();
+		cropWidth = stream_1.readUnsignedWord();
+		anInt1445 = stream_1.readUnsignedWord();
+		int j = stream_1.readUnsignedByte();
+		int[] ai = new int[j];
+		for (int k = 0; k < j - 1; k++) {
+			ai[k + 1] = stream_1.read3Bytes();
+			if (ai[k + 1] == 0)
+				ai[k + 1] = 1;
 		}
-		if (y + height > DrawingArea.bottomY) {
-			height -= (y + height) - DrawingArea.bottomY;
+
+		for (int l = 0; l < i; l++) {
+			stream_1.currentOffset += 2;
+			stream.currentOffset += stream_1.readUnsignedWord() * stream_1.readUnsignedWord();
+			stream_1.currentOffset++;
 		}
-		if (x < DrawingArea.topX) {
-			int trimLeft = DrawingArea.topX - x;
-			width -= trimLeft;
-			x = DrawingArea.topX;
-			srcOffset += trimLeft;
-			destOffset += trimLeft;
-			srcStep += trimLeft;
-			destStep += trimLeft;
+
+		drawOffsetX = stream_1.readUnsignedByte();
+		drawOffsetY = stream_1.readUnsignedByte();
+		myWidth = stream_1.readUnsignedWord();
+		myHeight = stream_1.readUnsignedWord();
+		int i1 = stream_1.readUnsignedByte();
+		int j1 = myWidth * myHeight;
+		myPixels = new int[j1];
+		if (i1 == 0) {
+			for (int k1 = 0; k1 < j1; k1++)
+				myPixels[k1] = ai[stream.readUnsignedByte()];
+			setTransparency(255, 0, 255);
+			return;
 		}
-		if (x + width > DrawingArea.bottomX) {
-			int trimRight = (x + width) - DrawingArea.bottomX;
-			width -= trimRight;
-			srcStep += trimRight;
-			destStep += trimRight;
+		if (i1 == 1) {
+			for (int l1 = 0; l1 < myWidth; l1++) {
+				for (int i2 = 0; i2 < myHeight; i2++)
+					myPixels[l1 + i2 * myWidth] = ai[stream.readUnsignedByte()];
+			}
+
 		}
-		if (!((width <= 0) || (height <= 0))) {
-			set24BitPixels(width, height, DrawingArea.pixels, myPixels, alpha, destOffset, srcOffset, destStep,
-					srcStep);
+		setTransparency(255, 0, 255);
+	}
+
+	public Sprite(byte[] spriteData) {
+		try {
+			Image image = Toolkit.getDefaultToolkit().createImage(spriteData);
+			ImageIcon sprite = new ImageIcon(image);
+			myWidth = sprite.getIconWidth();
+			myHeight = sprite.getIconHeight();
+			cropWidth = myWidth;
+			anInt1445 = myHeight;
+			drawOffsetX = 0;
+			drawOffsetY = 0;
+			myPixels = new int[myWidth * myHeight];
+			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
+			pixelgrabber.grabPixels();
+			image = null;
+			setTransparency(255, 0, 255);
+		} catch (Exception _ex) {
+			System.out.println(_ex);
 		}
 	}
 
@@ -212,31 +255,57 @@ public final class Sprite extends DrawingArea
 		return bufferedimage;
 	}
 
-	public Sprite(Sprite sprite_a, int x, int y, int w, int h) {
-		try {
-			ImageIcon Sprite = new ImageIcon(getSprite(sprite_a));
-			BufferedImage bi = toBufferedImage(Sprite.getImage()).getSubimage(x, y, w, h);
-			ImageIcon b = new ImageIcon(bi);
-			Image image = b.getImage();
-			ImageIcon sprite = new ImageIcon(image);
-			myWidth = sprite.getIconWidth();
-			myHeight = sprite.getIconHeight();
-			cropWidth = myWidth;
-			anInt1445 = myHeight;
-			drawOffsetX = 0;
-			drawOffsetY = 0;
-			myPixels = new int[myWidth * myHeight];
-			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
-			pixelgrabber.grabPixels();
-			setTransparency(0, 0, 0);
-			image = null;
-		} catch (Exception _ex) {
-			System.out.println(_ex);
+	public void drawHoverSprite(int x, int y, int offsetX, int offsetY, Sprite hover) {
+		this.drawSprite(x, y);
+		if (Client.instance.mouseX >= offsetX + x && Client.instance.mouseX <= offsetX + x + this.myWidth
+				&& Client.instance.mouseY >= offsetY + y && Client.instance.mouseY <= offsetY + y + this.myHeight) {
+			hover.drawSprite(x, y);
+		}
+	}
+
+	public void draw24BitSprite(int x, int y) {
+		int alpha = 256;
+		x += drawOffsetX;
+		y += drawOffsetY;
+		int destOffset = x + y * DrawingArea.width;
+		int srcOffset = 0;
+		int height = myHeight;
+		int width = myWidth;
+		int destStep = DrawingArea.width - width;
+		int srcStep = 0;
+		if (y < DrawingArea.topY) {
+			int trimHeight = DrawingArea.topY - y;
+			height -= trimHeight;
+			y = DrawingArea.topY;
+			srcOffset += trimHeight * width;
+			destOffset += trimHeight * DrawingArea.width;
+		}
+		if (y + height > DrawingArea.bottomY) {
+			height -= (y + height) - DrawingArea.bottomY;
+		}
+		if (x < DrawingArea.topX) {
+			int trimLeft = DrawingArea.topX - x;
+			width -= trimLeft;
+			x = DrawingArea.topX;
+			srcOffset += trimLeft;
+			destOffset += trimLeft;
+			srcStep += trimLeft;
+			destStep += trimLeft;
+		}
+		if (x + width > DrawingArea.bottomX) {
+			int trimRight = (x + width) - DrawingArea.bottomX;
+			width -= trimRight;
+			srcStep += trimRight;
+			destStep += trimRight;
+		}
+		if (!((width <= 0) || (height <= 0))) {
+			set24BitPixels(width, height, DrawingArea.pixels, myPixels, alpha, destOffset, srcOffset, destStep,
+					srcStep);
 		}
 	}
 
 	public void drawTransparentSprite(int i, int j, int opacity) {
-		int k = opacity;// was parameter
+		int k = opacity;
 		i += drawOffsetX;
 		j += drawOffsetY;
 		int i1 = i + j * DrawingArea.width;
@@ -274,8 +343,8 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-	private void set24BitPixels(int width, int height, int destPixels[], int srcPixels[], int srcAlpha, int destOffset,
-			int srcOffset, int destStep, int srcStep) {
+	private void set24BitPixels(int width, int height, int[] destPixels, int[] srcPixels, int srcAlpha, int destOffset,
+								int srcOffset, int destStep, int srcStep) {
 		int srcColor;
 		int destAlpha;
 		for (int loop = -height; loop < 0; loop++) {
@@ -302,49 +371,6 @@ public final class Sprite extends DrawingArea
 			if (((myPixels[index] >> 16) & 255) == transRed && ((myPixels[index] >> 8) & 255) == transGreen
 					&& (myPixels[index] & 255) == transBlue)
 				myPixels[index] = 0;
-	}
-
-	public Sprite(StreamLoader streamLoader, String s, int i) {
-		Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
-		Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
-		stream_1.currentOffset = stream.readUnsignedWord();
-		cropWidth = stream_1.readUnsignedWord();
-		anInt1445 = stream_1.readUnsignedWord();
-		int j = stream_1.readUnsignedByte();
-		int ai[] = new int[j];
-		for (int k = 0; k < j - 1; k++) {
-			ai[k + 1] = stream_1.read3Bytes();
-			if (ai[k + 1] == 0)
-				ai[k + 1] = 1;
-		}
-
-		for (int l = 0; l < i; l++) {
-			stream_1.currentOffset += 2;
-			stream.currentOffset += stream_1.readUnsignedWord() * stream_1.readUnsignedWord();
-			stream_1.currentOffset++;
-		}
-
-		drawOffsetX = stream_1.readUnsignedByte();
-		drawOffsetY = stream_1.readUnsignedByte();
-		myWidth = stream_1.readUnsignedWord();
-		myHeight = stream_1.readUnsignedWord();
-		int i1 = stream_1.readUnsignedByte();
-		int j1 = myWidth * myHeight;
-		myPixels = new int[j1];
-		if (i1 == 0) {
-			for (int k1 = 0; k1 < j1; k1++)
-				myPixels[k1] = ai[stream.readUnsignedByte()];
-			setTransparency(255, 0, 255);
-			return;
-		}
-		if (i1 == 1) {
-			for (int l1 = 0; l1 < myWidth; l1++) {
-				for (int i2 = 0; i2 < myHeight; i2++)
-					myPixels[l1 + i2 * myWidth] = ai[stream.readUnsignedByte()];
-			}
-
-		}
-		setTransparency(255, 0, 255);
 	}
 
 	public void method343() {
@@ -380,7 +406,7 @@ public final class Sprite extends DrawingArea
 	}
 
 	public void method345() {
-		int ai[] = new int[cropWidth * anInt1445];
+		int[] ai = new int[cropWidth * anInt1445];
 		for (int j = 0; j < myHeight; j++) {
 			System.arraycopy(myPixels, j * myWidth, ai, j + drawOffsetY * cropWidth + drawOffsetX, myWidth);
 		}
@@ -431,7 +457,7 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-	private void method347(int i, int j, int k, int l, int i1, int k1, int ai[], int ai1[]) {
+	private void method347(int i, int j, int k, int l, int i1, int k1, int[] ai, int[] ai1) {
 		int l1 = -(j >> 2);
 		j = -(j & 3);
 		for (int i2 = -k; i2 < 0; i2++) {
@@ -607,7 +633,7 @@ public final class Sprite extends DrawingArea
 	}
 
 	public void drawSprite2(int i, int j) {
-		int k = 225;// was parameter
+		int k = 225;
 		i += drawOffsetX;
 		j += drawOffsetY;
 		int i1 = i + j * DrawingArea.width;
@@ -645,8 +671,8 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-	private void method349(int ai[], int ai1[], int j, int k, int l, int i1, int j1, int k1) {
-		int i;// was parameter
+	private void method349(int[] ai, int[] ai1, int j, int k, int l, int i1, int j1, int k1) {
+		int i;
 		int l1 = -(l >> 2);
 		l = -(l & 3);
 		for (int i2 = -i1; i2 < 0; i2++) {
@@ -690,8 +716,8 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-	private void method351(int i, int j, int ai[], int ai1[], int l, int i1, int j1, int k1, int l1) {
-		int k;// was parameter
+	private void method351(int i, int j, int[] ai, int[] ai1, int l, int i1, int j1, int k1, int l1) {
+		int k;
 		int j2 = 256 - k1;
 		for (int k2 = -i1; k2 < 0; k2++) {
 			for (int l2 = -j; l2 < 0; l2++) {
@@ -710,7 +736,7 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-	public void method352(int i, int j, int ai[], int k, int ai1[], int i1, int j1, int k1, int l1, int i2) {
+	public void method352(int i, int j, int[] ai, int k, int[] ai1, int i1, int j1, int k1, int l1, int i2) {
 		try {
 			int j2 = -l1 / 2;
 			int k2 = -i / 2;
@@ -765,15 +791,62 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-	public void method353(int i, double d, int l1) {
-		// all of the following were parameters
+	public void drawRotatedSpriteAt(int drawX, int drawY, int angle, int zoom) {
+		int size = 33;
+		int center = size / 2;
+
+		int spriteOffsetX = 9;
+		int spriteOffsetY = 10;
+
+		int sin = (int)(Math.sin(angle / 326.11) * 65536.0);
+		int cos = (int)(Math.cos(angle / 326.11) * 65536.0);
+
+		sin = sin * zoom >> 8;
+		cos = cos * zoom >> 8;
+
+		int radiusSquared = center * center;
+
+		for (int y = -center; y < center; y++) {
+			int dy = y;
+			int baseU = dy * sin;
+			int baseV = dy * cos;
+
+			int destY = drawY + center + dy;
+			if (destY < 0 || destY >= DrawingArea.height) continue;
+
+			for (int x = -center; x < center; x++) {
+				int dx = x;
+				if ((dx * dx + dy * dy) > radiusSquared) continue;
+
+				int u = (dx * cos + baseU) >> 16;
+				int v = (baseV - dx * sin) >> 16;
+
+				int srcX = u + center + spriteOffsetX;
+				int srcY = v + center + spriteOffsetY;
+
+				if (srcX < 0 || srcX >= myWidth || srcY < 0 || srcY >= myHeight) continue;
+
+				int color = myPixels[srcX + srcY * myWidth];
+				if (color == 0) continue;
+
+				int destX = drawX + center + dx;
+				if (destX < 0 || destX >= DrawingArea.width) continue;
+
+				DrawingArea.pixels[destX + destY * DrawingArea.width] = color;
+			}
+		}
+	}
+
+
+	public void method353(int i, double d, int l1)
+	{
 		int j = 15;
 		int k = 20;
 		int l = 15;
 		int j1 = 256;
 		int k1 = 20;
-		// all of the previous were parameters
-		try {
+		try
+		{
 			int i2 = -k / 2;
 			int j2 = -k1 / 2;
 			int k2 = (int) (Math.sin(d) * 65536D);
@@ -783,11 +856,13 @@ public final class Sprite extends DrawingArea
 			int i3 = (l << 16) + (j2 * k2 + i2 * l2);
 			int j3 = (j << 16) + (j2 * l2 - i2 * k2);
 			int k3 = l1 + i * DrawingArea.width;
-			for (i = 0; i < k1; i++) {
+			for (i = 0; i < k1; i++)
+			{
 				int l3 = k3;
 				int i4 = i3;
 				int j4 = j3;
-				for (l1 = -k; l1 < 0; l1++) {
+				for (l1 = -k; l1 < 0; l1++)
+				{
 					int k4 = myPixels[(i4 >> 16) + (j4 >> 16) * myWidth];
 					if (k4 != 0)
 						DrawingArea.pixels[l3++] = k4;
@@ -802,27 +877,9 @@ public final class Sprite extends DrawingArea
 				k3 += DrawingArea.width;
 			}
 
-		} catch (Exception _ex) {
 		}
-	}
-
-	public Sprite(byte spriteData[]) {
-		try {
-			Image image = Toolkit.getDefaultToolkit().createImage(spriteData);
-			ImageIcon sprite = new ImageIcon(image);
-			myWidth = sprite.getIconWidth();
-			myHeight = sprite.getIconHeight();
-			cropWidth = myWidth;
-			anInt1445 = myHeight;
-			drawOffsetX = 0;
-			drawOffsetY = 0;
-			myPixels = new int[myWidth * myHeight];
-			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
-			pixelgrabber.grabPixels();
-			image = null;
-			setTransparency(255, 0, 255);
-		} catch (Exception _ex) {
-			System.out.println(_ex);
+		catch (Exception _ex)
+		{
 		}
 	}
 
@@ -907,8 +964,8 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-	private void renderARGBPixels(int spriteWidth, int spriteHeight, int spritePixels[], int renderAreaPixels[],
-			int pixel, int alphaValue, int i, int l, int j1) {
+	private void renderARGBPixels(int spriteWidth, int spriteHeight, int[] spritePixels, int[] renderAreaPixels,
+								  int pixel, int alphaValue, int i, int l, int j1) {
 		int pixelColor;
 		int alphaLevel;
 		int alpha = alphaValue;
@@ -938,7 +995,7 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-	private void method355(int ai[], int i, byte abyte0[], int j, int ai1[], int k, int l, int i1, int j1, int k1) {
+	private void method355(int[] ai, int i, byte[] abyte0, int j, int[] ai1, int k, int l, int i1, int j1, int k1) {
 		int l1 = -(i >> 2);
 		i = -(i & 3);
 		for (int j2 = -j; j2 < 0; j2++) {
@@ -978,12 +1035,4 @@ public final class Sprite extends DrawingArea
 		}
 
 	}
-
-	public int myPixels[];
-	public int myWidth;
-	public int myHeight;
-	public int drawOffsetX;
-	int drawOffsetY;
-	public int cropWidth;
-	public int anInt1445;
 }

@@ -1,22 +1,9 @@
 package com.bestbudz.util;
 
-import java.awt.Toolkit;
-import javax.imageio.ImageIO;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.awt.Toolkit;
 
 public class ResourceLoader {
-
-	public static BufferedImage loadBufferedImage(String fullPath) {
-		try {
-			return ImageIO.read(ResourceLoader.class.getResource(fullPath));
-		} catch (IOException | IllegalArgumentException e) {
-			System.err.println("[ERROR] Failed to load: " + fullPath);
-			e.printStackTrace();
-			return null;
-		}
-	}
 
 	public static Image loadIcon(String fullPath) {
 		try {

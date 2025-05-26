@@ -1,7 +1,7 @@
 package com.bestbudz.client;
 
 import com.bestbudz.client.frame.ClientFrame;
-import com.bestbudz.config.ClientConstants;
+import com.bestbudz.config.FrameConfig;
 import com.bestbudz.graphics.buffer.ImageProducer;
 import com.bestbudz.ui.Console;
 import com.bestbudz.ui.LoginRenderer;
@@ -26,52 +26,60 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-
-import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 
 public class ClientEngine extends Applet implements Runnable, ActionListener, MouseListener, MouseMotionListener, MouseWheelListener, KeyListener, FocusListener, WindowListener {
 
 	private static final long serialVersionUID = 1L;
-
+	public final int LEFT = 0;
+	public final int RIGHT = 1;
+	public final int DRAG = 2;
+	public final int RELEASED = 3;
+	public final int MOVE = 4;
+	final int[] keyArray = new int[128];
+	private final long[] aLongArray7 = new long[10];
+	private final int[] charQueue = new int[128];
 	public Console console = new Console();
-
 	public LoginRenderer loginRenderer;
-
-	private int anInt4;
-	private int delayTime;
-	int minDelay;
-	private final long aLongArray7[] = new long[10];
-	int fps;
-	boolean shouldDebug;
-	int myWidth;
-	int myHeight;
 	public Graphics graphics;
-	ImageProducer fullGameScreen;
-	ClientFrame gameFrame;
-	private boolean shouldClearScreen;
-	boolean awtFocus;
-	int idleTime;
-	int clickMode2;
 	public int mouseX;
 	public int mouseY;
-	int clickMode1;
-	private int clickX;
-	private int clickY;
 	public long aLong29;
 	public int clickMode3;
 	public int saveClickX;
 	public int saveClickY;
-	final int keyArray[] = new int[128];
-	private final int charQueue[] = new int[128];
-	public boolean isLoading;
+	public boolean isApplet;
+	public boolean mouseWheelDown;
+	public int mouseWheelX;
+	public int mouseWheelY;
+	protected int screenGliding;
+	int minDelay;
+	int fps;
+	boolean shouldDebug;
+	int myWidth;
+	int myHeight;
+	ImageProducer fullGameScreen;
+	ClientFrame gameFrame;
+	boolean awtFocus;
+	int idleTime;
+	int clickMode2;
+	int clickMode1;
+	private int anInt4;
+	private int delayTime;
+	private boolean shouldClearScreen;
+	private int clickX;
+	private int clickY;
 	private int readIndex;
 	private int writeIndex;
-	public static int anInt34;
-	public boolean isApplet;
-	protected int screenGliding;
-	public boolean resized;
 
+	ClientEngine() {
+		delayTime = 20;
+		minDelay = 1;
+		shouldDebug = false;
+		shouldClearScreen = true;
+		awtFocus = true;
+	}
 
 	public void refreshFrameSize(boolean undecorated, int width, int height, boolean resizable, boolean full) {
 		System.out.println("[LOG] refreshFrameSize called: "
@@ -81,34 +89,60 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 			+ ", resizable=" + resizable
 			+ ", full=" + full
 		);
-		boolean createdByApplet = (isApplet && !undecorated);
+		Runnable task = () -> {
+			boolean createdByApplet = (isApplet && !undecorated);
 
-		myWidth = width;
-		myHeight = height;
-		if (gameFrame != null) {
-			gameFrame.dispose();
-		}
-		if (!createdByApplet) {
-			gameFrame = new ClientFrame(this, width, height + (!resizable && !undecorated ? 20 : 0), resizable, undecorated);
-			gameFrame.setLocationRelativeTo(null);
-			gameFrame.addWindowListener(this);
+			if (gameFrame != null)
+				gameFrame.dispose();
 
-		}
-		graphics = (createdByApplet ? this : gameFrame).getGraphics();
-		if (!createdByApplet) {
-			getGameComponent().addMouseWheelListener(this);
-			getGameComponent().addMouseListener(this);
-			getGameComponent().addMouseMotionListener(this);
-			getGameComponent().addKeyListener(this);
-			getGameComponent().addFocusListener(this);
-		}
+			if (!createdByApplet)
+			{
+				try
+				{
+					gameFrame = new ClientFrame(this, width, height, resizable, undecorated);
+				}
+				catch (UnsupportedLookAndFeelException e)
+				{
+					throw new RuntimeException(e);
+				}
+				catch (ClassNotFoundException e)
+				{
+					throw new RuntimeException(e);
+				}
+				catch (InstantiationException e)
+				{
+					throw new RuntimeException(e);
+				}
+				catch (IllegalAccessException e)
+				{
+					throw new RuntimeException(e);
+				}
+				gameFrame.setLocationRelativeTo(null);
+				gameFrame.addWindowListener(this);
+			}
+
+			graphics = (createdByApplet ? this : gameFrame).getGraphics();
+			if (!createdByApplet)
+			{
+				getGameComponent().addMouseWheelListener(this);
+				getGameComponent().addMouseListener(this);
+				getGameComponent().addMouseMotionListener(this);
+				getGameComponent().addKeyListener(this);
+				getGameComponent().addFocusListener(this);
+			}
+		};
+		if( SwingUtilities.isEventDispatchThread() )
+			task.run();
+		else
+			SwingUtilities.invokeLater( task );
 	}
 
 	public boolean appletClient() {
-		return gameFrame == null && isApplet == true;
+		return gameFrame == null && isApplet;
 	}
 
-	final void createClientFrame(int w, int h) {
+	final void createClientFrame(int w, int h) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException
+	{
 		System.out.println("[LOG] createClientFrame called: w=" + w + ", h=" + h);
 		isApplet = false;
 		myWidth = w;
@@ -120,11 +154,10 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		startRunnable(this, 1);
 	}
 
-
 	final void initClientFrame(int w, int h) {
 		isApplet = true;
-		myWidth = w;
-		myHeight = h;
+		myWidth = FrameConfig.MIN_WIDTH;
+		myHeight = FrameConfig.MIN_HEIGHT;
 		graphics = getGameComponent().getGraphics();
 		fullGameScreen = new ImageProducer(myWidth, myHeight);
 		startRunnable(this, 1);
@@ -169,7 +202,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 				j = k1;
 				k = i2;
 			} else if (l2 > aLongArray7[i]) {
-				j = (int) ((long) (2560 * delayTime) / (l2 - aLongArray7[i]));
+				j = (int) ((long) (2560L * delayTime) / (l2 - aLongArray7[i]));
 			}
 			if (j < 25) {
 				j = 25;
@@ -214,15 +247,15 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 			}
 			processDrawing();
 			if (shouldDebug) {
-				System.out.println((new StringBuilder()).append("ntime:").append(l2).toString());
+				System.out.println("ntime:" + l2);
 				for (int k2 = 0; k2 < 10; k2++) {
 					int i3 = ((i - k2 - 1) + 20) % 10;
-					System.out.println((new StringBuilder()).append("otim").append(i3).append(":").append(aLongArray7[i3]).toString());
+					System.out.println("otim" + i3 + ":" + aLongArray7[i3]);
 				}
 
-				System.out.println((new StringBuilder()).append("fps:").append(fps).append(" ratio:").append(j).append(" count:").append(l).toString());
-				System.out.println((new StringBuilder()).append("del:").append(k).append(" deltime:").append(delayTime).append(" mindel:").append(minDelay).toString());
-				System.out.println((new StringBuilder()).append("intex:").append(i1).append(" opos:").append(i).toString());
+				System.out.println("fps:" + fps + " ratio:" + j + " count:" + l);
+				System.out.println("del:" + k + " deltime:" + delayTime + " mindel:" + minDelay);
+				System.out.println("intex:" + i1 + " opos:" + i);
 				shouldDebug = false;
 				i1 = 0;
 			}
@@ -232,23 +265,11 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		}
 	}
 
-	public final void exitOption() {
-		int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit " + ClientConstants.CLIENT_NAME + "?", "Confirm Exit", JOptionPane.YES_NO_OPTION);
-		if (option == 0) {
-			gameFrame.setTitle("Please wait, " + ClientConstants.CLIENT_NAME + " is exiting...");
-			if (gameFrame != null) {
-	            exit();
-	            try {
-	                Thread.sleep(1000L);
-	            } catch (Exception ex) {}
-	        }
-	        System.exit(0);
-		}
-	}
-
 	private void exit() {
 		anInt4 = -2;
+
 		cleanUpForQuit();
+
 		if (gameFrame != null) {
 			try {
 				Thread.sleep(500L);
@@ -288,7 +309,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		}
 	}
 
-	public final void update(Graphics g) {
+	public final void paint(Graphics g) {
 		if (graphics == null) {
 			graphics = g;
 		}
@@ -296,7 +317,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		raiseWelcomeScreen();
 	}
 
-	public final void paint(Graphics g) {
+	public final void update(Graphics g) {
 		if (graphics == null) {
 			graphics = g;
 		}
@@ -413,26 +434,17 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 			if ((mouseX > (offsetX + positionX)) && (mouseY > (offsetY + positionY)) && (mouseX < (offsetX + positionX + width)) && (mouseY < (offsetY + positionY + height))) {
 				if (RSInterface.interfaceCache[rsi.children[childID]].scrollPosition > 0) {
 					RSInterface.interfaceCache[rsi.children[childID]].scrollPosition += rotation * 30;
-					return;
 				} else {
 					if (rotation > 0) {
 						RSInterface.interfaceCache[rsi.children[childID]].scrollPosition += rotation * 30;
-						return;
 					}
 				}
 			}
 		}
 	}
 
-	public int clickType;
-	public final int LEFT = 0;
-	public final int RIGHT = 1;
-	public final int DRAG = 2;
-	public final int RELEASED = 3;
-	public final int MOVE = 4;
-	public int releasedX;
-	public int releasedY;
-	public boolean mouseWheelDown;
+	public final void mouseClicked(MouseEvent mouseevent) {
+	}
 
 	public final void mousePressed(MouseEvent e) {
 		int x = e.getX();
@@ -440,8 +452,8 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		int type = e.getButton();
 		if (gameFrame != null) {
 			Insets insets = gameFrame.getInsets();
-			x -= insets.left;// 4
-			y -= insets.top;// 22
+			x -= insets.left;
+			y -= insets.top;
 		}
 		idleTime = 0;
 		clickX = x;
@@ -454,11 +466,9 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 			return;
 		}
 		if (e.isMetaDown()) {
-			clickType = RIGHT;
 			clickMode1 = 2;
 			clickMode2 = 2;
 		} else {
-			clickType = LEFT;
 			clickMode1 = 1;
 			clickMode2 = 1;
 		}
@@ -469,19 +479,13 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		int y = e.getY();
 		if (gameFrame != null) {
 			Insets insets = gameFrame.getInsets();
-			x -= insets.left;// 4
-			y -= insets.top;// 22
+			x -= insets.left;
+			y -= insets.top;
 		}
-		releasedX = x;
-		releasedY = y;
 		idleTime = 0;
 		clickMode2 = 0;
-		clickType = RELEASED;
 		mouseWheelDown = false;
 		Client.instance.isExtendingChatArea = false;
-	}
-
-	public final void mouseClicked(MouseEvent mouseevent) {
 	}
 
 	public final void mouseEntered(MouseEvent mouseevent) {
@@ -492,9 +496,6 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		mouseX = -1;
 		mouseY = -1;
 	}
-
-	public int mouseWheelX;
-	public int mouseWheelY;
 
 	public final void mouseDragged(MouseEvent e) {
 		int x = e.getX();
@@ -520,11 +521,6 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		idleTime = 0;
 		mouseX = x;
 		mouseY = y;
-		clickType = DRAG;
-	}
-
-	void mouseWheelDragged(int param1, int param2) {
-
 	}
 
 	public final void mouseMoved(MouseEvent mouseevent) {
@@ -532,8 +528,8 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		int y = mouseevent.getY();
 		if (gameFrame != null) {
 			Insets insets = gameFrame.getInsets();
-			x -= insets.left;// 4
-			y -= insets.top;// 22
+			x -= insets.left;
+			y -= insets.top;
 		}
 	     if (System.currentTimeMillis() - aLong29 >= 250L || Math.abs(saveClickX - x) > 5 || Math.abs(saveClickY - y) > 5) {
 	         idleTime = 0;
@@ -543,7 +539,13 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		idleTime = 0;
 		mouseX = x;
 		mouseY = y;
-		clickType = MOVE;
+	}
+
+	void mouseWheelDragged(int param1, int param2) {
+
+	}
+
+	public final void keyTyped(KeyEvent keyevent) {
 	}
 
 	public final void keyPressed(KeyEvent keyevent) {
@@ -638,9 +640,6 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 			keyArray[c] = 0;
 	}
 
-	public final void keyTyped(KeyEvent keyevent) {
-	}
-
 	public final int readChar(int dummy) {
 		while (dummy >= 0) {
 			for (int j = 1; j > 0; j++)
@@ -672,10 +671,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 
 	}
 
-	public final void windowActivated(WindowEvent windowevent) {
-	}
-
-	public final void windowClosed(WindowEvent windowevent) {
+	public final void windowOpened(WindowEvent windowevent) {
 	}
 
 	public final void windowClosing(WindowEvent windowevent) {
@@ -683,16 +679,19 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 
 	}
 
-	public final void windowDeactivated(WindowEvent windowevent) {
-	}
-
-	public final void windowDeiconified(WindowEvent windowevent) {
+	public final void windowClosed(WindowEvent windowevent) {
 	}
 
 	public final void windowIconified(WindowEvent windowevent) {
 	}
 
-	public final void windowOpened(WindowEvent windowevent) {
+	public final void windowDeiconified(WindowEvent windowevent) {
+	}
+
+	public final void windowActivated(WindowEvent windowevent) {
+	}
+
+	public final void windowDeactivated(WindowEvent windowevent) {
 	}
 
 	void startUp() {
@@ -742,44 +741,45 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		FontMetrics fontmetrics1 = getGameComponent().getFontMetrics(font1);
 		if (shouldClearScreen) {
 			graphics.setColor(Color.black);
-			graphics.fillRect(0, 0, Client.frameWidth, Client.frameHeight);
+			graphics.fillRect(0, 0, FrameConfig.MIN_WIDTH, FrameConfig.MIN_HEIGHT);
 			shouldClearScreen = false;
 		}
 		Color color = new Color(140, 17, 17);
-		int y = Client.frameHeight / 2 - 18;
+		int y = FrameConfig.MIN_HEIGHT / 2 - 18;
 		graphics.setColor(color);
-		graphics.drawRect(Client.frameWidth / 2 - 152, y, 304, 34);
-		graphics.fillRect(Client.frameWidth / 2 - 150, y + 2, percentage * 3, 30);
+		graphics.drawRect(FrameConfig.MIN_WIDTH / 2 - 152, y, 304, 34);
+		graphics.fillRect(FrameConfig.MIN_WIDTH / 2 - 150, y + 2, percentage * 3, 30);
 		graphics.setColor(Color.black);
-		graphics.fillRect((Client.frameWidth / 2 - 150) + percentage * 3, y + 2, 300 - percentage * 3, 30);
+		graphics.fillRect((FrameConfig.MIN_WIDTH / 2 - 150) + percentage * 3, y + 2, 300 - percentage * 3, 30);
 		graphics.setFont(font);
 		graphics.setColor(Color.white);
-		graphics.drawString(loadingText, (Client.frameWidth - fontmetrics.stringWidth(loadingText)) / 2, y + 22);
-		graphics.drawString("", (Client.frameWidth - fontmetrics1.stringWidth("")) / 2, y - 8);
-	}
-
-	ClientEngine() {
-		delayTime = 20;
-		minDelay = 1;
-		shouldDebug = false;
-		shouldClearScreen = true;
-		awtFocus = true;
+		graphics.drawString(loadingText, (FrameConfig.MIN_WIDTH - fontmetrics.stringWidth(loadingText)) / 2, y + 22);
+		graphics.drawString("", (FrameConfig.MIN_WIDTH - fontmetrics1.stringWidth("")) / 2, y - 8);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
-		if (cmd != null) {
-			//Best Budz
-			if (cmd.equalsIgnoreCase("Order weed in BENELUX")) {
+		if (cmd != null)
+		{
+			if (cmd.equalsIgnoreCase("Order weed in BENELUX"))
+			{
 				Client.instance.launchURL("https://wiet-forum.nl/");
-			} else if (cmd.equalsIgnoreCase("Origins of 420")) {
+			}
+			else if (cmd.equalsIgnoreCase("Origins of 420"))
+			{
 				Client.instance.launchURL("https://420waldos.com/");
-			} else if (cmd.equalsIgnoreCase("History of weed")) {
+			}
+			else if (cmd.equalsIgnoreCase("History of weed"))
+			{
 				Client.instance.launchURL("https://www.history.com/topics/crime/history-of-marijuana");
-			} else if (cmd.equalsIgnoreCase("Discord stoner community")) {
+			}
+			else if (cmd.equalsIgnoreCase("Discord stoner community"))
+			{
 				Client.instance.launchURL("https://discord.com/invite/c8NNM652qv");
-			} else if (cmd.equalsIgnoreCase("Search item IDs")) {
+			}
+			else if (cmd.equalsIgnoreCase("Search item IDs"))
+			{
 				Client.instance.launchURL("https://www.itemdb.biz/");
 			}
 		}

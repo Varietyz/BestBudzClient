@@ -3,21 +3,59 @@ package com.bestbudz.entity;
 import com.bestbudz.client.Client;
 import com.bestbudz.config.Configuration;
 import com.bestbudz.data.ItemDef;
-import com.bestbudz.rendering.animation.Animation;
-import com.bestbudz.rendering.model.Model;
+import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.SpotAnim;
+import com.bestbudz.rendering.animation.Animation;
+import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
-import com.bestbudz.network.Stream;
 import com.bestbudz.util.TextClass;
 
 public final class Stoner extends Entity
 {
+	public static MRUNodes mruNodes = new MRUNodes(260);
+	public final int[] anIntArray1700;
+	public final int[] equipment;
+	public int privelage;
+	public String title, titleColor;
+	public boolean titlePrefix;
+	public EntityDef desc;
+	public boolean aBoolean1699;
+	public int team;
+	public String name;
+	public int combatLevel;
+	public int headIcon;
+	public int skullIcon;
+	public int hintIcon;
+	public int spotAnimStartCycle;
+	public int spotAnimEndCycle;
+	public int spotAnimY;
+	public boolean visible;
+	public int spotAnimX;
+	public int spotAnimZ;
+	public int spotAnimDestY;
+	public Model aModel_1714;
+	public int anInt1719;
+	public int anInt1720;
+	public int anInt1721;
+	public int anInt1722;
+	public int skill;
+	int gender;
+	private long lastModelKey;
+	private long modelCacheKey;
+	public Stoner() {
+		lastModelKey = -1L;
+		aBoolean1699 = false;
+		anIntArray1700 = new int[5];
+		visible = false;
+		equipment = new int[12];
+	}
+
 @Override
-	public Model getRotatedModel() {
+	public Model getFinalRenderedModel() {
 		if (!visible)
 			return null;
-		Model model = method452();
+		Model model = buildPlayerModel();
 		if (model == null)
 			return null;
 		super.height = model.modelHeight;
@@ -29,26 +67,26 @@ public final class Stoner extends Entity
 			Model model_2 = spotAnim.getModel();
 			if (model_2 != null) {
 				Model model_3 = new Model(true, SequenceFrame.method532(super.anInt1521), false, model_2);
-				model_3.method475(0, -super.anInt1524, 0);
-				model_3.method469();
+				model_3.translateCoords(0, -super.anInt1524, 0);
+				model_3.calculateNormals();
 				model_3.method470(spotAnim.aAnimation_407.anIntArray353[super.anInt1521]);
 				model_3.anIntArrayArray1658 = null;
 				model_3.anIntArrayArray1657 = null;
 				if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128)
-					model_3.method478(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
-				model_3.method479(84 + spotAnim.anInt413, 1550 + spotAnim.anInt414, -50, -110, -50, true);
-				Model aclass30_sub2_sub4_sub6_1s[] = { model, model_3 };
+					model_3.modelScale(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
+				model_3.applyLighting(84 + spotAnim.anInt413, 1550 + spotAnim.anInt414, -50, -110, -50, true);
+				Model[] aclass30_sub2_sub4_sub6_1s = { model, model_3 };
 				model = new Model(aclass30_sub2_sub4_sub6_1s);
 			} else {
 				return null;
 			}
 		}
 		if (aModel_1714 != null) {
-			if (Client.loopCycle >= anInt1708)
+			if (Client.loopCycle >= spotAnimEndCycle)
 				aModel_1714 = null;
-			if (Client.loopCycle >= anInt1707 && Client.loopCycle < anInt1708) {
+			if (Client.loopCycle >= spotAnimStartCycle && Client.loopCycle < spotAnimEndCycle) {
 				Model model_1 = aModel_1714;
-				model_1.method475(anInt1711 - super.x, anInt1712 - anInt1709, anInt1713 - super.y);
+				model_1.translateCoords(spotAnimX - super.x, spotAnimZ - spotAnimY, spotAnimDestY - super.y);
 				if (super.turnDirection == 512) {
 					model_1.method473();
 					model_1.method473();
@@ -58,7 +96,7 @@ public final class Stoner extends Entity
 					model_1.method473();
 				} else if (super.turnDirection == 1536)
 					model_1.method473();
-				Model aclass30_sub2_sub4_sub6s[] = { model, model_1 };
+				Model[] aclass30_sub2_sub4_sub6s = { model, model_1 };
 				model = new Model(aclass30_sub2_sub4_sub6s);
 				if (super.turnDirection == 512)
 					model_1.method473();
@@ -70,41 +108,47 @@ public final class Stoner extends Entity
 					model_1.method473();
 					model_1.method473();
 				}
-				model_1.method475(super.x - anInt1711, anInt1709 - anInt1712, super.y - anInt1713);
+				model_1.translateCoords(super.x - spotAnimX, spotAnimY - spotAnimZ, super.y - spotAnimDestY);
 			}
 		}
 		model.aBoolean1659 = true;
 		return model;
 	}
 
-	public void updateStoner(Stream stream) {
+	public void updateStoner(Stream stream)
+	{
 		stream.currentOffset = 0;
-		anInt1702 = stream.readUnsignedByte();
+		gender = stream.readUnsignedByte();
 		headIcon = stream.readUnsignedByte();
 		skullIcon = stream.readUnsignedByte();
 		hintIcon = stream.readUnsignedByte();
 		desc = null;
 		team = 0;
-		for (int j = 0; j < 12; j++) {
+		for (int j = 0; j < 12; j++)
+		{
 			int k = stream.readUnsignedByte();
-			if (k == 0) {
+			if (k == 0)
+			{
 				equipment[j] = 0;
 				continue;
 			}
 			int i1 = stream.readUnsignedByte();
 			equipment[j] = (k << 8) + i1;
-			if (j == 0 && equipment[0] == 65535) {
+			if (j == 0 && equipment[0] == 65535)
+			{
 				desc = EntityDef.forID(stream.readUnsignedWord());
 				break;
 			}
-			if (equipment[j] >= 512 && equipment[j] - 512 < ItemDef.totalItems) {
-				int l1 = ItemDef.forID(equipment[j] - 512).team;
+			if (equipment[j] >= 512 && equipment[j] - 512 < ItemDef.totalItems)
+			{
+				int l1 = ItemDef.getItemDefinition(equipment[j] - 512).team;
 				if (l1 != 0)
 					team = l1;
 			}
 		}
 
-		for (int l = 0; l < 5; l++) {
+		for (int l = 0; l < 5; l++)
+		{
 			int j1 = stream.readUnsignedByte();
 			if (j1 < 0 || j1 >= Client.anIntArrayArray1003[l].length)
 				j1 = 0;
@@ -139,33 +183,34 @@ public final class Stoner extends Entity
 		titlePrefix = stream.readUnsignedByte() == 1;
 
 		combatLevel = stream.readUnsignedByte();
-		// skill = stream.readUnsignedWord();
 		visible = true;
-		aLong1718 = 0L;
-		for (int k1 = 0; k1 < 12; k1++) {
-			aLong1718 <<= 4;
+		modelCacheKey = 0L;
+		for (int k1 = 0; k1 < 12; k1++)
+		{
+			modelCacheKey <<= 4;
 			if (equipment[k1] >= 256)
-				aLong1718 += equipment[k1] - 256;
+				modelCacheKey += equipment[k1] - 256;
 		}
 
 		if (equipment[0] >= 256)
-			aLong1718 += equipment[0] - 256 >> 4;
+			modelCacheKey += equipment[0] - 256 >> 4;
 		if (equipment[1] >= 256)
-			aLong1718 += equipment[1] - 256 >> 8;
-		for (int i2 = 0; i2 < 5; i2++) {
-			aLong1718 <<= 3;
-			aLong1718 += anIntArray1700[i2];
+			modelCacheKey += equipment[1] - 256 >> 8;
+		for (int i2 = 0; i2 < 5; i2++)
+		{
+			modelCacheKey <<= 3;
+			modelCacheKey += anIntArray1700[i2];
 		}
 
-		aLong1718 <<= 1;
-		aLong1718 += anInt1702;
+		modelCacheKey <<= 1;
+		modelCacheKey += gender;
 	}
 
-	public Model method452() {
+	public Model buildPlayerModel() {
 		int nextAnim = -1;
 		int currCycle = -1;
 		int nextCycle = -1;
-		long l = aLong1718;
+		long l = modelCacheKey;
 		int k = -1;
 		int i1 = -1;
 		int j1 = -1;
@@ -203,11 +248,11 @@ public final class Stoner extends Entity
 			}
 			if (animation.anInt360 >= 0) {
 				j1 = animation.anInt360;
-				l += j1 - equipment[5] << 40;
+				l += (long) j1 - equipment[5] << 40;
 			}
 			if (animation.anInt361 >= 0) {
 				k1 = animation.anInt361;
-				l += k1 - equipment[3] << 48;
+				l += (long) k1 - equipment[3] << 48;
 			}
 		} else if (super.anInt1517 >= 0) {
 			Animation seq = Animation.anims[super.anInt1517];
@@ -229,19 +274,19 @@ public final class Stoner extends Entity
 					k2 = j1;
 				if (k2 >= 256 && k2 < 512 && !IdentityKit.cache[k2 - 256].method537())
 					flag = true;
-				if (k2 >= 512 && !ItemDef.forID(k2 - 512).method195(anInt1702))
+				if (k2 >= 512 && !ItemDef.getItemDefinition(k2 - 512).method195(gender))
 					flag = true;
 			}
 
 			if (flag) {
-				if (aLong1697 != -1L)
-					model_1 = (Model) mruNodes.insertFromCache(aLong1697);
+				if (lastModelKey != -1L)
+					model_1 = (Model) mruNodes.insertFromCache(lastModelKey);
 				if (model_1 == null)
 					return null;
 			}
 		}
 		if (model_1 == null) {
-			Model aclass30_sub2_sub4_sub6s[] = new Model[12];
+			Model[] aclass30_sub2_sub4_sub6s = new Model[12];
 			int j2 = 0;
 			for (int l2 = 0; l2 < 12; l2++) {
 				int i3 = equipment[l2];
@@ -255,7 +300,7 @@ public final class Stoner extends Entity
 						aclass30_sub2_sub4_sub6s[j2++] = model_3;
 				}
 				if (i3 >= 512) {
-					Model model_4 = ItemDef.forID(i3 - 512).method196(anInt1702);
+					Model model_4 = ItemDef.getItemDefinition(i3 - 512).getInventoryModel(gender);
 					if (model_4 != null)
 						aclass30_sub2_sub4_sub6s[j2++] = model_4;
 				}
@@ -264,17 +309,17 @@ public final class Stoner extends Entity
 			model_1 = new Model(j2, aclass30_sub2_sub4_sub6s);
 			for (int j3 = 0; j3 < 5; j3++)
 				if (anIntArray1700[j3] != 0) {
-					model_1.method476(Client.anIntArrayArray1003[j3][0],
+					model_1.replaceColor(Client.anIntArrayArray1003[j3][0],
 							Client.anIntArrayArray1003[j3][anIntArray1700[j3]]);
 					if (j3 == 1)
-						model_1.method476(Client.anIntArray1204[0], Client.anIntArray1204[anIntArray1700[j3]]);
+						model_1.replaceColor(Client.anIntArray1204[0], Client.anIntArray1204[anIntArray1700[j3]]);
 				}
 
-			model_1.method469();
-			model_1.method478(132, 132, 132);
-			model_1.method479(84, 1000, -90, -580, -90, true);
+			model_1.calculateNormals();
+			model_1.modelScale(132, 132, 132);
+			model_1.applyLighting(84, 1000, -90, -580, -90, true);
 			mruNodes.removeFromCache(model_1, l);
-			aLong1697 = l;
+			lastModelKey = l;
 		}
 		if (aBoolean1699)
 			return model_1;
@@ -295,9 +340,7 @@ public final class Stoner extends Entity
 		return visible;
 	}
 
-	public int privelage;
-
-	public Model method453() {
+	public Model getUnanimatedModel() {
 		if (!visible)
 			return null;
 		if (desc != null)
@@ -307,13 +350,13 @@ public final class Stoner extends Entity
 			int j = equipment[i];
 			if (j >= 256 && j < 512 && !IdentityKit.cache[j - 256].method539())
 				flag = true;
-			if (j >= 512 && !ItemDef.forID(j - 512).method192(anInt1702))
+			if (j >= 512 && !ItemDef.getItemDefinition(j - 512).method192(gender))
 				flag = true;
 		}
 
 		if (flag)
 			return null;
-		Model aclass30_sub2_sub4_sub6s[] = new Model[12];
+		Model[] aclass30_sub2_sub4_sub6s = new Model[12];
 		int k = 0;
 		for (int l = 0; l < 12; l++) {
 			int i1 = equipment[l];
@@ -323,7 +366,7 @@ public final class Stoner extends Entity
 					aclass30_sub2_sub4_sub6s[k++] = model_1;
 			}
 			if (i1 >= 512) {
-				Model model_2 = ItemDef.forID(i1 - 512).method194(anInt1702);
+				Model model_2 = ItemDef.getItemDefinition(i1 - 512).getWornModel(gender);
 				if (model_2 != null)
 					aclass30_sub2_sub4_sub6s[k++] = model_2;
 			}
@@ -332,50 +375,12 @@ public final class Stoner extends Entity
 		Model model = new Model(k, aclass30_sub2_sub4_sub6s);
 		for (int j1 = 0; j1 < 5; j1++)
 			if (anIntArray1700[j1] != 0) {
-				model.method476(Client.anIntArrayArray1003[j1][0], Client.anIntArrayArray1003[j1][anIntArray1700[j1]]);
+				model.replaceColor(Client.anIntArrayArray1003[j1][0], Client.anIntArrayArray1003[j1][anIntArray1700[j1]]);
 				if (j1 == 1)
-					model.method476(Client.anIntArray1204[0], Client.anIntArray1204[anIntArray1700[j1]]);
+					model.replaceColor(Client.anIntArray1204[0], Client.anIntArray1204[anIntArray1700[j1]]);
 			}
 
 		return model;
 	}
-
-	public Stoner() {
-		aLong1697 = -1L;
-		aBoolean1699 = false;
-		anIntArray1700 = new int[5];
-		visible = false;
-		equipment = new int[12];
-	}
-
-	public String title, titleColor;
-	public boolean titlePrefix;
-	private long aLong1697;
-	public EntityDef desc;
-	public boolean aBoolean1699;
-	public final int[] anIntArray1700;
-	public int team;
-	int anInt1702;
-	public String name;
-	public static MRUNodes mruNodes = new MRUNodes(260);
-	public int combatLevel;
-	public int headIcon;
-	public int skullIcon;
-	public int hintIcon;
-	public int anInt1707;
-	public int anInt1708;
-	public int anInt1709;
-	public boolean visible;
-	public int anInt1711;
-	public int anInt1712;
-	public int anInt1713;
-	public Model aModel_1714;
-	public final int[] equipment;
-	private long aLong1718;
-	public int anInt1719;
-	public int anInt1720;
-	public int anInt1721;
-	public int anInt1722;
-	public int skill;
 
 }

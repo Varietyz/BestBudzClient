@@ -1,9 +1,17 @@
 package com.bestbudz.world;
 
-import com.bestbudz.network.StreamLoader;
 import com.bestbudz.network.Stream;
+import com.bestbudz.network.StreamLoader;
 
 public final class  Varp {
+
+    public static Varp[] cache;
+    private static int anInt702;
+    private static int[] anIntArray703;
+    public int anInt709;
+    private Varp()
+    {
+	}
 
     public static void unpackConfig(StreamLoader streamLoader)
     {
@@ -51,13 +59,15 @@ public final class  Varp {
                 stream.readDWord();
             else
             if(j == 8)
-                aBoolean713 = true;
+			{
+			}
              else
             if(j == 10)
                  stream.readString();
             else
             if(j == 11)
-                aBoolean713 = true;
+			{
+			}
             else
             if(j == 12)
                 stream.readDWord();
@@ -67,16 +77,5 @@ public final class  Varp {
                 System.out.println("Error unrecognised config code: " + j);
         } while(true);
     }
-
-    private Varp()
-    {
-        aBoolean713 = false;
-    }
-
-    public static Varp cache[];
-    private static int anInt702;
-    private static int[] anIntArray703;
-    public int anInt709;
-    public boolean aBoolean713;
 
 }

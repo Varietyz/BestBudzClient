@@ -5,6 +5,11 @@ import java.io.RandomAccessFile;
 
 public final class Decompressor {
 
+	private static final byte[] buffer = new byte[520];
+	private final RandomAccessFile dataFile;
+	private final RandomAccessFile indexFile;
+	private final int anInt311;
+
 	public Decompressor(RandomAccessFile randomaccessfile, RandomAccessFile randomaccessfile1, int j) {
 		anInt311 = j;
 		dataFile = randomaccessfile;
@@ -23,11 +28,10 @@ public final class Decompressor {
 			}
 			int i1 = ((buffer[0] & 0xff) << 16) + ((buffer[1] & 0xff) << 8) + (buffer[2] & 0xff);
 			int j1 = ((buffer[3] & 0xff) << 16) + ((buffer[4] & 0xff) << 8) + (buffer[5] & 0xff);
-			//if(i1 < 0 || i1 > 0xffffff)
-			//	return null;
+
 			if(j1 <= 0 || (long)j1 > dataFile.length() / 520L)
 				return null;
-			byte abyte0[] = new byte[i1];
+			byte[] abyte0 = new byte[i1];
 			int k1 = 0;
 			for(int l1 = 0; k1 < i1; l1++) {
 				if(j1 == 0)
@@ -63,14 +67,14 @@ public final class Decompressor {
 		}
 	}
 
-	public synchronized boolean method234(int i, byte abyte0[], int j) {
+	public synchronized boolean method234(int i, byte[] abyte0, int j) {
 		boolean flag = method235(true, j, i, abyte0);
 		if(!flag)
 			flag = method235(false, j, i, abyte0);
 		return flag;
 	}
 
-	private synchronized boolean method235(boolean flag, int j, int k, byte abyte0[]) {
+	private synchronized boolean method235(boolean flag, int j, int k, byte[] abyte0) {
 		try {
 			int l;
 			if(flag) {
@@ -161,10 +165,5 @@ public final class Decompressor {
 			e.printStackTrace();
 		}
 	}
-
-	private static final byte[] buffer = new byte[520];
-	private final RandomAccessFile dataFile;
-	private final RandomAccessFile indexFile;
-	private final int anInt311;
 
 }
