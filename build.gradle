@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.bestbudz'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'src/libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'src/libs', include: ['*.jar'])
+    implementation 'org.pushing-pixels:substance:5.3'
+    implementation 'org.pushing-pixels:trident:1.2'
+    implementation 'org.jcodec:jcodec:0.2.5'
+    implementation 'org.jcodec:jcodec-javase:0.2.5'
+    implementation 'com.formdev:flatlaf:3.2'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+application {
+    mainClass = 'com.bestbudz.client.Client'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.incremental = true
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.bestbudz.client.Client'
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+

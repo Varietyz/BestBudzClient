@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="client">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/src/main/java/com/bestbudz/client" />
+    </SOURCES>
+  </library>
+</component>
