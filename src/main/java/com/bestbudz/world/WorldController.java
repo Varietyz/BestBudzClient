@@ -33,7 +33,7 @@ public final class WorldController {
 	public static boolean lowMem = true;
 	public static int anInt470 = -1;
 	public static int anInt471 = -1;
-	public static int viewDistance = GraphicsConfig.VIEW_DISTANCE; // default ~9; try 10, 11, 12
+	public static int viewDistance = GraphicsConfig.VIEW_DISTANCE;
 
 	private static int anInt446;
 	private static int anInt447;
@@ -99,9 +99,9 @@ public final class WorldController {
 	private int obj5CacheCurrPos;
 	private int anInt488;
 	public WorldController(int[][][] ai) {
-		int i = 104;
-		int j = 104;
-		int k = 4;
+		int i = GraphicsConfig.REGION_RENDER;
+		int j = GraphicsConfig.REGION_RENDER;
+		int k = 8;
 		aBoolean434 = true;
 		obj5Cache = new Object5[5000];
 		anIntArray486 = new int[10000];
@@ -2179,15 +2179,29 @@ public final class WorldController {
 		}
 	}
 
-	private boolean method322(int i, int j, int k, int l) {
-		if (method320(i, j, k))
-			return true;
-		int i1 = j << 7;
-		int j1 = k << 7;
-		return !method324(i1 + 1, anIntArrayArrayArray440[i][j][k] - l, j1 + 1)
-			|| !method324((i1 + 128) - 1, anIntArrayArrayArray440[i][j + 1][k] - l, j1 + 1)
-			|| !method324((i1 + 128) - 1, anIntArrayArrayArray440[i][j + 1][k + 1] - l, (j1 + 128) - 1)
-			|| !method324(i1 + 1, anIntArrayArrayArray440[i][j][k + 1] - l, (j1 + 128) - 1);
+	private boolean method322(int plane, int tileX, int tileY, int modelHeight) {
+		if (method320(plane, tileX, tileY))
+			return true;                                        // already unclipped
+
+		final int worldX = tileX << 7;
+		final int worldY = tileY << 7;
+
+    /* bring the sample heights on the *target* plane down into the same
+       reference frame as the occluder on plane-0 by cancelling the vertical
+       128-unit offset for every plane above 0                                */
+		final int planeOffset = plane * GraphicsConfig.PLANE_HEIGHT;
+
+		/* four corners of the tile (00, 10, 11, 01) */
+		int h00 = anIntArrayArrayArray440[plane][tileX    ][tileY    ] - planeOffset - modelHeight;
+		int h10 = anIntArrayArrayArray440[plane][tileX + 1][tileY    ] - planeOffset - modelHeight;
+		int h11 = anIntArrayArrayArray440[plane][tileX + 1][tileY + 1] - planeOffset - modelHeight;
+		int h01 = anIntArrayArrayArray440[plane][tileX    ][tileY + 1] - planeOffset - modelHeight;
+
+		/* if *all four* points fall inside the same occluder → tile is hidden   */
+		return !(  method324(worldX + 1,          h00, worldY + 1)
+			|| method324(worldX + 127,        h10, worldY + 1)
+			|| method324(worldX + 127,        h11, worldY + 127)
+			|| method324(worldX + 1,          h01, worldY + 127) );
 	}
 
 	private boolean method323(int i, int j, int k, int l, int i1, int j1) {

@@ -301,6 +301,7 @@ Client client;
 				class46.hasActions = true;
 			}
 		}
+
 		return class46;
 	}
 

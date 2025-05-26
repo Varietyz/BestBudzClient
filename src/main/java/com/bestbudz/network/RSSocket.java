@@ -11,15 +11,15 @@ public final class RSSocket implements Runnable {
   private final InputStream inputStream;
   private final OutputStream outputStream;
   private final Socket socket;
-  private final ClientEngine rsApplet;
+  private final ClientEngine engine;
   private boolean closed;
   private byte[] buffer;
 
-  public RSSocket(ClientEngine RSApplet_, Socket socket1) throws IOException {
+  public RSSocket(ClientEngine Engine, Socket socket1) throws IOException {
     closed = false;
     isWriter = false;
     hasIOError = false;
-    rsApplet = RSApplet_;
+    engine = Engine;
     socket = socket1;
     socket.setSoTimeout(30000);
     socket.setTcpNoDelay(true);
@@ -80,7 +80,7 @@ public final class RSSocket implements Runnable {
 
       if (!isWriter) {
         isWriter = true;
-        rsApplet.startRunnable(this, 3);
+        engine.startRunnable(this, 3);
       }
       notify();
     }

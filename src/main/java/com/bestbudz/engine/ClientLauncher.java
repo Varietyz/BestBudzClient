@@ -2,13 +2,14 @@ package com.bestbudz.engine;
 
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.config.SettingHandler;
-import com.bestbudz.graphics.DrawingArea;
-import com.bestbudz.rendering.Rasterizer;
-import java.awt.Dimension;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.net.InetAddress;
+import com.bestbudz.engine.input.Keyboard;
+import com.bestbudz.engine.input.MouseManager;
+
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.net.InetAddress;
 
 public final class ClientLauncher {
 	public static void main(String[] args) {
@@ -26,8 +27,7 @@ public final class ClientLauncher {
 
 			final JFrame frame = new JFrame(GraphicsConfig.TITLE);
 			GameCanvas canvas = new GameCanvas();
-			frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-			//frame.setSize(Client.frameWidth, Client.frameHeight);
+			frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			frame.setResizable(true);
 			canvas.setPreferredSize(
 				new Dimension(Client.frameWidth, Client.frameHeight)
@@ -47,12 +47,15 @@ public final class ClientLauncher {
 			Client client = new Client();
 			Client.instance = client;
 
+			MouseManager mouseManager = new MouseManager();
+			Keyboard keyboard = new Keyboard();
 
 			client.setCanvas(canvas);
-			canvas.addKeyListener(client);
-			canvas.addMouseListener(client);
-			canvas.addMouseMotionListener(client);
-			canvas.addMouseWheelListener(client);
+
+			canvas.addKeyListener(keyboard);
+			canvas.addMouseListener(mouseManager);
+			canvas.addMouseMotionListener(mouseManager);
+			canvas.addMouseWheelListener(mouseManager);
 			canvas.addFocusListener(client);
 			canvas.requestFocusInWindow();
 
@@ -61,11 +64,23 @@ public final class ClientLauncher {
 
 			frame.setMinimumSize(new Dimension(1280, 720));
 
+			// 1 ▸ Clean exit on window close
+			frame.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent e) {
+					client.cleanUpForQuit();
+					System.exit(0);
+				}
+			});
 
+			// 2 ▸ Clean exit on JVM shutdown
+			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+				try {
+					client.cleanUpForQuit();
+				} catch (Exception ignored) {}
+			}));
 
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
 	}
 }
-

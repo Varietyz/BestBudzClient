@@ -9,6 +9,7 @@ public class GameCanvas extends Canvas {
 		setFocusable(true);
 		setIgnoreRepaint(true);
 		setFocusTraversalKeysEnabled(false);
+
 	}
 
 	@Override

@@ -67,7 +67,7 @@ public final class Stream extends NodeSub
 	}
 
 	public void createFrame(int i) {
-		 System.out.println("Frame: " + i);
+		 //System.out.println("Frame: " + i);
 		buffer[currentOffset++] = (byte) (i + encryption.getNextKey());
 	}
 

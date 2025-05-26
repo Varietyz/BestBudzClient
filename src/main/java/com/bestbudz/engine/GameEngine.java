@@ -33,20 +33,23 @@ public class GameEngine implements Runnable {
 			int lockedH = canvas.getHeight();
 
 			if (lockedW != Client.screenAreaWidth || lockedH != Client.screenAreaHeight) {
-				// 💣 STOP EVERYTHING BEFORE YOU DIE
 				BufferStrategy bs = canvas.getBufferStrategy();
 				if (bs != null) bs.dispose();
 
-				// 💥 HARD RESET
 				client.refreshFrameSize(canvas, lockedW, lockedH);
+				Client.setBounds();
+				client.calcCameraPos();
+
+				DrawingArea.setDrawingArea(Client.frameHeight, 0, Client.frameWidth, 0);
+				DrawingArea.setAllPixelsToZero(); // Force-clear the new buffer
 
 				try {
 					canvas.createBufferStrategy(GraphicsConfig.BUFFERS);
 				} catch (IllegalStateException ignored) {}
 
-				// 🛑 SKIP THIS FRAME COMPLETELY
 				continue;
 			}
+
 
 
 
@@ -67,12 +70,14 @@ public class GameEngine implements Runnable {
 					Graphics2D g = null;
 					try {
 						g = (Graphics2D) bufferStrategy.getDrawGraphics();
-						DrawingArea.setAllPixelsToZero();
-
 						if (!started) {
 							client.startUp(g);
+
 							started = true;
 						}
+						DrawingArea.setAllPixelsToZero();
+
+
 
 						long now = System.nanoTime();
 						int logicRuns = 0;

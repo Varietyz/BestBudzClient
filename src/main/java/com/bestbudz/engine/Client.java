@@ -9,6 +9,11 @@ import com.bestbudz.data.AccountManager;
 import com.bestbudz.data.Item;
 import com.bestbudz.data.ItemDef;
 import com.bestbudz.data.Skills;
+import com.bestbudz.engine.input.Keyboard;
+import static com.bestbudz.engine.input.Keyboard.console;
+import static com.bestbudz.engine.input.Keyboard.keyArray;
+import com.bestbudz.engine.input.MouseManager;
+import com.bestbudz.engine.input.MouseState;
 import com.bestbudz.entity.Entity;
 import com.bestbudz.entity.EntityDef;
 import com.bestbudz.entity.IdentityKit;
@@ -41,8 +46,7 @@ import com.bestbudz.rendering.SpotAnim;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.sound.Sounds;
-import com.bestbudz.ui.LoginRenderer;
-import com.bestbudz.ui.MouseDetection;
+//import com.bestbudz.ui.MouseDetection;
 import com.bestbudz.ui.RSInterface;
 import com.bestbudz.ui.TextInput;
 import com.bestbudz.ui.interfaces.CustomInterfaces;
@@ -65,11 +69,11 @@ import com.bestbudz.world.ObjectManager;
 import com.bestbudz.world.VarBit;
 import com.bestbudz.world.Varp;
 import com.bestbudz.world.WorldController;
+import static com.sun.javafx.util.Utils.clamp;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.File;
@@ -89,10 +93,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import javax.imageio.ImageIO;
 
 public class Client extends ClientEngine
@@ -101,6 +107,10 @@ public class Client extends ClientEngine
 	private int frameCount = 0;
 	private int fps = 0;
 	private long lastFpsTime = System.currentTimeMillis();
+
+	private boolean loginInProgress = false;
+	private boolean loginComplete = false;
+
 
 	public static final int[][] anIntArrayArray1003 = {
 		{6798, 107, 10283, 16, 4797, 7744, 5799, 4634, 33697, 22433, 2983, 54193, 1000, 7114, 6873, 6400, 6837, 6850, 350, 400, 325, 375, 660, 21662, 5738, 675, 1075, 2130, 1050, 8776, 7833, 3700, 36133, 4960, 19860, 86933, 27831, 33, 17350, 38693, 8759, 13860, 35321, 43297, 167550, 5938, 96993, 49863, 49500, 54783, 58933, 689484, 50000, 61093, 5652, 926, 79839683, 2219, 7114, 3982, 6073, 49823, 689385, 67832, 33823, 271833, 869308091, 12821, 23421, 9583, 123456, 28131},
@@ -158,11 +168,11 @@ public class Client extends ClientEngine
 	public static int backDialogID;
 	public static String server = "";
 	public static boolean rememberMe = false;
-	static int openInterfaceID;
+	public static int openInterfaceID;
 	static int myPrivilege;
 
-	static int anInt1211;
-	static int tabID;
+	public static int anInt1211;
+	public static int tabID;
 	private static boolean filterGrayScale = false;
 	private static int anInt849;
 	private static int anInt854;
@@ -418,7 +428,6 @@ public class Client extends ClientEngine
 	private Sprite mapMarker;
 	private boolean aBoolean872;
 	private int weight;
-	MouseDetection mouseDetection;
 	private String reportAbuseInput;
 	private int unknownInt10;
 	private boolean menuOpen;
@@ -451,7 +460,7 @@ public class Client extends ClientEngine
 	private int anInt936;
 	private int anInt937;
 	private int anInt938;
-	private int anInt945;
+	public int anInt945;
 	private WorldController worldController;
 	private Sprite[] sideIcons;
 	private int menuScreenArea;
@@ -531,8 +540,8 @@ public class Client extends ClientEngine
 	private Stream inStream;
 	private int dragFromSlot;
 	private int activeInterfaceType;
-	private int pressX;
-	private int pressY;
+	public int pressX;
+	public int pressY;
 	private int[] menuActionCmd2;
 	private int[] menuActionCmd3;
 	private int[] menuActionID;
@@ -569,7 +578,7 @@ public class Client extends ClientEngine
 	private int unreadMessages;
 	private boolean canMute;
 	private boolean aBoolean1159;
-	private boolean aBoolean1160;
+	public boolean aBoolean1160;
 	private ImageProducer aRSImageProducer_1164;
 	private int daysSinceRecovChange;
 	private RSSocket socketStream;
@@ -616,7 +625,7 @@ public class Client extends ClientEngine
 	private int tradeMode;
 	private int anInt1249;
 	private int anInt1251;
-	private int anInt1253;
+	private int legacyClickInt;
 	private boolean welcomeScreenRaised;
 	private boolean messagePromptRaised;
 	private byte[][][] byteGroundArray;
@@ -638,6 +647,7 @@ public class Client extends ClientEngine
 	private int publicChatMode;
 	private int modifiableXValue = 0;
 	private GameCanvas canvas;
+
 	public Client()
 	{
 		ClientConstants.worldSelected = 1;
@@ -1095,15 +1105,15 @@ public class Client extends ClientEngine
 		{
 			if (changeChatArea)
 			{
-				if (mouseX > 0 && mouseX < 494 && mouseY > frameHeight - 175 - extendChatArea
-					&& mouseY < frameHeight)
+				if (MouseState.x > 0 && MouseState.x < 494 && MouseState.y > frameHeight - 175 - extendChatArea
+					&& MouseState.y < frameHeight)
 				{
 					return true;
 				}
 				else
 				{
-					if (mouseX > 494 && mouseX < 515 && mouseY > frameHeight - 175 - extendChatArea
-						&& mouseY < frameHeight)
+					if (MouseState.x > 494 && MouseState.x < 515 && MouseState.y > frameHeight - 175 - extendChatArea
+						&& MouseState.y < frameHeight)
 					{
 						return false;
 					}
@@ -1111,8 +1121,8 @@ public class Client extends ClientEngine
 			}
 			else if (!changeChatArea)
 			{
-				if (mouseX > 0 && mouseX < 519 && mouseY > frameHeight - 175
-					&& mouseY < frameHeight)
+				if (MouseState.x > 0 && MouseState.x < 519 && MouseState.y > frameHeight - 175
+					&& MouseState.y < frameHeight)
 				{
 					return false;
 				}
@@ -1121,9 +1131,9 @@ public class Client extends ClientEngine
 
 		if (!changeTabArea)
 		{
-			if (mouseX > 0 && mouseY > 0 && mouseY < frameWidth && mouseY < frameHeight)
+			if (MouseState.x > 0 && MouseState.y > 0 && MouseState.y < frameWidth && MouseState.y < frameHeight)
 			{
-				return mouseX < frameWidth - 242 || mouseY < frameHeight - 335;
+				return MouseState.x < frameWidth - 242 || MouseState.y < frameHeight - 335;
 			}
 			return false;
 		}
@@ -1131,17 +1141,17 @@ public class Client extends ClientEngine
 		{
 			if (frameWidth > 1000)
 			{
-				return (mouseX < frameWidth - 420 || mouseX > frameWidth || mouseY < frameHeight - 37
-					|| mouseY > frameHeight)
-					&& (mouseX <= frameWidth - 225 || mouseX >= frameWidth
-					|| mouseY <= frameHeight - 37 - 274 || mouseY >= frameHeight);
+				return (MouseState.x < frameWidth - 420 || MouseState.x > frameWidth || MouseState.y < frameHeight - 37
+					|| MouseState.y > frameHeight)
+					&& (MouseState.x <= frameWidth - 225 || MouseState.x >= frameWidth
+					|| MouseState.y <= frameHeight - 37 - 274 || MouseState.y >= frameHeight);
 			}
 			else
 			{
-				return (mouseX < frameWidth - 210 || mouseX > frameWidth || mouseY < frameHeight - 74
-					|| mouseY > frameHeight)
-					&& (mouseX <= frameWidth - 225 || mouseX >= frameWidth
-					|| mouseY <= frameHeight - 74 - 274 || mouseY >= frameHeight);
+				return (MouseState.x < frameWidth - 210 || MouseState.x > frameWidth || MouseState.y < frameHeight - 74
+					|| MouseState.y > frameHeight)
+					&& (MouseState.x <= frameWidth - 225 || MouseState.x >= frameWidth
+					|| MouseState.y <= frameHeight - 74 - 274 || MouseState.y >= frameHeight);
 			}
 		}
 		return true;
@@ -1149,12 +1159,12 @@ public class Client extends ClientEngine
 
 	public boolean mouseInRegion(int x1, int y1, int x2, int y2)
 	{
-		return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
+		return MouseState.x >= x1 && MouseState.x <= x2 && MouseState.y >= y1 && MouseState.y <= y2;
 	}
 
 	public boolean clickInRegion(int x1, int y1, int x2, int y2)
 	{
-		return saveClickX >= x1 && saveClickX <= x2 && saveClickY >= y1 && saveClickY <= y2;
+		return MouseState.x >= x1 && MouseState.x <= x2 && MouseState.y >= y1 && MouseState.y <= y2;
 	}
 
 	public void mouseMapPosition() {
@@ -1299,25 +1309,31 @@ public class Client extends ClientEngine
 		}
 	}
 
-	public void extendChatArea()
-	{
+	public void extendChatArea() {
 		int offsetY = frameHeight - 160;
 		int x = 256;
 		int y = offsetY - 10 - extendChatArea;
-		if (clickMode2 == 1 && mouseX >= x && mouseX <= x + 8 && mouseY >= y
-			&& mouseY <= y + 9)
-		{
+
+		// Start drag if mouse is pressed within the drag box
+		if (!isExtendingChatArea && MouseState.leftDown && MouseState.x >= x && MouseState.x <= x + 8
+			&& MouseState.y >= y && MouseState.y <= y + 9) {
 			isExtendingChatArea = true;
 		}
-		if (isExtendingChatArea)
-		{
-			int height = offsetY - mouseY;
-			if (height < frameHeight - 170)
-			{
-				extendChatArea = height > 0 ? height : 0;
+
+		// Update drag movement
+		if (isExtendingChatArea) {
+			int height = offsetY - MouseState.y;
+			if (height < frameHeight - 170) {
+				extendChatArea = Math.max(0, height);
 			}
 		}
+
+		// Stop drag on mouse release
+		if (MouseState.released) {
+			isExtendingChatArea = false;
+		}
 	}
+
 
 	private boolean chatStateCheck()
 	{
@@ -1618,7 +1634,7 @@ public class Client extends ClientEngine
 			rightClickMenu(0, 0);
 		}
 
-		aRSImageProducer_1165.initDrawingArea();
+		//aRSImageProducer_1165.initDrawingArea();
 		Rasterizer.anIntArray1472 = anIntArray1182;
 	}
 
@@ -1771,7 +1787,7 @@ public class Client extends ClientEngine
 			stream.createFrame(0);
 			objectManager.method171(aClass11Array1230, worldController);
 			ColorUtility.fadingToColor = getNextInteger(objectManager.colors).getKey();
-			aRSImageProducer_1165.initDrawingArea();
+			//aRSImageProducer_1165.initDrawingArea();
 			stream.createFrame(0);
 			int k3 = ObjectManager.anInt145;
 			if (k3 > plane)
@@ -1891,13 +1907,13 @@ public class Client extends ClientEngine
 
 		}
 
-		aRSImageProducer_1165.initDrawingArea();
+		aRSImageProducer_1165.initDrawingArea(); // Buffered connection?
 		DrawingArea.setAllPixelsToZero(); // wipe buffer
 
 		anInt1071 = 0;
-		for (int k2 = 0; k2 < 104; k2++)
+		for (int k2 = 0; k2 < GraphicsConfig.REGION_RENDER; k2++)
 		{
-			for (int l2 = 0; l2 < 104; l2++)
+			for (int l2 = 0; l2 < GraphicsConfig.REGION_RENDER; l2++)
 			{
 				int i3 = worldController.method303(plane, k2, l2);
 				if (i3 != 0)
@@ -2014,13 +2030,14 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void buildInterfaceMenu(int y, RSInterface rsinterface, int mouseX, int x, int mouseY, int scrollPosition)
+	private void buildInterfaceMenu(int y, RSInterface rsinterface, int x, int scrollPosition)
 	{
+
 		if (rsinterface == null)
 			rsinterface = RSInterface.interfaceCache[21356];
 		if (rsinterface.type != 0 || rsinterface.children == null || rsinterface.isMouseoverTriggered)
 			return;
-		if (mouseX < y || mouseY < x || mouseX > y + rsinterface.width || mouseY > x + rsinterface.height)
+		if (MouseState.x < y || MouseState.y < x || MouseState.x > y + rsinterface.width || MouseState.y > x + rsinterface.height)
 			return;
 		for (int childIndex = 0; childIndex < rsinterface.children.length; childIndex++)
 		{
@@ -2029,27 +2046,27 @@ public class Client extends ClientEngine
 			RSInterface child = RSInterface.interfaceCache[rsinterface.children[childIndex]];
 			childX += child.anInt263;
 			childY += child.anInt265;
-			if ((child.hoverType >= 0 || child.textHoverColor != 0) && mouseX >= childX && mouseY >= childY
-				&& mouseX < childX + child.width && mouseY < childY + child.height)
+			if ((child.hoverType >= 0 || child.textHoverColor != 0) && MouseState.x >= childX && MouseState.y >= childY
+				&& MouseState.x < childX + child.width && MouseState.y < childY + child.height)
 				if (child.hoverType >= 0)
 					anInt886 = child.hoverType;
 				else
 					anInt886 = child.id;
-			if (child.type == 8 && mouseX >= childX && mouseY >= childY && mouseX < childX + child.width
-				&& mouseY < childY + child.height)
+			if (child.type == 8 && MouseState.x >= childX && MouseState.y >= childY && MouseState.x < childX + child.width
+				&& MouseState.y < childY + child.height)
 			{
 				anInt1315 = child.id;
 			}
 			if (child.type == 0)
 			{
-				buildInterfaceMenu(childX, child, mouseX, childY, mouseY, child.scrollPosition);
+				buildInterfaceMenu(childX, child, childY, child.scrollPosition);
 				if (child.scrollMax > child.height)
-					drawInterfaceRecursive(childX + child.width, child.height, mouseX, mouseY, child, childY, true, child.scrollMax);
+					drawInterfaceRecursive(childX + child.width, child.height, MouseState.x, MouseState.y, child, childY, true, child.scrollMax);
 			}
 			else
 			{
-				if (child.atActionType == 1 && mouseX >= childX && mouseY >= childY && mouseX < childX + child.width
-					&& mouseY < childY + child.height)
+				if (child.atActionType == 1 && MouseState.x >= childX && MouseState.y >= childY && MouseState.x < childX + child.width
+					&& MouseState.y < childY + child.height)
 				{
 					boolean flag = false;
 					if (child.contentType != 0)
@@ -2062,8 +2079,8 @@ public class Client extends ClientEngine
 						menuActionRow++;
 					}
 				}
-				if (child.atActionType == 2 && spellSelected == 0 && mouseX >= childX && mouseY >= childY
-					&& mouseX < childX + child.width && mouseY < childY + child.height)
+				if (child.atActionType == 2 && spellSelected == 0 && MouseState.x >= childX && MouseState.y >= childY
+					&& MouseState.x < childX + child.width && MouseState.y < childY + child.height)
 				{
 					String s = child.selectedActionName;
 					if (s.indexOf(" ") != -1)
@@ -2073,16 +2090,16 @@ public class Client extends ClientEngine
 					menuActionCmd3[menuActionRow] = child.id;
 					menuActionRow++;
 				}
-				if (child.atActionType == 3 && mouseX >= childX && mouseY >= childY && mouseX < childX + child.width
-					&& mouseY < childY + child.height)
+				if (child.atActionType == 3 && MouseState.x >= childX && MouseState.y >= childY && MouseState.x < childX + child.width
+					&& MouseState.y < childY + child.height)
 				{
 					menuActionName[menuActionRow] = "Shut";
 					menuActionID[menuActionRow] = 200;
 					menuActionCmd3[menuActionRow] = child.id;
 					menuActionRow++;
 				}
-				if (child.atActionType == 4 && mouseX >= childX && mouseY >= childY && mouseX < childX + child.width
-					&& mouseY < childY + child.height)
+				if (child.atActionType == 4 && MouseState.x >= childX && MouseState.y >= childY && MouseState.x < childX + child.width
+					&& MouseState.y < childY + child.height)
 				{
 					menuActionName[menuActionRow] = child.tooltip;
 					menuActionID[menuActionRow] = 169;
@@ -2093,24 +2110,24 @@ public class Client extends ClientEngine
 
 					}
 				}
-				if (child.atActionType == 5 && mouseX >= childX && mouseY >= childY && mouseX < childX + child.width
-					&& mouseY < childY + child.height)
+				if (child.atActionType == 5 && MouseState.x >= childX && MouseState.y >= childY && MouseState.x < childX + child.width
+					&& MouseState.y < childY + child.height)
 				{
 					menuActionName[menuActionRow] = child.tooltip;
 					menuActionID[menuActionRow] = 646;
 					menuActionCmd3[menuActionRow] = child.id;
 					menuActionRow++;
 				}
-				if (child.atActionType == 6 && !aBoolean1149 && mouseX >= childX && mouseY >= childY
-					&& mouseX < childX + child.width && mouseY < childY + child.height)
+				if (child.atActionType == 6 && !aBoolean1149 && MouseState.x >= childX && MouseState.y >= childY
+					&& MouseState.x < childX + child.width && MouseState.y < childY + child.height)
 				{
 					menuActionName[menuActionRow] = child.tooltip;
 					menuActionID[menuActionRow] = 679;
 					menuActionCmd3[menuActionRow] = child.id;
 					menuActionRow++;
 				}
-				if (child.atActionType == 8 && !aBoolean1149 && mouseX >= childX && mouseY >= childY
-					&& mouseX < childX + child.width && mouseY < childY + child.height)
+				if (child.atActionType == 8 && !aBoolean1149 && MouseState.x >= childX && MouseState.y >= childY
+					&& MouseState.x < childX + child.width && MouseState.y < childY + child.height)
 				{
 					for (int i = 0; i < child.actions.length; i++)
 					{
@@ -2120,8 +2137,8 @@ public class Client extends ClientEngine
 						menuActionRow++;
 					}
 				}
-				if (mouseX >= childX && mouseY >= childY && mouseX < childX + (child.type == 4 ? 100 : child.width)
-					&& mouseY < childY + child.height)
+				if (MouseState.x >= childX && MouseState.y >= childY && MouseState.x < childX + (child.type == 4 ? 100 : child.width)
+					&& MouseState.y < childY + child.height)
 				{
 					if (child.actions != null)
 					{
@@ -2201,7 +2218,7 @@ public class Client extends ClientEngine
 								j3 += child.spritesX[k2];
 								k3 += child.spritesY[k2];
 							}
-							if (mouseX >= j3 && mouseY >= k3 && mouseX < j3 + 32 && mouseY < k3 + 32)
+							if (MouseState.x >= j3 && MouseState.y >= k3 && MouseState.x < j3 + 32 && MouseState.y < k3 + 32)
 							{
 								mouseInvInterfaceIndex = k2;
 								lastActiveInvInterface = child.id;
@@ -2375,6 +2392,7 @@ public class Client extends ClientEngine
 				}
 			}
 		}
+
 	}
 
 	public void drawTransparentScrollBar(int x, int y, int height, int maxScroll, int pos)
@@ -2558,245 +2576,113 @@ public class Client extends ClientEngine
 
 	}
 
-	public void processChatModeClick()
-	{
-		final int yOffset = frameHeight - 503;
-		if (mouseX >= 5 && mouseX <= 61 && mouseY >= yOffset + 482 && mouseY <= yOffset + 503)
-		{
-			cButtonHPos = 0;
-			inputTaken = true;
-		}
-		else if (mouseX >= 71 && mouseX <= 127 && mouseY >= yOffset + 482
-			&& mouseY <= yOffset + 503)
-		{
-			cButtonHPos = 1;
-			inputTaken = true;
-		}
-		else if (mouseX >= 137 && mouseX <= 193 && mouseY >= yOffset + 482
-			&& mouseY <= yOffset + 503)
-		{
-			cButtonHPos = 2;
-			inputTaken = true;
-		}
-		else if (mouseX >= 203 && mouseX <= 259 && mouseY >= yOffset + 482
-			&& mouseY <= yOffset + 503)
-		{
-			cButtonHPos = 3;
-			inputTaken = true;
-		}
-		else if (mouseX >= 269 && mouseX <= 325 && mouseY >= yOffset + 482
-			&& mouseY <= yOffset + 503)
-		{
-			cButtonHPos = 4;
-			inputTaken = true;
-		}
-		else if (mouseX >= 335 && mouseX <= 391 && mouseY >= yOffset + 482
-			&& mouseY <= yOffset + 503)
-		{
-			cButtonHPos = 5;
-			inputTaken = true;
-		}
-		else if (mouseX >= 404 && mouseX <= 515 && mouseY >= yOffset + 482
-			&& mouseY <= yOffset + 503)
-		{
-			cButtonHPos = 6;
-			inputTaken = true;
-		}
-		else
-		{
-			cButtonHPos = -1;
-			inputTaken = true;
-		}
-		if (super.clickMode3 == 1)
-		{
-			if (RSInterface.currentInputField != null)
-			{
-				if (RSInterface.currentInputField.onlyNumbers)
-				{
-					long amount = 0;
+	private void processChatModeClick(boolean leftClick, boolean rightClick) {
+		int yOffset = frameHeight - 503;
 
-					try
-					{
-						amount = Long.parseLong(message.replaceAll(",", ""));
-						if (amount < -Integer.MAX_VALUE)
-						{
-							amount = -Integer.MAX_VALUE;
-						}
-						else if (amount > Integer.MAX_VALUE)
-						{
-							amount = Integer.MAX_VALUE;
-						}
-					}
-					catch (Exception ignored)
-					{
-					}
+		updateChatHoverState(yOffset);
 
-					if (amount > 0)
-					{
-						stream.createFrame(208);
-						stream.writeDWord((int) amount);
-					}
-				}
-				else
-				{
-					stream.createFrame(150);
-					stream.writeWordBigEndian(RSInterface.currentInputField.disabledMessage.length() + 3);
-					stream.writeWord(RSInterface.currentInputField.id);
-					stream.writeString(RSInterface.currentInputField.disabledMessage);
-				}
+		if (!leftClick) return;
 
-				RSInterface.currentInputField.disabledMessage = "";
+		handleChatInputFieldSubmission();
+
+		if (handleChatTabToggle(yOffset)) {
+			stream.createFrame(95);
+			stream.writeWordBigEndian(publicChatMode);
+			stream.writeWordBigEndian(privateChatMode);
+			stream.writeWordBigEndian(tradeMode);
+		}
+	}
+
+	private void updateChatHoverState(int yOffset) {
+		int[][] regions = {
+			{5, 61}, {71, 127}, {137, 193}, {203, 259},
+			{269, 325}, {335, 391}, {404, 515}
+		};
+
+		for (int i = 0; i < regions.length; i++) {
+			int[] bounds = regions[i];
+			if (MouseState.x >= bounds[0] && MouseState.x <= bounds[1]
+				&& MouseState.y >= yOffset + 482 && MouseState.y <= yOffset + 503) {
+				cButtonHPos = i;
+				inputTaken = true;
+				return;
 			}
-			RSInterface.currentInputField = null;
-			if (saveClickX >= 5 && saveClickX <= 61 && saveClickY >= yOffset + 482
-				&& saveClickY <= yOffset + 505)
-			{
+		}
+		cButtonHPos = -1;
+		inputTaken = true;
+	}
 
-				if (setChannel != 0)
-				{
-					cButtonCPos = 0;
-					chatTypeView = 0;
-					inputTaken = true;
-					setChannel = 0;
+	private void handleChatInputFieldSubmission() {
+		if (RSInterface.currentInputField == null) return;
+
+		if (RSInterface.currentInputField.onlyNumbers) {
+			try {
+				long amount = Long.parseLong(message.replaceAll(",", ""));
+				amount = Math.max(-Integer.MAX_VALUE, Math.min(Integer.MAX_VALUE, amount));
+				if (amount > 0) {
+					stream.createFrame(208);
+					stream.writeDWord((int) amount);
 				}
-				else
-				{
+			} catch (Exception ignored) {}
+		} else {
+			stream.createFrame(150);
+			stream.writeWordBigEndian(RSInterface.currentInputField.disabledMessage.length() + 3);
+			stream.writeWord(RSInterface.currentInputField.id);
+			stream.writeString(RSInterface.currentInputField.disabledMessage);
+		}
+
+		RSInterface.currentInputField.disabledMessage = "";
+		RSInterface.currentInputField = null;
+	}
+
+	private boolean handleChatTabToggle(int yOffset) {
+		int[][] bounds = {
+			{5, 61}, {71, 127}, {137, 193}, {203, 259},
+			{269, 325}, {335, 391}, {404, 515}
+		};
+
+		for (int i = 0; i < 6; i++) {
+			int x0 = bounds[i][0];
+			int x1 = bounds[i][1];
+			if (MouseState.x >= x0 && MouseState.x <= x1 &&
+				MouseState.y >= yOffset + 482 && MouseState.y <= yOffset + 505) {
+
+				if (setChannel != i) {
+					cButtonCPos = i;
+					chatTypeView = (i == 1 || i == 4) ? 5 : (i == 2 ? 1 : (i == 3 ? 2 : (i == 5 ? 3 : 0)));
+					setChannel = i;
+					inputTaken = true;
+				} else {
 					showChatComponents = !showChatComponents;
 				}
-				stream.createFrame(95);
-				stream.writeWordBigEndian(publicChatMode);
-				stream.writeWordBigEndian(privateChatMode);
-				stream.writeWordBigEndian(tradeMode);
+				return true;
 			}
-			else if (saveClickX >= 71 && saveClickX <= 127 && saveClickY >= yOffset + 482
-				&& saveClickY <= yOffset + 505)
-			{
+		}
 
-				if (setChannel != 1)
-				{
-					cButtonCPos = 1;
-					chatTypeView = 5;
-					inputTaken = true;
-					setChannel = 1;
-				}
-				else
-				{
-					showChatComponents = !showChatComponents;
-				}
+		// Handle Report Button
+		int x0 = bounds[6][0];
+		int x1 = bounds[6][1];
+		if (MouseState.x >= x0 && MouseState.x <= x1 &&
+			MouseState.y >= yOffset + 482 && MouseState.y <= yOffset + 505) {
 
-				stream.createFrame(95);
-				stream.writeWordBigEndian(publicChatMode);
-				stream.writeWordBigEndian(privateChatMode);
-				stream.writeWordBigEndian(tradeMode);
-			}
-			else if (saveClickX >= 137 && saveClickX <= 193 && saveClickY >= yOffset + 482
-				&& saveClickY <= yOffset + 505)
-			{
-
-				if (setChannel != 2)
-				{
-					cButtonCPos = 2;
-					chatTypeView = 1;
-					inputTaken = true;
-					setChannel = 2;
-				}
-				else
-				{
-					showChatComponents = !showChatComponents;
-				}
-
-				stream.createFrame(95);
-				stream.writeWordBigEndian(publicChatMode);
-				stream.writeWordBigEndian(privateChatMode);
-				stream.writeWordBigEndian(tradeMode);
-			}
-			else if (saveClickX >= 203 && saveClickX <= 259 && saveClickY >= yOffset + 482
-				&& saveClickY <= yOffset + 505)
-			{
-
-				if (setChannel != 3)
-				{
-					cButtonCPos = 3;
-					chatTypeView = 2;
-					inputTaken = true;
-					setChannel = 3;
-				}
-				else
-				{
-					showChatComponents = !showChatComponents;
-				}
-
-				stream.createFrame(95);
-				stream.writeWordBigEndian(publicChatMode);
-				stream.writeWordBigEndian(privateChatMode);
-				stream.writeWordBigEndian(tradeMode);
-			}
-			else if (saveClickX >= 269 && saveClickX <= 325 && saveClickY >= yOffset + 482
-				&& saveClickY <= yOffset + 505)
-			{
-
-				if (setChannel != 4)
-				{
-					cButtonCPos = 4;
-					chatTypeView = 5;
-					inputTaken = true;
-					setChannel = 4;
-				}
-				else
-				{
-					showChatComponents = !showChatComponents;
-				}
-				stream.createFrame(95);
-				stream.writeWordBigEndian(publicChatMode);
-				stream.writeWordBigEndian(privateChatMode);
-				stream.writeWordBigEndian(tradeMode);
-			}
-			else if (saveClickX >= 335 && saveClickX <= 391 && saveClickY >= yOffset + 482
-				&& saveClickY <= yOffset + 505)
-			{
-
-				if (setChannel != 5)
-				{
-					cButtonCPos = 5;
-					chatTypeView = 3;
-					inputTaken = true;
-					setChannel = 5;
-				}
-				else
-				{
-					showChatComponents = !showChatComponents;
-				}
-
-				stream.createFrame(95);
-				stream.writeWordBigEndian(publicChatMode);
-				stream.writeWordBigEndian(privateChatMode);
-				stream.writeWordBigEndian(tradeMode);
-			}
-			else if (saveClickX >= 404 && saveClickX <= 515 && saveClickY >= yOffset + 482
-				&& saveClickY <= yOffset + 505)
-			{
-				if (openInterfaceID == -1)
-				{
-					clearTopInterfaces();
-					reportAbuseInput = "";
-					canMute = false;
-					for (int i = 0; i < RSInterface.interfaceCache.length; i++)
-					{
-						if (RSInterface.interfaceCache[i] == null || RSInterface.interfaceCache[i].parentID != 41750)
-						{
-							continue;
-						}
+			if (openInterfaceID == -1) {
+				clearTopInterfaces();
+				reportAbuseInput = "";
+				canMute = false;
+				for (int i = 0; i < RSInterface.interfaceCache.length; i++) {
+					if (RSInterface.interfaceCache[i] == null) continue;
+					if (RSInterface.interfaceCache[i].parentID == 41750) {
 						reportAbuseInterfaceID = openInterfaceID = RSInterface.interfaceCache[i].parentID;
 						break;
 					}
 				}
-				else
-				{
-					pushMessage("Close yo shit before reporting a sucker xD", 0, "");
-				}
+			} else {
+				pushMessage("Close yo shit before reporting a sucker xD", 0, "");
 			}
 		}
+		return false;
 	}
+
 
 	private void updateConfigValues(int i)
 	{
@@ -2899,7 +2785,7 @@ public class Client extends ClientEngine
 					aBoolean848 = false;
 			}
 			if (j == 5)
-				anInt1253 = k;
+				legacyClickInt = k;
 			if (j == 6)
 				anInt1249 = k;
 			if (j == 8)
@@ -3282,13 +3168,13 @@ public class Client extends ClientEngine
 		if (frameWidth >= 1000) {
 			// Wide layout (single row of 14)
 			int y = frameHeight - 37;
-			return mouseY >= y && mouseY <= frameHeight;
+			return MouseState.y >= y && MouseState.y <= frameHeight;
 		} else {
 			// Stacked layout (2 rows of 7)
 			int yTop = frameHeight - 73;
 			int yBottom = frameHeight - 37;
-			return (mouseY >= yTop && mouseY <= yTop + 36)
-				|| (mouseY >= yBottom && mouseY <= frameHeight);
+			return (MouseState.y >= yTop && MouseState.y <= yTop + 36)
+				|| (MouseState.y >= yBottom && MouseState.y <= frameHeight);
 		}
 	}
 
@@ -3520,7 +3406,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void calcCameraPos()
+	public void calcCameraPos()
 	{
 		int i = anInt1098 * 128 + 64;
 		int j = anInt1099 * 128 + 64;
@@ -3696,6 +3582,8 @@ public class Client extends ClientEngine
 		setBounds();
 		socketStream = null;
 		loggedIn = false;
+		loginComplete = false;
+		loginInProgress = false;
 		loginScreenState = 0;
 		loginMessage1 = "Welcome to BestBudz";
 		loginMessage2 = "Where the weed flows, where the tree grows!";
@@ -4225,8 +4113,8 @@ public class Client extends ClientEngine
 	{
 		if (lowMem && loadingStage == 2 && ObjectManager.anInt131 != plane)
 		{
-			aRSImageProducer_1165.initDrawingArea();
-			drawLoadingMessages(1, "Rolling one, just for you!", null);
+			//aRSImageProducer_1165.initDrawingArea();
+			//drawLoadingMessages(1, "Rolling one, just for you!", null);
 			aRSImageProducer_1165.drawGraphics(0, g, 0);
 			loadingStage = 1;
 			aLong824 = System.currentTimeMillis();
@@ -4418,10 +4306,15 @@ public class Client extends ClientEngine
 	public void refreshFrameSize(GameCanvas canvas, int lockedW, int lockedH) {
 		if (lockedW <= 0 || lockedH <= 0) return;
 
-		this.frameWidth = lockedW;
-		this.frameHeight = lockedH;
-		this.screenAreaWidth = lockedW;
-		this.screenAreaHeight = lockedH;
+		if (!canvas.hasFocus()) {
+			System.out.println("Lost Focus, Requesting focus after framesize refresh..");
+			canvas.requestFocus();
+		}
+
+		frameWidth = lockedW;
+		frameHeight = lockedH;
+		screenAreaWidth = lockedW;
+		screenAreaHeight = lockedH;
 
 		setBounds();
 
@@ -4431,7 +4324,6 @@ public class Client extends ClientEngine
 		Rasterizer.method365(lockedW, lockedH);
 		Client.aRSImageProducer_1109 = new ImageProducer(lockedW, lockedH); // Offscreen
 		Client.aRSImageProducer_1109.initDrawingArea();
-
 		System.out.println("Client size set to: " + lockedW + "x" + lockedH);
 		System.out.println("Pixels : " + pixels.length);
 		System.out.println("Expected: " + (lockedW * lockedH));
@@ -4441,351 +4333,290 @@ public class Client extends ClientEngine
 		}
 	}
 
-
-
-
-
-	private void mainGameProcessor(Graphics2D g, GameCanvas canvas)
-	{
-		if (anInt1104 > 1)
-			anInt1104--;
-		if (anInt1011 > 0)
-			anInt1011--;
-		for (int j = 0; j < 5; j++)
-			if (!parsePacket(g))
-				break;
-
-		if (!loggedIn)
-			return;
-		synchronized (mouseDetection.syncObject)
-		{
-			if (flagged)
-			{
-				if (super.clickMode3 != 0 || mouseDetection.coordsIndex >= 40)
-				{
-					stream.createFrame(45);
-					stream.writeWordBigEndian(0);
-					int j2 = stream.currentOffset;
-					int j3 = 0;
-					for (int j4 = 0; j4 < mouseDetection.coordsIndex; j4++)
-					{
-						if (j2 - stream.currentOffset >= 240)
-							break;
-						j3++;
-						int l4 = mouseDetection.coordsY[j4];
-						if (l4 < 0)
-							l4 = 0;
-						else if (l4 > 502)
-							l4 = 502;
-						int k5 = mouseDetection.coordsX[j4];
-						if (k5 < 0)
-							k5 = 0;
-						else if (k5 > 764)
-							k5 = 764;
-						int i6 = l4 * 765 + k5;
-						if (mouseDetection.coordsY[j4] == -1 && mouseDetection.coordsX[j4] == -1)
-						{
-							k5 = -1;
-							l4 = -1;
-							i6 = 0x7ffff;
-						}
-						if (k5 == anInt1237 && l4 == anInt1238)
-						{
-							if (anInt1022 < 2047)
-								anInt1022++;
-						}
-						else
-						{
-							int j6 = k5 - anInt1237;
-							anInt1237 = k5;
-							int k6 = l4 - anInt1238;
-							anInt1238 = l4;
-							if (anInt1022 < 8 && j6 >= -32 && j6 <= 31 && k6 >= -32 && k6 <= 31)
-							{
-								j6 += 32;
-								k6 += 32;
-								stream.writeWord((anInt1022 << 12) + (j6 << 6) + k6);
-								anInt1022 = 0;
-							}
-							else if (anInt1022 < 8)
-							{
-								stream.writeDWordBigEndian(0x800000 + (anInt1022 << 19) + i6);
-								anInt1022 = 0;
-							}
-							else
-							{
-								stream.writeDWord(0xc0000000 + (anInt1022 << 19) + i6);
-								anInt1022 = 0;
-							}
-						}
-					}
-
-					stream.writeBytes(stream.currentOffset - j2);
-					if (j3 >= mouseDetection.coordsIndex)
-					{
-						mouseDetection.coordsIndex = 0;
-					}
-					else
-					{
-						mouseDetection.coordsIndex -= j3;
-						for (int i5 = 0; i5 < mouseDetection.coordsIndex; i5++)
-						{
-							mouseDetection.coordsX[i5] = mouseDetection.coordsX[i5 + j3];
-							mouseDetection.coordsY[i5] = mouseDetection.coordsY[i5 + j3];
-						}
-
-					}
-				}
-			}
-			else
-			{
-				mouseDetection.coordsIndex = 0;
-			}
+	private void mainGameProcessor(Graphics2D g, GameCanvas canvas) {
+		if (!canvas.hasFocus()) {
+			canvas.requestFocus();
 		}
-		if (super.clickMode3 != 0)
-		{
-			long l = (super.aLong29 - aLong1220) / 50L;
-			if (l > 4095L)
-				l = 4095L;
-			aLong1220 = super.aLong29;
-			int k2 = saveClickY;
-			if (k2 < 0)
-				k2 = 0;
-			else if (k2 > 502)
-				k2 = 502;
-			int k3 = saveClickX;
-			if (k3 < 0)
-				k3 = 0;
-			else if (k3 > 764)
-				k3 = 764;
-			int k4 = k2 * 765 + k3;
-			int j5 = 0;
-			if (super.clickMode3 == 2)
-				j5 = 1;
-			int l5 = (int) l;
-			stream.createFrame(241);
-			stream.writeDWord((l5 << 20) + (j5 << 19) + k4);
+
+		// ⬇️ Snapshot mouse state for this frame
+		boolean leftClick = MouseState.leftClicked;
+		boolean rightClick = MouseState.rightClicked;
+
+		handleDecrements();
+		handlePackets(g);
+		if (!loggedIn) return;
+
+		handleClickPacket(leftClick, rightClick);       // 🔄 Needs update to accept args
+		handleMovementKeys();
+		handleFocusPacket();
+		runCorePhases(g, canvas);
+		handleCrossCursor();
+		handleBoxDialogue();
+		handleDragAndDrop();
+		handleWalkToObject();
+		handleInputClearOnClick(leftClick, rightClick); // 🔄 Also needs update
+		processMenuClick(leftClick, rightClick);        // 🔄 Also needs update
+		handleInputTick(leftClick, rightClick);                     // 🔄 Also needs update
+		runSceneRendering(g);
+		handleIdle();
+		tryFlushStream(g, canvas);
+
+		// ⬇️ Reset click flags at end of frame
+		MouseState.leftClicked = false;
+		MouseState.rightClicked = false;
+	}
+
+
+	private void handleDecrements() {
+		if (anInt1104 > 1) anInt1104--;
+		if (anInt1011 > 0) anInt1011--;
+		if (anInt1016 > 0) anInt1016--;
+	}
+
+	private void handlePackets(Graphics2D g) {
+		for (int i = 0; i < 5; i++) {
+			if (!parsePacket(g)) break;
 		}
-		if (anInt1016 > 0)
-			anInt1016--;
-		if (super.keyArray[1] == 1 || super.keyArray[2] == 1 || super.keyArray[3] == 1 || super.keyArray[4] == 1)
+	}
+
+	private void handleClickPacket(boolean leftClick, boolean rightClick) {
+		if (!leftClick && !rightClick) return;
+
+		int clampedX = Math.max(0, Math.min(764, MouseState.x));
+		int clampedY = Math.max(0, Math.min(502, MouseState.y));
+		int packed = clampedY * 765 + clampedX;
+
+		int rightClickFlag = rightClick ? 1 : 0;
+
+		long delta = (System.currentTimeMillis() - aLong1220) / 50L;
+		delta = Math.min(delta, 4095L);
+		aLong1220 = System.currentTimeMillis();
+
+		int payload = (int)((delta << 20) | (rightClickFlag << 19) | packed);
+		stream.createFrame(241);
+		stream.writeDWord(payload);
+
+		if (flagged) {
+			stream.createFrame(45);
+			stream.writeWordBigEndian(0);
+			stream.writeWord(packed);
+		}
+	}
+
+	private void handleMovementKeys() {
+		if (keyArray[1] == 1 || keyArray[2] == 1 || keyArray[3] == 1 || keyArray[4] == 1) {
 			aBoolean1017 = true;
-		if (aBoolean1017 && anInt1016 <= 0)
-		{
+		}
+		if (aBoolean1017 && anInt1016 <= 0) {
 			anInt1016 = 20;
 			aBoolean1017 = false;
 			stream.createFrame(86);
 			stream.writeWord(anInt1184);
 			stream.method432(minimapInt1);
 		}
-		if (super.awtFocus && !aBoolean954)
-		{
+	}
+
+	private void handleFocusPacket() {
+		if (super.awtFocus && !aBoolean954) {
 			aBoolean954 = true;
 			stream.createFrame(3);
 			stream.writeWordBigEndian(1);
 		}
-		if (!super.awtFocus && aBoolean954)
-		{
+		if (!super.awtFocus && aBoolean954) {
 			aBoolean954 = false;
 			stream.createFrame(3);
 			stream.writeWordBigEndian(0);
 		}
+	}
+
+	private void runCorePhases(Graphics2D g, GameCanvas canvas) {
 		loadingStages(g);
 		method115();
 		anInt1009++;
-		if (anInt1009 > 750)
-			dropClient(g, canvas);
+		if (anInt1009 > 750) dropClient(g, canvas);
 		method114();
 		method95();
 		method38();
 		anInt945++;
-		if (crossType != 0)
-		{
-			crossIndex += 20;
-			if (crossIndex >= 400)
-				crossType = 0;
+	}
+
+	private void handleCrossCursor() {
+		if (crossType == 0) return;
+		crossIndex += 20;
+		if (crossIndex >= 400) crossType = 0;
+	}
+
+	private void handleBoxDialogue() {
+		if (atBoxInterfaceType == 0) return;
+		atBoxLoopCycle++;
+		if (atBoxLoopCycle < 15) return;
+		if (atBoxInterfaceType == 3) inputTaken = true;
+		atBoxInterfaceType = 0;
+	}
+
+	private void handleDragAndDrop() {
+		if (activeInterfaceType == 0) return;
+
+		dragCycle++;
+		if (Math.abs(MouseState.x - pressX) > 5 || Math.abs(MouseState.y - pressY) > 5) {
+			aBoolean1242 = true;
 		}
-		if (atBoxInterfaceType != 0)
-		{
-			atBoxLoopCycle++;
-			if (atBoxLoopCycle >= 15)
-			{
-				if (atBoxInterfaceType == 2)
-				{
-				}
-				if (atBoxInterfaceType == 3)
-					inputTaken = true;
-				atBoxInterfaceType = 0;
+
+		if (!MouseState.leftDown) {
+			if (activeInterfaceType == 3) inputTaken = true;
+			activeInterfaceType = 0;
+
+			if (aBoolean1242 && dragCycle >= 15) {
+				processDragItemMovement();
+			} else if ((MouseState.leftClicked || menuHasAddStoner(menuActionRow - 1)) && menuActionRow > 2) {
+				deterquarryMenuSize();
+			} else if (menuActionRow > 0) {
+				doAction(menuActionRow - 1);
+			}
+			atBoxLoopCycle = 10;
+		}
+	}
+
+	private void processDragItemMovement() {
+		lastActiveInvInterface = -1;
+		processRightClick();
+
+		if (focusedDragWidget == 5382) {
+			processBankSwap();
+			return;
+		}
+
+		if (lastActiveInvInterface == focusedDragWidget && mouseInvInterfaceIndex != dragFromSlot) {
+			swapInventoryItem();
+		}
+	}
+
+	private void processBankSwap() {
+		int xOffset = (frameWidth - 237 - RSInterface.interfaceCache[5292].width) / 2;
+		int yOffset = 36 + ((frameHeight - 503) / 2);
+		int[] slots = new int[10];
+		for (int i = 0; i < 10; i++) {
+			slots[i] = xOffset + 76 + (i * 40);
+		}
+		int yTop = yOffset + 22;
+		int yBottom = yOffset + 62;
+
+		for (int i = 0; i < 10; i++) {
+			if (MouseState.x >= slots[i] && MouseState.x <= (slots[i] + 41) &&
+				MouseState.y >= yTop && MouseState.y <= yBottom) {
+				stream.createFrame(214);
+				stream.method433(focusedDragWidget);
+				stream.method424(2);
+				stream.method433(dragFromSlot);
+				stream.method431(i);
+				return;
 			}
 		}
-		if (activeInterfaceType != 0)
-		{
-			dragCycle++;
-			if (mouseX > pressX + 5 || mouseX < pressX - 5 || mouseY > pressY + 5
-				|| mouseY < pressY - 5)
-				aBoolean1242 = true;
-			if (clickMode2 == 0)
-			{
-				if (activeInterfaceType == 2)
-				{
-				}
-				if (activeInterfaceType == 3)
-					inputTaken = true;
-				activeInterfaceType = 0;
-				if (aBoolean1242 && dragCycle >= 15)
-				{
-					lastActiveInvInterface = -1;
-					processRightClick();
-					if (focusedDragWidget == 5382)
-					{
-						Point southWest, northEast;
+	}
 
+	private void swapInventoryItem() {
+		RSInterface rsi = RSInterface.interfaceCache[focusedDragWidget];
+		boolean bankMode = (anInt913 == 1 && rsi.contentType == 206);
+		if (rsi.inv[mouseInvInterfaceIndex] <= 0) bankMode = false;
 
-						int xOffset = (frameWidth - 237 - RSInterface.interfaceCache[5292].width) / 2;
-						int yOffset = 36 + ((frameHeight - 503) / 2);
-						southWest = new Point(xOffset + 76, yOffset + 62);
-						northEast = new Point(xOffset + 117, yOffset + 22);
-
-
-						int[] slots = new int[10];
-
-						for (int i = 0; i < slots.length; i++)
-						{
-							slots[i] = (40 * i) + (int) southWest.getX();
-						}
-
-						for (int i = 0; i < slots.length; i++)
-						{
-							if ((mouseX >= slots[i]) && (mouseX <= (slots[i] + 41))
-								&& (mouseY >= northEast.getY()) && (mouseY <= southWest.getY()))
-							{
-								stream.createFrame(214);
-								stream.method433(focusedDragWidget);
-								stream.method424(2);
-								stream.method433(dragFromSlot);
-								stream.method431(i);
-								return;
-							}
-						}
-					}
-
-					if (lastActiveInvInterface == focusedDragWidget && mouseInvInterfaceIndex != dragFromSlot)
-					{
-						RSInterface class9 = RSInterface.interfaceCache[focusedDragWidget];
-						int j1 = 0;
-						if (anInt913 == 1 && class9.contentType == 206)
-							j1 = 1;
-						if (class9.inv[mouseInvInterfaceIndex] <= 0)
-							j1 = 0;
-						if (class9.aBoolean235)
-						{
-							int l2 = dragFromSlot;
-							int l3 = mouseInvInterfaceIndex;
-							class9.inv[l3] = class9.inv[l2];
-							class9.invStackSizes[l3] = class9.invStackSizes[l2];
-							class9.inv[l2] = -1;
-							class9.invStackSizes[l2] = 0;
-						}
-						else if (j1 == 0)
-						{
-							class9.swapBoxItems(dragFromSlot, mouseInvInterfaceIndex);
-						}
-
-						stream.createFrame(214);
-						stream.method433(focusedDragWidget);
-						stream.method424(j1);
-						stream.method433(dragFromSlot);
-						stream.method431(mouseInvInterfaceIndex);
-					}
-				}
-				else if ((anInt1253 == 1 || menuHasAddStoner(menuActionRow - 1)) && menuActionRow > 2)
-					deterquarryMenuSize();
-				else if (menuActionRow > 0)
-					doAction(menuActionRow - 1);
-				atBoxLoopCycle = 10;
-				super.clickMode3 = 0;
-			}
+		if (rsi.aBoolean235) {
+			int a = dragFromSlot;
+			int b = mouseInvInterfaceIndex;
+			rsi.inv[b] = rsi.inv[a];
+			rsi.invStackSizes[b] = rsi.invStackSizes[a];
+			rsi.inv[a] = -1;
+			rsi.invStackSizes[a] = 0;
+		} else if (!bankMode) {
+			rsi.swapBoxItems(dragFromSlot, mouseInvInterfaceIndex);
 		}
-		if (WorldController.anInt470 != -1)
-		{
-			int k = WorldController.anInt470;
-			int k1 = WorldController.anInt471;
-			boolean flag = doWalkTo(0, 0, 0, 0, myStoner.smallY[0], 0, 0, k1, myStoner.smallX[0], true, k);
-			WorldController.anInt470 = -1;
-			if (flag)
-			{
-				crossX = saveClickX;
-				crossY = saveClickY;
-				crossType = 1;
-				crossIndex = 0;
-			}
+
+		stream.createFrame(214);
+		stream.method433(focusedDragWidget);
+		stream.method424(bankMode ? 1 : 0);
+		stream.method433(dragFromSlot);
+		stream.method431(mouseInvInterfaceIndex);
+	}
+
+	private void handleWalkToObject() {
+		if (WorldController.anInt470 == -1) return;
+
+		int x = WorldController.anInt470;
+		int y = WorldController.anInt471;
+		WorldController.anInt470 = -1;
+
+		if (doWalkTo(0, 0, 0, 0, myStoner.smallY[0], 0, 0, y, myStoner.smallX[0], true, x)) {
+			crossX = MouseState.x;
+			crossY = MouseState.y;
+			crossType = 1;
+			crossIndex = 0;
 		}
-		if (super.clickMode3 == 1 && aString844 != null)
-		{
+	}
+
+	private void handleInputClearOnClick(boolean leftClick, boolean rightClick) {
+		if ((leftClick || rightClick) && aString844 != null) {
 			aString844 = null;
 			inputTaken = true;
-			super.clickMode3 = 0;
 		}
-		processMenuClick();
-		if (clickMode2 == 1 || super.clickMode3 == 1)
+	}
+
+
+	private void handleInputTick(boolean leftClick, boolean rightClick) {
+		if (leftClick || rightClick)
 			anInt1213++;
-		if (anInt1500 != 0 || anInt1044 != 0 || anInt1129 != 0)
-		{
-			if (anInt1501 < 0 && !menuOpen)
-			{
+
+		if (anInt1500 != 0 || anInt1044 != 0 || anInt1129 != 0) {
+			if (anInt1501 < 0 && !menuOpen) {
 				anInt1501++;
-				if (anInt1501 == 0)
-				{
-					if (anInt1500 != 0)
-					{
-						inputTaken = true;
-					}
-					if (anInt1044 != 0)
-					{
-					}
+				if (anInt1501 == 0 && anInt1500 != 0) {
+					inputTaken = true;
 				}
 			}
-		}
-		else if (anInt1501 > 0)
-		{
+		} else if (anInt1501 > 0) {
 			anInt1501--;
 		}
-		if (loadingStage == 2)
-			method108();
-		if (loadingStage == 2 && aBoolean1160)
-			calcCameraPos();
-		for (int i1 = 0; i1 < 5; i1++)
-			anIntArray1030[i1]++;
+	}
 
+
+	private void runSceneRendering(Graphics2D g) {
+		if (loadingStage == 2) {
+			method108();
+			if (aBoolean1160) {
+				calcCameraPos();
+			}
+		}
+		for (int i = 0; i < 5; i++) {
+			anIntArray1030[i]++;
+		}
 		method73(g);
-		super.idleTime++;
-		if (super.idleTime > 4500)
-		{
+	}
+
+	private void handleIdle() {
+		idleTime++;
+		if (idleTime > 4500) {
 			anInt1011 = 250;
-			super.idleTime -= 500;
+			idleTime -= 500;
 			stream.createFrame(202);
 		}
 		anInt1010++;
-		if (anInt1010 > 50)
+		if (anInt1010 > 50) {
 			stream.createFrame(0);
-		try
-		{
-			if (socketStream != null && stream.currentOffset > 0)
-			{
+		}
+	}
+
+	private void tryFlushStream(Graphics2D g, GameCanvas canvas) {
+		try {
+			if (socketStream != null && stream.currentOffset > 0) {
 				socketStream.queueBytes(stream.currentOffset, stream.buffer);
 				stream.currentOffset = 0;
 				anInt1010 = 0;
 			}
-		}
-		catch (IOException _ex)
-		{
+		} catch (IOException ex) {
 			dropClient(g, canvas);
-		}
-		catch (Exception exception)
-		{
+		} catch (Exception e) {
 			resetLogout();
 		}
 	}
+
 
 	private void method63()
 	{
@@ -4807,7 +4638,7 @@ public class Client extends ClientEngine
 	{
 		if (aRSImageProducer_1107 != null)
 			return;
-		fullGameScreen = null;
+		gameWorldScreen = null;
 		aRSImageProducer_1166 = null;
 		aRSImageProducer_1164 = null;
 		aRSImageProducer_1163 = null;
@@ -4915,8 +4746,8 @@ public class Client extends ClientEngine
 		{
 			doWalkTo(2, l1, 0, k1 + 1, myStoner.smallY[0], 0, 0, j, myStoner.smallX[0], false, k);
 		}
-		crossX = saveClickX;
-		crossY = saveClickY;
+		crossX = MouseState.x;
+		crossY = MouseState.y;
 		crossType = 2;
 		crossIndex = 0;
 		return true;
@@ -5071,6 +4902,9 @@ public class Client extends ClientEngine
 		}
 		RSSocket rsSocket = socketStream;
 		loggedIn = false;
+		loginComplete = false;
+		loginInProgress = false;
+
 		loginFailures = 0;
 		setBounds();
 		login(myUsername, myPassword, true,g, canvas);
@@ -5099,6 +4933,7 @@ public class Client extends ClientEngine
 
 	protected void doAction(int i)
 	{
+
 		if (i < 0)
 			return;
 		if (inputDialogState != 0)
@@ -5197,8 +5032,8 @@ public class Client extends ClientEngine
 			if (npc != null)
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, npc.smallY[0], myStoner.smallX[0], false, npc.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				stream.createFrame(57);
@@ -5213,8 +5048,8 @@ public class Client extends ClientEngine
 			boolean flag1 = doWalkTo(2, 0, 0, 0, myStoner.smallY[0], 0, 0, k, myStoner.smallX[0], false, j);
 			if (!flag1)
 				flag1 = doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, k, myStoner.smallX[0], false, j);
-			crossX = saveClickX;
-			crossY = saveClickY;
+			crossX = MouseState.x;
+			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
 			stream.createFrame(236);
@@ -5237,8 +5072,8 @@ public class Client extends ClientEngine
 			boolean flag2 = doWalkTo(2, 0, 0, 0, myStoner.smallY[0], 0, 0, k, myStoner.smallX[0], false, j);
 			if (!flag2)
 				flag2 = doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, k, myStoner.smallX[0], false, j);
-			crossX = saveClickX;
-			crossY = saveClickY;
+			crossX = MouseState.x;
+			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
 			stream.createFrame(25);
@@ -5390,8 +5225,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, stoner.smallY[0], myStoner.smallX[0], false,
 					stoner.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				anInt1188 += i1;
@@ -5411,8 +5246,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub1_1.smallY[0],
 					myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub1_1.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				stream.createFrame(155);
@@ -5426,8 +5261,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub2_1.smallY[0],
 					myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub2_1.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				stream.createFrame(153);
@@ -5436,7 +5271,7 @@ public class Client extends ClientEngine
 		}
 		if (l == 519)
 			if (!menuOpen)
-				worldController.method312(saveClickY - 4, saveClickX - 4);
+				worldController.method312(MouseState.y - 4, MouseState.x - 4);
 			else
 				worldController.method312(k - 4, j - 4);
 		if (l == 1062)
@@ -5640,8 +5475,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub2_2.smallY[0],
 					myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub2_2.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				anInt986 += i1;
@@ -5660,8 +5495,8 @@ public class Client extends ClientEngine
 			boolean flag3 = doWalkTo(2, 0, 0, 0, myStoner.smallY[0], 0, 0, k, myStoner.smallX[0], false, j);
 			if (!flag3)
 				flag3 = doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, k, myStoner.smallX[0], false, j);
-			crossX = saveClickX;
-			crossY = saveClickY;
+			crossX = MouseState.x;
+			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
 			stream.createFrame(79);
@@ -5855,8 +5690,8 @@ public class Client extends ClientEngine
 			boolean flag4 = doWalkTo(2, 0, 0, 0, myStoner.smallY[0], 0, 0, k, myStoner.smallX[0], false, j);
 			if (!flag4)
 				flag4 = doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, k, myStoner.smallX[0], false, j);
-			crossX = saveClickX;
-			crossY = saveClickY;
+			crossX = MouseState.x;
+			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
 			stream.createFrame(156);
@@ -5889,8 +5724,8 @@ public class Client extends ClientEngine
 			boolean flag5 = doWalkTo(2, 0, 0, 0, myStoner.smallY[0], 0, 0, k, myStoner.smallX[0], false, j);
 			if (!flag5)
 				flag5 = doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, k, myStoner.smallX[0], false, j);
-			crossX = saveClickX;
-			crossY = saveClickY;
+			crossX = MouseState.x;
+			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
 			stream.createFrame(181);
@@ -5958,8 +5793,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub1_2.smallY[0],
 					myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub1_2.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				anInt1226 += i1;
@@ -5980,8 +5815,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub1_3.smallY[0],
 					myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub1_3.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				anInt1134++;
@@ -6002,8 +5837,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub1_4.smallY[0],
 					myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub1_4.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				stream.createFrame(131);
@@ -6047,8 +5882,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub1_6.smallY[0],
 					myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub1_6.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				stream.createFrame(72);
@@ -6062,8 +5897,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub2_3.smallY[0],
 					myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub2_3.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				stream.createFrame(249);
@@ -6078,8 +5913,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub2_4.smallY[0],
 					myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub2_4.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				stream.createFrame(39);
@@ -6093,8 +5928,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub2_5.smallY[0],
 					myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub2_5.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				stream.createFrame(139);
@@ -6114,8 +5949,8 @@ public class Client extends ClientEngine
 			boolean flag6 = doWalkTo(2, 0, 0, 0, myStoner.smallY[0], 0, 0, k, myStoner.smallX[0], false, j);
 			if (!flag6)
 				flag6 = doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, k, myStoner.smallX[0], false, j);
-			crossX = saveClickX;
-			crossY = saveClickY;
+			crossX = MouseState.x;
+			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
 			stream.createFrame(23);
@@ -6174,8 +6009,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub2_6.smallY[0],
 					myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub2_6.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				stream.createFrame(14);
@@ -6235,8 +6070,8 @@ public class Client extends ClientEngine
 			{
 				doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub1_7.smallY[0],
 					myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub1_7.smallX[0]);
-				crossX = saveClickX;
-				crossY = saveClickY;
+				crossX = MouseState.x;
+				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
 				if ((i1 & 3) == 0)
@@ -6335,8 +6170,8 @@ public class Client extends ClientEngine
 			boolean flag7 = doWalkTo(2, 0, 0, 0, myStoner.smallY[0], 0, 0, k, myStoner.smallX[0], false, j);
 			if (!flag7)
 				flag7 = doWalkTo(2, 0, 1, 0, myStoner.smallY[0], 1, 0, k, myStoner.smallX[0], false, j);
-			crossX = saveClickX;
-			crossY = saveClickY;
+			crossX = MouseState.x;
+			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
 			stream.createFrame(253);
@@ -6379,7 +6214,7 @@ public class Client extends ClientEngine
 
 	public void mouseWheelDragged(int i, int j)
 	{
-		if (!mouseWheelDown)
+		if (!MouseManager.mouseWheelDown)
 		{
 			return;
 		}
@@ -6639,8 +6474,6 @@ public class Client extends ClientEngine
 			}
 
 			setBounds();
-			mouseDetection = new MouseDetection(this);
-			startRunnable(mouseDetection, 10);
 			Animable_Sub5.clientInstance = this;
 			ObjectDef.clientInstance = this;
 			EntityDef.clientInstance = this;
@@ -6659,12 +6492,15 @@ public class Client extends ClientEngine
 	{
 		if (rsAlreadyLoaded || loadingError || genericLoadingError)
 			return;
+
 		loopCycle++;
 		if (!loggedIn)
 			loginRenderer.processLoginScreen(g, canvas);
 		else
 			mainGameProcessor(g, canvas);
 		processOnDemandQueue();
+		//MouseState.leftClicked = false;
+		//MouseState.rightClicked = false;
 	}
 
 	public void cleanUpForQuit()
@@ -6682,9 +6518,6 @@ public class Client extends ClientEngine
 		}
 		socketStream = null;
 		stopMidi();
-		if (mouseDetection != null)
-			mouseDetection.running = false;
-		mouseDetection = null;
 		onDemandFetcher.disable();
 		onDemandFetcher = null;
 		aStream_834 = null;
@@ -6797,6 +6630,7 @@ public class Client extends ClientEngine
 
 	public void processDrawing(Graphics2D g, GameCanvas canvas)
 	{
+		//System.out.println("Render frame: loggedIn=" + loggedIn + ", loginComplete=" + loginComplete + ", loadingStage=" + loadingStage);
 
 		int expected = Client.screenAreaWidth * Client.screenAreaHeight;
 		if (pixels.length != expected) {
@@ -6842,13 +6676,6 @@ public class Client extends ClientEngine
 			return;
 		}
 
-		//refreshFrameSize(canvas);
-		//if (aRSImageProducer_1109 == null ||
-		//	aRSImageProducer_1109.canvasWidth != Client.frameWidth ||
-		//	aRSImageProducer_1109.canvasHeight != Client.frameHeight) {
-		//	aRSImageProducer_1109 = new ImageProducer(Client.frameWidth, Client.frameHeight);
-		//}
-
 		aRSImageProducer_1109.initDrawingArea();
 		Graphics2D offscreenG = aRSImageProducer_1109.getImageGraphics();
 
@@ -6873,7 +6700,7 @@ public class Client extends ClientEngine
 		}
 		DrawingArea.drawPixels(36, (Client.frameHeight / 2) - 10, ((Client.frameWidth / 2) - 274 + percent), 0x302e2c, (530 - percent));
 		regularText.method382(0xffffff, (Client.frameWidth / 2), message, (Client.frameHeight / 2) + 12, true);
-		aRSImageProducer_1109.drawGraphics(0, g, 0);
+		aRSImageProducer_1109.drawGraphics(0, g,0);
 
 		if (welcomeScreenRaised)
 		{
@@ -6887,8 +6714,8 @@ public class Client extends ClientEngine
 		{
 			menuActionName[menuActionRow] = "Shuffle over here";
 			menuActionID[menuActionRow] = 519;
-			menuActionCmd2[menuActionRow] = mouseX;
-			menuActionCmd3[menuActionRow] = mouseY;
+			menuActionCmd2[menuActionRow] = MouseState.x;
+			menuActionCmd3[menuActionRow] = MouseState.y;
 			menuActionRow++;
 		}
 		int j = -1;
@@ -7145,7 +6972,7 @@ public class Client extends ClientEngine
 	{
 		do
 		{
-			int j = readChar(-796);
+			int j = Keyboard.readChar(-796);
 			if (j == -1)
 				break;
 			if (j == 96)
@@ -8450,272 +8277,275 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void rightClickMenu(int xOffSet, int yOffSet)
-	{
+	private void rightClickMenu(int xOffSet, int yOffSet) {
+		final int PAD_TOP = 1;
+		final int PAD_BOTTOM = 3;
 
 		int xPos = menuOffsetX - (xOffSet - 4);
 		int yPos = menuOffsetY + 4 - yOffSet;
 		int menuW = menuWidth;
-		final int PAD_TOP = 1;
-		final int PAD_BOTTOM = 3;
 		int bgY = yPos + 18 - PAD_TOP;
 		int bgH = menuActionRow * 15 + PAD_TOP + PAD_BOTTOM;
-		int panel = 0x1E1E1E;
-		int border = 0x353535;
-		int hover = 0x2B2B2B;
-		DrawingArea.drawAlphaPixels(xPos, bgY, menuW, bgH, panel, 170);
-		DrawingArea.drawPixels(bgH, bgY, xPos, border, 1);
-		DrawingArea.drawPixels(bgH, bgY, xPos + menuW - 1, border, 1);
-		DrawingArea.drawPixels(1, bgY, xPos, border, menuW);
-		DrawingArea.drawPixels(1, bgY + bgH - 1, xPos, border, menuW);
-		int mouseX = ClientEngine.mouseX - xOffSet;
-		int mouseY = ClientEngine.mouseY - yOffSet;
 
-		for (int i = 0; i < menuActionRow; i++)
-		{
-
-			int textY = yPos + 31 + (menuActionRow - 1 - i) * 15;
-			int colour = 0xFFFFFF;
-
-			if (mouseX > xPos && mouseX < xPos + menuW &&
-				mouseY > textY - 13 && mouseY < textY + 3)
-			{
-
-				DrawingArea.drawPixels(15, textY - 12, xPos + 2, hover, menuW - 4);
-				colour = 0xFFFFA0;
-			}
-			newBoldFont.drawBasicString(menuActionName[i], xPos + 4, textY, colour, 1);
-		}
+		drawMenuBackground(xPos, bgY, menuW, bgH);
+		drawMenuEntries(xPos, yPos, menuW);
 
 		inputTaken = true;
 		tabAreaAltered = true;
 	}
 
-	private void deterquarryMenuSize()
-	{
-		int boxLength = newBoldFont.getTextWidth("Choose already");
-		for (int row = 0; row < menuActionRow; row++)
-		{
-			int actionLength = newBoldFont.getTextWidth(menuActionName[row]);
-			if (actionLength > boxLength)
-			{
-				boxLength = actionLength;
+	private void drawMenuBackground(int x, int y, int width, int height) {
+		int panel = 0x1E1E1E;
+		int border = 0x353535;
+
+		DrawingArea.drawAlphaPixels(x, y, width, height, panel, 170);
+		DrawingArea.drawPixels(height, y, x, border, 1);
+		DrawingArea.drawPixels(height, y, x + width - 1, border, 1);
+		DrawingArea.drawPixels(1, y, x, border, width);
+		DrawingArea.drawPixels(1, y + height - 1, x, border, width);
+	}
+
+	private void drawMenuEntries(int x, int y, int width) {
+		final int hover = 0x2B2B2B;
+
+		for (int i = 0; i < menuActionRow; i++) {
+			int textY = y + 31 + (menuActionRow - 1 - i) * 15;
+			String entry = menuActionName[i];
+			int entryWidth = newBoldFont.getTextWidth(entry);
+			int textX = x + (width - entryWidth) / 2;
+			int textColor = 0xFFFFFF;
+
+			if (MouseState.x > x && MouseState.x < x + width &&
+				MouseState.y > textY - 13 && MouseState.y < textY + 3) {
+				DrawingArea.drawPixels(15, textY - 12, x + 2, hover, width - 4);
+				textColor = 0xFFFFA0;
 			}
-		}
-		boxLength += 8;
 
-		int offset = 15 * menuActionRow + 21;
-
-		if (saveClickX > 0 && saveClickY > 0
-			&& saveClickX < frameWidth
-			&& saveClickY < frameHeight)
-		{
-
-			int xClick = saveClickX - boxLength / 2;
-			if (xClick + boxLength > frameWidth - 4)
-				xClick = frameWidth - 4 - boxLength;
-			if (xClick < 0)
-				xClick = 0;
-
-			int yClick = saveClickY;
-			yClick -= MENU_Y_SHIFT;
-			if (yClick < 0)
-				yClick = 0;
-			if (yClick + offset > frameHeight - 6)
-				yClick = frameHeight - 6 - offset;
-
-			menuOpen = true;
-			menuOffsetX = xClick;
-			menuOffsetY = yClick;
-			menuWidth = boxLength;
-			menuHeight = 15 * menuActionRow + 22;
+			newBoldFont.drawBasicString(entry, textX, textY, textColor, 1);
 		}
 	}
 
-	private void processMenuClick()
-	{
-		if (activeInterfaceType != 0)
+
+	private void deterquarryMenuSize() {
+		int boxWidth = getMaxMenuTextWidth() + 8;
+		int boxHeight = 15 * menuActionRow + 22;
+
+		if (MouseState.x <= 0 || MouseState.y <= 0 ||
+			MouseState.x >= frameWidth || MouseState.y >= frameHeight)
 			return;
-		int j = super.clickMode3;
-		if (spellSelected == 1 && saveClickX >= 516 && saveClickY >= 160 && saveClickX <= 765
-			&& saveClickY <= 205)
-			j = 0;
-		if (menuOpen)
-		{
-			if (j != 1)
-			{
-				int k = mouseX;
-				int j1 = mouseY;
-				if (menuScreenArea == 0)
-				{
-					k -= 4;
-					j1 -= 4;
-				}
-				if (menuScreenArea == 1)
-				{
-					k -= 519;
-					j1 -= 168;
-				}
-				if (menuScreenArea == 2)
-				{
-					k -= 17;
-					j1 -= 338;
-				}
-				if (menuScreenArea == 3)
-				{
-					k -= 519;
-					j1 -= 0;
-				}
-				if (k < menuOffsetX - 10 || k > menuOffsetX + menuWidth + 10 || j1 < menuOffsetY - 10
-					|| j1 > menuOffsetY + menuHeight + 10)
-				{
-					menuOpen = false;
-					if (menuScreenArea == 1)
-					{
-					}
-					if (menuScreenArea == 2)
-						inputTaken = true;
-				}
-			}
-			if (j == 1)
-			{
-				int l = menuOffsetX;
-				int k1 = menuOffsetY;
-				int i2 = menuWidth;
-				int k2 = saveClickX;
-				int l2 = saveClickY;
-				switch (menuScreenArea)
-				{
-					case 0:
-						k2 -= 4;
-						l2 -= 4;
-						break;
-					case 1:
-						k2 -= 519;
-						l2 -= 168;
-						break;
-					case 2:
-						k2 -= 5;
-						l2 -= 338;
-						break;
-					case 3:
-						k2 -= 519;
-						l2 -= 0;
-						break;
-				}
-				int i3 = -1;
-				for (int j3 = 0; j3 < menuActionRow; j3++)
-				{
-					int k3 = k1 + 31 + (menuActionRow - 1 - j3) * 15;
-					if (k2 > l && k2 < l + i2 && l2 > k3 - 13 && l2 < k3 + 3)
-						i3 = j3;
-				}
-				if (i3 != -1)
-					doAction(i3);
-				menuOpen = false;
-				if (menuScreenArea == 1)
-				{
-				}
-				if (menuScreenArea == 2)
-				{
-					inputTaken = true;
-				}
-			}
 
-			if (RSInterface.currentInputField != null)
-			{
-				if (RSInterface.currentInputField.onlyNumbers)
-				{
-					long amount = 0;
+		int xClick = MouseState.x - boxWidth / 2;
+		int yClick = MouseState.y - MENU_Y_SHIFT;
 
-					try
-					{
-						amount = Long.parseLong(message.replaceAll(",", ""));
-						if (amount < -Integer.MAX_VALUE)
-						{
-							amount = -Integer.MAX_VALUE;
-						}
-						else if (amount > Integer.MAX_VALUE)
-						{
-							amount = Integer.MAX_VALUE;
-						}
-					}
-					catch (Exception ignored)
-					{
-					}
+		// Clamp within canvas
+		if (xClick + boxWidth > frameWidth - 4)
+			xClick = frameWidth - 4 - boxWidth;
+		if (xClick < 0)
+			xClick = 0;
 
-					if (amount > 0)
-					{
-						stream.createFrame(208);
-						stream.writeDWord((int) amount);
-					}
-				}
-				else
-				{
-					stream.createFrame(150);
-					stream.writeWordBigEndian(RSInterface.currentInputField.disabledMessage.length() + 3);
-					stream.writeWord(RSInterface.currentInputField.id);
-					stream.writeString(RSInterface.currentInputField.disabledMessage);
-				}
+		if (yClick + boxHeight > frameHeight - 6)
+			yClick = frameHeight - 6 - boxHeight;
+		if (yClick < 0)
+			yClick = 0;
 
-				RSInterface.currentInputField.disabledMessage = "";
-			}
-			RSInterface.currentInputField = null;
+		menuOpen = true;
+		menuOffsetX = xClick;
+		menuOffsetY = yClick;
+		menuWidth = boxWidth;
+		menuHeight = boxHeight;
+	}
+
+
+	private int getMaxMenuTextWidth() {
+		int max = newBoldFont.getTextWidth("Choose already");
+		for (int i = 0; i < menuActionRow; i++) {
+			int width = newBoldFont.getTextWidth(menuActionName[i]);
+			if (width > max) max = width;
 		}
-		else
-		{
-			/* Block world clicks on blank resizable-bottom strip */
-			if (changeTabArea) {
-				final int barH  = (frameWidth >= 1000) ? 37 : 73;        // height
-				final int barX0 = (frameWidth >= 1000) ? frameWidth-450  // wide layout
-					: frameWidth-226; // narrow layout
-				if (saveClickY >= frameHeight - barH && saveClickX >= barX0) {
-        /* click fell on blank part of the bottom tab strip
-           – let tab logic run, but skip any scene action   */
-					processTabClick();
-					return;
-				}
-			}
+		return max;
+	}
 
+	private int clamp(int value, int min, int max) {
+		return Math.max(min, Math.min(max, value));
+	}
 
-			if (j == 1 && menuActionRow > 0)
-			{
-				int i1 = menuActionID[menuActionRow - 1];
-				if (i1 == 632 || i1 == 78 || i1 == 867 || i1 == 431 || i1 == 53 || i1 == 74 || i1 == 454 || i1 == 539
-					|| i1 == 493 || i1 == 847 || i1 == 447 || i1 == 1125)
-				{
-					int l1 = menuActionCmd2[menuActionRow - 1];
-					int j2 = menuActionCmd3[menuActionRow - 1];
-					RSInterface class9 = RSInterface.interfaceCache[j2];
-					if (class9.aBoolean259 || class9.aBoolean235)
-					{
-						aBoolean1242 = false;
-						dragCycle = 0;
-						focusedDragWidget = j2;
-						dragFromSlot = l1;
-						activeInterfaceType = 2;
-						pressX = saveClickX;
-						pressY = saveClickY;
-						if (RSInterface.interfaceCache[j2].parentID == openInterfaceID)
-							activeInterfaceType = 1;
-						if (RSInterface.interfaceCache[j2].parentID == backDialogID)
-							activeInterfaceType = 3;
-						return;
-					}
-				}
-			}
-			if (j == 1 && (anInt1253 == 1 || menuHasAddStoner(menuActionRow - 1)) && menuActionRow > 2)
-				j = 2;
-			if (j == 1 && menuActionRow > 0)
+	private void processMenuClick(boolean leftClick, boolean rightClick) {
+		if (activeInterfaceType != 0) {
+			System.out.println("🚫 BLOCKED: activeInterfaceType = " + activeInterfaceType);
+			return;
+		}
+
+		if (spellSelected == 1 && MouseState.x >= 516 && MouseState.y >= 160 && MouseState.x <= 765 && MouseState.y <= 205)
+			return;
+
+		if (!leftClick && !rightClick) {
+			if (menuOpen) handleMenuCloseOnOutsideClick();
+			return;
+		}
+
+		if (menuOpen) {
+				handleMenuClick();
+				handleInputFieldSubmission();
+
+		} else {
+				if (handleResizableTabAreaClick(leftClick, rightClick)) return;
+				handleWidgetDragStart(leftClick, rightClick);
+				handleFallbackAction(leftClick, rightClick);
+				processMainScreenClick(leftClick, rightClick);
+				processTabClick(leftClick, rightClick);
+				processChatModeClick(leftClick, rightClick);
+				handleMinimapInteractions(leftClick, rightClick);
+			if (!rightClick && menuActionRow > 0 && !isClickInsideOrbBounds()) {
 				doAction(menuActionRow - 1);
-			if (j == 2 && menuActionRow > 0)
-				deterquarryMenuSize();
-			processMainScreenClick();
-			processTabClick();
-			processChatModeClick();
-			minimapHovers();
+				menuOpen = false;
+			}
+
+
+		}
+
+		MouseState.leftClicked = false;
+		MouseState.rightClicked = false;
+	}
+
+	private boolean isClickInsideOrbBounds() {
+		if (!Configuration.enableStatusOrbs) return false;
+
+		int orbX = frameWidth - 217 + 155;
+
+		boolean insideOrbRegion =
+			inBounds(MouseState.x, MouseState.y, orbX, 45, 56, 32) || // HP
+				inBounds(MouseState.x, MouseState.y, orbX, 85, 56, 32) || // Prayer
+				inBounds(MouseState.x, MouseState.y, orbX, 125, 56, 32) || // Run
+				inBounds(MouseState.x, MouseState.y, frameWidth - 96, 2, 26, 26) || // XP orb
+				(Configuration.enablePouch && inBounds(MouseState.x, MouseState.y, frameWidth - 65, 165, 62, 31)); // Pouch
+
+		// ⛔ Do NOT block logout button (top-right)
+		boolean isLogoutArea = inBounds(MouseState.x, MouseState.y, frameWidth - 26, 2, 25, 22);
+
+		return insideOrbRegion && !isLogoutArea;
+	}
+
+
+
+
+	private void handleMenuCloseOnOutsideClick() {
+		int x = MouseState.x;
+		int y = MouseState.y;
+
+		switch (menuScreenArea) {
+			case 0: x -= 4;  y -= 4;   break;
+			case 1: x -= 519; y -= 168; break;
+			case 2: x -= 17;  y -= 338; break;
+			case 3: x -= 519; y -= 0;   break;
+		}
+
+		if (x < menuOffsetX - 10 || x > menuOffsetX + menuWidth + 10 || y < menuOffsetY - 10 || y > menuOffsetY + menuHeight + 10) {
+			menuOpen = false;
+			if (menuScreenArea == 2) inputTaken = true;
 		}
 	}
+
+	private void handleMenuClick() {
+		int mouseX = MouseState.x;
+		int mouseY = MouseState.y;
+
+		switch (menuScreenArea) {
+			case 0: mouseX -= 4;   mouseY -= 4;   break;
+			case 1: mouseX -= 519; mouseY -= 168; break;
+			case 2: mouseX -= 5;   mouseY -= 338; break;
+			case 3: mouseX -= 519; mouseY -= 0;   break;
+		}
+
+		int actionIndex = -1;
+		for (int i = 0; i < menuActionRow; i++) {
+			int entryY = menuOffsetY + 31 + (menuActionRow - 1 - i) * 15;
+			if (mouseX > menuOffsetX && mouseX < menuOffsetX + menuWidth && mouseY > entryY - 13 && mouseY < entryY + 3) {
+				actionIndex = i;
+				break;
+			}
+		}
+
+		if (actionIndex != -1) doAction(actionIndex);
+		menuOpen = false;
+		if (menuScreenArea == 2) inputTaken = true;
+	}
+
+	private void handleInputFieldSubmission() {
+		if (RSInterface.currentInputField == null) return;
+
+		if (RSInterface.currentInputField.onlyNumbers) {
+			long amount = 0;
+			try {
+				amount = Long.parseLong(message.replaceAll(",", ""));
+				amount = Math.max(-Integer.MAX_VALUE, Math.min(amount, Integer.MAX_VALUE));
+			} catch (Exception ignored) {}
+
+			if (amount > 0) {
+				stream.createFrame(208);
+				stream.writeDWord((int) amount);
+			}
+		} else {
+			stream.createFrame(150);
+			stream.writeWordBigEndian(RSInterface.currentInputField.disabledMessage.length() + 3);
+			stream.writeWord(RSInterface.currentInputField.id);
+			stream.writeString(RSInterface.currentInputField.disabledMessage);
+		}
+
+		RSInterface.currentInputField.disabledMessage = "";
+		RSInterface.currentInputField = null;
+	}
+
+	private boolean handleResizableTabAreaClick(boolean leftClick, boolean rightClick) {
+		if (!changeTabArea) return false;
+
+		final int barHeight = (frameWidth >= 1000) ? 37 : 73;
+		final int barX = (frameWidth >= 1000) ? frameWidth - 450 : frameWidth - 226;
+
+		if (MouseState.y >= frameHeight - barHeight && MouseState.x >= barX) {
+			processTabClick(leftClick, rightClick);
+			return true;
+		}
+		return false;
+	}
+
+	private void handleWidgetDragStart(boolean leftClick, boolean rightClick) {
+		if (!leftClick || menuActionRow <= 0) return;
+
+		int actionId = menuActionID[menuActionRow - 1];
+		if (actionId != 632 && actionId != 78 && actionId != 867 && actionId != 431 && actionId != 53 &&
+			actionId != 74 && actionId != 454 && actionId != 539 && actionId != 493 &&
+			actionId != 847 && actionId != 447 && actionId != 1125) return;
+
+		int slot = menuActionCmd2[menuActionRow - 1];
+		int interfaceId = menuActionCmd3[menuActionRow - 1];
+		RSInterface widget = RSInterface.interfaceCache[interfaceId];
+
+		if (widget.aBoolean259 || widget.aBoolean235) {
+			aBoolean1242 = false;
+			dragCycle = 0;
+			focusedDragWidget = interfaceId;
+			dragFromSlot = slot;
+			activeInterfaceType = 2;
+			pressX = MouseState.x;
+			pressY = MouseState.y;
+
+			if (widget.parentID == openInterfaceID) activeInterfaceType = 1;
+			if (widget.parentID == backDialogID) activeInterfaceType = 3;
+		}
+	}
+
+	private void handleFallbackAction(boolean leftClick, boolean rightClick) {
+		if (!rightClick) return;
+
+		if ((leftClick || menuHasAddStoner(menuActionRow - 1)) && menuActionRow > 2) {
+			doAction(menuActionRow - 1);
+		}
+
+		if (menuActionRow > 0) {
+			deterquarryMenuSize();
+		}
+	}
+
 
 	private void drawSplitPrivateChat()
 	{
@@ -8856,44 +8686,8 @@ public class Client extends ClientEngine
 					}
 				}
 			}
-		}
-	}
 
-	protected final void minimapHovers() {
 
-		int frameSize = frameWidth - 217;
-		int orbPosX = frameSize + 155;
-
-		// HP orb
-		int hpX = orbPosX;
-		int hpY = 45;
-		hpHover = inBounds(mouseX, mouseY, hpX, hpY, 56, 32);
-
-		// Prayer orb
-		int prayX = orbPosX;
-		int prayY = 85;
-		prayHover = inBounds(mouseX, mouseY, prayX, prayY, 56, 32);
-
-		// Run orb
-		int runX = orbPosX;
-		int runY = 125;
-		runHover = inBounds(mouseX, mouseY, runX, runY, 56, 32);
-
-		// XP orb
-		int xpX = frameWidth - 96;
-		int xpY = 2;
-		counterHover = inBounds(mouseX, mouseY, xpX, xpY, 26, 26);
-
-		// World orb
-		int worldX = frameWidth - 41;
-		int worldY = 203;
-		worldHover = inBounds(mouseX, mouseY, worldX, worldY, 30, 30);
-
-		// Pouch orb
-		if (Configuration.enablePouch) {
-			int pouchX = frameWidth - 65;
-			int pouchY = 165;
-			pouchHover = inBounds(mouseX, mouseY, pouchX, pouchY, 62, 31);
 		}
 	}
 
@@ -8902,9 +8696,9 @@ public class Client extends ClientEngine
 	}
 
 
-	protected void processTabClick()
+	protected void processTabClick(boolean leftClick, boolean rightClick)
 	{
-		if (super.clickMode3 == 1)
+		if (leftClick)
 		{
 			if (!changeTabArea)
 			{
@@ -8912,9 +8706,9 @@ public class Client extends ClientEngine
 				int yOffset = frameHeight - 503;
 				for (int i = 0; i < tabClickX.length; i++)
 				{
-					if (mouseX >= tabClickStart[i] + xOffset
-						&& mouseX <= tabClickStart[i] + tabClickX[i] + xOffset
-						&& mouseY >= tabClickY[i] + yOffset && mouseY < tabClickY[i] + 37 + yOffset
+					if (MouseState.x >= tabClickStart[i] + xOffset
+						&& MouseState.x <= tabClickStart[i] + tabClickX[i] + xOffset
+						&& MouseState.y >= tabClickY[i] + yOffset && MouseState.y < tabClickY[i] + 37 + yOffset
 						&& tabInterfaceIDs[i] != -1)
 					{
 						tabID = i;
@@ -8925,9 +8719,9 @@ public class Client extends ClientEngine
 			}
 			else if (changeTabArea && frameWidth >= 1000)
 			{
-				if (mouseY >= frameHeight - 37 && mouseY <= frameHeight)
+				if (MouseState.y >= frameHeight - 37 && MouseState.y <= frameHeight)
 				{
-					if (mouseX >= frameWidth - 449 && mouseX <= frameWidth - 418)
+					if (MouseState.x >= frameWidth - 449 && MouseState.x <= frameWidth - 418)
 					{
 						if (tabID == 0)
 						{
@@ -8940,7 +8734,7 @@ public class Client extends ClientEngine
 						tabID = 0;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 417 && mouseX <= frameWidth - 386)
+					if (MouseState.x >= frameWidth - 417 && MouseState.x <= frameWidth - 386)
 					{
 						if (tabID == 1)
 						{
@@ -8953,7 +8747,7 @@ public class Client extends ClientEngine
 						tabID = 1;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 385 && mouseX <= frameWidth - 354)
+					if (MouseState.x >= frameWidth - 385 && MouseState.x <= frameWidth - 354)
 					{
 						if (tabID == 2)
 						{
@@ -8966,7 +8760,7 @@ public class Client extends ClientEngine
 						tabID = 2;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 353 && mouseX <= frameWidth - 322)
+					if (MouseState.x >= frameWidth - 353 && MouseState.x <= frameWidth - 322)
 					{
 						if (tabID == 3)
 						{
@@ -8979,7 +8773,7 @@ public class Client extends ClientEngine
 						tabID = 3;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 321 && mouseX <= frameWidth - 290)
+					if (MouseState.x >= frameWidth - 321 && MouseState.x <= frameWidth - 290)
 					{
 						if (tabID == 4)
 						{
@@ -8992,7 +8786,7 @@ public class Client extends ClientEngine
 						tabID = 4;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 289 && mouseX <= frameWidth - 258)
+					if (MouseState.x >= frameWidth - 289 && MouseState.x <= frameWidth - 258)
 					{
 						if (tabID == 5)
 						{
@@ -9005,7 +8799,7 @@ public class Client extends ClientEngine
 						tabID = 5;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 257 && mouseX <= frameWidth - 226)
+					if (MouseState.x >= frameWidth - 257 && MouseState.x <= frameWidth - 226)
 					{
 						if (tabID == 6)
 						{
@@ -9018,7 +8812,7 @@ public class Client extends ClientEngine
 						tabID = 6;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 225 && mouseX <= frameWidth - 196)
+					if (MouseState.x >= frameWidth - 225 && MouseState.x <= frameWidth - 196)
 					{
 						if (tabID == 7)
 						{
@@ -9031,7 +8825,7 @@ public class Client extends ClientEngine
 						tabID = 7;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 195 && mouseX <= frameWidth - 164)
+					if (MouseState.x >= frameWidth - 195 && MouseState.x <= frameWidth - 164)
 					{
 						if (tabID == 8)
 						{
@@ -9044,7 +8838,7 @@ public class Client extends ClientEngine
 						tabID = 8;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 163 && mouseX <= frameWidth - 132)
+					if (MouseState.x >= frameWidth - 163 && MouseState.x <= frameWidth - 132)
 					{
 						if (tabID == 9)
 						{
@@ -9057,7 +8851,7 @@ public class Client extends ClientEngine
 						tabID = 9;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 131 && mouseX <= frameWidth - 100)
+					if (MouseState.x >= frameWidth - 131 && MouseState.x <= frameWidth - 100)
 					{
 						if (tabID == 10)
 						{
@@ -9070,7 +8864,7 @@ public class Client extends ClientEngine
 						tabID = 10;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 99 && mouseX <= frameWidth - 68)
+					if (MouseState.x >= frameWidth - 99 && MouseState.x <= frameWidth - 68)
 					{
 						if (tabID == 11)
 						{
@@ -9083,7 +8877,7 @@ public class Client extends ClientEngine
 						tabID = 11;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 67 && mouseX <= frameWidth - 36)
+					if (MouseState.x >= frameWidth - 67 && MouseState.x <= frameWidth - 36)
 					{
 						if (tabID == 12)
 						{
@@ -9096,7 +8890,7 @@ public class Client extends ClientEngine
 						tabID = 12;
 						tabAreaAltered = true;
 					}
-					if (mouseX >= frameWidth - 32 && mouseX <= frameWidth)
+					if (MouseState.x >= frameWidth - 32 && MouseState.x <= frameWidth)
 					{
 						if (tabID == 13)
 						{
@@ -9119,7 +8913,7 @@ public class Client extends ClientEngine
 		if (aRSImageProducer_1166 != null)
 			return;
 		nullLoader();
-		fullGameScreen = null;
+		gameWorldScreen = null;
 		aRSImageProducer_1107 = null;
 		aRSImageProducer_1108 = null;
 		aRSImageProducer_1109 = null;
@@ -9142,21 +8936,21 @@ public class Client extends ClientEngine
 
 	public void rightClickChatButtons()
 	{
-		if (mouseY >= frameHeight - 22 && mouseY <= frameHeight)
+		if (MouseState.y >= frameHeight - 22 && MouseState.y <= frameHeight)
 		{
-			if (mouseX >= 5 && mouseX <= 61)
+			if (MouseState.x >= 5 && MouseState.x <= 61)
 			{
 				menuActionName[1] = "See All";
 				menuActionID[1] = 999;
 				menuActionRow = 2;
 			}
-			else if (mouseX >= 71 && mouseX <= 127)
+			else if (MouseState.x >= 71 && MouseState.x <= 127)
 			{
 				menuActionName[1] = "See Game";
 				menuActionID[1] = 998;
 				menuActionRow = 2;
 			}
-			else if (mouseX >= 137 && mouseX <= 193)
+			else if (MouseState.x >= 137 && MouseState.x <= 193)
 			{
 				menuActionName[1] = "Blind Public";
 				menuActionID[1] = 997;
@@ -9170,7 +8964,7 @@ public class Client extends ClientEngine
 				menuActionID[5] = 993;
 				menuActionRow = 6;
 			}
-			else if (mouseX >= 203 && mouseX <= 259)
+			else if (MouseState.x >= 203 && MouseState.x <= 259)
 			{
 				menuActionName[1] = "No PM";
 				menuActionID[1] = 992;
@@ -9182,7 +8976,7 @@ public class Client extends ClientEngine
 				menuActionID[4] = 989;
 				menuActionRow = 5;
 			}
-			else if (mouseX >= 269 && mouseX <= 325)
+			else if (MouseState.x >= 269 && MouseState.x <= 325)
 			{
 				menuActionName[1] = "No Cult Chat";
 				menuActionID[1] = 1003;
@@ -9194,7 +8988,7 @@ public class Client extends ClientEngine
 				menuActionID[4] = 1000;
 				menuActionRow = 5;
 			}
-			else if (mouseX >= 335 && mouseX <= 391)
+			else if (MouseState.x >= 335 && MouseState.x <= 391)
 			{
 				menuActionName[1] = "Dont Deal";
 				menuActionID[1] = 987;
@@ -9206,7 +9000,7 @@ public class Client extends ClientEngine
 				menuActionID[4] = 984;
 				menuActionRow = 5;
 			}
-			else if (mouseX >= 404 && mouseX <= 515)
+			else if (MouseState.x >= 404 && MouseState.x <= 515)
 			{
 				menuActionName[1] = "Report Sucker";
 				menuActionID[1] = 606;
@@ -9215,232 +9009,251 @@ public class Client extends ClientEngine
 		}
 	}
 
-	public void processRightClick()
-	{
+	public void processRightClick() {
 		if (activeInterfaceType != 0)
-		{
 			return;
-		}
+
+		resetRightClickMenu();
+
+		Set<Integer> menuHandledInterfaces = new HashSet<>();
+
+		buildChatSplitMenu();
+		handle3DOrInterfaceScreenMenu(menuHandledInterfaces);
+		handleOverlayInterfaces(menuHandledInterfaces);
+		handleTabAreaInterfaces(menuHandledInterfaces);
+		handleChatAreaMenu(menuHandledInterfaces);
+		handleMinimapMenu();
+
+		sortMenuEntries();
+	}
+
+	private void resetRightClickMenu() {
 		menuActionName[0] = "Uuuuhhh, no..";
 		menuActionID[0] = 1107;
 		menuActionRow = 1;
-		if (showChatComponents)
-		{
+		anInt886 = 0;
+		anInt1315 = 0;
+	}
+
+	private void buildChatSplitMenu() {
+		if (showChatComponents) {
 			buildSplitPrivateChatMenu();
 		}
-		anInt886 = 0;
-		anInt1315 = 0;
+	}
 
-		if (getMousePositions())
-		{
-			int w = 512, h = 334;
-			int x = (frameWidth / 2) - 256, y = (frameHeight / 2) - 167;
-			int x2 = (frameWidth / 2) + 256, y2 = (frameHeight / 2) + 167;
-			int count = !changeTabArea ? 4 : 3;
+	private void handle3DOrInterfaceScreenMenu(Set<Integer> handled) {
+		if (!getMousePositions()) return;
 
-			for (int i = 0; i < count; i++)
-			{
-				if (x + w > (frameWidth - 225))
-				{
-					x = x - 30;
-					x2 = x2 - 30;
-					if (x < 0)
-					{
-						x = 0;
-					}
-				}
-				if (y + h > (frameHeight - 182))
-				{
-					y = y - 30;
-					y2 = y2 - 30;
-					if (y < 0)
-					{
-						y = 0;
-					}
-				}
-			}
+		int w = 512, h = 334;
+		int x = (frameWidth / 2) - 256;
+		int y = (frameHeight / 2) - 167;
+		int x2 = x + w;
+		int y2 = y + h;
+		int count = changeTabArea ? 3 : 4;
 
-			if (openInterfaceID == 5292)
-			{
-				if (mouseX > (frameWidth / 2) - 356 && mouseY > (frameHeight / 2) - 230
-					&& mouseX < ((frameWidth / 2) + 356) && mouseY < (frameHeight / 2) + 230)
-				{
-					buildInterfaceMenu((frameWidth / 2) - 356, RSInterface.interfaceCache[openInterfaceID],
-						mouseX, (frameHeight / 2) - 230, mouseY, 0);
-				}
-				else
-				{
-					build3dScreenMenu();
-				}
+		for (int i = 0; i < count; i++) {
+			if (x2 > frameWidth - 225) {
+				x -= 30;
+				x2 -= 30;
+				if (x < 0) x = 0;
 			}
-			else if (openInterfaceID != -1 && openInterfaceID != 5292 && mouseX > x && mouseY > y
-				&& mouseX < x2 && mouseY < y2)
-			{
-				buildInterfaceMenu(x, RSInterface.interfaceCache[openInterfaceID], mouseX, y, mouseY,
-					0);
+			if (y2 > frameHeight - 182) {
+				y -= 30;
+				y2 -= 30;
+				if (y < 0) y = 0;
 			}
-			else
-			{
+		}
+
+		if (openInterfaceID == 5292) {
+			if (MouseState.x >= x - 100 && MouseState.x <= x2 + 100 &&
+				MouseState.y >= y - 63 && MouseState.y <= y2 + 63) {
+				if (handled.add(openInterfaceID))
+					buildInterfaceMenu(x - 100, RSInterface.interfaceCache[openInterfaceID], y - 63, 0);
+			} else {
 				build3dScreenMenu();
 			}
+		} else if (openInterfaceID != -1 &&
+			MouseState.x >= x && MouseState.x <= x2 &&
+			MouseState.y >= y && MouseState.y <= y2) {
+			if (handled.add(openInterfaceID))
+				buildInterfaceMenu(x, RSInterface.interfaceCache[openInterfaceID], y, 0);
+		} else {
+			build3dScreenMenu();
 		}
 
-		if (anInt886 != anInt1026)
-		{
-			anInt1026 = anInt886;
-		}
-		if (anInt1315 != anInt1129)
-		{
-			anInt1129 = anInt1315;
-		}
+		anInt1026 = anInt886;
+		anInt1129 = anInt1315;
 		anInt886 = 0;
 		anInt1315 = 0;
-		if (!changeTabArea)
-		{
-			final int yOffset = frameHeight - 503;
-			final int xOffset = frameWidth - 765;
-			if (mouseX > 548 + xOffset && mouseX < 740 + xOffset && mouseY > 207 + yOffset
-				&& mouseY < 468 + yOffset)
-			{
-				if (invOverlayInterfaceID != -1)
-				{
-					buildInterfaceMenu(548 + xOffset, RSInterface.interfaceCache[invOverlayInterfaceID], mouseX,
-						207 + yOffset, mouseY, 0);
-				}
-				else if (tabInterfaceIDs[tabID] != -1)
-				{
-					buildInterfaceMenu(548 + xOffset, RSInterface.interfaceCache[tabInterfaceIDs[tabID]], mouseX,
-						207 + yOffset, mouseY, 0);
-				}
+	}
+
+
+	private void handleOverlayInterfaces(Set<Integer> handled) {
+		if (!changeTabArea) {
+			int xOffset = frameWidth - 765;
+			int yOffset = frameHeight - 503;
+
+			if (MouseState.x > 548 + xOffset && MouseState.x < 740 + xOffset &&
+				MouseState.y > 207 + yOffset && MouseState.y < 468 + yOffset) {
+
+				int id = (invOverlayInterfaceID != -1) ? invOverlayInterfaceID : tabInterfaceIDs[tabID];
+				if (id != -1 && handled.add(id))
+					buildInterfaceMenu(548 + xOffset, RSInterface.interfaceCache[id], 207 + yOffset, 0);
+			}
+		} else {
+			int yOffset = (frameWidth >= 1000) ? 37 : 74;
+
+			if (MouseState.x > frameWidth - 197 && MouseState.x < frameWidth - 7 &&
+				MouseState.y > frameHeight - yOffset - 267 && MouseState.y < frameHeight - yOffset - 7 &&
+				showTabComponents) {
+
+				int id = (invOverlayInterfaceID != -1) ? invOverlayInterfaceID : tabInterfaceIDs[tabID];
+				if (id != -1 && handled.add(id))
+					buildInterfaceMenu(frameWidth - 197, RSInterface.interfaceCache[id], frameHeight - yOffset - 267, 0);
 			}
 		}
-		else
-		{
-			final int yOffset = frameWidth >= 1000 ? 37 : 74;
-			if (mouseX > frameWidth - 197 && mouseY > frameHeight - yOffset - 267
-				&& mouseX < frameWidth - 7 && mouseY < frameHeight - yOffset - 7 && showTabComponents)
-			{
-				if (invOverlayInterfaceID != -1)
-				{
-					buildInterfaceMenu(frameWidth - 197, RSInterface.interfaceCache[invOverlayInterfaceID],
-						mouseX, frameHeight - yOffset - 267, mouseY, 0);
-				}
-				else if (tabInterfaceIDs[tabID] != -1)
-				{
-					buildInterfaceMenu(frameWidth - 197, RSInterface.interfaceCache[tabInterfaceIDs[tabID]],
-						mouseX, frameHeight - yOffset - 267, mouseY, 0);
-				}
-			}
-		}
-		if (anInt886 != anInt1048)
-		{
+
+		if (anInt886 != anInt1048) {
 			tabAreaAltered = true;
 			anInt1048 = anInt886;
 		}
-		if (anInt1315 != anInt1044)
-		{
+		if (anInt1315 != anInt1044) {
 			tabAreaAltered = true;
 			anInt1044 = anInt1315;
 		}
 		anInt886 = 0;
 		anInt1315 = 0;
-		if (mouseX > 0
-			&& mouseY > (frameHeight - (165 + extendChatArea))
-			&& mouseX < 490 && mouseY < (frameHeight - 40)
-			&& showChatComponents)
-		{
-			if (backDialogID != -1)
-			{
-				buildInterfaceMenu(20, RSInterface.interfaceCache[backDialogID], mouseX,
-					(frameHeight - 145), mouseY, 0);
-			}
-			else if (mouseY < (frameHeight - 40) && mouseX < 490)
-			{
-				buildChatAreaMenu(mouseY - (frameHeight - 165));
+	}
+
+	private void handleChatAreaMenu(Set<Integer> handled) {
+		if (!showChatComponents) return;
+
+		int chatYStart = frameHeight - (165 + extendChatArea);
+		if (MouseState.x > 0 && MouseState.x < 490 &&
+			MouseState.y > chatYStart && MouseState.y < frameHeight - 40) {
+			if (backDialogID != -1 && handled.add(backDialogID)) {
+				buildInterfaceMenu(20, RSInterface.interfaceCache[backDialogID], frameHeight - 145, 0);
+			} else {
+				buildChatAreaMenu(MouseState.y - (frameHeight - 165));
 			}
 		}
-		if (backDialogID != -1 && anInt886 != anInt1039)
-		{
+
+		if (backDialogID != -1 && anInt886 != anInt1039) {
 			inputTaken = true;
 			anInt1039 = anInt886;
 		}
-		if (backDialogID != -1 && anInt1315 != anInt1500)
-		{
+		if (backDialogID != -1 && anInt1315 != anInt1500) {
 			inputTaken = true;
 			anInt1500 = anInt1315;
 		}
-		if (mouseX > 4 && mouseY > 480 && mouseX < 516 && mouseY < frameHeight)
-		{
+	}
+
+	private void handleMinimapMenu() {
+		if (MouseState.x > 4 && MouseState.y > 480 && MouseState.x < 516 && MouseState.y < frameHeight) {
 			rightClickChatButtons();
 		}
-		processMinimapActions();
-		boolean flag = false;
-		while (!flag)
-		{
-			flag = true;
-			for (int j = 0; j < menuActionRow - 1; j++)
-			{
-				if (menuActionID[j] < 1000 && menuActionID[j + 1] > 1000)
-				{
-					String s = menuActionName[j];
-					menuActionName[j] = menuActionName[j + 1];
-					menuActionName[j + 1] = s;
-					int k = menuActionID[j];
-					menuActionID[j] = menuActionID[j + 1];
-					menuActionID[j + 1] = k;
-					k = menuActionCmd2[j];
-					menuActionCmd2[j] = menuActionCmd2[j + 1];
-					menuActionCmd2[j + 1] = k;
-					k = menuActionCmd3[j];
-					menuActionCmd3[j] = menuActionCmd3[j + 1];
-					menuActionCmd3[j + 1] = k;
-					k = menuActionCmd1[j];
-					menuActionCmd1[j] = menuActionCmd1[j + 1];
-					menuActionCmd1[j + 1] = k;
-					flag = false;
+	}
+
+	private void sortMenuEntries() {
+		boolean sorted = false;
+		while (!sorted) {
+			sorted = true;
+			for (int i = 0; i < menuActionRow - 1; i++) {
+				if (menuActionID[i] < 1000 && menuActionID[i + 1] > 1000) {
+					swapMenuEntry(i, i + 1);
+					sorted = false;
 				}
 			}
 		}
 	}
 
-	public void login(String username, String password, boolean flag, Graphics2D g, GameCanvas canvas)
-	{
+	private void swapMenuEntry(int a, int b) {
+		String tempName = menuActionName[a];
+		menuActionName[a] = menuActionName[b];
+		menuActionName[b] = tempName;
+
+		int temp;
+
+		temp = menuActionID[a];
+		menuActionID[a] = menuActionID[b];
+		menuActionID[b] = temp;
+
+		temp = menuActionCmd1[a];
+		menuActionCmd1[a] = menuActionCmd1[b];
+		menuActionCmd1[b] = temp;
+
+		temp = menuActionCmd2[a];
+		menuActionCmd2[a] = menuActionCmd2[b];
+		menuActionCmd2[b] = temp;
+
+		temp = menuActionCmd3[a];
+		menuActionCmd3[a] = menuActionCmd3[b];
+		menuActionCmd3[b] = temp;
+	}
+
+	private void handleTabAreaInterfaces(Set<Integer> handled) {
+		if (!changeTabArea) return;
+
+		int yOffset = (frameWidth >= 1000) ? 37 : 74;
+		int x0 = frameWidth - 197;
+		int y0 = frameHeight - yOffset - 267;
+		int x1 = frameWidth - 7;
+		int y1 = frameHeight - yOffset - 7;
+
+		if (MouseState.x >= x0 && MouseState.x <= x1 &&
+			MouseState.y >= y0 && MouseState.y <= y1 &&
+			showTabComponents) {
+
+			int id = (invOverlayInterfaceID != -1) ? invOverlayInterfaceID : tabInterfaceIDs[tabID];
+			if (id != -1 && handled.add(id))
+				buildInterfaceMenu(x0, RSInterface.interfaceCache[id], y0, 0);
+		}
+	}
+
+	public void login(String username, String password, boolean flag, Graphics2D g, GameCanvas canvas) {
+		if (loginInProgress || loginComplete || loggedIn)
+			return;
+
+		loginInProgress = true;
 		Signlink.errorname = username;
-		try
-		{
-			if (rememberMe && username != null && password != null)
-			{
+
+		try {
+			if (rememberMe && username != null && password != null) {
 				SettingHandler.save();
 			}
-			if (!flag)
-			{
+
+			// Only show once per manual login
+			if (!flag) {
 				loginMessage1 = "";
 				loginMessage2 = "Rolling a fat blunt...";
-				loginRenderer.displayLoginScreen(g, canvas);
+			//	loginRenderer.displayLoginScreen(g, canvas);
 			}
+
 			server = ClientConstants.SERVER_IPS[ClientConstants.worldSelected - 1];
 			socketStream = new RSSocket(this, openSocket(ClientConstants.SERVER_PORT + portOff));
+
 			long l = TextClass.longForName(username);
 			int i = (int) (l >> 16 & 31L);
 			stream.currentOffset = 0;
 			stream.writeWordBigEndian(14);
 			stream.writeWordBigEndian(i);
 			socketStream.queueBytes(2, stream.buffer);
-			for (int j = 0; j < 8; j++)
-				socketStream.read();
 
+			for (int j = 0; j < 8; j++) socketStream.read();
 			int k = socketStream.read();
 			int i1 = k;
-			if (k == 0)
-			{
+
+			if (k == 0) {
 				socketStream.flushInputStream(inStream.buffer, 8);
 				inStream.currentOffset = 0;
 				aLong1215 = inStream.readQWord();
+
 				int[] ai = new int[4];
 				ai[0] = (int) (Math.random() * 99999999D);
 				ai[1] = (int) (Math.random() * 99999999D);
 				ai[2] = (int) (aLong1215 >> 32);
 				ai[3] = (int) aLong1215;
+
 				stream.currentOffset = 0;
 				stream.writeWordBigEndian(100);
 				stream.writeDWord(ai[0]);
@@ -9451,65 +9264,68 @@ public class Client extends ClientEngine
 				stream.writeString(username);
 				stream.writeString(password);
 				stream.doKeys();
+
 				aStream_847.currentOffset = 0;
-				if (flag)
-					aStream_847.writeWordBigEndian(18);
-				else
-					aStream_847.writeWordBigEndian(16);
+				aStream_847.writeWordBigEndian(flag ? 18 : 16);
 				aStream_847.writeWordBigEndian(stream.currentOffset + 36 + 1 + 1 + 2);
 				aStream_847.writeWordBigEndian(255);
 				aStream_847.writeWord(217 + ClientConstants.CLIENT_VERSION_INT);
 				aStream_847.writeWordBigEndian(lowMem ? 1 : 0);
+
 				for (int l1 = 0; l1 < 9; l1++)
 					aStream_847.writeDWord(expectedCRCs[l1]);
 
 				aStream_847.writeBytes(stream.buffer, stream.currentOffset, 0);
 				stream.encryption = new ISAACRandomGen(ai);
-				for (int j2 = 0; j2 < 4; j2++)
-					ai[j2] += 50;
 
+				for (int j2 = 0; j2 < 4; j2++) ai[j2] += 50;
 				encryption = new ISAACRandomGen(ai);
+
 				socketStream.queueBytes(aStream_847.currentOffset, aStream_847.buffer);
 				k = socketStream.read();
 			}
-			if (k == 1)
-			{
-				try
-				{
-					Thread.sleep(2000L);
-				}
-				catch (Exception _ex)
-				{
-				}
+
+			if (k == 1) {
+				Thread.sleep(2000L);
+				loginInProgress = false;
 				login(username, password, flag, g, canvas);
 				return;
 			}
-			if (k == 2)
-			{
+
+			if (k == 2) {
+				// Login success
 				myUsername = username;
 				myPassword = password;
 				myPrivilege = socketStream.read();
 				final AccountData account = new AccountData(myPrivilege, username, password);
-				if (rememberMe)
-				{
+
+				if (rememberMe) {
 					AccountManager.addAccount(account);
-				}
-				currentAccount = AccountManager.getAccount(username);
-				if (currentAccount == null)
-				{
-					currentAccount = account;
-				}
-				if (rememberMe)
-				{
 					AccountManager.saveAccount();
 				}
+				currentAccount = AccountManager.getAccount(username);
+				if (currentAccount == null) currentAccount = account;
+
 				flagged = socketStream.read() == 1;
 				aLong1220 = 0L;
 				anInt1022 = 0;
-				mouseDetection.coordsIndex = 0;
 				super.awtFocus = true;
 				aBoolean954 = true;
 				loggedIn = true;
+				loginComplete = true;
+				loginInProgress = false;
+				activeInterfaceType = 0;
+				MouseState.leftDown = false;
+				MouseState.leftClicked = false;
+				MouseState.rightDown = false;
+				MouseState.rightClicked = false;
+				MouseState.pressed = false;
+				MouseState.clickEvent = false;
+
+				// Input focus
+				//canvas.requestFocusInWindow();
+
+				// Game init
 				stream.currentOffset = 0;
 				inStream.currentOffset = 0;
 				pktType = -1;
@@ -9523,9 +9339,9 @@ public class Client extends ClientEngine
 				anInt855 = 0;
 				menuActionRow = 0;
 				menuOpen = false;
-				super.idleTime = 0;
-				for (int j1 = 0; j1 < 500; j1++)
-					chatMessages[j1] = null;
+				idleTime = 0;
+
+				for (int j1 = 0; j1 < 500; j1++) chatMessages[j1] = null;
 				itemSelected = 0;
 				spellSelected = 0;
 				loadingStage = 0;
@@ -9537,28 +9353,23 @@ public class Client extends ClientEngine
 				destY = 0;
 				stonerCount = 0;
 				npcCount = 0;
-				for (int i2 = 0; i2 < maxStoners; i2++)
-				{
+
+				for (int i2 = 0; i2 < maxStoners; i2++) {
 					stonerArray[i2] = null;
 					aStreamArray895s[i2] = null;
 				}
-				for (int index = 0; index < 17; index++)
-				{
-					console.inputConsoleMessages[index] = "";
-				}
-				for (int k2 = 0; k2 < 16384; k2++)
-					npcArray[k2] = null;
+				for (i = 0; i < 17; i++) console.inputConsoleMessages[i] = "";
+				for (int k2 = 0; k2 < 16384; k2++) npcArray[k2] = null;
+
 				myStoner = stonerArray[myStonerIndex] = new Stoner();
 				aClass19_1013.removeAll();
 				aClass19_1056.removeAll();
+
 				for (int l2 = 0; l2 < 4; l2++)
-				{
 					for (int i3 = 0; i3 < 104; i3++)
-					{
 						for (int k3 = 0; k3 < 104; k3++)
 							groundArray[l2][i3][k3] = null;
-					}
-				}
+
 				aClass19_1179 = new NodeList();
 				fullscreenInterfaceID = -1;
 				anInt900 = 0;
@@ -9578,13 +9389,13 @@ public class Client extends ClientEngine
 				anInt1054 = -1;
 				aBoolean1047 = true;
 				method45();
-				for (int j3 = 0; j3 < 5; j3++)
-					anIntArray990[j3] = 0;
-				for (int l3 = 0; l3 < 5; l3++)
-				{
+
+				for (int j3 = 0; j3 < 5; j3++) anIntArray990[j3] = 0;
+				for (int l3 = 0; l3 < 5; l3++) {
 					atStonerActions[l3] = null;
 					atStonerArray[l3] = false;
 				}
+
 				anInt1175 = 0;
 				anInt1134 = 0;
 				anInt986 = 0;
@@ -9593,192 +9404,149 @@ public class Client extends ClientEngine
 				anInt1188 = 0;
 				anInt1155 = 0;
 				anInt1226 = 0;
+
 				sendFrame36(429, 1);
 				resetImageProducers2();
 				setBounds();
+				canvas.requestFocusInWindow();
+				canvas.requestFocus();
 				return;
 			}
-			if (k == 3)
-			{
-				loginMessage1 = "How high are you?!";
-				loginMessage2 = "Think man, think!.";
-				return;
-			}
-			if (k == 4)
-			{
-				loginMessage1 = "You were naughty.";
-				loginMessage2 = "You have been banned, shithead.";
-				return;
-			}
-			if (k == 5)
-			{
-				loginMessage1 = "All hell loose, you have been hacked!";
-				loginMessage2 = "Or you too fuckd up and forgot you are logged in already.";
-				return;
-			}
-			if (k == 6)
-			{
-				loginMessage1 = "Best Budz has gotten a new addition!";
-				loginMessage2 = "Please download the newest client.";
-				return;
-			}
-			if (k == 7)
-			{
-				loginMessage1 = "BestBudz is so popular, theres no room for you..";
-				loginMessage2 = "Please hold your horses!.";
-				return;
-			}
-			if (k == 8)
-			{
-				loginMessage1 = "Jay might be in bed.";
-				loginMessage2 = "Check discord to be certain.";
-				return;
-			}
-			if (k == 9)
-			{
-				loginMessage1 = "Sure 9 client's are enough!?";
-				loginMessage2 = "You aint a real stoner bro!.";
-				return;
-			}
-			if (k == 10)
-			{
-				loginMessage1 = "Unable to connect.";
-				loginMessage2 = "Bad session id.";
-				return;
-			}
-			if (k == 11)
-			{
-				loginMessage1 = "Login server rejected session.";
-				loginMessage2 = "Please try again.";
-				return;
-			}
-			if (k == 12)
-			{
-				loginMessage1 = "You need a members account to login to this world.";
-				loginMessage2 = "Please subscribe, or use a different world.";
-				return;
-			}
-			if (k == 13)
-			{
-				loginMessage1 = "Could not complete login.";
-				loginMessage2 = "Please try using a different world.";
-				return;
-			}
-			if (k == 14)
-			{
-				loginMessage1 = "The server is being updated.";
-				loginMessage2 = "Please wait 1 minute and try again.";
-				return;
-			}
-			if (k == 15)
-			{
-				loggedIn = true;
-				stream.currentOffset = 0;
-				inStream.currentOffset = 0;
-				pktType = -1;
-				anInt841 = -1;
-				anInt842 = -1;
-				anInt843 = -1;
-				pktSize = 0;
-				anInt1009 = 0;
-				anInt1104 = 0;
-				menuActionRow = 0;
-				menuOpen = false;
-				aLong824 = System.currentTimeMillis();
-				return;
-			}
-			if (k == 16)
-			{
-				loginMessage1 = "You need to chill, so i am forcing you.";
-				loginMessage2 = "Roll a joint and try again.";
-				return;
-			}
-			if (k == 17)
-			{
-				loginMessage1 = "You are standing in a members-only area.";
-				loginMessage2 = "To play on this world move to a free area first";
-				return;
-			}
-			if (k == 20)
-			{
-				loginMessage1 = "Invalid loginserver requested";
-				loginMessage2 = "Please try using a different world.";
-				return;
-			}
-			if (k == 21)
-			{
-				for (int k1 = socketStream.read(); k1 >= 0; k1--)
-				{
-					loginMessage1 = "You have only just left another world";
-					loginMessage2 = "Your profile will be transferred in: " + k1 + " seconds";
-					loginRenderer.displayLoginScreen(g, canvas);
-					try
-					{
+
+			// All error handling paths
+			loginInProgress = false;
+
+			switch (k) {
+				case 3:
+					loginMessage1 = "How high are you?!";
+					loginMessage2 = "Think man, think!.";
+					break;
+
+				case 4:
+					loginMessage1 = "You were naughty.";
+					loginMessage2 = "You have been banned, shithead.";
+					break;
+
+				case 5:
+					loginMessage1 = "All hell loose, you have been hacked!";
+					loginMessage2 = "Or you too fuckd up and forgot you are logged in already.";
+					break;
+
+				case 6:
+					loginMessage1 = "Best Budz has gotten a new addition!";
+					loginMessage2 = "Please download the newest client.";
+					break;
+
+				case 7:
+					loginMessage1 = "BestBudz is so popular, theres no room for you..";
+					loginMessage2 = "Please hold your horses!.";
+					break;
+
+				case 8:
+					loginMessage1 = "Jay might be in bed.";
+					loginMessage2 = "Check discord to be certain.";
+					break;
+
+				case 9:
+					loginMessage1 = "Sure 9 client's are enough!?";
+					loginMessage2 = "You aint a real stoner bro!.";
+					break;
+
+				case 10:
+					loginMessage1 = "Unable to connect.";
+					loginMessage2 = "Bad session id.";
+					break;
+
+				case 11:
+					loginMessage1 = "Login server rejected session.";
+					loginMessage2 = "Please try again.";
+					break;
+
+				case 12:
+					loginMessage1 = "You need a members account to login to this world.";
+					loginMessage2 = "Please subscribe, or use a different world.";
+					break;
+
+				case 13:
+					loginMessage1 = "Could not complete login.";
+					loginMessage2 = "Please try using a different world.";
+					break;
+
+				case 14:
+					loginMessage1 = "The server is being updated.";
+					loginMessage2 = "Please wait 1 minute and try again.";
+					break;
+
+				case 15:
+					loggedIn = true;
+					loginComplete = true;
+					loginInProgress = false;
+					aLong824 = System.currentTimeMillis();
+					break;
+
+				case 16:
+					loginMessage1 = "You need to chill, so I am forcing you.";
+					loginMessage2 = "Roll a joint and try again.";
+					break;
+
+				case 17:
+					loginMessage1 = "You are standing in a members-only area.";
+					loginMessage2 = "To play on this world move to a free area first";
+					break;
+
+				case 20:
+					loginMessage1 = "Invalid loginserver requested";
+					loginMessage2 = "Please try using a different world.";
+					break;
+
+				case 21:
+					for (int t = socketStream.read(); t >= 0; t--) {
+						loginMessage1 = "You have only just left another world";
+						loginMessage2 = "Your profile will be transferred in: " + t + " seconds";
+						loginRenderer.displayLoginScreen(g, canvas);
 						Thread.sleep(1000L);
 					}
-					catch (Exception _ex)
-					{
-					}
-				}
-				login(username, password, flag, g, canvas);
-				return;
-			}
-			if (k == 22)
-			{
-				loginMessage1 = "Cannot pick '" + TextClass.capitalize(myUsername) + "'!";
-				loginMessage2 = "Take something else.";
-				return;
-			}
-			if (k == 23)
-			{
-				loginMessage1 = "You do not have permission to do this!";
-				loginMessage2 = "Please try a different world.";
-				return;
-			}
-			if (k == -1)
-			{
-				if (i1 == 0)
-				{
-					if (loginFailures < 2)
-					{
-						try
-						{
-							Thread.sleep(2000L);
-						}
-						catch (Exception _ex)
-						{
-						}
+					loginInProgress = false;
+					login(username, password, flag, g, canvas);
+					return;
+
+				case 22:
+					loginMessage1 = "Cannot pick '" + TextClass.capitalize(myUsername) + "'!";
+					loginMessage2 = "Take something else.";
+					break;
+
+				case 23:
+					loginMessage1 = "You do not have permission to do this!";
+					loginMessage2 = "Please try a different world.";
+					break;
+
+				case -1:
+					if (i1 == 0 && loginFailures < 2) {
+						Thread.sleep(2000L);
 						loginFailures++;
-						login(username, password, flag,g , canvas);
+						loginInProgress = false;
+						login(username, password, flag, g, canvas);
 						return;
-					}
-					else
-					{
+					} else {
 						loginMessage1 = "No response from loginserver";
 						loginMessage2 = "Please wait 1 minute and try again.";
-						return;
 					}
-				}
-				else
-				{
-					loginMessage1 = "No response from server";
+					break;
+
+				default:
+					System.out.println("response:" + k);
+					loginMessage1 = "Unexpected server response";
 					loginMessage2 = "Please try using a different world.";
-					return;
-				}
+					break;
 			}
-			else
-			{
-				System.out.println("response:" + k);
-				loginMessage1 = "Unexpected server response";
-				loginMessage2 = "Please try using a different world.";
-				return;
-			}
-		}
-		catch (IOException _ex)
-		{
+
+		} catch (IOException e) {
 			loginMessage1 = "";
+			loginMessage2 = "Error getting lit asf.";
+			loginInProgress = false;
+		} catch (InterruptedException ignored) {
+			loginInProgress = false;
 		}
-		loginMessage2 = "Error getting lit asf.";
 	}
 
 	private boolean doWalkTo(int i, int j, int k, int i1, int j1, int k1, int l1, int i2, int j2, boolean flag,
@@ -10005,7 +9773,7 @@ public class Client extends ClientEngine
 				stream.writeWordBigEndian(bigY[i4] - i7);
 			}
 			stream.method431(i7 + baseY);
-			stream.method424(super.keyArray[5] != 1 ? 0 : 1);
+			stream.method424(keyArray[5] != 1 ? 0 : 1);
 			return true;
 		}
 		return i != 1;
@@ -10409,17 +10177,18 @@ public class Client extends ClientEngine
 			+ Math.pow((circleY + radius - clickY), 2) < Math.pow(radius, 2);
 	}
 
-	protected void processMainScreenClick()
+	protected void processMainScreenClick(boolean leftClick, boolean rightClick)
 	{
+
 		if (anInt1021 != 0)
 			return;
-		if (super.clickMode3 == 1)
+		if (leftClick)
 		{
 			int i;
 			int j;
 
-			i = saveClickX - (frameWidth - 182 + 24);
-			j = saveClickY - 8;
+			i = MouseState.x - (frameWidth - 182 + 24);
+			j = MouseState.y - 8;
 
 
 
@@ -10932,141 +10701,111 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void drawGameScreen(Graphics2D g)
-	{
-		if (fullscreenInterfaceID != -1 && (loadingStage == 2 || fullGameScreen != null))
-		{
-			if (loadingStage == 2)
-			{
-				method119(anInt945, fullscreenInterfaceID);
-				if (openInterfaceID != -1)
-				{
-					method119(anInt945, openInterfaceID);
-				}
-				anInt945 = 0;
-				resetAllImageProducers();
-				fullGameScreen.initDrawingArea();
-				Rasterizer.anIntArray1472 = fullScreenTextureArray;
-				DrawingArea.setAllPixelsToZero();
-				welcomeScreenRaised = true;
-				if (openInterfaceID != -1)
-				{
-					RSInterface rsInterface_1 = RSInterface.interfaceCache[openInterfaceID];
-					if (rsInterface_1.width == 512 && rsInterface_1.height == 334 && rsInterface_1.type == 0)
-					{
-						rsInterface_1.width = 765;
-						rsInterface_1.height = 503;
-					}
-					drawInterface(0, 0, rsInterface_1, 8);
-				}
-				RSInterface rsInterface = RSInterface.interfaceCache[fullscreenInterfaceID];
-				if (rsInterface.width == 512 && rsInterface.height == 334 && rsInterface.type == 0)
-				{
-					rsInterface.width = 765;
-					rsInterface.height = 503;
-				}
-				drawInterface(0, 0, rsInterface, 8);
-				if (!menuOpen)
-				{
-					processRightClick();
-					drawTooltip();
-				}
-				else
-				{
-					rightClickMenu(0, 0);
-				}
-			}
-			drawCount++;
-			fullGameScreen.drawGraphics(0, g, 0);
+	private void drawGameScreen(Graphics2D g) {
+		if (fullscreenInterfaceID != -1 && (loadingStage == 2 || gameWorldScreen != null)) {
+			renderFullscreenInterface(g);
 			return;
 		}
-		else
-		{
-			if (drawCount != 0)
-			{
-				resetImageProducers2();
-			}
-		}
-		if (welcomeScreenRaised)
-		{
-			welcomeScreenRaised = false;
-			inputTaken = true;
-			tabAreaAltered = true;
-			if (loadingStage != 2)
-			{
 
-			}
-		}
-		if (invOverlayInterfaceID != -1)
-		{
-			method119(anInt945, invOverlayInterfaceID);
-		}
+		if (drawCount != 0) resetImageProducers2();
+		if (welcomeScreenRaised) clearWelcomeState();
+		if (invOverlayInterfaceID != -1) method119(anInt945, invOverlayInterfaceID);
+
 		drawTabArea();
-		if (backDialogID == -1)
-		{
+		handleBackDialogOrChatbox();
+		renderChatIfInvalidated();
+
+		if (loadingStage == 2) method146(g);
+		if (anInt1054 != -1) tabAreaAltered = true;
+		if (tabAreaAltered) commitTabState();
+
+		anInt945 = 0;
+	}
+
+	private void renderFullscreenInterface(Graphics2D g) {
+		if (loadingStage == 2) {
+			method119(anInt945, fullscreenInterfaceID);
+			if (openInterfaceID != -1) method119(anInt945, openInterfaceID);
+			anInt945 = 0;
+			resetAllImageProducers();
+
+			Rasterizer.anIntArray1472 = fullScreenTextureArray;
+			DrawingArea.setAllPixelsToZero();
+			welcomeScreenRaised = true;
+
+			if (openInterfaceID != -1) renderFullscreenChild(openInterfaceID);
+			renderFullscreenChild(fullscreenInterfaceID);
+
+			if (menuOpen) {
+				processRightClick();
+				rightClickMenu(0, 0);
+			} else {
+				processRightClick();
+				drawTooltip();
+			}
+		}
+		drawCount++;
+		gameWorldScreen.drawGraphics(0, g, 0);
+		MouseState.leftClicked = false;
+		MouseState.rightClicked = false;
+
+	}
+
+	private void renderFullscreenChild(int interfaceID) {
+		RSInterface rsi = RSInterface.interfaceCache[interfaceID];
+		if (rsi.width == 512 && rsi.height == 334 && rsi.type == 0) {
+			rsi.width = 765;
+			rsi.height = 503;
+		}
+		drawInterface(0, 0, rsi, 8);
+	}
+
+	private void clearWelcomeState() {
+		welcomeScreenRaised = false;
+		inputTaken = true;
+		tabAreaAltered = true;
+	}
+
+	private void handleBackDialogOrChatbox() {
+		if (backDialogID == -1) {
 			aClass9_1059.scrollPosition = anInt1211 - anInt1089 - 110;
-			if (mouseX >= 496 && mouseX <= 511
-				&& mouseY > (frameHeight - 158))
-				drawInterfaceRecursive(494, 110, mouseX,
-					mouseY - (frameHeight - 158), aClass9_1059, 0,
+			if (MouseState.x >= 496 && MouseState.x <= 511 && MouseState.y > frameHeight - 158) {
+				drawInterfaceRecursive(494, 110, MouseState.x,
+					MouseState.y - (frameHeight - 158), aClass9_1059, 0,
 					false, anInt1211);
-			int i = anInt1211 - 110 - aClass9_1059.scrollPosition;
-			if (i < 0)
-			{
-				i = 0;
 			}
-			if (i > anInt1211 - 110)
-			{
-				i = anInt1211 - 110;
-			}
-			if (anInt1089 != i)
-			{
-				anInt1089 = i;
+			int idealScroll = anInt1211 - 110 - aClass9_1059.scrollPosition;
+			idealScroll = Math.max(0, Math.min(idealScroll, anInt1211 - 110));
+			if (anInt1089 != idealScroll) {
+				anInt1089 = idealScroll;
 				inputTaken = true;
 			}
+		} else {
+			if (method119(anInt945, backDialogID)) inputTaken = true;
 		}
-		if (backDialogID != -1)
-		{
-			boolean flag2 = method119(anInt945, backDialogID);
-			if (flag2)
-				inputTaken = true;
-		}
-		if (atBoxInterfaceType == 3)
+		if (atBoxInterfaceType == 3 || activeInterfaceType == 3 || aString844 != null || (menuOpen && menuScreenArea == 2))
 			inputTaken = true;
-		if (activeInterfaceType == 3)
-			inputTaken = true;
-		if (aString844 != null)
-			inputTaken = true;
-		if (menuOpen && menuScreenArea == 2)
-			inputTaken = true;
+	}
+
+	private void renderChatIfInvalidated() {
 		extendChatArea();
-		if (inputTaken)
-		{
+		if (inputTaken) {
 			drawChatArea();
 			inputTaken = false;
 		}
-		if (loadingStage == 2)
-			method146(g);
-		if (loadingStage == 2)
-		{
-
-		}
-		if (anInt1054 != -1)
-			tabAreaAltered = true;
-		if (tabAreaAltered)
-		{
-			if (anInt1054 != -1 && anInt1054 == tabID)
-			{
-				anInt1054 = -1;
-				stream.createFrame(120);
-				stream.writeWordBigEndian(tabID);
-			}
-			tabAreaAltered = false;
-			aRSImageProducer_1125.initDrawingArea();
-			aRSImageProducer_1165.initDrawingArea();
-		}
-		anInt945 = 0;
 	}
+
+	private void commitTabState() {
+		if (anInt1054 != -1 && anInt1054 == tabID) {
+			anInt1054 = -1;
+			stream.createFrame(120);
+			stream.writeWordBigEndian(tabID);
+		}
+		tabAreaAltered = false;
+		aRSImageProducer_1125.initDrawingArea();
+		aRSImageProducer_1165.initDrawingArea();
+	}
+
 
 	private boolean buildStonersListMenu(RSInterface class9)
 	{
@@ -11136,6 +10875,7 @@ public class Client extends ClientEngine
 
 	private void drawInterface(int j, int k, RSInterface class9, int l)
 	{
+
 		if (class9.parentID == 197)
 		{
 			k = frameWidth - 120;
@@ -11412,8 +11152,8 @@ public class Client extends ClientEngine
 											&& focusedDragWidget == child.id)
 										{
 											draggedItem = itemSprite;
-											x = mouseX - pressX;
-											y = mouseY - pressY;
+											x = MouseState.x - pressX;
+											y = MouseState.y - pressY;
 											if (x < 5 && x > -5)
 												x = 0;
 											if (y < 5 && y > -5)
@@ -12137,18 +11877,18 @@ public class Client extends ClientEngine
 						yy = frameWidth >= 1000 ? frameHeight - 280 : frameHeight - 262 + yy - j;
 					}
 
-					if (mouseX >= xx && mouseX <= xx + child.width && mouseY >= yy
-						&& mouseY <= yy + child.height)
+					if (MouseState.x >= xx && MouseState.x <= xx + child.width && MouseState.y >= yy
+						&& MouseState.y <= yy + child.height)
 					{
 						hover = true;
 					}
 
-					if (saveClickX >= xx && saveClickX <= xx + child.width && saveClickY >= yy
-						&& saveClickY <= yy + child.height)
+					if (MouseState.x >= xx && MouseState.x <= xx + child.width && MouseState.y >= yy
+						&& MouseState.y <= yy + child.height)
 					{
 						if (RSInterface.currentInputField != child)
 						{
-							if (clickMode2 == 1 && !menuOpen)
+							if (MouseState.leftClicked && !menuOpen)
 							{
 								RSInterface.currentInputField = child;
 							}
@@ -12454,12 +12194,12 @@ public class Client extends ClientEngine
 			{
 				anInt1015 += (y - anInt1015) / 16;
 			}
-			if (super.keyArray[1] == 1)
+			if (keyArray[1] == 1)
 			{
 				anInt1186 += (-24 - anInt1186) / rotSpeed;
 				screenGliding++;
 			}
-			else if (super.keyArray[2] == 1)
+			else if (keyArray[2] == 1)
 			{
 				anInt1186 += (24 - anInt1186) / rotSpeed;
 				screenGliding++;
@@ -12482,12 +12222,12 @@ public class Client extends ClientEngine
 					anInt1186 /= rotSpeed;
 				}
 			}
-			if (super.keyArray[3] == 1)
+			if (keyArray[3] == 1)
 			{
 				anInt1187 += (12 - anInt1187) / rotSpeed;
 				screenGliding++;
 			}
-			else if (super.keyArray[4] == 1)
+			else if (keyArray[4] == 1)
 			{
 				anInt1187 += (-12 - anInt1187) / rotSpeed;
 				screenGliding++;
@@ -12615,285 +12355,197 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void draw3dScreen()
-	{
-		if (counterOn)
-		{
-			drawCounterOnScreen();
-		}
+	private void draw3dScreen() {
+		drawGameOverlays();
+		drawContextualInterfaces();
+		drawOpenInterface();
+		drawContextMenu();
+		drawMiscOverlays();
+		drawClientDiagnostics();
+		drawSystemUpdateCountdown();
+	}
 
-		if (showChatComponents)
-		{
-			drawSplitPrivateChat();
-		}
-
+	private void drawGameOverlays() {
+		if (counterOn) drawCounterOnScreen();
+		if (showChatComponents) drawSplitPrivateChat();
 		BannerManager.drawMovingBanner();
 
-		if (crossType == 1)
-		{
-			int offSet = 0;
-			crosses[crossIndex / 100].drawSprite(crossX - 8 - offSet, crossY - 8 - offSet);
-			anInt1142++;
-			if (anInt1142 > 67)
-			{
+		if (crossType == 1) {
+			crosses[crossIndex / 100].drawSprite(crossX - 8, crossY - 8);
+			if (++anInt1142 > 67) {
 				anInt1142 = 0;
 				stream.createFrame(78);
 			}
-		}
-		if (crossType == 2)
-		{
-			int offSet = 0;
-			crosses[4 + crossIndex / 100].drawSprite(crossX - 8 - offSet, crossY - 8 - offSet);
-		}
-		if (inBarrows(baseX + (myStoner.x - 6 >> 7), baseY + (myStoner.y - 6 >> 7)))
-		{
-			anInt1018 = 59000;
-		}
-		else if (inGWD(baseX + (myStoner.x - 6 >> 7), baseY + (myStoner.y - 6 >> 7)))
-		{
-			anInt1018 = 61750;
-		}
-		else if (inWGLobby(baseX + (myStoner.x - 6 >> 7), baseY + (myStoner.y - 6 >> 7)))
-		{
-			anInt1018 = 41250;
-		}
-		else if (inWGGame(baseX + (myStoner.x - 6 >> 7), baseY + (myStoner.y - 6 >> 7)))
-		{
-			anInt1018 = 41270;
-		}
-		else if (inCyclops(baseX + (myStoner.x - 6 >> 7), baseY + (myStoner.y - 6 >> 7), plane))
-		{
-			anInt1018 = 51200;
-		}
-		else if (inPcBoat(baseX + (myStoner.x - 6 >> 7), baseY + (myStoner.y - 6 >> 7)))
-		{
-			anInt1018 = 21119;
-		}
-		else if (inPcGame(baseX + (myStoner.x - 6 >> 7), baseY + (myStoner.y - 6 >> 7)))
-		{
-			anInt1018 = 21100;
-		}
-		else if (inWilderness(baseX + (myStoner.x - 6 >> 7), baseY + (myStoner.y - 6 >> 7))
-			&& Configuration.economyWorld)
-		{
-			anInt1018 = 23300;
-		}
-		else if (inPvP(baseX + (myStoner.x - 6 >> 7), baseY + (myStoner.y - 6 >> 7))
-			&& !Configuration.economyWorld)
-		{
-			anInt1018 = 60250;
-		}
-		else if (inSafe(baseX + (myStoner.x - 6 >> 7), baseY + (myStoner.y - 6 >> 7))
-			&& !Configuration.economyWorld)
-		{
-			anInt1018 = 60350;
-		}
-		else if (Configuration.snow)
-		{
-			anInt1018 = 11877;
-		}
-		else
-		{
-			anInt1018 = -1;
-		}
-
-		if (anInt1018 != -1)
-		{
-			RSInterface rsInterface = RSInterface.interfaceCache[anInt1018];
-			method119(anInt945, anInt1018);
-
-			if (anInt1018 == 11146)
-			{
-				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], -5);
-			}
-			else if (anInt1018 == 23300)
-			{
-				drawInterface(0, frameWidth - rsInterface.width - 253, rsInterface, 0);
-			}
-			else if (anInt1018 == 23300)
-			{
-				drawInterface(0, frameWidth / 2 - 780, RSInterface.interfaceCache[anInt1018], 80);
-			}
-			else if ((anInt1018 == 2804 || anInt1018 == 11479))
-			{
-				drawInterface(0, frameWidth / 2 - 1010, RSInterface.interfaceCache[anInt1018], 80);
-			}
-			else if (anInt1018 == 41270)
-			{
-				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 8);
-			}
-			else if (anInt1018 == 41250)
-			{
-				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 8);
-			}
-			else if (anInt1018 == 201)
-			{
-				drawInterface(0, frameWidth - 520, RSInterface.interfaceCache[anInt1018], -110);
-			}
-			else if (anInt1018 == 41270)
-			{
-				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 8);
-			}
-			else if (anInt1018 == 41250)
-			{
-				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 8);
-			}
-			else if (anInt1018 == 59000)
-			{
-				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], frameHeight - 495);
-			}
-			else if (anInt1018 == 21119)
-			{
-				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 5);
-			}
-			else if (anInt1018 == 21100)
-			{
-				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 5);
-			}
-			else if (anInt1018 == 51200)
-			{
-				drawInterface(0, frameWidth - 770, RSInterface.interfaceCache[anInt1018], 25);
-			}
-			else if (anInt1018 == 61750)
-			{
-				drawInterface(0, frameWidth - 800, RSInterface.interfaceCache[anInt1018], 5);
-			}
-			else if (anInt1018 == 4535)
-			{
-				drawInterface(0, -418, RSInterface.interfaceCache[anInt1018], -285);
-			}
-			else if ((anInt1018 == 15892 || anInt1018 == 15917 || anInt1018 == 15931 || anInt1018 == 15962))
-			{
-				drawInterface(0, (anInt1018 == 15892 ? -325 : -349), RSInterface.interfaceCache[anInt1018], 25);
-			}
-			else
-				drawInterface(0, (frameWidth / 2) - -80,
-					RSInterface.interfaceCache[anInt1018], (frameHeight / 2) - 550);
-		}
-		if (openInterfaceID == 5292)
-		{
-			method119(anInt945, openInterfaceID);
-			drawInterface(0, (frameWidth / 2) - 356,
-				RSInterface.interfaceCache[openInterfaceID], (frameHeight / 2) - 230);
-		}
-		else if (openInterfaceID != -1)
-		{
-			method119(anInt945, openInterfaceID);
-			int w = 512, h = 334;
-			int x = (frameWidth / 2) - 256;
-			int y = (frameHeight / 2) - 167;
-			int count = !changeTabArea ? 4 : 3;
-
-			for (int i = 0; i < count; i++)
-			{
-				if (x + w > (frameWidth - 225))
-				{
-					x = x - 30;
-					if (x < 0)
-					{
-						x = 0;
-					}
-				}
-				if (y + h > (frameHeight - 182))
-				{
-					y = y - 30;
-					if (y < 0)
-					{
-						y = 0;
-					}
-				}
-			}
-
-			RSInterface rsi = RSInterface.interfaceCache[openInterfaceID];
-			if (rsi == null)
-			{
-				System.err.println("[WARN] Tried to draw interface " + openInterfaceID + " but it’s null");
-				return;
-			}
-			drawInterface(0, x, rsi, y);
-			//System.err.println("[INFO] drawing interface " + openInterfaceID);
-		}
-		if (!menuOpen)
-		{
-			processRightClick();
-			drawTooltip();
-		}
-		else if (menuScreenArea == 0)
-		{
-			rightClickMenu(0, 0);
-		}
-		if (anInt1055 == 1)
-		{
-			multiOverlay.drawSprite(frameWidth - 165, 160);
-		}
-		if (fpsOn)
-		{
-			int textColour = 0xffff00;
-			if (fps < 15)
-			{
-				textColour = 0xff0000;
-			} else if (fps >= 60){
-				textColour = 0x00ff00;
-			} else if (fps >= 90){
-				textColour = 0x00ffff;
-			}
-			regularText.method385(textColour, "Fps: " + fps, 12, 5);
-			Runtime runtime = Runtime.getRuntime();
-			int memUsage = (int) ((runtime.totalMemory() - runtime.freeMemory()) / 1024L);
-			textColour = 0xffff00;
-			if (memUsage > 0x2000000 && lowMem)
-			{
-				textColour = 0xff0000;
-			}
-			regularText.method385(textColour, "Mem: " + memUsage + "k", 27, 5);
-		}
-		int x = baseX + (myStoner.x - 6 >> 7);
-		int y = baseY + (myStoner.y - 6 >> 7);
-		if (clientData)
-		{
-			int textColour = 0xffff00;
-			int fpsColour = 0xffff00;
-			if (fps < 15)
-			{
-				fpsColour = 0xff0000;
-			} else if (fps >= 60){
-				fpsColour = 0x00ff00;
-			} else if (fps >= 90){
-				fpsColour = 0x00ffff;
-			}
-			smallText.method385(textColour,
-				"Frame Width: " + (mouseX - frameWidth) + ", Frame Height: " + (mouseY - frameHeight),
-				frameHeight - 271, 5);
-			smallText.method385(textColour, "Client Zoom: " + cameraZoom, frameHeight - 257, 5);
-			smallText.method385(fpsColour, "Fps: " + fps, frameHeight - 243, 5);
-			Runtime runtime = Runtime.getRuntime();
-			int clientMemory = (int) ((runtime.totalMemory() - runtime.freeMemory()) / 1024L);
-			smallText.method385(textColour, "Memory Usage: " + NumberFormat.getInstance().format(clientMemory) + "k",
-				frameHeight - 229, 5);
-			smallText.method385(textColour, "Mouse X: " + mouseX + ", Mouse Y: " + mouseY, frameHeight - 215, 5);
-			smallText.method385(textColour, "Coords: " + x + ", " + y, frameHeight - 201, 5);
-			smallText.method385(textColour, "Client Mode: ", frameHeight - 187, 5);
-			smallText.method385(textColour, "Client Resolution: " + frameWidth + "x" + frameHeight, frameHeight - 173,
-				5);
-		}
-		if (anInt1104 != 0)
-		{
-			int j = anInt1104 / 50;
-			int l = j / 60;
-			int yOffset = frameHeight - 498;
-			j %= 60;
-			if (j < 10)
-				smallText.method385(0xffff00, "System update in: " + l + ":0" + j, 329 + yOffset, 4);
-			else
-				smallText.method385(0xffff00, "System update in: " + l + ":" + j, 329 + yOffset, 4);
-			anInt849++;
-			if (anInt849 > 75)
-			{
-				anInt849 = 0;
-				stream.createFrame(148);
-			}
+		} else if (crossType == 2) {
+			crosses[4 + crossIndex / 100].drawSprite(crossX - 8, crossY - 8);
 		}
 	}
+
+	private void drawContextualInterfaces() {
+		int absX = baseX + ((myStoner.x - 6) >> 7);
+		int absY = baseY + ((myStoner.y - 6) >> 7);
+		anInt1018 = getRegionInterface(absX, absY, plane);
+
+		if (anInt1018 == -1) return;
+
+		RSInterface rsi = RSInterface.interfaceCache[anInt1018];
+		method119(anInt945, anInt1018);
+
+		switch (anInt1018) {
+			case 11146:
+				drawInterface(0, 0, rsi, -5);
+				break;
+			case 23300:
+				drawInterface(0, frameWidth - rsi.width - 253, rsi, 0);
+				break;
+			case 2804:
+			case 11479:
+				drawInterface(0, frameWidth / 2 - 1010, rsi, 80);
+				break;
+			case 41270:
+			case 41250:
+				drawInterface(0, 0, rsi, 8);
+				break;
+			case 201:
+				drawInterface(0, frameWidth - 520, rsi, -110);
+				break;
+			case 59000:
+				drawInterface(0, 0, rsi, frameHeight - 495);
+				break;
+			case 21119:
+			case 21100:
+				drawInterface(0, 0, rsi, 5);
+				break;
+			case 51200:
+				drawInterface(0, frameWidth - 770, rsi, 25);
+				break;
+			case 61750:
+				drawInterface(0, frameWidth - 800, rsi, 5);
+				break;
+			case 4535:
+				drawInterface(0, -418, rsi, -285);
+				break;
+			case 15892:
+			case 15917:
+			case 15931:
+			case 15962:
+				drawInterface(0, (anInt1018 == 15892 ? -325 : -349), rsi, 25);
+				break;
+			default:
+				drawInterface(0, (frameWidth / 2) + 80, rsi, (frameHeight / 2) - 550);
+				break;
+		}
+	}
+
+
+	private void drawOpenInterface() {
+		if (openInterfaceID == -1) return;
+
+		method119(anInt945, openInterfaceID);
+
+		if (openInterfaceID == 5292) {
+			drawInterface(0, (frameWidth / 2) - 356, RSInterface.interfaceCache[openInterfaceID], (frameHeight / 2) - 230);
+			return;
+		}
+
+		RSInterface rsi = RSInterface.interfaceCache[openInterfaceID];
+		if (rsi == null) {
+			System.err.println("[WARN] Tried to draw interface " + openInterfaceID + " but it’s null");
+			return;
+		}
+
+		int w = 512, h = 334;
+		int x = (frameWidth / 2) - 256;
+		int y = (frameHeight / 2) - 167;
+		int count = changeTabArea ? 3 : 4;
+
+		for (int i = 0; i < count; i++) {
+			if (x + w > (frameWidth - 225)) x = Math.max(0, x - 30);
+			if (y + h > (frameHeight - 182)) y = Math.max(0, y - 30);
+		}
+
+		drawInterface(0, x, rsi, y);
+	}
+
+	private void drawContextMenu() {
+		if (!menuOpen) {
+			processRightClick();
+			drawTooltip();
+		} else if (menuScreenArea == 0) {
+			rightClickMenu(0, 0);
+		}
+	}
+
+	private void drawMiscOverlays() {
+		if (anInt1055 == 1) multiOverlay.drawSprite(frameWidth - 165, 160);
+	}
+
+	private void drawClientDiagnostics() {
+		if (!clientData) return;
+
+		int x = baseX + ((myStoner.x - 6) >> 7);
+		int y = baseY + ((myStoner.y - 6) >> 7);
+		int col = 0xffff00;
+
+		int fpsCol;
+		if (fps < 15) {
+			fpsCol = 0xff0000;
+		} else if (fps >= 90) {
+			fpsCol = 0x00ffff;
+		} else if (fps >= 60) {
+			fpsCol = 0x00ff00;
+		} else {
+			fpsCol = 0xffff00;
+		}
+
+		smallText.method385(col, "Frame Width: " + (MouseState.x - frameWidth) + ", Frame Height: " + (MouseState.y - frameHeight), frameHeight - 271, 5);
+		smallText.method385(col, "Client Zoom: " + cameraZoom, frameHeight - 257, 5);
+		smallText.method385(fpsCol, "Fps: " + fps, frameHeight - 243, 5);
+		smallText.method385(col, "Memory Usage: " + getUsedMemory() + "k", frameHeight - 229, 5);
+		smallText.method385(col, "Mouse X: " + MouseState.x + ", Mouse Y: " + MouseState.y, frameHeight - 215, 5);
+		smallText.method385(col, "Coords: " + x + ", " + y, frameHeight - 201, 5);
+		smallText.method385(col, "Client Mode: ", frameHeight - 187, 5);
+		smallText.method385(col, "Client Resolution: " + frameWidth + "x" + frameHeight, frameHeight - 173, 5);
+	}
+
+
+	private void drawSystemUpdateCountdown() {
+		if (anInt1104 == 0) return;
+
+		int j = anInt1104 / 50;
+		int l = j / 60;
+		j %= 60;
+		String timer = (j < 10) ? l + ":0" + j : l + ":" + j;
+
+		int yOffset = frameHeight - 498;
+		smallText.method385(0xffff00, "System update in: " + timer, 329 + yOffset, 4);
+
+		if (++anInt849 > 75) {
+			anInt849 = 0;
+			stream.createFrame(148);
+		}
+	}
+
+	private int getUsedMemory() {
+		Runtime runtime = Runtime.getRuntime();
+		return (int) ((runtime.totalMemory() - runtime.freeMemory()) / 1024L);
+	}
+
+	private int getRegionInterface(int x, int y, int plane) {
+		if (inBarrows(x, y)) return 59000;
+		if (inGWD(x, y)) return 61750;
+		if (inWGLobby(x, y)) return 41250;
+		if (inWGGame(x, y)) return 41270;
+		if (inCyclops(x, y, plane)) return 51200;
+		if (inPcBoat(x, y)) return 21119;
+		if (inPcGame(x, y)) return 21100;
+		if (inWilderness(x, y) && Configuration.economyWorld) return 23300;
+		if (inPvP(x, y) && !Configuration.economyWorld) return 60250;
+		if (inSafe(x, y) && !Configuration.economyWorld) return 60350;
+		if (Configuration.snow) return 11877;
+		return -1;
+	}
+
 
 	private final boolean inBarrows(int x, int y)
 	{
@@ -13473,8 +13125,8 @@ public class Client extends ClientEngine
 		s = s + "@gre@";
 		int tooltipWidth   = Integer.sum(newBoldFont.getTextWidth(s.trim()), 4);
 		int tooltipHeight  = 17;
-		int tooltipX       = mouseX;
-		int tooltipY       = Math.subtractExact(mouseY, 11);
+		int tooltipX       = MouseState.x;
+		int tooltipY       = Math.subtractExact(MouseState.y, 11);
 		int maxX           = Math.subtractExact(Client.screenAreaWidth, tooltipWidth);
 		int maxY           = Math.subtractExact(Client.screenAreaHeight, tooltipHeight);
 
@@ -13509,8 +13161,8 @@ public class Client extends ClientEngine
 			int xpOrbY = setXpOrbPosY;
 
 			final boolean hoveringXpOrb =
-				mouseX >= xpOrbX && mouseX <= xpOrbX + 26 &&
-					mouseY >= xpOrbY && mouseY <= xpOrbY + 26;
+				MouseState.x >= xpOrbX && MouseState.x <= xpOrbX + 26 &&
+					MouseState.y >= xpOrbY && MouseState.y <= xpOrbY + 26;
 
 			orbComponents3[hoveringXpOrb ? 1 : 0].drawSprite(xpOrbX, xpOrbY);
 			loadAllOrbs(frameWidth - 217);
@@ -13530,8 +13182,8 @@ public class Client extends ClientEngine
 
 
 		boolean hoveringLogout =
-			mouseX >= frameWidth - 26 && mouseX <= frameWidth - 1 &&
-				mouseY >= 2 && mouseY <= 24;
+			MouseState.x >= frameWidth - 26 && MouseState.x <= frameWidth - 1 &&
+				MouseState.y >= 2 && MouseState.y <= 24;
 		if (hoveringLogout)
 		{
 			cacheSprite[348].drawARGBSprite(frameWidth - 23, 0, 205);
@@ -13547,6 +13199,95 @@ public class Client extends ClientEngine
 		if (menuOpen)
 		{
 			rightClickMenu(0, 0);
+		}
+	}
+
+	private void handleMinimapInteractions(boolean leftClick, boolean rightClick) {
+		int frameSize = frameWidth - 217;
+		int orbPosX = frameSize + 155;
+
+		// Hover detection and context menu building
+		hpHover = inBounds(MouseState.x, MouseState.y, orbPosX, 45, 56, 32);
+		prayHover = inBounds(MouseState.x, MouseState.y, orbPosX, 85, 56, 32);
+		runHover = inBounds(MouseState.x, MouseState.y, orbPosX, 125, 56, 32);
+		counterHover = inBounds(MouseState.x, MouseState.y, frameWidth - 96, 2, 26, 26);
+		worldHover = inBounds(MouseState.x, MouseState.y, frameWidth - 41, 203, 30, 30);
+
+		if (Configuration.enablePouch) {
+			pouchHover = inBounds(MouseState.x, MouseState.y, frameWidth - 65, 165, 62, 31);
+		}
+
+		if (leftClick && Configuration.enableStatusOrbs) {
+			if (prayHover) {
+				stream.createFrame(185);
+				stream.writeWord(50010); // toggle quick prayers
+			}
+			if (runHover) {
+				stream.createFrame(185);
+				stream.writeWord(152); // toggle run
+			}
+			if (counterHover) {
+				counterOn = !counterOn; // toggle XP counter visibility
+			}
+			if (pouchHover && Configuration.enablePouch) {
+				stream.createFrame(185);
+				stream.writeWord(713); // mimic "Withdraw from debit"
+			}
+
+		}
+
+
+		if (!rightClick) return; // Prevents unnecessary context menu building on hover only
+
+
+		if (changeChatArea) {
+			if (MouseState.x >= 256 && MouseState.x <= 264 &&
+				MouseState.y >= frameHeight - 170 - extendChatArea &&
+				MouseState.y <= frameHeight - 160 - extendChatArea) {
+				menuActionName[1] = "Drag to Extend Chat";
+				menuActionID[1] = 701;
+				menuActionRow = 2;
+			}
+		}
+
+		if (MouseState.x >= frameWidth - 26 && MouseState.x <= frameWidth - 1 &&
+			MouseState.y >= 2 && MouseState.y <= 24) {
+			menuActionName[1] = "Too stoned..";
+			menuActionID[1] = 1004;
+			menuActionRow = 2;
+		}
+
+		if (Configuration.enableStatusOrbs) {
+			if (counterHover) {
+				menuActionName[3] = counterOn ? "See Gains" : "Unsee Gains";
+				menuActionID[3] = 474;
+				menuActionName[2] = "Reset Gains";
+				menuActionID[2] = 475;
+				menuActionName[1] = "Gains settings";
+				menuActionID[1] = 476;
+				menuActionRow = 4;
+			}
+			if (pouchHover && Configuration.enablePouch) {
+				menuActionName[3] = "Withdraw from debit";
+				menuActionID[3] = 713;
+				menuActionName[2] = "Pay with... ";
+				menuActionID[2] = 715;
+				menuActionName[1] = "inspect debit card";
+				menuActionID[1] = 714;
+				menuActionRow = 4;
+			}
+			if (prayHover) {
+				menuActionName[2] = prayClicked ? "Dont channel necromance powers" : "Channel necromance powers";
+				menuActionID[2] = 1500;
+				menuActionName[1] = "Select necromance powers";
+				menuActionID[1] = 1506;
+				menuActionRow = 3;
+			}
+			if (runHover) {
+				menuActionName[1] = variousSettings[173] == 0 ? "Turn haste mode on" : "Turn haste mode off";
+				menuActionID[1] = 1050;
+				menuActionRow = 2;
+			}
 		}
 	}
 
@@ -13620,12 +13361,12 @@ public class Client extends ClientEngine
 
 					l = frameHeight - 170 - i * 13 - extendChatArea;
 
-					if (mouseX > 4 && mouseY - offSet > l - 10 && mouseY - offSet <= l + 3)
+					if (MouseState.x > 4 && MouseState.y - offSet > l - 10 && MouseState.y - offSet <= l + 3)
 					{
 						int i1 = regularText.getTextWidth("From:  " + s + chatMessages[j]) + 25;
 						if (i1 > 450)
 							i1 = 450;
-						if (mouseX < 4 + i1)
+						if (MouseState.x < 4 + i1)
 						{
 							if (myPrivilege >= 1)
 							{
@@ -13793,10 +13534,10 @@ public class Client extends ClientEngine
 
 	public void pushMessage(String s, int i, String s1, String title, String color)
 	{
+
 		if (i == 0 && dialogID != -1)
 		{
 			aString844 = s;
-			super.clickMode3 = 0;
 		}
 		if (backDialogID == -1)
 			inputTaken = true;
@@ -13822,7 +13563,6 @@ public class Client extends ClientEngine
 		if (i == 0 && dialogID != -1)
 		{
 			aString844 = s;
-			super.clickMode3 = 0;
 		}
 		if (backDialogID == -1)
 		{
@@ -14626,7 +14366,7 @@ public class Client extends ClientEngine
 						i11 = inStream.readUnsignedWord();
 						aBoolean1159 = false;
 					}
-					if (pktType == 241)
+					if (pktType == 241) // REGION LOADER
 					{
 						i11 = inStream.method435();
 						inStream.initBitAccess();
@@ -14662,9 +14402,6 @@ public class Client extends ClientEngine
 						aBoolean1141 = true;
 					loadingStage = 1;
 					aLong824 = System.currentTimeMillis();
-					aRSImageProducer_1165.initDrawingArea();
-					drawLoadingMessages(1, "Rolling a spliff.", null);
-					aRSImageProducer_1165.drawGraphics(0, g, 0);
 					if (pktType == 73)
 					{
 						int k16 = 0;
@@ -14832,6 +14569,7 @@ public class Client extends ClientEngine
 					}
 					aBoolean1160 = false;
 					pktType = -1;
+
 					return true;
 
 				case 208:
@@ -15312,11 +15050,11 @@ public class Client extends ClientEngine
 					{
 						String text = inStream.readString();
 						int frame = inStream.method435();
-						System.out.println("sendstring=" + text + ", frame=" + frame);
-						if (text.startsWith("www.") || text.startsWith("http://www."))
-						{
-							openURL(text);
-						}
+						//System.out.println("sendstring=" + text + ", frame=" + frame);
+						//if (text.startsWith("www.") || text.startsWith("http://www."))
+						//{
+						//	openURL(text);
+						//}
 						if (text.startsWith(":quicks:"))
 							clickedQuickPrayers = text.substring(8).equalsIgnoreCase("on");
 						if (text.startsWith(":prayer:"))
@@ -15863,8 +15601,8 @@ public class Client extends ClientEngine
 			}
 		Model.aBoolean1684 = true;
 		Model.anInt1687 = 0;
-		Model.anInt1685 = mouseX;
-		Model.anInt1686 = mouseY;
+		Model.anInt1685 = MouseState.x;
+		Model.anInt1686 = MouseState.y;
 		DrawingArea.setAllPixelsToZero();
 		if (Configuration.enableDistanceFog)
 		{
@@ -15920,71 +15658,13 @@ public class Client extends ClientEngine
 		{
 			console.drawConsole(frameWidth, 334);
 		}
-		aRSImageProducer_1165.drawGraphics(0, g, 0);
+		aRSImageProducer_1165.drawGraphics(0, g,
+			0);
 		xCameraPos = l;
 		zCameraPos = i1;
 		yCameraPos = j1;
 		yCameraCurve = k1;
 		xCameraCurve = l1;
-	}
-
-	private void processMinimapActions()
-	{
-
-		if (changeChatArea)
-		{
-			if (mouseX >= 256 && mouseX <= 264 && mouseY >= frameHeight - 170 - extendChatArea
-				&& mouseY <= frameHeight - 160 - extendChatArea)
-			{
-				menuActionName[1] = "Drag to Extend Chat";
-				menuActionID[1] = 701;
-				menuActionRow = 2;
-			}
-		}
-		if (mouseX >= frameWidth - 26 && mouseX <= frameWidth - 1 && mouseY >= 2
-			&& mouseY <= 24)
-		{
-			menuActionName[1] = "Too stoned..";
-			menuActionID[1] = 1004;
-			menuActionRow = 2;
-		}
-		if (Configuration.enableStatusOrbs)
-		{
-			if (counterHover)
-			{
-				menuActionName[3] = counterOn ? "See Gains" : "Unsee Gains";
-				menuActionID[3] = 474;
-				menuActionName[2] = "Reset Gains";
-				menuActionID[2] = 475;
-				menuActionName[1] = "Gains settings";
-				menuActionID[1] = 476;
-				menuActionRow = 4;
-			}
-			if (pouchHover & Configuration.enablePouch)
-			{
-				menuActionName[3] = "Withdraw from debit";
-				menuActionID[3] = 713;
-				menuActionName[2] = "Pay with... ";
-				menuActionID[2] = 715;
-				menuActionName[1] = "inspect debit card";
-				menuActionID[1] = 714;
-				menuActionRow = 4;
-			}
-			if (prayHover)
-			{
-				menuActionName[2] = prayClicked ? "Dont channel necromance powers" : "Channel necromance powers";
-				menuActionID[2] = 1500;
-				menuActionName[1] = "Select necromance powers";
-				menuActionID[1] = 1506;
-				menuActionRow = 3;
-			}
-			if (runHover)
-			{
-				menuActionName[1] = variousSettings[173] == 0 ? "Turn haste mode on" : "Turn haste mode off";
-				menuActionID[1] = 1050;
-				menuActionRow = 2;
-			}
-		}
 	}
 
 	private void loadAllOrbs(int xOffset) {
@@ -16316,7 +15996,7 @@ public class Client extends ClientEngine
 
 	public void resetAllImageProducers()
 	{
-		if (fullGameScreen != null)
+		if (gameWorldScreen != null)
 		{
 			return;
 		}
@@ -16334,7 +16014,7 @@ public class Client extends ClientEngine
 		aRSImageProducer_1113 = null;
 		aRSImageProducer_1114 = null;
 		aRSImageProducer_1115 = null;
-		fullGameScreen = new ImageProducer(canvas.getWidth(), canvas.getHeight());
+		gameWorldScreen = new ImageProducer(canvas.getWidth(), canvas.getHeight());
 		welcomeScreenRaised = true;
 	}
 

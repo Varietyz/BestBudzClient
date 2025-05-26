@@ -3,6 +3,7 @@ package com.bestbudz.graphics.sprite;
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.engine.ClientEngine;
 import com.bestbudz.config.Configuration;
+import com.bestbudz.engine.input.MouseState;
 import com.bestbudz.graphics.Background;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.network.Stream;
@@ -247,11 +248,12 @@ public final class Sprite extends DrawingArea
 
 	public void drawHoverSprite(int x, int y, int offsetX, int offsetY, Sprite hover) {
 		this.drawSprite(x, y);
-		if (ClientEngine.mouseX >= offsetX + x && ClientEngine.mouseX <= offsetX + x + this.myWidth
-				&& ClientEngine.mouseY >= offsetY + y && ClientEngine.mouseY <= offsetY + y + this.myHeight) {
+		if (MouseState.x >= offsetX + x && MouseState.x <= offsetX + x + this.myWidth
+			&& MouseState.y >= offsetY + y && MouseState.y <= offsetY + y + this.myHeight) {
 			hover.drawSprite(x, y);
 		}
 	}
+
 
 	public void draw24BitSprite(int x, int y) {
 		int alpha = 256;

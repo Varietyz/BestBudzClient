@@ -152,13 +152,16 @@ public class DrawingArea extends NodeSub {
     anInt1387 = bottomY / 2;
   }
 
-  public static void setAllPixelsToZero() {
-    int i = width * height;
-    for (int j = 0; j < i; j++) {
-      pixels[j] = 0;
-      depthBuffer[j] = Float.MAX_VALUE;
-    }
-  }
+	public static void setAllPixelsToZero() {
+		if (pixels == null || depthBuffer == null)
+			throw new IllegalStateException("DrawingArea not initialized");
+		int i = width * height;
+		for (int j = 0; j < i; j++) {
+			pixels[j] = 0;
+			depthBuffer[j] = Float.MAX_VALUE;
+		}
+	}
+
 
   public static void method336(int i, int j, int k, int l, int i1) {
     if (k < topX) {
