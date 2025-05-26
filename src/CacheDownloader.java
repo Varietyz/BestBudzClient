@@ -1,190 +1,137 @@
-import java.awt.Color;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
-import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicProgressBarUI;
 
 @SuppressWarnings("all")
 public class CacheDownloader implements Runnable {
 
-	public static final String ZIP_URL = "https://onedrive.live.com/download?cid=F9ED8B0E6B92618E&resid=F9ED8B0E6B92618E%21219134&authkey=AMUAUamKTlmB3PM";
-	public static final String VERSION_URL = "https://onedrive.live.com/download?cid=F9ED8B0E6B92618E&resid=F9ED8B0E6B92618E%21213750&authkey=AIProd0KztQvjQs";
-	public static final String VERSION_FILE = ClientConstants.CACHE_LOCATION + "cacheVersion.dat";
-	private Client client;
-	private Client frame;
+    public static final String ZIP_FILE_PATH = "./cache/cache.zip";
+    public static final String VERSION_FILE_PATH = "./cache/cacheVersion.dat";
 
-	public CacheDownloader(Client client) {
-		this.client = client;
-	}
+    private final Client client;
 
+    public CacheDownloader(Client client) {
+        this.client = client;
+    }
 
-	public double getCurrentVersion() {
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(VERSION_FILE)));
-			return Double.parseDouble(br.readLine());
-		} catch (Exception e) {
-			return 0.1;
-		}
-	}
+    @Override
+    public void run() {
+        client.drawLoadingText(0, "Checking Versions");
+        try {
+            double newest = getNewestVersion();
+            double current = getCurrentVersion();
 
-	public double getNewestVersion() {
-		try {
-			URL tmp = new URL(VERSION_URL);
-			BufferedReader br = new BufferedReader(new InputStreamReader(tmp.openStream()));
-			return Double.parseDouble(br.readLine());
-		} catch (Exception e) {
-			handleException(e);
-			return -1;
-		}
-	}
+            if (newest > current) {
+                client.drawLoadingText(0, "Update found!");
+                alert("Best Budz", "Update version " + newest + " has been found!\nClient will now automatically update.", true);
 
-	private void handleException(Exception e) {
-		StringBuilder strBuff = new StringBuilder();
-		strBuff.append("Something went wrong downloading your cache!\r\n");	
-		strBuff.append("Error Code: [" + e.getClass().getSimpleName() + "]");
-		alert("Best Budz", strBuff.toString(), true);
-			System.exit(0);
-		}
+                
+                updateClient();
 
+                client.drawLoadingText(0, "Best Budz has been updated!");
+                alert("Best Budz", "Download finished! Restarting the Client...", false);
 
-	private void alert(String msg) {
-		alert("Message", msg, false);
-	}
+                try (OutputStream out = new FileOutputStream(VERSION_FILE_PATH)) {
+                    out.write(String.valueOf(newest).getBytes());
+                }
 
-	private void alert(String title, String msg, boolean error) {
-		JOptionPane.showMessageDialog(null, msg, title, (error ? JOptionPane.ERROR_MESSAGE : JOptionPane.PLAIN_MESSAGE));
-	}
+                try {
+                    Runtime.getRuntime().exec("java -jar myApp.jar");
+                } catch (IOException ex) {
+                    alert("Restart Failed", "Could not restart the client.\n" + ex.getMessage(), true);
+                }
 
-	@Override
-	public void run() {
-		client.drawLoadingText(0, "Checking Versions");
-		try {
-			double newest = getNewestVersion();
-			if (newest > this.getCurrentVersion()) {
-				client.drawLoadingText(0, "Update found!");
-				
-				StringBuilder strBuff = new StringBuilder();
-				strBuff.append("Update version " + newest + " has been found!\n");
-				strBuff.append("Client will now automatically update.");
-				alert("Best Budz", strBuff.toString(), true);
+                System.exit(0);
+            }
+        } catch (IOException | NumberFormatException e) {
+            handleException(e);
+        }
+    }
 
-  		new ProgressBar();
-				updateClient();
-				
-				client.drawLoadingText(0, "Best Budz has been updated!");
-				alert("Best Budz", "Download finished! Restart the Client to start playing!", false);
-				OutputStream out = new FileOutputStream(VERSION_FILE);
-				out.write(String.valueOf(newest).getBytes());
-				Runtime.getRuntime().exec("java -jar myApp.jar");
-				System.exit(0);
-				} else {
+    private double getCurrentVersion() {
+        try (BufferedReader br = new BufferedReader(new FileReader(VERSION_FILE_PATH))) {
+            return Double.parseDouble(br.readLine());
+        } catch (Exception e) {
+            return 0.1;
+        }
+    }
 
-			}
-		} catch (Exception e) {
-			handleException(e);
-		}
-	}
+    private double getNewestVersion() {
+        return getCurrentVersion(); // Local-only cache
+    }
 
-	private void updateClient() {
-		File clientZip = downloadClient();
-		if (clientZip != null) {
-			unZip(clientZip);
-		}
-	}
+    private void updateClient() {
+        File zipFile = new File(ZIP_FILE_PATH);
+        if (!zipFile.exists()) {
+            alert("Best Budz", "Local cache.zip not found at: " + ZIP_FILE_PATH, true);
+            return;
+        }
 
-	private void unZip(File clientZip) {
-		try {
-			unZipFile(clientZip, new File(ClientConstants.CACHE_LOCATION));
-			clientZip.delete();
-		} catch (IOException e) {
-			handleException(e);
-		}
-	}
+        try {
+            unZipFile(zipFile, new File(ClientConstants.CACHE_LOCATION));
+            zipFile.delete();
+        } catch (IOException e) {
+            handleException(e);
+        }
+    }
 
-	private void unZipFile(File zipFile, File outFile) throws IOException {
-		ZipInputStream zin = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
-		ZipEntry e;
-		long max = 0;
-		long curr = 0;
-		while ((e = zin.getNextEntry()) != null)
-			max += e.getSize();
-		zin.close();
-		ZipInputStream in = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
-		while ((e = in.getNextEntry()) != null) {
-			if (e.isDirectory())
-				new File(outFile, e.getName()).mkdirs();
-			else {
-				FileOutputStream out = new FileOutputStream(new File(outFile, e.getName()));
-				byte[] b = new byte[1024];
-				int len;
-				while ((len = in.read(b, 0, b.length)) > -1) {
-					curr += len;
-					out.write(b, 0, len);
-					setUnzipPercent((int) ((curr * 100) / max));
-				}
-				out.flush();
-				out.close();
-			}
-		}
-	}
+    private void unZipFile(File zipFile, File outDir) throws IOException {
+        long totalSize = calculateUncompressedSize(zipFile);
+        long extracted = 0;
 
-	public int percent = 0;
-	
+        try (ZipInputStream zin = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)))) {
+            ZipEntry entry;
+            while ((entry = zin.getNextEntry()) != null) {
+                File outFile = new File(outDir, entry.getName());
+                if (entry.isDirectory()) {
+                    outFile.mkdirs();
+                    continue;
+                }
 
-	public void setDownloadPercent(int amount) {
-		percent = amount;
-		ProgressBar.updateValue(amount);
-		ProgressBar.updateString("(1/2) Downloading cache - " + ProgressBar.getValue() + "%");
-		client.drawLoadingText(amount, "(1/2) Downloading BestBudzCache" + " - " + amount + "%");
+                outFile.getParentFile().mkdirs();
+                try (FileOutputStream out = new FileOutputStream(outFile)) {
+                    byte[] buffer = new byte[1024];
+                    int len;
+                    while ((len = zin.read(buffer)) > 0) {
+                        out.write(buffer, 0, len);
+                        extracted += len;
+                        setUnzipPercent((int) ((extracted * 100) / Math.max(1, totalSize)));
+                    }
+                }
+            }
+        }
+    }
 
-	}
+    private long calculateUncompressedSize(File zipFile) throws IOException {
+        long size = 0;
+        try (ZipInputStream zin = new ZipInputStream(new FileInputStream(zipFile))) {
+            ZipEntry e;
+            while ((e = zin.getNextEntry()) != null) {
+                size += Math.max(0, e.getSize());
+            }
+        }
+        return size;
+    }
 
-	public int percent2 = 0;
+    private void alert(String title, String msg, boolean error) {
+        JOptionPane.showMessageDialog(null, msg, title, error ? JOptionPane.ERROR_MESSAGE : JOptionPane.PLAIN_MESSAGE);
+    }
 
-	public void setUnzipPercent(int amount2) {
-		percent2 = amount2;
-		ProgressBar.updateValue(amount2);
-		ProgressBar.updateString("(2/2) Extracting cache - " + ProgressBar.getValue() + "%");
-		client.drawLoadingText(amount2, "(2/2) Extracting cache" + " - " + amount2 + "%");
-	}
+    private void handleException(Exception e) {
+        alert("Best Budz", "Something went wrong!\nError Code: [" + e.getClass().getSimpleName() + "]", true);
+        System.exit(1);
+    }
 
-	private File downloadClient() {
-		File ret = new File(ClientConstants.CACHE_LOCATION + "cache.zip");
-		try {
-			OutputStream out = new FileOutputStream(ret);
-			URLConnection conn = new URL(ZIP_URL).openConnection();
-			InputStream in = conn.getInputStream();
-			long max = conn.getContentLength();
-			long curr = 0;
-			byte[] b = new byte[1024];
-			int len;
-			while ((len = in.read(b, 0, b.length)) > -1) {
-				out.write(b, 0, len);
-				curr += len;
-				setDownloadPercent((int) ((curr * 100) / max));
-			}
-			out.flush();
-			out.close();
-			in.close();
-			return ret;
-		} catch (Exception e) {
-			handleException(e);
-			ret.delete();
-			return null;
-		}
-	}
+    public void setDownloadPercent(int amount) {
+        ProgressBar.updateValue(amount);
+        ProgressBar.updateString("(1/2) Downloading cache - " + amount + "%");
+        client.drawLoadingText(amount, "(1/2) Downloading BestBudzCache - " + amount + "%");
+    }
+
+    public void setUnzipPercent(int amount) {
+        ProgressBar.updateValue(amount);
+        ProgressBar.updateString("(2/2) Extracting cache - " + amount + "%");
+        client.drawLoadingText(amount, "(2/2) Extracting cache - " + amount + "%");
+    }
 }

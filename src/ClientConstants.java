@@ -30,8 +30,8 @@ public class ClientConstants {
 	/**
 	 * The IP address which the client will be connecting to
 	 */
-	public final static String[] SERVER_IPS = { "bestbudz.net-freaks.com", "bestbudz.net-freaks.com", "127.0.0.1",
-			"bestbudz.net-freaks.com" };
+	public final static String[] SERVER_IPS = { "161.35.87.63", "161.35.87.63", "127.0.0.1",
+			"161.35.87.63" };
 
 	/**
 	 * The client port
