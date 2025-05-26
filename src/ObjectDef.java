@@ -24,159 +24,213 @@ public final class ObjectDef {
 				class46.originalModelColors = new int[] { 117, 127, 127, 96, 96 };
 			return class46;
 		}
-		
+
 		switch (i) {
-		// hardcode objects that don't have any actions.
-		case 26621:
-		case 26620:
-		case 26619:
-		case 26618:
-		case 26561:
-		case 26562:
-		case 7836:
-		case 7837:
-		case 7838:
-		case 7839:
-		case 7848:
-		case 7847:
-		case 7849:
-		case 7850:
-		case 8150:
-		case 8151:
-		case 8152:
-		case 8153:
-		case 8550:
-		case 8551:
-		case 8552:
-		case 8553:
-		case 8554:
-		case 8555:
-		case 8556:
-		case 8557:
-		case 20973:			
-		case 26606:
-		case 26611:
-		case 26613:
-		case 26626:
-		case 26608:
-		case 26607:
-		case 26603:
-		case 26580:
-		case 26604:
-		case 26609:
-		case 26600:
-		case 26601:
-		case 26610:
-		case 26616:
-		case 26612:
-		case 26605:
-		case 26602:
-			class46.hasActions = true;
-			break;
-		case 22472://Tab Creation
-			class46.name = "Tablet";
-			class46.actions = new String[5];
-			class46.actions[0] = "Create";
-			break;
+			// hardcode objects that don't have any actions.
+			case 26621:
+			case 26620:
+			case 26619:
+			case 26618:
+			case 26561:
+			case 26562:
+			case 7836:
+			case 7837:
+			case 7838:
+			case 7839:
+			case 7848:
+			case 7847:
+			case 7849:
+			case 7850:
+			case 8150:
+			case 8151:
+			case 8152:
+			case 8153:
+			case 8550:
+			case 8551:
+			case 8552:
+			case 8553:
+			case 8554:
+			case 8555:
+			case 8556:
+			case 8557:
+			case 20973:
+			case 26606:
+			case 26611:
+			case 26613:
+			case 26626:
+			case 26608:
+			case 26607:
+			case 26603:
+			case 26580:
+			case 26604:
+			case 26609:
+			case 26600:
+			case 26601:
+			case 26610:
+			case 26616:
+			case 26612:
+			case 26605:
+			case 26602:
+				class46.hasActions = true;
+				break;
+			case 22472:// Tab Creation
+				class46.name = "Tablet";
+				class46.actions = new String[5];
+				class46.actions[0] = "Create";
+				break;
 
-		case 8720:
-		case 26492:
-		case 26796:
-		case 26797:
-		case 26798:
-		case 26799:
-		case 26800:
-		case 26801:
-		case 26802:
-		case 26803:
-		case 26804:
-		case 26805:
-		case 26806:
-		case 26807:
-		case 26808:
-		case 26809:
-		case 26810:
-		case 26811:
-		case 26812:
-		case 26813:
-		case 26814:
-		case 26815:
-		case 26816:
-		case 26817:
-		case 26818:
-		case 26819:
-		case 26820:
-		case 26821:
-			class46.name = "Vote Toll";
-			class46.actions = new String[5];
-			class46.actions[0] = "Vote";
-			class46.actions[1] = "Open store";
-			class46.actions[2] = "Info";
-			class46.hasActions = true;
-			break;
-			
-		case 2072://Weapon Game Crate
-			class46.name = "Game Crate";
-			class46.actions = new String[5];
-			class46.actions[0] = "Search";
-			break;
+			case 8720:
+			case 26492:
+			case 26796:
+			case 26797:
+			case 26798:
+			case 26799:
+			case 26800:
+			case 26801:
+			case 26802:
+			case 26803:
+			case 26804:
+			case 26805:
+			case 26806:
+			case 26807:
+			case 26808:
+			case 26809:
+			case 26810:
+			case 26811:
+			case 26812:
+			case 26813:
+			case 26814:
+			case 26815:
+			case 26816:
+			case 26817:
+			case 26818:
+			case 26819:
+			case 26820:
+			case 26821:
+				class46.name = "Chill Booth";
+				class46.actions = new String[5];
+				class46.actions[1] = "Open shop";
+				class46.hasActions = true;
+				break;
 
-		case 9472:// Shop Exchange
-		case 9371:
-			class46.name = "Shop Exchange";
-			class46.actions = new String[5];
-			class46.actions[0] = "Info";
-			class46.actions[1] = "Edit Shop";
-			class46.actions[2] = "Explore Shops";
-			break;
-			
-        case 18772://Mystery box
-			class46.name = "Mystery Box";
-            class46.actions = new String[5];
-            class46.actions[0] = "Open";
-            break;
-			
-        case 2732://Fires
-            class46.actions = new String[5];
-            class46.actions[0] = "Add-Logs";
-            class46.actions[1] = "Change-color";
-            break;
-            
-        case 574:
-        	class46.name = "Magic book";
-        	class46.actions = new String[5];
-        	class46.actions[0] = "Change";
-        	break;
-        	
-        case 575:
-        	class46.name = "Altar";
-        	class46.actions = new String[5];
-        	class46.actions[0] = "Restore";
-        	break;
-        	
-        case 576:
-        	class46.name = "Highscores";
-        	class46.actions = new String[5];
-        	class46.actions[0] = "View";
-        	break;
-        	
-        case 13618:
-        	class46.name = "Wyverns";
-        	class46.actions = new String[5];
-        	class46.actions[0] = "Teleport-to";
-        	break;
-        	
-        case 13619:
-        	class46.name = "Fountain of Rune";
-        	class46.actions = new String[5];
-        	class46.actions[0] = "Teleport-to";
-        	break;
-            
-        case 4090:
-        	class46.name = "Blood altar";
-        	class46.actions = new String[5];
-        	class46.actions[0] = "Craft";
-        	break;
+			case 2072:// Weapon Game Crate
+				class46.name = "Game Crate";
+				class46.actions = new String[5];
+				class46.actions[0] = "Search";
+				break;
+
+			case 9472:// Shop Exchange
+			case 9371:
+				class46.name = "Stoner Market";
+				class46.actions = new String[5];
+				class46.actions[0] = "Info";
+				class46.actions[1] = "Edit Shop";
+				class46.actions[2] = "Explore Shops";
+				break;
+
+			case 18772:// Misery Box
+				class46.name = "Misery Box";
+				class46.actions = new String[5];
+				class46.actions[0] = "Open";
+				break;
+
+			case 5249:// Fires
+				class46.name = "Fyah";
+				class46.description = "Bun dem!".getBytes();
+				break;
+
+			// ORES QUARRYING
+			case 13712:
+				class46.name = "Tin";
+				class46.description = "It's a Tin ore.".getBytes();
+				class46.actions = new String[5];
+				class46.actions[0] = "Collect";
+				break;
+
+			case 13709:
+				class46.name = "Copper";
+				class46.description = "It's a Copper ore.".getBytes();
+				class46.actions = new String[5];
+				class46.actions[0] = "Collect";
+				break;
+
+			case 13711:
+				class46.name = "Iron";
+				class46.description = "It's a Iron ore.".getBytes();
+				class46.actions = new String[5];
+				class46.actions[0] = "Collect";
+				break;
+
+			case 13714:
+				class46.name = "Coal";
+				class46.description = "It's a Coal ore.".getBytes();
+				class46.actions = new String[5];
+				class46.actions[0] = "Collect";
+				break;
+
+			case 13718:
+				class46.name = "Mithril";
+				class46.description = "It's a Mithril ore.".getBytes();
+				class46.actions = new String[5];
+				class46.actions[0] = "Collect";
+				break;
+
+			case 14168:
+				class46.name = "Adamantite";
+				class46.description = "It's a Adamantite ore.".getBytes();
+				class46.actions = new String[5];
+				class46.actions[0] = "Collect";
+				break;
+
+			case 13707:
+				class46.name = "Gold";
+				class46.description = "It's a Gold ore.".getBytes();
+				class46.actions = new String[5];
+				class46.actions[0] = "Collect";
+				break;
+
+			case 14175:
+				class46.name = "Runite";
+				class46.description = "It's a Runite ore.".getBytes();
+				class46.actions = new String[5];
+				class46.actions[0] = "Collect";
+				break;
+
+			case 574:
+				class46.name = "Mage Spells";
+				class46.actions = new String[5];
+				class46.actions[0] = "Change";
+				break;
+
+			case 575:
+				class46.name = "Altar";
+				class46.actions = new String[5];
+				class46.actions[0] = "Restore";
+				break;
+
+			case 576:
+				class46.name = "Highscores";
+				class46.actions = new String[5];
+				class46.actions[0] = "View";
+				break;
+
+			case 13618:
+				class46.name = "Wyverns";
+				class46.actions = new String[5];
+				class46.actions[0] = "Teleport-to";
+				break;
+
+			case 13619:
+				class46.name = "Fountain of Rune";
+				class46.actions = new String[5];
+				class46.actions[0] = "Teleport-to";
+				break;
+
+			case 4090:
+				class46.name = "Blood altar";
+				class46.actions = new String[5];
+				class46.actions[0] = "Craft";
+				break;
 
 		}
 		if (ClientConstants.DEBUG_MODE) {
@@ -315,8 +369,9 @@ public final class ObjectDef {
 			int l = varBit.anInt650;
 			int i1 = Client.anIntArray1232[l - k];
 			i = clientInstance.variousSettings[j] >> k & i1;
-//			System.out.println(j + " " + k + " " + i1 + " " + clientInstance.variousSettings[j] + " " + i);
-//			System.out.println(Arrays.toString(childrenIDs));
+			// System.out.println(j + " " + k + " " + i1 + " " +
+			// clientInstance.variousSettings[j] + " " + i);
+			// System.out.println(Arrays.toString(childrenIDs));
 		} else if (anInt749 != -1)
 			i = clientInstance.variousSettings[anInt749];
 		if (i < 0 || i >= childrenIDs.length || childrenIDs[i] == -1)
@@ -391,7 +446,8 @@ public final class ObjectDef {
 		flag = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
 		boolean flag2;
 		flag2 = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
-		Model model_3 = new Model(modifiedModelColors == null, SequenceFrame.method532(k), l == 0 && k == -1 && !flag && !flag2, model);
+		Model model_3 = new Model(modifiedModelColors == null, SequenceFrame.method532(k),
+				l == 0 && k == -1 && !flag && !flag2, model);
 		if (k != -1) {
 			model_3.method469();
 			model_3.method470(k);

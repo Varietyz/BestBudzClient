@@ -19,7 +19,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				int l1 = ((ioBuffer[3] & 0xff) << 8) + (ioBuffer[4] & 0xff);
 				int i2 = ioBuffer[5] & 0xff;
 				current = null;
-				for (OnDemandData onDemandData = (OnDemandData) requested.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) requested.reverseGetNext()) {
+				for (OnDemandData onDemandData = (OnDemandData) requested
+						.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) requested
+								.reverseGetNext()) {
 					if (onDemandData.dataType == l && onDemandData.ID == j1)
 						current = onDemandData;
 					if (current != null)
@@ -101,7 +103,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			mapIndices2[i2] = stream2.readUnsignedWord();
 			mapIndices3[i2] = stream2.readUnsignedWord();
 		}
-		System.out.println("Maps Loaded: "+j1);
+		System.out.println("Maps Loaded: " + j1);
 		abyte2 = streamLoader.getDataForName("midi_index");
 		stream2 = new Stream(abyte2);
 		j1 = abyte2.length;
@@ -190,7 +192,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 	public void method558(int i, int j) {
 		synchronized (nodeSubList) {
-			for (OnDemandData onDemandData = (OnDemandData) nodeSubList.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) nodeSubList.reverseGetNext())
+			for (OnDemandData onDemandData = (OnDemandData) nodeSubList
+					.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) nodeSubList
+							.reverseGetNext())
 				if (onDemandData.dataType == i && onDemandData.ID == j)
 					return;
 
@@ -235,7 +239,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				}
 
 				boolean flag = false;
-				for (OnDemandData onDemandData = (OnDemandData) requested.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) requested.reverseGetNext())
+				for (OnDemandData onDemandData = (OnDemandData) requested
+						.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) requested
+								.reverseGetNext())
 					if (onDemandData.incomplete) {
 						flag = true;
 						onDemandData.loopCycle++;
@@ -246,7 +252,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					}
 
 				if (!flag) {
-					for (OnDemandData onDemandData_1 = (OnDemandData) requested.reverseGetFirst(); onDemandData_1 != null; onDemandData_1 = (OnDemandData) requested.reverseGetNext()) {
+					for (OnDemandData onDemandData_1 = (OnDemandData) requested
+							.reverseGetFirst(); onDemandData_1 != null; onDemandData_1 = (OnDemandData) requested
+									.reverseGetNext()) {
 						flag = true;
 						onDemandData_1.loopCycle++;
 						if (onDemandData_1.loopCycle > 50) {
@@ -272,7 +280,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					loopCycle = 0;
 					statusString = "";
 				}
-				if (Client.loggedIn && socket != null && outputStream != null && (anInt1332 > 0 || clientInstance.decompressors[0] == null)) {
+				if (Client.loggedIn && socket != null && outputStream != null
+						&& (anInt1332 > 0 || clientInstance.decompressors[0] == null)) {
 					writeLoopCycle++;
 					if (writeLoopCycle > 500) {
 						writeLoopCycle = 0;
@@ -386,10 +395,12 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private void handleFailed() {
 		uncompletedCount = 0;
 		completedCount = 0;
-		for (OnDemandData onDemandData = (OnDemandData) requested.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) requested.reverseGetNext())
+		for (OnDemandData onDemandData = (OnDemandData) requested
+				.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) requested.reverseGetNext())
 			if (onDemandData.incomplete) {
 				uncompletedCount++;
-				System.out.println("Error: model is incomplete or missing  [ type = " + onDemandData.dataType + "]  [id = " + onDemandData.ID + "]");
+				System.out.println("Error: model is incomplete or missing  [ type = " + onDemandData.dataType
+						+ "]  [id = " + onDemandData.ID + "]");
 			} else
 				completedCount++;
 
@@ -405,7 +416,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				uncompletedCount++;
 				closeRequest(onDemandData_1);
 				waiting = true;
-				System.out.println("Error: file is missing  [ type = " + onDemandData_1.dataType + "]  [id = " + onDemandData_1.ID + "]");
+				System.out.println("Error: file is missing  [ type = " + onDemandData_1.dataType + "]  [id = "
+						+ onDemandData_1.ID + "]");
 			} catch (Exception _ex) {
 			}
 		}

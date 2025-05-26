@@ -20,501 +20,550 @@ public final class EntityDef {
 		// Start of customor modified NPCs
 		switch (i) {
 
-		case 6144:
-			entityDef.name = "Portal";
-			entityDef.combatLevel = 0;
-			entityDef.walkAnim = 3928;
-			entityDef.standAnim = 3928;
-			entityDef.actions = new String[5];
-			entityDef.actions[1] = "Attack";
-			entityDef.anIntArray94 = new int[2];
-			entityDef.anIntArray94[0] = 14533;
-			entityDef.anIntArray94[1] = 14522;
-			entityDef.anIntArray70 = new int[5];
-			entityDef.anIntArray70[0] = 10355;
-			entityDef.anIntArray70[1] = 10471;
-			entityDef.anIntArray70[2] = 10941;
-			entityDef.anIntArray70[3] = 11200;
-			entityDef.anIntArray70[4] = 11187;
-			entityDef.anIntArray76 = new int[5];
-			entityDef.anIntArray76[0] = 54387;
-			entityDef.anIntArray76[1] = 54503;
-			entityDef.anIntArray76[2] = 54744;
-			entityDef.anIntArray76[3] = 55219;
-			entityDef.anIntArray76[4] = 55203;
-			entityDef.anInt91 = 128;
-			entityDef.anInt86 = 128;
-			entityDef.aByte68 = 3;
-			break;
+			case 6144:
+				entityDef.name = "Portal";
+				entityDef.combatGrade = 0;
+				entityDef.walkAnim = 3928;
+				entityDef.standAnim = 3928;
+				entityDef.actions = new String[5];
+				entityDef.actions[1] = "Assault";
+				entityDef.anIntArray94 = new int[2];
+				entityDef.anIntArray94[0] = 14533;
+				entityDef.anIntArray94[1] = 14522;
+				entityDef.anIntArray70 = new int[5];
+				entityDef.anIntArray70[0] = 10355;
+				entityDef.anIntArray70[1] = 10471;
+				entityDef.anIntArray70[2] = 10941;
+				entityDef.anIntArray70[3] = 11200;
+				entityDef.anIntArray70[4] = 11187;
+				entityDef.anIntArray76 = new int[5];
+				entityDef.anIntArray76[0] = 54387;
+				entityDef.anIntArray76[1] = 54503;
+				entityDef.anIntArray76[2] = 54744;
+				entityDef.anIntArray76[3] = 55219;
+				entityDef.anIntArray76[4] = 55203;
+				entityDef.anInt91 = 128;
+				entityDef.anInt86 = 128;
+				entityDef.aByte68 = 3;
+				break;
 
-		case 6145:
-			entityDef.name = "Portal";
-			entityDef.combatLevel = 0;
-			entityDef.walkAnim = 3928;
-			entityDef.standAnim = 3928;
-			entityDef.actions = new String[5];
-			entityDef.actions[1] = "Attack";
-			entityDef.anIntArray94 = new int[4];
-			entityDef.anIntArray94[0] = 14533;
-			entityDef.anIntArray94[1] = 14523;
-			entityDef.anIntArray94[2] = 14524;
-			entityDef.anIntArray94[3] = 14525;
-			entityDef.anIntArray70 = new int[5];
-			entityDef.anIntArray70[0] = 63411;
-			entityDef.anIntArray70[1] = 63287;
-			entityDef.anIntArray70[2] = 63163;
-			entityDef.anIntArray70[3] = 63046;
-			entityDef.anIntArray70[4] = 63046;
-			entityDef.anIntArray76 = new int[5];
-			entityDef.anIntArray76[0] = 54387;
-			entityDef.anIntArray76[1] = 54503;
-			entityDef.anIntArray76[2] = 54744;
-			entityDef.anIntArray76[3] = 55219;
-			entityDef.anIntArray76[4] = 55203;
-			entityDef.anInt91 = 128;
-			entityDef.anInt86 = 128;
-			entityDef.aByte68 = 3;
-			break;
+			case 6145:
+				entityDef.name = "Portal";
+				entityDef.combatGrade = 0;
+				entityDef.walkAnim = 3928;
+				entityDef.standAnim = 3928;
+				entityDef.actions = new String[5];
+				entityDef.actions[1] = "Assault";
+				entityDef.anIntArray94 = new int[4];
+				entityDef.anIntArray94[0] = 14533;
+				entityDef.anIntArray94[1] = 14523;
+				entityDef.anIntArray94[2] = 14524;
+				entityDef.anIntArray94[3] = 14525;
+				entityDef.anIntArray70 = new int[5];
+				entityDef.anIntArray70[0] = 63411;
+				entityDef.anIntArray70[1] = 63287;
+				entityDef.anIntArray70[2] = 63163;
+				entityDef.anIntArray70[3] = 63046;
+				entityDef.anIntArray70[4] = 63046;
+				entityDef.anIntArray76 = new int[5];
+				entityDef.anIntArray76[0] = 54387;
+				entityDef.anIntArray76[1] = 54503;
+				entityDef.anIntArray76[2] = 54744;
+				entityDef.anIntArray76[3] = 55219;
+				entityDef.anIntArray76[4] = 55203;
+				entityDef.anInt91 = 128;
+				entityDef.anInt86 = 128;
+				entityDef.aByte68 = 3;
+				break;
 
-		case 6146:
-			entityDef.name = "Portal";
-			entityDef.combatLevel = 0;
-			entityDef.walkAnim = 3928;
-			entityDef.standAnim = 3928;
-			entityDef.actions = new String[5];
-			entityDef.actions[1] = "Attack";
-			entityDef.anIntArray94 = new int[2];
-			entityDef.anIntArray94[0] = 14533;
-			entityDef.anIntArray94[1] = 14522;
-			entityDef.anIntArray70 = new int[5];
-			entityDef.anIntArray70[0] = 10355;
-			entityDef.anIntArray70[1] = 10471;
-			entityDef.anIntArray70[2] = 10941;
-			entityDef.anIntArray70[3] = 11200;
-			entityDef.anIntArray70[4] = 11187;
-			entityDef.anIntArray76 = new int[5];
-			entityDef.anIntArray76[0] = 54387;
-			entityDef.anIntArray76[1] = 54503;
-			entityDef.anIntArray76[2] = 54744;
-			entityDef.anIntArray76[3] = 55219;
-			entityDef.anIntArray76[4] = 55203;
-			entityDef.anInt91 = 128;
-			entityDef.anInt86 = 128;
-			entityDef.aByte68 = 3;
-			break;
+			case 6146:
+				entityDef.name = "Portal";
+				entityDef.combatGrade = 0;
+				entityDef.walkAnim = 3928;
+				entityDef.standAnim = 3928;
+				entityDef.actions = new String[5];
+				entityDef.actions[1] = "Assault";
+				entityDef.anIntArray94 = new int[2];
+				entityDef.anIntArray94[0] = 14533;
+				entityDef.anIntArray94[1] = 14522;
+				entityDef.anIntArray70 = new int[5];
+				entityDef.anIntArray70[0] = 10355;
+				entityDef.anIntArray70[1] = 10471;
+				entityDef.anIntArray70[2] = 10941;
+				entityDef.anIntArray70[3] = 11200;
+				entityDef.anIntArray70[4] = 11187;
+				entityDef.anIntArray76 = new int[5];
+				entityDef.anIntArray76[0] = 54387;
+				entityDef.anIntArray76[1] = 54503;
+				entityDef.anIntArray76[2] = 54744;
+				entityDef.anIntArray76[3] = 55219;
+				entityDef.anIntArray76[4] = 55203;
+				entityDef.anInt91 = 128;
+				entityDef.anInt86 = 128;
+				entityDef.aByte68 = 3;
+				break;
 
-		case 6147:
-			entityDef.name = "Portal";
-			entityDef.combatLevel = 0;
-			entityDef.walkAnim = 3928;
-			entityDef.standAnim = 3928;
-			entityDef.actions = new String[5];
-			entityDef.actions[1] = "Attack";
-			entityDef.anIntArray94 = new int[4];
-			entityDef.anIntArray94[0] = 14533;
-			entityDef.anIntArray94[1] = 14523;
-			entityDef.anIntArray94[2] = 14524;
-			entityDef.anIntArray94[3] = 14525;
-			entityDef.anIntArray70 = new int[5];
-			entityDef.anIntArray70[0] = 63411;
-			entityDef.anIntArray70[1] = 63287;
-			entityDef.anIntArray70[2] = 63163;
-			entityDef.anIntArray70[3] = 63046;
-			entityDef.anIntArray70[4] = 63046;
-			entityDef.anIntArray76 = new int[5];
-			entityDef.anIntArray76[0] = 54387;
-			entityDef.anIntArray76[1] = 54503;
-			entityDef.anIntArray76[2] = 54744;
-			entityDef.anIntArray76[3] = 55219;
-			entityDef.anIntArray76[4] = 55203;
-			entityDef.anInt91 = 128;
-			entityDef.anInt86 = 128;
-			entityDef.aByte68 = 3;
-			break;
+			case 6147:
+				entityDef.name = "Portal";
+				entityDef.combatGrade = 0;
+				entityDef.walkAnim = 3928;
+				entityDef.standAnim = 3928;
+				entityDef.actions = new String[5];
+				entityDef.actions[1] = "Assault";
+				entityDef.anIntArray94 = new int[4];
+				entityDef.anIntArray94[0] = 14533;
+				entityDef.anIntArray94[1] = 14523;
+				entityDef.anIntArray94[2] = 14524;
+				entityDef.anIntArray94[3] = 14525;
+				entityDef.anIntArray70 = new int[5];
+				entityDef.anIntArray70[0] = 63411;
+				entityDef.anIntArray70[1] = 63287;
+				entityDef.anIntArray70[2] = 63163;
+				entityDef.anIntArray70[3] = 63046;
+				entityDef.anIntArray70[4] = 63046;
+				entityDef.anIntArray76 = new int[5];
+				entityDef.anIntArray76[0] = 54387;
+				entityDef.anIntArray76[1] = 54503;
+				entityDef.anIntArray76[2] = 54744;
+				entityDef.anIntArray76[3] = 55219;
+				entityDef.anIntArray76[4] = 55203;
+				entityDef.anInt91 = 128;
+				entityDef.anInt86 = 128;
+				entityDef.aByte68 = 3;
+				break;
 
-		case 1518:
-			entityDef.name = "Shimps & Anchovies";
-			break;
+			case 1526:
+			case 1520:
+			case 1534:
+			case 1536:
+			case 1521:
+			case 1519:
+			case 1518:
+				entityDef.name = "Mystery Fishes";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Splash";
+				entityDef.description = "All kinds of fish are present, what else could be lurking in the water?"
+						.getBytes(); // Description
+				break;
 
-		case 1526:
-			entityDef.name = "Trout & Salmon";
-			break;
+			case 1103:
+				entityDef.actions = new String[5];
+				entityDef.name = "Game Instructor";
+				entityDef.actions[0] = "Speak with";
+				entityDef.actions[3] = "Deal";
+				entityDef.description = "It's a game instructor.".getBytes(); // Description
+				break;
 
-		case 1520:
-			entityDef.name = "Shark";
-			break;
+			case 13178:
+			case 495:
+			case 5907:
+			case 318:
+			case 497:
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Naptime";
+				break;
 
-		case 1534:
-			entityDef.name = "Monkfish";
-			break;
+			case 3936: // Travelling
+				entityDef.name = "Travel Agency";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Book";
+				entityDef.description = "It's a travel agency.".getBytes(); // Description
+				break;
 
-		case 1536:
-			entityDef.name = "Dark crab";
-			break;
-			
-		case 1103:
-			entityDef.actions = new String[5];
-			entityDef.name = "Game Instructor";
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[3] = "Open Store";
-			break;
-			
-		case 13178:
-		case 495:
-		case 5907:
-		case 318:
-		case 497:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			break;
-			
-		case 3680:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Travel";
-			break;
-			
-		case 3231:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Tan";
-			break;
-			
-		case 394:
-		case 2182:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Bank";
-			break;
-			
-		case 311:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			break;
-			
-		case 3951:
-			entityDef.name = "Vencillio Guard";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			break;
-			
-		case 6749:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			break;
-			
-		case 1325:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[3] = "Open Drop Tables";
-			break;
-			
-		case 5527:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[1] = "Trade";
-			break;
-			
-		case 6524:
-			entityDef.name = "Decantor";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[3] = "Decant";
-			break;
-			
-		case 5523:
-			entityDef.name = "Membership";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[1] = "Trade";
-			entityDef.actions[3] = "Teleport";
-			break;
-			
-		case 1603:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[1] = "Trade";
-			break;
+			case 3231: // Tanner
+				entityDef.name = "Tanner";
+				entityDef.description = "It's a tanner.".getBytes(); // Description
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Open";
+				break;
 
-		case 4000:
-			entityDef.name = "Prince black dragon";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.anIntArray94 = new int[] { 17414, 17415, 17429, 17422 };
-			entityDef.walkAnim = 4635;
-			entityDef.standAnim = 90;
-			entityDef.anInt86 = 50;
-			entityDef.anInt91 = 50;
-			break;
+			case 732: // Fred Farmer
+				entityDef.name = "Cultivation/THC-hempistry";
+				entityDef.description = "It's a cultivation and thc-hempistry store.".getBytes(); // Description
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				break;
 
-		case 4001:
-			entityDef.name = "Pet general graardor";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.anIntArray94 = new int[] { 27660, 27665 };
-			entityDef.walkAnim = 7016;
-			entityDef.standAnim = 7017;
-			entityDef.anInt86 = 40;
-			entityDef.anInt91 = 40;
-			break;
+			case 394:
+			case 2182:
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Bank";
+				break;
 
-		case 4002:
-			entityDef.name = "Pet corporeal beast";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.anIntArray94 = new int[] { 11056 };
-			entityDef.walkAnim = 1684;
-			entityDef.standAnim = 1678;
-			entityDef.anInt86 = 100;
-			entityDef.anInt91 = 100;
-			break;
+			case 311: // iron manager
+				entityDef.name = "Status Manager";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.description = "It's the status manager.".getBytes(); // Description
+				break;
 
-		case 4003:
-			entityDef.name = "Pet kree'Arra";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.anIntArray94 = new int[] { 28019, 28021, 28020 };
-			entityDef.walkAnim = 6977;
-			entityDef.standAnim = 6976;
-			entityDef.anInt86 = 25;
-			entityDef.anInt91 = 25;
-			break;
+			case 6749: // Custom MEMBER TITLES
+				entityDef.name = "Deluxe Title Manager";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.description = "Set your title color + name.".getBytes(); // Description
+				break;
 
-		case 4004:
-			entityDef.name = "Pet k'ril tsutsaroth";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.anIntArray94 = new int[] { 27683, 27681, 27692, 27682, 27690 };
-			entityDef.combatLevel = 0;
-			entityDef.walkAnim = 4070;
-			entityDef.standAnim = 6935;
-			entityDef.anInt86 = 25;
-			entityDef.anInt91 = 25;
-			break;
+			case 1325: // drop tables
+				entityDef.name = "Drop Tables";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.actions[3] = "Open";
+				entityDef.description = "View drop tables.".getBytes(); // Description
+				break;
 
-		case 4009:
-			entityDef.name = "Pet commander zilyana";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.anIntArray94 = new int[] { 27989, 27937, 27985, 27968, 27990 };
-			entityDef.combatLevel = 0;
-			entityDef.walkAnim = 6965;
-			entityDef.standAnim = 6966;
-			entityDef.anInt86 = 70;
-			entityDef.anInt91 = 70;
-			break;
+			case 1306: // Makeover Mage
+				entityDef.name = "Plastic Surgeon";
+				entityDef.description = "It's the Best Budz Plastic Surgeon.".getBytes(); // Description
+				break;
 
-		case 4006:
-			entityDef.name = "Pet dagannoth supreme";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.anIntArray94 = new int[] { 9941, 9943 };
-			entityDef.standAnim = 2850;
-			entityDef.walkAnim = 2849;
-			entityDef.anInt86 = 70;
-			entityDef.anInt91 = 70;
-			break;
+			case 5527: // achievement
+				entityDef.name = "Achievements";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.actions[1] = "Deal";
+				entityDef.description = "It's the achievement store.".getBytes(); // Description
+				break;
 
-		case 4007:
-			entityDef.name = "Pet dagannoth prime"; // 9940, 9943, 9942
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.anIntArray94 = new int[] { 9940, 994, 9942 };
-			entityDef.walkAnim = 2849;
-			entityDef.standAnim = 2850;
-			entityDef.anInt86 = 70;
-			entityDef.anInt91 = 70;
-			break;
+			case 6524:
+				entityDef.name = "Decantor";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.actions[3] = "Decant";
+				entityDef.description = "Decants your potions.".getBytes(); // Description
+				break;
 
-		case 4008:
-			entityDef.name = "Pet dagannoth rex";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.anIntArray94 = new int[] { 9941 };
-			entityDef.walkAnim = 2849;
-			entityDef.standAnim = 2850;
-			entityDef.anInt86 = 70;
-			entityDef.anInt91 = 70;
-			break;
-			
-		case 4010:
-			entityDef.name = "Tzrek-jad";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.anIntArray94 = new int[] { 9319 };
-			entityDef.walkAnim = 2651;
-			entityDef.standAnim = 2650;
-			entityDef.anInt86 = 25;
-			entityDef.anInt91 = 25;
-			break;
-			
-		case 963:
-			entityDef.anIntArray94 = new int[] { 24602, 24605, 24606 };
-			entityDef.walkAnim = 6236;
-			entityDef.standAnim = 6236;
-			entityDef.anInt86 = 128;
-			entityDef.anInt91 = 128;
-			break;
-			
-		case 964:
-			entityDef.anIntArray94 = new int[] { 24597, 24598 };
-			entityDef.walkAnim = 6238;
-			entityDef.standAnim = 6239;
-			entityDef.anInt86 = 128;
-			entityDef.anInt91 = 128;
-			break;
-			
-		case 5547:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			break;
-			
-		case 5559:
-		case 5560:
-		case 6637:
-		case 6638:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.actions[1] = "Metamorphosis";
-			break;
-			
-		case 2130:
-		case 2131:
-		case 2132:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.actions[1] = "Metamorphosis";
-			break;
-			
-		case 5860:// Big Mo
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[1] = "Open titles";
-			break;
+			case 5523:
+				entityDef.name = "Cannabud";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.actions[1] = "Deal";
+				entityDef.actions[3] = "Teleport";
+				entityDef.description = "It's your local weed supplier.".getBytes(); // Description
+				break;
 
-		case 518:// General Store
-		case 519:
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Store";
-			break;
-			
-		case 6525:// Decantor
-			entityDef.name = "Decantor";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			break;
+			case 1558: // tutorial man
+				entityDef.name = "Wah Gwaan";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's Best Budz bredren, Wah Gwaan!".getBytes(); // Description
+				break;
 
-		case 3984:// Potion Pack
-			entityDef.name = "Packs";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Store";
-			break;
+			case 1603: // MAGEARENA
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.actions[1] = "Deal";
+				break;
 
-		case 403:// Vannaka
-			entityDef.name = "Vannaka";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[1] = "Trade";
-			break;
+			case 4000:
+				entityDef.name = "Prince black dragon";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				entityDef.anIntArray94 = new int[] { 17414, 17415, 17429, 17422 };
+				entityDef.walkAnim = 4635;
+				entityDef.standAnim = 90;
+				entityDef.anInt86 = 50;
+				entityDef.anInt91 = 50;
+				break;
 
-		case 1758:// Void knight store
-			entityDef.name = "Void knight";
-			entityDef.actions[0] = "Store";
-			break;
+			case 4001:
+				entityDef.name = "Pet general graardor";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				entityDef.anIntArray94 = new int[] { 27660, 27665 };
+				entityDef.walkAnim = 7016;
+				entityDef.standAnim = 7017;
+				entityDef.anInt86 = 40;
+				entityDef.anInt91 = 40;
+				break;
 
-		case 1756:// Void knight
-			entityDef.name = "Void knight";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			break;
-			
-		case 606:// Prestige
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[1] = "Trade";
-			entityDef.actions[3] = "Prestige";
-			break;
+			case 4002:
+				entityDef.name = "Pet corporeal beast";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				entityDef.anIntArray94 = new int[] { 11056 };
+				entityDef.walkAnim = 1684;
+				entityDef.standAnim = 1678;
+				entityDef.anInt86 = 100;
+				entityDef.anInt91 = 100;
+				break;
 
-		case 490:// Neive
-			entityDef.name = "Nieve";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[1] = "Trade";
-			break;
+			case 4003:
+				entityDef.name = "Pet kree'Arra";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				entityDef.anIntArray94 = new int[] { 28019, 28021, 28020 };
+				entityDef.walkAnim = 6977;
+				entityDef.standAnim = 6976;
+				entityDef.anInt86 = 25;
+				entityDef.anInt91 = 25;
+				break;
 
-		case 326:// Genie
-			entityDef.name = "Genie";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[2] = "Reset";
-			break;
+			case 4004:
+				entityDef.name = "Pet k'ril tsutsaroth";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				entityDef.anIntArray94 = new int[] { 27683, 27681, 27692, 27682, 27690 };
+				entityDef.combatGrade = 0;
+				entityDef.walkAnim = 4070;
+				entityDef.standAnim = 6935;
+				entityDef.anInt86 = 25;
+				entityDef.anInt91 = 25;
+				break;
 
-		case 4936:// Mage of Zamorak
-			entityDef.name = "Mage of Zamorak";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[1] = "Trade";
-			entityDef.actions[3] = "Teleport";
-			break;
+			case 4009:
+				entityDef.name = "Pet commander zilyana";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				entityDef.anIntArray94 = new int[] { 27989, 27937, 27985, 27968, 27990 };
+				entityDef.combatGrade = 0;
+				entityDef.walkAnim = 6965;
+				entityDef.standAnim = 6966;
+				entityDef.anInt86 = 70;
+				entityDef.anInt91 = 70;
+				break;
 
-		case 22:// Merchant
-			entityDef.name = "Merchant";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Sell Goods";
-			break;
+			case 4006:
+				entityDef.name = "Pet dagannoth supreme";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				entityDef.anIntArray94 = new int[] { 9941, 9943 };
+				entityDef.standAnim = 2850;
+				entityDef.walkAnim = 2849;
+				entityDef.anInt86 = 70;
+				entityDef.anInt91 = 70;
+				break;
 
-		case 505:// Skilling
-			entityDef.name = "Skilling";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Open Store";
-			break;
+			case 4007:
+				entityDef.name = "Pet dagannoth prime"; // 9940, 9943, 9942
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				entityDef.anIntArray94 = new int[] { 9940, 994, 9942 };
+				entityDef.walkAnim = 2849;
+				entityDef.standAnim = 2850;
+				entityDef.anInt86 = 70;
+				entityDef.anInt91 = 70;
+				break;
 
-		case 225:// Cook
-			entityDef.name = "Consumables";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Open Store";
-			break;
+			case 4008:
+				entityDef.name = "Pet dagannoth rex";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				entityDef.anIntArray94 = new int[] { 9941 };
+				entityDef.walkAnim = 2849;
+				entityDef.standAnim = 2850;
+				entityDef.anInt86 = 70;
+				entityDef.anInt91 = 70;
+				break;
 
-		case 527:// Weapons
-			entityDef.name = "Weapons";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Open Store";
-			break;
+			case 4010:
+				entityDef.name = "Tzrek-jad";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				entityDef.anIntArray94 = new int[] { 9319 };
+				entityDef.walkAnim = 2651;
+				entityDef.standAnim = 2650;
+				entityDef.anInt86 = 25;
+				entityDef.anInt91 = 25;
+				break;
 
-		case 528:// Armour
-			entityDef.name = "Armour";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Open Store";
-			break;
+			case 963:
+				entityDef.anIntArray94 = new int[] { 24602, 24605, 24606 };
+				entityDef.walkAnim = 6236;
+				entityDef.standAnim = 6236;
+				entityDef.anInt86 = 128;
+				entityDef.anInt91 = 128;
+				break;
 
-		case 536:// Range
-			entityDef.name = "Range";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Open Store";
-			break;
+			case 964:
+				entityDef.anIntArray94 = new int[] { 24597, 24598 };
+				entityDef.walkAnim = 6238;
+				entityDef.standAnim = 6239;
+				entityDef.anInt86 = 128;
+				entityDef.anInt91 = 128;
+				break;
 
-		case 5314:// Magic
-			entityDef.name = "Magic";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Open Store";
-			break;
+			case 5547:
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				break;
 
-		case 603:// Accessories
-			entityDef.name = "Accessories";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Open Store";
-			break;
+			case 5559:
+			case 5560:
+			case 6637:
+			case 6638:
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				entityDef.actions[1] = "Metamorphosis";
+				break;
 
-		case 534:// Clothing
-			entityDef.name = "Clothing";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Open Store";
-			break;
+			case 2130:
+			case 2131:
+			case 2132:
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Pick-up";
+				entityDef.actions[1] = "Metamorphosis";
+				break;
 
-		case 315:// Emblem Trader
-			entityDef.name = "Emblem Trader";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Talk-to";
-			entityDef.actions[1] = "Trade";
-			entityDef.actions[3] = "Skull";
-			break;
+			case 518:// General Store
+			case 519:
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				break;
+
+			case 6525:// Decantor
+				entityDef.name = "Decantor";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.description = "Decants your potions.".getBytes(); // Description
+				break;
+
+			case 3984:// Potion Pack
+				entityDef.name = "Packs";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Store";
+				entityDef.description = "It's a pack seller.".getBytes(); // Description
+				break;
+
+			case 403:// Vannaka
+				entityDef.name = "Mercenary Tasks";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.actions[1] = "Deal";
+				entityDef.description = "It's a mercenary master.".getBytes(); // Description
+				break;
+
+			case 1758:// Void knight store
+				entityDef.name = "Void Shop";
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's the void knight's shop manager.".getBytes(); // Description
+				break;
+
+			case 1756:// Void knight
+				entityDef.name = "Void knight";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.description = "It's a void knight.".getBytes(); // Description
+				break;
+
+			case 606:// Advance
+				entityDef.name = "Advance Master";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.actions[1] = "Deal";
+				entityDef.actions[3] = "Advance";
+				entityDef.description = "It's the advance master.".getBytes(); // Description
+				break;
+
+			case 490:// Neive
+				entityDef.name = "Boss Mercenary Tasks";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.actions[1] = "Deal";
+				entityDef.description = "It's a mercenary master.".getBytes(); // Description
+				break;
+
+			case 326:// Genie
+				entityDef.name = "Combat Reset";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.actions[2] = "Reset";
+				entityDef.description = "It's a combat skill(s) manager.".getBytes(); // Description
+				break;
+
+			case 4936:// Mage of Zamorak
+				entityDef.name = "Consumer Mage";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.actions[1] = "Deal";
+				entityDef.actions[3] = "To Distant Land";
+				entityDef.description = "It's a artificeer.".getBytes(); // Description
+				break;
+
+			case 22:// Merchant
+				entityDef.name = "Pawnshop";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's a pawnshop.".getBytes(); // Description
+				break;
+
+			case 505:// Skilling
+				entityDef.name = "Skilling";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's a skilling shop.".getBytes(); // Description
+				break;
+
+			case 225:// Cook
+				entityDef.name = "Consumables";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's a consumables shop.".getBytes(); // Description
+				break;
+
+			case 527:// Weapons
+				entityDef.name = "Weapons";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's a weapons shop.".getBytes(); // Description
+				break;
+
+			case 528:// Armour
+				entityDef.name = "Armour";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's a armour shop.".getBytes(); // Description
+				break;
+
+			case 536:// Range
+				entityDef.name = "Range";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's a range shop.".getBytes(); // Description
+				break;
+
+			case 5314:// Mage
+				entityDef.name = "Mage";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's a mage shop.".getBytes(); // Description
+				break;
+
+			case 603:// Accessories
+				entityDef.name = "Accessories";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's a accessories shop.".getBytes(); // Description
+				break;
+
+			case 534:// Clothing
+				entityDef.name = "Clothing";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's a clothing shop.".getBytes(); // Description
+				break;
+			case 532:// Mastercapes
+				entityDef.name = "Master Capes";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's a mastercape shop.".getBytes(); // Description
+				break;
+
+			case 4306:// Skillcapes
+				entityDef.name = "Skillcapes";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Deal";
+				entityDef.description = "It's a skillcape shop.".getBytes(); // Description
+				break;
+
+			case 315:// Emblem Dealr
+				entityDef.name = "Bounty";
+				entityDef.actions = new String[5];
+				entityDef.actions[0] = "Speak with";
+				entityDef.actions[1] = "Deal";
+				entityDef.actions[3] = "Get Skulled";
+				entityDef.description = "It's a bounty hunter manager.".getBytes(); // Description
+				break;
 
 		}
 
@@ -601,69 +650,69 @@ public final class EntityDef {
 		boolean dump = false;
 		if (dump) {
 			try {
-				FileWriter fw = new FileWriter(System.getProperty("user.home")+"/Desktop/NPC Dump.txt");
-				for(int id = 0; id < totalNPCs; id++) {
+				FileWriter fw = new FileWriter(System.getProperty("user.home") + "/Desktop/NPC Dump.txt");
+				for (int id = 0; id < totalNPCs; id++) {
 					EntityDef ed = EntityDef.forID(id);
-					fw.write("case "+id+":");
+					fw.write("case " + id + ":");
 					fw.write(System.getProperty("line.separator"));
-					fw.write("entityDef.name = \""+ed.name+"\";");
+					fw.write("entityDef.name = \"" + ed.name + "\";");
 					fw.write(System.getProperty("line.separator"));
-					fw.write("entityDef.description = \""+ed.description+"\";");
+					fw.write("entityDef.description = \"" + ed.description + "\";");
 					fw.write(System.getProperty("line.separator"));
-					fw.write("entityDef.combatLevel = "+ed.combatLevel+";");
+					fw.write("entityDef.combatGrade = " + ed.combatGrade + ";");
 					fw.write(System.getProperty("line.separator"));
-					fw.write("entityDef.walkAnim = "+ed.walkAnim+";");
+					fw.write("entityDef.walkAnim = " + ed.walkAnim + ";");
 					fw.write(System.getProperty("line.separator"));
-					fw.write("entityDef.standAnim = "+ed.standAnim+";");
+					fw.write("entityDef.standAnim = " + ed.standAnim + ";");
 					fw.write(System.getProperty("line.separator"));
-					if(ed.actions != null) {
-						fw.write("entityDef.actions = new String["+ed.actions.length+"];");
+					if (ed.actions != null) {
+						fw.write("entityDef.actions = new String[" + ed.actions.length + "];");
 						fw.write(System.getProperty("line.separator"));
-						for(int range = 0; range < ed.actions.length; range++) {
-							if(ed.actions[range] != null) {
-								fw.write("entityDef.actions["+range+"] = \""+ed.actions[range]+"\";");
+						for (int range = 0; range < ed.actions.length; range++) {
+							if (ed.actions[range] != null) {
+								fw.write("entityDef.actions[" + range + "] = \"" + ed.actions[range] + "\";");
 								fw.write(System.getProperty("line.separator"));
 							}
 						}
 					}
-					if(ed.anIntArray94 != null) { 
-						fw.write("entityDef.models = new int["+ed.anIntArray94.length+"];");
+					if (ed.anIntArray94 != null) {
+						fw.write("entityDef.models = new int[" + ed.anIntArray94.length + "];");
 						fw.write(System.getProperty("line.separator"));
-						for(int range = 0; range < ed.anIntArray94.length; range++) {
-							fw.write("entityDef.models["+range+"] = "+ed.anIntArray94[range]+";");
+						for (int range = 0; range < ed.anIntArray94.length; range++) {
+							fw.write("entityDef.models[" + range + "] = " + ed.anIntArray94[range] + ";");
 							fw.write(System.getProperty("line.separator"));
 						}
 					}
-					if(ed.anIntArray76 != null) {
-						fw.write("entityDef.originalModelColors = new int["+ed.anIntArray76.length+"];");
+					if (ed.anIntArray76 != null) {
+						fw.write("entityDef.originalModelColors = new int[" + ed.anIntArray76.length + "];");
 						fw.write(System.getProperty("line.separator"));
-						for(int range = 0; range < ed.anIntArray76.length; range++) {
-							fw.write("entityDef.originalModelColors["+range+"] = "+ed.anIntArray76[range]+";");
+						for (int range = 0; range < ed.anIntArray76.length; range++) {
+							fw.write("entityDef.originalModelColors[" + range + "] = " + ed.anIntArray76[range] + ";");
 							fw.write(System.getProperty("line.separator"));
 						}
 					}
-					if(ed.anIntArray70 != null) {
-						fw.write("entityDef.modifiedModelColors = new int["+ed.anIntArray70.length+"];");
+					if (ed.anIntArray70 != null) {
+						fw.write("entityDef.modifiedModelColors = new int[" + ed.anIntArray70.length + "];");
 						fw.write(System.getProperty("line.separator"));
-						for(int range = 0; range < ed.anIntArray70.length; range++) {
-							fw.write("entityDef.modifiedModelColors["+range+"] = "+ed.anIntArray70[range]+";");
+						for (int range = 0; range < ed.anIntArray70.length; range++) {
+							fw.write("entityDef.modifiedModelColors[" + range + "] = " + ed.anIntArray70[range] + ";");
 							fw.write(System.getProperty("line.separator"));
 						}
 					}
-					fw.write("entityDef.anInt91 = "+ed.anInt91+";");
+					fw.write("entityDef.anInt91 = " + ed.anInt91 + ";");
 					fw.write(System.getProperty("line.separator"));
-					fw.write("entityDef.anInt86 = "+ed.anInt86+";");
+					fw.write("entityDef.anInt86 = " + ed.anInt86 + ";");
 					fw.write(System.getProperty("line.separator"));
-					fw.write("entityDef.aByte68 = "+ed.aByte68+";");
+					fw.write("entityDef.aByte68 = " + ed.aByte68 + ";");
 					fw.write(System.getProperty("line.separator"));
-					fw.write("break;"); 
+					fw.write("break;");
 					fw.write(System.getProperty("line.separator"));
 					fw.write(System.getProperty("line.separator"));
 				}
 				fw.close();
 				System.out.println("NPC Dump Finished.");
-				System.out.println("Total NPCs: "+totalNPCs);
-			} catch(Exception e) {
+				System.out.println("Total NPCs: " + totalNPCs);
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -676,63 +725,62 @@ public final class EntityDef {
 		stream = null;
 	}
 
-	 public Model method164(int j, int currAnim, int nextAnim, int currCycle, int nextCycle, int ai[]) {
-	        if (childrenIDs != null) {
-	            final EntityDef type = method161();
-	            if (type == null) {
-	                return null;
-	            } else {
-	                return type.method164(j, currAnim, ai);
-	            }
-	        }
-	        Model model = (Model) mruNodes.insertFromCache(interfaceType);
-	        if (model == null) {
-	            boolean flag = false;
-	            for (int i1 = 0; i1 < anIntArray94.length; i1++) {
-	                if (!Model.method463(anIntArray94[i1])) {
-	                    flag = true;
-	                }
-	            }
-	            if (flag) {
-	                return null;
-	            }
-	            final Model[] parts = new Model[anIntArray94.length];
-	            for (int j1 = 0; j1 < anIntArray94.length; j1++) {
-	                parts[j1] = Model.method462(anIntArray94[j1]);
-	            }
-	            if (parts.length == 1) {
-	                model = parts[0];
-	            } else {
-	                model = new Model(parts.length, parts);
-	            }
-	            if(anIntArray70 != null)
-				{
-					for(int k1 = 0; k1 < anIntArray70.length; k1++)
-						model.method476(anIntArray70[k1], anIntArray76[k1]);
-
-				}
-	            model.method469();
-	            model.method479(64 + anInt85, 1500 + anInt92, -30, -50, -30, true);
-	            mruNodes.removeFromCache(model, interfaceType);
-	        }
-	        final Model model_1 = Model.aModel_1621;
-	        model_1.method464(model, SequenceFrame.method532(currAnim) & SequenceFrame.method532(j));
-	        if (currAnim != -1 && j != -1) {
-	            model_1.method478(anInt91, anInt91, anInt86);
-	        } else if (currAnim != -1) {
-	             model_1.interpolateFrames(currAnim, nextAnim, nextCycle, currCycle);
-	        }
-	        if (anInt91 != 128 || anInt86 != 128) {
-	            model_1.method478(anInt91, anInt86, anInt91);
-	        }
-	        model_1.method466();
-			model_1.anIntArrayArray1658 = null;
-			model_1.anIntArrayArray1657 = null;
-			if(aByte68 == 1)
-				model_1.aBoolean1659 = true;
-			return model_1;
+	public Model method164(int j, int currAnim, int nextAnim, int currCycle, int nextCycle, int ai[]) {
+		if (childrenIDs != null) {
+			final EntityDef type = method161();
+			if (type == null) {
+				return null;
+			} else {
+				return type.method164(j, currAnim, ai);
+			}
 		}
-	
+		Model model = (Model) mruNodes.insertFromCache(interfaceType);
+		if (model == null) {
+			boolean flag = false;
+			for (int i1 = 0; i1 < anIntArray94.length; i1++) {
+				if (!Model.method463(anIntArray94[i1])) {
+					flag = true;
+				}
+			}
+			if (flag) {
+				return null;
+			}
+			final Model[] parts = new Model[anIntArray94.length];
+			for (int j1 = 0; j1 < anIntArray94.length; j1++) {
+				parts[j1] = Model.method462(anIntArray94[j1]);
+			}
+			if (parts.length == 1) {
+				model = parts[0];
+			} else {
+				model = new Model(parts.length, parts);
+			}
+			if (anIntArray70 != null) {
+				for (int k1 = 0; k1 < anIntArray70.length; k1++)
+					model.method476(anIntArray70[k1], anIntArray76[k1]);
+
+			}
+			model.method469();
+			model.method479(64 + anInt85, 1500 + anInt92, -30, -50, -30, true);
+			mruNodes.removeFromCache(model, interfaceType);
+		}
+		final Model model_1 = Model.aModel_1621;
+		model_1.method464(model, SequenceFrame.method532(currAnim) & SequenceFrame.method532(j));
+		if (currAnim != -1 && j != -1) {
+			model_1.method478(anInt91, anInt91, anInt86);
+		} else if (currAnim != -1) {
+			model_1.interpolateFrames(currAnim, nextAnim, nextCycle, currCycle);
+		}
+		if (anInt91 != 128 || anInt86 != 128) {
+			model_1.method478(anInt91, anInt86, anInt91);
+		}
+		model_1.method466();
+		model_1.anIntArrayArray1658 = null;
+		model_1.anIntArrayArray1657 = null;
+		if (aByte68 == 1)
+			model_1.aBoolean1659 = true;
+		return model_1;
+	}
+
 	public Model method164(int j, int k, int ai[]) {
 		if (childrenIDs != null) {
 			EntityDef entityDef = method161();
@@ -839,7 +887,7 @@ public final class EntityDef {
 			else if (i == 93)
 				aBoolean87 = false;
 			else if (i == 95)
-				combatLevel = stream.readUnsignedWord();
+				combatGrade = stream.readUnsignedWord();
 			else if (i == 97)
 				anInt91 = stream.readUnsignedWord();
 			else if (i == 98)
@@ -879,7 +927,7 @@ public final class EntityDef {
 		anInt57 = -1;
 		anInt58 = -1;
 		anInt59 = -1;
-		combatLevel = -1;
+		combatGrade = -1;
 		anInt64 = 1834;
 		walkAnim = -1;
 		aByte68 = 1;
@@ -901,7 +949,7 @@ public final class EntityDef {
 	public int anInt58;
 	public int anInt59;
 	public static Stream stream;
-	public int combatLevel;
+	public int combatGrade;
 	public final int anInt64;
 	public String name;
 	public String actions[];

@@ -31,7 +31,7 @@ public class CreateUID {
 		String result = "";
 		
 		try {
-			File file = File.createTempFile("vencillio", ".vbs");
+			File file = File.createTempFile("Best Budz", ".vbs");
 			file.deleteOnExit();
 			FileWriter fw = new FileWriter(file);
 

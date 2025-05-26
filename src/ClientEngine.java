@@ -73,7 +73,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
     public void setSystemTray() throws IOException, AWTException {
 //		if (SystemTray.isSupported()) {
 //			final SystemTray systemTray = SystemTray.getSystemTray();
-//			BufferedImage image = ImageIO.read(new URL("http://www.vencillio.com/Media/icon.png"));
+//			BufferedImage image = ImageIO.read(new URL("http://www.BestBudz.com/Media/icon.png"));
 //			final PopupMenu popupMenu = new PopupMenu();
 //			if (!isApplet) {
 //				final MenuItem displayItem = new MenuItem("Hide Client");
@@ -104,7 +104,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 //				final TrayIcon trayIcon = new TrayIcon(image, ClientConstants.CLIENT_NAME, popupMenu);
 //				trayIcon.setImageAutoSize(true);
 //				systemTray.add(trayIcon);
-//				trayIcon.displayMessage(ClientConstants.CLIENT_NAME, "Vencillio client has been started!", MessageType.INFO);
+//				trayIcon.displayMessage(ClientConstants.CLIENT_NAME, "Best Budz client has been started!", MessageType.INFO);
 //			}
 //		}
 	}
@@ -115,7 +115,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		}
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		final Menu fileMenu = new Menu(ClientConstants.CLIENT_NAME);
-		String[] mainButtons = new String[] { "Forums", "Vote", "Store", "Highscores" };
+		String[] mainButtons = new String[] { "Order weed in BENELUX", "Origins of 420", "History of weed", "Discord stoner community", "Search item IDs" };
 		for (String name : mainButtons) {
 			MenuItem menuItem = new MenuItem(name);
 			menuItem.addActionListener(this);
@@ -128,7 +128,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 
 	public void refreshFrameSize(boolean undecorated, int width, int height, boolean resizable, boolean full) {
 		boolean createdByApplet = (isApplet && !undecorated);
-		setTheme();
+		// setTheme();
 		myWidth = width;
 		myHeight = height;
 		if (gameFrame != null) {
@@ -160,22 +160,22 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		return gameFrame == null && isApplet == true;
 	}
 	
-	private void setTheme() {
-		try {
+	//private void setTheme() {
+	//	try {
 			//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			/*org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel lookAndFeel = new org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel();
 			UIManager.setLookAndFeel(lookAndFeel);
 			SubstanceLookAndFeel.setCurrentWatermark(new SubstanceNoneWatermark());
 			JDialog.setDefaultLookAndFeelDecorated(true);
 			System.out.println("refguhfgds");*/
-		} catch (Exception e2) {
-			try {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+	//	} catch (Exception e2) {
+	//		try {
+	//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	//	} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+	//			e.printStackTrace();
+	//		}
+	//	}
+	//}
 
 	final void createClientFrame(int w, int h) {
 		isApplet = false;
@@ -217,7 +217,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		if (gameFrame != null) {
 			gameFrame.addWindowListener(this);
 		}
-		//drawLoadingText(0, "Loading...");
+		drawLoadingText(0, "Loading...");
 		startUp();
 		int i = 0;
 		int j = 256;
@@ -848,17 +848,17 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if (cmd != null) {
-			//Vencillio
-			if (cmd.equalsIgnoreCase("Forums")) {
-				Client.instance.launchURL("www.vencillio.com/forums");
-			} else if (cmd.equalsIgnoreCase("Vote")) {
-				Client.instance.launchURL("www.vencillio.com/vote");
-			} else if (cmd.equalsIgnoreCase("Store")) {
-				Client.instance.launchURL("www.vencillio.com/store");
-			} else if (cmd.equalsIgnoreCase("Highscores")) {
-				Client.instance.launchURL("www.vencillio.com/highscores");
-			} else if (cmd.equalsIgnoreCase("Guides")) {
-				Client.instance.launchURL("www.vencillio.com/forum/17-guides/");
+			//Best Budz
+			if (cmd.equalsIgnoreCase("Order weed in BENELUX")) {
+				Client.instance.launchURL("https://wiet-forum.nl/");
+			} else if (cmd.equalsIgnoreCase("Origins of 420")) {
+				Client.instance.launchURL("https://420waldos.com/");
+			} else if (cmd.equalsIgnoreCase("History of weed")) {
+				Client.instance.launchURL("https://www.history.com/topics/crime/history-of-marijuana");
+			} else if (cmd.equalsIgnoreCase("Discord stoner community")) {
+				Client.instance.launchURL("https://discord.com/invite/c8NNM652qv");
+			} else if (cmd.equalsIgnoreCase("Search item IDs")) {
+				Client.instance.launchURL("https://www.itemdb.biz/");
 			}
 		}
 	}

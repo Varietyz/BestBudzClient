@@ -21,8 +21,8 @@ import javax.swing.plaf.basic.BasicProgressBarUI;
 @SuppressWarnings("all")
 public class CacheDownloader implements Runnable {
 
-	public static final String ZIP_URL = "http://www.vencillio.com/downloads/VencillioCache.zip";
-	public static final String VERSION_URL = "http://www.vencillio.com/downloads/cacheVersion.txt";
+	public static final String ZIP_URL = "https://onedrive.live.com/download?cid=F9ED8B0E6B92618E&resid=F9ED8B0E6B92618E%217921&authkey=ACOm1ZKvDbAzUVw";
+	public static final String VERSION_URL = "https://onedrive.live.com/download?cid=F9ED8B0E6B92618E&resid=F9ED8B0E6B92618E%217922&authkey=AN0RpeJSE09piwU";
 	public static final String VERSION_FILE = ClientConstants.CACHE_LOCATION + "cacheVersion.dat";
 	private Client client;
 	private Client frame;
@@ -54,18 +54,12 @@ public class CacheDownloader implements Runnable {
 
 	private void handleException(Exception e) {
 		StringBuilder strBuff = new StringBuilder();
-		strBuff.append("Something went wrong downloading your cache!\r\n");
-		strBuff.append("Please copy the error code and contact us via forums for assistantce.\r\n");
-		strBuff.append("http://www.vencillio.com\r\n\r\n");		
+		strBuff.append("Something went wrong downloading your cache!\r\n");	
 		strBuff.append("Error Code: [" + e.getClass().getSimpleName() + "]");
-		alert("Vencillio", strBuff.toString(), true);
-		int option = JOptionPane.showConfirmDialog(null, "Would you like to visit our forums?", "Vencillio Error", JOptionPane.YES_NO_OPTION);
-		if (option == 0) {
-			client.openURL("http://www.vencillio.com");
-		} else {
+		alert("Best Budz", strBuff.toString(), true);
 			System.exit(0);
 		}
-	}
+
 
 	private void alert(String msg) {
 		alert("Message", msg, false);
@@ -86,13 +80,13 @@ public class CacheDownloader implements Runnable {
 				StringBuilder strBuff = new StringBuilder();
 				strBuff.append("Update version " + newest + " has been found!\n");
 				strBuff.append("Client will now automatically update.");
-				alert("Vencillio", strBuff.toString(), true);
+				alert("Best Budz", strBuff.toString(), true);
 
-				new ProgressBar();
+  		new ProgressBar();
 				updateClient();
 				
-				client.drawLoadingText(0, "Vencillio has been updated!");
-				alert("Vencillio", "Download finished! Restart the Client to start playing!", false);
+				client.drawLoadingText(0, "Best Budz has been updated!");
+				alert("Best Budz", "Download finished! Restart the Client to start playing!", false);
 				OutputStream out = new FileOutputStream(VERSION_FILE);
 				out.write(String.valueOf(newest).getBytes());
 				Runtime.getRuntime().exec("java -jar myApp.jar");
@@ -155,7 +149,7 @@ public class CacheDownloader implements Runnable {
 		percent = amount;
 		ProgressBar.updateValue(amount);
 		ProgressBar.updateString("(1/2) Downloading cache - " + ProgressBar.getValue() + "%");
-		client.drawLoadingText(amount, "(1/2) Downloading VencillioCache" + " - " + amount + "%");
+		client.drawLoadingText(amount, "(1/2) Downloading BestBudzCache" + " - " + amount + "%");
 
 	}
 
@@ -165,7 +159,7 @@ public class CacheDownloader implements Runnable {
 		percent2 = amount2;
 		ProgressBar.updateValue(amount2);
 		ProgressBar.updateString("(2/2) Extracting cache - " + ProgressBar.getValue() + "%");
-		client.drawLoadingText(amount2, "(2/2) Extracting VencillioCache" + " - " + amount2 + "%");
+		client.drawLoadingText(amount2, "(2/2) Extracting cache" + " - " + amount2 + "%");
 	}
 
 	private File downloadClient() {

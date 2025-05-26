@@ -55,7 +55,6 @@ public class LoginRenderer {
 				Client.cacheSprite[10].drawSprite(centerX - 138, centerY);
 			}
 			
-			displayAnnounements();
 			
 			displayAccounts();
 			
@@ -67,12 +66,12 @@ public class LoginRenderer {
 			}
 			Client.boldText.method389(true, centerX - 326, 0xFFFFFF, ""+ClientConstants.worldSelected, centerY + 228);
 			if (client.mouseInRegion(centerX - 373, centerY + 203, centerX - 297, centerY + 240)) {// World Selection
-				client.drawTooltip(client.mouseX + 11, client.mouseY - 20, "World Selection");
+				client.drawTooltip(client.mouseX + 11, client.mouseY - 20, "Habitat Selection");
 			}
 
 			Client.smallText.method389(true, centerX + 75, 0xB0AFAB, "Client version " + ClientConstants.CLIENT_VERSION, centerY + 100);
-			Client.smallText.method389(true, centerX - 115, 0xB0AFAB, "Remember me?", centerY + 16);
-			Client.smallText.method389(true, centerX + 40, client.mouseInRegion(centerX + 40, centerY + 7, centerX + 127, centerY + 17) ? 0xFFFFFF : 0xB0AFAB, "Forgot password?", centerY + 16);
+			Client.smallText.method389(true, centerX - 115, 0xB0AFAB, "Easy login?", centerY + 16);
+			Client.smallText.method389(true, centerX + 40, client.mouseInRegion(centerX + 40, centerY + 7, centerX + 127, centerY + 17) ? 0xFFFFFF : 0xB0AFAB, "Too high for this.", centerY + 16);
 			Client.smallText.method389(true, centerX - 102, 0xB0AFAB, TextClass.capitalize(Client.myUsername) + ((client.loginScreenCursorPos == 0) & (Client.loopCycle % 40 < 20) ? "|" : ""), centerY - 63);// Username
 																																																				// field
 
@@ -92,7 +91,7 @@ public class LoginRenderer {
 		if (client.loginScreenState == 1) {
 			Client.cacheSprite[421].drawARGBSprite((Client.frameWidth / 2) - (Client.cacheSprite[421].myWidth / 2), (Client.frameHeight / 2) - (Client.cacheSprite[421].myHeight / 2));
 			if (client.mouseInRegion(centerX - 373, centerY + 203, centerX - 297, centerY + 240)) {// World Selection
-				client.drawTooltip(client.mouseX + 11, client.mouseY - 20, "World Selection");
+				client.drawTooltip(client.mouseX + 11, client.mouseY - 20, "Habitat Selection");
 				Client.cacheSprite[420].drawSprite(centerX - 373, centerY + 204);
 			} else {
 				Client.cacheSprite[419].drawSprite(centerX - 373, centerY + 204);
@@ -104,7 +103,7 @@ public class LoginRenderer {
 				displayWorlds(centerX + 180, y, 0xFFFFF, worldsAmount[index], world[index]);
 			}
 			if (client.mouseInRegion(centerX - 373, centerY + 203, centerX - 297, centerY + 240)) {// World Selection
-				client.drawTooltip(client.mouseX + 11, client.mouseY - 20, "World Selection");
+				client.drawTooltip(client.mouseX + 11, client.mouseY - 20, "Habitat Selection");
 			}
 			
 		}
@@ -119,10 +118,10 @@ public class LoginRenderer {
 	};
 	
 	private String world[] = { 
-		"Vencillio Economy - Main world", 
-		"Vencillio PK - Coming soon", 
-		"Development World - Developers only" ,
-		"Staff World - Staff member access only"
+		"Best Budz - Main world", 
+		"Best Budz PvP", 
+		"Development World" ,
+		"Staff World"
 	};
 	
 	public void displayWorlds(int x, int y, int textColor, int world, String worldType) {
@@ -187,7 +186,7 @@ public class LoginRenderer {
 			if (client.clickMode3 == 1 && client.clickInRegion(centerX - 108, centerY - 36, centerX + 143, centerY - 9))// Password
 				client.loginScreenCursorPos = 1;
 			if (client.clickMode3 == 1 && client.clickInRegion(centerX + 40, centerY + 7, centerX + 127, centerY + 17)) {// Account Recovery
-				client.launchURL("http://www.vencillio.com/forum/31-account-recovery/");
+				client.launchURL("https://discord.gg/tp56ZrBYmB");
 			}		
 			if (client.clickMode3 == 1 && client.clickInRegion(centerX - 373, centerY + 203, centerX - 297, centerY + 240)) {// World Selection
 				client.loginScreenState = 1;
@@ -284,7 +283,7 @@ public class LoginRenderer {
 						Configuration.economyWorld = false;
 					}
 					Client.rebuildFrameSize(Client.frameMode, Client.frameWidth, Client.frameHeight);
-					//for the world select on vencillio, whydid we have that code ^^
+					//for the world select on Best Budz, whydid we have that code ^^
 					//cause right now clicking on my world select doesnt actually change worlds
 				}
 				if (client.clickMode3 == 1 && client.clickInRegion(centerX - 373, centerY + 203, centerX - 297, centerY + 240)) {// World Selection
@@ -296,29 +295,5 @@ public class LoginRenderer {
 			}
 		}
 	}
+};
 	
-	private String[] announcements = { 
-		"Welcome to Vencillio!", 
-		"Developers are: Daniel, Chex, Seven & Zion.", 
-		"Vote every 12 hours for great rewards!", 
-		"Want to support Vencillio? Purchase membership!"
-	};
-	
-	int ticks = 0;
-	int maximum = announcements.length;
-	public void displayAnnounements() {	
-		announcementMovement--;
-		announcementFade++;
-			
-		if (announcementMovement < - announcements[ticks].length() - 10) {
-			announcementMovement = Client.frameWidth + 2;
-			ticks++;
-			if (ticks >= maximum) {
-				ticks = 0;
-			}
-		}
-		
-		TextDrawingArea.drawAlphaGradient(0, 0, Client.frameWidth, 25, 0xEBAB36, 0x997309, 205 - (int) (50 * Math.sin(announcementFade / 20.0)));
-		Client.smallText.method389(true, announcementMovement, 0xffffff, announcements[ticks], 17);
-	}
-}

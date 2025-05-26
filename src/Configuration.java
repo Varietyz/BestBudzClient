@@ -10,7 +10,7 @@ public class Configuration {
 	 * Check to enable Economy world
 	 */
 	public static boolean economyWorld = true;
-	
+
 	/**
 	 * Check to enable snow
 	 */
@@ -29,7 +29,7 @@ public class Configuration {
 	/**
 	 * Check to enable HD textures
 	 */
-	public static boolean enableHDTextures;
+	public static boolean enableTextures;
 
 	/**
 	 * Check to enable HD minimap
@@ -117,12 +117,12 @@ public class Configuration {
 	public static boolean enableTimeStamps;
 
 	/**
-	 * Check to enable Money Pouch
+	 * Check to enable Debit Card
 	 */
 	public static boolean enablePouch;
-	
+
 	/**
-	 * Check to enable Prestige colors
+	 * Check to enable Advance colors
 	 */
-	public static boolean enablePrestigeColors;
+	public static boolean enableAdvanceColors;
 }

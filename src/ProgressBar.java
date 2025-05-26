@@ -46,13 +46,13 @@ public class ProgressBar extends JFrame {
     private final Color TEXT_COLOR = Color.WHITE;
 
     /**
-     * Sets the Vencillio icon for bar
+     * Sets the Best Budz icon for bar
      */
     private void setIcon() {
         URL url = null;
         boolean update = true;
         try {
-            url = new URL("http://www.vencillio.com/Media/icon.png");
+            url = new URL("https://i.imgur.com/Pr2F7Hq.png");
         } catch (MalformedURLException ex) {
             update = false;
             ex.printStackTrace();
@@ -89,7 +89,7 @@ public class ProgressBar extends JFrame {
         this.setFont(new Font("Helvetica", 1, 16));
         this.getContentPane().add(progessbar, BorderLayout.CENTER);
         this.setSize(350, 100);
-        this.setTitle("Vencillio Updater");
+        this.setTitle("Best Budz Updater");
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setVisible(true);

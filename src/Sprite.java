@@ -46,26 +46,26 @@ public final class Sprite extends DrawingArea {
 			System.out.println("Error converting jpg");
 		}
 	}
-	
+
 	public Sprite(URL url) {
-        try {
-        	if(url == null) {
-        		return;
-        	}
-        	BufferedImage image = ImageIO.read(url.openStream());
-            myWidth = image.getWidth();
-            myHeight = image.getHeight();
+		try {
+			if (url == null) {
+				return;
+			}
+			BufferedImage image = ImageIO.read(url.openStream());
+			myWidth = image.getWidth();
+			myHeight = image.getHeight();
 			cropWidth = myWidth;
 			anInt1445 = myHeight;
 			drawOffsetX = 0;
 			drawOffsetY = 0;
-            myPixels = new int[myWidth * myHeight];
-            PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
-            pixelgrabber.grabPixels();
-            image = null;
-        } catch(Exception exception) {
-            System.out.println(exception);
-        }
+			myPixels = new int[myWidth * myHeight];
+			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
+			pixelgrabber.grabPixels();
+			image = null;
+		} catch (Exception exception) {
+			System.out.println(exception);
+		}
 	}
 
 	public Sprite(String img, int width, int height) {
@@ -108,7 +108,8 @@ public final class Sprite extends DrawingArea {
 
 	public void drawHoverSprite(int x, int y, int offsetX, int offsetY, Sprite hover) {
 		this.drawSprite(x, y);
-		if (Client.instance.mouseX >= offsetX + x && Client.instance.mouseX <= offsetX + x + this.myWidth && Client.instance.mouseY >= offsetY + y && Client.instance.mouseY <= offsetY + y + this.myHeight) {
+		if (Client.instance.mouseX >= offsetX + x && Client.instance.mouseX <= offsetX + x + this.myWidth
+				&& Client.instance.mouseY >= offsetY + y && Client.instance.mouseY <= offsetY + y + this.myHeight) {
 			hover.drawSprite(x, y);
 		}
 	}
@@ -149,10 +150,11 @@ public final class Sprite extends DrawingArea {
 			destStep += trimRight;
 		}
 		if (!((width <= 0) || (height <= 0))) {
-			set24BitPixels(width, height, DrawingArea.pixels, myPixels, alpha, destOffset, srcOffset, destStep, srcStep);
+			set24BitPixels(width, height, DrawingArea.pixels, myPixels, alpha, destOffset, srcOffset, destStep,
+					srcStep);
 		}
 	}
-	
+
 	public static BufferedImage toBufferedImage(Image image) {
 		if (image instanceof BufferedImage) {
 			return (BufferedImage) image;
@@ -183,14 +185,14 @@ public final class Sprite extends DrawingArea {
 		g.dispose();
 		return bimage;
 	}
-	
+
 	public static Image getSprite(Sprite sprite) {
 		if (sprite == null) {
 			return null;
 		}
 		return pixelsToImage(sprite.myWidth, sprite.myHeight, sprite.myPixels);
 	}
-	
+
 	public static BufferedImage pixelsToImage(int width, int height, int[] pixels) {
 		BufferedImage bufferedimage = new BufferedImage(width, height, 1);
 		bufferedimage.setRGB(0, 0, width, height, pixels, 0, width);
@@ -198,7 +200,7 @@ public final class Sprite extends DrawingArea {
 		graphics2d.dispose();
 		return bufferedimage;
 	}
-	
+
 	public Sprite(Sprite sprite_a, int x, int y, int w, int h) {
 		try {
 			ImageIcon Sprite = new ImageIcon(getSprite(sprite_a));
@@ -261,7 +263,8 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	private void set24BitPixels(int width, int height, int destPixels[], int srcPixels[], int srcAlpha, int destOffset, int srcOffset, int destStep, int srcStep) {
+	private void set24BitPixels(int width, int height, int destPixels[], int srcPixels[], int srcAlpha, int destOffset,
+			int srcOffset, int destStep, int srcStep) {
 		int srcColor;
 		int destAlpha;
 		for (int loop = -height; loop < 0; loop++) {
@@ -271,7 +274,9 @@ public final class Sprite extends DrawingArea {
 				srcColor = srcPixels[srcOffset++];
 				if (srcColor != 0 && srcColor != 0xffffff) {
 					int destColor = destPixels[destOffset];
-					destPixels[destOffset++] = ((srcColor & 0xff00ff) * srcAlpha + (destColor & 0xff00ff) * destAlpha & 0xff00ff00) + ((srcColor & 0xff00) * srcAlpha + (destColor & 0xff00) * destAlpha & 0xff0000) >> 8;
+					destPixels[destOffset++] = ((srcColor & 0xff00ff) * srcAlpha + (destColor & 0xff00ff) * destAlpha
+							& 0xff00ff00)
+							+ ((srcColor & 0xff00) * srcAlpha + (destColor & 0xff00) * destAlpha & 0xff0000) >> 8;
 				} else {
 					destOffset++;
 				}
@@ -283,7 +288,8 @@ public final class Sprite extends DrawingArea {
 
 	public void setTransparency(int transRed, int transGreen, int transBlue) {
 		for (int index = 0; index < myPixels.length; index++)
-			if (((myPixels[index] >> 16) & 255) == transRed && ((myPixels[index] >> 8) & 255) == transGreen && (myPixels[index] & 255) == transBlue)
+			if (((myPixels[index] >> 16) & 255) == transRed && ((myPixels[index] >> 8) & 255) == transGreen
+					&& (myPixels[index] & 255) == transBlue)
 				myPixels[index] = 0;
 	}
 
@@ -530,16 +536,20 @@ public final class Sprite extends DrawingArea {
 		for (int x = 0; x < tempWidth; x++) {
 			for (int y = 0; y < tempHeight; y++) {
 				if (tempArray[(x) + (y) * tempWidth] == 0) {
-					if (x < tempWidth - 1 && tempArray[(x + 1) + ((y) * tempWidth)] > 0 && tempArray[(x + 1) + ((y) * tempWidth)] != 0xffffff) {
+					if (x < tempWidth - 1 && tempArray[(x + 1) + ((y) * tempWidth)] > 0
+							&& tempArray[(x + 1) + ((y) * tempWidth)] != 0xffffff) {
 						tempArray[(x) + (y) * tempWidth] = color;
 					}
-					if (x > 0 && tempArray[(x - 1) + ((y) * tempWidth)] > 0 && tempArray[(x - 1) + ((y) * tempWidth)] != 0xffffff) {
+					if (x > 0 && tempArray[(x - 1) + ((y) * tempWidth)] > 0
+							&& tempArray[(x - 1) + ((y) * tempWidth)] != 0xffffff) {
 						tempArray[(x) + (y) * tempWidth] = color;
 					}
-					if (y < tempHeight - 1 && tempArray[(x) + ((y + 1) * tempWidth)] > 0 && tempArray[(x) + ((y + 1) * tempWidth)] != 0xffffff) {
+					if (y < tempHeight - 1 && tempArray[(x) + ((y + 1) * tempWidth)] > 0
+							&& tempArray[(x) + ((y + 1) * tempWidth)] != 0xffffff) {
 						tempArray[(x) + (y) * tempWidth] = color;
 					}
-					if (y > 0 && tempArray[(x) + ((y - 1) * tempWidth)] > 0 && tempArray[(x) + ((y - 1) * tempWidth)] != 0xffffff) {
+					if (y > 0 && tempArray[(x) + ((y - 1) * tempWidth)] > 0
+							&& tempArray[(x) + ((y - 1) * tempWidth)] != 0xffffff) {
 						tempArray[(x) + (y) * tempWidth] = color;
 					}
 				}
@@ -677,7 +687,8 @@ public final class Sprite extends DrawingArea {
 				k = ai1[i++];
 				if (k != 0) {
 					int i3 = ai[l1];
-					ai[l1++] = ((k & 0xff00ff) * k1 + (i3 & 0xff00ff) * j2 & 0xff00ff00) + ((k & 0xff00) * k1 + (i3 & 0xff00) * j2 & 0xff0000) >> 8;
+					ai[l1++] = ((k & 0xff00ff) * k1 + (i3 & 0xff00ff) * j2 & 0xff00ff00)
+							+ ((k & 0xff00) * k1 + (i3 & 0xff00) * j2 & 0xff0000) >> 8;
 				} else {
 					l1++;
 				}
@@ -721,8 +732,10 @@ public final class Sprite extends DrawingArea {
 					int a2 = u1 * v2;
 					int a3 = u2 * v1;
 					int a4 = u1 * v1;
-					int r = (c1 >> 16 & 0xff) * a1 + (c2 >> 16 & 0xff) * a2 + (c3 >> 16 & 0xff) * a3 + (c4 >> 16 & 0xff) * a4 & 0xff0000;
-					int g = (c1 >> 8 & 0xff) * a1 + (c2 >> 8 & 0xff) * a2 + (c3 >> 8 & 0xff) * a3 + (c4 >> 8 & 0xff) * a4 >> 8 & 0xff00;
+					int r = (c1 >> 16 & 0xff) * a1 + (c2 >> 16 & 0xff) * a2 + (c3 >> 16 & 0xff) * a3
+							+ (c4 >> 16 & 0xff) * a4 & 0xff0000;
+					int g = (c1 >> 8 & 0xff) * a1 + (c2 >> 8 & 0xff) * a2 + (c3 >> 8 & 0xff) * a3
+							+ (c4 >> 8 & 0xff) * a4 >> 8 & 0xff00;
 					int b = (c1 & 0xff) * a1 + (c2 & 0xff) * a2 + (c3 & 0xff) * a3 + (c4 & 0xff) * a4 >> 16;
 					if (Configuration.enableHDMinimap) {
 						DrawingArea.pixels[j4++] = r | g | b;
@@ -883,7 +896,8 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	private void renderARGBPixels(int spriteWidth, int spriteHeight, int spritePixels[], int renderAreaPixels[], int pixel, int alphaValue, int i, int l, int j1) {
+	private void renderARGBPixels(int spriteWidth, int spriteHeight, int spritePixels[], int renderAreaPixels[],
+			int pixel, int alphaValue, int i, int l, int j1) {
 		int pixelColor;
 		int alphaLevel;
 		int alpha = alphaValue;
@@ -901,7 +915,9 @@ public final class Sprite extends DrawingArea {
 				pixelColor = spritePixels[i++];
 				if (pixelColor != 0) {
 					int pixelValue = renderAreaPixels[pixel];
-					renderAreaPixels[pixel++] = ((pixelColor & 0xff00ff) * alphaValue + (pixelValue & 0xff00ff) * alphaLevel & 0xff00ff00) + ((pixelColor & 0xff00) * alphaValue + (pixelValue & 0xff00) * alphaLevel & 0xff0000) >> 8;
+					renderAreaPixels[pixel++] = ((pixelColor & 0xff00ff) * alphaValue
+							+ (pixelValue & 0xff00ff) * alphaLevel & 0xff00ff00)
+							+ ((pixelColor & 0xff00) * alphaValue + (pixelValue & 0xff00) * alphaLevel & 0xff0000) >> 8;
 				} else {
 					pixel++;
 				}

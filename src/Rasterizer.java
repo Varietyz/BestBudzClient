@@ -1,5 +1,5 @@
 public final class Rasterizer extends DrawingArea {
-	
+
 	public static void nullLoader() {
 		anIntArray1468 = null;
 		anIntArray1468 = null;
@@ -16,30 +16,27 @@ public final class Rasterizer extends DrawingArea {
 		anIntArrayArray1483 = null;
 	}
 
-	public static void method364()
-	{
+	public static void method364() {
 		anIntArray1472 = new int[DrawingArea.height];
-		for(int j = 0; j < DrawingArea.height; j++)
+		for (int j = 0; j < DrawingArea.height; j++)
 			anIntArray1472[j] = DrawingArea.width * j;
 
 		centerX = DrawingArea.width / 2;
 		centerY = DrawingArea.height / 2;
 	}
 
-	public static void method365(int j, int k)
-	{
-	   anIntArray1472 = new int[k];
-		for(int l = 0; l < k; l++)
+	public static void method365(int j, int k) {
+		anIntArray1472 = new int[k];
+		for (int l = 0; l < k; l++)
 			anIntArray1472[l] = j * l;
 
 		centerX = j / 2;
 		centerY = k / 2;
 	}
 
-	public static void method366()
-	{
+	public static void method366() {
 		anIntArrayArray1478 = null;
-		for(int j = 0; j < textureAmount; j++)
+		for (int j = 0; j < textureAmount; j++)
 			anIntArrayArray1479[j] = null;
 
 	}
@@ -49,40 +46,37 @@ public final class Rasterizer extends DrawingArea {
 			anInt1477 = 20;
 			anIntArrayArray1478 = new int[anInt1477][][];
 			for (int i = 0; i < anInt1477; i++) {
-				anIntArrayArray1478[i] = new int[][] { new int[16384], new int[4096], new int[1024], new int[256], new int[64], new int[16], new int[4], new int[1] };
+				anIntArrayArray1478[i] = new int[][] { new int[16384], new int[4096], new int[1024], new int[256],
+						new int[64], new int[16], new int[4], new int[1] };
 			}
 			for (int k = 0; k < textureAmount; k++)
 				anIntArrayArray1479[k] = null;
 		}
 	}
 
-	public static void method368(StreamLoader streamLoader)
-	{
+	public static void method368(StreamLoader streamLoader) {
 		anInt1473 = 0;
-		for(int j = 0; j < textureAmount; j++)
-			try
-			{
+		for (int j = 0; j < textureAmount; j++)
+			try {
 				aBackgroundArray1474s[j] = new Background(streamLoader, String.valueOf(j), 0);
-				if(lowMem && aBackgroundArray1474s[j].anInt1456 == 128)
+				if (lowMem && aBackgroundArray1474s[j].anInt1456 == 128)
 					aBackgroundArray1474s[j].method356();
 				else
 					aBackgroundArray1474s[j].method357();
 				anInt1473++;
+			} catch (Exception _ex) {
 			}
-			catch(Exception _ex) { }
 
 	}
 
-	public static int method369(int i)
-	{
-		if(anIntArray1476[i] != 0)
+	public static int method369(int i) {
+		if (anIntArray1476[i] != 0)
 			return anIntArray1476[i];
 		int k = 0;
 		int l = 0;
 		int i1 = 0;
 		int j1 = anIntArrayArray1483[i].length;
-		for(int k1 = 0; k1 < j1; k1++)
-		{
+		for (int k1 = 0; k1 < j1; k1++) {
 			k += anIntArrayArray1483[i][k1] >> 16 & 0xff;
 			l += anIntArrayArray1483[i][k1] >> 8 & 0xff;
 			i1 += anIntArrayArray1483[i][k1] & 0xff;
@@ -90,15 +84,14 @@ public final class Rasterizer extends DrawingArea {
 
 		int l1 = (k / j1 << 16) + (l / j1 << 8) + i1 / j1;
 		l1 = method373(l1, 1.3999999999999999D);
-		if(l1 == 0)
+		if (l1 == 0)
 			l1 = 1;
 		anIntArray1476[i] = l1;
 		return l1;
 	}
 
-	public static void method370(int i)
-	{
-		if(anIntArrayArray1479[i] == null)
+	public static void method370(int i) {
+		if (anIntArrayArray1479[i] == null)
 			return;
 		anIntArrayArray1478[anInt1477++] = anIntArrayArray1479[i];
 		anIntArrayArray1479[i] = null;
@@ -155,7 +148,9 @@ public final class Rasterizer extends DrawingArea {
 				for (int y = 0; y < size; y++) {
 					double r = 0, g = 0, b = 0;
 					int count = 0;
-					for (int rgb : new int[] { src[x + (y * size << 1) << 1], src[(x + (y * size << 1) << 1) + 1], src[(x + (y * size << 1) << 1) + (size << 1)], src[(x + (y * size << 1) << 1) + (size << 1) + 1] }) {
+					for (int rgb : new int[] { src[x + (y * size << 1) << 1], src[(x + (y * size << 1) << 1) + 1],
+							src[(x + (y * size << 1) << 1) + (size << 1)],
+							src[(x + (y * size << 1) << 1) + (size << 1) + 1] }) {
 						if (rgb != 0) {
 							double dr = (rgb >> 16 & 0xff) / 255d;
 							double dg = (rgb >> 8 & 0xff) / 255d;
@@ -182,117 +177,104 @@ public final class Rasterizer extends DrawingArea {
 		return texels;
 	}
 
-	public static void method372(double d)
-	{
+	public static void method372(double d) {
 		d += Math.random() * 0.029999999999999999D - 0.014999999999999999D;
 		int j = 0;
-		for(int k = 0; k < 512; k++)
-		{
-			double d1 = (double)(k / 8) / 64D + 0.0078125D;
-			double d2 = (double)(k & 7) / 8D + 0.0625D;
-			for(int k1 = 0; k1 < 128; k1++)
-			{
-				double d3 = (double)k1 / 128D;
+		for (int k = 0; k < 512; k++) {
+			double d1 = (double) (k / 8) / 64D + 0.0078125D;
+			double d2 = (double) (k & 7) / 8D + 0.0625D;
+			for (int k1 = 0; k1 < 128; k1++) {
+				double d3 = (double) k1 / 128D;
 				double d4 = d3;
 				double d5 = d3;
 				double d6 = d3;
-				if(d2 != 0.0D)
-				{
+				if (d2 != 0.0D) {
 					double d7;
-					if(d3 < 0.5D)
+					if (d3 < 0.5D)
 						d7 = d3 * (1.0D + d2);
 					else
 						d7 = (d3 + d2) - d3 * d2;
 					double d8 = 2D * d3 - d7;
 					double d9 = d1 + 0.33333333333333331D;
-					if(d9 > 1.0D)
+					if (d9 > 1.0D)
 						d9--;
 					double d10 = d1;
 					double d11 = d1 - 0.33333333333333331D;
-					if(d11 < 0.0D)
+					if (d11 < 0.0D)
 						d11++;
-					if(6D * d9 < 1.0D)
+					if (6D * d9 < 1.0D)
 						d4 = d8 + (d7 - d8) * 6D * d9;
-					else
-					if(2D * d9 < 1.0D)
+					else if (2D * d9 < 1.0D)
 						d4 = d7;
-					else
-					if(3D * d9 < 2D)
+					else if (3D * d9 < 2D)
 						d4 = d8 + (d7 - d8) * (0.66666666666666663D - d9) * 6D;
 					else
 						d4 = d8;
-					if(6D * d10 < 1.0D)
+					if (6D * d10 < 1.0D)
 						d5 = d8 + (d7 - d8) * 6D * d10;
-					else
-					if(2D * d10 < 1.0D)
+					else if (2D * d10 < 1.0D)
 						d5 = d7;
-					else
-					if(3D * d10 < 2D)
+					else if (3D * d10 < 2D)
 						d5 = d8 + (d7 - d8) * (0.66666666666666663D - d10) * 6D;
 					else
 						d5 = d8;
-					if(6D * d11 < 1.0D)
+					if (6D * d11 < 1.0D)
 						d6 = d8 + (d7 - d8) * 6D * d11;
-					else
-					if(2D * d11 < 1.0D)
+					else if (2D * d11 < 1.0D)
 						d6 = d7;
-					else
-					if(3D * d11 < 2D)
+					else if (3D * d11 < 2D)
 						d6 = d8 + (d7 - d8) * (0.66666666666666663D - d11) * 6D;
 					else
 						d6 = d8;
 				}
-				int l1 = (int)(d4 * 256D);
-				int i2 = (int)(d5 * 256D);
-				int j2 = (int)(d6 * 256D);
+				int l1 = (int) (d4 * 256D);
+				int i2 = (int) (d5 * 256D);
+				int j2 = (int) (d6 * 256D);
 				int k2 = (l1 << 16) + (i2 << 8) + j2;
 				k2 = method373(k2, d);
-				if(k2 == 0)
+				if (k2 == 0)
 					k2 = 1;
 				anIntArray1482[j++] = k2;
 			}
 
 		}
 
-		for(int l = 0; l < textureAmount; l++)
-			if(aBackgroundArray1474s[l] != null)
-			{
+		for (int l = 0; l < textureAmount; l++)
+			if (aBackgroundArray1474s[l] != null) {
 				int ai[] = aBackgroundArray1474s[l].anIntArray1451;
 				anIntArrayArray1483[l] = new int[ai.length];
-				for(int j1 = 0; j1 < ai.length; j1++)
-				{
+				for (int j1 = 0; j1 < ai.length; j1++) {
 					anIntArrayArray1483[l][j1] = method373(ai[j1], d);
-					if((anIntArrayArray1483[l][j1] & 0xf8f8ff) == 0 && j1 != 0)
+					if ((anIntArrayArray1483[l][j1] & 0xf8f8ff) == 0 && j1 != 0)
 						anIntArrayArray1483[l][j1] = 1;
 				}
 
 			}
 
-		for(int i1 = 0; i1 < textureAmount; i1++)
+		for (int i1 = 0; i1 < textureAmount; i1++)
 			method370(i1);
 
 	}
 
-	private static int method373(int i, double d)
-	{
-		double d1 = (double)(i >> 16) / 256D;
-		double d2 = (double)(i >> 8 & 0xff) / 256D;
-		double d3 = (double)(i & 0xff) / 256D;
+	private static int method373(int i, double d) {
+		double d1 = (double) (i >> 16) / 256D;
+		double d2 = (double) (i >> 8 & 0xff) / 256D;
+		double d3 = (double) (i & 0xff) / 256D;
 		d1 = Math.pow(d1, d);
 		d2 = Math.pow(d2, d);
 		d3 = Math.pow(d3, d);
-		int j = (int)(d1 * 256D);
-		int k = (int)(d2 * 256D);
-		int l = (int)(d3 * 256D);
+		int j = (int) (d1 * 256D);
+		int k = (int) (d2 * 256D);
+		int l = (int) (d3 * 256D);
 		return (j << 16) + (k << 8) + l;
 	}
-	
+
 	private static int texelPos(int defaultIndex) {
 		int x = (defaultIndex & 127) >> mipMapLevel;
 		int y = (defaultIndex >> 7) >> mipMapLevel;
 		return x + (y << (7 - mipMapLevel));
 	}
-	
+
 	private static void setMipmapLevel(int y1, int y2, int y3, int x1, int x2, int x3, int tex) {
 		if (!aBoolean1464) {
 			mipMapLevel = 0;
@@ -332,13 +314,15 @@ public final class Rasterizer extends DrawingArea {
 			mipMapLevel = 7;
 		}
 	}
-	
-	public static void drawMaterializedTriangle(int y1, int y2, int y3, int x1, int x2, int x3, int hsl1, int hsl2, int hsl3, int tx1, int tx2, int tx3, int ty1, int ty2, int ty3, int tz1, int tz2, int tz3, int tex, float z1, float z2, float z3) {
+
+	public static void drawMaterializedTriangle(int y1, int y2, int y3, int x1, int x2, int x3, int hsl1, int hsl2,
+			int hsl3, int tx1, int tx2, int tx3, int ty1, int ty2, int ty3, int tz1, int tz2, int tz3, int tex,
+			float z1, float z2, float z3) {
 		if (z1 < 0.0F || z2 < 0.0F || z3 < 0.0F) {
 			return;
 		}
-		if (!Configuration.enableHDTextures || Texture.get(tex) == null) {
-			method374(y1, y2, y3, x1, x2, x3, hsl1, hsl2, hsl3, tz1, tz2 , tz3);
+		if (!Configuration.enableTextures || Texture.get(tex) == null) {
+			method374(y1, y2, y3, x1, x2, x3, hsl1, hsl2, hsl3, tz1, tz2, tz3);
 			return;
 		}
 		setMipmapLevel(y1, y2, y3, x1, x2, x3, tex);
@@ -424,7 +408,8 @@ public final class Rasterizer extends DrawingArea {
 					y2 -= y1;
 					y1 = anIntArray1472[y1];
 					while (--y2 >= 0) {
-						drawMaterializedScanline(DrawingArea.pixels, ai, y1, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, l4, k5, j6, i5, l5, k6, z1, depth_slope);
+						drawMaterializedScanline(DrawingArea.pixels, ai, y1, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7,
+								l4, k5, j6, i5, l5, k6, z1, depth_slope);
 						x3 += i8;
 						x1 += i7;
 						z1 += depth_increment;
@@ -436,7 +421,8 @@ public final class Rasterizer extends DrawingArea {
 						j6 += l6;
 					}
 					while (--y3 >= 0) {
-						drawMaterializedScanline(DrawingArea.pixels, ai, y1, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, l4, k5, j6, i5, l5, k6, z1, depth_slope);
+						drawMaterializedScanline(DrawingArea.pixels, ai, y1, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7,
+								l4, k5, j6, i5, l5, k6, z1, depth_slope);
 						x3 += i8;
 						x2 += k7;
 						z1 += depth_increment;
@@ -453,7 +439,8 @@ public final class Rasterizer extends DrawingArea {
 				y2 -= y1;
 				y1 = anIntArray1472[y1];
 				while (--y2 >= 0) {
-					drawMaterializedScanline(DrawingArea.pixels, ai, y1, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, l4, k5, j6, i5, l5, k6, z1, depth_slope);
+					drawMaterializedScanline(DrawingArea.pixels, ai, y1, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, l4,
+							k5, j6, i5, l5, k6, z1, depth_slope);
 					x3 += i8;
 					x1 += i7;
 					z1 += depth_increment;
@@ -465,7 +452,8 @@ public final class Rasterizer extends DrawingArea {
 					j6 += l6;
 				}
 				while (--y3 >= 0) {
-					drawMaterializedScanline(DrawingArea.pixels, ai, y1, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, l4, k5, j6, i5, l5, k6, z1, depth_slope);
+					drawMaterializedScanline(DrawingArea.pixels, ai, y1, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, l4,
+							k5, j6, i5, l5, k6, z1, depth_slope);
 					x3 += i8;
 					x2 += k7;
 					z1 += depth_increment;
@@ -504,7 +492,8 @@ public final class Rasterizer extends DrawingArea {
 				y3 -= y1;
 				y1 = anIntArray1472[y1];
 				while (--y3 >= 0) {
-					drawMaterializedScanline(DrawingArea.pixels, ai, y1, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, l4, k5, j6, i5, l5, k6, z1, depth_slope);
+					drawMaterializedScanline(DrawingArea.pixels, ai, y1, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, l4,
+							k5, j6, i5, l5, k6, z1, depth_slope);
 					x2 += i8;
 					x1 += i7;
 					z1 += depth_increment;
@@ -516,7 +505,8 @@ public final class Rasterizer extends DrawingArea {
 					j6 += l6;
 				}
 				while (--y2 >= 0) {
-					drawMaterializedScanline(DrawingArea.pixels, ai, y1, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, l4, k5, j6, i5, l5, k6, z1, depth_slope);
+					drawMaterializedScanline(DrawingArea.pixels, ai, y1, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, l4,
+							k5, j6, i5, l5, k6, z1, depth_slope);
 					x3 += k7;
 					x1 += i7;
 					z1 += depth_increment;
@@ -533,7 +523,8 @@ public final class Rasterizer extends DrawingArea {
 			y3 -= y1;
 			y1 = anIntArray1472[y1];
 			while (--y3 >= 0) {
-				drawMaterializedScanline(DrawingArea.pixels, ai, y1, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, l4, k5, j6, i5, l5, k6, z1, depth_slope);
+				drawMaterializedScanline(DrawingArea.pixels, ai, y1, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, l4, k5,
+						j6, i5, l5, k6, z1, depth_slope);
 				x2 += i8;
 				x1 += i7;
 				z1 += depth_increment;
@@ -545,7 +536,8 @@ public final class Rasterizer extends DrawingArea {
 				j6 += l6;
 			}
 			while (--y2 >= 0) {
-				drawMaterializedScanline(DrawingArea.pixels, ai, y1, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, l4, k5, j6, i5, l5, k6, z1, depth_slope);
+				drawMaterializedScanline(DrawingArea.pixels, ai, y1, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, l4, k5,
+						j6, i5, l5, k6, z1, depth_slope);
 				x3 += k7;
 				x1 += i7;
 				z1 += depth_increment;
@@ -596,7 +588,8 @@ public final class Rasterizer extends DrawingArea {
 					y3 -= y2;
 					y2 = anIntArray1472[y2];
 					while (--y3 >= 0) {
-						drawMaterializedScanline(DrawingArea.pixels, ai, y2, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, l4, k5, j6, i5, l5, k6, z2, depth_slope);
+						drawMaterializedScanline(DrawingArea.pixels, ai, y2, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7,
+								l4, k5, j6, i5, l5, k6, z2, depth_slope);
 						x1 += i7;
 						x2 += k7;
 						z2 += depth_increment;
@@ -608,7 +601,8 @@ public final class Rasterizer extends DrawingArea {
 						j6 += l6;
 					}
 					while (--y1 >= 0) {
-						drawMaterializedScanline(DrawingArea.pixels, ai, y2, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, l4, k5, j6, i5, l5, k6, z2, depth_slope);
+						drawMaterializedScanline(DrawingArea.pixels, ai, y2, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7,
+								l4, k5, j6, i5, l5, k6, z2, depth_slope);
 						x1 += i7;
 						x3 += i8;
 						z2 += depth_increment;
@@ -625,7 +619,8 @@ public final class Rasterizer extends DrawingArea {
 				y3 -= y2;
 				y2 = anIntArray1472[y2];
 				while (--y3 >= 0) {
-					drawMaterializedScanline(DrawingArea.pixels, ai, y2, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, l4, k5, j6, i5, l5, k6, z2, depth_slope);
+					drawMaterializedScanline(DrawingArea.pixels, ai, y2, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, l4,
+							k5, j6, i5, l5, k6, z2, depth_slope);
 					x1 += i7;
 					x2 += k7;
 					z2 += depth_increment;
@@ -637,7 +632,8 @@ public final class Rasterizer extends DrawingArea {
 					j6 += l6;
 				}
 				while (--y1 >= 0) {
-					drawMaterializedScanline(DrawingArea.pixels, ai, y2, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, l4, k5, j6, i5, l5, k6, z2, depth_slope);
+					drawMaterializedScanline(DrawingArea.pixels, ai, y2, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, l4,
+							k5, j6, i5, l5, k6, z2, depth_slope);
 					x1 += i7;
 					x3 += i8;
 					z2 += depth_increment;
@@ -676,7 +672,8 @@ public final class Rasterizer extends DrawingArea {
 				y1 -= y2;
 				y2 = anIntArray1472[y2];
 				while (--y1 >= 0) {
-					drawMaterializedScanline(DrawingArea.pixels, ai, y2, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, l4, k5, j6, i5, l5, k6, z2, depth_slope);
+					drawMaterializedScanline(DrawingArea.pixels, ai, y2, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, l4,
+							k5, j6, i5, l5, k6, z2, depth_slope);
 					x3 += i7;
 					x2 += k7;
 					z2 += depth_increment;
@@ -688,7 +685,8 @@ public final class Rasterizer extends DrawingArea {
 					j6 += l6;
 				}
 				while (--y3 >= 0) {
-					drawMaterializedScanline(DrawingArea.pixels, ai, y2, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, l4, k5, j6, i5, l5, k6, z2, depth_slope);
+					drawMaterializedScanline(DrawingArea.pixels, ai, y2, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, l4,
+							k5, j6, i5, l5, k6, z2, depth_slope);
 					x1 += i8;
 					x2 += k7;
 					z2 += depth_increment;
@@ -705,7 +703,8 @@ public final class Rasterizer extends DrawingArea {
 			y1 -= y2;
 			y2 = anIntArray1472[y2];
 			while (--y1 >= 0) {
-				drawMaterializedScanline(DrawingArea.pixels, ai, y2, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, l4, k5, j6, i5, l5, k6, z2, depth_slope);
+				drawMaterializedScanline(DrawingArea.pixels, ai, y2, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, l4, k5,
+						j6, i5, l5, k6, z2, depth_slope);
 				x3 += i7;
 				x2 += k7;
 				z2 += depth_increment;
@@ -717,7 +716,8 @@ public final class Rasterizer extends DrawingArea {
 				j6 += l6;
 			}
 			while (--y3 >= 0) {
-				drawMaterializedScanline(DrawingArea.pixels, ai, y2, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, l4, k5, j6, i5, l5, k6, z2, depth_slope);
+				drawMaterializedScanline(DrawingArea.pixels, ai, y2, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, l4, k5,
+						j6, i5, l5, k6, z2, depth_slope);
 				x1 += i8;
 				x2 += k7;
 				z2 += depth_increment;
@@ -767,7 +767,8 @@ public final class Rasterizer extends DrawingArea {
 				y1 -= y3;
 				y3 = anIntArray1472[y3];
 				while (--y1 >= 0) {
-					drawMaterializedScanline(DrawingArea.pixels, ai, y3, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, l4, k5, j6, i5, l5, k6, z3, depth_slope);
+					drawMaterializedScanline(DrawingArea.pixels, ai, y3, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, l4,
+							k5, j6, i5, l5, k6, z3, depth_slope);
 					x2 += k7;
 					x3 += i8;
 					z3 += depth_increment;
@@ -779,7 +780,8 @@ public final class Rasterizer extends DrawingArea {
 					j6 += l6;
 				}
 				while (--y2 >= 0) {
-					drawMaterializedScanline(DrawingArea.pixels, ai, y3, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, l4, k5, j6, i5, l5, k6, z3, depth_slope);
+					drawMaterializedScanline(DrawingArea.pixels, ai, y3, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, l4,
+							k5, j6, i5, l5, k6, z3, depth_slope);
 					x2 += k7;
 					x1 += i7;
 					z3 += depth_increment;
@@ -796,7 +798,8 @@ public final class Rasterizer extends DrawingArea {
 			y1 -= y3;
 			y3 = anIntArray1472[y3];
 			while (--y1 >= 0) {
-				drawMaterializedScanline(DrawingArea.pixels, ai, y3, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, l4, k5, j6, i5, l5, k6, z3, depth_slope);
+				drawMaterializedScanline(DrawingArea.pixels, ai, y3, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, l4, k5,
+						j6, i5, l5, k6, z3, depth_slope);
 				x2 += k7;
 				x3 += i8;
 				z3 += depth_increment;
@@ -808,7 +811,8 @@ public final class Rasterizer extends DrawingArea {
 				j6 += l6;
 			}
 			while (--y2 >= 0) {
-				drawMaterializedScanline(DrawingArea.pixels, ai, y3, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, l4, k5, j6, i5, l5, k6, z3, depth_slope);
+				drawMaterializedScanline(DrawingArea.pixels, ai, y3, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, l4, k5,
+						j6, i5, l5, k6, z3, depth_slope);
 				x2 += k7;
 				x1 += i7;
 				z3 += depth_increment;
@@ -847,7 +851,8 @@ public final class Rasterizer extends DrawingArea {
 			y2 -= y3;
 			y3 = anIntArray1472[y3];
 			while (--y2 >= 0) {
-				drawMaterializedScanline(DrawingArea.pixels, ai, y3, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, l4, k5, j6, i5, l5, k6, z3, depth_slope);
+				drawMaterializedScanline(DrawingArea.pixels, ai, y3, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, l4, k5,
+						j6, i5, l5, k6, z3, depth_slope);
 				x1 += k7;
 				x3 += i8;
 				z3 += depth_increment;
@@ -859,7 +864,8 @@ public final class Rasterizer extends DrawingArea {
 				j6 += l6;
 			}
 			while (--y1 >= 0) {
-				drawMaterializedScanline(DrawingArea.pixels, ai, y3, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, l4, k5, j6, i5, l5, k6, z3, depth_slope);
+				drawMaterializedScanline(DrawingArea.pixels, ai, y3, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, l4, k5,
+						j6, i5, l5, k6, z3, depth_slope);
 				x2 += i7;
 				x3 += i8;
 				z3 += depth_increment;
@@ -876,7 +882,8 @@ public final class Rasterizer extends DrawingArea {
 		y2 -= y3;
 		y3 = anIntArray1472[y3];
 		while (--y2 >= 0) {
-			drawMaterializedScanline(DrawingArea.pixels, ai, y3, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, l4, k5, j6, i5, l5, k6, z3, depth_slope);
+			drawMaterializedScanline(DrawingArea.pixels, ai, y3, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, l4, k5, j6,
+					i5, l5, k6, z3, depth_slope);
 			x1 += k7;
 			x3 += i8;
 			z3 += depth_increment;
@@ -888,7 +895,8 @@ public final class Rasterizer extends DrawingArea {
 			j6 += l6;
 		}
 		while (--y1 >= 0) {
-			drawMaterializedScanline(DrawingArea.pixels, ai, y3, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, l4, k5, j6, i5, l5, k6, z3, depth_slope);
+			drawMaterializedScanline(DrawingArea.pixels, ai, y3, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, l4, k5, j6,
+					i5, l5, k6, z3, depth_slope);
 			x2 += i7;
 			x3 += i8;
 			z3 += depth_increment;
@@ -901,7 +909,8 @@ public final class Rasterizer extends DrawingArea {
 		}
 	}
 
-	private static void drawMaterializedScanline(int dst[], int src[], int off, int x1, int x2, int hsl1, int hsl2, int l1, int i2, int j2, int k2, int l2, int i3, float depth, float depth_slope) {
+	private static void drawMaterializedScanline(int dst[], int src[], int off, int x1, int x2, int hsl1, int hsl2,
+			int l1, int i2, int j2, int k2, int l2, int i3, float depth, float depth_slope) {
 		int i = 0;
 		int j = 0;
 		if (x1 >= x2) {
@@ -966,7 +975,9 @@ public final class Rasterizer extends DrawingArea {
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
 			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000) + (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00) + (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
 				DrawingArea.depthBuffer[off] = depth;
 			}
 			off++;
@@ -977,7 +988,9 @@ public final class Rasterizer extends DrawingArea {
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
 			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000) + (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00) + (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
 				DrawingArea.depthBuffer[off] = depth;
 			}
 			off++;
@@ -988,7 +1001,9 @@ public final class Rasterizer extends DrawingArea {
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
 			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000) + (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00) + (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
 				DrawingArea.depthBuffer[off] = depth;
 			}
 			off++;
@@ -999,7 +1014,9 @@ public final class Rasterizer extends DrawingArea {
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
 			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000) + (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00) + (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
 				DrawingArea.depthBuffer[off] = depth;
 			}
 			off++;
@@ -1010,7 +1027,9 @@ public final class Rasterizer extends DrawingArea {
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
 			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000) + (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00) + (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
 				DrawingArea.depthBuffer[off] = depth;
 			}
 			off++;
@@ -1021,7 +1040,9 @@ public final class Rasterizer extends DrawingArea {
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
 			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000) + (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00) + (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
 				DrawingArea.depthBuffer[off] = depth;
 			}
 			off++;
@@ -1032,7 +1053,9 @@ public final class Rasterizer extends DrawingArea {
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
 			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000) + (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00) + (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
 				DrawingArea.depthBuffer[off] = depth;
 			}
 			off++;
@@ -1043,7 +1066,9 @@ public final class Rasterizer extends DrawingArea {
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
 			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000) + (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00) + (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
 				DrawingArea.depthBuffer[off] = depth;
 			}
 			off++;
@@ -1071,7 +1096,9 @@ public final class Rasterizer extends DrawingArea {
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
 			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000) + (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00) + (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
 				DrawingArea.depthBuffer[off] = depth;
 			}
 			off++;
@@ -1079,10 +1106,11 @@ public final class Rasterizer extends DrawingArea {
 			i += j7;
 			j += l7;
 			hsl1 += hsl2;
-		}		
+		}
 	}
 
-	public static void method374(int y1, int y2, int y3, int x1, int x2, int x3, int hsl1, int hsl2, int hsl3, float z1, float z2, float z3) {
+	public static void method374(int y1, int y2, int y3, int x1, int x2, int x3, int hsl1, int hsl2, int hsl3, float z1,
+			float z2, float z3) {
 		if (z1 < 0.0F || z2 < 0.0F || z3 < 0.0F) {
 			return;
 		}
@@ -1688,8 +1716,9 @@ public final class Rasterizer extends DrawingArea {
 			z3 += depth_increment;
 		}
 	}
-	
-	public static void method375(int[] dest, int offset, int x1, int x2, int r1, int g1, int b1, int r2, int g2, int b2, float depth, float depth_slope) {
+
+	public static void method375(int[] dest, int offset, int x1, int x2, int r1, int g1, int b1, int r2, int g2, int b2,
+			float depth, float depth_slope) {
 		int n = x2 - x1;
 		if (n <= 0) {
 			return;
@@ -1735,7 +1764,8 @@ public final class Rasterizer extends DrawingArea {
 					rgb = ((rgb & 0xff00ff) * a2 >> 8 & 0xff00ff) + ((rgb & 0xff00) * a2 >> 8 & 0xff00);
 					dst = dest[offset];
 					if (true) {
-						dest[offset] = rgb + ((dst & 0xff00ff) * a1 >> 8 & 0xff00ff) + ((dst & 0xff00) * a1 >> 8 & 0xff00);
+						dest[offset] = rgb + ((dst & 0xff00ff) * a1 >> 8 & 0xff00ff)
+								+ ((dst & 0xff00) * a1 >> 8 & 0xff00);
 						DrawingArea.depthBuffer[offset] = depth;
 					}
 					depth += depth_slope;
@@ -2095,7 +2125,8 @@ public final class Rasterizer extends DrawingArea {
 		}
 	}
 
-	private static void method377(int dest[], int offset, int loops, int start_x, int end_x, float depth, float depth_slope) {
+	private static void method377(int dest[], int offset, int loops, int start_x, int end_x, float depth,
+			float depth_slope) {
 		int rgb;
 		if (aBoolean1462) {
 			if (end_x > DrawingArea.centerX) {
@@ -2138,7 +2169,8 @@ public final class Rasterizer extends DrawingArea {
 		while (--rgb >= 0) {
 			for (int i = 0; i < 4; i++) {
 				if (true) {
-					dest[offset] = loops + ((dest[offset] & 0xff00ff) * dest_alpha >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * dest_alpha >> 8 & 0xff00);
+					dest[offset] = loops + ((dest[offset] & 0xff00ff) * dest_alpha >> 8 & 0xff00ff)
+							+ ((dest[offset] & 0xff00) * dest_alpha >> 8 & 0xff00);
 					DrawingArea.depthBuffer[offset] = depth;
 				}
 				offset++;
@@ -2147,108 +2179,143 @@ public final class Rasterizer extends DrawingArea {
 		}
 		for (rgb = end_x - start_x & 3; --rgb >= 0;) {
 			if (true) {
-				dest[offset] = loops + ((dest[offset] & 0xff00ff) * dest_alpha >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * dest_alpha >> 8 & 0xff00);
+				dest[offset] = loops + ((dest[offset] & 0xff00ff) * dest_alpha >> 8 & 0xff00ff)
+						+ ((dest[offset] & 0xff00) * dest_alpha >> 8 & 0xff00);
 				DrawingArea.depthBuffer[offset] = depth;
 			}
 			offset++;
 			depth += depth_slope;
 		}
 	}
-	
-	public static void method378(int y_a, int y_b, int y_c, int x_a, int x_b, int x_c, int l1, int l2, int l3, int tx1, int tx2, int tx3, int ty1, int ty2, int ty3, int tz1, int tz2, int tz3, int tex, float z1, float z2, float z3) {
-		try {
-		if (!aBoolean1464) {
-			method378_2(y_a, y_b, y_c, x_a, x_b, x_c, l1, l2, l3, tx1, tx2, tx3, ty1, ty2, ty3, tz1, tz2, tz3, tex);
-			return;
-		}
-		if (z1 < 0.0F || z2 < 0.0F || z3 < 0.0F) {
-			return;
-		}
-		l1 = 0x7f - l1 << 1;
-		l2 = 0x7f - l2 << 1;
-		l3 = 0x7f - l3 << 1;
-		setMipmapLevel(y_a, y_b, y_c, x_a, x_b, x_c, tex);
-		int ai[] = method371(tex)[mipMapLevel];
-		aBoolean1463 = !aBooleanArray1475[tex];
-		tx2 = tx1 - tx2;
-		ty2 = ty1 - ty2;
-		tz2 = tz1 - tz2;
-		tx3 -= tx1;
-		ty3 -= ty1;
-		tz3 -= tz1;
-		int l4 = tx3 * ty1 - ty3 * tx1 << (WorldController.viewDistance == 9 ? 14 : 15);
-		int i5 = ty3 * tz1 - tz3 * ty1 << 8;
-		int j5 = tz3 * tx1 - tx3 * tz1 << 5;
-		int k5 = tx2 * ty1 - ty2 * tx1 << (WorldController.viewDistance == 9 ? 14 : 15);
-		int l5 = ty2 * tz1 - tz2 * ty1 << 8;
-		int i6 = tz2 * tx1 - tx2 * tz1 << 5;
-		int j6 = ty2 * tx3 - tx2 * ty3 << (WorldController.viewDistance == 9 ? 14 : 15);
-		int k6 = tz2 * ty3 - ty2 * tz3 << 8;
-		int l6 = tx2 * tz3 - tz2 * tx3 << 5;
-		int i7 = 0;
-		int j7 = 0;
-		if (y_b != y_a) {
-			i7 = (x_b - x_a << 16) / (y_b - y_a);
-			j7 = (l2 - l1 << 16) / (y_b - y_a);
-		}
-		int k7 = 0;
-		int l7 = 0;
-		if (y_c != y_b) {
-			k7 = (x_c - x_b << 16) / (y_c - y_b);
-			l7 = (l3 - l2 << 16) / (y_c - y_b);
-		}
-		int i8 = 0;
-		int j8 = 0;
-		if (y_c != y_a) {
-			i8 = (x_a - x_c << 16) / (y_a - y_c);
-			j8 = (l1 - l3 << 16) / (y_a - y_c);
-		}
-		float b_aX = x_b - x_a;
-		float b_aY = y_b - y_a;
-		float c_aX = x_c - x_a;
-		float c_aY = y_c - y_a;
-		float b_aZ = z2 - z1;
-		float c_aZ = z3 - z1;
 
-		float div = b_aX * c_aY - c_aX * b_aY;
-		float depth_slope = (b_aZ * c_aY - c_aZ * b_aY) / div;
-		float depth_increment = (c_aZ * b_aX - b_aZ * c_aX) / div;
-		if (y_a <= y_b && y_a <= y_c) {
-			if (y_a >= DrawingArea.bottomY)
+	public static void method378(int y_a, int y_b, int y_c, int x_a, int x_b, int x_c, int l1, int l2, int l3, int tx1,
+			int tx2, int tx3, int ty1, int ty2, int ty3, int tz1, int tz2, int tz3, int tex, float z1, float z2,
+			float z3) {
+		try {
+			if (!aBoolean1464) {
+				method378_2(y_a, y_b, y_c, x_a, x_b, x_c, l1, l2, l3, tx1, tx2, tx3, ty1, ty2, ty3, tz1, tz2, tz3, tex);
 				return;
-			if (y_b > DrawingArea.bottomY)
-				y_b = DrawingArea.bottomY;
-			if (y_c > DrawingArea.bottomY)
-				y_c = DrawingArea.bottomY;
-			z1 = z1 - depth_slope * x_a + depth_slope;
-			if (y_b < y_c) {
-				x_c = x_a <<= 16;
-				l3 = l1 <<= 16;
-				if (y_a < 0) {
-					x_c -= i8 * y_a;
-					x_a -= i7 * y_a;
-					z1 -= depth_increment * y_a;
-					l3 -= j8 * y_a;
-					l1 -= j7 * y_a;
-					y_a = 0;
-				}
-				x_b <<= 16;
-				l2 <<= 16;
-				if (y_b < 0) {
-					x_b -= k7 * y_b;
-					l2 -= l7 * y_b;
-					y_b = 0;
-				}
-				int k8 = y_a - centerY;
-				l4 += j5 * k8;
-				k5 += i6 * k8;
-				j6 += l6 * k8;
-				if (y_a != y_b && i8 < i7 || y_a == y_b && i8 > k7) {
+			}
+			if (z1 < 0.0F || z2 < 0.0F || z3 < 0.0F) {
+				return;
+			}
+			l1 = 0x7f - l1 << 1;
+			l2 = 0x7f - l2 << 1;
+			l3 = 0x7f - l3 << 1;
+			setMipmapLevel(y_a, y_b, y_c, x_a, x_b, x_c, tex);
+			int ai[] = method371(tex)[mipMapLevel];
+			aBoolean1463 = !aBooleanArray1475[tex];
+			tx2 = tx1 - tx2;
+			ty2 = ty1 - ty2;
+			tz2 = tz1 - tz2;
+			tx3 -= tx1;
+			ty3 -= ty1;
+			tz3 -= tz1;
+			int l4 = tx3 * ty1 - ty3 * tx1 << (WorldController.viewDistance == 9 ? 14 : 15);
+			int i5 = ty3 * tz1 - tz3 * ty1 << 8;
+			int j5 = tz3 * tx1 - tx3 * tz1 << 5;
+			int k5 = tx2 * ty1 - ty2 * tx1 << (WorldController.viewDistance == 9 ? 14 : 15);
+			int l5 = ty2 * tz1 - tz2 * ty1 << 8;
+			int i6 = tz2 * tx1 - tx2 * tz1 << 5;
+			int j6 = ty2 * tx3 - tx2 * ty3 << (WorldController.viewDistance == 9 ? 14 : 15);
+			int k6 = tz2 * ty3 - ty2 * tz3 << 8;
+			int l6 = tx2 * tz3 - tz2 * tx3 << 5;
+			int i7 = 0;
+			int j7 = 0;
+			if (y_b != y_a) {
+				i7 = (x_b - x_a << 16) / (y_b - y_a);
+				j7 = (l2 - l1 << 16) / (y_b - y_a);
+			}
+			int k7 = 0;
+			int l7 = 0;
+			if (y_c != y_b) {
+				k7 = (x_c - x_b << 16) / (y_c - y_b);
+				l7 = (l3 - l2 << 16) / (y_c - y_b);
+			}
+			int i8 = 0;
+			int j8 = 0;
+			if (y_c != y_a) {
+				i8 = (x_a - x_c << 16) / (y_a - y_c);
+				j8 = (l1 - l3 << 16) / (y_a - y_c);
+			}
+			float b_aX = x_b - x_a;
+			float b_aY = y_b - y_a;
+			float c_aX = x_c - x_a;
+			float c_aY = y_c - y_a;
+			float b_aZ = z2 - z1;
+			float c_aZ = z3 - z1;
+
+			float div = b_aX * c_aY - c_aX * b_aY;
+			float depth_slope = (b_aZ * c_aY - c_aZ * b_aY) / div;
+			float depth_increment = (c_aZ * b_aX - b_aZ * c_aX) / div;
+			if (y_a <= y_b && y_a <= y_c) {
+				if (y_a >= DrawingArea.bottomY)
+					return;
+				if (y_b > DrawingArea.bottomY)
+					y_b = DrawingArea.bottomY;
+				if (y_c > DrawingArea.bottomY)
+					y_c = DrawingArea.bottomY;
+				z1 = z1 - depth_slope * x_a + depth_slope;
+				if (y_b < y_c) {
+					x_c = x_a <<= 16;
+					l3 = l1 <<= 16;
+					if (y_a < 0) {
+						x_c -= i8 * y_a;
+						x_a -= i7 * y_a;
+						z1 -= depth_increment * y_a;
+						l3 -= j8 * y_a;
+						l1 -= j7 * y_a;
+						y_a = 0;
+					}
+					x_b <<= 16;
+					l2 <<= 16;
+					if (y_b < 0) {
+						x_b -= k7 * y_b;
+						l2 -= l7 * y_b;
+						y_b = 0;
+					}
+					int k8 = y_a - centerY;
+					l4 += j5 * k8;
+					k5 += i6 * k8;
+					j6 += l6 * k8;
+					if (y_a != y_b && i8 < i7 || y_a == y_b && i8 > k7) {
+						y_c -= y_b;
+						y_b -= y_a;
+						y_a = anIntArray1472[y_a];
+						while (--y_b >= 0) {
+							method379(DrawingArea.pixels, ai, y_a, x_c >> 16, x_a >> 16, l3, l1, l4, k5, j6, i5, l5, k6,
+									z1, depth_slope);
+							x_c += i8;
+							x_a += i7;
+							z1 += depth_increment;
+							l3 += j8;
+							l1 += j7;
+							y_a += DrawingArea.width;
+							l4 += j5;
+							k5 += i6;
+							j6 += l6;
+						}
+						while (--y_c >= 0) {
+							method379(DrawingArea.pixels, ai, y_a, x_c >> 16, x_b >> 16, l3, l2, l4, k5, j6, i5, l5, k6,
+									z1, depth_slope);
+							x_c += i8;
+							x_b += k7;
+							z1 += depth_increment;
+							l3 += j8;
+							l2 += l7;
+							y_a += DrawingArea.width;
+							l4 += j5;
+							k5 += i6;
+							j6 += l6;
+						}
+						return;
+					}
 					y_c -= y_b;
 					y_b -= y_a;
 					y_a = anIntArray1472[y_a];
 					while (--y_b >= 0) {
-						method379(DrawingArea.pixels, ai, y_a, x_c >> 16, x_a >> 16, l3, l1, l4, k5, j6, i5, l5, k6, z1, depth_slope);
+						method379(DrawingArea.pixels, ai, y_a, x_a >> 16, x_c >> 16, l1, l3, l4, k5, j6, i5, l5, k6, z1,
+								depth_slope);
 						x_c += i8;
 						x_a += i7;
 						z1 += depth_increment;
@@ -2260,7 +2327,8 @@ public final class Rasterizer extends DrawingArea {
 						j6 += l6;
 					}
 					while (--y_c >= 0) {
-						method379(DrawingArea.pixels, ai, y_a, x_c >> 16, x_b >> 16, l3, l2, l4, k5, j6, i5, l5, k6, z1, depth_slope);
+						method379(DrawingArea.pixels, ai, y_a, x_b >> 16, x_c >> 16, l2, l3, l4, k5, j6, i5, l5, k6, z1,
+								depth_slope);
 						x_c += i8;
 						x_b += k7;
 						z1 += depth_increment;
@@ -2273,62 +2341,65 @@ public final class Rasterizer extends DrawingArea {
 					}
 					return;
 				}
-				y_c -= y_b;
-				y_b -= y_a;
-				y_a = anIntArray1472[y_a];
-				while (--y_b >= 0) {
-					method379(DrawingArea.pixels, ai, y_a, x_a >> 16, x_c >> 16, l1, l3, l4, k5, j6, i5, l5, k6, z1, depth_slope);
-					x_c += i8;
-					x_a += i7;
-					z1 += depth_increment;
-					l3 += j8;
-					l1 += j7;
-					y_a += DrawingArea.width;
-					l4 += j5;
-					k5 += i6;
-					j6 += l6;
+				x_b = x_a <<= 16;
+				l2 = l1 <<= 16;
+				if (y_a < 0) {
+					x_b -= i8 * y_a;
+					x_a -= i7 * y_a;
+					z1 -= depth_increment * y_a;
+					l2 -= j8 * y_a;
+					l1 -= j7 * y_a;
+					y_a = 0;
 				}
-				while (--y_c >= 0) {
-					method379(DrawingArea.pixels, ai, y_a, x_b >> 16, x_c >> 16, l2, l3, l4, k5, j6, i5, l5, k6, z1, depth_slope);
-					x_c += i8;
-					x_b += k7;
-					z1 += depth_increment;
-					l3 += j8;
-					l2 += l7;
-					y_a += DrawingArea.width;
-					l4 += j5;
-					k5 += i6;
-					j6 += l6;
+				x_c <<= 16;
+				l3 <<= 16;
+				if (y_c < 0) {
+					x_c -= k7 * y_c;
+					l3 -= l7 * y_c;
+					y_c = 0;
 				}
-				return;
-			}
-			x_b = x_a <<= 16;
-			l2 = l1 <<= 16;
-			if (y_a < 0) {
-				x_b -= i8 * y_a;
-				x_a -= i7 * y_a;
-				z1 -= depth_increment * y_a;
-				l2 -= j8 * y_a;
-				l1 -= j7 * y_a;
-				y_a = 0;
-			}
-			x_c <<= 16;
-			l3 <<= 16;
-			if (y_c < 0) {
-				x_c -= k7 * y_c;
-				l3 -= l7 * y_c;
-				y_c = 0;
-			}
-			int l8 = y_a - centerY;
-			l4 += j5 * l8;
-			k5 += i6 * l8;
-			j6 += l6 * l8;
-			if (y_a != y_c && i8 < i7 || y_a == y_c && k7 > i7) {
+				int l8 = y_a - centerY;
+				l4 += j5 * l8;
+				k5 += i6 * l8;
+				j6 += l6 * l8;
+				if (y_a != y_c && i8 < i7 || y_a == y_c && k7 > i7) {
+					y_b -= y_c;
+					y_c -= y_a;
+					y_a = anIntArray1472[y_a];
+					while (--y_c >= 0) {
+						method379(DrawingArea.pixels, ai, y_a, x_b >> 16, x_a >> 16, l2, l1, l4, k5, j6, i5, l5, k6, z1,
+								depth_slope);
+						x_b += i8;
+						x_a += i7;
+						l2 += j8;
+						l1 += j7;
+						z1 += depth_increment;
+						y_a += DrawingArea.width;
+						l4 += j5;
+						k5 += i6;
+						j6 += l6;
+					}
+					while (--y_b >= 0) {
+						method379(DrawingArea.pixels, ai, y_a, x_c >> 16, x_a >> 16, l3, l1, l4, k5, j6, i5, l5, k6, z1,
+								depth_slope);
+						x_c += k7;
+						x_a += i7;
+						l3 += l7;
+						l1 += j7;
+						z1 += depth_increment;
+						y_a += DrawingArea.width;
+						l4 += j5;
+						k5 += i6;
+						j6 += l6;
+					}
+					return;
+				}
 				y_b -= y_c;
 				y_c -= y_a;
 				y_a = anIntArray1472[y_a];
 				while (--y_c >= 0) {
-					method379(DrawingArea.pixels, ai, y_a, x_b >> 16, x_a >> 16, l2, l1, l4, k5, j6, i5, l5, k6, z1, depth_slope);
+					method379(DrawingArea.pixels, ai, y_a, x_a >> 16, x_b >> 16, l1, l2, l4, k5, j6, i5, l5, k6, z1,
+							depth_slope);
 					x_b += i8;
 					x_a += i7;
 					l2 += j8;
@@ -2340,7 +2411,8 @@ public final class Rasterizer extends DrawingArea {
 					j6 += l6;
 				}
 				while (--y_b >= 0) {
-					method379(DrawingArea.pixels, ai, y_a, x_c >> 16, x_a >> 16, l3, l1, l4, k5, j6, i5, l5, k6, z1, depth_slope);
+					method379(DrawingArea.pixels, ai, y_a, x_a >> 16, x_c >> 16, l1, l3, l4, k5, j6, i5, l5, k6, z1,
+							depth_slope);
 					x_c += k7;
 					x_a += i7;
 					l3 += l7;
@@ -2353,71 +2425,74 @@ public final class Rasterizer extends DrawingArea {
 				}
 				return;
 			}
-			y_b -= y_c;
-			y_c -= y_a;
-			y_a = anIntArray1472[y_a];
-			while (--y_c >= 0) {
-				method379(DrawingArea.pixels, ai, y_a, x_a >> 16, x_b >> 16, l1, l2, l4, k5, j6, i5, l5, k6, z1, depth_slope);
-				x_b += i8;
-				x_a += i7;
-				l2 += j8;
-				l1 += j7;
-				z1 += depth_increment;
-				y_a += DrawingArea.width;
-				l4 += j5;
-				k5 += i6;
-				j6 += l6;
-			}
-			while (--y_b >= 0) {
-				method379(DrawingArea.pixels, ai, y_a, x_a >> 16, x_c >> 16, l1, l3, l4, k5, j6, i5, l5, k6, z1, depth_slope);
-				x_c += k7;
-				x_a += i7;
-				l3 += l7;
-				l1 += j7;
-				z1 += depth_increment;
-				y_a += DrawingArea.width;
-				l4 += j5;
-				k5 += i6;
-				j6 += l6;
-			}
-			return;
-		}
-		if (y_b <= y_c) {
-			if (y_b >= DrawingArea.bottomY)
-				return;
-			if (y_c > DrawingArea.bottomY)
-				y_c = DrawingArea.bottomY;
-			if (y_a > DrawingArea.bottomY)
-				y_a = DrawingArea.bottomY;
-			z2 = z2 - depth_slope * x_b + depth_slope;
-			if (y_c < y_a) {
-				x_a = x_b <<= 16;
-				l1 = l2 <<= 16;
-				if (y_b < 0) {
-					x_a -= i7 * y_b;
-					x_b -= k7 * y_b;
-					z2 -= depth_increment * y_b;
-					l1 -= j7 * y_b;
-					l2 -= l7 * y_b;
-					y_b = 0;
-				}
-				x_c <<= 16;
-				l3 <<= 16;
-				if (y_c < 0) {
-					x_c -= i8 * y_c;
-					l3 -= j8 * y_c;
-					y_c = 0;
-				}
-				int i9 = y_b - centerY;
-				l4 += j5 * i9;
-				k5 += i6 * i9;
-				j6 += l6 * i9;
-				if (y_b != y_c && i7 < k7 || y_b == y_c && i7 > i8) {
+			if (y_b <= y_c) {
+				if (y_b >= DrawingArea.bottomY)
+					return;
+				if (y_c > DrawingArea.bottomY)
+					y_c = DrawingArea.bottomY;
+				if (y_a > DrawingArea.bottomY)
+					y_a = DrawingArea.bottomY;
+				z2 = z2 - depth_slope * x_b + depth_slope;
+				if (y_c < y_a) {
+					x_a = x_b <<= 16;
+					l1 = l2 <<= 16;
+					if (y_b < 0) {
+						x_a -= i7 * y_b;
+						x_b -= k7 * y_b;
+						z2 -= depth_increment * y_b;
+						l1 -= j7 * y_b;
+						l2 -= l7 * y_b;
+						y_b = 0;
+					}
+					x_c <<= 16;
+					l3 <<= 16;
+					if (y_c < 0) {
+						x_c -= i8 * y_c;
+						l3 -= j8 * y_c;
+						y_c = 0;
+					}
+					int i9 = y_b - centerY;
+					l4 += j5 * i9;
+					k5 += i6 * i9;
+					j6 += l6 * i9;
+					if (y_b != y_c && i7 < k7 || y_b == y_c && i7 > i8) {
+						y_a -= y_c;
+						y_c -= y_b;
+						y_b = anIntArray1472[y_b];
+						while (--y_c >= 0) {
+							method379(DrawingArea.pixels, ai, y_b, x_a >> 16, x_b >> 16, l1, l2, l4, k5, j6, i5, l5, k6,
+									z2, depth_slope);
+							x_a += i7;
+							x_b += k7;
+							l1 += j7;
+							l2 += l7;
+							z2 += depth_increment;
+							y_b += DrawingArea.width;
+							l4 += j5;
+							k5 += i6;
+							j6 += l6;
+						}
+						while (--y_a >= 0) {
+							method379(DrawingArea.pixels, ai, y_b, x_a >> 16, x_c >> 16, l1, l3, l4, k5, j6, i5, l5, k6,
+									z2, depth_slope);
+							x_a += i7;
+							x_c += i8;
+							l1 += j7;
+							l3 += j8;
+							z2 += depth_increment;
+							y_b += DrawingArea.width;
+							l4 += j5;
+							k5 += i6;
+							j6 += l6;
+						}
+						return;
+					}
 					y_a -= y_c;
 					y_c -= y_b;
 					y_b = anIntArray1472[y_b];
 					while (--y_c >= 0) {
-						method379(DrawingArea.pixels, ai, y_b, x_a >> 16, x_b >> 16, l1, l2, l4, k5, j6, i5, l5, k6, z2, depth_slope);
+						method379(DrawingArea.pixels, ai, y_b, x_b >> 16, x_a >> 16, l2, l1, l4, k5, j6, i5, l5, k6, z2,
+								depth_slope);
 						x_a += i7;
 						x_b += k7;
 						l1 += j7;
@@ -2429,7 +2504,8 @@ public final class Rasterizer extends DrawingArea {
 						j6 += l6;
 					}
 					while (--y_a >= 0) {
-						method379(DrawingArea.pixels, ai, y_b, x_a >> 16, x_c >> 16, l1, l3, l4, k5, j6, i5, l5, k6, z2, depth_slope);
+						method379(DrawingArea.pixels, ai, y_b, x_c >> 16, x_a >> 16, l3, l1, l4, k5, j6, i5, l5, k6, z2,
+								depth_slope);
 						x_a += i7;
 						x_c += i8;
 						l1 += j7;
@@ -2442,62 +2518,65 @@ public final class Rasterizer extends DrawingArea {
 					}
 					return;
 				}
-				y_a -= y_c;
-				y_c -= y_b;
-				y_b = anIntArray1472[y_b];
-				while (--y_c >= 0) {
-					method379(DrawingArea.pixels, ai, y_b, x_b >> 16, x_a >> 16, l2, l1, l4, k5, j6, i5, l5, k6, z2, depth_slope);
-					x_a += i7;
-					x_b += k7;
-					l1 += j7;
-					l2 += l7;
-					z2 += depth_increment;
-					y_b += DrawingArea.width;
-					l4 += j5;
-					k5 += i6;
-					j6 += l6;
+				x_c = x_b <<= 16;
+				l3 = l2 <<= 16;
+				if (y_b < 0) {
+					x_c -= i7 * y_b;
+					x_b -= k7 * y_b;
+					z2 -= depth_increment * y_b;
+					l3 -= j7 * y_b;
+					l2 -= l7 * y_b;
+					y_b = 0;
 				}
-				while (--y_a >= 0) {
-					method379(DrawingArea.pixels, ai, y_b, x_c >> 16, x_a >> 16, l3, l1, l4, k5, j6, i5, l5, k6, z2, depth_slope);
-					x_a += i7;
-					x_c += i8;
-					l1 += j7;
-					l3 += j8;
-					z2 += depth_increment;
-					y_b += DrawingArea.width;
-					l4 += j5;
-					k5 += i6;
-					j6 += l6;
+				x_a <<= 16;
+				l1 <<= 16;
+				if (y_a < 0) {
+					x_a -= i8 * y_a;
+					l1 -= j8 * y_a;
+					y_a = 0;
 				}
-				return;
-			}
-			x_c = x_b <<= 16;
-			l3 = l2 <<= 16;
-			if (y_b < 0) {
-				x_c -= i7 * y_b;
-				x_b -= k7 * y_b;
-				z2 -= depth_increment * y_b;
-				l3 -= j7 * y_b;
-				l2 -= l7 * y_b;
-				y_b = 0;
-			}
-			x_a <<= 16;
-			l1 <<= 16;
-			if (y_a < 0) {
-				x_a -= i8 * y_a;
-				l1 -= j8 * y_a;
-				y_a = 0;
-			}
-			int j9 = y_b - centerY;
-			l4 += j5 * j9;
-			k5 += i6 * j9;
-			j6 += l6 * j9;
-			if (i7 < k7) {
+				int j9 = y_b - centerY;
+				l4 += j5 * j9;
+				k5 += i6 * j9;
+				j6 += l6 * j9;
+				if (i7 < k7) {
+					y_c -= y_a;
+					y_a -= y_b;
+					y_b = anIntArray1472[y_b];
+					while (--y_a >= 0) {
+						method379(DrawingArea.pixels, ai, y_b, x_c >> 16, x_b >> 16, l3, l2, l4, k5, j6, i5, l5, k6, z2,
+								depth_slope);
+						x_c += i7;
+						x_b += k7;
+						l3 += j7;
+						l2 += l7;
+						z2 += depth_increment;
+						y_b += DrawingArea.width;
+						l4 += j5;
+						k5 += i6;
+						j6 += l6;
+					}
+					while (--y_c >= 0) {
+						method379(DrawingArea.pixels, ai, y_b, x_a >> 16, x_b >> 16, l1, l2, l4, k5, j6, i5, l5, k6, z2,
+								depth_slope);
+						x_a += i8;
+						x_b += k7;
+						l1 += j8;
+						l2 += l7;
+						z2 += depth_increment;
+						y_b += DrawingArea.width;
+						l4 += j5;
+						k5 += i6;
+						j6 += l6;
+					}
+					return;
+				}
 				y_c -= y_a;
 				y_a -= y_b;
 				y_b = anIntArray1472[y_b];
 				while (--y_a >= 0) {
-					method379(DrawingArea.pixels, ai, y_b, x_c >> 16, x_b >> 16, l3, l2, l4, k5, j6, i5, l5, k6, z2, depth_slope);
+					method379(DrawingArea.pixels, ai, y_b, x_b >> 16, x_c >> 16, l2, l3, l4, k5, j6, i5, l5, k6, z2,
+							depth_slope);
 					x_c += i7;
 					x_b += k7;
 					l3 += j7;
@@ -2509,7 +2588,8 @@ public final class Rasterizer extends DrawingArea {
 					j6 += l6;
 				}
 				while (--y_c >= 0) {
-					method379(DrawingArea.pixels, ai, y_b, x_a >> 16, x_b >> 16, l1, l2, l4, k5, j6, i5, l5, k6, z2, depth_slope);
+					method379(DrawingArea.pixels, ai, y_b, x_b >> 16, x_a >> 16, l2, l1, l4, k5, j6, i5, l5, k6, z2,
+							depth_slope);
 					x_a += i8;
 					x_b += k7;
 					l1 += j8;
@@ -2522,70 +2602,73 @@ public final class Rasterizer extends DrawingArea {
 				}
 				return;
 			}
-			y_c -= y_a;
-			y_a -= y_b;
-			y_b = anIntArray1472[y_b];
-			while (--y_a >= 0) {
-				method379(DrawingArea.pixels, ai, y_b, x_b >> 16, x_c >> 16, l2, l3, l4, k5, j6, i5, l5, k6, z2, depth_slope);
-				x_c += i7;
-				x_b += k7;
-				l3 += j7;
-				l2 += l7;
-				z2 += depth_increment;
-				y_b += DrawingArea.width;
-				l4 += j5;
-				k5 += i6;
-				j6 += l6;
-			}
-			while (--y_c >= 0) {
-				method379(DrawingArea.pixels, ai, y_b, x_b >> 16, x_a >> 16, l2, l1, l4, k5, j6, i5, l5, k6, z2, depth_slope);
-				x_a += i8;
-				x_b += k7;
-				l1 += j8;
-				l2 += l7;
-				z2 += depth_increment;
-				y_b += DrawingArea.width;
-				l4 += j5;
-				k5 += i6;
-				j6 += l6;
-			}
-			return;
-		}
-		if (y_c >= DrawingArea.bottomY)
-			return;
-		if (y_a > DrawingArea.bottomY)
-			y_a = DrawingArea.bottomY;
-		if (y_b > DrawingArea.bottomY)
-			y_b = DrawingArea.bottomY;
-		z3 = z3 - depth_slope * x_c + depth_slope;
-		if (y_a < y_b) {
-			x_b = x_c <<= 16;
-			l2 = l3 <<= 16;
-			if (y_c < 0) {
-				x_b -= k7 * y_c;
-				x_c -= i8 * y_c;
-				z3 -= depth_increment * y_c;
-				l2 -= l7 * y_c;
-				l3 -= j8 * y_c;
-				y_c = 0;
-			}
-			x_a <<= 16;
-			l1 <<= 16;
-			if (y_a < 0) {
-				x_a -= i7 * y_a;
-				l1 -= j7 * y_a;
-				y_a = 0;
-			}
-			int k9 = y_c - centerY;
-			l4 += j5 * k9;
-			k5 += i6 * k9;
-			j6 += l6 * k9;
-			if (k7 < i8) {
+			if (y_c >= DrawingArea.bottomY)
+				return;
+			if (y_a > DrawingArea.bottomY)
+				y_a = DrawingArea.bottomY;
+			if (y_b > DrawingArea.bottomY)
+				y_b = DrawingArea.bottomY;
+			z3 = z3 - depth_slope * x_c + depth_slope;
+			if (y_a < y_b) {
+				x_b = x_c <<= 16;
+				l2 = l3 <<= 16;
+				if (y_c < 0) {
+					x_b -= k7 * y_c;
+					x_c -= i8 * y_c;
+					z3 -= depth_increment * y_c;
+					l2 -= l7 * y_c;
+					l3 -= j8 * y_c;
+					y_c = 0;
+				}
+				x_a <<= 16;
+				l1 <<= 16;
+				if (y_a < 0) {
+					x_a -= i7 * y_a;
+					l1 -= j7 * y_a;
+					y_a = 0;
+				}
+				int k9 = y_c - centerY;
+				l4 += j5 * k9;
+				k5 += i6 * k9;
+				j6 += l6 * k9;
+				if (k7 < i8) {
+					y_b -= y_a;
+					y_a -= y_c;
+					y_c = anIntArray1472[y_c];
+					while (--y_a >= 0) {
+						method379(DrawingArea.pixels, ai, y_c, x_b >> 16, x_c >> 16, l2, l3, l4, k5, j6, i5, l5, k6, z3,
+								depth_slope);
+						x_b += k7;
+						x_c += i8;
+						l2 += l7;
+						l3 += j8;
+						z3 += depth_increment;
+						y_c += DrawingArea.width;
+						l4 += j5;
+						k5 += i6;
+						j6 += l6;
+					}
+					while (--y_b >= 0) {
+						method379(DrawingArea.pixels, ai, y_c, x_b >> 16, x_a >> 16, l2, l1, l4, k5, j6, i5, l5, k6, z3,
+								depth_slope);
+						x_b += k7;
+						x_a += i7;
+						l2 += l7;
+						l1 += j7;
+						z3 += depth_increment;
+						y_c += DrawingArea.width;
+						l4 += j5;
+						k5 += i6;
+						j6 += l6;
+					}
+					return;
+				}
 				y_b -= y_a;
 				y_a -= y_c;
 				y_c = anIntArray1472[y_c];
 				while (--y_a >= 0) {
-					method379(DrawingArea.pixels, ai, y_c, x_b >> 16, x_c >> 16, l2, l3, l4, k5, j6, i5, l5, k6, z3, depth_slope);
+					method379(DrawingArea.pixels, ai, y_c, x_c >> 16, x_b >> 16, l3, l2, l4, k5, j6, i5, l5, k6, z3,
+							depth_slope);
 					x_b += k7;
 					x_c += i8;
 					l2 += l7;
@@ -2597,7 +2680,8 @@ public final class Rasterizer extends DrawingArea {
 					j6 += l6;
 				}
 				while (--y_b >= 0) {
-					method379(DrawingArea.pixels, ai, y_c, x_b >> 16, x_a >> 16, l2, l1, l4, k5, j6, i5, l5, k6, z3, depth_slope);
+					method379(DrawingArea.pixels, ai, y_c, x_a >> 16, x_b >> 16, l1, l2, l4, k5, j6, i5, l5, k6, z3,
+							depth_slope);
 					x_b += k7;
 					x_a += i7;
 					l2 += l7;
@@ -2610,62 +2694,65 @@ public final class Rasterizer extends DrawingArea {
 				}
 				return;
 			}
-			y_b -= y_a;
-			y_a -= y_c;
-			y_c = anIntArray1472[y_c];
-			while (--y_a >= 0) {
-				method379(DrawingArea.pixels, ai, y_c, x_c >> 16, x_b >> 16, l3, l2, l4, k5, j6, i5, l5, k6, z3, depth_slope);
-				x_b += k7;
-				x_c += i8;
-				l2 += l7;
-				l3 += j8;
-				z3 += depth_increment;
-				y_c += DrawingArea.width;
-				l4 += j5;
-				k5 += i6;
-				j6 += l6;
+			x_a = x_c <<= 16;
+			l1 = l3 <<= 16;
+			if (y_c < 0) {
+				x_a -= k7 * y_c;
+				x_c -= i8 * y_c;
+				z3 -= depth_increment * y_c;
+				l1 -= l7 * y_c;
+				l3 -= j8 * y_c;
+				y_c = 0;
 			}
-			while (--y_b >= 0) {
-				method379(DrawingArea.pixels, ai, y_c, x_a >> 16, x_b >> 16, l1, l2, l4, k5, j6, i5, l5, k6, z3, depth_slope);
-				x_b += k7;
-				x_a += i7;
-				l2 += l7;
-				l1 += j7;
-				z3 += depth_increment;
-				y_c += DrawingArea.width;
-				l4 += j5;
-				k5 += i6;
-				j6 += l6;
+			x_b <<= 16;
+			l2 <<= 16;
+			if (y_b < 0) {
+				x_b -= i7 * y_b;
+				l2 -= j7 * y_b;
+				y_b = 0;
 			}
-			return;
-		}
-		x_a = x_c <<= 16;
-		l1 = l3 <<= 16;
-		if (y_c < 0) {
-			x_a -= k7 * y_c;
-			x_c -= i8 * y_c;
-			z3 -= depth_increment * y_c;
-			l1 -= l7 * y_c;
-			l3 -= j8 * y_c;
-			y_c = 0;
-		}
-		x_b <<= 16;
-		l2 <<= 16;
-		if (y_b < 0) {
-			x_b -= i7 * y_b;
-			l2 -= j7 * y_b;
-			y_b = 0;
-		}
-		int l9 = y_c - centerY;
-		l4 += j5 * l9;
-		k5 += i6 * l9;
-		j6 += l6 * l9;
-		if (k7 < i8) {
+			int l9 = y_c - centerY;
+			l4 += j5 * l9;
+			k5 += i6 * l9;
+			j6 += l6 * l9;
+			if (k7 < i8) {
+				y_a -= y_b;
+				y_b -= y_c;
+				y_c = anIntArray1472[y_c];
+				while (--y_b >= 0) {
+					method379(DrawingArea.pixels, ai, y_c, x_a >> 16, x_c >> 16, l1, l3, l4, k5, j6, i5, l5, k6, z3,
+							depth_slope);
+					x_a += k7;
+					x_c += i8;
+					l1 += l7;
+					l3 += j8;
+					z3 += depth_increment;
+					y_c += DrawingArea.width;
+					l4 += j5;
+					k5 += i6;
+					j6 += l6;
+				}
+				while (--y_a >= 0) {
+					method379(DrawingArea.pixels, ai, y_c, x_b >> 16, x_c >> 16, l2, l3, l4, k5, j6, i5, l5, k6, z3,
+							depth_slope);
+					x_b += i7;
+					x_c += i8;
+					l2 += j7;
+					l3 += j8;
+					z3 += depth_increment;
+					y_c += DrawingArea.width;
+					l4 += j5;
+					k5 += i6;
+					j6 += l6;
+				}
+				return;
+			}
 			y_a -= y_b;
 			y_b -= y_c;
 			y_c = anIntArray1472[y_c];
 			while (--y_b >= 0) {
-				method379(DrawingArea.pixels, ai, y_c, x_a >> 16, x_c >> 16, l1, l3, l4, k5, j6, i5, l5, k6, z3, depth_slope);
+				method379(DrawingArea.pixels, ai, y_c, x_c >> 16, x_a >> 16, l3, l1, l4, k5, j6, i5, l5, k6, z3,
+						depth_slope);
 				x_a += k7;
 				x_c += i8;
 				l1 += l7;
@@ -2677,7 +2764,8 @@ public final class Rasterizer extends DrawingArea {
 				j6 += l6;
 			}
 			while (--y_a >= 0) {
-				method379(DrawingArea.pixels, ai, y_c, x_b >> 16, x_c >> 16, l2, l3, l4, k5, j6, i5, l5, k6, z3, depth_slope);
+				method379(DrawingArea.pixels, ai, y_c, x_c >> 16, x_b >> 16, l3, l2, l4, k5, j6, i5, l5, k6, z3,
+						depth_slope);
 				x_b += i7;
 				x_c += i8;
 				l2 += j7;
@@ -2688,40 +2776,12 @@ public final class Rasterizer extends DrawingArea {
 				k5 += i6;
 				j6 += l6;
 			}
-			return;
-		}
-		y_a -= y_b;
-		y_b -= y_c;
-		y_c = anIntArray1472[y_c];
-		while (--y_b >= 0) {
-			method379(DrawingArea.pixels, ai, y_c, x_c >> 16, x_a >> 16, l3, l1, l4, k5, j6, i5, l5, k6, z3, depth_slope);
-			x_a += k7;
-			x_c += i8;
-			l1 += l7;
-			l3 += j8;
-			z3 += depth_increment;
-			y_c += DrawingArea.width;
-			l4 += j5;
-			k5 += i6;
-			j6 += l6;
-		}
-		while (--y_a >= 0) {
-			method379(DrawingArea.pixels, ai, y_c, x_c >> 16, x_b >> 16, l3, l2, l4, k5, j6, i5, l5, k6, z3, depth_slope);
-			x_b += i7;
-			x_c += i8;
-			l2 += j7;
-			l3 += j8;
-			z3 += depth_increment;
-			y_c += DrawingArea.width;
-			l4 += j5;
-			k5 += i6;
-			j6 += l6;
-		}
-		} catch(Exception e) {
+		} catch (Exception e) {
 		}
 	}
 
-	private static void method379(int dest[], int texture[], int dest_off, int start_x, int end_x, int shadeValue, int gradient, int a1, int i2, int j2, int k2, int a2, int i3, float depth, float depth_slope) {
+	private static void method379(int dest[], int texture[], int dest_off, int start_x, int end_x, int shadeValue,
+			int gradient, int a1, int i2, int j2, int k2, int a2, int i3, float depth, float depth_slope) {
 		int i = 0;
 		int j = 0;
 		if (start_x >= end_x)
@@ -3009,82 +3069,110 @@ public final class Rasterizer extends DrawingArea {
 			shadeValue += dl;
 		}
 	}
-	
-	public static void method378_2(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3, int l3, int i4, int j4, int k4) {
+
+	public static void method378_2(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2,
+			int l2, int i3, int j3, int k3, int l3, int i4, int j4, int k4) {
 		try {
-		k1 = 0x7f - k1;
-		l1 = 0x7f - l1;
-		i2 = 0x7f - i2;
-		setMipmapLevel(i, j, k, l, i1, j1, k4);
-		int ai[] = method371(k4)[mipMapLevel];
-		aBoolean1463 = !aBooleanArray1475[k4];
-		k2 = j2 - k2;
-		j3 = i3 - j3;
-		i4 = l3 - i4;
-		l2 -= j2;
-		k3 -= i3;
-		j4 -= l3;
-		int l4 = l2 * i3 - k3 * j2 << (WorldController.viewDistance == 9 ? 14 : 15);
-		int i5 = k3 * l3 - j4 * i3 << 8;
-		int j5 = j4 * j2 - l2 * l3 << 5;
-		int k5 = k2 * i3 - j3 * j2 << (WorldController.viewDistance == 9 ? 14 : 15);
-		int l5 = j3 * l3 - i4 * i3 << 8;
-		int i6 = i4 * j2 - k2 * l3 << 5;
-		int j6 = j3 * l2 - k2 * k3 << (WorldController.viewDistance == 9 ? 14 : 15);
-		int k6 = i4 * k3 - j3 * j4 << 8;
-		int l6 = k2 * j4 - i4 * l2 << 5;
-		int i7 = 0;
-		int j7 = 0;
-		if (j != i) {
-			i7 = (i1 - l << 16) / (j - i);
-			j7 = (l1 - k1 << 16) / (j - i);
-		}
-		int k7 = 0;
-		int l7 = 0;
-		if (k != j) {
-			k7 = (j1 - i1 << 16) / (k - j);
-			l7 = (i2 - l1 << 16) / (k - j);
-		}
-		int i8 = 0;
-		int j8 = 0;
-		if (k != i) {
-			i8 = (l - j1 << 16) / (i - k);
-			j8 = (k1 - i2 << 16) / (i - k);
-		}
-		if (i <= j && i <= k) {
-			if (i >= bottomY)
-				return;
-			if (j > bottomY)
-				j = bottomY;
-			if (k > bottomY)
-				k = bottomY;
-			if (j < k) {
-				j1 = l <<= 16;
-				i2 = k1 <<= 16;
-				if (i < 0) {
-					j1 -= i8 * i;
-					l -= i7 * i;
-					i2 -= j8 * i;
-					k1 -= j7 * i;
-					i = 0;
-				}
-				i1 <<= 16;
-				l1 <<= 16;
-				if (j < 0) {
-					i1 -= k7 * j;
-					l1 -= l7 * j;
-					j = 0;
-				}
-				int k8 = i - centerY;
-				l4 += j5 * k8;
-				k5 += i6 * k8;
-				j6 += l6 * k8;
-				if (i != j && i8 < i7 || i == j && i8 > k7) {
+			k1 = 0x7f - k1;
+			l1 = 0x7f - l1;
+			i2 = 0x7f - i2;
+			setMipmapLevel(i, j, k, l, i1, j1, k4);
+			int ai[] = method371(k4)[mipMapLevel];
+			aBoolean1463 = !aBooleanArray1475[k4];
+			k2 = j2 - k2;
+			j3 = i3 - j3;
+			i4 = l3 - i4;
+			l2 -= j2;
+			k3 -= i3;
+			j4 -= l3;
+			int l4 = l2 * i3 - k3 * j2 << (WorldController.viewDistance == 9 ? 14 : 15);
+			int i5 = k3 * l3 - j4 * i3 << 8;
+			int j5 = j4 * j2 - l2 * l3 << 5;
+			int k5 = k2 * i3 - j3 * j2 << (WorldController.viewDistance == 9 ? 14 : 15);
+			int l5 = j3 * l3 - i4 * i3 << 8;
+			int i6 = i4 * j2 - k2 * l3 << 5;
+			int j6 = j3 * l2 - k2 * k3 << (WorldController.viewDistance == 9 ? 14 : 15);
+			int k6 = i4 * k3 - j3 * j4 << 8;
+			int l6 = k2 * j4 - i4 * l2 << 5;
+			int i7 = 0;
+			int j7 = 0;
+			if (j != i) {
+				i7 = (i1 - l << 16) / (j - i);
+				j7 = (l1 - k1 << 16) / (j - i);
+			}
+			int k7 = 0;
+			int l7 = 0;
+			if (k != j) {
+				k7 = (j1 - i1 << 16) / (k - j);
+				l7 = (i2 - l1 << 16) / (k - j);
+			}
+			int i8 = 0;
+			int j8 = 0;
+			if (k != i) {
+				i8 = (l - j1 << 16) / (i - k);
+				j8 = (k1 - i2 << 16) / (i - k);
+			}
+			if (i <= j && i <= k) {
+				if (i >= bottomY)
+					return;
+				if (j > bottomY)
+					j = bottomY;
+				if (k > bottomY)
+					k = bottomY;
+				if (j < k) {
+					j1 = l <<= 16;
+					i2 = k1 <<= 16;
+					if (i < 0) {
+						j1 -= i8 * i;
+						l -= i7 * i;
+						i2 -= j8 * i;
+						k1 -= j7 * i;
+						i = 0;
+					}
+					i1 <<= 16;
+					l1 <<= 16;
+					if (j < 0) {
+						i1 -= k7 * j;
+						l1 -= l7 * j;
+						j = 0;
+					}
+					int k8 = i - centerY;
+					l4 += j5 * k8;
+					k5 += i6 * k8;
+					j6 += l6 * k8;
+					if (i != j && i8 < i7 || i == j && i8 > k7) {
+						k -= j;
+						j -= i;
+						i = anIntArray1472[i];
+						while (--j >= 0) {
+							method379_2(pixels, ai, i, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+							j1 += i8;
+							l += i7;
+							i2 += j8;
+							k1 += j7;
+							i += width;
+							l4 += j5;
+							k5 += i6;
+							j6 += l6;
+						}
+						while (--k >= 0) {
+							method379_2(pixels, ai, i, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+							j1 += i8;
+							i1 += k7;
+							i2 += j8;
+							l1 += l7;
+							i += width;
+							l4 += j5;
+							k5 += i6;
+							j6 += l6;
+						}
+						return;
+					}
 					k -= j;
 					j -= i;
 					i = anIntArray1472[i];
 					while (--j >= 0) {
-						method379_2(pixels, ai, i, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+						method379_2(pixels, ai, i, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
 						j1 += i8;
 						l += i7;
 						i2 += j8;
@@ -3095,7 +3183,7 @@ public final class Rasterizer extends DrawingArea {
 						j6 += l6;
 					}
 					while (--k >= 0) {
-						method379_2(pixels, ai, i, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+						method379_2(pixels, ai, i, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
 						j1 += i8;
 						i1 += k7;
 						i2 += j8;
@@ -3107,59 +3195,59 @@ public final class Rasterizer extends DrawingArea {
 					}
 					return;
 				}
-				k -= j;
-				j -= i;
-				i = anIntArray1472[i];
-				while (--j >= 0) {
-					method379_2(pixels, ai, i, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
-					j1 += i8;
-					l += i7;
-					i2 += j8;
-					k1 += j7;
-					i += width;
-					l4 += j5;
-					k5 += i6;
-					j6 += l6;
+				i1 = l <<= 16;
+				l1 = k1 <<= 16;
+				if (i < 0) {
+					i1 -= i8 * i;
+					l -= i7 * i;
+					l1 -= j8 * i;
+					k1 -= j7 * i;
+					i = 0;
 				}
-				while (--k >= 0) {
-					method379_2(pixels, ai, i, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
-					j1 += i8;
-					i1 += k7;
-					i2 += j8;
-					l1 += l7;
-					i += width;
-					l4 += j5;
-					k5 += i6;
-					j6 += l6;
+				j1 <<= 16;
+				i2 <<= 16;
+				if (k < 0) {
+					j1 -= k7 * k;
+					i2 -= l7 * k;
+					k = 0;
 				}
-				return;
-			}
-			i1 = l <<= 16;
-			l1 = k1 <<= 16;
-			if (i < 0) {
-				i1 -= i8 * i;
-				l -= i7 * i;
-				l1 -= j8 * i;
-				k1 -= j7 * i;
-				i = 0;
-			}
-			j1 <<= 16;
-			i2 <<= 16;
-			if (k < 0) {
-				j1 -= k7 * k;
-				i2 -= l7 * k;
-				k = 0;
-			}
-			int l8 = i - centerY;
-			l4 += j5 * l8;
-			k5 += i6 * l8;
-			j6 += l6 * l8;
-			if (i != k && i8 < i7 || i == k && k7 > i7) {
+				int l8 = i - centerY;
+				l4 += j5 * l8;
+				k5 += i6 * l8;
+				j6 += l6 * l8;
+				if (i != k && i8 < i7 || i == k && k7 > i7) {
+					j -= k;
+					k -= i;
+					i = anIntArray1472[i];
+					while (--k >= 0) {
+						method379_2(pixels, ai, i, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+						i1 += i8;
+						l += i7;
+						l1 += j8;
+						k1 += j7;
+						i += width;
+						l4 += j5;
+						k5 += i6;
+						j6 += l6;
+					}
+					while (--j >= 0) {
+						method379_2(pixels, ai, i, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+						j1 += k7;
+						l += i7;
+						i2 += l7;
+						k1 += j7;
+						i += width;
+						l4 += j5;
+						k5 += i6;
+						j6 += l6;
+					}
+					return;
+				}
 				j -= k;
 				k -= i;
 				i = anIntArray1472[i];
 				while (--k >= 0) {
-					method379_2(pixels, ai, i, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+					method379_2(pixels, ai, i, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
 					i1 += i8;
 					l += i7;
 					l1 += j8;
@@ -3170,7 +3258,7 @@ public final class Rasterizer extends DrawingArea {
 					j6 += l6;
 				}
 				while (--j >= 0) {
-					method379_2(pixels, ai, i, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+					method379_2(pixels, ai, i, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
 					j1 += k7;
 					l += i7;
 					i2 += l7;
@@ -3182,67 +3270,67 @@ public final class Rasterizer extends DrawingArea {
 				}
 				return;
 			}
-			j -= k;
-			k -= i;
-			i = anIntArray1472[i];
-			while (--k >= 0) {
-				method379_2(pixels, ai, i, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
-				i1 += i8;
-				l += i7;
-				l1 += j8;
-				k1 += j7;
-				i += width;
-				l4 += j5;
-				k5 += i6;
-				j6 += l6;
-			}
-			while (--j >= 0) {
-				method379_2(pixels, ai, i, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
-				j1 += k7;
-				l += i7;
-				i2 += l7;
-				k1 += j7;
-				i += width;
-				l4 += j5;
-				k5 += i6;
-				j6 += l6;
-			}
-			return;
-		}
-		if (j <= k) {
-			if (j >= bottomY)
-				return;
-			if (k > bottomY)
-				k = bottomY;
-			if (i > bottomY)
-				i = bottomY;
-			if (k < i) {
-				l = i1 <<= 16;
-				k1 = l1 <<= 16;
-				if (j < 0) {
-					l -= i7 * j;
-					i1 -= k7 * j;
-					k1 -= j7 * j;
-					l1 -= l7 * j;
-					j = 0;
-				}
-				j1 <<= 16;
-				i2 <<= 16;
-				if (k < 0) {
-					j1 -= i8 * k;
-					i2 -= j8 * k;
-					k = 0;
-				}
-				int i9 = j - centerY;
-				l4 += j5 * i9;
-				k5 += i6 * i9;
-				j6 += l6 * i9;
-				if (j != k && i7 < k7 || j == k && i7 > i8) {
+			if (j <= k) {
+				if (j >= bottomY)
+					return;
+				if (k > bottomY)
+					k = bottomY;
+				if (i > bottomY)
+					i = bottomY;
+				if (k < i) {
+					l = i1 <<= 16;
+					k1 = l1 <<= 16;
+					if (j < 0) {
+						l -= i7 * j;
+						i1 -= k7 * j;
+						k1 -= j7 * j;
+						l1 -= l7 * j;
+						j = 0;
+					}
+					j1 <<= 16;
+					i2 <<= 16;
+					if (k < 0) {
+						j1 -= i8 * k;
+						i2 -= j8 * k;
+						k = 0;
+					}
+					int i9 = j - centerY;
+					l4 += j5 * i9;
+					k5 += i6 * i9;
+					j6 += l6 * i9;
+					if (j != k && i7 < k7 || j == k && i7 > i8) {
+						i -= k;
+						k -= j;
+						j = anIntArray1472[j];
+						while (--k >= 0) {
+							method379_2(pixels, ai, j, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+							l += i7;
+							i1 += k7;
+							k1 += j7;
+							l1 += l7;
+							j += width;
+							l4 += j5;
+							k5 += i6;
+							j6 += l6;
+						}
+						while (--i >= 0) {
+							method379_2(pixels, ai, j, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+							l += i7;
+							j1 += i8;
+							k1 += j7;
+							i2 += j8;
+							j += width;
+							l4 += j5;
+							k5 += i6;
+							j6 += l6;
+						}
+						return;
+					}
 					i -= k;
 					k -= j;
 					j = anIntArray1472[j];
 					while (--k >= 0) {
-						method379_2(pixels, ai, j, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+						method379_2(pixels, ai, j, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
 						l += i7;
 						i1 += k7;
 						k1 += j7;
@@ -3253,7 +3341,7 @@ public final class Rasterizer extends DrawingArea {
 						j6 += l6;
 					}
 					while (--i >= 0) {
-						method379_2(pixels, ai, j, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+						method379_2(pixels, ai, j, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
 						l += i7;
 						j1 += i8;
 						k1 += j7;
@@ -3265,59 +3353,59 @@ public final class Rasterizer extends DrawingArea {
 					}
 					return;
 				}
-				i -= k;
-				k -= j;
-				j = anIntArray1472[j];
-				while (--k >= 0) {
-					method379_2(pixels, ai, j, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
-					l += i7;
-					i1 += k7;
-					k1 += j7;
-					l1 += l7;
-					j += width;
-					l4 += j5;
-					k5 += i6;
-					j6 += l6;
+				j1 = i1 <<= 16;
+				i2 = l1 <<= 16;
+				if (j < 0) {
+					j1 -= i7 * j;
+					i1 -= k7 * j;
+					i2 -= j7 * j;
+					l1 -= l7 * j;
+					j = 0;
 				}
-				while (--i >= 0) {
-					method379_2(pixels, ai, j, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
-					l += i7;
-					j1 += i8;
-					k1 += j7;
-					i2 += j8;
-					j += width;
-					l4 += j5;
-					k5 += i6;
-					j6 += l6;
+				l <<= 16;
+				k1 <<= 16;
+				if (i < 0) {
+					l -= i8 * i;
+					k1 -= j8 * i;
+					i = 0;
 				}
-				return;
-			}
-			j1 = i1 <<= 16;
-			i2 = l1 <<= 16;
-			if (j < 0) {
-				j1 -= i7 * j;
-				i1 -= k7 * j;
-				i2 -= j7 * j;
-				l1 -= l7 * j;
-				j = 0;
-			}
-			l <<= 16;
-			k1 <<= 16;
-			if (i < 0) {
-				l -= i8 * i;
-				k1 -= j8 * i;
-				i = 0;
-			}
-			int j9 = j - centerY;
-			l4 += j5 * j9;
-			k5 += i6 * j9;
-			j6 += l6 * j9;
-			if (i7 < k7) {
+				int j9 = j - centerY;
+				l4 += j5 * j9;
+				k5 += i6 * j9;
+				j6 += l6 * j9;
+				if (i7 < k7) {
+					k -= i;
+					i -= j;
+					j = anIntArray1472[j];
+					while (--i >= 0) {
+						method379_2(pixels, ai, j, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+						j1 += i7;
+						i1 += k7;
+						i2 += j7;
+						l1 += l7;
+						j += width;
+						l4 += j5;
+						k5 += i6;
+						j6 += l6;
+					}
+					while (--k >= 0) {
+						method379_2(pixels, ai, j, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+						l += i8;
+						i1 += k7;
+						k1 += j8;
+						l1 += l7;
+						j += width;
+						l4 += j5;
+						k5 += i6;
+						j6 += l6;
+					}
+					return;
+				}
 				k -= i;
 				i -= j;
 				j = anIntArray1472[j];
 				while (--i >= 0) {
-					method379_2(pixels, ai, j, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+					method379_2(pixels, ai, j, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
 					j1 += i7;
 					i1 += k7;
 					i2 += j7;
@@ -3328,7 +3416,7 @@ public final class Rasterizer extends DrawingArea {
 					j6 += l6;
 				}
 				while (--k >= 0) {
-					method379_2(pixels, ai, j, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+					method379_2(pixels, ai, j, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
 					l += i8;
 					i1 += k7;
 					k1 += j8;
@@ -3340,66 +3428,66 @@ public final class Rasterizer extends DrawingArea {
 				}
 				return;
 			}
-			k -= i;
-			i -= j;
-			j = anIntArray1472[j];
-			while (--i >= 0) {
-				method379_2(pixels, ai, j, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
-				j1 += i7;
-				i1 += k7;
-				i2 += j7;
-				l1 += l7;
-				j += width;
-				l4 += j5;
-				k5 += i6;
-				j6 += l6;
-			}
-			while (--k >= 0) {
-				method379_2(pixels, ai, j, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
-				l += i8;
-				i1 += k7;
-				k1 += j8;
-				l1 += l7;
-				j += width;
-				l4 += j5;
-				k5 += i6;
-				j6 += l6;
-			}
-			return;
-		}
-		if (k >= bottomY)
-			return;
-		if (i > bottomY)
-			i = bottomY;
-		if (j > bottomY)
-			j = bottomY;
-		if (i < j) {
-			i1 = j1 <<= 16;
-			l1 = i2 <<= 16;
-			if (k < 0) {
-				i1 -= k7 * k;
-				j1 -= i8 * k;
-				l1 -= l7 * k;
-				i2 -= j8 * k;
-				k = 0;
-			}
-			l <<= 16;
-			k1 <<= 16;
-			if (i < 0) {
-				l -= i7 * i;
-				k1 -= j7 * i;
-				i = 0;
-			}
-			int k9 = k - centerY;
-			l4 += j5 * k9;
-			k5 += i6 * k9;
-			j6 += l6 * k9;
-			if (k7 < i8) {
+			if (k >= bottomY)
+				return;
+			if (i > bottomY)
+				i = bottomY;
+			if (j > bottomY)
+				j = bottomY;
+			if (i < j) {
+				i1 = j1 <<= 16;
+				l1 = i2 <<= 16;
+				if (k < 0) {
+					i1 -= k7 * k;
+					j1 -= i8 * k;
+					l1 -= l7 * k;
+					i2 -= j8 * k;
+					k = 0;
+				}
+				l <<= 16;
+				k1 <<= 16;
+				if (i < 0) {
+					l -= i7 * i;
+					k1 -= j7 * i;
+					i = 0;
+				}
+				int k9 = k - centerY;
+				l4 += j5 * k9;
+				k5 += i6 * k9;
+				j6 += l6 * k9;
+				if (k7 < i8) {
+					j -= i;
+					i -= k;
+					k = anIntArray1472[k];
+					while (--i >= 0) {
+						method379_2(pixels, ai, k, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+						i1 += k7;
+						j1 += i8;
+						l1 += l7;
+						i2 += j8;
+						k += width;
+						l4 += j5;
+						k5 += i6;
+						j6 += l6;
+					}
+					while (--j >= 0) {
+						method379_2(pixels, ai, k, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+						i1 += k7;
+						l += i7;
+						l1 += l7;
+						k1 += j7;
+						k += width;
+						l4 += j5;
+						k5 += i6;
+						j6 += l6;
+					}
+					return;
+				}
 				j -= i;
 				i -= k;
 				k = anIntArray1472[k];
 				while (--i >= 0) {
-					method379_2(pixels, ai, k, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+					method379_2(pixels, ai, k, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
 					i1 += k7;
 					j1 += i8;
 					l1 += l7;
@@ -3410,7 +3498,7 @@ public final class Rasterizer extends DrawingArea {
 					j6 += l6;
 				}
 				while (--j >= 0) {
-					method379_2(pixels, ai, k, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+					method379_2(pixels, ai, k, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
 					i1 += k7;
 					l += i7;
 					l1 += l7;
@@ -3422,59 +3510,59 @@ public final class Rasterizer extends DrawingArea {
 				}
 				return;
 			}
-			j -= i;
-			i -= k;
-			k = anIntArray1472[k];
-			while (--i >= 0) {
-				method379_2(pixels, ai, k, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
-				i1 += k7;
-				j1 += i8;
-				l1 += l7;
-				i2 += j8;
-				k += width;
-				l4 += j5;
-				k5 += i6;
-				j6 += l6;
+			l = j1 <<= 16;
+			k1 = i2 <<= 16;
+			if (k < 0) {
+				l -= k7 * k;
+				j1 -= i8 * k;
+				k1 -= l7 * k;
+				i2 -= j8 * k;
+				k = 0;
 			}
-			while (--j >= 0) {
-				method379_2(pixels, ai, k, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
-				i1 += k7;
-				l += i7;
-				l1 += l7;
-				k1 += j7;
-				k += width;
-				l4 += j5;
-				k5 += i6;
-				j6 += l6;
+			i1 <<= 16;
+			l1 <<= 16;
+			if (j < 0) {
+				i1 -= i7 * j;
+				l1 -= j7 * j;
+				j = 0;
 			}
-			return;
-		}
-		l = j1 <<= 16;
-		k1 = i2 <<= 16;
-		if (k < 0) {
-			l -= k7 * k;
-			j1 -= i8 * k;
-			k1 -= l7 * k;
-			i2 -= j8 * k;
-			k = 0;
-		}
-		i1 <<= 16;
-		l1 <<= 16;
-		if (j < 0) {
-			i1 -= i7 * j;
-			l1 -= j7 * j;
-			j = 0;
-		}
-		int l9 = k - centerY;
-		l4 += j5 * l9;
-		k5 += i6 * l9;
-		j6 += l6 * l9;
-		if (k7 < i8) {
+			int l9 = k - centerY;
+			l4 += j5 * l9;
+			k5 += i6 * l9;
+			j6 += l6 * l9;
+			if (k7 < i8) {
+				i -= j;
+				j -= k;
+				k = anIntArray1472[k];
+				while (--j >= 0) {
+					method379_2(pixels, ai, k, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+					l += k7;
+					j1 += i8;
+					k1 += l7;
+					i2 += j8;
+					k += width;
+					l4 += j5;
+					k5 += i6;
+					j6 += l6;
+				}
+				while (--i >= 0) {
+					method379_2(pixels, ai, k, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+					i1 += i7;
+					j1 += i8;
+					l1 += j7;
+					i2 += j8;
+					k += width;
+					l4 += j5;
+					k5 += i6;
+					j6 += l6;
+				}
+				return;
+			}
 			i -= j;
 			j -= k;
 			k = anIntArray1472[k];
 			while (--j >= 0) {
-				method379_2(pixels, ai, k, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+				method379_2(pixels, ai, k, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
 				l += k7;
 				j1 += i8;
 				k1 += l7;
@@ -3485,7 +3573,7 @@ public final class Rasterizer extends DrawingArea {
 				j6 += l6;
 			}
 			while (--i >= 0) {
-				method379_2(pixels, ai, k, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+				method379_2(pixels, ai, k, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
 				i1 += i7;
 				j1 += i8;
 				l1 += j7;
@@ -3495,38 +3583,12 @@ public final class Rasterizer extends DrawingArea {
 				k5 += i6;
 				j6 += l6;
 			}
-			return;
-		}
-		i -= j;
-		j -= k;
-		k = anIntArray1472[k];
-		while (--j >= 0) {
-			method379_2(pixels, ai, k, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
-			l += k7;
-			j1 += i8;
-			k1 += l7;
-			i2 += j8;
-			k += width;
-			l4 += j5;
-			k5 += i6;
-			j6 += l6;
-		}
-		while (--i >= 0) {
-			method379_2(pixels, ai, k, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
-			i1 += i7;
-			j1 += i8;
-			l1 += j7;
-			i2 += j8;
-			k += width;
-			l4 += j5;
-			k5 += i6;
-			j6 += l6;
-		}
-		} catch(Exception e) {
+		} catch (Exception e) {
 		}
 	}
 
-	private static void method379_2(int ai[], int ai1[], int k, int x1, int x2, int lig1, int lig2, int l1, int i2, int j2, int k2, int l2, int i3) {
+	private static void method379_2(int ai[], int ai1[], int k, int x1, int x2, int lig1, int lig2, int l1, int i2,
+			int j2, int k2, int l2, int i3) {
 		int i = 0;// was parameter
 		int j = 0;// was parameter
 		if (x1 >= x2)
@@ -3782,20 +3844,20 @@ public final class Rasterizer extends DrawingArea {
 	public static int anIntArray1482[] = new int[0x10000];
 	private static int[][] anIntArrayArray1483 = new int[textureAmount][];
 
-	static  {
+	static {
 		anIntArray1468 = new int[512];
 		anIntArray1469 = new int[2048];
 		anIntArray1470 = new int[2048];
 		anIntArray1471 = new int[2048];
-		for(int i = 1; i < 512; i++) {
+		for (int i = 1; i < 512; i++) {
 			anIntArray1468[i] = 32768 / i;
 		}
-		for(int j = 1; j < 2048; j++) {
+		for (int j = 1; j < 2048; j++) {
 			anIntArray1469[j] = 0x10000 / j;
 		}
-		for(int k = 0; k < 2048; k++) {
-			anIntArray1470[k] = (int)(65536D * Math.sin((double)k * 0.0030679614999999999D));
-			anIntArray1471[k] = (int)(65536D * Math.cos((double)k * 0.0030679614999999999D));
+		for (int k = 0; k < 2048; k++) {
+			anIntArray1470[k] = (int) (65536D * Math.sin((double) k * 0.0030679614999999999D));
+			anIntArray1471[k] = (int) (65536D * Math.cos((double) k * 0.0030679614999999999D));
 		}
 	}
 }

@@ -9,7 +9,7 @@ public class RSInterface {
 	public boolean drawsTransparent;
 	public Sprite disabledSprite;
 	public int anInt208;
-	public boolean inventoryhover;
+	public boolean boxhover;
 	public Sprite sprites[];
 	public static RSInterface interfaceCache[];
 	public int anIntArray212[];
@@ -51,7 +51,7 @@ public class RSInterface {
 	boolean onlyNumbers;
 	public int characterLimit;
 	public static RSInterface currentInputField = null;
-	public boolean isInventoryInterface;
+	public boolean isBoxInterface;
 	public int id;
 	public int invStackSizes[];
 	public int inv[];
@@ -82,7 +82,7 @@ public class RSInterface {
 		disabledMessage = text;
 	}
 
-	public void swapInventoryItems(int i, int j) {
+	public void swapBoxItems(int i, int j) {
 		int k = inv[i];
 		inv[i] = inv[j];
 		inv[j] = k;
@@ -91,7 +91,8 @@ public class RSInterface {
 		invStackSizes[j] = k;
 	}
 
-	public static void unpack(StreamLoader streamLoader, TextDrawingArea textDrawingAreas[], StreamLoader streamLoader_1) {
+	public static void unpack(StreamLoader streamLoader, TextDrawingArea textDrawingAreas[],
+			StreamLoader streamLoader_1) {
 		aMRUNodes_238 = new MRUNodes(50000);
 		Stream stream = new Stream(streamLoader.getDataForName("data"));
 		int i = -1;
@@ -163,7 +164,7 @@ public class RSInterface {
 				rsInterface.inv = new int[rsInterface.width * rsInterface.height];
 				rsInterface.invStackSizes = new int[rsInterface.width * rsInterface.height];
 				rsInterface.aBoolean259 = stream.readUnsignedByte() == 1;
-				rsInterface.isInventoryInterface = stream.readUnsignedByte() == 1;
+				rsInterface.isBoxInterface = stream.readUnsignedByte() == 1;
 				rsInterface.usableItemInterface = stream.readUnsignedByte() == 1;
 				rsInterface.aBoolean235 = stream.readUnsignedByte() == 1;
 				rsInterface.invSpritePadX = stream.readUnsignedByte();
@@ -179,7 +180,8 @@ public class RSInterface {
 						String s1 = stream.readString();
 						if (streamLoader_1 != null && s1.length() > 0) {
 							int i5 = s1.lastIndexOf(",");
-							rsInterface.sprites[j2] = method207(Integer.parseInt(s1.substring(i5 + 1)), streamLoader_1, s1.substring(0, i5));
+							rsInterface.sprites[j2] = method207(Integer.parseInt(s1.substring(i5 + 1)), streamLoader_1,
+									s1.substring(0, i5));
 						}
 					}
 				}
@@ -210,7 +212,8 @@ public class RSInterface {
 				rsInterface.textShadow = stream.readUnsignedByte() == 1;
 			}
 			if (rsInterface.type == 4) {
-				rsInterface.disabledMessage = stream.readString().replaceAll("RuneScape", "" + ClientConstants.CLIENT_NAME);
+				rsInterface.disabledMessage = stream.readString().replaceAll("RuneScape",
+						"" + ClientConstants.CLIENT_NAME);
 				rsInterface.enabledMessage = stream.readString();
 			}
 			if (rsInterface.type == 1 || rsInterface.type == 3 || rsInterface.type == 4)
@@ -225,12 +228,14 @@ public class RSInterface {
 				String s = stream.readString();
 				if (streamLoader_1 != null && s.length() > 0) {
 					int i4 = s.lastIndexOf(",");
-					rsInterface.disabledSprite = method207(Integer.parseInt(s.substring(i4 + 1)), streamLoader_1, s.substring(0, i4));
+					rsInterface.disabledSprite = method207(Integer.parseInt(s.substring(i4 + 1)), streamLoader_1,
+							s.substring(0, i4));
 				}
 				s = stream.readString();
 				if (streamLoader_1 != null && s.length() > 0) {
 					int j4 = s.lastIndexOf(",");
-					rsInterface.enabledSprite = method207(Integer.parseInt(s.substring(j4 + 1)), streamLoader_1, s.substring(0, j4));
+					rsInterface.enabledSprite = method207(Integer.parseInt(s.substring(j4 + 1)), streamLoader_1,
+							s.substring(0, j4));
 				}
 			}
 			if (rsInterface.type == 6) {
@@ -269,7 +274,7 @@ public class RSInterface {
 				rsInterface.textColor = stream.readDWord();
 				rsInterface.invSpritePadX = stream.readSignedWord();
 				rsInterface.invSpritePadY = stream.readSignedWord();
-				rsInterface.isInventoryInterface = stream.readUnsignedByte() == 1;
+				rsInterface.isBoxInterface = stream.readUnsignedByte() == 1;
 				rsInterface.actions = new String[5];
 				for (int k4 = 0; k4 < 5; k4++) {
 					rsInterface.actions[k4] = stream.readString();
@@ -287,7 +292,8 @@ public class RSInterface {
 			if (rsInterface.type == 8)
 				rsInterface.disabledMessage = stream.readString();
 
-			if (rsInterface.atActionType == 1 || rsInterface.atActionType == 4 || rsInterface.atActionType == 5 || rsInterface.atActionType == 6) {
+			if (rsInterface.atActionType == 1 || rsInterface.atActionType == 4 || rsInterface.atActionType == 5
+					|| rsInterface.atActionType == 6) {
 				rsInterface.tooltip = stream.readString();
 
 				if (rsInterface.tooltip.length() == 0) {
@@ -306,16 +312,16 @@ public class RSInterface {
 		aClass44 = streamLoader;
 		constructLunar();
 		configureLunar(textDrawingAreas);
-		edgevilleHomeTeleport(textDrawingAreas);
+		homeTeleport(textDrawingAreas);
 		itemsOnDeathDATA(textDrawingAreas);
 		CustomInterfaces.unpackInterfaces(textDrawingAreas);
 		aMRUNodes_238 = null;
 	}
 
-	public static void edgevilleHomeTeleport(TextDrawingArea[] TDA) {
+	public static void homeTeleport(TextDrawingArea[] TDA) {
 		RSInterface rsi = interfaceCache[21741];
 		rsi.atActionType = 1;
-		rsi.tooltip = "Cast @gre@Edgeville Home Teleport";
+		rsi.tooltip = "Home teleport";
 	}
 
 	public static void addButton(int id, int sid, String tooltip) {
@@ -523,33 +529,46 @@ public class RSInterface {
 		 * str1y, str2x, str2y, str3x, str3y, str4x, str4y, img1x, img1y, img2x,
 		 * img2y, img3x, img3y, img4x, img4y, tda);
 		 */
-		Sidebar0a(1698, 1701, 7499, "Chop", "Hack", "Smash", "Block", 42, 75, 127, 75, 39, 128, 125, 128, 122, 103, 40, 50, 122, 50, 40, 103, tda);
-		Sidebar0a(2276, 2279, 7574, "Stab", "Lunge", "Slash", "Block", 43, 75, 124, 75, 41, 128, 125, 128, 122, 103, 40, 50, 122, 50, 40, 103, tda);
-		Sidebar0a(2423, 2426, 7599, "Chop", "Slash", "Lunge", "Block", 42, 75, 125, 75, 40, 128, 125, 128, 122, 103, 40, 50, 122, 50, 40, 103, tda);
-		Sidebar0a(3796, 3799, 7624, "Pound", "Pummel", "Spike", "Block", 39, 75, 121, 75, 41, 128, 125, 128, 122, 103, 40, 50, 122, 50, 40, 103, tda);
-		Sidebar0a(4679, 4682, 7674, "Lunge", "Swipe", "Pound", "Block", 40, 75, 124, 75, 39, 128, 125, 128, 122, 103, 40, 50, 122, 50, 40, 103, tda);
-		Sidebar0a(4705, 4708, 7699, "Chop", "Slash", "Smash", "Block", 42, 75, 125, 75, 39, 128, 125, 128, 122, 103, 40, 50, 122, 50, 40, 103, tda);
-		Sidebar0a(5570, 5573, 7724, "Spike", "Impale", "Smash", "Block", 41, 75, 123, 75, 39, 128, 125, 128, 122, 103, 40, 50, 122, 50, 40, 103, tda);
-		Sidebar0a(7762, 7765, 7800, "Chop", "Slash", "Lunge", "Block", 42, 75, 125, 75, 40, 128, 125, 128, 122, 103, 40, 50, 122, 50, 40, 103, tda);
+		Sidebar0a(1698, 1701, 7499, "Chop", "Hack", "Smash", "Block", 42, 75, 127, 75, 39, 128, 125, 128, 122, 103, 40,
+				50, 122, 50, 40, 103, tda);
+		Sidebar0a(2276, 2279, 7574, "Stab", "Lunge", "Slash", "Block", 43, 75, 124, 75, 41, 128, 125, 128, 122, 103, 40,
+				50, 122, 50, 40, 103, tda);
+		Sidebar0a(2423, 2426, 7599, "Chop", "Slash", "Lunge", "Block", 42, 75, 125, 75, 40, 128, 125, 128, 122, 103, 40,
+				50, 122, 50, 40, 103, tda);
+		Sidebar0a(3796, 3799, 7624, "Pound", "Pummel", "Spike", "Block", 39, 75, 121, 75, 41, 128, 125, 128, 122, 103,
+				40, 50, 122, 50, 40, 103, tda);
+		Sidebar0a(4679, 4682, 7674, "Lunge", "Swipe", "Pound", "Block", 40, 75, 124, 75, 39, 128, 125, 128, 122, 103,
+				40, 50, 122, 50, 40, 103, tda);
+		Sidebar0a(4705, 4708, 7699, "Chop", "Slash", "Smash", "Block", 42, 75, 125, 75, 39, 128, 125, 128, 122, 103, 40,
+				50, 122, 50, 40, 103, tda);
+		Sidebar0a(5570, 5573, 7724, "Spike", "Impale", "Smash", "Block", 41, 75, 123, 75, 39, 128, 125, 128, 122, 103,
+				40, 50, 122, 50, 40, 103, tda);
+		Sidebar0a(7762, 7765, 7800, "Chop", "Slash", "Lunge", "Block", 42, 75, 125, 75, 40, 128, 125, 128, 122, 103, 40,
+				50, 122, 50, 40, 103, tda);
 		/*
 		 * Sidebar0b(id, id2, "text1", "text2", "text3", "text4", str1x, str1y,
 		 * str2x, str2y, str3x, str3y, str4x, str4y, img1x, img1y, img2x, img2y,
 		 * img3x, img3y, img4x, img4y, tda);
 		 */
-		Sidebar0b(776, 779, "Reap", "Chop", "Jab", "Block", 42, 75, 126, 75, 46, 128, 125, 128, 122, 103, 122, 50, 40, 103, 40, 50, tda);
+		Sidebar0b(776, 779, "Reap", "Chop", "Jab", "Block", 42, 75, 126, 75, 46, 128, 125, 128, 122, 103, 122, 50, 40,
+				103, 40, 50, tda);
 		/*
 		 * Sidebar0c(id, id2, id3, "text1", "text2", "text3", str1x, str1y,
 		 * str2x, str2y, str3x, str3y, img1x, img1y, img2x, img2y, img3x, img3y,
 		 * tda);
 		 */
 		Sidebar0c(425, 428, 7474, "Pound", "Pummel", "Block", 39, 75, 121, 75, 42, 128, 40, 103, 40, 50, 122, 50, tda);
-		Sidebar0c(1749, 1752, 7524, "Accurate", "Rapid", "Longrange", 33, 75, 125, 75, 29, 128, 40, 103, 40, 50, 122, 50, tda);
-		Sidebar0c(1764, 1767, 7549, "Accurate", "Rapid", "Longrange", 33, 75, 125, 75, 29, 128, 40, 103, 40, 50, 122, 50, tda);
-		Sidebar0c(4446, 4449, 7649, "Accurate", "Rapid", "Longrange", 33, 75, 125, 75, 29, 128, 40, 103, 40, 50, 122, 50, tda);
+		Sidebar0c(1749, 1752, 7524, "Accurate", "Rapid", "Longrange", 33, 75, 125, 75, 29, 128, 40, 103, 40, 50, 122,
+				50, tda);
+		Sidebar0c(1764, 1767, 7549, "Accurate", "Rapid", "Longrange", 33, 75, 125, 75, 29, 128, 40, 103, 40, 50, 122,
+				50, tda);
+		Sidebar0c(4446, 4449, 7649, "Accurate", "Rapid", "Longrange", 33, 75, 125, 75, 29, 128, 40, 103, 40, 50, 122,
+				50, tda);
 		Sidebar0c(5855, 5857, 7749, "Punch", "Kick", "Block", 40, 75, 129, 75, 42, 128, 40, 50, 122, 50, 40, 103, tda);
 		Sidebar0c(6103, 6132, 6117, "Bash", "Pound", "Block", 43, 75, 124, 75, 42, 128, 40, 103, 40, 50, 122, 50, tda);
 		Sidebar0c(8460, 8463, 8493, "Jab", "Swipe", "Fend", 46, 75, 124, 75, 43, 128, 40, 103, 40, 50, 122, 50, tda);
-		Sidebar0c(12290, 12293, 12323, "Flick", "Lash", "Deflect", 44, 75, 127, 75, 36, 128, 40, 50, 40, 103, 122, 50, tda);
+		Sidebar0c(12290, 12293, 12323, "Flick", "Lash", "Deflect", 44, 75, 127, 75, 36, 128, 40, 50, 40, 103, 122, 50,
+				tda);
 		/*
 		 * Sidebar0d(id, id2, "text1", "text2", "text3", str1x, str1y, str2x,
 		 * str2y, str3x, str3y, img1x, img1y, img2x, img2y, img3x, img3y, tda);
@@ -560,10 +579,10 @@ public class RSInterface {
 		/* textSize(ID, wid, Size); */
 		textSize(3983, tda, 0);
 		/* addToggleButton(id, sprite, config, width, height, wid); */
-		addToggleButton(150, 150, 172, 150, 44, "Auto Retaliate");
+		addToggleButton(150, 150, 172, 150, 44, " ");
 
 		rsi.totalChildren(2, 2, 2);
-		rsi.child(0, 3983, 52, 25); // combat level
+		rsi.child(0, 3983, 52, 25); // combat grade
 		rsi.child(1, 150, 21, 153); // auto retaliate
 
 		rsi = interfaceCache[3983];
@@ -571,8 +590,10 @@ public class RSInterface {
 		rsi.textColor = 0xff981f;
 	}
 
-	public static void Sidebar0a(int id, int id2, int id3, String text1, String text2, String text3, String text4, int str1x, int str1y, int str2x, int str2y, int str3x, int str3y, int str4x, int str4y, int img1x, int img1y, int img2x, int img2y, int img3x, int img3y, int img4x, int img4y, TextDrawingArea[] tda) // 4button
-																																																																															// spec
+	public static void Sidebar0a(int id, int id2, int id3, String text1, String text2, String text3, String text4,
+			int str1x, int str1y, int str2x, int str2y, int str3x, int str3y, int str4x, int str4y, int img1x,
+			int img1y, int img2x, int img2y, int img3x, int img3y, int img4x, int img4y, TextDrawingArea[] tda) // 4button
+																												// spec
 	{
 		RSInterface rsi = addInterface(id); // 2423
 		/* addText(ID, "Text", tda, Size, Colour, Centered); */
@@ -623,7 +644,7 @@ public class RSInterface {
 		rsi.child(frame, id2, 94, 4);
 		frame++; // weapon 2426
 		rsi.child(frame, id3, 21, 205);
-		frame++; // special attack 7599
+		frame++; // special assault 7599
 
 		for (int i = id2 + 3; i < id2 + 7; i++) { // 2429 - 2433
 			rsi = interfaceCache[i];
@@ -634,8 +655,10 @@ public class RSInterface {
 		}
 	}
 
-	public static void Sidebar0b(int id, int id2, String text1, String text2, String text3, String text4, int str1x, int str1y, int str2x, int str2y, int str3x, int str3y, int str4x, int str4y, int img1x, int img1y, int img2x, int img2y, int img3x, int img3y, int img4x, int img4y, TextDrawingArea[] tda) // 4button
-																																																																													// nospec
+	public static void Sidebar0b(int id, int id2, String text1, String text2, String text3, String text4, int str1x,
+			int str1y, int str2x, int str2y, int str3x, int str3y, int str4x, int str4y, int img1x, int img1y,
+			int img2x, int img2y, int img3x, int img3y, int img4x, int img4y, TextDrawingArea[] tda) // 4button
+																										// nospec
 	{
 		RSInterface rsi = addInterface(id); // 2423
 		/* addText(ID, "Text", tda, Size, Colour, Centered); */
@@ -693,8 +716,10 @@ public class RSInterface {
 		}
 	}
 
-	public static void Sidebar0c(int id, int id2, int id3, String text1, String text2, String text3, int str1x, int str1y, int str2x, int str2y, int str3x, int str3y, int img1x, int img1y, int img2x, int img2y, int img3x, int img3y, TextDrawingArea[] tda) // 3button
-																																																																// spec
+	public static void Sidebar0c(int id, int id2, int id3, String text1, String text2, String text3, int str1x,
+			int str1y, int str2x, int str2y, int str3x, int str3y, int img1x, int img1y, int img2x, int img2y,
+			int img3x, int img3y, TextDrawingArea[] tda) // 3button
+															// spec
 	{
 		RSInterface rsi = addInterface(id); // 2423
 		/* addText(ID, "Text", tda, Size, Colour, Centered); */
@@ -738,7 +763,7 @@ public class RSInterface {
 		rsi.child(frame, id2, 94, 4);
 		frame++; // weapon
 		rsi.child(frame, id3, 21, 205);
-		frame++; // special attack 7599
+		frame++; // special assault 7599
 
 		for (int i = id2 + 3; i < id2 + 6; i++) {
 			rsi = interfaceCache[i];
@@ -749,10 +774,12 @@ public class RSInterface {
 		}
 	}
 
-	public static void Sidebar0d(int id, int id2, String text1, String text2, String text3, int str1x, int str1y, int str2x, int str2y, int str3x, int str3y, int img1x, int img1y, int img2x, int img2y, int img3x, int img3y, TextDrawingArea[] tda) // 3button
-																																																														// nospec
-																																																														// (magic
-																																																														// intf)
+	public static void Sidebar0d(int id, int id2, String text1, String text2, String text3, int str1x, int str1y,
+			int str2x, int str2y, int str3x, int str3y, int img1x, int img1y, int img2x, int img2y, int img3x,
+			int img3y, TextDrawingArea[] tda) // 3button
+												// nospec
+												// (mage
+												// intf)
 	{
 		RSInterface rsi = addInterface(id); // 2423
 		/* addText(ID, "Text", tda, Size, Colour, Centered); */
@@ -874,7 +901,7 @@ public class RSInterface {
 		RSInterface RSinterface = addInterface(21119);
 		addText(21120, "What", 0x999999, false, true, 52, tda, 1);
 		addText(21121, "What", 0x33cc00, false, true, 52, tda, 1);
-		addText(21122, "(Need 5 to 25 players)", 0xFFcc33, false, true, 52, tda, 1);
+		addText(21122, "(Need 5 to 25 stoners)", 0xFFcc33, false, true, 52, tda, 1);
 		addText(21123, "Points", 0x33ccff, false, true, 52, tda, 1);
 		int last = 4;
 		RSinterface.children = new int[last];
@@ -895,14 +922,14 @@ public class RSInterface {
 		addSprite(21105, 4, "Pest Control/PEST1");
 		addSprite(21106, 5, "Pest Control/PEST1");
 		addText(21107, "", 0xCC00CC, false, true, 52, tda, 1);
-		addText(21108, "", 0x0000FF, false, true, 52, tda, 1);
+		addText(21108, "", 0xf7dd45, false, true, 52, tda, 1);
 		addText(21109, "", 0xFFFF44, false, true, 52, tda, 1);
 		addText(21110, "", 0xCC0000, false, true, 52, tda, 1);
 		addText(21111, "250", 0x99FF33, false, true, 52, tda, 1);// w purp
 		addText(21112, "250", 0x99FF33, false, true, 52, tda, 1);// e blue
 		addText(21113, "250", 0x99FF33, false, true, 52, tda, 1);// se yel
 		addText(21114, "250", 0x99FF33, false, true, 52, tda, 1);// sw red
-		addText(21115, "200", 0x99FF33, false, true, 52, tda, 1);// attacks
+		addText(21115, "200", 0x99FF33, false, true, 52, tda, 1);// assaults
 		addText(21116, "0", 0x99FF33, false, true, 52, tda, 1);// knights hp
 		addText(21117, "Time Remaining:", 0xFFFFFF, false, true, 52, tda, 0);
 		addText(21118, "", 0xFFFFFF, false, true, 52, tda, 0);
@@ -949,7 +976,7 @@ public class RSInterface {
 		rsi.aBoolean227 = false;
 		rsi.aBoolean235 = false;
 		rsi.usableItemInterface = false;
-		rsi.isInventoryInterface = false;
+		rsi.isBoxInterface = false;
 		rsi.aBoolean259 = true;
 		rsi.textShadow = false;
 		rsi.invSpritePadX = 35;
@@ -980,7 +1007,8 @@ public class RSInterface {
 		rsi.valueIndexArray[0][2] = 0;
 	}
 
-	public static void addText(int id, String text, TextDrawingArea tda[], int idx, int color, boolean center, boolean shadow) {
+	public static void addText(int id, String text, TextDrawingArea tda[], int idx, int color, boolean center,
+			boolean shadow) {
 		RSInterface tab = addTabInterface(id);
 		tab.parentID = id;
 		tab.id = id;
@@ -1036,7 +1064,8 @@ public class RSInterface {
 		tab.tooltip = tooltip;
 	}
 
-	public static void addConfigButton(int ID, int pID, int bID, int bID2, int width, int height, String tT, int configID, int aT, int configFrame) {
+	public static void addConfigButton(int ID, int pID, int bID, int bID2, int width, int height, String tT,
+			int configID, int aT, int configFrame) {
 		RSInterface Tab = addTabInterface(ID);
 		Tab.parentID = pID;
 		Tab.id = ID;
@@ -1109,9 +1138,10 @@ public class RSInterface {
 		widget.disabledSprite = spriteId2 < 0 ? null : Client.cacheSprite[spriteId2];
 	}
 
-	public static void addHoverButton(int i, String imageName, int j, int width, int height, String text, int contentType, int hoverOver, int aT) {// hoverable
-																																					// //
-																																					// button
+	public static void addHoverButton(int i, String imageName, int j, int width, int height, String text,
+			int contentType, int hoverOver, int aT) {// hoverable
+														// //
+														// button
 		RSInterface tab = addTabInterface(i);
 		tab.id = i;
 		tab.parentID = i;
@@ -1140,7 +1170,6 @@ public class RSInterface {
 		tab.opacity = 0;
 		tab.hoverType = -1;
 		tab.scrollMax = 0;
-		// addHoverImage(IMAGEID, j, j, imageName);TODO:
 		tab.totalChildren(1);
 		tab.child(0, IMAGEID, 0, 0);
 	}
@@ -1285,7 +1314,7 @@ public class RSInterface {
 		if (i == 2)
 			model = EntityDef.forID(j).method160();
 		if (i == 3)
-			model = Client.myPlayer.method453();
+			model = Client.myStoner.method453();
 		if (i == 4)
 			model = ItemDef.forID(j).method202(50);
 		if (i == 5)
@@ -1417,7 +1446,8 @@ public class RSInterface {
 		setBounds(30002, 0, 0, 0, Int);
 	}
 
-	public static void addLunar2RunesSmallBox(int ID, int r1, int r2, int ra1, int ra2, int rune1, int lvl, String name, String descr, TextDrawingArea[] TDA, int sid, int suo, int type) {
+	public static void addLunar2RunesSmallBox(int ID, int r1, int r2, int ra1, int ra2, int rune1, int lvl, String name,
+			String descr, TextDrawingArea[] TDA, int sid, int suo, int type) {
 		RSInterface rsInterface = addInterface(ID);
 		rsInterface.id = ID;
 		rsInterface.parentID = 1151;
@@ -1462,7 +1492,7 @@ public class RSInterface {
 		setChildren(7, INT);
 		addLunarSprite(ID + 2, 143);
 		setBounds(ID + 2, 0, 0, 0, INT);
-		addText(ID + 3, "Level " + (lvl + 1) + ": " + name, 0xFF981F, true, true, 52, TDA, 1);
+		addText(ID + 3, "Grade " + (lvl + 1) + ": " + name, 0xFF981F, true, true, 52, TDA, 1);
 		setBounds(ID + 3, 90, 4, 1, INT);
 		addText(ID + 4, descr, 0xAF6A1A, true, true, 52, TDA, 0);
 		setBounds(ID + 4, 90, 19, 2, INT);
@@ -1474,7 +1504,8 @@ public class RSInterface {
 		setBounds(ID + 6, 123, 66, 6, INT);
 	}
 
-	public static void addLunar3RunesSmallBox(int ID, int r1, int r2, int r3, int ra1, int ra2, int ra3, int rune1, int rune2, int lvl, String name, String descr, TextDrawingArea[] TDA, int sid, int suo, int type) {
+	public static void addLunar3RunesSmallBox(int ID, int r1, int r2, int r3, int ra1, int ra2, int ra3, int rune1,
+			int rune2, int lvl, String name, String descr, TextDrawingArea[] TDA, int sid, int suo, int type) {
 		RSInterface rsInterface = addInterface(ID);
 		rsInterface.id = ID;
 		rsInterface.parentID = 1151;
@@ -1526,7 +1557,7 @@ public class RSInterface {
 		setChildren(9, INT);
 		addLunarSprite(ID + 2, 144);
 		setBounds(ID + 2, 0, 0, 0, INT);
-		addText(ID + 3, "Level " + (lvl + 1) + ": " + name, 0xFF981F, true, true, 52, TDA, 1);
+		addText(ID + 3, "Grade " + (lvl + 1) + ": " + name, 0xFF981F, true, true, 52, TDA, 1);
 		setBounds(ID + 3, 90, 4, 1, INT);
 		addText(ID + 4, descr, 0xAF6A1A, true, true, 52, TDA, 0);
 		setBounds(ID + 4, 90, 19, 2, INT);
@@ -1541,7 +1572,8 @@ public class RSInterface {
 		setBounds(ID + 7, 142, 66, 8, INT);
 	}
 
-	public static void addLunar3RunesBigBox(int ID, int r1, int r2, int r3, int ra1, int ra2, int ra3, int rune1, int rune2, int lvl, String name, String descr, TextDrawingArea[] TDA, int sid, int suo, int type) {
+	public static void addLunar3RunesBigBox(int ID, int r1, int r2, int r3, int ra1, int ra2, int ra3, int rune1,
+			int rune2, int lvl, String name, String descr, TextDrawingArea[] TDA, int sid, int suo, int type) {
 		RSInterface rsInterface = addInterface(ID);
 		rsInterface.id = ID;
 		rsInterface.parentID = 1151;
@@ -1593,7 +1625,7 @@ public class RSInterface {
 		setChildren(9, INT);
 		addLunarSprite(ID + 2, 145);
 		setBounds(ID + 2, 0, 0, 0, INT);
-		addText(ID + 3, "Level " + (lvl + 1) + ": " + name, 0xFF981F, true, true, 52, TDA, 1);
+		addText(ID + 3, "Grade " + (lvl + 1) + ": " + name, 0xFF981F, true, true, 52, TDA, 1);
 		setBounds(ID + 3, 90, 4, 1, INT);
 		addText(ID + 4, descr, 0xAF6A1A, true, true, 52, TDA, 0);
 		setBounds(ID + 4, 90, 21, 2, INT);
@@ -1608,7 +1640,8 @@ public class RSInterface {
 		setBounds(ID + 7, 142, 79, 8, INT);
 	}
 
-	public static void addLunar3RunesLargeBox(int ID, int r1, int r2, int r3, int ra1, int ra2, int ra3, int rune1, int rune2, int lvl, String name, String descr, TextDrawingArea[] TDA, int sid, int suo, int type) {
+	public static void addLunar3RunesLargeBox(int ID, int r1, int r2, int r3, int ra1, int ra2, int ra3, int rune1,
+			int rune2, int lvl, String name, String descr, TextDrawingArea[] TDA, int sid, int suo, int type) {
 		RSInterface rsInterface = addInterface(ID);
 		rsInterface.id = ID;
 		rsInterface.parentID = 1151;
@@ -1659,7 +1692,7 @@ public class RSInterface {
 		setChildren(9, INT);
 		addLunarSprite(ID + 2, 145);
 		setBounds(ID + 2, 0, 0, 0, INT);
-		addText(ID + 3, "Level " + (lvl + 1) + ": " + name, 0xFF981F, true, true, 52, TDA, 1);
+		addText(ID + 3, "Grade " + (lvl + 1) + ": " + name, 0xFF981F, true, true, 52, TDA, 1);
 		setBounds(ID + 3, 90, 4, 1, INT);
 		addText(ID + 4, descr, 0xAF6A1A, true, true, 52, TDA, 0);
 		setBounds(ID + 4, 90, 34, 2, INT);
@@ -1697,45 +1730,85 @@ public class RSInterface {
 		drawRune(30014, 157);
 		drawRune(30015, 158);
 		drawRune(30016, 159);
-		addLunar3RunesSmallBox(30017, 9075, 554, 555, 0, 4, 3, 30003, 30004, 64, "Bake Pie", "Bake pies without a stove", TDA, 160, 16, 2);
-		addLunar2RunesSmallBox(30025, 9075, 557, 189, 7, 30006, 65, "Cure Plant", "Cure disease on farming patch", TDA, 161, 4, 2);
-		addLunar3RunesBigBox(30032, 9075, 564, 558, 0, 0, 0, 30013, 30007, 65, "Monster Examine", "Detect the combat statistics of a\\nmonster", TDA, 162, 2, 2);
-		addLunar3RunesSmallBox(30040, 9075, 564, 556, 0, 0, 1, 30013, 30005, 66, "NPC Contact", "Speak with varied NPCs", TDA, 163, 0, 2);
-		addLunar3RunesSmallBox(30048, 9075, 563, 557, 0, 0, 9, 30012, 30006, 67, "Cure Other", "Cure poisoned players", TDA, 164, 8, 2);
-		addLunar3RunesSmallBox(30056, 9075, 555, 554, 0, 2, 0, 30004, 30003, 67, "Humidify", "Fills certain vessels with water", TDA, 165, 0, 5);
-		addLunar3RunesSmallBox(30064, 9075, 563, 557, 1, 0, 1, 30012, 30006, 68, "Moonclan Teleport", "Teleports you to moonclan island", TDA, 166, 0, 5);
-		addLunar3RunesBigBox(30075, 9075, 563, 557, 1, 0, 3, 30012, 30006, 69, "Tele Group Moonclan", "Teleports players to Moonclan\\nisland", TDA, 167, 0, 5);
-		addLunar3RunesSmallBox(30083, 9075, 563, 557, 1, 0, 5, 30012, 30006, 70, "Ourania Teleport", "Teleports you to ourania rune altar", TDA, 168, 0, 5);
-		addLunar3RunesSmallBox(30091, 9075, 564, 563, 1, 1, 0, 30013, 30012, 70, "Cure Me", "Cures Poison", TDA, 169, 0, 5);
-		addLunar2RunesSmallBox(30099, 9075, 557, 1, 1, 30006, 70, "Hunter Kit", "Get a kit of hunting gear", TDA, 170, 0, 5);
-		addLunar3RunesSmallBox(30106, 9075, 563, 555, 1, 0, 0, 30012, 30004, 71, "Waterbirth Teleport", "Teleports you to Waterbirth island", TDA, 171, 0, 5);
-		addLunar3RunesBigBox(30114, 9075, 563, 555, 1, 0, 4, 30012, 30004, 72, "Tele Group Waterbirth", "Teleports players to Waterbirth\\nisland", TDA, 172, 0, 5);
-		addLunar3RunesSmallBox(30122, 9075, 564, 563, 1, 1, 1, 30013, 30012, 73, "Cure Group", "Cures Poison on players", TDA, 173, 0, 5);
-		addLunar3RunesBigBox(30130, 9075, 564, 559, 1, 1, 4, 30013, 30008, 74, "Stat Spy", "Cast on another player to see their\\nskill levels", TDA, 174, 8, 2);
-		addLunar3RunesBigBox(30138, 9075, 563, 554, 1, 1, 2, 30012, 30003, 74, "Barbarian Teleport", "Teleports you to the Barbarian\\noutpost", TDA, 175, 0, 5);
-		addLunar3RunesBigBox(30146, 9075, 563, 554, 1, 1, 5, 30012, 30003, 75, "Tele Group Barbarian", "Teleports players to the Barbarian\\noutpost", TDA, 176, 0, 5);
-		addLunar3RunesSmallBox(30154, 9075, 554, 556, 1, 5, 9, 30003, 30005, 76, "Superglass Make", "Make glass without a furnace", TDA, 177, 16, 2);
-		addLunar3RunesSmallBox(30162, 9075, 563, 555, 1, 1, 3, 30012, 30004, 77, "Khazard Teleport", "Teleports you to Port khazard", TDA, 178, 0, 5);
-		addLunar3RunesSmallBox(30170, 9075, 563, 555, 1, 1, 7, 30012, 30004, 78, "Tele Group Khazard", "Teleports players to Port khazard", TDA, 179, 0, 5);
-		addLunar3RunesBigBox(30178, 9075, 564, 559, 1, 0, 4, 30013, 30008, 78, "Dream", "Take a rest and restore hitpoints 3\\n times faster", TDA, 180, 0, 5);
-		addLunar3RunesSmallBox(30186, 9075, 557, 555, 1, 9, 4, 30006, 30004, 79, "String Jewellery", "String amulets without wool", TDA, 181, 0, 5);
-		addLunar3RunesLargeBox(30194, 9075, 557, 555, 1, 9, 9, 30006, 30004, 80, "Stat Restore Pot\\nShare", "Share a potion with up to 4 nearby\\nplayers", TDA, 182, 0, 5);
-		addLunar3RunesSmallBox(30202, 9075, 554, 555, 1, 6, 6, 30003, 30004, 81, "Magic Imbue", "Combine runes without a talisman", TDA, 183, 0, 5);
-		addLunar3RunesBigBox(30210, 9075, 561, 557, 2, 1, 14, 30010, 30006, 82, "Fertile Soil", "Fertilise a farming patch with super\\ncompost", TDA, 184, 4, 2);
-		addLunar3RunesBigBox(30218, 9075, 557, 555, 2, 11, 9, 30006, 30004, 83, "Boost Potion Share", "Shares a potion with up to 4 nearby\\nplayers", TDA, 185, 0, 5);
-		addLunar3RunesSmallBox(30226, 9075, 563, 555, 2, 2, 9, 30012, 30004, 84, "Fishing Guild Teleport", "Teleports you to the fishing guild", TDA, 186, 0, 5);
-		addLunar3RunesLargeBox(30234, 9075, 563, 555, 1, 2, 13, 30012, 30004, 85, "Tele Group Fishing\\nGuild", "Teleports players to the Fishing\\nGuild", TDA, 187, 0, 5);
-		addLunar3RunesSmallBox(30242, 9075, 557, 561, 2, 14, 0, 30006, 30010, 85, "Plank Make", "Turn Logs into planks", TDA, 188, 16, 5);
-		addLunar3RunesSmallBox(30250, 9075, 563, 555, 2, 2, 9, 30012, 30004, 86, "Catherby Teleport", "Teleports you to Catherby", TDA, 189, 0, 5);
-		addLunar3RunesSmallBox(30258, 9075, 563, 555, 2, 2, 14, 30012, 30004, 87, "Tele Group Catherby", "Teleports players to Catherby", TDA, 190, 0, 5);
-		addLunar3RunesSmallBox(30266, 9075, 563, 555, 2, 2, 7, 30012, 30004, 88, "Ice Plateau Teleport", "Teleports you to Ice Plateau", TDA, 191, 0, 5);
-		addLunar3RunesLargeBox(30274, 9075, 563, 555, 2, 2, 15, 30012, 30004, 89, "Tele Group Ice Plateau", "Teleports players to Ice Plateau", TDA, 192, 0, 5);
-		addLunar3RunesBigBox(30282, 9075, 563, 561, 2, 1, 0, 30012, 30010, 90, "Energy Transfer", "Spend HP and SA energy to\\n give another SA and run energy", TDA, 193, 8, 2);
-		addLunar3RunesBigBox(30290, 9075, 563, 565, 2, 2, 0, 30012, 30014, 91, "Heal Other", "Transfer up to 75% of hitpoints\\n to another player", TDA, 194, 8, 2);
-		addLunar3RunesBigBox(30298, 9075, 560, 557, 2, 1, 9, 30009, 30006, 92, "Vengeance Other", "Allows another player to rebound\\ndamage to an opponent", TDA, 195, 8, 2);
-		addLunar3RunesSmallBox(30306, 9075, 560, 557, 3, 1, 9, 30009, 30006, 93, "Vengeance", "Rebound damage to an opponent", TDA, 196, 0, 5);
-		addLunar3RunesBigBox(30314, 9075, 565, 563, 3, 2, 5, 30014, 30012, 94, "Heal Group", "Transfer up to 75% of hitpoints\\n to a group", TDA, 197, 0, 5);
-		addLunar3RunesBigBox(30322, 9075, 564, 563, 2, 1, 0, 30013, 30012, 95, "Spellbook Swap", "Change to another spellbook for 1\\nspell cast", TDA, 198, 0, 5);
+		addLunar3RunesSmallBox(30017, 9075, 554, 555, 0, 4, 3, 30003, 30004, 64, "Bake Pie",
+				"Bake pies without a stove", TDA, 160, 16, 2);
+		addLunar2RunesSmallBox(30025, 9075, 557, 189, 7, 30006, 65, "Cure Plant", "Cure disease on cultivation patch",
+				TDA,
+				161, 4, 2);
+		addLunar3RunesBigBox(30032, 9075, 564, 558, 0, 0, 0, 30013, 30007, 65, "Monster inspect",
+				"Detect the combat statistics of a\\nmonster", TDA, 162, 2, 2);
+		addLunar3RunesSmallBox(30040, 9075, 564, 556, 0, 0, 1, 30013, 30005, 66, "NPC Contact",
+				"Speak with varied NPCs", TDA, 163, 0, 2);
+		addLunar3RunesSmallBox(30048, 9075, 563, 557, 0, 0, 9, 30012, 30006, 67, "Cure Other", "Cure poisoned stoners",
+				TDA, 164, 8, 2);
+		addLunar3RunesSmallBox(30056, 9075, 555, 554, 0, 2, 0, 30004, 30003, 67, "Humidify",
+				"Fills certain vessels with water", TDA, 165, 0, 5);
+		addLunar3RunesSmallBox(30064, 9075, 563, 557, 1, 0, 1, 30012, 30006, 68, "Moonclan Teleport",
+				"Teleports you to moonclan island", TDA, 166, 0, 5);
+		addLunar3RunesBigBox(30075, 9075, 563, 557, 1, 0, 3, 30012, 30006, 69, "Tele Group Moonclan",
+				"Teleports stoners to Moonclan\\nisland", TDA, 167, 0, 5);
+		addLunar3RunesSmallBox(30083, 9075, 563, 557, 1, 0, 5, 30012, 30006, 70, "Ourania Teleport",
+				"Teleports you to ourania rune altar", TDA, 168, 0, 5);
+		addLunar3RunesSmallBox(30091, 9075, 564, 563, 1, 1, 0, 30013, 30012, 70, "Cure Me", "Cures Poison", TDA, 169, 0,
+				5);
+		addLunar2RunesSmallBox(30099, 9075, 557, 1, 1, 30006, 70, "Hunter Kit", "Get a kit of hunting gear", TDA, 170,
+				0, 5);
+		addLunar3RunesSmallBox(30106, 9075, 563, 555, 1, 0, 0, 30012, 30004, 71, "Waterbirth Teleport",
+				"Teleports you to Waterbirth island", TDA, 171, 0, 5);
+		addLunar3RunesBigBox(30114, 9075, 563, 555, 1, 0, 4, 30012, 30004, 72, "Tele Group Waterbirth",
+				"Teleports stoners to Waterbirth\\nisland", TDA, 172, 0, 5);
+		addLunar3RunesSmallBox(30122, 9075, 564, 563, 1, 1, 1, 30013, 30012, 73, "Cure Group",
+				"Cures Poison on stoners", TDA, 173, 0, 5);
+		addLunar3RunesBigBox(30130, 9075, 564, 559, 1, 1, 4, 30013, 30008, 74, "Stat Spy",
+				"Cast on another stoner to see their\\nskill grades", TDA, 174, 8, 2);
+		addLunar3RunesBigBox(30138, 9075, 563, 554, 1, 1, 2, 30012, 30003, 74, "Barbarian Teleport",
+				"Teleports you to the Barbarian\\noutpost", TDA, 175, 0, 5);
+		addLunar3RunesBigBox(30146, 9075, 563, 554, 1, 1, 5, 30012, 30003, 75, "Tele Group Barbarian",
+				"Teleports stoners to the Barbarian\\noutpost", TDA, 176, 0, 5);
+		addLunar3RunesSmallBox(30154, 9075, 554, 556, 1, 5, 9, 30003, 30005, 76, "Superglass Make",
+				"Make glass without a furnace", TDA, 177, 16, 2);
+		addLunar3RunesSmallBox(30162, 9075, 563, 555, 1, 1, 3, 30012, 30004, 77, "Khazard Teleport",
+				"Teleports you to Port khazard", TDA, 178, 0, 5);
+		addLunar3RunesSmallBox(30170, 9075, 563, 555, 1, 1, 7, 30012, 30004, 78, "Tele Group Khazard",
+				"Teleports stoners to Port khazard", TDA, 179, 0, 5);
+		addLunar3RunesBigBox(30178, 9075, 564, 559, 1, 0, 4, 30013, 30008, 78, "Dream",
+				"Take a rest and restore life 3\\n times faster", TDA, 180, 0, 5);
+		addLunar3RunesSmallBox(30186, 9075, 557, 555, 1, 9, 4, 30006, 30004, 79, "String Jewellery",
+				"String amulets without wool", TDA, 181, 0, 5);
+		addLunar3RunesLargeBox(30194, 9075, 557, 555, 1, 9, 9, 30006, 30004, 80, "Stat Restore Pot\\nShare",
+				"Share a potion with up to 4 nearby\\nstoners", TDA, 182, 0, 5);
+		addLunar3RunesSmallBox(30202, 9075, 554, 555, 1, 6, 6, 30003, 30004, 81, "Mage Imbue",
+				"Combine runes without a talisman", TDA, 183, 0, 5);
+		addLunar3RunesBigBox(30210, 9075, 561, 557, 2, 1, 14, 30010, 30006, 82, "Fertile Soil",
+				"Fertilise a cultivation patch with super\\ncompost", TDA, 184, 4, 2);
+		addLunar3RunesBigBox(30218, 9075, 557, 555, 2, 11, 9, 30006, 30004, 83, "Boost Potion Share",
+				"Shares a potion with up to 4 nearby\\nstoners", TDA, 185, 0, 5);
+		addLunar3RunesSmallBox(30226, 9075, 563, 555, 2, 2, 9, 30012, 30004, 84, "Fisher Guild Teleport",
+				"Teleports you to the fisher guild", TDA, 186, 0, 5);
+		addLunar3RunesLargeBox(30234, 9075, 563, 555, 1, 2, 13, 30012, 30004, 85, "Tele Group Fisher\\nGuild",
+				"Teleports stoners to the Fisher\\nGuild", TDA, 187, 0, 5);
+		addLunar3RunesSmallBox(30242, 9075, 557, 561, 2, 14, 0, 30006, 30010, 85, "Plank Make", "Turn Logs into planks",
+				TDA, 188, 16, 5);
+		addLunar3RunesSmallBox(30250, 9075, 563, 555, 2, 2, 9, 30012, 30004, 86, "Catweedy Teleport",
+				"Teleports you to Catweedy", TDA, 189, 0, 5);
+		addLunar3RunesSmallBox(30258, 9075, 563, 555, 2, 2, 14, 30012, 30004, 87, "Tele Group Catweedy",
+				"Teleports stoners to Catweedy", TDA, 190, 0, 5);
+		addLunar3RunesSmallBox(30266, 9075, 563, 555, 2, 2, 7, 30012, 30004, 88, "Ice Plateau Teleport",
+				"Teleports you to Ice Plateau", TDA, 191, 0, 5);
+		addLunar3RunesLargeBox(30274, 9075, 563, 555, 2, 2, 15, 30012, 30004, 89, "Tele Group Ice Plateau",
+				"Teleports stoners to Ice Plateau", TDA, 192, 0, 5);
+		addLunar3RunesBigBox(30282, 9075, 563, 561, 2, 1, 0, 30012, 30010, 90, "Energy Transfer",
+				"Spend HP and SA energy to\\n give another SA and run energy", TDA, 193, 8, 2);
+		addLunar3RunesBigBox(30290, 9075, 563, 565, 2, 2, 0, 30012, 30014, 91, "Heal Other",
+				"Transfer up to 75% of life\\n to another stoner", TDA, 194, 8, 2);
+		addLunar3RunesBigBox(30298, 9075, 560, 557, 2, 1, 9, 30009, 30006, 92, "Vengeance Other",
+				"Allows another stoner to rebound\\ndamage to an opponent", TDA, 195, 8, 2);
+		addLunar3RunesSmallBox(30306, 9075, 560, 557, 3, 1, 9, 30009, 30006, 93, "Vengeance",
+				"Rebound damage to an opponent", TDA, 196, 0, 5);
+		addLunar3RunesBigBox(30314, 9075, 565, 563, 3, 2, 5, 30014, 30012, 94, "Heal Group",
+				"Transfer up to 75% of life\\n to a group", TDA, 197, 0, 5);
+		addLunar3RunesBigBox(30322, 9075, 564, 563, 2, 1, 0, 30013, 30012, 95, "Spellbook Swap",
+				"Change to another spellbook for 1\\nspell cast", TDA, 198, 0, 5);
 	}
 
 	public static void constructLunar() {
@@ -1845,7 +1918,8 @@ public class RSInterface {
 		RSInterface.tooltip = S;
 	}
 
-	public static void addHoverText(int id, String text, String tooltip, TextDrawingArea tda[], int idx, int color, boolean center, boolean textShadow, int width) {
+	public static void addHoverText(int id, String text, String tooltip, TextDrawingArea tda[], int idx, int color,
+			boolean center, boolean textShadow, int width) {
 		RSInterface rsinterface = addInterface(id);
 		rsinterface.id = id;
 		rsinterface.parentID = id;
@@ -1868,7 +1942,8 @@ public class RSInterface {
 		rsinterface.anInt239 = 0;
 	}
 
-	public static void addText(int id, String text, TextDrawingArea tda[], int idx, int color, boolean center, boolean shadow, int contentType, int actionType) {
+	public static void addText(int id, String text, TextDrawingArea tda[], int idx, int color, boolean center,
+			boolean shadow, int contentType, int actionType) {
 		RSInterface tab = addTabInterface(id);
 		tab.parentID = id;
 		tab.id = id;
@@ -1890,7 +1965,8 @@ public class RSInterface {
 		tab.anInt239 = 0;
 	}
 
-	public static void addHoverButton(int i, Sprite sprite, int width, int height, String text, int contentType, int hoverOver, int aT) {
+	public static void addHoverButton(int i, Sprite sprite, int width, int height, String text, int contentType,
+			int hoverOver, int aT) {
 		RSInterface tab = addTabInterface(i);
 		tab.id = i;
 		tab.parentID = i;
@@ -1906,7 +1982,8 @@ public class RSInterface {
 		tab.tooltip = text;
 	}
 
-	protected static void addHoverButton(int id, int j, int width, int height, String text, int anInt214, int hoverOver, int aT) {
+	protected static void addHoverButton(int id, int j, int width, int height, String text, int anInt214, int hoverOver,
+			int aT) {
 		RSInterface component = addTabInterface(id);
 		component.id = id;
 		component.parentID = id;
@@ -1926,7 +2003,8 @@ public class RSInterface {
 		component.tooltip = text;
 	}
 
-	public static void addHoverButton(int i, Sprite sprite, int j, int width, int height, String text, int contentType, int hoverOver, int aT) {
+	public static void addHoverButton(int i, Sprite sprite, int j, int width, int height, String text, int contentType,
+			int hoverOver, int aT) {
 		RSInterface tab = addTabInterface(i);
 		tab.id = i;
 		tab.parentID = i;
@@ -2008,7 +2086,8 @@ public class RSInterface {
 		tab.tooltip = tooltip;
 	}
 
-	public static void addConfigButton(int ID, int pID, Sprite disabled, Sprite enabled, int width, int height, String tT, int configID, int aT, int configFrame) {
+	public static void addConfigButton(int ID, int pID, Sprite disabled, Sprite enabled, int width, int height,
+			String tT, int configID, int aT, int configFrame) {
 		RSInterface Tab = addTabInterface(ID);
 		Tab.parentID = pID;
 		Tab.id = ID;
@@ -2032,7 +2111,8 @@ public class RSInterface {
 		Tab.tooltip = tT;
 	}
 
-	public static void addHoveredConfigButton(RSInterface original, int ID, int IMAGEID, int disabledID, int enabledID) {
+	public static void addHoveredConfigButton(RSInterface original, int ID, int IMAGEID, int disabledID,
+			int enabledID) {
 		RSInterface rsint = addTabInterface(ID);
 		rsint.parentID = original.id;
 		rsint.id = ID;
@@ -2058,7 +2138,8 @@ public class RSInterface {
 		rsint.isMouseoverTriggered = true;
 	}
 
-	public static void addHoveredConfigButton(RSInterface original, int ID, int IMAGEID, Sprite disabledID, Sprite enabledID) {
+	public static void addHoveredConfigButton(RSInterface original, int ID, int IMAGEID, Sprite disabledID,
+			Sprite enabledID) {
 		RSInterface rsint = addTabInterface(ID);
 		rsint.parentID = original.id;
 		rsint.id = ID;
@@ -2084,7 +2165,8 @@ public class RSInterface {
 		rsint.isMouseoverTriggered = true;
 	}
 
-	public static void addHoverConfigButton(int id, int hoverOver, int disabledID, int enabledID, int width, int height, String tooltip, int[] anIntArray245, int[] anIntArray212, int[][] valueIndexArray) {
+	public static void addHoverConfigButton(int id, int hoverOver, int disabledID, int enabledID, int width, int height,
+			String tooltip, int[] anIntArray245, int[] anIntArray212, int[][] valueIndexArray) {
 		RSInterface rsint = addTabInterface(id);
 		rsint.parentID = id;
 		rsint.id = id;
@@ -2103,7 +2185,8 @@ public class RSInterface {
 		rsint.tooltip = tooltip;
 	}
 
-	public static void addHoverConfigButton(int id, int hoverOver, Sprite disabledID, Sprite enabledID, int width, int height, String tooltip, int[] anIntArray245, int[] anIntArray212, int[][] valueIndexArray) {
+	public static void addHoverConfigButton(int id, int hoverOver, Sprite disabledID, Sprite enabledID, int width,
+			int height, String tooltip, int[] anIntArray245, int[] anIntArray212, int[][] valueIndexArray) {
 		RSInterface rsint = addTabInterface(id);
 		rsint.parentID = id;
 		rsint.id = id;
@@ -2181,7 +2264,7 @@ public class RSInterface {
 		rsinterface.width = rsinterface.disabledSprite.myWidth;
 		rsinterface.height = rsinterface.enabledSprite.myHeight;
 		rsinterface.tooltip = tooltip;
-		rsinterface.inventoryhover = true;
+		rsinterface.boxhover = true;
 	}
 
 	public static void addHoveredButton(int i, Sprite sprite, int w, int h, int IMAGEID) {// hoverable
@@ -2269,7 +2352,8 @@ public class RSInterface {
 		t.anInt258 = -1;
 	}
 
-	public static void addHoverText(int id, String text, String tooltip, TextDrawingArea tda[], int idx, int color, boolean center, boolean textShadow, int width, int hoveredColor) {
+	public static void addHoverText(int id, String text, String tooltip, TextDrawingArea tda[], int idx, int color,
+			boolean center, boolean textShadow, int width, int hoveredColor) {
 		RSInterface rsinterface = addInterface(id);
 		rsinterface.id = id;
 		rsinterface.parentID = id;
@@ -2310,7 +2394,7 @@ public class RSInterface {
 		rsi.aBoolean227 = false;
 		rsi.aBoolean235 = false;
 		rsi.usableItemInterface = false;
-		rsi.isInventoryInterface = false;
+		rsi.isBoxInterface = false;
 		rsi.aBoolean259 = true;
 		rsi.textShadow = false;
 		rsi.invSpritePadX = 30;
@@ -2419,7 +2503,8 @@ public class RSInterface {
 		rsinterface.childY[19] = 228;
 	}
 
-	public static void itemDisplay(int index, int itemSpaceX, int itemSpaceY, int itemX, int itemY, int zoom, String... options) {
+	public static void itemDisplay(int index, int itemSpaceX, int itemSpaceY, int itemX, int itemY, int zoom,
+			String... options) {
 		RSInterface rsi = interfaceCache[index] = new RSInterface();
 		rsi.actions = new String[options.length];
 		for (int i = 0; i < options.length; i++) {
@@ -2436,7 +2521,7 @@ public class RSInterface {
 		rsi.aBoolean227 = false;
 		rsi.aBoolean235 = false;
 		rsi.usableItemInterface = false;
-		rsi.isInventoryInterface = false;
+		rsi.isBoxInterface = false;
 		rsi.aBoolean259 = true;
 		rsi.textShadow = false;
 		rsi.invSpritePadX = itemSpaceX;
@@ -2466,7 +2551,7 @@ public class RSInterface {
 		rsi.aBoolean227 = false;
 		rsi.aBoolean235 = false;
 		rsi.usableItemInterface = false;
-		rsi.isInventoryInterface = false;
+		rsi.isBoxInterface = false;
 		rsi.aBoolean259 = true;
 		rsi.textShadow = false;
 		rsi.invSpritePadX = itemSpaceX;
@@ -2478,7 +2563,8 @@ public class RSInterface {
 		rsi.type = 2;
 	}
 
-	public static void itemContainer(int id, int itemSpaceX, int itemSpaceY, int width, int height, boolean transparent, String... options) {
+	public static void itemContainer(int id, int itemSpaceX, int itemSpaceY, int width, int height, boolean transparent,
+			String... options) {
 		RSInterface rsi = interfaceCache[id] = new RSInterface();
 		rsi.actions = new String[options.length];
 		for (int i = 0; i < options.length; i++) {
@@ -2495,7 +2581,7 @@ public class RSInterface {
 		rsi.aBoolean227 = false;
 		rsi.aBoolean235 = false;
 		rsi.usableItemInterface = false;
-		rsi.isInventoryInterface = false;
+		rsi.isBoxInterface = false;
 		rsi.aBoolean259 = true;
 		rsi.textShadow = false;
 		rsi.drawsTransparent = transparent;
@@ -2525,7 +2611,7 @@ public class RSInterface {
 		rsi.aBoolean227 = false;
 		rsi.aBoolean235 = false;
 		rsi.usableItemInterface = false;
-		rsi.isInventoryInterface = false;
+		rsi.isBoxInterface = false;
 		rsi.aBoolean259 = true;
 		rsi.textShadow = false;
 		rsi.invSpritePadX = 30;
@@ -2695,7 +2781,7 @@ public class RSInterface {
 		rsinterface.aBoolean227 = false;
 		rsinterface.aBoolean235 = false;
 		rsinterface.usableItemInterface = false;
-		rsinterface.isInventoryInterface = false;
+		rsinterface.isBoxInterface = false;
 		rsinterface.usableItemInterface = false;
 		rsinterface.aBoolean259 = true;
 		rsinterface.textShadow = false;
@@ -2723,7 +2809,7 @@ public class RSInterface {
 		rsi.aBoolean227 = false;
 		rsi.aBoolean235 = false;
 		rsi.usableItemInterface = false;
-		rsi.isInventoryInterface = false;
+		rsi.isBoxInterface = false;
 		rsi.aBoolean259 = true;
 		rsi.textShadow = false;
 		rsi.invSpritePadX = 30;
@@ -2753,7 +2839,9 @@ public class RSInterface {
 		t.anInt258 = -1;
 	}
 
-	public static void addInputField(int parentId, int id, int characterLimit, int defaultColor, int defaultHoverColor, int selectedColor, int selectedHoverColor, String text, int width, int height, boolean onlyNumbers, boolean asterisks, String defaultText) {
+	public static void addInputField(int parentId, int id, int characterLimit, int defaultColor, int defaultHoverColor,
+			int selectedColor, int selectedHoverColor, String text, int width, int height, boolean onlyNumbers,
+			boolean asterisks, String defaultText) {
 		RSInterface field = addInterface(id);
 		field.id = id;
 		field.parentID = parentId;

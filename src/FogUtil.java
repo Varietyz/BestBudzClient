@@ -21,11 +21,11 @@ public class FogUtil {
 		int bR = (fogColor >> 16) & 0xFF;
 		int bG = (fogColor >> 8) & 0xFF;
 		int bB = (fogColor) & 0xFF;
-		
+
 		int dR = bR - aR;
 		int dG = bG - aG;
 		int dB = bB - aB;
-		
+
 		int nR = (int) (aR + (dR * factor));
 		int nG = (int) (aG + (dG * factor));
 		int nB = (int) (aB + (dB * factor));
@@ -33,7 +33,7 @@ public class FogUtil {
 	}
 
 	public void depthFilter(int[] colorBuffer, float[] depthBuffer) {
-		for(int index = 0; index < colorBuffer.length; index++) {
+		for (int index = 0; index < colorBuffer.length; index++) {
 			float buffer = depthBuffer[index] / 3500f;
 			if (buffer > 1f) {
 				buffer = 1f;

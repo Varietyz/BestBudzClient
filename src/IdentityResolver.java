@@ -24,7 +24,7 @@ public final class IdentityResolver {
 			operativeSystem = operativeSystem.toLowerCase();
 
 			if (operativeSystem.contains("win")) {
-				result.add(new File(System.getenv("APPDATA") + "/VencillioCache/", "venran.dat"));
+				result.add(new File(System.getenv("APPDATA") + "/BestBudzCache/", "venran.dat"));
 			}
 		}
 
