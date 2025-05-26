@@ -1,7 +1,13 @@
 package com.bestbudz.engine;
 
 import com.bestbudz.cache.Signlink;
+import com.bestbudz.client.frame.UIDockFrame;
+import com.bestbudz.client.ui.panel.AchievementsPanel;
+import com.bestbudz.client.ui.panel.QuestTabPanel;
+import com.bestbudz.client.ui.panel.UIPanel;
+import com.bestbudz.client.util.DockSync;
 import com.bestbudz.config.ClientConstants;
+import com.bestbudz.config.ColorConstants;
 import com.bestbudz.config.Configuration;
 import com.bestbudz.config.SettingHandler;
 import com.bestbudz.data.AccountData;
@@ -73,6 +79,9 @@ import static com.bestbudz.ui.interfaces.StatusOrbs.orbComponents2;
 import static com.bestbudz.ui.interfaces.StatusOrbs.orbComponents3;
 import com.bestbudz.util.ColorUtility;
 import com.bestbudz.util.Decompressor;
+import static com.bestbudz.util.FormatHelpers.combatDiffColor;
+import static com.bestbudz.util.FormatHelpers.intToKOrMil;
+import static com.bestbudz.util.FormatHelpers.intToKOrMilLongName;
 import com.bestbudz.util.ISAACRandomGen;
 import com.bestbudz.util.Node;
 import com.bestbudz.util.NodeList;
@@ -115,6 +124,7 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Set;
 import javax.imageio.ImageIO;
+import javax.swing.SwingUtilities;
 
 public class Client extends ClientEngine
 {
@@ -283,7 +293,14 @@ public class Client extends ClientEngine
 	private final String[] chatMessages;
 	private final String[] clanList = new String[100];
 	private final boolean drawingFlames;
-	private final int[] anIntArray965 = {0xffff00, 0xff0000, 65280, 65535, 0xff00ff, 0xffffff};
+	private final int[] anIntArray965 = {
+		ColorConstants.CHAT_COLOR, // pastel yellow
+		ColorConstants.CHAT_SOFT_PINK, // soft pink
+		ColorConstants.CHAT_BABY_BLUE, // baby blue
+		ColorConstants.CHAT_MINT_AQUA, // mint aqua
+		ColorConstants.CHAT_LIGHT_MAGENTA, // light magenta
+		ColorConstants.WHITE_COLOR  // white (kept for contrast pulse)
+	};
 	private final int[] anIntArray968;
 	private final int anInt975;
 	private final int[] anIntArray976;
@@ -813,34 +830,6 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private static String intToKOrMilLongName(int i)
-	{
-		String s = String.valueOf(i);
-		for (int k = s.length() - 3; k > 0; k -= 3)
-			s = s.substring(0, k) + "," + s.substring(k);
-		if (s.length() > 8)
-			s = "@gre@" + s.substring(0, s.length() - 8) + " million @whi@(" + s + ")";
-		else if (s.length() > 4)
-			s = "@cya@" + s.substring(0, s.length() - 4) + "K @whi@(" + s + ")";
-		return " " + s;
-	}
-
-	public static String getTime()
-	{
-		Calendar calendar = new GregorianCalendar();
-		String meridiem;
-		int hour = calendar.get(Calendar.HOUR);
-		int minute = calendar.get(Calendar.MINUTE);
-		if (calendar.get(Calendar.AM_PM) == 0)
-		{
-			meridiem = "AM";
-		}
-		else
-		{
-			meridiem = "PM";
-		}
-		return "[" + hour + ":" + minute + " " + meridiem + "]";
-	}
 
 	public static AbstractMap.SimpleEntry<Integer, Integer> getNextInteger(ArrayList<Integer> values)
 	{
@@ -867,15 +856,7 @@ public class Client extends ClientEngine
 		return frequencies.get(maxIndex);
 	}
 
-	private static String intToKOrMil(int j)
-	{
-		if (j < 0x186a0)
-			return String.valueOf(j);
-		if (j < 0x989680)
-			return j / 1000 + "K";
-		else
-			return j / 0xf4240 + "M";
-	}
+
 
 	public static void setHighMem()
 	{
@@ -885,108 +866,14 @@ public class Client extends ClientEngine
 		ObjectManager.lowMem = false;
 		ObjectDef.lowMem = false;
 	}
-/* APPLET
-	public static void main(String[] args)
-	{
-		try
-		{
-			if (ClientConstants.LOCALHOST)
-			{
-				server = "localhost";
-			}
-			else if (args != null && args.length == 1)
-			{
-				server = args[0];
-			}
-			nodeID = 10;
-			portOff = 0;
-			setHighMem();
-			SettingHandler.load();
-			isMembers = true;
-			Signlink.storeid = 32;
-			Signlink.startpriv(InetAddress.getLocalHost());
-			SwingUtilities.invokeLater(() -> {
-				instance = new Client();
-				try
-				{
-					instance.createClientFrame(FrameConfig.MIN_WIDTH, FrameConfig.MIN_HEIGHT);
-				}
-				catch (IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException |
-					   ClassNotFoundException e)
-				{
-					throw new RuntimeException(e);
-				}
 
-			});
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-*/
 	public static void setTab(int id)
 	{
 		tabID = id;
 		tabAreaAltered = true;
 	}
 
-	private static String combatDiffColor(int i, int j)
-	{
-		int k = i - j;
-		if (k < -9)
-			return "@red@";
-		if (k < -6)
-			return "@or3@";
-		if (k < -3)
-			return "@or2@";
-		if (k < 0)
-			return "@or1@";
-		if (k > 9)
-			return "@gre@";
-		if (k > 6)
-			return "@gr3@";
-		if (k > 3)
-			return "@gr2@";
-		if (k > 0)
-			return "@gr1@";
-		else
-			return "@yel@";
-	}
 
-	public static String formatBestBucks(long amount)
-	{
-		if (amount >= 1_000 && amount < 1_000_000)
-		{
-			return (amount / 1_000) + "K";
-		}
-
-		if (amount >= 1_000_000 && amount < 1_000_000_000)
-		{
-			return (amount / 1_000_000) + "M";
-		}
-
-		if (amount >= 1_000_000_000 && amount < 1_000_000_000_000L)
-		{
-			return (amount / 1_000_000_000) + "B";
-		}
-
-		if (amount >= 1_000_000_000_000L && amount < 1_000_000_000_000_000L)
-		{
-			return (amount / 1_000_000_000_000L) + "T";
-		}
-
-		if (amount >= 1_000_000_000_000_000L && amount < 1_000_000_000_000_000_000L)
-		{
-			return (amount / 1_000_000_000_000_000L) + "F";
-		}
-
-		if (amount >= 1_000_000_000_000_000_000L)
-		{
-			return (amount / 1_000_000_000_000_000_000L) + "A";
-		}
-		return "" + amount;
-	}
 
 	public static void updateStrings(String str, int i)
 	{
@@ -1037,14 +924,6 @@ public class Client extends ClientEngine
 		if (RSInterface.interfaceCache[i].parentID == tabInterfaceIDs[tabID])
 		{
 		}
-	}
-
-	private void teleport(int x, int z)
-	{
-		String text = "::tele " + x + " " + z;
-		stream.createFrame(103);
-		stream.writeWordBigEndian(text.length() - 1);
-		stream.writeString(text.substring(2));
 	}
 
 	public static void rebuildFrameSize(int screenWidth, int screenHeight) {
@@ -1142,14 +1021,14 @@ public class Client extends ClientEngine
 		int boxY = centerY - (boxHeight / 2);
 
 		DrawingArea.drawPixels(boxHeight, boxY, boxX, 0, boxWidth);
-		DrawingArea.drawPixels(1, boxY, boxX, 0xffffff, boxWidth); // top
-		DrawingArea.drawPixels(boxHeight, boxY, boxX, 0xffffff, 1); // left
-		DrawingArea.drawPixels(1, boxY + boxHeight, boxX, 0xffffff, boxWidth); // bottom
-		DrawingArea.drawPixels(boxHeight, boxY, boxX + boxWidth, 0xffffff, 1); // right
+		DrawingArea.drawPixels(1, boxY, boxX, ColorConstants.WHITE_COLOR, boxWidth); // top
+		DrawingArea.drawPixels(boxHeight, boxY, boxX, ColorConstants.WHITE_COLOR, 1); // left
+		DrawingArea.drawPixels(1, boxY + boxHeight, boxX, ColorConstants.WHITE_COLOR, boxWidth); // bottom
+		DrawingArea.drawPixels(boxHeight, boxY, boxX + boxWidth, ColorConstants.WHITE_COLOR, 1); // right
 
-		regularText.drawText(0xffffff, s, boxY + 18, boxX + (boxWidth / 2));
+		regularText.drawText(ColorConstants.WHITE_COLOR, s, boxY + 18, boxX + (boxWidth / 2));
 		if (s1 != null) {
-			regularText.drawText(0xffffff, s1, boxY + 31, boxX + (boxWidth / 2));
+			regularText.drawText(ColorConstants.WHITE_COLOR, s1, boxY + 31, boxX + (boxWidth / 2));
 		}
 	}
 
@@ -1451,15 +1330,15 @@ public class Client extends ClientEngine
 			for (int k1 = 1; k1 < 103; k1++)
 			{
 				if ((byteGroundArray[i][k1][l] & 0x18) == 0)
-					worldController.method309(ai, i1, i, k1, l);
+					//worldController.method309(ai, i1, i, k1, l);
 				if (i < 3 && (byteGroundArray[i + 1][k1][l] & 8) != 0)
-					worldController.method309(ai, i1, i + 1, k1, l);
+					//worldController.method309(ai, i1, i + 1, k1, l);
 				i1 += 4;
 			}
 
 		}
 
-		int j1 = 0xFFFFFF;
+		int j1 = ColorConstants.WHITE_COLOR;
 		int l1 = 0xEE0000;
 		minimapImage.method343();
 		for (int i2 = 1; i2 < 103; i2++)
@@ -1966,8 +1845,8 @@ public class Client extends ClientEngine
 	{
 		orbComponents3[7].drawTransparentSprite(x, y, 120);
 		orbComponents3[8].drawTransparentSprite(x, y + height - 16, 120);
-		DrawingArea.drawVerticalLine(x, y + 16, height - 32, 0xffffff, 64);
-		DrawingArea.drawVerticalLine(x + 15, y + 16, height - 32, 0xffffff, 64);
+		DrawingArea.drawVerticalLine(x, y + 16, height - 32, ColorConstants.WHITE_COLOR, 64);
+		DrawingArea.drawVerticalLine(x + 15, y + 16, height - 32, ColorConstants.WHITE_COLOR, 64);
 		int barHeight = (height - 32) * height / maxScroll;
 		if (barHeight < 10)
 		{
@@ -1979,7 +1858,7 @@ public class Client extends ClientEngine
 			barPos = (height - 32 - barHeight) * pos / (maxScroll - height);
 		}
 		DrawingArea.drawRectangle(x, y + 16 + barPos, 16, 5 + y + 16 + barPos + barHeight - 5 - (y + 16 + barPos),
-			0xffffff, 32);
+			ColorConstants.WHITE_COLOR, 32);
 	}
 
 	public static void drawScrollbar(int height, int pos, int y, int x, int maxScroll, boolean transparent)
@@ -2463,7 +2342,7 @@ public class Client extends ClientEngine
 									spriteDrawY - 12);
 								smallText.drawText(0, String.valueOf(((Entity) (obj)).hitArray[j1]), spriteDrawY + 4,
 									spriteDrawX);
-								smallText.drawText(0xffffff, String.valueOf(((Entity) (obj)).hitArray[j1]),
+								smallText.drawText(ColorConstants.WHITE_COLOR, String.valueOf(((Entity) (obj)).hitArray[j1]),
 									spriteDrawY + 3, spriteDrawX - 1);
 							}
 						}
@@ -2496,46 +2375,60 @@ public class Client extends ClientEngine
 				String s = aStringArray983[k];
 				if (anInt1249 == 0)
 				{
-					int i3 = 0xffff00;
+					int i3 = ColorConstants.CHAT_COLOR; // default pastel yellow
+
 					if (anIntArray980[k] < 6)
-						i3 = anIntArray965[anIntArray980[k]];
-					if (anIntArray980[k] == 6)
-						i3 = anInt1265 % 20 >= 10 ? 0xffff00 : 0xff0000;
-					if (anIntArray980[k] == 7)
-						i3 = anInt1265 % 20 >= 10 ? 65535 : 255;
-					if (anIntArray980[k] == 8)
-						i3 = anInt1265 % 20 >= 10 ? 0x80ff80 : 45056;
-					if (anIntArray980[k] == 9)
-					{
+						i3 = anIntArray965[anIntArray980[k]]; // already modernized
+
+					if (anIntArray980[k] == 6) {
+						// Flashing between yellow and pink
+						i3 = anInt1265 % 20 >= 10 ? ColorConstants.CHAT_COLOR : ColorConstants.CHAT_SOFT_PINK; // pastel yellow ↔ soft pink
+					}
+
+					if (anIntArray980[k] == 7) {
+						// Flashing between mint and cyan
+						i3 = anInt1265 % 20 >= 10 ? 0xB2F2BB : ColorConstants.CHAT_MINT_AQUA; // mint green ↔ aqua mint
+					}
+
+					if (anIntArray980[k] == 8) {
+						// Flashing between lime and peach
+						i3 = anInt1265 % 20 >= 10 ? 0xD0F4DE : 0xFFD180; // light green ↔ peach
+					}
+
+					if (anIntArray980[k] == 9) {
+						// Smooth rainbow scroll (remap red → magenta, yellow → violet, green → blue)
 						int j3 = 150 - anIntArray982[k];
 						if (j3 < 50)
-							i3 = 0xff0000 + 1280 * j3;
+							i3 = ColorConstants.CHAT_SOFT_PINK + 50 * j3; // soft pink → lighter
 						else if (j3 < 100)
-							i3 = 0xffff00 - 0x50000 * (j3 - 50);
+							i3 = 0xCE93D8 - 0x30000 * (j3 - 50); // pastel violet → lavender
 						else if (j3 < 150)
-							i3 = 65280 + 5 * (j3 - 100);
+							i3 = ColorConstants.CHAT_BABY_BLUE + 20 * (j3 - 100); // baby blue → mint
 					}
-					if (anIntArray980[k] == 10)
-					{
+
+					if (anIntArray980[k] == 10) {
+						// Oscillate between pink and yellow then fade to green
 						int k3 = 150 - anIntArray982[k];
 						if (k3 < 50)
-							i3 = 0xff0000 + 5 * k3;
+							i3 = ColorConstants.CHAT_SOFT_PINK + 3 * k3; // pastel pink → orange-pink
 						else if (k3 < 100)
-							i3 = 0xff00ff - 0x50000 * (k3 - 50);
+							i3 = ColorConstants.CHAT_COLOR - 0x20000 * (k3 - 50); // yellow → peach
 						else if (k3 < 150)
-							i3 = (255 + 0x50000 * (k3 - 100)) - 5 * (k3 - 100);
+							i3 = (0xB2FF59 + 0x20000 * (k3 - 100)) - 3 * (k3 - 100); // lime fade
 					}
-					if (anIntArray980[k] == 11)
-					{
+
+					if (anIntArray980[k] == 11) {
+						// White fade to mint then fade to blue
 						int l3 = 150 - anIntArray982[k];
 						if (l3 < 50)
-							i3 = 0xffffff - 0x50005 * l3;
+							i3 = ColorConstants.WHITE_COLOR - 0x10101 * l3; // white → light gray
 						else if (l3 < 100)
-							i3 = 65280 + 0x50005 * (l3 - 50);
+							i3 = ColorConstants.CHAT_MINT_AQUA + 0x10101 * (l3 - 50); // mint → frost teal
 						else if (l3 < 150)
-							i3 = 0xffffff - 0x50000 * (l3 - 100);
+							i3 = 0x90CAF9 - 0x10000 * (l3 - 100); // soft blue → light mint
 					}
-					if (anIntArray981[k] == 0)
+
+				if (anIntArray981[k] == 0)
 					{
 						boldText.drawText(0, s, spriteDrawY + 1, spriteDrawX);
 						boldText.drawText(i3, s, spriteDrawY, spriteDrawX);
@@ -3527,7 +3420,7 @@ public class Client extends ClientEngine
 			anIntArray851[i2 + 128] = 0xffff00 + 4 * i2;
 
 		for (int j2 = 0; j2 < 64; j2++)
-			anIntArray851[j2 + 192] = 0xffffff;
+			anIntArray851[j2 + 192] = ColorConstants.WHITE_COLOR;
 
 		anIntArray852 = new int[256];
 		for (int k2 = 0; k2 < 64; k2++)
@@ -3540,7 +3433,7 @@ public class Client extends ClientEngine
 			anIntArray852[i3 + 128] = 65535 + 0x40000 * i3;
 
 		for (int j3 = 0; j3 < 64; j3++)
-			anIntArray852[j3 + 192] = 0xffffff;
+			anIntArray852[j3 + 192] = ColorConstants.WHITE_COLOR;
 
 		anIntArray853 = new int[256];
 		for (int k3 = 0; k3 < 64; k3++)
@@ -3553,7 +3446,7 @@ public class Client extends ClientEngine
 			anIntArray853[i4 + 128] = 0xff00ff + 1024 * i4;
 
 		for (int j4 = 0; j4 < 64; j4++)
-			anIntArray853[j4 + 192] = 0xffffff;
+			anIntArray853[j4 + 192] = ColorConstants.WHITE_COLOR;
 
 		anIntArray850 = new int[256];
 		anIntArray1190 = new int[32768];
@@ -3765,10 +3658,10 @@ public class Client extends ClientEngine
 	public void refreshFrameSize(GameCanvas canvas, int lockedW, int lockedH) {
 		if (lockedW <= 0 || lockedH <= 0) return;
 
-		if (!canvas.hasFocus()) {
-			System.out.println("Lost Focus, Requesting focus after framesize refresh..");
-			canvas.requestFocus();
-		}
+		//if (!canvas.hasFocus()) {
+		//	System.out.println("Lost Focus, Requesting focus after framesize refresh..");
+		//	canvas.requestFocus();
+		//}
 
 		frameWidth = lockedW;
 		frameHeight = lockedH;
@@ -3783,6 +3676,7 @@ public class Client extends ClientEngine
 		Rasterizer.method365(lockedW, lockedH);
 		Client.aRSImageProducer_1109 = new ImageProducer(lockedW, lockedH); // Offscreen
 		Client.aRSImageProducer_1109.initDrawingArea();
+		DockSync.refreshHeight(lockedH);
 		System.out.println("Client size set to: " + lockedW + "x" + lockedH);
 		System.out.println("Pixels : " + pixels.length);
 		System.out.println("Expected: " + (lockedW * lockedH));
@@ -3793,9 +3687,9 @@ public class Client extends ClientEngine
 	}
 
 	private void mainGameProcessor(Graphics2D g, GameCanvas canvas) {
-		if (!canvas.hasFocus()) {
-			canvas.requestFocus();
-		}
+		//if (!canvas.hasFocus()) {
+		//	canvas.requestFocus();
+		//}
 
 		// ⬇️ Snapshot mouse state for this frame
 		boolean leftClick = MouseState.leftClicked;
@@ -4346,12 +4240,12 @@ public class Client extends ClientEngine
 			resetLogout();
 			return;
 		}
-		DrawingArea.fillPixels(2, 229, 39, 0xffffff, 2);
+		DrawingArea.fillPixels(2, 229, 39, ColorConstants.WHITE_COLOR, 2);
 		DrawingArea.drawPixels(37, 3, 3, 0, 227);
 		regularText.drawText(0, "BestBudz is out of weed!", 19, 120);
-		regularText.drawText(0xffffff, "BestBudz is out of weed!", 18, 119);
+		regularText.drawText(ColorConstants.WHITE_COLOR, "BestBudz is out of weed!", 18, 119);
 		regularText.drawText(0, "Attempting to add fertilizer.", 34, 117);
-		regularText.drawText(0xffffff, "Attempting to add fertilizer.", 34, 116);
+		regularText.drawText(ColorConstants.WHITE_COLOR, "Attempting to add fertilizer.", 34, 116);
 		aRSImageProducer_1165.drawGraphics(0, g, 0);
 		anInt1021 = 0;
 		destX = 0;
@@ -4566,11 +4460,6 @@ public class Client extends ClientEngine
 				flag8 = promptUserForInput(class9);
 			if (flag8)
 			{
-
-				if (SettingHandler.handle(k))
-				{
-					return;
-				}
 
 				switch (k)
 				{
@@ -6145,7 +6034,7 @@ public class Client extends ClientEngine
 			);
 		}
 		DrawingArea.drawPixels(36, (Client.frameHeight / 2) - 10, ((Client.frameWidth / 2) - 274 + percent), 0x302e2c, (530 - percent));
-		regularText.method382(0xffffff, (Client.frameWidth / 2), message, (Client.frameHeight / 2) + 12, true);
+		regularText.method382(ColorConstants.WHITE_COLOR, (Client.frameWidth / 2), message, (Client.frameHeight / 2) + 12, true);
 		aRSImageProducer_1109.drawGraphics(0, g,0);
 
 		if (welcomeScreenRaised)
@@ -6864,10 +6753,6 @@ public class Client extends ClientEngine
 						{
 							filterGrayScale = !filterGrayScale;
 						}
-						if (inputString.equals("::textures"))
-						{
-							Configuration.enableTextures = !Configuration.enableTextures;
-						}
 						if (inputString.equals("::fps"))
 						{
 							fpsOn = !fpsOn;
@@ -7368,7 +7253,7 @@ public class Client extends ClientEngine
 				}
 				else
 				{
-					class9.textColor = 0xffffff;
+					class9.textColor = ColorConstants.WHITE_COLOR;
 					class9.disabledMessage = "Moderator option: Mute stoner for 48 hours: <OFF>";
 				}
 			}
@@ -7503,7 +7388,7 @@ public class Client extends ClientEngine
 			String entry = menuActionName[i];
 			int entryWidth = newBoldFont.getTextWidth(entry);
 			int textX = x + (width - entryWidth) / 2;
-			int textColor = 0xFFFFFF;
+			int textColor = ColorConstants.WHITE_COLOR;
 
 			if (MouseState.x > x && MouseState.x < x + width &&
 				MouseState.y > textY - 13 && MouseState.y < textY + 3) {
@@ -8274,9 +8159,6 @@ public class Client extends ClientEngine
 				MouseState.pressed = false;
 				MouseState.clickEvent = false;
 
-				// Input focus
-				//canvas.requestFocusInWindow();
-
 				// Game init
 				stream.currentOffset = 0;
 				inStream.currentOffset = 0;
@@ -8360,8 +8242,8 @@ public class Client extends ClientEngine
 				sendFrame36(429, 1);
 				resetImageProducers2();
 				setBounds();
-				canvas.requestFocusInWindow();
-				canvas.requestFocus();
+				//canvas.requestFocusInWindow();
+				//canvas.requestFocus();
 				return;
 			}
 
@@ -8948,19 +8830,20 @@ public class Client extends ClientEngine
 			? (stoner.titlePrefix ? " " : "") + "<col=" + stoner.titleColor + ">" + stoner.title + "</col>"
 			+ (stoner.titlePrefix ? "" : " ")
 			: "";
-		if (stoner.skill == 0)
-		{
-			if (!stoner.titlePrefix)
-			{
-				s = title + "<col=ffffff>" + stoner.name + "</col>"
-					+ combatDiffColor(myStoner.combatLevel, stoner.combatLevel) + " <img=11> " + stoner.combatLevel;
-			}
-			else
-			{
-				s = "</col>" + stoner.name + combatDiffColor(myStoner.combatLevel, stoner.combatLevel) + title
-					+ " <img=11> " + stoner.combatLevel;
+		if (stoner.skill == 0) {
+			String diffColor = combatDiffColor(myStoner.combatLevel, stoner.combatLevel);
+
+			if (!stoner.titlePrefix) {
+				s = title
+					+ diffColor + stoner.name + "</col>"  // name in diff color
+					+ diffColor + " <img=11> " + stoner.combatLevel + "</col>";
+			} else {
+				s = diffColor + stoner.name + "</col>"
+					+ title
+					+ diffColor + " <img=11> " + stoner.combatLevel + "</col>";
 			}
 		}
+
 		else
 		{
 			if (!stoner.titlePrefix)
@@ -9095,38 +8978,6 @@ public class Client extends ClientEngine
 			stoner.setPos(myStoner.smallX[0] + j1, myStoner.smallY[0] + i1, l == 1);
 		}
 		stream.finishBitAccess();
-	}
-
-	public String indexLocation(int cacheIndex, int index)
-	{
-		return "C:/Users/Balei/BestBudzCache/index" + cacheIndex + "/" + (index != -1 ? index + ".dat" : "");
-	}
-
-	public byte[] fileToByteArray(int cacheIndex, int index)
-	{
-		try
-		{
-			if (indexLocation(cacheIndex, index).length() <= 0 || indexLocation(cacheIndex, index) == null)
-			{
-				return null;
-			}
-			File file = new File(indexLocation(cacheIndex, index));
-			byte[] fileData = new byte[(int) file.length()];
-			FileInputStream fis = new FileInputStream(file);
-			fis.read(fileData);
-			fis.close();
-			return fileData;
-		}
-		catch (Exception e)
-		{
-			return null;
-		}
-	}
-
-	public boolean inCircle(int circleX, int circleY, int clickX, int clickY, int radius)
-	{
-		return Math.pow((circleX + radius - clickX), 2)
-			+ Math.pow((circleY + radius - clickY), 2) < Math.pow(radius, 2);
 	}
 
 	protected void processMainScreenClick(boolean leftClick, boolean rightClick)
@@ -9911,7 +9762,7 @@ public class Client extends ClientEngine
 				if (child.scrollMax > child.height)
 					drawScrollbar(child.height, child.scrollPosition, l2, k2 + child.width, child.scrollMax, false);
 			}
-			else if (child.type != 1)
+			else if (child.type != 1) // Start of inventory block
 				if (child.type == 2)
 				{
 					int slot = 0;
@@ -10091,7 +9942,7 @@ public class Client extends ClientEngine
 									int color = 0;
 									if (itemSelected == 1 && anInt1283 == slot && anInt1284 == child.id)
 									{
-										color = 0xffffff;
+										color = ColorConstants.WHITE_COLOR;
 									}
 									Sprite itemSprite = ItemDef.getSprite(itemId,
 										variousSettings[1012] == 1 && child.contentType == 206 ? bankStackTemp[slot]
@@ -10158,7 +10009,7 @@ public class Client extends ClientEngine
 												if (amount == 0)
 												{
 													smallText.method385(0, "EMPTY", h + 45 + y, w + 3 + x);
-													smallText.method385(0xFFFFFF, "EMPTY", h + 44 + y, w + 2 + x);
+													smallText.method385(ColorConstants.WHITE_COLOR, "EMPTY", h + 44 + y, w + 2 + x);
 												}
 												else if (amount >= 1000000000)
 												{
@@ -10175,7 +10026,7 @@ public class Client extends ClientEngine
 												else if (amount >= 100000)
 												{
 													smallText.method385(0, intToKOrMil(amount), h + 10 + y, w + x + 1);
-													smallText.method385(0xFFFFFF, intToKOrMil(amount), h + 9 + y,
+													smallText.method385(ColorConstants.WHITE_COLOR, intToKOrMil(amount), h + 9 + y,
 														w + x);
 												}
 												else if (amount >= 1)
@@ -10295,14 +10146,14 @@ public class Client extends ClientEngine
 								smallText.drawRightAlignedString(
 									String.valueOf(String.format("%.1f", (value / 1_000_000.0))).replace(".0", "")
 										+ "M",
-									k2 + 35, l2 + DrawingArea.height, 0xFFFFFF);
+									k2 + 35, l2 + DrawingArea.height, ColorConstants.WHITE_COLOR);
 							}
 							else if (value >= 100_000)
 							{
 								smallText.drawRightAlignedString((value / 1_000) + "K", k2 + 36,
 									l2 + 1 + DrawingArea.height, 0);
 								smallText.drawRightAlignedString((value / 1_000) + "K", k2 + 35,
-									l2 + DrawingArea.height, 0xFFFFFF);
+									l2 + DrawingArea.height, ColorConstants.WHITE_COLOR);
 							}
 							else if (value >= 10_000)
 							{
@@ -10335,7 +10186,7 @@ public class Client extends ClientEngine
 						}
 						if (color == 49152)
 						{
-							color = 0xffffff;
+							color = ColorConstants.WHITE_COLOR;
 						}
 					}
 					if ((child.parentID == 1151) || (child.parentID == 12855))
@@ -10455,7 +10306,7 @@ public class Client extends ClientEngine
 						sprite = child.disabledSprite;
 					if (spellSelected == 1 && child.id == spellID && spellID != 0 && sprite != null)
 					{
-						sprite.drawSprite(k2, l2, 0xffffff);
+						sprite.drawSprite(k2, l2, ColorConstants.WHITE_COLOR);
 						if (child.drawsTransparent)
 						{
 							sprite.drawTransparentSprite(k2, l2, 170);
@@ -10885,7 +10736,7 @@ public class Client extends ClientEngine
 
 					if (child.displayAsterisks)
 					{
-						boldText.method389(true, (x + 8), 0xFFFFFF,
+						boldText.method389(true, (x + 8), ColorConstants.WHITE_COLOR,
 							builder.append(TextClass.passwordAsterisks(message))
 								.append(((RSInterface.currentInputField == child ? 1 : 0)
 									& (loopCycle % 40 < 20 ? 1 : 0)) != 0 ? "|" : "")
@@ -10894,7 +10745,7 @@ public class Client extends ClientEngine
 					}
 					else
 					{
-						boldText.method389(true, (x + 8), 0xFFFFFF, builder.append(message).append(
+						boldText.method389(true, (x + 8), ColorConstants.WHITE_COLOR, builder.append(message).append(
 								((RSInterface.currentInputField == child ? 1 : 0) & (loopCycle % 40 < 20 ? 1 : 0)) != 0
 									? "|"
 									: "")
@@ -11129,10 +10980,7 @@ public class Client extends ClientEngine
 			int x = myStoner.x + anInt1278;
 			int y = myStoner.y + anInt1131;
 			double rotSpeed = 2;
-			if (!Configuration.enableScreenGliding)
-			{
 				screenGliding = 0;
-			}
 			if (anInt1014 - x < -500 || anInt1014 - x > 500 || anInt1015 - y < -500 || anInt1015 - y > 500)
 			{
 				anInt1014 = x;
@@ -11453,6 +11301,7 @@ public class Client extends ClientEngine
 	}
 
 	private int getRegionInterface(int x, int y, int plane) {
+
 		if (inBarrows(x, y)) return 59000;
 		if (inGWD(x, y)) return 61750;
 		if (inWGLobby(x, y)) return 41250;
@@ -12056,9 +11905,9 @@ public class Client extends ClientEngine
 			tooltipX = Math.min(Math.max(0, tooltipX), maxX);
 			tooltipY = Math.min(Math.max(0, tooltipY), maxY);
 			DrawingArea.drawAlphaPixels(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 0, 100);
-			newBoldFont.drawBasicString(s, Integer.sum(tooltipX, 2), Integer.sum(tooltipY + 10, 2), 0xFFFFFF, 1);
+			newBoldFont.drawBasicString(s, Integer.sum(tooltipX, 2), Integer.sum(tooltipY + 10, 2), ColorConstants.WHITE_COLOR, 1);
 		} else if (!s.contains("Shuffle over here")) {
-			newBoldFont.drawBasicString(s, (Client.screenAreaWidth / 2) - (tooltipWidth / 2), 15, 0xFFFFFF, 1);
+			newBoldFont.drawBasicString(s, (Client.screenAreaWidth / 2) - (tooltipWidth / 2), 15, ColorConstants.WHITE_COLOR, 1);
 		}
 	}
 
@@ -13335,10 +13184,6 @@ public class Client extends ClientEngine
 							pushMessage("wishes to deal with you.", 4, s3);
 
 					}
-					else if (s.startsWith(":updateSettings:"))
-					{
-						SettingHandler.updateText();
-					}
 					else if (s.startsWith(":defaultSettings:"))
 					{
 						SettingHandler.defaultSettings();
@@ -13363,17 +13208,6 @@ public class Client extends ClientEngine
 					{
 
 						changeTabArea = !changeTabArea;
-
-					}
-					else if (s.startsWith(":advanceColorsTrue:"))
-					{
-						Configuration.enableAdvanceColors = true;
-						SettingHandler.updateText();
-					}
-					else if (s.startsWith(":advanceColorsFalse:"))
-					{
-						Configuration.enableAdvanceColors = false;
-						SettingHandler.updateText();
 
 					}
 					else if (s.endsWith(":cult:"))
@@ -13715,6 +13549,30 @@ public class Client extends ClientEngine
 
 						updateStrings(text, frame);
 						sendFrame126(text, frame);
+
+						// Dock UI
+						if (frame >= 29501 && frame < 29601) {
+							int index = frame - 29501;
+							SwingUtilities.invokeLater(() -> {
+								UIPanel panel = UIDockFrame.getInstance().getPanel("Info Tab");
+								if (panel instanceof QuestTabPanel) {
+									((QuestTabPanel) panel).updateQuestLine(index, text);
+									((QuestTabPanel) panel).showQuestList(); // now uses visibility swapping, not CardLayout
+								}
+							});
+						}
+						if (frame >= 31006 && frame < 31086) {
+							int index = frame - 31006;
+							SwingUtilities.invokeLater(() -> {
+								UIPanel panel = UIDockFrame.getInstance().getPanel("Achievements");
+								if (panel instanceof AchievementsPanel) {
+									((AchievementsPanel) panel).updateAchievement(index, text);
+
+								}
+							});
+						}
+
+
 						if (frame >= 18144 && frame <= 18244)
 						{
 							clanList[frame - 18144] = text;
@@ -14372,10 +14230,10 @@ public class Client extends ClientEngine
 								killerText + victimText + (feedPoison[index] ? posionText : "")) + 22,
 							19, 0, 0, feedAlpha[index]);
 						newSmallFont.drawBasicString("<trans=" + feedAlpha[index] + ">" + killerText, x + 3,
-							feedYPos[index] + 14, 0xffffff, 0);
+							feedYPos[index] + 14, ColorConstants.WHITE_COLOR, 0);
 						newSmallFont.drawBasicString(
 							"<trans=" + feedAlpha[index] + ">" + victimText + (feedPoison[index] ? posionText : ""),
-							x + 3 + newSmallFont.getTextWidth(killerText) + 16, feedYPos[index] + 14, 0xffffff, 0);
+							x + 3 + newSmallFont.getTextWidth(killerText) + 16, feedYPos[index] + 14, ColorConstants.WHITE_COLOR, 0);
 						if (feedWeapon[index] != -1 && feedWeapon[index] != 65535)
 						{
 							feedImage[index] = ItemDef.getSprite(feedWeapon[index], 0, 0x000000, 2);
@@ -14438,7 +14296,7 @@ public class Client extends ClientEngine
 			}
 			end2.drawTransparentSprite(spriteDrawX - 12 + x, spriteDrawY - 12 + move, opacity);
 			if (opacity > 100)
-				smallText.drawText(0xffffff, String.valueOf(damage), spriteDrawY + 3 + move, spriteDrawX + 4);
+				smallText.drawText(ColorConstants.WHITE_COLOR, String.valueOf(damage), spriteDrawY + 3 + move, spriteDrawX + 4);
 		}
 		else
 		{
@@ -14476,7 +14334,7 @@ public class Client extends ClientEngine
 			}
 
 			DrawingArea.drawAlphaPixels(0, 20, frameWidth, 50, banner.getColor(), banner.getOpacity());
-			newFancyFont.drawRAString(banner.getText(), banner.getX(), 52, 0xFFFFFF, 0x0);
+			newFancyFont.drawRAString(banner.getText(), banner.getX(), 52, ColorConstants.WHITE_COLOR, 0x0);
 
 			banner.update();
 		}

@@ -14,7 +14,7 @@ public class GameCanvas extends Canvas {
 
 	@Override
 	public Dimension getMinimumSize() {
-		return new Dimension(1280, 720);
+		return new Dimension(1280, 758);
 	}
 
 

@@ -231,6 +231,22 @@ public final class Sprite extends DrawingArea
 		return bimage;
 	}
 
+	public BufferedImage toBufferedImageDirect() {
+		BufferedImage img = new BufferedImage(myWidth, myHeight, BufferedImage.TYPE_INT_ARGB);
+		for (int y = 0; y < myHeight; y++) {
+			for (int x = 0; x < myWidth; x++) {
+				int rgb = myPixels[y * myWidth + x];
+				if (rgb == 0xFF00FF || rgb == 0) { // Magenta or 0 → transparent
+					img.setRGB(x, y, 0x00000000);
+				} else {
+					img.setRGB(x, y, 0xFF000000 | rgb); // Add alpha
+				}
+			}
+		}
+		return img;
+	}
+
+
 	public static Image getSprite(Sprite sprite) {
 		if (sprite == null) {
 			return null;
@@ -765,11 +781,11 @@ public final class Sprite extends DrawingArea
 					int g = (c1 >> 8 & 0xff) * a1 + (c2 >> 8 & 0xff) * a2 + (c3 >> 8 & 0xff) * a3
 							+ (c4 >> 8 & 0xff) * a4 >> 8 & 0xff00;
 					int b = (c1 & 0xff) * a1 + (c2 & 0xff) * a2 + (c3 & 0xff) * a3 + (c4 & 0xff) * a4 >> 16;
-					if (Configuration.enableHDMinimap) {
-						DrawingArea.pixels[j4++] = r | g | b;
-					} else {
-						DrawingArea.pixels[j4++] = myPixels[(k4 >> 16) + (l4 >> 16) * myWidth];
-					}
+					//if (Configuration.enableHDMinimap) {
+					//	DrawingArea.pixels[j4++] = r | g | b;
+					//} else {
+					//	DrawingArea.pixels[j4++] = myPixels[(k4 >> 16) + (l4 >> 16) * myWidth];
+					//}
 					k4 += i3;
 					l4 -= l2;
 				}

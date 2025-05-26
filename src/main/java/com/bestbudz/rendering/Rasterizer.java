@@ -375,7 +375,7 @@ public final class Rasterizer extends DrawingArea
 			return;
 		}
 
-		if (!Configuration.enableTextures || Texture.get(tex) == null) {
+		if (Texture.get(tex) == null) {
 			method374(y1, y2, y3, x1, x2, x3, hsl1, hsl2, hsl3, tz1, tz2, tz3);
 			return;
 		}

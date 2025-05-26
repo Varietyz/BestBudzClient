@@ -16,80 +16,79 @@ public final class SequenceFrame {
   public int[] anIntArray642;
   public SequenceFrame() {}
 
-  public static void load(int file, byte[] array) {
-    try {
-      final Stream ay = new Stream(array);
-      final Class18 b2 = new Class18(ay);
-      final int n = ay.readUnsignedWord();
-      animationlist[file] = new SequenceFrame[n * 3];
-      final int[] array2 = new int[500];
-      final int[] array3 = new int[500];
-      final int[] array4 = new int[500];
-      final int[] array5 = new int[500];
-      for (int j = 0; j < n; ++j) {
-        final int k = ay.readUnsignedWord();
-        final SequenceFrame[] array6 = animationlist[file];
-		  final SequenceFrame q = new SequenceFrame();
-        array6[k] = q;
-		  q.aClass18_637 = b2;
-        final int f = ay.readUnsignedByte();
-        int c2 = 0;
-        int n3 = -1;
-        for (int l = 0; l < f; ++l) {
-          final int f2;
-          if ((f2 = ay.readUnsignedByte()) > 0) {
-            if (b2.anIntArray342[l] != 0) {
-              for (int n4 = l - 1; n4 > n3; --n4) {
-                if (b2.anIntArray342[n4] == 0) {
-                  array2[c2] = n4;
-                  array3[c2] = 0;
-                  array5[c2] = (array4[c2] = 0);
-                  ++c2;
-                  break;
-                }
-              }
-            }
-            array2[c2] = l;
-            int n4 = 0;
-            if (b2.anIntArray342[l] == 3) {
-              n4 = 128;
-            }
-            if ((f2 & 0x1) != 0x0) {
-              array3[c2] = ay.readShort2();
-            } else {
-              array3[c2] = n4;
-            }
-            if ((f2 & 0x2) != 0x0) {
-              array4[c2] = ay.readShort2();
-            } else {
-              array4[c2] = n4;
-            }
-            if ((f2 & 0x4) != 0x0) {
-              array5[c2] = ay.readShort2();
-            } else {
-              array5[c2] = n4;
-            }
-            n3 = l;
-            ++c2;
-          }
-        }
-        q.anInt638 = c2;
-        q.anIntArray639 = new int[c2];
-        q.anIntArray640 = new int[c2];
-        q.anIntArray641 = new int[c2];
-        q.anIntArray642 = new int[c2];
-        for (int l = 0; l < c2; ++l) {
-          q.anIntArray639[l] = array2[l];
-          q.anIntArray640[l] = array3[l];
-          q.anIntArray641[l] = array4[l];
-          q.anIntArray642[l] = array5[l];
-        }
-      }
-    } catch (Exception ex)
-	{
-		throw new RuntimeException(ex);
+	public static void load(int file, byte[] array) {
+		try {
+			final Stream ay = new Stream(array);
+			final Class18 b2 = new Class18(ay);
+			final int n = ay.readUnsignedWord();
+			animationlist[file] = new SequenceFrame[n * 3];
+
+			final int[] array2 = new int[500];
+			final int[] array3 = new int[500];
+			final int[] array4 = new int[500];
+			final int[] array5 = new int[500];
+
+			for (int j = 0; j < n; ++j) {
+				try {
+					final int k = ay.readUnsignedWord();
+					final SequenceFrame[] array6 = animationlist[file];
+					final SequenceFrame q = new SequenceFrame();
+					array6[k] = q;
+					q.aClass18_637 = b2;
+
+					final int f = ay.readUnsignedByte();
+					int c2 = 0;
+					int n3 = -1;
+
+					for (int l = 0; l < f; ++l) {
+						final int f2 = ay.readUnsignedByte();
+						if (f2 > 0) {
+							if (b2.anIntArray342[l] != 0) {
+								for (int n4 = l - 1; n4 > n3; --n4) {
+									if (b2.anIntArray342[n4] == 0) {
+										array2[c2] = n4;
+										array3[c2] = 0;
+										array4[c2] = 0;
+										array5[c2] = 0;
+										c2++;
+										break;
+									}
+								}
+							}
+
+							array2[c2] = l;
+							int base = (b2.anIntArray342[l] == 3) ? 128 : 0;
+							array3[c2] = (f2 & 0x1) != 0 ? ay.readShort2() : base;
+							array4[c2] = (f2 & 0x2) != 0 ? ay.readShort2() : base;
+							array5[c2] = (f2 & 0x4) != 0 ? ay.readShort2() : base;
+
+							n3 = l;
+							c2++;
+						}
+					}
+
+					q.anInt638 = c2;
+					q.anIntArray639 = new int[c2];
+					q.anIntArray640 = new int[c2];
+					q.anIntArray641 = new int[c2];
+					q.anIntArray642 = new int[c2];
+
+					for (int l = 0; l < c2; ++l) {
+						q.anIntArray639[l] = array2[l];
+						q.anIntArray640[l] = array3[l];
+						q.anIntArray641[l] = array4[l];
+						q.anIntArray642[l] = array5[l];
+					}
+				} catch (Exception inner) {
+					System.err.println("⚠ Skipping corrupt sequence frame in block " + file + " at index " + j + ": " + inner.getMessage());
+				}
+			}
+		} catch (Exception ex) {
+			System.err.println("❌ Failed to load sequence block " + file + ": " + ex.getMessage());
+			// Skip loading but do NOT crash the client
+		}
 	}
-  }
+
 
   public static void loader(int file, byte[] abyte0) {
     try {

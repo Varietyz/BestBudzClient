@@ -26,7 +26,6 @@ import static com.bestbudz.engine.Client.dialogID;
 import static com.bestbudz.engine.Client.extendChatArea;
 import static com.bestbudz.engine.Client.fixedGameComponents;
 import static com.bestbudz.engine.Client.frameHeight;
-import static com.bestbudz.engine.Client.getTime;
 import static com.bestbudz.engine.Client.inputDialogState;
 import static com.bestbudz.engine.Client.inputString;
 import static com.bestbudz.engine.Client.isExtendingChatArea;
@@ -60,6 +59,7 @@ import com.bestbudz.graphics.text.TextDrawingArea;
 import com.bestbudz.rendering.Rasterizer;
 import com.bestbudz.ui.RSInterface;
 import static com.bestbudz.ui.interfaces.StatusOrbs.orbComponents3;
+import static com.bestbudz.util.FormatHelpers.getTime;
 import com.bestbudz.util.TextClass;
 import java.util.Set;
 

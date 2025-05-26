@@ -146,13 +146,22 @@ public final class Stream extends NodeSub
 	}
 
 	public int readUnsignedWord() {
+		if (currentOffset + 1 >= buffer.length) {
+			System.err.println("Warning: readUnsignedWord overflow at offset=" + currentOffset + ", buffer length=" + buffer.length);
+			return 0; // safe default — acts like a null/zero opcode or ID
+		}
+		int value = ((buffer[currentOffset] & 0xff) << 8) + (buffer[currentOffset + 1] & 0xff);
 		currentOffset += 2;
-		return ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] & 0xff);
+		return value;
 	}
 
 	public int readSignedWord() {
+		if (currentOffset + 1 >= buffer.length) {
+			System.err.println("Warning: readSignedWord overflow at offset=" + currentOffset + ", buffer length=" + buffer.length);
+			return -1; // common sentinel value for invalid index or value
+		}
+		int i = ((buffer[currentOffset] & 0xff) << 8) + (buffer[currentOffset + 1] & 0xff);
 		currentOffset += 2;
-		int i = ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] & 0xff);
 		if (i > 32767)
 			i -= 0x10000;
 		return i;

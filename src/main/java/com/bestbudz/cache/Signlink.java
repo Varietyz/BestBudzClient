@@ -93,7 +93,7 @@ public final class Signlink implements Runnable {
 	public static String findCacheDir()
 	{
 		Path cacheDir = Paths.get(System.getProperty("user.home"), ".BestBudzCache");
-		String theme = Configuration.cacheTheme ? "runelite" : "bestbudz";
+		String theme = "bestbudz";
 
 		try
 		{

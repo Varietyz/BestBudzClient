@@ -1,5 +1,6 @@
 package com.bestbudz.graphics.text;
 
+import com.bestbudz.config.ColorConstants;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
@@ -207,63 +208,62 @@ public final class TextDrawingArea extends DrawingArea {
           k + (int) ((double) anInt1497 * 0.69999999999999996D), 0x800000, i - l, l);
   }
 
-  private int getColorByName(String s) {
-	  switch (s)
-	  {
-		  case "mbl":
-			  return 0x359BBD;
-		  case "mye":
-			  return 0xE8E110;
-		  case "mre":
-			  return 0xD10F29;
-		  case "369":
-			  return 0x336699;
-		  case "mon":
-			  return 0x00ff80;
-		  case "gry":
-			  return 0x475154;
-		  case "red":
-			  return 0xff0000;
-		  case "gre":
-			  return 65280;
-		  case "blu":
-			  return 255;
-		  case "yel":
-			  return 0xffff00;
-		  case "cya":
-			  return 65535;
-		  case "mag":
-			  return 0xff00ff;
-		  case "whi":
-			  return 0xffffff;
-		  case "bla":
-			  return 0;
-		  case "lre":
-			  return 0xff9040;
-		  case "dre":
-			  return 0x800000;
-		  case "dbl":
-			  return 128;
-		  case "or1":
-			  return 0xffb000;
-		  case "or2":
-			  return 0xff7000;
-		  case "or3":
-			  return 0xff3000;
-		  case "gr1":
-			  return 0xc0ff00;
-		  case "gr2":
-			  return 0x80ff00;
-		  case "gr3":
-			  return 0x40ff00;
-		  case "str":
-			  aBoolean1499 = true;
-			  break;
-	  }
+	private int getColorByName(String s) {
+		switch (s) {
+			case "mbl":
+				return ColorConstants.COLOR_LAVENDER_PINK;
+			case "mye":
+				return ColorConstants.CHAT_MINT_AQUA;
+			case "mre":
+				return ColorConstants.CHAT_LIGHT_MAGENTA;
+			case "369":
+				return ColorConstants.COLOR_LILAC;
+			case "mon":
+				return ColorConstants.COLOR_PEACH_ORANGE;
+			case "gry":
+				return ColorConstants.COLOR_LIME_YELLOW;
+			case "red":
+				return ColorConstants.CHAT_SOFT_PINK;
+			case "gre":
+				return ColorConstants.CHAT_BABY_BLUE;
+			case "blu":
+				return ColorConstants.COLOR_LIME_GREEN;
+			case "yel":
+				return ColorConstants.COLOR_PASTEL_VIOLET;
+			case "cya":
+				return ColorConstants.COLOR_SPRING_GREEN;
+			case "mag":
+				return ColorConstants.COLOR_BRIGHT_YELLOW;
+			case "whi":
+				return ColorConstants.COLOR_FROST_TEAL;
+			case "bla":
+				return ColorConstants.COLOR_LIGHT_AMBER;
+			case "lre":
+				return ColorConstants.COLOR_DUSTY_PERIWINKLE;
+			case "dre":
+				return ColorConstants.COLOR_SUNFLOWER_YELLOW;
+			case "dbl":
+				return ColorConstants.COLOR_MINTY_GREEN;
+			case "or1":
+				return ColorConstants.COLOR_CYAN_TURQUOISE;
+			case "or2":
+				return ColorConstants.COLOR_LAVENDER;
+			case "or3":
+				return ColorConstants.COLOR_ROSE_PINK;
+			case "gr1":
+				return ColorConstants.COLOR_SOFT_PEACH;
+			case "gr2":
+				return ColorConstants.COLOR_CORAL_ORANGE;
+			case "gr3":
+				return ColorConstants.COLOR_CREAM_ROSE;
+			case "str":
+				aBoolean1499 = true;
+				break;
+		}
+		if (s.equals("end")) aBoolean1499 = false;
+		return -1;
+	}
 
-	  if (s.equals("end")) aBoolean1499 = false;
-    return -1;
-  }
 
   private void method392(byte[] abyte0, int i, int j, int k, int l, int i1) {
     int j1 = i + j * width;

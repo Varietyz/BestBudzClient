@@ -117,6 +117,9 @@ public class GameEngine implements Runnable {
 		}
 	}
 
+	public void shutdown() {
+		running = false;
+	}
 
 
 }

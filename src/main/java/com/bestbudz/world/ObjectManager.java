@@ -364,7 +364,7 @@ public final class ObjectManager {
 					if (i_261_ > 0 && i_262_ > 0 && i_261_ < 103 && i_262_ < 103)
 					{
 						ObjectDef class46 = ObjectDef.forID(i_252_);
-						if (i_260_ != 22 || Configuration.enableGroundDecors || class46.hasActions || class46.aBoolean736)
+						if (i_260_ != 22 || class46.hasActions || class46.aBoolean736)
 						{
 							bool &= class46.method579();
 							bool_255_ = true;
@@ -850,8 +850,8 @@ public final class ObjectManager {
 			l2 += 0x80000000;
 		byte byte0 = (byte) ((j1 << 6) + j);
 		if (j == 22) {
-			if (!Configuration.enableGroundDecors && !class46.hasActions && !class46.aBoolean736)
 				return;
+				/* GROUND DECORATIONS DISABLED FOR PERFORMANCE
 			Animable obj;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj = class46.method578(22, j1, k1, l1, i2, j2, -1);
@@ -860,7 +860,7 @@ public final class ObjectManager {
 			worldController.method280(k, k2, i, obj, byte0, l2, l);
 			if (class46.aBoolean767 && class46.hasActions && class11 != null)
 				class11.method213(i, l);
-			return;
+			return;*/
 		}
 		if (j == 10 || j == 11) {
 			Animable obj1;

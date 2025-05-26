@@ -46,7 +46,7 @@ public class OptionsTab extends RSInterface {
 	  addHoveredButton(36011, 467, 40, 40, 36012);                     // hover state → child 19
 
 // === Custom & Chat Coloring Buttons ===
-	  addHoverButton(36026, 104, 40, 40, "Custom", -1, 36027, 1);    // child 31
+	  addHoverButton(36026, 104, 40, 40, "Custom", -1, 36027, 1); // Custom Settings Tab = AVAILABLE    // child 31
 	  addHoveredButton(36027, 105, 40, 40, 36028);                   // child 32
 	  addHoverButton(36029, 69, 40, 40, "Chat Coloring", -1, 36030, 1); // child 2
 	  addHoveredButton(36030, 70, 40, 40, 36031);                    // child 33

@@ -884,7 +884,7 @@ public final class WorldController {
 				model_1.anIntArray1637[l1] = -1;
 
 	}
-
+/*
 	public void method309(int[] pixels, int pixelOffset, int z, int x, int y) {
 		if (Configuration.enableHDMinimap) {
 			Ground class30_sub3 = groundArray[z][x][y];
@@ -1118,7 +1118,7 @@ public final class WorldController {
 			}
 		}
 	}
-
+*/
 	public void method312(int i, int j) {
 		aBoolean467 = true;
 		anInt468 = j;
@@ -1778,20 +1778,10 @@ public final class WorldController {
 			}
 			if (class43.anInt720 == -1 || class43.anInt720 > 50) {
 				if (class43.anInt718 != 0xbc614e) {
-					if (Configuration.enableTextures && class43.anInt720 != -1) {
-						if (class43.aBoolean721) {
-							Rasterizer.drawMaterializedTriangle(j6, l6, l5, i6, k6, k5, class43.anInt718,
-									class43.anInt719, class43.anInt717, i2, i3, l1, l3, i4, k4, k2, j2, j3,
-									class43.anInt720, k3, j3, j2);
-						} else {
-							Rasterizer.drawMaterializedTriangle(j6, l6, l5, i6, k6, k5, class43.anInt718,
-									class43.anInt719, class43.anInt717, l2, l1, i3, j4, k4, i4, k3, j3, j2,
-									class43.anInt720, k3, j3, j2);
-						}
-					} else {
+
 						Rasterizer.method374(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719,
 								class43.anInt717, k3, j3, j2);
-					}
+
 				}
 			} else if (!lowMem) {
 				if (class43.aBoolean721) {
@@ -1816,13 +1806,10 @@ public final class WorldController {
 			}
 			if (class43.anInt720 == -1 || class43.anInt720 > 50) {
 				if (class43.anInt716 != 0xbc614e) {
-					if (Configuration.enableTextures && class43.anInt720 != -1) {
-						Rasterizer.drawMaterializedTriangle(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717,
-								class43.anInt719, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720, k2, j2, j3);
-					} else {
+
 						Rasterizer.method374(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717,
 								class43.anInt719, k2, j2, j3);
-					}
+
 				}
 			} else {
 				if (!lowMem) {
@@ -1852,11 +1839,6 @@ public final class WorldController {
 			if (i3 < 50) {
 				return;
 			}
-			if (Configuration.enableTextures || class40.anIntArray682 != null) {
-				Class40.anIntArray690[l1] = i2;
-				Class40.anIntArray691[l1] = k2;
-				Class40.anIntArray692[l1] = i3;
-			}
 			Class40.anIntArray688[l1] = Rasterizer.centerX + (i2 << viewDistance) / i3;
 			Class40.anIntArray689[l1] = Rasterizer.centerY + (k2 << viewDistance) / i3;
 			Class40.depthPoint[l1] = i3;
@@ -1884,28 +1866,11 @@ public final class WorldController {
 				if (class40.anIntArray682 == null || class40.anIntArray682[j2] == -1
 						|| class40.anIntArray682[j2] > 50) {
 					if (class40.anIntArray676[j2] != 0xbc614e) {
-						if (Configuration.enableTextures && class40.anIntArray682 != null
-								&& class40.anIntArray682[j2] != -1) {
-							if (class40.aBoolean683 || class40.anIntArray682[j2] == 505) {
-								Rasterizer.drawMaterializedTriangle(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
-										class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[0],
-										Class40.anIntArray690[1], Class40.anIntArray690[3], Class40.anIntArray691[0],
-										Class40.anIntArray691[1], Class40.anIntArray691[3], Class40.anIntArray692[0],
-										Class40.anIntArray692[1], Class40.anIntArray692[3], class40.anIntArray682[j2],
-										Class40.depthPoint[l2], Class40.depthPoint[j3], Class40.depthPoint[l3]);
-							} else {
-								Rasterizer.drawMaterializedTriangle(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
-										class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[l2],
-										Class40.anIntArray690[j3], Class40.anIntArray690[l3], Class40.anIntArray691[l2],
-										Class40.anIntArray691[j3], Class40.anIntArray691[l3], Class40.anIntArray692[l2],
-										Class40.anIntArray692[j3], Class40.anIntArray692[l3], class40.anIntArray682[j2],
-										Class40.depthPoint[l2], Class40.depthPoint[j3], Class40.depthPoint[l3]);
-							}
-						} else {
+
 							Rasterizer.method374(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
 									class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.depthPoint[l2],
 									Class40.depthPoint[j3], Class40.depthPoint[l3]);
-						}
+
 					}
 				} else if (!lowMem) {
 					if (class40.aBoolean683) {

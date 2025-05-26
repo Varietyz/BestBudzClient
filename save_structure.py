@@ -22,7 +22,12 @@ def save_tree_structure(start_path, exclude_entries=None, output_file="Navigatio
             "assets",
             ".venv",
             "Image-ExifTool-13.26",
-            "resources"
+            "runtime",
+            ".gradle",
+            ".idea",
+            ".vscode",
+            "build",
+            "gradle"
         ]
     
     # Mapping of file extensions to emojis

@@ -1,10 +1,15 @@
 package com.bestbudz.engine;
 
 import com.bestbudz.cache.Signlink;
+import com.bestbudz.client.frame.UIDockFrame;
+import com.bestbudz.client.util.DockSync;
 import com.bestbudz.config.SettingHandler;
 import com.bestbudz.engine.input.Keyboard;
 import com.bestbudz.engine.input.MouseManager;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -25,6 +30,12 @@ public final class ClientLauncher {
 			GraphicsConfig.MIN_WIDTH = Client.frameWidth;
 			GraphicsConfig.MIN_HEIGHT = Client.frameHeight;
 
+			try {
+				UIManager.setLookAndFeel(new FlatDarkLaf());
+			} catch (Exception ex) {
+				System.err.println("Failed to initialize FlatLaf");
+			}
+
 			final JFrame frame = new JFrame(GraphicsConfig.TITLE);
 			GameCanvas canvas = new GameCanvas();
 			frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -42,10 +53,10 @@ public final class ClientLauncher {
 				try { Thread.sleep(10); } catch (InterruptedException ignored) {}
 			}
 
-			canvas.createBufferStrategy(GraphicsConfig.BUFFERS);
-
 			Client client = new Client();
 			Client.instance = client;
+			Client.instance.refreshFrameSize(canvas, canvas.getWidth(), canvas.getHeight());
+			canvas.createBufferStrategy(GraphicsConfig.BUFFERS);
 
 			MouseManager mouseManager = new MouseManager();
 			Keyboard keyboard = new Keyboard();
@@ -60,24 +71,66 @@ public final class ClientLauncher {
 			canvas.requestFocusInWindow();
 
 			GameEngine engine = new GameEngine(canvas, client);
-			new Thread(engine, "GameLoop").start();
+			Thread gameThread = new Thread(engine, "GameLoop");
+			gameThread.start();
 
-			frame.setMinimumSize(new Dimension(1280, 720));
+			frame.setMinimumSize(new Dimension(1280, 758));
 
-			// 1 ▸ Clean exit on window close
+			// 🪟 UI Dock Frame
+			UIDockFrame uiDock = new UIDockFrame();
+			DockSync.setDock(uiDock);
+			uiDock.setLocation(frame.getX() + frame.getWidth(), frame.getY());
+
 			frame.addWindowListener(new WindowAdapter() {
+				@Override
 				public void windowClosing(WindowEvent e) {
-					client.cleanUpForQuit();
+					engine.shutdown(); // 🛑 stop the loop
+
+					try {
+						gameThread.join(200); // ⏳ wait up to 200ms for safe stop
+					} catch (InterruptedException ex) {
+						ex.printStackTrace();
+					}
+
+					if (UIDockFrame.getInstance() != null) {
+						UIDockFrame.getInstance().saveLayoutState();
+					}
+					SettingHandler.save();
+					client.cleanUpForQuit(); // 🧹 safe cleanup
 					System.exit(0);
 				}
 			});
 
-			// 2 ▸ Clean exit on JVM shutdown
-			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-				try {
-					client.cleanUpForQuit();
-				} catch (Exception ignored) {}
-			}));
+			frame.addComponentListener(new ComponentAdapter() {
+				@Override
+				public void componentMoved(ComponentEvent e) {
+					Point location = frame.getLocationOnScreen();
+					int x = location.x + frame.getWidth();
+					int y = location.y;
+					uiDock.setLocation(x, y);
+				}
+
+				@Override
+				public void componentResized(ComponentEvent e) {
+					Dimension size = frame.getSize();
+					uiDock.setLocation(frame.getX() + size.width, frame.getY());
+					uiDock.setSize(uiDock.getWidth(), size.height); // match height only
+				}
+			});
+			frame.addWindowStateListener(e -> {
+				int state = e.getNewState();
+
+				if ((state & Frame.ICONIFIED) == Frame.ICONIFIED) {
+					// Minimized
+					uiDock.setVisible(false);
+				} else
+				{
+					// Restored
+					uiDock.setVisible(true);
+					// Optionally snap to edge again:
+					uiDock.setLocation(frame.getX() + frame.getWidth(), frame.getY());
+				}
+			});
 
 		} catch (Exception exception) {
 			exception.printStackTrace();

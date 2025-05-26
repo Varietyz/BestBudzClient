@@ -1,5 +1,7 @@
 package com.bestbudz.config;
 
+import com.bestbudz.engine.Client;
+
 public class Configuration {
 
   public static boolean economyWorld = true;
@@ -10,10 +12,6 @@ public class Configuration {
 
   public static boolean menuHovers;
 
-  public static boolean enableTextures;
-
-  public static boolean enableHDMinimap;
-
   public static boolean enableDistanceFog;
 
   public static boolean enableTweening;
@@ -21,8 +19,6 @@ public class Configuration {
   public static boolean enableMipMapping;
 
   public static boolean enableRoofs;
-
-  public static boolean enableScreenGliding;
 
   public static boolean enableMovingTextures;
 
@@ -34,12 +30,6 @@ public class Configuration {
 
   public static boolean enableNewHitmarks;
 
-  public static boolean cacheTheme;
-
-  public static boolean enableGroundDecors;
-
-  public static boolean showNotifications;
-
   public static boolean showKillFeed;
 
   public static boolean entityAttackPriority;
@@ -48,5 +38,9 @@ public class Configuration {
 
   public static boolean enablePouch;
 
-  public static boolean enableAdvanceColors;
+  public static String uiDockPanels = "";
+
+  public static float uiDockDividerRatio = 0.5f;
+
+  public static String uiDockLastActive = "";
 }

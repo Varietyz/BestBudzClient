@@ -428,36 +428,43 @@ public class CustomInterfaces extends RSInterface
 	{
 		RSInterface tab = addInterface(41750);
 		addSprite(41751, 449);
-		addHoverButton(41752, 17, 21, 21, "Close", 250, 41753, 3);
-		addHoveredButton(41753, 18, 21, 21, 41754);
-		addText(41755, "Report Abuse", jaybane, 2, 0xff9933, true, true);
 
-		addText(41756, "This form is for reporting stoners who are breaking our rules.", jaybane, 1, 0xff9933, true,
-			true);
-		addText(41757, "Using it sends a snapshot of the last 60 seconds of activity to us.", jaybane, 1, 0xff9933,
-			true, true);
-		addText(41758, "Misusing this form will result with an infraction, or worse.", jaybane, 1, 0xDB0D0D, true,
-			true);
-		addText(41759, "Please enter the username of the offending stoner:", jaybane, 1, 0xff9933, true, true);
+		addHoverButton(41752, 17, 21, 21, "Get out", 250, 41753, 3);
+		addHoveredButton(41753, 18, 21, 21, 41754);
+
+		addText(41755, "Snitch Form", jaybane, 2, 0xFF99CC, true, true);
+
+		addText(41756, "Use this form to narc on stoners doing shady stuff.", jaybane, 1, 0xFF99CC, true, true);
+		addText(41757, "It sends us your best selfie, possibly feet pics.", jaybane, 1, 0xFF99CC, true, true);
+		addText(41758, "False reports will get you bonked. Possibly by a duck.", jaybane, 1, 0xDB0D0D, true, true);
+		addText(41759, "Drop the username of the sketchy stoner below, we might review it.", jaybane, 1, 0xFF99CC, true, true);
 
 		addInputField(41750, 41760, 25, 0x332E24, 0x4D4636, 0x383631, 0x474540, "", 180, 23, false, false, "");
 
-		addText(41761, "Please select the rule of which the offending stoner has broken.", jaybane, 1, 0xff9933, true,
-			true);
+		addText(41761, "Naah, not really, we dont give a fuck, but go ahead tho:", jaybane, 1, 0xFF99CC, true, true);
 
 		String[] rules = {
-			"Offensive language", "Item scamming", "Password scamming", "Bug abuse",
-			"BestBudz staff impersonation", "Account sharing/trading", "Macroing", "Multiple logging in",
-			"Advertising", "Real world trading", "Misuse of customer support", "Encouraging others to break rules",
+			"Being way too high in public chat",
+			"Claimed they had a GF in another server",
+			"Scammed a leaf and ran off laughing",
+			"Found a bug and called it a feature",
+			"Wore a mod crown in roleplay",
+			"Shared their Netflix account",
+			"Gave me Monkey Nuts",
+			"Logged in twice, called it 'duo mode'",
+			"Spammed links to their mixtape",
+			"Sold imaginary items for real hugs",
+			"Asked mod help to open a jar",
+			"Told others to type ::crashme"
 		};
 
-		for (int i = 0; i < rules.length; i++)
-		{
-			addHoverText(41762 + i, (i + 1) + ") " + rules[i], "Select", jaybane, 0, 0xF7AA25, false, true, 250);
+		for (int i = 0; i < rules.length; i++) {
+			addHoverText(41762 + i, (i + 1) + ") " + rules[i], "Roast", jaybane, 0, 0xF7AA25, false, true, 250);
 		}
 
-		addHoverButton(41774, 446, 135, 30, "Confirm selection", -1, 41775, 1);
+		addHoverButton(41774, 446, 135, 30, "Snitch them", -1, 41775, 1);
 		addHoveredButton(41775, 447, 135, 30, 41776);
+
 
 		tab.totalChildren(24);
 		tab.child(0, 41751, 11, 17);
@@ -730,34 +737,7 @@ public class CustomInterfaces extends RSInterface
 	public static void questInterface(TextDrawingArea[] TDA)
 	{
 		RSInterface Interface = addInterface(8134);
-		Interface.centerText = true;
-		addSprite(8135, 382);
-		addSprite(8136, 383);
-		addText(8144, "Quest Name", 0x000000, true, false, 52, TDA, 3);
-		addHoverButton(8137, 384, 26, 23, "Close", 250, 8138, 3);
-		addHoveredButton(8138, 385, 26, 23, 8139);
-		setChildren(6, Interface);
-		setBounds(8136, 18, 4, 0, Interface);
-		setBounds(8135, 18, 62, 1, Interface);
-		setBounds(8144, 260, 15, 2, Interface);
-		setBounds(8140, 50, 86, 3, Interface);
-		setBounds(8137, 452, 63, 4, Interface);
-		setBounds(8138, 452, 63, 5, Interface);
-		Interface = addInterface(8140);
-		Interface.height = 217;
-		Interface.width = 404;
-		Interface.scrollMax = 4700;
-		setChildren(51, Interface);
-		int Ypos = 18;
-		int frameID = 0;
-		for (int iD = 8145; iD <= 8195; iD++)
-		{
-			addText(iD, "", 0xf3d106, true, false, 52, TDA, 1);
-			setBounds(iD, 202, Ypos, frameID, Interface);
-			frameID++;
-			Ypos += 19;
-			Ypos++;
-		}
+		setChildren(0, Interface);
 	}
 
 
@@ -790,49 +770,15 @@ public class CustomInterfaces extends RSInterface
 		}
 	}
 
-
-	public static void settings(TextDrawingArea[] jaybane)
-	{
+	public static void settings(TextDrawingArea[] jaybane) {
 		RSInterface tab = addInterface(28400);
 
-		addSprite(28401, 360);
-		addSprite(28402, 38);
-		addText(28403, "EXTRA Settings", jaybane, 2, 0xF7AA25, true, true);
-		addText(28404, "Cant decide? Hit the bong", jaybane, 0, 0xF7AA25, true, true);
 		addHoverButton(28405, 446, 130, 24, "Confirm Selection", -1, 28406, 1);
 		addHoveredButton(28406, 447, 130, 24, 28407);
-		addHoverButton(28408, 351, 15, 15, "Reset to default", -1, 28409, 1);
-		addHoveredButton(28409, 352, 15, 15, 28410);
 
-		tab.totalChildren(10);
-		tab.child(0, 28401, -4, 34);
-		tab.child(1, 28402, -0, 34);
-		tab.child(2, 28402, -0, 229);
-		tab.child(3, 28403, 95, 4);
-		tab.child(4, 28404, 95, 20);
-		tab.child(5, 28415, 5, 36);
-		tab.child(6, 28405, -10, 233);
-		tab.child(7, 28406, -10, 233);
-		tab.child(8, 28408, 160, 237);
-		tab.child(9, 28409, 160, 237);
-
-		int amount = SettingHandler.strings.length;
-
-		RSInterface scrollInterface = addTabInterface(28415);
-		scrollInterface.width = 170;
-		scrollInterface.height = 192;
-		scrollInterface.scrollMax = 650;
-		setChildren(amount * 2, scrollInterface);
-
-		int y = 0;
-		for (int i = 0; i < amount; i++)
-		{
-			addButton(28420 + i, 473, "Toggle " + SettingHandler.strings[i]);
-			setBounds(28420 + i, 35, y + 5, i, scrollInterface);
-			addText(28450 + i, "", jaybane, 0, 0xF7AA25, false, true);
-			setBounds(28450 + i, 45, y + 10, i + amount, scrollInterface);
-			y += 30;
-		}
+		tab.totalChildren(2);
+		tab.child(0, 28405, -10, 233);
+		tab.child(1, 28406, -10, 233);
 	}
 
 	public static void staffTab(TextDrawingArea[] jaybane)
@@ -1462,7 +1408,7 @@ public class CustomInterfaces extends RSInterface
 		}
 	}
 
-	private static void achievementsTab(TextDrawingArea[] jaybane)
+	private static void achievementsTab(TextDrawingArea[] jaybane) // JFRAMED
 	{
 		RSInterface tab = addTabInterface(31000);
 		addSprite(31001, 15);
@@ -1659,7 +1605,7 @@ public class CustomInterfaces extends RSInterface
 		}
 	}
 
-	public static void questTab(TextDrawingArea[] bestbudz)
+	public static void questTab(TextDrawingArea[] bestbudz) // JFRAMED
 	{
 		RSInterface tab = addTabInterface(29400);
 		addSprite(29401, 82);
