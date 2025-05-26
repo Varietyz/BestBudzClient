@@ -14,7 +14,7 @@ public class SettingHandler
 		"Tweening", "Fog", "Mip Mapping", "Moving Textures", "Status Orbs",
 		"Roofs", "Debit Card", "Kill Feed", "Hover Menus", "Entity Feed", "HP Bars",
 		"Hitmarkers",
-		"x10 Damage", "Attack Priority", "Time Stamps",
+		"x10 Damage", "Attack Priority", "Time Stamps", "Ground Decorations"
 	};
 	private final static String PATH = Signlink.findCacheDir() + "/settings.dat";
 
@@ -35,6 +35,7 @@ public class SettingHandler
 		Configuration.enable10xDamage = false;
 		Configuration.entityAttackPriority = false;
 		Configuration.enableTimeStamps = false;
+		Configuration.enableGroundDecorations = true;
 		Client.loadingStage = 1;
 		Client.minimapImage.method343();
 	}
@@ -64,6 +65,7 @@ public class SettingHandler
 			out.writeBoolean(Configuration.enable10xDamage);
 			out.writeBoolean(Configuration.entityAttackPriority);
 			out.writeBoolean(Configuration.enableTimeStamps);
+			out.writeBoolean(Configuration.enableGroundDecorations);
 			out.writeUTF(Configuration.uiDockPanels);
 			out.writeFloat(Configuration.uiDockDividerRatio); // ✅ persist ratio
 			out.writeUTF(Configuration.uiDockLastActive);
@@ -105,6 +107,7 @@ public class SettingHandler
 			Configuration.enable10xDamage = in.readBoolean();
 			Configuration.entityAttackPriority = in.readBoolean();
 			Configuration.enableTimeStamps = in.readBoolean();
+			Configuration.enableGroundDecorations = in.readBoolean();
 			try {
 				Configuration.uiDockPanels = in.readUTF();
 			} catch (Exception ignored) {

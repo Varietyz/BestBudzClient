@@ -17,6 +17,9 @@ public class SettingsPanel implements UIPanel {
 	public SettingsPanel() {
 		panel = new JPanel(new BorderLayout(0, 10));
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		panel.setPreferredSize(null);
+		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		panel.setMinimumSize(new Dimension(0, 0));
 
 		JPanel grid = new JPanel(new GridLayout(0, 2, 12, 6));
 		grid.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -36,10 +39,20 @@ public class SettingsPanel implements UIPanel {
 		addSetting(grid, "x10 Damage", Configuration.enable10xDamage);
 		addSetting(grid, "Attack Priority", Configuration.entityAttackPriority);
 		addSetting(grid, "Time Stamps", Configuration.enableTimeStamps);
+		addSetting(grid, "Ground Decorations", Configuration.enableGroundDecorations);
 
 		JPanel gridWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		gridWrapper.add(grid);
-		panel.add(gridWrapper, BorderLayout.CENTER);
+
+		JScrollPane scrollPane = new JScrollPane(gridWrapper);
+		scrollPane.setBorder(null);
+		scrollPane.setOpaque(false);
+		scrollPane.getViewport().setOpaque(false);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+		panel.add(scrollPane, BorderLayout.CENTER);
+
 
 		JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		panel.add(btnRow, BorderLayout.SOUTH);
@@ -68,6 +81,7 @@ public class SettingsPanel implements UIPanel {
 		else if (label.equals("x10 Damage")) Configuration.enable10xDamage = value;
 		else if (label.equals("Attack Priority")) Configuration.entityAttackPriority = value;
 		else if (label.equals("Time Stamps")) Configuration.enableTimeStamps = value;
+		else if (label.equals("Ground Decorations")) Configuration.enableGroundDecorations = value;
 
 		startAutoSaveTimer(); // 🆕 Trigger debounce save
 	}
@@ -92,6 +106,7 @@ public class SettingsPanel implements UIPanel {
 			else if (label.equals("x10 Damage")) box.setSelected(Configuration.enable10xDamage);
 			else if (label.equals("Attack Priority")) box.setSelected(Configuration.entityAttackPriority);
 			else if (label.equals("Time Stamps")) box.setSelected(Configuration.enableTimeStamps);
+			else if (label.equals("Ground Decorations")) box.setSelected(Configuration.enableGroundDecorations);
 		}
 	}
 
@@ -110,8 +125,14 @@ public class SettingsPanel implements UIPanel {
 
 
 	@Override
+	public void updateText()
+	{
+
+	}
+
+	@Override
 	public String getPanelID() {
-		return "settings";
+		return "Settings";
 	}
 
 	@Override
@@ -126,4 +147,10 @@ public class SettingsPanel implements UIPanel {
 
 	@Override
 	public void onDeactivate() {}
+
+	@Override
+	public void updateDockText(int index, String text)
+	{
+
+	}
 }

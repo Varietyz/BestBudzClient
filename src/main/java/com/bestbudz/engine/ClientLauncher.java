@@ -47,7 +47,9 @@ public final class ClientLauncher {
 			frame.add(canvas);
 			frame.pack();
 			frame.setLocationRelativeTo(null);
+
 			frame.setVisible(true);
+
 
 			while (!canvas.isDisplayable()) {
 				try { Thread.sleep(10); } catch (InterruptedException ignored) {}
@@ -77,9 +79,22 @@ public final class ClientLauncher {
 			frame.setMinimumSize(new Dimension(1280, 758));
 
 			// 🪟 UI Dock Frame
-			UIDockFrame uiDock = new UIDockFrame();
-			DockSync.setDock(uiDock);
+			UIDockFrame uiDock = new UIDockFrame(frame);
 			uiDock.setLocation(frame.getX() + frame.getWidth(), frame.getY());
+
+			frame.addWindowStateListener(e -> {
+				int state = e.getNewState();
+				if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) {
+					SwingUtilities.invokeLater(() -> {
+						// Sync dock to frame
+						int dockWidth = 300;
+						uiDock.setLocation(frame.getX() + frame.getWidth(), frame.getY());
+						uiDock.setSize(dockWidth, frame.getHeight());
+						uiDock.revalidate();
+						uiDock.repaint();
+					});
+				}
+			});
 
 			frame.addWindowListener(new WindowAdapter() {
 				@Override
@@ -112,25 +127,16 @@ public final class ClientLauncher {
 
 				@Override
 				public void componentResized(ComponentEvent e) {
-					Dimension size = frame.getSize();
-					uiDock.setLocation(frame.getX() + size.width, frame.getY());
-					uiDock.setSize(uiDock.getWidth(), size.height); // match height only
-				}
-			});
-			frame.addWindowStateListener(e -> {
-				int state = e.getNewState();
-
-				if ((state & Frame.ICONIFIED) == Frame.ICONIFIED) {
-					// Minimized
-					uiDock.setVisible(false);
-				} else
-				{
-					// Restored
-					uiDock.setVisible(true);
-					// Optionally snap to edge again:
 					uiDock.setLocation(frame.getX() + frame.getWidth(), frame.getY());
+					int height = frame.getHeight();
+					uiDock.setSize(uiDock.getWidth(), height - 8);
+
+					uiDock.revalidate();
+					uiDock.repaint();
 				}
+
 			});
+
 
 		} catch (Exception exception) {
 			exception.printStackTrace();

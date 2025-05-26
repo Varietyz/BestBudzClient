@@ -25,23 +25,18 @@ public final class Skills {
 	public static final int MERCENARY = 18;
 	public static final int CULTIVATION = 19;
 	public static final int CONSUMER = 20;
-	public static final int HUNTER = 21;
-	public static final int SUMMONING = 22;
-	public static final int CONSTRUCTION = 23;
-	public static final int DUNGEONEERING = 24;
 
 	public static final String[] SKILL_NAMES = {
 		"assault", "aegis", "vigour", "life", "sagittarius", "necromance",
 		"mage", "foodie", "lumbering", "woodcarving", "fisher", "pyromaniac",
 		"handiness", "forging", "quarrying", "thc-hempistry", "weedsmoking",
-		"accomplisher", "mercenary", "cultivation", "consumer", "hunter",
-		"summoning", "construction", "dungeoneering", "grades total"
+		"accomplisher", "mercenary", "cultivation", "consumer", "grades total"
 	};
 
 	public static final boolean[] SKILL_ENABLED = new boolean[SKILLS_COUNT];
 
 	public static final int[] EXP_FOR_GRADE = {
-		0, 15053, 30322, 45812, 61525, 77465, 93635, 110038, 126678, 143558,
+		0, 0, 15053, 30322, 45812, 61525, 77465, 93635, 110038, 126678, 143558,
 		160681, 178051, 195671, 213546, 231678, 250072, 268732, 287660, 306862, 326340,
 		346099, 366144, 386477, 407104, 428028, 449254, 470786, 492629, 514786, 537264,
 		560065, 583195, 606659, 630461, 654607, 679101, 703948, 729154, 754723, 780660,
@@ -93,11 +88,8 @@ public final class Skills {
 	public static final int[] EXP_FOR_LEVEL = new int[EXP_FOR_GRADE.length];
 
 	static {
-		System.arraycopy(EXP_FOR_GRADE, 0, EXP_FOR_LEVEL, 0, EXP_FOR_GRADE.length);
-		for (int i = 0; i < EXP_FOR_LEVEL.length; i++) {
-			int shiftedIndex = i + 1;
-			EXP_FOR_LEVEL[i] = EXP_FOR_GRADE[Math.min(shiftedIndex, EXP_FOR_GRADE.length - 1)];
-		}
+		System.arraycopy(EXP_FOR_GRADE, 0, EXP_FOR_LEVEL, 0, EXP_FOR_LEVEL.length);
+
 
 		SKILL_ENABLED[ASSAULT] = true;
 		SKILL_ENABLED[AEGIS] = true;
@@ -120,10 +112,6 @@ public final class Skills {
 		SKILL_ENABLED[MERCENARY] = true;
 		SKILL_ENABLED[CULTIVATION] = true;
 		SKILL_ENABLED[CONSUMER] = true;
-		SKILL_ENABLED[HUNTER] = false;
-		SKILL_ENABLED[SUMMONING] = false;
-		SKILL_ENABLED[CONSTRUCTION] = false;
-		SKILL_ENABLED[DUNGEONEERING] = false;
 	}
 
 	public static int getIdByName(String skill) {

@@ -18,8 +18,15 @@ public class Bank extends RSInterface {
     Sprite button1 = method207(0, aClass44, "miscgraphics");
     Sprite button2 = method207(9, aClass44, "miscgraphics");
 
-    addSprite(id, 108);
-    addHoverButton(
+	  RSInterface background = addInterface(id);
+	  background.type = 3; // filled rectangle
+	  background.aBoolean227 = true; // draw filled
+	  background.width = 670;  // adjust to match original sprite size
+	  background.height = 340;
+	  background.textColor = 0x000000; // black
+	  background.opacity = (byte) 50;
+
+	  addHoverButton(
         id + 1, method207(2, aClass44, "miscgraphics2"), 21, 21, "Close", 250, id + 2, 3);
     addHoveredButton(id + 2, method207(3, aClass44, "miscgraphics2"), 21, 21, id + 3);
     addContainer(

@@ -1,14 +1,15 @@
 package com.bestbudz.client.ui.panel;
 
 import com.bestbudz.client.frame.UIDockFrame;
-import com.bestbudz.client.util.SpriteUtil;
+import com.bestbudz.client.util.DockTextUpdatable;
 import com.bestbudz.engine.Client;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
 import java.awt.*;
 
-public class QuestTabPanel implements UIPanel {
+public class QuestTabPanel implements UIPanel, DockTextUpdatable
+{
 
 	private final DefaultListModel<String> listModel = new DefaultListModel<>();
 	private final JList<String> questList = new JList<>(listModel);
@@ -23,6 +24,9 @@ public class QuestTabPanel implements UIPanel {
 		panel = new JPanel(new BorderLayout(0, 10));
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		panel.setBackground(Color.BLACK);
+		panel.setPreferredSize(null);
+		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		panel.setMinimumSize(new Dimension(0, 0));
 
 		JLabel title = new JLabel("BestBudz");
 		title.setForeground(new Color(0xF7AA25));
@@ -46,7 +50,7 @@ public class QuestTabPanel implements UIPanel {
 		achievementsBtn.setToolTipText("View achievements");
 
 		achievementsBtn.addActionListener(e -> {
-			UIDockFrame.getInstance().dockPanelToMatch("Info Tab", "Achievements");
+			if (Client.loggedIn) UIDockFrame.getInstance().dockPanelToMatch("Info Tab", "Achievements");
 		});
 
 		buttonBar.add(achievementsBtn);
@@ -138,7 +142,7 @@ public class QuestTabPanel implements UIPanel {
 					int index = questList.locationToIndex(e.getPoint());
 					int childId = 29501 + index; // Matches original RSInterface child ID
 
-					System.out.println("Clicked quest line " + index + " (ID " + childId + ")");
+					System.out.println("Clicked info line " + index + " (ID " + childId + ")");
 
 					// Send interaction
 					try {
@@ -157,7 +161,7 @@ public class QuestTabPanel implements UIPanel {
 				try {
 					Client.stream.createFrame(185);
 					Client.stream.writeWord(29410);
-					System.out.println("Auto-refreshing quest tab.");
+					System.out.println("Auto-refreshing info tab.");
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -186,6 +190,12 @@ public class QuestTabPanel implements UIPanel {
 
 
 	@Override
+	public void updateText()
+	{
+
+	}
+
+	@Override
 	public String getPanelID() {
 		return "Info Tab";
 	}
@@ -208,6 +218,16 @@ public class QuestTabPanel implements UIPanel {
 	@Override
 	public String getPanelIconPath() {
 		return "sprites/quest-tab.png";
+	}
+	@Override
+	public void updateDockText(int index, String text) {
+		updateQuestLine(index, text);
+		showQuestList(); // Optional
+	}
+
+	@Override
+	public int[] getBlockedInterfaces() {
+		return new int[] { 29500 };
 	}
 
 }

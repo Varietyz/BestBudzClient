@@ -13,6 +13,8 @@ import com.bestbudz.rendering.model.Model;
 import com.bestbudz.ui.interfaces.CustomInterfaces;
 import com.bestbudz.util.MRUNodes;
 import com.bestbudz.util.TextClass;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 public class RSInterface {
 
@@ -320,6 +322,7 @@ public class RSInterface {
 		itemsOnDeathDATA(textDrawingAreas);
 		CustomInterfaces.unpackInterfaces(textDrawingAreas);
 		aMRUNodes_238 = null;
+
 	}
 
 	public static void homeTeleport(TextDrawingArea[] TDA) {

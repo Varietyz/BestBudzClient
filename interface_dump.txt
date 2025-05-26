@@ -1,0 +1,4256 @@
+ID: 89 | Text: Close Window
+ID: 90 | Text: Thessalia's Makeovers (Legs)
+ID: 108 | Text: CONFIRM (500 gold)
+ID: 125 | Text: Select colour
+ID: 138 | Text: Select leg style
+ID: 146 | Text: Select an Option
+ID: 148 | Text: Energy left:
+ID: 149 | Text: %1%
+ID: 154 | Text: Player controls
+ID: 155 | Text: Guard
+ID: 156 | Text: Off
+ID: 157 | Text: On
+ID: 158 | Text: Move speed
+ID: 159 | Text: Run
+ID: 160 | Text: Walk
+ID: 174 | Text: Emote animations
+ID: 175 | Text: Bow
+ID: 182 | Text: Cry
+ID: 183 | Text: Weight carried:
+ID: 184 | Text: %1kg
+ID: 185 | Text: Laugh
+ID: 186 | Text: Cheer
+ID: 187 | Text: Clap
+ID: 188 | Text: Sojourn
+ID: 189 | Text: Mad Eadgar
+ID: 190 | Text: Marzipan
+ID: 191 | Text: Troll Stronghold
+ID: 192 | Text: Righteousness
+ID: 246 | Text: Chef Surprise
+ID: 247 | Text: Last Stand
+ID: 248 | Text: Making Waves
+ID: 249 | Text: Swan Song
+ID: 299 | Text: Congratulations!
+ID: 300 | Text: Close Window
+ID: 303 | Text: Total Points:
+ID: 304 | Text: %1
+ID: 308 | Text: Line1
+ID: 309 | Text: Click here to continue
+ID: 312 | Text: Line1
+ID: 313 | Text: Line1
+ID: 314 | Text: Click here to continue
+ID: 317 | Text: Line1
+ID: 318 | Text: Line1
+ID: 319 | Text: Click here to continue
+ID: 320 | Text: Line1
+ID: 323 | Text: Line1
+ID: 324 | Text: Line1
+ID: 325 | Text: Click here to continue
+ID: 326 | Text: Line1
+ID: 327 | Text: Line1
+ID: 331 | Text: Combat Lvl: %1
+ID: 352 | Text: (none set)
+ID: 355 | Text: %1
+ID: 357 | Text: Line1
+ID: 358 | Text: Click here to continue
+ID: 360 | Text: Line1
+ID: 361 | Text: Line2
+ID: 362 | Text: Click here to continue
+ID: 364 | Text: Line1
+ID: 365 | Text: Line2
+ID: 366 | Text: Line3
+ID: 367 | Text: Click here to continue
+ID: 369 | Text: Line1
+ID: 370 | Text: Line2
+ID: 371 | Text: Line3
+ID: 372 | Text: Line4
+ID: 373 | Text: Click here to continue
+ID: 375 | Text: Line1
+ID: 376 | Text: Line2
+ID: 377 | Text: Line3
+ID: 378 | Text: Line4
+ID: 379 | Text: Line5
+ID: 380 | Text: Click here to continue
+ID: 427 | Text: Weapon:
+ID: 428 | Text: %1
+ID: 429 | Text: Combat Lvl: %1
+ID: 437 | Text: Pound
+ID: 438 | Text: Pummel
+ID: 439 | Text: Block
+ID: 440 | Text: (Aggressive)
+ID: 441 | Text: (Accurate)
+ID: 442 | Text: (Defensive)
+ID: 443 | Text: (Crush)
+ID: 444 | Text: (Crush)
+ID: 445 | Text: (Crush)
+ID: 537 | Text: Target View.
+ID: 549 | Text: Shots
+ID: 550 | Text: Score:
+ID: 551 | Text: %1
+ID: 552 | Text: Left:
+ID: 553 | Text: 10
+ID: 554 | Text: 20
+ID: 555 | Text: 30
+ID: 556 | Text: 50
+ID: 558 | Text: 100
+ID: 567 | Text: Missed!
+ID: 568 | Text: Close Window
+ID: 640 | Text: Quest Points: 0
+ID: 663 | Text: Free Quests
+ID: 664 | Text: Aztec
+ID: 668 | Text: Recruitment Drive
+ID: 669 | Text: Fun Weapons
+ID: 673 | Text: Big Chompy Bird Hunting
+ID: 674 | Text: Chompy Hunt
+ID: 675 | Text: Grumpy
+ID: 676 | Text: Forbidden
+ID: 677 | Text: Cursed
+ID: 678 | Text: Understanding
+ID: 682 | Text: Members Quests
+ID: 687 | Text: %1/%2
+ID: 688 | Text: Level 1\nThick Skin
+ID: 689 | Text: Level 4\nBurst of Strength
+ID: 690 | Text: Level 7\nClarity of Thought
+ID: 691 | Text: Level 10\nRock Skin
+ID: 692 | Text: Level 13\nSuperhuman Strength
+ID: 693 | Text: Level 16\nImproved Reflexes
+ID: 694 | Text: Level 19\nRapid Restore
+ID: 695 | Text: Level 22\nRapid Heal
+ID: 696 | Text: Level 25\nProtect Items
+ID: 697 | Text: Level 28\nSteel Skin
+ID: 698 | Text: Level 31\nUltimate Strength
+ID: 699 | Text: Level 34\nIncredible Reflexes
+ID: 700 | Text: Level 37\nProtect from Magic
+ID: 701 | Text: Level 40\nProtect from Missiles
+ID: 702 | Text: Protection from ranged attacks
+ID: 704 | Text: Level 43\nProtect from Melee
+ID: 705 | Text: Protection from close attacks
+ID: 708 | Text: Level 46\nRetribution
+ID: 709 | Text: Inflicts damage to nearby\ntargets if you die
+ID: 712 | Text: Level 49\nRedemption
+ID: 713 | Text: Heals you if your health\nfalls below 10%
+ID: 760 | Text: A
+ID: 761 | Text: A
+ID: 762 | Text: A
+ID: 763 | Text: A
+ID: 772 | Text: Combination Lock Door
+ID: 773 | Text: Close Window
+ID: 775 | Text: ENTER
+ID: 778 | Text: Weapon:
+ID: 779 | Text: %1
+ID: 780 | Text: Combat Lvl: %1
+ID: 790 | Text: Reap
+ID: 791 | Text: Chop
+ID: 792 | Text: Jab
+ID: 793 | Text: Block
+ID: 794 | Text: (Accurate)
+ID: 795 | Text: (Aggressive)
+ID: 796 | Text: (Aggressive)
+ID: 797 | Text: (Defensive)
+ID: 798 | Text: (Slash)
+ID: 799 | Text: (Stab)
+ID: 800 | Text: (Crush)
+ID: 801 | Text: (Slash)
+ID: 809 | Text: Ta Quir Priw
+ID: 810 | Text: Lemanto Andra
+ID: 811 | Text: Sindarpos
+ID: 812 | Text: Gandius
+ID: 813 | Text: Kar-Hewo
+ID: 829 | Text: Close Window
+ID: 843 | Text: line1
+ID: 844 | Text: line2
+ID: 845 | Text: line3
+ID: 846 | Text: line4
+ID: 847 | Text: line5
+ID: 848 | Text: line6
+ID: 849 | Text: line7
+ID: 850 | Text: line8
+ID: 851 | Text: line9
+ID: 852 | Text: line10
+ID: 853 | Text: line11
+ID: 854 | Text: line12
+ID: 855 | Text: line13
+ID: 856 | Text: line14
+ID: 857 | Text: line15
+ID: 858 | Text: line16
+ID: 859 | Text: line17
+ID: 860 | Text: line18
+ID: 861 | Text: line19
+ID: 862 | Text: line20
+ID: 863 | Text: line21
+ID: 864 | Text: line22
+ID: 903 | Text: %1
+ID: 917 | Text: Game Options
+ID: 918 | Text: Screen Brightness
+ID: 919 | Text: Dark
+ID: 920 | Text: Normal
+ID: 921 | Text: Bright
+ID: 922 | Text: V-Bright
+ID: 923 | Text: Mouse Buttons
+ID: 924 | Text: Two
+ID: 925 | Text: One
+ID: 926 | Text: Chat Effects
+ID: 927 | Text: Off
+ID: 928 | Text: On
+ID: 929 | Text: Music\nVolume
+ID: 935 | Text: Off
+ID: 936 | Text: 1
+ID: 937 | Text: 2
+ID: 938 | Text: 3
+ID: 939 | Text: 4
+ID: 940 | Text: Effect\nVolume
+ID: 946 | Text: Off
+ID: 947 | Text: 1
+ID: 948 | Text: 2
+ID: 949 | Text: 3
+ID: 950 | Text: 4
+ID: 951 | Text: Split Private-chat
+ID: 954 | Text: On
+ID: 955 | Text: Off
+ID: 956 | Text: Split Private-chat
+ID: 959 | Text: On
+ID: 960 | Text: Off
+ID: 961 | Text: Ice Melody
+ID: 963 | Text: Music
+ID: 970 | Text: Name
+ID: 971 | Text: Line1
+ID: 972 | Text: Click here to continue
+ID: 975 | Text: Name
+ID: 976 | Text: Line1
+ID: 977 | Text: Line2
+ID: 978 | Text: Click here to continue
+ID: 981 | Text: Name
+ID: 982 | Text: Line1
+ID: 983 | Text: Line2
+ID: 984 | Text: Line3
+ID: 985 | Text: Click here to continue
+ID: 988 | Text: Name
+ID: 989 | Text: Line1
+ID: 990 | Text: Line2
+ID: 991 | Text: Line3
+ID: 992 | Text: Line4
+ID: 993 | Text: Click here to continue
+ID: 1083 | Text: Warhammer
+ID: 1084 | Text: Close Window
+ID: 1085 | Text: Sword
+ID: 1086 | Text: Long sword
+ID: 1087 | Text: Scimitar
+ID: 1088 | Text: 2 hand sword
+ID: 1089 | Text: 2 bars
+ID: 1090 | Text: 3 bars
+ID: 1091 | Text: Axe
+ID: 1092 | Text: Battle axe
+ID: 1093 | Text: Mace
+ID: 1094 | Text: Dagger
+ID: 1095 | Text: 3 bars
+ID: 1096 | Text: other
+ID: 1098 | Text: Chain body
+ID: 1099 | Text: Plate legs
+ID: 1100 | Text: Plate skirt
+ID: 1101 | Text: Plate body
+ID: 1102 | Text: Medium helm
+ID: 1103 | Text: Full helm
+ID: 1104 | Text: Square shield
+ID: 1105 | Text: Kite shield
+ID: 1106 | Text: Throwing knives
+ID: 1107 | Text: Dart tips
+ID: 1108 | Text: Arrowtips
+ID: 1109 | Text: 3 bars
+ID: 1110 | Text: 3 bars
+ID: 1111 | Text: 3 bars
+ID: 1112 | Text: 5 bars
+ID: 1113 | Text: 2 bars
+ID: 1114 | Text: 2 bars
+ID: 1115 | Text: 3 bars
+ID: 1116 | Text: 2 bars
+ID: 1117 | Text: What would you like to make?
+ID: 1118 | Text: 3 bars
+ID: 1124 | Text: 1 bar
+ID: 1125 | Text: 1 bar
+ID: 1126 | Text: 1 bar
+ID: 1127 | Text: 1 bar
+ID: 1128 | Text: 1 bar
+ID: 1129 | Text: 1 bar
+ID: 1130 | Text: 1 bar
+ID: 1131 | Text: 1 bar
+ID: 1132 | Text: 1 bar
+ID: 1134 | Text: Studs
+ID: 1135 | Text: 1 bar
+ID: 1137 | Text: Close Window
+ID: 1200 | Text: Level 1 : Wind Strike
+ID: 1201 | Text: A basic Air missile
+ID: 1204 | Text: %1/1
+ID: 1205 | Text: %1/1
+ID: 1207 | Text: Level 3 : Confuse
+ID: 1208 | Text: Reduces your opponent's\nattack by 5%
+ID: 1212 | Text: %1/3
+ID: 1213 | Text: %1/2
+ID: 1214 | Text: %1/1
+ID: 1216 | Text: Level 5 : Water Strike
+ID: 1217 | Text: A basic Water missile
+ID: 1221 | Text: %1/1
+ID: 1222 | Text: %1/1
+ID: 1223 | Text: %1/1
+ID: 1225 | Text: Level 7: Lvl-1 Enchant
+ID: 1226 | Text: For use on sapphire jewellery
+ID: 1229 | Text: %1/1
+ID: 1230 | Text: %1/1
+ID: 1232 | Text: Level 9 : Earth Strike
+ID: 1233 | Text: A basic Earth missile
+ID: 1237 | Text: %1/2
+ID: 1238 | Text: %1/1
+ID: 1239 | Text: %1/1
+ID: 1241 | Text: Level 11 : Weaken
+ID: 1242 | Text: Reduces your opponent's\nstrength by 5%
+ID: 1246 | Text: %1/3
+ID: 1247 | Text: %1/2
+ID: 1248 | Text: %1/1
+ID: 1250 | Text: Level 13 : Fire Strike
+ID: 1251 | Text: A basic Fire missile
+ID: 1255 | Text: %1/3
+ID: 1256 | Text: %1/2
+ID: 1257 | Text: %1/1
+ID: 1259 | Text: Level 15 : Bones to Bananas
+ID: 1260 | Text: Changes all held bones into\nbananas
+ID: 1264 | Text: %1/2
+ID: 1265 | Text: %1/2
+ID: 1266 | Text: %1/1
+ID: 1268 | Text: Level 17 : Wind Bolt
+ID: 1269 | Text: A low level Air missile
+ID: 1272 | Text: %1/2
+ID: 1273 | Text: %1/1
+ID: 1275 | Text: Level 19 : Curse
+ID: 1276 | Text: Reduces your opponent's\ndefence by 5%
+ID: 1280 | Text: %1/2
+ID: 1281 | Text: %1/3
+ID: 1282 | Text: %1/1
+ID: 1284 | Text: Level 21 : Low Level Alchemy
+ID: 1285 | Text: Converts an item into gold
+ID: 1288 | Text: %1/3
+ID: 1289 | Text: %1/1
+ID: 1291 | Text: Level 23 : Water Bolt
+ID: 1292 | Text: A low level Water missile
+ID: 1296 | Text: %1/2
+ID: 1297 | Text: %1/2
+ID: 1298 | Text: %1/1
+ID: 1300 | Text: Level 25 : Varrock Teleport
+ID: 1301 | Text: Teleports you to Varrock
+ID: 1305 | Text: %1/1
+ID: 1306 | Text: %1/3
+ID: 1307 | Text: %1/1
+ID: 1309 | Text: Level 27: Lvl-2 Enchant
+ID: 1310 | Text: For use on emerald jewellery
+ID: 1313 | Text: %1/3
+ID: 1314 | Text: %1/1
+ID: 1316 | Text: Level 29 : Earth Bolt
+ID: 1317 | Text: A low level Earth missile
+ID: 1321 | Text: %1/3
+ID: 1322 | Text: %1/2
+ID: 1323 | Text: %1/1
+ID: 1325 | Text: Level 31 : Lumbridge Teleport
+ID: 1326 | Text: Teleports you to Lumbridge
+ID: 1330 | Text: %1/1
+ID: 1331 | Text: %1/3
+ID: 1332 | Text: %1/1
+ID: 1334 | Text: Level 33 : Telekinetic Grab
+ID: 1335 | Text: Take an item you can see\nbut can't reach
+ID: 1338 | Text: %1/1
+ID: 1339 | Text: %1/1
+ID: 1341 | Text: Level 35 : Fire Bolt
+ID: 1342 | Text: A low level Fire missile
+ID: 1346 | Text: %1/4
+ID: 1347 | Text: %1/3
+ID: 1348 | Text: %1/1
+ID: 1350 | Text: Level 37 : Falador Teleport
+ID: 1351 | Text: Teleports you to Falador
+ID: 1355 | Text: %1/1
+ID: 1356 | Text: %1/3
+ID: 1357 | Text: %1/1
+ID: 1359 | Text: Level 39 : Crumble Undead
+ID: 1360 | Text: Hits skeletons, ghosts,\nshades & zombies hard
+ID: 1364 | Text: %1/2
+ID: 1365 | Text: %1/2
+ID: 1366 | Text: %1/1
+ID: 1368 | Text: Level 41 : Wind Blast
+ID: 1369 | Text: A medium level Air missile
+ID: 1372 | Text: %1/3
+ID: 1373 | Text: %1/1
+ID: 1375 | Text: Level 43 : Superheat Item
+ID: 1376 | Text: Smelt ore without a furnace
+ID: 1379 | Text: %1/4
+ID: 1380 | Text: %1/1
+ID: 1382 | Text: Level 45 : Camelot Teleport
+ID: 1383 | Text: Teleports you to Camelot
+ID: 1386 | Text: %1/5
+ID: 1387 | Text: %1/1
+ID: 1389 | Text: Level 47 : Water Blast
+ID: 1390 | Text: A medium level Water missile
+ID: 1394 | Text: %1/3
+ID: 1395 | Text: %1/3
+ID: 1396 | Text: %1/1
+ID: 1398 | Text: Level 49: Lvl-3 Enchant
+ID: 1399 | Text: For use on ruby jewellery
+ID: 1402 | Text: %1/5
+ID: 1403 | Text: %1/1
+ID: 1405 | Text: Level 50 : Iban Blast
+ID: 1406 | Text: Summons the wrath of Iban
+ID: 1411 | Text: %1/5
+ID: 1412 | Text: %1/1
+ID: 1413 | Text: %1/1
+ID: 1415 | Text: Level 51 : Ardougne Teleport
+ID: 1416 | Text: Teleports you to Ardougne
+ID: 1419 | Text: %1/2
+ID: 1420 | Text: %1/2
+ID: 1422 | Text: Level 53 : Earth Blast
+ID: 1423 | Text: A medium level Earth missile
+ID: 1427 | Text: %1/4
+ID: 1428 | Text: %1/3
+ID: 1429 | Text: %1/1
+ID: 1431 | Text: Level 55 : High Level Alchemy
+ID: 1432 | Text: Converts an item into\nmore gold
+ID: 1435 | Text: %1/5
+ID: 1436 | Text: %1/1
+ID: 1438 | Text: Level 56 : Charge Water Orb
+ID: 1439 | Text: Needs to be cast on\na water obelisk
+ID: 1443 | Text: %1/30
+ID: 1444 | Text: %1/3
+ID: 1445 | Text: %1/1
+ID: 1447 | Text: Level 57: Lvl-4 Enchant
+ID: 1448 | Text: For use on diamond jewellery
+ID: 1451 | Text: %1/10
+ID: 1452 | Text: %1/1
+ID: 1454 | Text: Level 58 : Watchtower Teleport
+ID: 1455 | Text: Teleports you to the\nWatchtower
+ID: 1458 | Text: %1/2
+ID: 1459 | Text: %1/2
+ID: 1461 | Text: Level 59 : Fire Blast
+ID: 1462 | Text: A medium level Fire missile
+ID: 1466 | Text: %1/5
+ID: 1467 | Text: %1/4
+ID: 1468 | Text: %1/1
+ID: 1470 | Text: Level 60 : Charge Earth Orb
+ID: 1471 | Text: Needs to be cast on\nan earth obelisk
+ID: 1475 | Text: %1/30
+ID: 1476 | Text: %1/3
+ID: 1477 | Text: %1/1
+ID: 1479 | Text: Level 62 : Wind Wave
+ID: 1480 | Text: A high level Air missile
+ID: 1483 | Text: %1/5
+ID: 1484 | Text: %1/1
+ID: 1486 | Text: Level 63 : Charge Fire Orb
+ID: 1487 | Text: Needs to be cast on \na fire obelisk
+ID: 1491 | Text: %1/30
+ID: 1492 | Text: %1/3
+ID: 1493 | Text: %1/1
+ID: 1495 | Text: Level 65 : Water Wave
+ID: 1496 | Text: A high level Water missile
+ID: 1500 | Text: %1/7
+ID: 1501 | Text: %1/5
+ID: 1502 | Text: %1/1
+ID: 1504 | Text: Level 66 : Charge Air Orb
+ID: 1505 | Text: Needs to be cast on \nan air obelisk
+ID: 1509 | Text: %1/30
+ID: 1510 | Text: %1/3
+ID: 1511 | Text: %1/1
+ID: 1513 | Text: Level 66 : Vulnerability
+ID: 1514 | Text: Reduces your opponent's\ndefence by 10%
+ID: 1518 | Text: %1/5
+ID: 1519 | Text: %1/5
+ID: 1520 | Text: %1/1
+ID: 1522 | Text: Level 68: Lvl-5 Enchant
+ID: 1523 | Text: For use on dragonstone jewellery
+ID: 1527 | Text: %1/15
+ID: 1528 | Text: %1/15
+ID: 1529 | Text: %1/1
+ID: 1531 | Text: Level 70 : Earth Wave
+ID: 1532 | Text: A high level Earth missile
+ID: 1536 | Text: %1/7
+ID: 1537 | Text: %1/5
+ID: 1538 | Text: %1/1
+ID: 1545 | Text: Level 73 : Enfeeble
+ID: 1546 | Text: Reduces your opponent's\nstrength by 10%
+ID: 1550 | Text: %1/8
+ID: 1551 | Text: %1/8
+ID: 1552 | Text: %1/1
+ID: 1554 | Text: Level 75 : Fire Wave
+ID: 1555 | Text: A high level Fire missile
+ID: 1559 | Text: %1/7
+ID: 1560 | Text: %1/5
+ID: 1561 | Text: %1/1
+ID: 1564 | Text: Level 80 : Stun
+ID: 1565 | Text: Reduces your opponent's\nattack by 10%
+ID: 1569 | Text: %1/12
+ID: 1570 | Text: %1/12
+ID: 1571 | Text: %1/1
+ID: 1574 | Text: Level 20 : Bind
+ID: 1575 | Text: Holds your opponent\nfor 5 seconds
+ID: 1579 | Text: %1/3
+ID: 1580 | Text: %1/3
+ID: 1581 | Text: %1/2
+ID: 1584 | Text: Level 50 : Snare
+ID: 1585 | Text: Holds your opponent\nfor 10 seconds
+ID: 1589 | Text: %1/4
+ID: 1590 | Text: %1/4
+ID: 1591 | Text: %1/3
+ID: 1594 | Text: Level 79 : Entangle
+ID: 1595 | Text: Holds your opponent\nfor 15 seconds
+ID: 1599 | Text: %1/5
+ID: 1600 | Text: %1/5
+ID: 1601 | Text: %1/4
+ID: 1603 | Text: Level 60 : Saradomin strike
+ID: 1604 | Text: Summons the power\nof Saradomin
+ID: 1608 | Text: %1/2
+ID: 1609 | Text: %1/2
+ID: 1610 | Text: %1/4
+ID: 1612 | Text: %1/1
+ID: 1614 | Text: Level 60 : Claws of Guthix
+ID: 1615 | Text: Summons the power\nof Guthix
+ID: 1619 | Text: %1/1
+ID: 1620 | Text: %1/2
+ID: 1621 | Text: %1/4
+ID: 1623 | Text: %1/1
+ID: 1625 | Text: Level 60 : Flames of Zamorak
+ID: 1626 | Text: Summons the power\nof Zamorak
+ID: 1630 | Text: %1/4
+ID: 1631 | Text: %1/2
+ID: 1632 | Text: %1/1
+ID: 1634 | Text: %1/1
+ID: 1636 | Text: Level 80 : Charge
+ID: 1637 | Text: Temporarily increases the power\nof the three arena spells
+ID: 1641 | Text: %1/3
+ID: 1642 | Text: %1/3
+ID: 1643 | Text: %1/3
+ID: 1673 | Text: Attack bonus
+ID: 1674 | Text: Defence bonus
+ID: 1675 | Text: Stab: +120
+ID: 1676 | Text: Slash: +120
+ID: 1677 | Text: Crush: +120
+ID: 1678 | Text: Magic: +120
+ID: 1679 | Text: Range: +120
+ID: 1680 | Text: Stab: +120
+ID: 1681 | Text: Slash: +120
+ID: 1682 | Text: Crush: +120
+ID: 1683 | Text: Magic: +120
+ID: 1684 | Text: Range: +120
+ID: 1685 | Text: Other bonuses
+ID: 1686 | Text: Strength: +120
+ID: 1687 | Text: Prayer: +120
+ID: 1692 | Text: Autocast spell
+ID: 1700 | Text: Weapon:
+ID: 1701 | Text: %1
+ID: 1702 | Text: Combat Lvl: %1
+ID: 1712 | Text: Chop
+ID: 1713 | Text: Hack
+ID: 1714 | Text: Smash
+ID: 1715 | Text: Block
+ID: 1716 | Text: (Accurate)
+ID: 1717 | Text: (Aggressive)
+ID: 1718 | Text: (Aggressive)
+ID: 1719 | Text: (Defensive)
+ID: 1720 | Text: (Slash)
+ID: 1721 | Text: (Slash)
+ID: 1722 | Text: (Crush)
+ID: 1723 | Text: (Slash)
+ID: 1727 | Text: Close Window
+ID: 1728 | Text: Water Battlestaff
+ID: 1729 | Text: Air Battlestaff
+ID: 1730 | Text: Earth Battlestaff
+ID: 1731 | Text: Fire Battlestaff
+ID: 1732 | Text: What would you like to enchant?
+ID: 1733 | Text: Lava Battlestaff
+ID: 1739 | Text: Insect Queen
+ID: 1740 | Text: Tai Bwo Wannai Trio
+ID: 1741 | Text: Level 52\nSmite
+ID: 1742 | Text: 1/4 of damage dealt is also\n removed from opponent's Prayer
+ID: 1751 | Text: Weapon:
+ID: 1752 | Text: %1
+ID: 1753 | Text: Choose Attack Style
+ID: 1761 | Text: Accurate
+ID: 1762 | Text: Rapid
+ID: 1763 | Text: Longrange
+ID: 1766 | Text: Weapon:
+ID: 1767 | Text: %1
+ID: 1768 | Text: Combat Lvl: %1
+ID: 1776 | Text: Accurate
+ID: 1777 | Text: Rapid
+ID: 1778 | Text: Longrange
+ID: 1783 | Text: line1\nline2\nline3\nline4\nline5
+ID: 1785 | Text: title1
+ID: 1786 | Text: line1\nline2\nline3\nline4\nline5\nline6\nline7\nline8\nline9\nline10\nline11\nline12
+ID: 1826 | Text: Gianne's cook book
+ID: 1827 | Text: Close Window
+ID: 1828 | Text: Index
+ID: 1847 | Text: Select a Combat Spell
+ID: 1854 | Text: Level 1 : Wind Strike
+ID: 1855 | Text: A basic Air missile
+ID: 1858 | Text: %1/1
+ID: 1859 | Text: %1/1
+ID: 1862 | Text: Level 5 : Water Strike
+ID: 1863 | Text: A basic Water missile
+ID: 1867 | Text: %1/1
+ID: 1868 | Text: %1/1
+ID: 1869 | Text: %1/1
+ID: 1872 | Text: Level 9 : Earth Strike
+ID: 1873 | Text: A basic Earth missile
+ID: 1877 | Text: %1/2
+ID: 1878 | Text: %1/1
+ID: 1879 | Text: %1/1
+ID: 1882 | Text: Level 13 : Fire Strike
+ID: 1883 | Text: Landlubber
+ID: 1887 | Text: %1/3
+ID: 1888 | Text: %1/2
+ID: 1890 | Text: Undercurrent
+ID: 1891 | Text: Level 17 : Wind Bolt
+ID: 1892 | Text: A low level Air missile
+ID: 1893 | Text: Nomad
+ID: 1896 | Text: %1/2
+ID: 1898 | Text: Zealot
+ID: 1899 | Text: Level 23 : Water Bolt
+ID: 1900 | Text: A low level Water missile
+ID: 1905 | Text: %1/2
+ID: 1906 | Text: %1/2
+ID: 1909 | Text: Level 29 : Earth Bolt
+ID: 1910 | Text: A low level Earth missile
+ID: 1915 | Text: %1/3
+ID: 1916 | Text: %1/2
+ID: 1919 | Text: Level 35 : Fire Bolt
+ID: 1920 | Text: A low level Fire missile
+ID: 1925 | Text: %1/4
+ID: 1926 | Text: %1/3
+ID: 1929 | Text: Level 41 : Wind Blast
+ID: 1930 | Text: A medium level Air missile
+ID: 1934 | Text: %1/3
+ID: 1937 | Text: Level 47 : Water Blast
+ID: 1938 | Text: A medium level Water missile
+ID: 1943 | Text: %1/3
+ID: 1944 | Text: %1/3
+ID: 1947 | Text: Level 53 : Earth Blast
+ID: 1948 | Text: A medium level Earth missile
+ID: 1953 | Text: %1/4
+ID: 1954 | Text: %1/3
+ID: 1957 | Text: Level 59 : Fire Blast
+ID: 1958 | Text: A medium level Fire missile
+ID: 1963 | Text: %1/5
+ID: 1964 | Text: %1/4
+ID: 1967 | Text: Level 62 : Wind Wave
+ID: 1968 | Text: A high level Air missile
+ID: 1972 | Text: %1/5
+ID: 1975 | Text: Level 65 : Water Wave
+ID: 1976 | Text: A high level Water missile
+ID: 1981 | Text: %1/7
+ID: 1982 | Text: %1/5
+ID: 1985 | Text: Level 70 : Earth Wave
+ID: 1986 | Text: A high level Earth missile
+ID: 1990 | Text: A basic Fire missile
+ID: 1991 | Text: %1/7
+ID: 1992 | Text: %1/5
+ID: 1993 | Text: %1/1
+ID: 1996 | Text: Level 75 : Fire Wave
+ID: 1997 | Text: A high level Fire missile
+ID: 2001 | Text: %1/7
+ID: 2002 | Text: %1/5
+ID: 2003 | Text: %1/1
+ID: 2004 | Text: Take me back!
+ID: 2083 | Text: Hairdresser's Salon
+ID: 2084 | Text: Close Window
+ID: 2113 | Text: CONFIRM
+ID: 2127 | Text: Please select colour
+ID: 2247 | Text: Accept
+ID: 2248 | Text: Party Drop Chest
+ID: 2249 | Text: Close Window
+ID: 2266 | Text: Text
+ID: 2275 | Text: (Once you press Accept items can't be taken out of the chest!)
+ID: 2278 | Text: Weapon:
+ID: 2279 | Text: %1
+ID: 2280 | Text: Combat Lvl: %1
+ID: 2290 | Text: Stab
+ID: 2291 | Text: Lunge
+ID: 2292 | Text: Slash
+ID: 2293 | Text: Block
+ID: 2294 | Text: (Accurate)
+ID: 2295 | Text: (Aggressive)
+ID: 2296 | Text: (Aggressive)
+ID: 2297 | Text: (Defensive)
+ID: 2298 | Text: (Stab)
+ID: 2299 | Text: (Stab)
+ID: 2300 | Text: (Slash)
+ID: 2301 | Text: (Stab)
+ID: 2403 | Text: What would you like to smelt?
+ID: 2408 | Text: What would you like to make?
+ID: 2422 | Text: Close window
+ID: 2425 | Text: Weapon:
+ID: 2426 | Text: %1
+ID: 2427 | Text: Combat Lvl: %1
+ID: 2437 | Text: Chop
+ID: 2438 | Text: Slash
+ID: 2439 | Text: Lunge
+ID: 2440 | Text: Block
+ID: 2441 | Text: (Accurate)
+ID: 2442 | Text: (Controlled)
+ID: 2443 | Text: (Aggressive)
+ID: 2444 | Text: (Defensive)
+ID: 2445 | Text: (Slash)
+ID: 2446 | Text: (Slash)
+ID: 2447 | Text: (Stab)
+ID: 2448 | Text: (Slash)
+ID: 2451 | Text: You got too high, didnt you?
+ID: 2452 | Text: Enjoy the flight & sleep tight!
+ID: 2458 | Text: Get some rest...
+ID: 2460 | Text: Select an Option
+ID: 2461 | Text: option1
+ID: 2462 | Text: option2
+ID: 2470 | Text: Select an Option
+ID: 2471 | Text: option1
+ID: 2472 | Text: option2
+ID: 2473 | Text: option3
+ID: 2481 | Text: Select an Option
+ID: 2482 | Text: option1
+ID: 2483 | Text: option2
+ID: 2484 | Text: option3
+ID: 2485 | Text: option4
+ID: 2493 | Text: Select an Option
+ID: 2494 | Text: option1
+ID: 2495 | Text: option2
+ID: 2496 | Text: option3
+ID: 2497 | Text: option4
+ID: 2498 | Text: option5
+ID: 2582 | Text: Hairdresser's Salon
+ID: 2583 | Text: Close Window
+ID: 2606 | Text: CONFIRM
+ID: 2620 | Text: Please select colour
+ID: 2729 | Text: Hairdresser's Salon
+ID: 2730 | Text: Close Window
+ID: 2753 | Text: CONFIRM
+ID: 2767 | Text: Please select colour
+ID: 2800 | Text: How many would you like to make?
+ID: 2802 | Text: Fire and Brimstone
+ID: 2803 | Text: In the Pits
+ID: 2805 | Text: Current Champion: TzHaar-Xil-Huz
+ID: 2806 | Text: Foes Remaining: %1
+ID: 2811 | Text: Choose some othertime
+ID: 2940 | Text: Close Window
+ID: 2941 | Text: Thessalia's Makeovers (Torso)
+ID: 2959 | Text: CONFIRM (500 gold)
+ID: 2976 | Text: Select body style
+ID: 2977 | Text: Select arms style
+ID: 2978 | Text: Select colour
+ID: 3024 | Text: Close Window
+ID: 3127 | Text: Close Window
+ID: 3128 | Text: Thessalia's Makeovers (Torso)
+ID: 3146 | Text: CONFIRM (500 gold)
+ID: 3163 | Text: Select body style
+ID: 3164 | Text: Select arms style
+ID: 3165 | Text: Select colour
+ID: 3206 | Text: Click the tune to play.
+ID: 3220 | Text: Close Window
+ID: 3276 | Text: Tears of Guthix
+ID: 3277 | Text: The Power of Tears
+ID: 3278 | Text: Tears of Guthix
+ID: 3282 | Text: You Journey on the ship....
+ID: 3284 | Text: Ape
+ID: 3285 | Text: Asgarnia
+ID: 3286 | Text: Karamja
+ID: 3287 | Text: Crandor
+ID: 3288 | Text: Entrana
+ID: 3289 | Text: Port
+ID: 3290 | Text: Sarim
+ID: 3295 | Text: Port
+ID: 3296 | Text: Khazard
+ID: 3297 | Text: Ship
+ID: 3298 | Text: Yard
+ID: 3301 | Text: Cairn
+ID: 3302 | Text: Isle
+ID: 3304 | Text: Brimhaven
+ID: 3305 | Text: Ardougne
+ID: 3320 | Text: Distant Land
+ID: 3417 | Text: Trading With:
+ID: 3418 | Text: Opponent's Offer
+ID: 3419 | Text: Your Offer
+ID: 3421 | Text: Accept
+ID: 3423 | Text: Decline
+ID: 3431 | Text: Waiting for other player
+ID: 3442 | Text: Close Window
+ID: 3533 | Text: You are about to give:
+ID: 3534 | Text: In return you will receive:
+ID: 3535 | Text: Are you sure you want to make this trade?
+ID: 3536 | Text: There is NO WAY to reverse a trade if you change your mind
+ID: 3543 | Text: Close Window
+ID: 3547 | Text: Accept
+ID: 3549 | Text: Decline
+ID: 3557 | Text: Absolutely nothing!
+ID: 3558 | Text: Absolutely nothing!
+ID: 3649 | Text: BestBudz
+ID: 3652 | Text: Enter Budz
+ID: 3658 | Text: Torso
+ID: 3673 | Text: Arms
+ID: 3674 | Text: Legs
+ID: 3675 | Text: Head
+ID: 3676 | Text: Hands
+ID: 3677 | Text: Feet
+ID: 3678 | Text: Jaw
+ID: 3684 | Text: Design
+ID: 3686 | Text: Colour
+ID: 3690 | Text: Hair
+ID: 3691 | Text: Torso
+ID: 3692 | Text: Legs
+ID: 3693 | Text: Skin
+ID: 3694 | Text: Feet
+ID: 3697 | Text: Gender
+ID: 3700 | Text: Stoner
+ID: 3701 | Text: Stonerette
+ID: 3793 | Text: Telescope View
+ID: 3794 | Text: Close Window
+ID: 3798 | Text: Weapon:
+ID: 3799 | Text: %1
+ID: 3800 | Text: Combat Lvl: %1
+ID: 3810 | Text: Pound
+ID: 3811 | Text: Pummel
+ID: 3812 | Text: Spike
+ID: 3813 | Text: Block
+ID: 3814 | Text: (Accurate)
+ID: 3815 | Text: (Controlled)
+ID: 3816 | Text: (Aggressive)
+ID: 3817 | Text: (Defensive)
+ID: 3818 | Text: (Crush)
+ID: 3819 | Text: (Crush)
+ID: 3820 | Text: (Stab)
+ID: 3821 | Text: (Crush)
+ID: 3901 | Text: Axe Shop
+ID: 3902 | Text: Close Window
+ID: 3903 | Text: Right-click on shop to buy item - Right-click on inventory to sell item
+ID: 3983 | Text: Combat Lvl: %1
+ID: 3984 | Text: Total Lvl: %1
+ID: 3985 | Text: QP: %1
+ID: 3987 | Text: \n\n\n\nBronze
+ID: 3991 | Text: \n\n\n\nIron
+ID: 3995 | Text: \n\n\n\nSilver
+ID: 3999 | Text: \n\n\n\nSteel
+ID: 4003 | Text: \n\n\n\nGold
+ID: 4004 | Text: %1
+ID: 4005 | Text: %1
+ID: 4006 | Text: %1
+ID: 4007 | Text: %1
+ID: 4008 | Text: %1
+ID: 4009 | Text: %1
+ID: 4010 | Text: %1
+ID: 4011 | Text: %1
+ID: 4012 | Text: %1
+ID: 4013 | Text: %1
+ID: 4014 | Text: %1
+ID: 4015 | Text: %1
+ID: 4016 | Text: %1
+ID: 4017 | Text: %1
+ID: 4018 | Text: %1
+ID: 4019 | Text: %1
+ID: 4020 | Text: %1
+ID: 4021 | Text: %1
+ID: 4022 | Text: %1
+ID: 4023 | Text: %1
+ID: 4024 | Text: %1
+ID: 4025 | Text: %1
+ID: 4026 | Text: %1
+ID: 4027 | Text: %1
+ID: 4028 | Text: %1
+ID: 4029 | Text: %1
+ID: 4030 | Text: %1
+ID: 4031 | Text: %1
+ID: 4032 | Text: %1
+ID: 4033 | Text: %1
+ID: 4034 | Text: %1
+ID: 4035 | Text: %1
+ID: 4036 | Text: %1
+ID: 4037 | Text: %1
+ID: 4038 | Text: %1
+ID: 4039 | Text: %1
+ID: 4042 | Text: Attack XP:
+ID: 4043 | Text: Next Level At:
+ID: 4044 | Text: %1
+ID: 4045 | Text: %1
+ID: 4048 | Text: Strength XP:
+ID: 4049 | Text: Next Level At:
+ID: 4050 | Text: %1
+ID: 4051 | Text: %1
+ID: 4054 | Text: Defence XP:
+ID: 4055 | Text: Next Level At:
+ID: 4056 | Text: %1
+ID: 4057 | Text: %1
+ID: 4060 | Text: Ranged XP:
+ID: 4061 | Text: Next Level At:
+ID: 4062 | Text: %1
+ID: 4063 | Text: %1
+ID: 4066 | Text: Prayer XP:
+ID: 4067 | Text: Next Level At:
+ID: 4068 | Text: %1
+ID: 4069 | Text: %1
+ID: 4072 | Text: Magic XP:
+ID: 4073 | Text: Next Level At:
+ID: 4074 | Text: %1
+ID: 4075 | Text: %1
+ID: 4078 | Text: Hitpoints XP:
+ID: 4079 | Text: Next Level At:
+ID: 4080 | Text: %1
+ID: 4081 | Text: %1
+ID: 4084 | Text: Agility XP:
+ID: 4085 | Text: Next Level At:
+ID: 4086 | Text: %1
+ID: 4087 | Text: %1
+ID: 4090 | Text: Herblore XP:
+ID: 4091 | Text: Next Level At:
+ID: 4092 | Text: %1
+ID: 4093 | Text: %1
+ID: 4096 | Text: Thieving XP:
+ID: 4097 | Text: Next Level At:
+ID: 4098 | Text: %1
+ID: 4099 | Text: %1
+ID: 4102 | Text: Crafting XP:
+ID: 4103 | Text: Next Level At:
+ID: 4104 | Text: %1
+ID: 4105 | Text: %1
+ID: 4108 | Text: Fletching XP:
+ID: 4109 | Text: Next Level At:
+ID: 4110 | Text: %1
+ID: 4111 | Text: %1
+ID: 4114 | Text: Mining XP:
+ID: 4115 | Text: Next Level At:
+ID: 4116 | Text: %1
+ID: 4117 | Text: %1
+ID: 4120 | Text: Smithing XP:
+ID: 4121 | Text: Next Level At:
+ID: 4122 | Text: %1
+ID: 4123 | Text: %1
+ID: 4126 | Text: Fishing XP:
+ID: 4127 | Text: Next Level At:
+ID: 4128 | Text: %1
+ID: 4129 | Text: %1
+ID: 4132 | Text: Cooking XP:
+ID: 4133 | Text: Next Level At:
+ID: 4134 | Text: %1
+ID: 4135 | Text: %1
+ID: 4138 | Text: Firemaking XP:
+ID: 4139 | Text: Next Level At:
+ID: 4140 | Text: %1
+ID: 4141 | Text: %1
+ID: 4144 | Text: Woodcutting XP:
+ID: 4145 | Text: Next Level At:
+ID: 4146 | Text: %1
+ID: 4147 | Text: %1
+ID: 4152 | Text: %1
+ID: 4153 | Text: %1
+ID: 4155 | Text: Runecraft XP:
+ID: 4156 | Text: Next Level At:
+ID: 4157 | Text: %1
+ID: 4159 | Text: %1
+ID: 4226 | Text: What would you like to make?
+ID: 4227 | Text: Close Window
+ID: 4230 | Text: You need a ring mould to craft rings.
+ID: 4231 | Text: Rings
+ID: 4236 | Text: You need a necklace mould to craft necklaces.
+ID: 4237 | Text: Necklaces
+ID: 4242 | Text: You need an amulet mould to craft amulets.
+ID: 4243 | Text: Amulets
+ID: 4263 | Text: Line1
+ID: 4264 | Text: Line2
+ID: 4265 | Text: Click here to continue
+ID: 4268 | Text: Line1
+ID: 4269 | Text: Line2
+ID: 4270 | Text: Click here to continue
+ID: 4273 | Text: Line1
+ID: 4274 | Text: Line2
+ID: 4275 | Text: Click here to continue
+ID: 4278 | Text: Line1
+ID: 4279 | Text: Line2
+ID: 4280 | Text: Click here to continue
+ID: 4283 | Text: Line1
+ID: 4284 | Text: Line2
+ID: 4285 | Text: Click here to continue
+ID: 4287 | Text: Adventure
+ID: 4288 | Text: Al Kharid
+ID: 4289 | Text: Alone
+ID: 4290 | Text: Ambient Jungle
+ID: 4291 | Text: Arabian
+ID: 4292 | Text: Arabian 2
+ID: 4293 | Text: Arabian 3
+ID: 4294 | Text: Arabique
+ID: 4295 | Text: Army Of Darkness
+ID: 4296 | Text: Arrival
+ID: 4297 | Text: Attack 1
+ID: 4298 | Text: Attack 2
+ID: 4299 | Text: Attack 3
+ID: 4300 | Text: Attack 4
+ID: 4301 | Text: Attack 5
+ID: 4302 | Text: Attack 6
+ID: 4303 | Text: Attention
+ID: 4304 | Text: Autumn Voyage
+ID: 4306 | Text: Ballad Of Enchantment
+ID: 4307 | Text: Baroque
+ID: 4308 | Text: Beyond
+ID: 4309 | Text: Big Chords
+ID: 4310 | Text: Book Of Spells
+ID: 4311 | Text: Camelot
+ID: 4313 | Text: Cavern
+ID: 4314 | Text: Chain Of Command
+ID: 4315 | Text: Crystal Cave
+ID: 4316 | Text: Crystal Sword
+ID: 4317 | Text: Dangerous
+ID: 4318 | Text: Close Window
+ID: 4319 | Text: Deep Wildy
+ID: 4320 | Text: Desert Voyage
+ID: 4321 | Text: Doorways
+ID: 4323 | Text: Dunjun
+ID: 4324 | Text: Egypt
+ID: 4325 | Text: Emotion
+ID: 4326 | Text: Expanse
+ID: 4327 | Text: Expecting
+ID: 4328 | Text: Faerie
+ID: 4329 | Text: Fanfare
+ID: 4330 | Text: Fanfare 2
+ID: 4331 | Text: Fanfare 3
+ID: 4332 | Text: Fishing
+ID: 4333 | Text: Flute Salad
+ID: 4334 | Text: Forever
+ID: 4335 | Text: Gaol
+ID: 4336 | Text: Garden
+ID: 4337 | Text: Gnome King
+ID: 4338 | Text: Gnome Theme
+ID: 4339 | Text: Gnome Village
+ID: 4340 | Text: Gnome Village 2
+ID: 4341 | Text: Gnome
+ID: 4342 | Text: Gnomeball
+ID: 4343 | Text: Greatness
+ID: 4344 | Text: Harmony
+ID: 4345 | Text: High Seas
+ID: 4346 | Text: Horizon
+ID: 4347 | Text: Iban
+ID: 4348 | Text: In the Manor
+ID: 4349 | Text: Inspiration
+ID: 4350 | Text: Intrepid
+ID: 4351 | Text: Jolly-R
+ID: 4352 | Text: Jungle Island
+ID: 4353 | Text: Jungly 1
+ID: 4354 | Text: Jungly 2
+ID: 4355 | Text: Jungly 3
+ID: 4356 | Text: Knightly
+ID: 4357 | Text: Lasting
+ID: 4358 | Text: Legion
+ID: 4359 | Text: Lightness
+ID: 4360 | Text: Lightwalk
+ID: 4361 | Text: Long Ago
+ID: 4362 | Text: Long Way Home
+ID: 4364 | Text: Lullaby
+ID: 4365 | Text: Mage Arena
+ID: 4366 | Text: Magic Dance
+ID: 4367 | Text: Magical Journey
+ID: 4368 | Text: Medieval
+ID: 4369 | Text: Mellow
+ID: 4370 | Text: Miles Away
+ID: 4371 | Text: Miracle Dance
+ID: 4372 | Text: Monarch Waltz
+ID: 4373 | Text: Moody
+ID: 4374 | Text: Neverland
+ID: 4375 | Text: Newbie Melody
+ID: 4376 | Text: Nightfall
+ID: 4377 | Text: Oriental
+ID: 4378 | Text: Overture
+ID: 4379 | Text: Parade
+ID: 4380 | Text: Quest
+ID: 4382 | Text: Reggae
+ID: 4383 | Text: Reggae 2
+ID: 4384 | Text: Riverside
+ID: 4385 | Text: Royale
+ID: 4386 | Text: Rune Essence
+ID: 4387 | Text: Sad Meadow
+ID: 4388 | Text: Scape Cave
+ID: 4389 | Text: Scape Main
+ID: 4392 | Text: Sea Shanty
+ID: 4393 | Text: Sea Shanty 2
+ID: 4394 | Text: Serenade
+ID: 4395 | Text: Serene
+ID: 4396 | Text: Shine
+ID: 4397 | Text: Soundscape
+ID: 4398 | Text: Spirit
+ID: 4399 | Text: Splendour
+ID: 4401 | Text: Spooky Jungle
+ID: 4402 | Text: Starlight
+ID: 4403 | Text: Still Night
+ID: 4404 | Text: The Desert
+ID: 4405 | Text: The Shadow
+ID: 4406 | Text: The Tower
+ID: 4407 | Text: Trawler
+ID: 4408 | Text: Trawler Minor
+ID: 4409 | Text: Tree Spirits
+ID: 4410 | Text: Tribal Background
+ID: 4411 | Text: Tribal
+ID: 4412 | Text: Tribal 2
+ID: 4413 | Text: Trinity
+ID: 4414 | Text: Troubled
+ID: 4415 | Text: Underground
+ID: 4417 | Text: Line1
+ID: 4418 | Text: Unknown Land
+ID: 4420 | Text: Upcoming
+ID: 4421 | Text: Venture
+ID: 4422 | Text: Vision
+ID: 4423 | Text: Voodoo Cult
+ID: 4424 | Text: Voyage
+ID: 4425 | Text: Wander
+ID: 4426 | Text: Waterfall
+ID: 4427 | Text: Wilderness 2
+ID: 4428 | Text: Wilderness 3
+ID: 4430 | Text: Witching
+ID: 4431 | Text: Wonder
+ID: 4432 | Text: Wonderous
+ID: 4433 | Text: Workshop
+ID: 4434 | Text: Start
+ID: 4435 | Text: Talking Forest
+ID: 4436 | Text: Theme
+ID: 4437 | Text: Expedition
+ID: 4438 | Text: Line2
+ID: 4439 | Text: AUTO
+ID: 4440 | Text: Click here to continue
+ID: 4441 | Text: Emperor
+ID: 4444 | Text: 0
+ID: 4448 | Text: Weapon:
+ID: 4449 | Text: %1
+ID: 4450 | Text: Combat Lvl: %1
+ID: 4458 | Text: Accurate
+ID: 4459 | Text: Rapid
+ID: 4460 | Text: Longrange
+ID: 4463 | Text: Stop Viewing
+ID: 4503 | Text: Close Window
+ID: 4506 | Text: Hypnotized
+ID: 4507 | Text: Mirage
+ID: 4508 | Text: Icthlarin's Little Helper
+ID: 4530 | Text: Water Collected
+ID: 4531 | Text: Time Left
+ID: 4533 | Text: %1
+ID: 4536 | Text: Kill Count: %1
+ID: 4549 | Text: Which is the next shape in the above sequence?
+ID: 4553 | Text: 1.
+ID: 4554 | Text: 2.
+ID: 4555 | Text: 3.
+ID: 4556 | Text: 4.
+ID: 4562 | Text: Close Window
+ID: 4563 | Text: %1
+ID: 4641 | Text: Trawler Catch
+ID: 4642 | Text: Dump Items
+ID: 4643 | Text: Click Dump Items to close the window and discard remaining items.
+ID: 4681 | Text: Weapon:
+ID: 4682 | Text: %1
+ID: 4683 | Text: Combat Lvl: %1
+ID: 4693 | Text: Lunge
+ID: 4694 | Text: Swipe
+ID: 4695 | Text: Pound
+ID: 4696 | Text: Block
+ID: 4697 | Text: (Controlled)
+ID: 4698 | Text: (Controlled)
+ID: 4699 | Text: (Controlled)
+ID: 4700 | Text: (Defensive)
+ID: 4701 | Text: (Stab)
+ID: 4702 | Text: (Slash)
+ID: 4703 | Text: (Stab)
+ID: 4704 | Text: (Crush)
+ID: 4707 | Text: Weapon:
+ID: 4708 | Text: %1
+ID: 4709 | Text: Combat Lvl: %1
+ID: 4719 | Text: Chop
+ID: 4720 | Text: Slash
+ID: 4721 | Text: Smash
+ID: 4722 | Text: Block
+ID: 4723 | Text: (Accurate)
+ID: 4724 | Text: (Aggressive)
+ID: 4725 | Text: (Aggressive)
+ID: 4726 | Text: (Defensive)
+ID: 4727 | Text: (Slash)
+ID: 4728 | Text: (Slash)
+ID: 4729 | Text: (Slash)
+ID: 4730 | Text: (Crush)
+ID: 4820 | Text: Close Window
+ID: 4821 | Text: Thessalia's Makeovers (Legs)
+ID: 4839 | Text: CONFIRM (500 gold)
+ID: 4856 | Text: Select colour
+ID: 4864 | Text: Barbarianism
+ID: 4870 | Text: Complication
+ID: 4878 | Text: Select leg style
+ID: 4879 | Text: Down To Earth
+ID: 4880 | Text: Courage
+ID: 4881 | Text: Superstition
+ID: 4884 | Text: Name
+ID: 4885 | Text: Line1
+ID: 4886 | Text: Click here to continue
+ID: 4889 | Text: Name
+ID: 4890 | Text: Line1
+ID: 4891 | Text: Line2
+ID: 4892 | Text: Click here to continue
+ID: 4895 | Text: Name
+ID: 4896 | Text: Line1
+ID: 4897 | Text: Line2
+ID: 4898 | Text: Line3
+ID: 4899 | Text: Click here to continue
+ID: 4902 | Text: Name
+ID: 4903 | Text: Line1
+ID: 4904 | Text: Line2
+ID: 4905 | Text: Line3
+ID: 4906 | Text: Line4
+ID: 4907 | Text: Click here to continue
+ID: 4911 | Text: Text
+ID: 4912 | Text: Close Window
+ID: 4913 | Text: Text
+ID: 4914 | Text: Text
+ID: 4915 | Text: Text
+ID: 4916 | Text: Text
+ID: 4918 | Text: Text
+ID: 4952 | Text: Line1
+ID: 4953 | Text: Line1
+ID: 4954 | Text: Click here to continue
+ID: 4955 | Text: Line1
+ID: 4956 | Text: Line1
+ID: 4960 | Text: Gnomeball
+ID: 4961 | Text: Score
+ID: 4962 | Text: %1
+ID: 4963 | Text: Repair State :
+ID: 4964 | Text: %1%
+ID: 4965 | Text: Resources :
+ID: 4966 | Text: %1%
+ID: 4967 | Text: Sanctity:
+ID: 4968 | Text: %1%
+ID: 4969 | Text: * Temple Repair *
+ID: 5029 | Text: Fractional still
+ID: 5030 | Text: Close Window
+ID: 5032 | Text: Heat
+ID: 5034 | Text: Pressure
+ID: 5062 | Text: Add Coal
+ID: 5067 | Text: Friends List
+ID: 5070 | Text: Add Friend
+ID: 5071 | Text: Del Friend
+ID: 5092 | Text: Loading friend list
+ID: 5093 | Text: Please wait...
+ID: 5383 | Text: The Bank of Best Budz
+ID: 5384 | Text: Close Window
+ID: 5388 | Text: Withdraw as:
+ID: 5389 | Text: Item
+ID: 5390 | Text: Rearrange mode:
+ID: 5391 | Text: Note
+ID: 5394 | Text: Southeast Runescape
+ID: 5395 | Text: Close Window
+ID: 5434 | Text: Lumbridge
+ID: 5435 | Text: Draynor
+ID: 5436 | Text: Varrock
+ID: 5437 | Text: Falador
+ID: 5438 | Text: Village
+ID: 5439 | Text: Port
+ID: 5440 | Text: Sarim
+ID: 5449 | Text: Green=Unlocked
+ID: 5450 | Text: Playing:
+ID: 5453 | Text: Line1
+ID: 5543 | Text: Close Window
+ID: 5544 | Text: CONFIRM (3000 Gold)
+ID: 5557 | Text: MALE
+ID: 5558 | Text: Select skin colour and gender
+ID: 5559 | Text: FEMALE
+ID: 5572 | Text: Weapon:
+ID: 5573 | Text: %1
+ID: 5574 | Text: Combat Lvl: %1
+ID: 5584 | Text: Spike
+ID: 5585 | Text: Impale
+ID: 5586 | Text: Smash
+ID: 5587 | Text: Block
+ID: 5588 | Text: (Accurate)
+ID: 5589 | Text: (Aggressive)
+ID: 5590 | Text: (Aggressive)
+ID: 5591 | Text: (Defensive)
+ID: 5592 | Text: (Stab)
+ID: 5593 | Text: (Stab)
+ID: 5594 | Text: (Crush)
+ID: 5595 | Text: (Stab)
+ID: 5601 | Text: Use rope to repair the Trawler's nets.
+ID: 5602 | Text: Use Swamp Paste to repair leaks
+ID: 5603 | Text: in the Ship's hull.
+ID: 5604 | Text: If all else fails you can always try
+ID: 5605 | Text: and bail the water out as well!
+ID: 5606 | Text: How to play:
+ID: 5607 | Text: Close Window
+ID: 5655 | Text: Increases your defence by 5%
+ID: 5659 | Text: Increases your strength by 5%
+ID: 5663 | Text: Increases your attack by 5%
+ID: 5667 | Text: Increases your defence by 10%
+ID: 5671 | Text: Increases your strength by 10%
+ID: 5675 | Text: Increases your attack by 10%
+ID: 5679 | Text: 2x restore rate for all stats\nexcept hitpoints and prayer
+ID: 5683 | Text: 2x restore rate for hitpoints stat
+ID: 5687 | Text: Keep 1 extra item if you die
+ID: 5691 | Text: Increases your defence by 15%
+ID: 5695 | Text: Increases your strength by 15%
+ID: 5699 | Text: Increases your attack by 15%
+ID: 5703 | Text: Protection from magical attacks
+ID: 5708 | Text: Line1
+ID: 5709 | Text: Click here to continue
+ID: 5712 | Text: Line1
+ID: 5713 | Text: Line1
+ID: 5714 | Text: Click here to continue
+ID: 5717 | Text: Ignore List
+ID: 5720 | Text: Add Name
+ID: 5721 | Text: Del Name
+ID: 5742 | Text: Loading ignore list
+ID: 5743 | Text: Please wait...
+ID: 5844 | Text: Line1
+ID: 5845 | Text: Line1
+ID: 5846 | Text: Click here to continue
+ID: 5847 | Text: Line1
+ID: 5850 | Text: Line1
+ID: 5851 | Text: Line1
+ID: 5852 | Text: Click here to continue
+ID: 5853 | Text: Line1
+ID: 5854 | Text: Line1
+ID: 5856 | Text: Weapon:
+ID: 5858 | Text: Combat Lvl: %1
+ID: 5869 | Text: (Accurate)
+ID: 5870 | Text: (Aggressive)
+ID: 5871 | Text: (Defensive)
+ID: 5872 | Text: (Crush)
+ID: 5873 | Text: (Crush)
+ID: 5874 | Text: (Crush)
+ID: 5951 | Text: Report abuse
+ID: 5952 | Text: Close Window
+ID: 5966 | Text: This form is for reporting players who are breaking our rules.
+ID: 5967 | Text: Using it sends a snapshot of the last 60 secs of activity to us.
+ID: 5968 | Text: If you misuse this form, you will be banned.
+ID: 5969 | Text: Then click below to indicate which of our 13 rules is being broken.
+ID: 5970 | Text: For a detailed explanation of each rule please read the manual on our website.
+ID: 5971 | Text: 1: Offensive language
+ID: 5972 | Text: 2: Item scamming
+ID: 5973 | Text: 3: Password scamming
+ID: 5974 | Text: 4: Bug abuse
+ID: 5975 | Text: 5: Jagex staff impersonation
+ID: 5976 | Text: 6: Account sharing/trading
+ID: 5977 | Text: 7: Macroing
+ID: 5978 | Text: 8: Multiple logging in
+ID: 5979 | Text: 9: Encouraging others to break rules
+ID: 5980 | Text: 10: Misuse of customer support
+ID: 5981 | Text: 11: Advertising / website
+ID: 5982 | Text: 12: Real world item trading
+ID: 5983 | Text: First please enter the name of the offending player below:
+ID: 5984 | Text: Andrew*
+ID: 5985 | Text: Moderator option: Mute player for 48 hours: <OFF>
+ID: 5988 | Text: Scape Soft
+ID: 5989 | Text: Yesteryear
+ID: 5990 | Text: Shining
+ID: 5996 | Text: Desert Heat
+ID: 5997 | Text: The Genie
+ID: 6002 | Text: Message of the week
+ID: 6005 | Text: Level 87: Lvl-6 Enchant
+ID: 6006 | Text: For use on onyx jewellery
+ID: 6009 | Text: %1/1
+ID: 6010 | Text: %1/20
+ID: 6012 | Text: %1/20
+ID: 6013 | Text: TzHaar!
+ID: 6020 | Text: Unmorph
+ID: 6024 | Text: Wanted!
+ID: 6025 | Text: Temple of Light
+ID: 6026 | Text: La Mort
+ID: 6027 | Text: Mourning's Ends Part 2
+ID: 6030 | Text: Close Window
+ID: 6032 | Text: List of needed items:
+ID: 6033 | Text: mourning_deathalter_item1
+ID: 6035 | Text: mourning_deathalter_item2
+ID: 6036 | Text: mourning_deathalter_item3
+ID: 6037 | Text: mourning_deathalter_item4
+ID: 6038 | Text: mourning_deathalter_item5
+ID: 6039 | Text: mourning_deathalter_item6
+ID: 6040 | Text: mourning_deathalter_item7
+ID: 6041 | Text: mourning_deathalter_item8
+ID: 6042 | Text: mourning_deathalter_item9
+ID: 6043 | Text: mourning_deathalter_item10
+ID: 6044 | Text: mourning_deathalter_item11
+ID: 6045 | Text: mourning_deathalter_item12
+ID: 6046 | Text: mourning_deathalter_item13
+ID: 6047 | Text: mourning_deathalter_item14
+ID: 6048 | Text: mourning_deathalter_item15
+ID: 6049 | Text: mourning_deathalter_item16
+ID: 6050 | Text: mourning_deathalter_item17
+ID: 6051 | Text: mourning_deathalter_item18
+ID: 6052 | Text: mourning_deathalter_item19
+ID: 6053 | Text: mourning_deathalter_item20
+ID: 6054 | Text: mourning_deathalter_item21
+ID: 6055 | Text: mourning_deathalter_item22
+ID: 6056 | Text: mourning_deathalter_item23
+ID: 6057 | Text: mourning_deathalter_item24
+ID: 6058 | Text: mourning_deathalter_item25
+ID: 6059 | Text: mourning_deathalter_item26
+ID: 6060 | Text: mourning_deathalter_item27
+ID: 6061 | Text: mourning_deathalter_item28
+ID: 6062 | Text: mourning_deathalter_item29
+ID: 6063 | Text: mourning_deathalter_item30
+ID: 6064 | Text: mourning_deathalter_item31
+ID: 6065 | Text: mourning_deathalter_item32
+ID: 6066 | Text: mourning_deathalter_item33
+ID: 6067 | Text: mourning_deathalter_item34
+ID: 6068 | Text: mourning_deathalter_item35
+ID: 6069 | Text: mourning_deathalter_item36
+ID: 6070 | Text: mourning_deathalter_item37
+ID: 6071 | Text: mourning_deathalter_item38
+ID: 6072 | Text: mourning_deathalter_item39
+ID: 6073 | Text: mourning_deathalter_item40
+ID: 6074 | Text: mourning_deathalter_item41
+ID: 6075 | Text: mourning_deathalter_item42
+ID: 6076 | Text: mourning_deathalter_item43
+ID: 6077 | Text: mourning_deathalter_item44
+ID: 6078 | Text: mourning_deathalter_item45
+ID: 6079 | Text: mourning_deathalter_item46
+ID: 6080 | Text: mourning_deathalter_item47
+ID: 6081 | Text: mourning_deathalter_item48
+ID: 6082 | Text: mourning_deathalter_item49
+ID: 6083 | Text: mourning_deathalter_item50
+ID: 6100 | Text: Close window.
+ID: 6102 | Text: Rotate mirror.
+ID: 6114 | Text: Line2
+ID: 6129 | Text: S P E C I A L  A T T A C K
+ID: 6131 | Text: Weapon:
+ID: 6132 | Text: %1
+ID: 6133 | Text: Combat Lvl: %1
+ID: 6141 | Text: Bash
+ID: 6142 | Text: Pound
+ID: 6143 | Text: Block
+ID: 6144 | Text: (Aggressive)
+ID: 6145 | Text: (Accurate)
+ID: 6146 | Text: (Defensive)
+ID: 6147 | Text: Click here to continue
+ID: 6148 | Text: (Crush)
+ID: 6149 | Text: (Crush)
+ID: 6150 | Text: (Crush)
+ID: 6151 | Text: Corporal Punishment
+ID: 6156 | Text: You are awarded
+ID: 6158 | Text: Quest points.
+ID: 6161 | Text: Changed my mind..
+ID: 6165 | Text: Level 58 : Ice Rush
+ID: 6180 | Text: Title
+ID: 6181 | Text: Line1
+ID: 6182 | Text: Line2
+ID: 6183 | Text: Line3
+ID: 6184 | Text: Line4
+ID: 6185 | Text: Lonesome
+ID: 6191 | Text: Close
+ID: 6203 | Text: \n\n\n\nFishbowl
+ID: 6207 | Text: Line1
+ID: 6208 | Text: Line2
+ID: 6209 | Text: Click here to continue
+ID: 6212 | Text: Line1
+ID: 6213 | Text: Line2
+ID: 6214 | Text: Click here to continue
+ID: 6217 | Text: Line1
+ID: 6218 | Text: Line2
+ID: 6219 | Text: Click here to continue
+ID: 6222 | Text: Line1
+ID: 6223 | Text: Line2
+ID: 6224 | Text: Click here to continue
+ID: 6227 | Text: Line1
+ID: 6228 | Text: Line2
+ID: 6229 | Text: Click here to continue
+ID: 6232 | Text: Line1
+ID: 6233 | Text: Line2
+ID: 6234 | Text: Click here to continue
+ID: 6238 | Text: Line1
+ID: 6239 | Text: Line2
+ID: 6240 | Text: Click here to continue
+ID: 6243 | Text: Line1
+ID: 6244 | Text: Line2
+ID: 6245 | Text: Click here to continue
+ID: 6248 | Text: Line1
+ID: 6249 | Text: Line2
+ID: 6250 | Text: Click here to continue
+ID: 6254 | Text: Line1
+ID: 6255 | Text: Line2
+ID: 6256 | Text: Click here to continue
+ID: 6259 | Text: Line1
+ID: 6260 | Text: Line2
+ID: 6261 | Text: Click here to continue
+ID: 6264 | Text: Line1
+ID: 6265 | Text: Line2
+ID: 6266 | Text: Click here to continue
+ID: 6271 | Text: MAN
+ID: 6272 | Text: AUTO
+ID: 6282 | Text: Game Options
+ID: 6283 | Text: Screen Brightness
+ID: 6284 | Text: Dark
+ID: 6285 | Text: Normal
+ID: 6286 | Text: Bright
+ID: 6287 | Text: V-Bright
+ID: 6288 | Text: Mouse Buttons
+ID: 6289 | Text: Two
+ID: 6290 | Text: One
+ID: 6291 | Text: Chat Effects
+ID: 6292 | Text: Off
+ID: 6293 | Text: On
+ID: 6294 | Text: Music + Sounds are only
+ID: 6295 | Text: available in the high detail
+ID: 6296 | Text: version of the game.
+ID: 6297 | Text: Tomorrow
+ID: 6298 | Text: Duel Arena
+ID: 6300 | Text: To reduce memory requirements
+ID: 6301 | Text: music & sounds are only
+ID: 6302 | Text: available in the high-detail
+ID: 6303 | Text: If you wish to hear these
+ID: 6304 | Text: please switch versions, but
+ID: 6305 | Text: bear in mind things will run
+ID: 6306 | Text: more slowly as a result.
+ID: 6307 | Text: version of the game.
+ID: 6399 | Text: Last fifty duels on this server:
+ID: 6400 | Text: Scoreboard
+ID: 6401 | Text: Close Window
+ID: 6402 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 6403 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 6404 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 6405 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 6406 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 6407 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 6408 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 6409 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 6410 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 6411 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 6504 | Text: You are about to stake:
+ID: 6505 | Text: Are you sure you want to fight this duel?
+ID: 6510 | Text: Close Window
+ID: 6516 | Text: Absolutely nothing!
+ID: 6517 | Text: Absolutely nothing!
+ID: 6518 | Text: Throne of Miscellania
+ID: 6519 | Text: Glass
+ID: 6522 | Text: Wall
+ID: 6527 | Text: Before the duel starts:
+ID: 6532 | Text: Box
+ID: 6533 | Text: Glass
+ID: 6534 | Text: Accept
+ID: 6540 | Text: Climb
+ID: 6541 | Text: Rope
+ID: 6542 | Text: During the duel:
+ID: 6546 | Text: Cry
+ID: 6547 | Text: Think
+ID: 6548 | Text: Laugh
+ID: 6549 | Text: Dance
+ID: 6550 | Text: Climb Rope
+ID: 6551 | Text: Lean on air
+ID: 6552 | Text: Glass Wall
+ID: 6553 | Text: Glass Box
+ID: 6556 | Text: Decline
+ID: 6557 | Text: Runesquares
+ID: 6559 | Text: 100 vs 100
+ID: 6561 | Text: Which shape is blue?
+ID: 6565 | Text: Shape1
+ID: 6566 | Text: Shape2
+ID: 6567 | Text: Shape3
+ID: 6569 | Text: Complete the Maze as fast as possible!
+ID: 6570 | Text: There is...
+ID: 6571 | Text: Waiting for other player...
+ID: 6572 | Text: %1%
+ID: 6664 | Text: ... of the Reward left!
+ID: 6671 | Text: Dueling with:
+ID: 6677 | Text: Opponents Stake:
+ID: 6678 | Text: Your Stake:
+ID: 6680 | Text: Accept
+ID: 6682 | Text: Decline
+ID: 6684 | Text: Neither player is allowed to forfeit the duel.
+ID: 6696 | Text: No Forfeit
+ID: 6697 | Text: No Magic
+ID: 6698 | Text: No Ranged
+ID: 6699 | Text: No Melee
+ID: 6701 | Text: No Drinks
+ID: 6702 | Text: No Food
+ID: 6703 | Text: No Prayer
+ID: 6704 | Text: No Movement
+ID: 6731 | Text: Obstacles
+ID: 6825 | Text: You are victorious!
+ID: 6827 | Text: Claim!
+ID: 6834 | Text: Close Window
+ID: 6835 | Text: The Spoils:
+ID: 6836 | Text: The Defeated:
+ID: 6837 | Text: Name:
+ID: 6838 | Text: Combat level:
+ID: 6839 | Text: 126
+ID: 6840 | Text: Crunchy
+ID: 6842 | Text: Wolf Mountain
+ID: 6843 | Text: Harmony 2
+ID: 6844 | Text: %1/1
+ID: 6846 | Text: %1/1
+ID: 6848 | Text: %1/1
+ID: 6850 | Text: %1/1
+ID: 6852 | Text: %1/1
+ID: 6854 | Text: %1/1
+ID: 6856 | Text: %1/1
+ID: 6858 | Text: %1/1
+ID: 6860 | Text: %1/1
+ID: 6862 | Text: %1/1
+ID: 6864 | Text: %1/1
+ID: 6867 | Text: Venture 2
+ID: 6924 | Text: Close Window
+ID: 6939 | Text: Proceed with caution. If you go much further north you will enter the\nwilderness. This is a very dangerous area where other players can attack you!
+ID: 6940 | Text: WARNING !!!
+ID: 6941 | Text: The further north you go the more dangerous it becomes, but there is more\ntreasure to be found.
+ID: 6942 | Text: In the wilderness an indicator at the bottom-right of the screen\nwill show the current level of danger.
+ID: 6943 | Text: Escape
+ID: 6944 | Text: Close Quarters
+ID: 6945 | Text: Heart and Mind
+ID: 6951 | Text: Close Window
+ID: 6959 | Text: Get Location
+ID: 6961 | Text: Close Window
+ID: 6967 | Text: Close Window
+ID: 6968 | Text: The quick brown fox jumped over the 
+ID: 6969 | Text: The quick brown fox jumped over the 
+ID: 6970 | Text: The quick brown fox jumped over the 
+ID: 6971 | Text: The quick brown fox jumped over the 
+ID: 6972 | Text: The quick brown fox jumped over the 
+ID: 6973 | Text: The quick brown fox jumped over the 
+ID: 6974 | Text: The quick brown fox jumped over the 
+ID: 6975 | Text: The quick brown fox jumped over the 
+ID: 6978 | Text: Close Window
+ID: 6982 | Text: Hint
+ID: 6983 | Text: Wildwood
+ID: 6987 | Text: A Fairy Tale Pt. 1
+ID: 6990 | Text: Close
+ID: 6991 | Text: Certificate of Advanced Healing
+ID: 6992 | Text: From PoxStead College.
+ID: 6993 | Text: Signed Dr Foster-MMD, PRD
+ID: 6996 | Text: Close Window
+ID: 7028 | Text: 2E
+ID: 7030 | Text: Far Away
+ID: 7044 | Text: Fight or Flight
+ID: 7047 | Text: Close Window
+ID: 7068 | Text: 1N
+ID: 7069 | Text: 6E
+ID: 7070 | Text: 2W
+ID: 7071 | Text: 6N
+ID: 7115 | Text: Close Window
+ID: 7151 | Text: 2W
+ID: 7152 | Text: 4S
+ID: 7153 | Text: 3E
+ID: 7154 | Text: 3S
+ID: 7164 | Text: Close Window
+ID: 7201 | Text: 3E
+ID: 7202 | Text: 3N
+ID: 7203 | Text: 1E
+ID: 7204 | Text: 2N
+ID: 7223 | Text: Close Window
+ID: 7273 | Text: Close Window
+ID: 7331 | Text: Head Of Magical Healing.
+ID: 7332 | Text: Black Knights' Fortress
+ID: 7333 | Text: Cook's Assistant
+ID: 7334 | Text: Demon Slayer
+ID: 7335 | Text: Rune Mysteries Quest
+ID: 7336 | Text: Doric's Quest
+ID: 7337 | Text: The Restless Ghost
+ID: 7338 | Text: Goblin Diplomacy
+ID: 7339 | Text: Ernest the Chicken
+ID: 7340 | Text: Imp Catcher
+ID: 7341 | Text: Pirate's Treasure
+ID: 7342 | Text: Prince Ali Rescue
+ID: 7343 | Text: Romeo & Juliet
+ID: 7344 | Text: Sheep Shearer
+ID: 7345 | Text: Shield of Arrav
+ID: 7346 | Text: The Knight's Sword
+ID: 7347 | Text: Vampire Slayer
+ID: 7348 | Text: Witch's Potion
+ID: 7349 | Text: Watch Tower
+ID: 7350 | Text: Waterfall Quest
+ID: 7351 | Text: Witch's House
+ID: 7352 | Text: Biohazard
+ID: 7353 | Text: Clock Tower
+ID: 7354 | Text: Digsite Quest
+ID: 7355 | Text: Druidic Ritual
+ID: 7356 | Text: Dwarf Cannon
+ID: 7357 | Text: Family Crest
+ID: 7358 | Text: Fight Arena
+ID: 7359 | Text: Fishing Contest
+ID: 7360 | Text: Gertrude's Cat
+ID: 7361 | Text: The Grand Tree
+ID: 7362 | Text: Hazeel Cult
+ID: 7363 | Text: Heroes Quest
+ID: 7364 | Text: Holy Grail
+ID: 7365 | Text: Jungle Potion
+ID: 7366 | Text: Legends Quest
+ID: 7367 | Text: Lost City
+ID: 7368 | Text: Merlin's Crystal
+ID: 7369 | Text: Monk's Friend
+ID: 7370 | Text: Murder Mystery
+ID: 7371 | Text: Observatory Quest
+ID: 7372 | Text: Plague City
+ID: 7373 | Text: Scorpion Catcher
+ID: 7374 | Text: Sea Slug Quest
+ID: 7375 | Text: Sheep Herder
+ID: 7376 | Text: Shilo Village
+ID: 7378 | Text: Temple of Ikov
+ID: 7379 | Text: The Tourist Trap
+ID: 7380 | Text: Tree Gnome Village
+ID: 7381 | Text: Tribal Totem
+ID: 7382 | Text: Underground Pass
+ID: 7383 | Text: Dragon Slayer
+ID: 7421 | Text: The Bank of Best Budz - Deposit Box
+ID: 7422 | Text: Close Window
+ID: 7441 | Text: \n\n\n\nMithril
+ID: 7446 | Text: \n\n\n\nAdamant
+ID: 7450 | Text: \n\n\n\nRune
+ID: 7451 | Text: Saga
+ID: 7452 | Text: Legend
+ID: 7453 | Text: Sunburn
+ID: 7454 | Text: Bandit Camp
+ID: 7457 | Text: Level 61 : Trollheim Teleport
+ID: 7458 | Text: Teleports you to Trollheim
+ID: 7459 | Text: Elemental Workshop
+ID: 7460 | Text: Stratosphere
+ID: 7461 | Text: Twilight
+ID: 7486 | Text: S P E C I A L  A T T A C K
+ID: 7511 | Text: S P E C I A L  A T T A C K
+ID: 7536 | Text: S P E C I A L  A T T A C K
+ID: 7561 | Text: S P E C I A L  A T T A C K
+ID: 7586 | Text: S P E C I A L  A T T A C K
+ID: 7611 | Text: S P E C I A L  A T T A C K
+ID: 7636 | Text: S P E C I A L  A T T A C K
+ID: 7661 | Text: S P E C I A L  A T T A C K
+ID: 7686 | Text: S P E C I A L  A T T A C K
+ID: 7711 | Text: S P E C I A L  A T T A C K
+ID: 7736 | Text: S P E C I A L  A T T A C K
+ID: 7761 | Text: S P E C I A L  A T T A C K
+ID: 7764 | Text: Weapon:
+ID: 7765 | Text: %1
+ID: 7766 | Text: Combat Lvl: %1
+ID: 7776 | Text: Chop
+ID: 7777 | Text: Slash
+ID: 7778 | Text: Lunge
+ID: 7779 | Text: Block
+ID: 7780 | Text: (Accurate)
+ID: 7781 | Text: (Controlled)
+ID: 7782 | Text: (Aggressive)
+ID: 7783 | Text: (Defensive)
+ID: 7784 | Text: (Slash)
+ID: 7785 | Text: (Slash)
+ID: 7786 | Text: (Stab)
+ID: 7787 | Text: (Slash)
+ID: 7812 | Text: S P E C I A L  A T T A C K
+ID: 7815 | Text: Harold
+ID: 7817 | Text: No Sp. Atk
+ID: 8094 | Text: Grave Monument
+ID: 8095 | Text: Close Window
+ID: 8112 | Text: Saradomin\n\nlights my way\n\nthrough\n\nthe darkness of life
+ID: 8115 | Text: Priest in Peril
+ID: 8116 | Text: Mausoleum
+ID: 8117 | Text: Morytania
+ID: 8118 | Text: Village
+ID: 8129 | Text: Close Window
+ID: 8132 | Text: Insert
+ID: 8133 | Text: Swap
+ID: 8136 | Text: Close Window
+ID: 8137 | Text: Nature Spirit
+ID: 8138 | Text: Grotto
+ID: 8139 | Text: Natural
+ID: 8140 | Text: Waterlogged
+ID: 8141 | Text: Stagnant
+ID: 8142 | Text: Dead Quiet
+ID: 8144 | Text: ifquestname
+ID: 8145 | Text: qj1
+ID: 8147 | Text: qj2
+ID: 8148 | Text: qj3
+ID: 8149 | Text: qj4
+ID: 8150 | Text: qj5
+ID: 8151 | Text: qj6
+ID: 8152 | Text: qj7
+ID: 8153 | Text: qj8
+ID: 8154 | Text: qj9
+ID: 8155 | Text: qj10
+ID: 8156 | Text: qj11
+ID: 8157 | Text: qj12
+ID: 8158 | Text: qj13
+ID: 8159 | Text: qj14
+ID: 8160 | Text: qj15
+ID: 8161 | Text: qj16
+ID: 8162 | Text: qj17
+ID: 8163 | Text: qj18
+ID: 8164 | Text: qj19
+ID: 8165 | Text: qj20
+ID: 8166 | Text: qj21
+ID: 8167 | Text: qj22
+ID: 8168 | Text: qj23
+ID: 8169 | Text: qj24
+ID: 8170 | Text: qj25
+ID: 8171 | Text: qj26
+ID: 8172 | Text: qj27
+ID: 8173 | Text: qj28
+ID: 8174 | Text: qj29
+ID: 8175 | Text: qj30
+ID: 8176 | Text: qj31
+ID: 8177 | Text: qj32
+ID: 8178 | Text: qj33
+ID: 8179 | Text: qj34
+ID: 8180 | Text: qj35
+ID: 8181 | Text: qj36
+ID: 8182 | Text: qj37
+ID: 8183 | Text: qj38
+ID: 8184 | Text: qj39
+ID: 8185 | Text: qj40
+ID: 8186 | Text: qj41
+ID: 8187 | Text: qj42
+ID: 8188 | Text: qj43
+ID: 8189 | Text: qj44
+ID: 8190 | Text: qj45
+ID: 8191 | Text: qj46
+ID: 8192 | Text: qj47
+ID: 8193 | Text: qj48
+ID: 8194 | Text: qj49
+ID: 8195 | Text: qj50
+ID: 8208 | Text: Select an Option
+ID: 8209 | Text: option1
+ID: 8210 | Text: option2
+ID: 8211 | Text: option3
+ID: 8212 | Text: option4
+ID: 8220 | Text: Select an Option
+ID: 8221 | Text: option1
+ID: 8222 | Text: option2
+ID: 8223 | Text: option3
+ID: 8224 | Text: option4
+ID: 8225 | Text: option5
+ID: 8233 | Text: Your opponent will stake:
+ID: 8238 | Text: There will be obstacles in the arena.
+ID: 8239 | Text: There will be obstacles in the arena.
+ID: 8240 | Text: There will be obstacles in the arena.
+ID: 8241 | Text: There will be obstacles in the arena.
+ID: 8242 | Text: There will be obstacles in the arena.
+ID: 8243 | Text: There will be obstacles in the arena.
+ID: 8244 | Text: There will be obstacles in the arena.
+ID: 8245 | Text: There will be obstacles in the arena.
+ID: 8246 | Text: There will be obstacles in the arena.
+ID: 8247 | Text: There will be obstacles in the arena.
+ID: 8248 | Text: There will be obstacles in the arena.
+ID: 8249 | Text: There will be obstacles in the arena.
+ID: 8250 | Text: Lots of y's and g's
+ID: 8251 | Text: There will be obstacles in the arena.
+ID: 8252 | Text: There will be obstacles in the arena.
+ID: 8253 | Text: There will be obstacles in the arena.
+ID: 8260 | Text: Neither player is allowed to forfeit the duel.
+ID: 8262 | Text: Players stand next to each other and aren't allowed to move.
+ID: 8264 | Text: Neither player is allowed to use weapons.
+ID: 8266 | Text: Neither player is allowed to use armour.
+ID: 8268 | Text: Neither player is allowed to wear jewelry.
+ID: 8270 | Text: Neither player is allowed to use ranged attacks.
+ID: 8272 | Text: Neither player is allowed to use melee attacks.
+ID: 8274 | Text: Neither player is allowed to use magic attacks.
+ID: 8276 | Text: Neither player will be allowed to use special attacks.
+ID: 8278 | Text: Both players will use a 'fun weapon', such as: flowers or rubber chicken.
+ID: 8280 | Text: Neither player will be allowed to use drinks.
+ID: 8282 | Text: Neither player will be allowed to use food.
+ID: 8284 | Text: Neither player will be allowed to use prayer.
+ID: 8286 | Text: The duel will be in an arena with obstacles.
+ID: 8383 | Text: Agility Ticket Exchange
+ID: 8384 | Text: Toadflax
+ID: 8385 | Text: Pirate's hook
+ID: 8386 | Text: Close Window
+ID: 8388 | Text: Experience (1)
+ID: 8394 | Text: Snapdragon
+ID: 8395 | Text: Experience (10)
+ID: 8396 | Text: Experience (25)
+ID: 8397 | Text: Experience (100)
+ID: 8398 | Text: Experience (1000)
+ID: 8399 | Text: Player
+ID: 8421 | Text: Roll Dice!
+ID: 8423 | Text: Continue...
+ID: 8424 | Text: 0
+ID: 8425 | Text: 0
+ID: 8426 | Text: You win!
+ID: 8427 | Text: Close Window
+ID: 8428 | Text: 2 bars
+ID: 8429 | Text: Claws
+ID: 8432 | Text: Time Out
+ID: 8433 | Text: Principality
+ID: 8434 | Text: Hermit
+ID: 8435 | Text: Kingdom
+ID: 8436 | Text: Contest
+ID: 8437 | Text: Tremble
+ID: 8438 | Text: Death Plateau
+ID: 8451 | Text: Tar regulator
+ID: 8452 | Text: Pressure valve
+ID: 8454 | Text: Total distilled
+ID: 8462 | Text: Weapon:
+ID: 8463 | Text: %1
+ID: 8464 | Text: Combat Lvl: %1
+ID: 8472 | Text: Jab
+ID: 8473 | Text: Swipe
+ID: 8474 | Text: Fend
+ID: 8475 | Text: (Controlled)
+ID: 8476 | Text: (Defensive)
+ID: 8477 | Text: (Aggressive)
+ID: 8478 | Text: (Stab)
+ID: 8479 | Text: (Slash)
+ID: 8480 | Text: (Stab)
+ID: 8505 | Text: S P E C I A L  A T T A C K
+ID: 8546 | Text: Close
+ID: 8557 | Text: x%1
+ID: 8558 | Text: x%1
+ID: 8565 | Text: Breeze
+ID: 8566 | Text: Well of Voyage
+ID: 8567 | Text: Crystal Castle
+ID: 8568 | Text: Exposed
+ID: 8569 | Text: Lost Soul
+ID: 8570 | Text: Meridian
+ID: 8571 | Text: Woodland
+ID: 8572 | Text: Everywhere
+ID: 8573 | Text: Overpass
+ID: 8574 | Text: Forest
+ID: 8575 | Text: Elven Mist
+ID: 8576 | Text: Regicide
+ID: 8578 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8579 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8580 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8581 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8582 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8583 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8584 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8585 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8586 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8587 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8588 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8589 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8590 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8591 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8592 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8593 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8594 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8595 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8596 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8597 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8598 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8599 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8600 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8601 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8602 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8603 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8604 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8605 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8606 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8607 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8608 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8609 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8610 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8611 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8612 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8613 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8614 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8615 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8616 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8617 | Text: Crunchy (126) beat Crunchy2 (126)
+ID: 8620 | Text: \n\n\n\n\nArmour
+ID: 8622 | Text: \n\n\n\n\nGloves
+ID: 8624 | Text: \n\n\n\n\nBoots
+ID: 8626 | Text: \n\n\n\n\nVambraces
+ID: 8628 | Text: \n\n\n\n\nChaps
+ID: 8630 | Text: \n\n\n\n\nCoif
+ID: 8632 | Text: \n\n\n\n\nCowl
+ID: 8675 | Text: %1/2
+ID: 8676 | Text: %1/2
+ID: 8679 | Text: Eadgar's Ruse
+ID: 8716 | Text: Skill Name
+ID: 8718 | Text: Level
+ID: 8719 | Text: Advancement
+ID: 8812 | Text: Close Window
+ID: 8823 | Text: Bronze
+ID: 8824 | Text: Iron
+ID: 8827 | Text: Steel
+ID: 8837 | Text: Mithril
+ID: 8840 | Text: Adamant
+ID: 8843 | Text: Rune
+ID: 8846 | Text: Smelting
+ID: 8849 | Text: Members only skill
+ID: 8859 | Text: Op 8
+ID: 8862 | Text: Op 9
+ID: 8865 | Text: Op 10
+ID: 8879 | Text: What would you like to make?
+ID: 8898 | Text: What would you like to make?
+ID: 8922 | Text: What would you like to make?
+ID: 8934 | Text: Player
+ID: 8935 | Text: Artistry
+ID: 8936 | Text: Deadlands
+ID: 8966 | Text: What would you like to make?
+ID: 8967 | Text: Lair
+ID: 8968 | Text: Bone Dance
+ID: 8969 | Text: Shades of Mort'ton
+ID: 8970 | Text: Shadowland
+ID: 8971 | Text: Background
+ID: 8972 | Text: Cave Background
+ID: 8973 | Text: Dark
+ID: 8974 | Text: Dream
+ID: 8975 | Text: March
+ID: 8976 | Text: Regal
+ID: 8977 | Text: Scape Sad
+ID: 8978 | Text: Scape Wild
+ID: 8979 | Text: Spooky
+ID: 8980 | Text: Cellar Song
+ID: 9045 | Text: Close Window
+ID: 9110 | Text: Close Window
+ID: 9198 | Text: Close Window
+ID: 9277 | Text: Close Window
+ID: 9361 | Text: Close Window
+ID: 9456 | Text: Close Window
+ID: 9509 | Text: Close Window
+ID: 9634 | Text: Close Window
+ID: 9724 | Text: Close Window
+ID: 9845 | Text: Close Window
+ID: 9926 | Text: LOOP
+ID: 9927 | Text: Underground Pass
+ID: 9937 | Text: Close Window
+ID: 10036 | Text: Close Window
+ID: 10037 | Text: Yrsa's Shoe Store
+ID: 10038 | Text: CONFIRM (500 GOLD)
+ID: 10095 | Text: A
+ID: 10096 | Text: A
+ID: 10097 | Text: A
+ID: 10098 | Text: A
+ID: 10107 | Text: Combination Lock Door
+ID: 10108 | Text: Close Window
+ID: 10110 | Text: E N T E R
+ID: 10111 | Text: Borderland
+ID: 10112 | Text: Rellekka
+ID: 10113 | Text: Warrior
+ID: 10114 | Text: The Navigator
+ID: 10115 | Text: The Fremennik Trials
+ID: 10118 | Text: Close Window
+ID: 10126 | Text: Scape Scared
+ID: 10127 | Text: Pirates of Peril
+ID: 10128 | Text: Dangerous Road
+ID: 10129 | Text: Faithless
+ID: 10131 | Text: Lighthouse
+ID: 10132 | Text: Out of the Deep
+ID: 10133 | Text: Tiptoe
+ID: 10135 | Text: Horror from the Deep
+ID: 10162 | Text: Close Window
+ID: 10246 | Text: Draughts: Options
+ID: 10248 | Text: Challenge
+ID: 10255 | Text: Close Window
+ID: 10256 | Text: 30 seconds
+ID: 10262 | Text: 1 minute
+ID: 10263 | Text: 2 minutes
+ID: 10264 | Text: 15 seconds
+ID: 10265 | Text: Time per move:
+ID: 10269 | Text: Choose piece:
+ID: 10292 | Text: Ranked
+ID: 10361 | Text: Challenge: Select Game
+ID: 10363 | Text: Select
+ID: 10370 | Text: Close Window
+ID: 10374 | Text: Draughts
+ID: 10375 | Text: Runelink
+ID: 10376 | Text: 100 vs 100
+ID: 10377 | Text: 100 vs 100
+ID: 10378 | Text: Game:
+ID: 10379 | Text: Ranks (mine vs opponents):
+ID: 10448 | Text: Insert a very long name here!
+ID: 10456 | Text: vs
+ID: 10457 | Text: Insert a very long name here!
+ID: 10469 | Text: Turn:
+ID: 10472 | Text: Draughts
+ID: 10474 | Text: Resign
+ID: 10476 | Text: Offer draw
+ID: 10479 | Text: A very long name
+ID: 10492 | Text: Blah blah blah blah blah blah blah!
+ID: 10498 | Text: Blah blah blah blah blah blah blah!
+ID: 10499 | Text: Blah blah blah blah blah!
+ID: 10505 | Text: Draughts
+ID: 10506 | Text: Rank: %1
+ID: 10575 | Text: Insert a very long name here!
+ID: 10583 | Text: vs
+ID: 10584 | Text: Insert a very long name here!
+ID: 10596 | Text: Draughts
+ID: 10604 | Text: Blah blah blah blah blah!
+ID: 10606 | Text: Close
+ID: 10615 | Text: Blah blah blah blah blah blah blah!
+ID: 10616 | Text: Blah blah blah blah blah blah blah!
+ID: 10685 | Text: Insert a very long name here!
+ID: 10693 | Text: vs
+ID: 10694 | Text: Insert a very long name here!
+ID: 10706 | Text: Turn:
+ID: 10710 | Text: Runelink
+ID: 10712 | Text: Resign
+ID: 10714 | Text: Offer draw
+ID: 10717 | Text: A very long name
+ID: 10731 | Text: Blah blah blah blah blah blah blah!
+ID: 10735 | Text: Blah blah blah blah blah blah blah!
+ID: 10743 | Text: Blah blah blah blah blah!
+ID: 10746 | Text: Close
+ID: 10822 | Text: Runelink: Options
+ID: 10824 | Text: Challenge
+ID: 10831 | Text: Close Window
+ID: 10832 | Text: 30 seconds
+ID: 10838 | Text: 1 minute
+ID: 10839 | Text: 2 minutes
+ID: 10840 | Text: 15 seconds
+ID: 10841 | Text: Time per move:
+ID: 10845 | Text: Choose piece:
+ID: 10868 | Text: Ranked
+ID: 10872 | Text: Runelink
+ID: 10873 | Text: Rank: %1
+ID: 10942 | Text: Insert a very long name here!
+ID: 10950 | Text: vs
+ID: 10951 | Text: Insert a very long name here!
+ID: 10963 | Text: Runelink
+ID: 10970 | Text: Blah blah blah blah blah!
+ID: 10972 | Text: Close
+ID: 10981 | Text: Blah blah blah blah blah blah blah!
+ID: 10982 | Text: Blah blah blah blah blah blah blah!
+ID: 10983 | Text: Competition
+ID: 10986 | Text: Kingdom of Miscellania
+ID: 10987 | Text: Close Window
+ID: 10990 | Text: Mining
+ID: 10994 | Text: Herbs
+ID: 11011 | Text: Coffers:
+ID: 11029 | Text: Wood
+ID: 11045 | Text: Fishing
+ID: 11064 | Text: Idle
+ID: 11072 | Text: 500,000
+ID: 11073 | Text: Deposit
+ID: 11074 | Text: Withdraw
+ID: 11081 | Text: Help
+ID: 11095 | Text: The Desolate Isle
+ID: 11096 | Text: Miscellania
+ID: 11097 | Text: Etceteria
+ID: 11098 | Text: Rellekka
+ID: 11101 | Text: Lean
+ID: 11102 | Text: Blow
+ID: 11103 | Text: Kiss
+ID: 11106 | Text: Goblin Game
+ID: 11107 | Text: Fruits de Mer
+ID: 11108 | Text: Etceteria
+ID: 11109 | Text: Miscellania
+ID: 11110 | Text: Close Window
+ID: 11128 | Text: Close Window
+ID: 11132 | Text: Monkey Madness
+ID: 11133 | Text: Narnode's Theme
+ID: 11134 | Text: Anywhere
+ID: 11135 | Text: Technology
+ID: 11136 | Text: Monkey Madness
+ID: 11137 | Text: Marooned
+ID: 11138 | Text: Island Life
+ID: 11139 | Text: Temple
+ID: 11140 | Text: Suspicious
+ID: 11141 | Text: Showdown
+ID: 11142 | Text: Find My Way
+ID: 11144 | Text: Cooked
+ID: 11147 | Text: Zamorak = %1
+ID: 11148 | Text: %1 = Saradomin
+ID: 11154 | Text: Health %1%
+ID: 11155 | Text: %1 Min
+ID: 11158 | Text: Locked
+ID: 11160 | Text: Collapsed
+ID: 11162 | Text: Collapsed
+ID: 11164 | Text: Operational
+ID: 11258 | Text: Catapult Controls
+ID: 11259 | Text: Close Window
+ID: 11328 | Text: Fire Catapult
+ID: 11334 | Text: Total Wins This Season!
+ID: 11335 | Text: Saradomin: 0
+ID: 11336 | Text: Zamorak: 0
+ID: 11337 | Text: Close
+ID: 11345 | Text: Zamorak = %1
+ID: 11346 | Text: %1 = Saradomin
+ID: 11352 | Text: Health %1%
+ID: 11353 | Text: %1 Min
+ID: 11356 | Text: Locked
+ID: 11358 | Text: Collapsed
+ID: 11360 | Text: Collapsed
+ID: 11362 | Text: Operational
+ID: 11456 | Text: Castle Wars Ticket Exchange
+ID: 11457 | Text: Close Window
+ID: 11459 | Text: 1 bar
+ID: 11461 | Text: Oil lantern frame
+ID: 11474 | Text: \n\n\n\nVial
+ID: 11476 | Text: Castlewars
+ID: 11477 | Text: Melodrama
+ID: 11478 | Text: Ready for Battle
+ID: 11480 | Text: Waiting for players to join the other team.
+ID: 11481 | Text: Haunted Mine
+ID: 11482 | Text: Spooky 2
+ID: 11483 | Text: Deep Down
+ID: 11484 | Text: Chamber
+ID: 11574 | Text: Points Settings
+ID: 11575 | Text: Close Window
+ID: 11692 | Text: < To Lift
+ID: 11694 | Text: Controls
+ID: 11708 | Text: START
+ID: 11710 | Text: Controls
+ID: 11711 | Text: You are\nhere
+ID: 11720 | Text: A
+ID: 11721 | Text: B
+ID: 11722 | Text: C
+ID: 11723 | Text: D
+ID: 11724 | Text: E
+ID: 11725 | Text: F
+ID: 11726 | Text: G
+ID: 11727 | Text: H
+ID: 11728 | Text: I
+ID: 11729 | Text: J
+ID: 11730 | Text: K
+ID: 11857 | Text: Haunted Mine
+ID: 11858 | Text: Troll Romance
+ID: 11861 | Text: Line1
+ID: 11862 | Text: Click here to continue
+ID: 11866 | Text: Line1
+ID: 11867 | Text: Line1
+ID: 11868 | Text: Click here to continue
+ID: 11872 | Text: Line1
+ID: 11873 | Text: Line1
+ID: 11874 | Text: Click here to continue
+ID: 11875 | Text: Line1
+ID: 11880 | Text: Scape Santa
+ID: 11881 | Text: Hells Bells
+ID: 11882 | Text: Romancing the Crone
+ID: 11883 | Text: Stranded
+ID: 11886 | Text: Name
+ID: 11887 | Text: Line1
+ID: 11888 | Text: Line2
+ID: 11889 | Text: Line3
+ID: 11890 | Text: Line4
+ID: 11893 | Text: Name
+ID: 11894 | Text: Line1
+ID: 11895 | Text: Line2
+ID: 11896 | Text: Line3
+ID: 11897 | Text: Line4
+ID: 11906 | Text: Stillness
+ID: 11907 | Text: In Search of the Myreque
+ID: 11930 | Text: Water:
+ID: 11931 | Text: Net:
+ID: 11932 | Text: Catch:
+ID: 11933 | Text: Time left:
+ID: 11935 | Text: Okay
+ID: 11936 | Text: Ripped!
+ID: 11937 | Text: Nothing
+ID: 11938 | Text: 10 mins
+ID: 11939 | Text: Karamja Jam
+ID: 11940 | Text: Pathways
+ID: 11941 | Text: 7th Realm
+ID: 12031 | Text: Ranging Guild Ticket Exchange
+ID: 12032 | Text: Close Window
+ID: 12039 | Text: Level 50 : Magic Dart
+ID: 12040 | Text: A magic dart of slaying
+ID: 12043 | Text: %1/1
+ID: 12044 | Text: %1/4
+ID: 12045 | Text: %1/1
+ID: 12047 | Text: Masquerade
+ID: 12048 | Text: The Terrible Tower
+ID: 12049 | Text: The Slayer
+ID: 12065 | Text: Level 62 : Wind Wave
+ID: 12066 | Text: A high level Air missile
+ID: 12068 | Text: %1/5
+ID: 12069 | Text: %1/1
+ID: 12073 | Text: Level 65 : Water Wave
+ID: 12074 | Text: A high level Water missile
+ID: 12077 | Text: %1/7
+ID: 12078 | Text: %1/5
+ID: 12079 | Text: %1/1
+ID: 12083 | Text: Level 70 : Earth Wave
+ID: 12084 | Text: A high level Earth missile
+ID: 12087 | Text: %1/7
+ID: 12088 | Text: %1/5
+ID: 12089 | Text: %1/1
+ID: 12093 | Text: Level 75 : Fire Wave
+ID: 12094 | Text: A high level Fire missile
+ID: 12097 | Text: %1/7
+ID: 12098 | Text: %1/5
+ID: 12099 | Text: %1/1
+ID: 12101 | Text: cancel
+ID: 12104 | Text: Level 50 : Magic Dart
+ID: 12105 | Text: A magic dart of slaying
+ID: 12108 | Text: %1/1
+ID: 12109 | Text: %1/1
+ID: 12110 | Text: %1/4
+ID: 12114 | Text: Level 39 : Crumble Undead
+ID: 12115 | Text: Hits skeletons, ghosts,\nshades & zombies hard
+ID: 12119 | Text: %1/2
+ID: 12120 | Text: %1/2
+ID: 12121 | Text: %1/1
+ID: 12123 | Text: Line1
+ID: 12124 | Text: Line2
+ID: 12125 | Text: Click here to continue
+ID: 12126 | Text: Fenkenstrain's Refrain
+ID: 12127 | Text: Body Parts
+ID: 12128 | Text: Barking Mad
+ID: 12129 | Text: Creature of Fenkenstrain
+ID: 12134 | Text: Close Window
+ID: 12135 | Text: Time
+ID: 12136 | Text: 4:17
+ID: 12137 | Text: 300
+ID: 12138 | Text: XP score
+ID: 12139 | Text: Roving Elves
+ID: 12142 | Text: Congratulations!
+ID: 12143 | Text: Close
+ID: 12144 | Text: You have completed Death Plateau!
+ID: 12146 | Text: Quest Points:
+ID: 12147 | Text: %1
+ID: 12149 | Text: You are awarded:
+ID: 12150 | Text: Line 1
+ID: 12151 | Text: Line 2
+ID: 12152 | Text: Line 3
+ID: 12153 | Text: Line 4
+ID: 12154 | Text: Line 5
+ID: 12155 | Text: Line 6
+ID: 12166 | Text: %1
+ID: 12167 | Text: %1
+ID: 12169 | Text: Slayer XP:
+ID: 12170 | Text: Next Level At:
+ID: 12171 | Text: %1
+ID: 12172 | Text: %1
+ID: 12174 | Text: qj51
+ID: 12175 | Text: qj52
+ID: 12176 | Text: qj53
+ID: 12177 | Text: qj54
+ID: 12178 | Text: qj55
+ID: 12179 | Text: qj56
+ID: 12180 | Text: qj57
+ID: 12181 | Text: qj58
+ID: 12182 | Text: qj59
+ID: 12183 | Text: qj60
+ID: 12184 | Text: qj61
+ID: 12185 | Text: qj62
+ID: 12186 | Text: qj63
+ID: 12187 | Text: qj64
+ID: 12188 | Text: qj65
+ID: 12189 | Text: qj66
+ID: 12190 | Text: qj67
+ID: 12191 | Text: qj68
+ID: 12192 | Text: qj69
+ID: 12193 | Text: qj70
+ID: 12194 | Text: qj71
+ID: 12195 | Text: qj72
+ID: 12196 | Text: qj73
+ID: 12197 | Text: qj74
+ID: 12198 | Text: qj75
+ID: 12199 | Text: qj76
+ID: 12200 | Text: qj77
+ID: 12201 | Text: qj78
+ID: 12202 | Text: qj79
+ID: 12203 | Text: qj80
+ID: 12204 | Text: qj81
+ID: 12205 | Text: qj82
+ID: 12206 | Text: qj83
+ID: 12207 | Text: qj84
+ID: 12208 | Text: qj85
+ID: 12209 | Text: qj86
+ID: 12210 | Text: qj87
+ID: 12211 | Text: qj88
+ID: 12212 | Text: qj89
+ID: 12213 | Text: qj90
+ID: 12214 | Text: qj91
+ID: 12215 | Text: qj92
+ID: 12216 | Text: qj93
+ID: 12217 | Text: qj94
+ID: 12218 | Text: qj95
+ID: 12219 | Text: qj96
+ID: 12220 | Text: qj97
+ID: 12221 | Text: qj98
+ID: 12222 | Text: qj99
+ID: 12223 | Text: qj100
+ID: 12224 | Text: % Done
+ID: 12225 | Text: Tutorial Island Progress
+ID: 12229 | Text: Please follow the instructions below
+ID: 12230 | Text: to advance in the tutorial.
+ID: 12234 | Text: Rune-Draw
+ID: 12235 | Text: Close Window
+ID: 12236 | Text: Your Score
+ID: 12237 | Text: opponent's Score
+ID: 12238 | Text: Draw
+ID: 12239 | Text: Hold
+ID: 12260 | Text: DEATH
+ID: 12261 | Text: Text
+ID: 12262 | Text: DEATH
+ID: 12263 | Text: Text
+ID: 12270 | Text: Close Window
+ID: 12271 | Text: 8-East
+ID: 12272 | Text: 6-South
+ID: 12273 | Text: 2-North
+ID: 12274 | Text: 4-East
+ID: 12275 | Text: 22-South
+ID: 12276 | Text: X marks the start!
+ID: 12277 | Text: Dragontooth Island
+ID: 12280 | Text: Windspeed:
+ID: 12281 | Text: high
+ID: 12282 | Text: Ghosts Ahoy
+ID: 12285 | Text: Text
+ID: 12286 | Text: Shipwrecked
+ID: 12287 | Text: Phasmatys
+ID: 12288 | Text: The Other Side
+ID: 12289 | Text: Dragontooth Island
+ID: 12292 | Text: Weapon:
+ID: 12293 | Text: %1
+ID: 12294 | Text: Combat Lvl: %1
+ID: 12302 | Text: Flick
+ID: 12303 | Text: Lash
+ID: 12304 | Text: Deflect
+ID: 12305 | Text: (Controlled)
+ID: 12306 | Text: (Accurate)
+ID: 12308 | Text: (Slash)
+ID: 12309 | Text: (Slash)
+ID: 12310 | Text: (Slash)
+ID: 12335 | Text: S P E C I A L  A T T A C K
+ID: 12336 | Text: Monster Melee
+ID: 12338 | Text: Lemantolly
+ID: 12339 | Text: Undri
+ID: 12345 | Text: One Small Favour
+ID: 12348 | Text: Close Window
+ID: 12358 | Text: **********
+ID: 12359 | Text: ************************
+ID: 12364 | Text: Remove this key
+ID: 12365 | Text: ***************
+ID: 12367 | Text: Remove this key
+ID: 12376 | Text: Name
+ID: 12377 | Text: Line1
+ID: 12380 | Text: Name
+ID: 12381 | Text: Line1
+ID: 12382 | Text: Line2
+ID: 12385 | Text: Name
+ID: 12386 | Text: Line1
+ID: 12387 | Text: Line2
+ID: 12388 | Text: Line3
+ID: 12389 | Text: Mountain Daughter
+ID: 12390 | Text: Cave of Beasts
+ID: 12391 | Text: Settlement
+ID: 12396 | Text: \n\n\n\nOrb
+ID: 12400 | Text: \n\n\n\nBeer Glass
+ID: 12404 | Text: \n\n\nCandle\nLantern
+ID: 12408 | Text: \n\n\nOil\nLamp
+ID: 12412 | Text: \n\n\nLantern\nLens
+ID: 12413 | Text: What would you like to make?
+ID: 12427 | Text: Level 74 : Teleother Lumbridge
+ID: 12428 | Text: Teleports target to Lumbridge
+ID: 12432 | Text: %1/1
+ID: 12433 | Text: %1/1
+ID: 12434 | Text: %1/1
+ID: 12437 | Text: Level 82 : Teleother Falador
+ID: 12438 | Text: Teleports target to Falador
+ID: 12442 | Text: %1/1
+ID: 12443 | Text: %1/1
+ID: 12444 | Text: %1/1
+ID: 12447 | Text: Level 85 : Tele Block
+ID: 12448 | Text: Stops your target from teleporting
+ID: 12452 | Text: %1/1
+ID: 12453 | Text: %1/1
+ID: 12454 | Text: %1/1
+ID: 12457 | Text: Level 90 : Teleother Camelot
+ID: 12458 | Text: Teleports target to Camelot
+ID: 12461 | Text: %1/2
+ID: 12462 | Text: %1/1
+ID: 12463 | Text: Accept Aid
+ID: 12466 | Text: Yes
+ID: 12467 | Text: No
+ID: 12557 | Text: Teleport Option
+ID: 12558 | Text: %1
+ID: 12559 | Text: ...wants to teleport you to...
+ID: 12560 | Text: %2
+ID: 12561 | Text: Do you accept?
+ID: 12567 | Text: Accept
+ID: 12569 | Text: Decline
+ID: 12584 | Text: Cave of the Goblins
+ID: 12585 | Text: Accept Aid
+ID: 12588 | Text: Yes
+ID: 12589 | Text: No
+ID: 12609 | Text: Schematic 1
+ID: 12610 | Text: Schematic 2
+ID: 12611 | Text: Schematic 3
+ID: 12612 | Text: Show/Select
+ID: 12665 | Text: Close Window
+ID: 12666 | Text: %1
+ID: 12715 | Text: line1
+ID: 12716 | Text: line2
+ID: 12717 | Text: line3
+ID: 12718 | Text: line4
+ID: 12719 | Text: line5
+ID: 12720 | Text: line6
+ID: 12721 | Text: line7
+ID: 12722 | Text: line8
+ID: 12723 | Text: line9
+ID: 12724 | Text: line10
+ID: 12725 | Text: line11
+ID: 12726 | Text: line12
+ID: 12727 | Text: line13
+ID: 12728 | Text: line14
+ID: 12729 | Text: line15
+ID: 12730 | Text: line16
+ID: 12731 | Text: line17
+ID: 12732 | Text: line18
+ID: 12733 | Text: line19
+ID: 12734 | Text: line20
+ID: 12735 | Text: line21
+ID: 12736 | Text: line22
+ID: 12742 | Text: Name
+ID: 12743 | Text: Line1
+ID: 12745 | Text: Line1
+ID: 12763 | Text: Close
+ID: 12771 | Text: That's it, it all makes sense now! If you were a dwarf, that is...
+ID: 12772 | Text: Between a Rock...
+ID: 12775 | Text: Name
+ID: 12776 | Text: Line1
+ID: 12779 | Text: Name
+ID: 12780 | Text: Line1
+ID: 12781 | Text: Line2
+ID: 12784 | Text: Name
+ID: 12785 | Text: Line1
+ID: 12786 | Text: Line2
+ID: 12787 | Text: Line3
+ID: 12789 | Text: Line1
+ID: 12791 | Text: Line1
+ID: 12792 | Text: Line2
+ID: 12794 | Text: Line1
+ID: 12795 | Text: Line2
+ID: 12796 | Text: Line3
+ID: 12798 | Text: Line1
+ID: 12799 | Text: Line2
+ID: 12800 | Text: Line3
+ID: 12801 | Text: Line4
+ID: 12803 | Text: Line1
+ID: 12804 | Text: Line2
+ID: 12805 | Text: Line3
+ID: 12806 | Text: Line4
+ID: 12807 | Text: Line5
+ID: 12808 | Text: Time to Mine
+ID: 12809 | Text: In Between
+ID: 12810 | Text: Claustrophobia
+ID: 12814 | Text: Whatever text you need goes here!
+ID: 12815 | Text: Combi for lock
+ID: 12816 | Text: Close Window
+ID: 12817 | Text: Text
+ID: 12818 | Text: Text
+ID: 12819 | Text: Text
+ID: 12823 | Text: Close Window
+ID: 12835 | Text: Dynasty
+ID: 12836 | Text: The Feud
+ID: 12839 | Text: The Golem
+ID: 12840 | Text: Scape Original
+ID: 12841 | Text: The Golem
+ID: 12842 | Text: Forgotten
+ID: 12843 | Text: Throne of the Demon
+ID: 12844 | Text: Bone Dry
+ID: 12845 | Text: Path of Peril
+ID: 12846 | Text: Sarcophagus
+ID: 12847 | Text: Frostbite
+ID: 12848 | Text: Down Below
+ID: 12849 | Text: City of the Dead
+ID: 12850 | Text: Scarab
+ID: 12851 | Text: Sphinx
+ID: 12852 | Text: Desert Treasure
+ID: 12863 | Text: Level 58 : Ice Rush
+ID: 12864 | Text: A single target ice attack
+ID: 12868 | Text: %1/2
+ID: 12869 | Text: %1/2
+ID: 12870 | Text: %1/2
+ID: 12873 | Text: Level 82 : Ice Blitz
+ID: 12874 | Text: A single target strong\nice attack
+ID: 12878 | Text: %1/2
+ID: 12879 | Text: %1/2
+ID: 12880 | Text: %1/3
+ID: 12883 | Text: Level 70 : Ice Burst
+ID: 12884 | Text: A multi-target ice attack
+ID: 12888 | Text: %1/4
+ID: 12889 | Text: %1/2
+ID: 12890 | Text: %1/4
+ID: 12893 | Text: Level 94 : Ice Barrage
+ID: 12894 | Text: A multi-target strong\nice attack
+ID: 12898 | Text: %1/4
+ID: 12899 | Text: %1/2
+ID: 12900 | Text: %1/6
+ID: 12903 | Text: Level 56 : Blood Rush
+ID: 12904 | Text: A single target blood attack
+ID: 12908 | Text: %1/2
+ID: 12909 | Text: %1/2
+ID: 12910 | Text: %1/1
+ID: 12913 | Text: Level 80 : Blood Blitz
+ID: 12914 | Text: A single target strong\nblood attack
+ID: 12917 | Text: %1/2
+ID: 12918 | Text: %1/4
+ID: 12921 | Text: Level 68 : Blood Burst
+ID: 12922 | Text: A multi-target blood attack
+ID: 12926 | Text: %1/4
+ID: 12927 | Text: %1/2
+ID: 12928 | Text: %1/2
+ID: 12931 | Text: Level 92 : Blood Barrage
+ID: 12932 | Text: A multi-target strong\nblood attack
+ID: 12936 | Text: %1/4
+ID: 12937 | Text: %1/4
+ID: 12938 | Text: %1/1
+ID: 12941 | Text: Level 50 : Smoke Rush
+ID: 12942 | Text: A single target smoke attack
+ID: 12947 | Text: %1/2
+ID: 12948 | Text: %1/2
+ID: 12949 | Text: %1/1
+ID: 12950 | Text: %1/1
+ID: 12953 | Text: Level 74 : Smoke Blitz
+ID: 12954 | Text: A single target strong\n smoke attack
+ID: 12959 | Text: %1/2
+ID: 12960 | Text: %1/2
+ID: 12961 | Text: %1/2
+ID: 12962 | Text: %1/2
+ID: 12965 | Text: Level 62 : Smoke Burst
+ID: 12966 | Text: A multi-target smoke attack
+ID: 12971 | Text: %1/4
+ID: 12972 | Text: %1/2
+ID: 12973 | Text: %1/2
+ID: 12974 | Text: %1/2
+ID: 12977 | Text: Level 86 : Smoke Barrage
+ID: 12978 | Text: A multi-target strong\nsmoke attack
+ID: 12983 | Text: %1/4
+ID: 12984 | Text: %1/2
+ID: 12985 | Text: %1/4
+ID: 12986 | Text: %1/4
+ID: 12989 | Text: Level 52 : Shadow Rush
+ID: 12990 | Text: A single target shadow attack
+ID: 12995 | Text: %1/2
+ID: 12996 | Text: %1/2
+ID: 12997 | Text: %1/1
+ID: 12998 | Text: %1/1
+ID: 13001 | Text: Level 76 : Shadow Blitz
+ID: 13002 | Text: A single target strong\nshadow attack
+ID: 13007 | Text: %1/2
+ID: 13008 | Text: %1/2
+ID: 13009 | Text: %1/2
+ID: 13010 | Text: %1/2
+ID: 13013 | Text: Level 64 : Shadow Burst
+ID: 13014 | Text: A multi-target shadow attack
+ID: 13019 | Text: %1/4
+ID: 13020 | Text: %1/2
+ID: 13021 | Text: %1/2
+ID: 13022 | Text: %1/2
+ID: 13025 | Text: Level 88 : Shadow Barrage
+ID: 13026 | Text: A multi-target strong\nshadow attack
+ID: 13031 | Text: %1/4
+ID: 13032 | Text: %1/2
+ID: 13033 | Text: %1/4
+ID: 13034 | Text: %1/3
+ID: 13037 | Text: Level 54 : Paddewwa Teleport
+ID: 13038 | Text: A teleportation spell
+ID: 13042 | Text: %1/2
+ID: 13043 | Text: %1/1
+ID: 13044 | Text: %1/1
+ID: 13047 | Text: Level 60 : Senntisten Teleport
+ID: 13048 | Text: A teleportation spell
+ID: 13051 | Text: %1/2
+ID: 13052 | Text: %1/1
+ID: 13055 | Text: Level 66 : Kharyrll Teleport
+ID: 13056 | Text: A teleportation spell
+ID: 13059 | Text: %1/2
+ID: 13060 | Text: %1/1
+ID: 13063 | Text: Level 72 : Lassar Teleport
+ID: 13064 | Text: A teleportation spell
+ID: 13067 | Text: %1/2
+ID: 13068 | Text: %1/4
+ID: 13071 | Text: Level 78 : Dareeyak Teleport
+ID: 13072 | Text: A teleportation spell
+ID: 13076 | Text: %1/2
+ID: 13077 | Text: %1/3
+ID: 13078 | Text: %1/2
+ID: 13081 | Text: Level 84 : Carrallangar Teleport
+ID: 13082 | Text: A teleportation spell
+ID: 13085 | Text: %1/2
+ID: 13086 | Text: %1/2
+ID: 13089 | Text: Level 90 : Annakarl Teleport
+ID: 13090 | Text: A teleportation spell
+ID: 13093 | Text: %1/2
+ID: 13094 | Text: %1/2
+ID: 13097 | Text: Level 96 : Ghorrock Teleport
+ID: 13098 | Text: A teleportation spell
+ID: 13101 | Text: %1/2
+ID: 13102 | Text: %1/8
+ID: 13107 | Text: A single target ice attack
+ID: 13111 | Text: %1/2
+ID: 13112 | Text: %1/2
+ID: 13113 | Text: %1/2
+ID: 13117 | Text: Level 82 : Ice Blitz
+ID: 13118 | Text: A single target strong\nice attack
+ID: 13122 | Text: %1/2
+ID: 13123 | Text: %1/2
+ID: 13124 | Text: %1/3
+ID: 13128 | Text: Level 70 : Ice Burst
+ID: 13129 | Text: A multi-target ice attack
+ID: 13133 | Text: %1/4
+ID: 13134 | Text: %1/2
+ID: 13135 | Text: %1/4
+ID: 13139 | Text: Level 94 : Ice Barrage
+ID: 13140 | Text: A multi-target strong\nice attack
+ID: 13144 | Text: %1/4
+ID: 13145 | Text: %1/2
+ID: 13146 | Text: %1/6
+ID: 13150 | Text: Level 56 : Blood Rush
+ID: 13151 | Text: A single target blood attack
+ID: 13155 | Text: %1/2
+ID: 13156 | Text: %1/2
+ID: 13157 | Text: %1/1
+ID: 13161 | Text: Level 80 : Blood Blitz
+ID: 13162 | Text: A single target strong\nblood attack
+ID: 13165 | Text: %1/2
+ID: 13166 | Text: %1/4
+ID: 13170 | Text: Level 68 : Blood Burst
+ID: 13171 | Text: A multi-target blood attack
+ID: 13175 | Text: %1/4
+ID: 13176 | Text: %1/2
+ID: 13177 | Text: %1/2
+ID: 13181 | Text: Level 92 : Blood Barrage
+ID: 13182 | Text: A multi-target strong\nblood attack
+ID: 13186 | Text: %1/4
+ID: 13187 | Text: %1/4
+ID: 13188 | Text: %1/1
+ID: 13192 | Text: Level 50 : Smoke Rush
+ID: 13193 | Text: A single target smoke attack
+ID: 13198 | Text: %1/2
+ID: 13199 | Text: %1/2
+ID: 13200 | Text: %1/1
+ID: 13201 | Text: %1/1
+ID: 13205 | Text: Level 74 : Smoke Blitz
+ID: 13206 | Text: A single target strong\n smoke attack
+ID: 13211 | Text: %1/2
+ID: 13212 | Text: %1/2
+ID: 13213 | Text: %1/2
+ID: 13214 | Text: %1/2
+ID: 13218 | Text: Level 62 : Smoke Burst
+ID: 13219 | Text: A multi-target smoke attack
+ID: 13224 | Text: %1/4
+ID: 13225 | Text: %1/2
+ID: 13226 | Text: %1/2
+ID: 13227 | Text: %1/2
+ID: 13231 | Text: Level 86 : Smoke Barrage
+ID: 13232 | Text: A multi-target strong\nsmoke attack
+ID: 13237 | Text: %1/4
+ID: 13238 | Text: %1/2
+ID: 13239 | Text: %1/4
+ID: 13240 | Text: %1/4
+ID: 13244 | Text: Level 52 : Shadow Rush
+ID: 13245 | Text: A single target shadow attack
+ID: 13250 | Text: %1/2
+ID: 13251 | Text: %1/2
+ID: 13252 | Text: %1/1
+ID: 13253 | Text: %1/1
+ID: 13257 | Text: Level 76 : Shadow Blitz
+ID: 13258 | Text: A single target strong\nshadow attack
+ID: 13263 | Text: %1/2
+ID: 13264 | Text: %1/2
+ID: 13265 | Text: %1/2
+ID: 13266 | Text: %1/2
+ID: 13270 | Text: Level 64 : Shadow Burst
+ID: 13271 | Text: A multi-target shadow attack
+ID: 13276 | Text: %1/4
+ID: 13277 | Text: %1/2
+ID: 13278 | Text: %1/2
+ID: 13279 | Text: %1/2
+ID: 13283 | Text: Level 88 : Shadow Barrage
+ID: 13284 | Text: A multi-target strong\nshadow attack
+ID: 13289 | Text: %1/4
+ID: 13290 | Text: %1/2
+ID: 13291 | Text: %1/4
+ID: 13292 | Text: %1/3
+ID: 13316 | Text: line1
+ID: 13317 | Text: line2
+ID: 13318 | Text: line3
+ID: 13319 | Text: line4
+ID: 13320 | Text: line5
+ID: 13321 | Text: line6
+ID: 13322 | Text: line7
+ID: 13323 | Text: line8
+ID: 13324 | Text: line9
+ID: 13325 | Text: line10
+ID: 13326 | Text: line11
+ID: 13327 | Text: line12
+ID: 13328 | Text: line13
+ID: 13329 | Text: line14
+ID: 13330 | Text: line15
+ID: 13331 | Text: line16
+ID: 13332 | Text: line17
+ID: 13333 | Text: line18
+ID: 13334 | Text: line19
+ID: 13335 | Text: line20
+ID: 13336 | Text: line21
+ID: 13337 | Text: line22
+ID: 13338 | Text: line23
+ID: 13339 | Text: line24
+ID: 13340 | Text: line25
+ID: 13341 | Text: line26
+ID: 13342 | Text: line27
+ID: 13343 | Text: line28
+ID: 13344 | Text: line28
+ID: 13345 | Text: line29
+ID: 13350 | Text: page%1
+ID: 13351 | Text: page%2
+ID: 13352 | Text: Dance of the Undead
+ID: 13353 | Text: Dangerous Way
+ID: 13354 | Text: Wayward
+ID: 13355 | Text: Zogre Dance
+ID: 13356 | Text: Zogre Flesh Eaters
+ID: 13357 | Text: 1 bar
+ID: 13358 | Text: Nails
+ID: 13359 | Text: Romper Chomper
+ID: 13360 | Text: The Lost Melody
+ID: 13361 | Text: The Lost Tribe
+ID: 13375 | Text: Bang
+ID: 13377 | Text: Jump
+ID: 13378 | Text: Rasp'
+ID: 13379 | Text: berry
+ID: 13385 | Text: Dagannoth Dawn
+ID: 13388 | Text: Bow
+ID: 13389 | Text: The Lost Tribe
+ID: 13393 | Text: Close Window
+ID: 13471 | Text: Brooch
+ID: 13472 | Text: Close Window
+ID: 13504 | Text: Close Window
+ID: 13509 | Text: -Drogokishuun-\nGoblins of the\nFierce Blades
+ID: 13510 | Text: -Huzamogaarb-\nLive-Flesh Eaters\nof the Chaos God
+ID: 13511 | Text: -Saragorgak-\nFootsoldiers of\nHoly Wrath
+ID: 13512 | Text: -Dorgeshuun-\nGoblins of the\nStrong Spears
+ID: 13513 | Text: -Horogothgar-\nEaters of\nManflesh
+ID: 13514 | Text: -Yurkolgokh-\nThe Flatulent
+ID: 13515 | Text: -Thorobshuun-\nGoblins of the\nHills
+ID: 13516 | Text: -Garagorshuun-\nGoblins of the\nSea
+ID: 13517 | Text: -Rekeshuun-\nGoblins of the\nNorth
+ID: 13518 | Text: -Ekeleshuun-\nGoblins of the\nEast
+ID: 13519 | Text: -Idithuun-\nGoblins of the\nSouth
+ID: 13520 | Text: -Narogoshuun-\nGoblins of the\nWest
+ID: 13524 | Text: Goblin tradition holds that\ntheir race was created by\na war-god in order to\nfight a war against other\ngods.
+ID: 13525 | Text: (They never name their\ngod, so whether it is the\nsame as any of the gods\nworshipped by the other\nraces is unknown.)
+ID: 13526 | Text: The legends also speak\nof goblins fighting\nagainst goblins during\nthe wars, so it is likely\nthat gods other than\ntheir creators used\nthem as footsoldiers.
+ID: 13527 | Text: Although goblins are still\nwarlike, it is probable\nthat in earlier ages\nthey were more\norganised than they\nare now,
+ID: 13529 | Text: especially if they were\nunder the direct\ncommand of one or\nmore gods.
+ID: 13530 | Text: This is corroborated\nby finds unearthed\nat various\narchaeological sites,\nincluding the large\nexcavation east of\nVarrock.
+ID: 13531 | Text: Armour and weapons\nhave been found,\nobviously made to fit\ngoblins but far more\nwell-made than their\ncurrent equipment.
+ID: 13533 | Text: Almost every piece of\nancient goblin equipment\nhas one of a number\nof symbols on it,\nand by correlating these\nsymbols with the\nsketchy records that\nsurvive from the\nThird Age it has been\npossible to identify\ntwelve distinct goblin tribes\nor regiments.
+ID: 13534 | Text: The separate identities of\nthe tribes have long\nsince dissolved and\nno goblins remember the\nsymbols, although their\ngenerals may still\nrecognize the ancient\ntribal names.
+ID: 13535 | Text: In the following pages\nI present a list of\nthe tribes and their\nsymbols.
+ID: 13537 | Text: Select a Combat Spell
+ID: 13552 | Text: Five hundred years have passed since the rule of King Alvis,
+ID: 13553 | Text: saviour of Keldagrim, victim of his own inventions.
+ID: 13554 | Text: Founder of the Consortium, the gathering of mining companies
+ID: 13555 | Text: that were to serve the monarchy, eventually the monarchy came
+ID: 13556 | Text: to serve the Consortium.
+ID: 13557 | Text: By the time of his death, the monarchy was all but abolished.
+ID: 13558 | Text: By now, the Kings of Keldagrim are but a distant memory...
+ID: 13559 | Text: with only the statue of King Alvis to remind the people of the
+ID: 13560 | Text: old days.
+ID: 13575 | Text: Tale of Keldagrim
+ID: 13576 | Text: Land of the Dwarves
+ID: 13577 | Text: The Giant Dwarf
+ID: 13580 | Text: Both
+ID: 13581 | Text: Argh!
+ID: 13587 | Text: Close Window
+ID: 13589 | Text: lj_title
+ID: 13591 | Text: lj1
+ID: 13592 | Text: lj2
+ID: 13593 | Text: lj3
+ID: 13594 | Text: lj4
+ID: 13595 | Text: lj5
+ID: 13596 | Text: lj6
+ID: 13597 | Text: lj7
+ID: 13598 | Text: lj8
+ID: 13599 | Text: lj9
+ID: 13600 | Text: lj10
+ID: 13601 | Text: lj11
+ID: 13602 | Text: lj12
+ID: 13603 | Text: lj13
+ID: 13604 | Text: lj14
+ID: 13605 | Text: lj15
+ID: 13606 | Text: lj16
+ID: 13607 | Text: lj17
+ID: 13608 | Text: lj18
+ID: 13609 | Text: lj19
+ID: 13610 | Text: lj20
+ID: 13611 | Text: lj21
+ID: 13612 | Text: lj22
+ID: 13613 | Text: lj23
+ID: 13614 | Text: lj24
+ID: 13615 | Text: lj25
+ID: 13616 | Text: lj26
+ID: 13617 | Text: lj27
+ID: 13618 | Text: lj28
+ID: 13619 | Text: lj29
+ID: 13620 | Text: lj30
+ID: 13621 | Text: lj31
+ID: 13622 | Text: lj32
+ID: 13623 | Text: lj33
+ID: 13624 | Text: lj34
+ID: 13625 | Text: lj35
+ID: 13626 | Text: lj36
+ID: 13627 | Text: lj37
+ID: 13628 | Text: lj38
+ID: 13629 | Text: lj39
+ID: 13630 | Text: lj40
+ID: 13631 | Text: lj41
+ID: 13632 | Text: lj42
+ID: 13633 | Text: lj43
+ID: 13634 | Text: lj44
+ID: 13635 | Text: lj45
+ID: 13636 | Text: lj46
+ID: 13637 | Text: lj47
+ID: 13638 | Text: lj48
+ID: 13639 | Text: lj49
+ID: 13640 | Text: lj50
+ID: 13641 | Text: lj51
+ID: 13642 | Text: lj52
+ID: 13643 | Text: lj53
+ID: 13644 | Text: lj54
+ID: 13645 | Text: lj55
+ID: 13646 | Text: lj56
+ID: 13647 | Text: lj57
+ID: 13648 | Text: lj58
+ID: 13649 | Text: lj59
+ID: 13650 | Text: lj60
+ID: 13651 | Text: lj61
+ID: 13652 | Text: lj62
+ID: 13653 | Text: lj63
+ID: 13654 | Text: lj64
+ID: 13655 | Text: lj65
+ID: 13656 | Text: lj66
+ID: 13657 | Text: lj67
+ID: 13658 | Text: lj68
+ID: 13659 | Text: lj69
+ID: 13660 | Text: lj70
+ID: 13661 | Text: lj71
+ID: 13662 | Text: lj72
+ID: 13663 | Text: lj73
+ID: 13664 | Text: lj74
+ID: 13665 | Text: lj75
+ID: 13666 | Text: lj76
+ID: 13667 | Text: lj77
+ID: 13668 | Text: lj78
+ID: 13669 | Text: lj79
+ID: 13670 | Text: lj80
+ID: 13671 | Text: lj81
+ID: 13672 | Text: lj82
+ID: 13673 | Text: lj83
+ID: 13674 | Text: lj84
+ID: 13675 | Text: lj85
+ID: 13676 | Text: lj86
+ID: 13677 | Text: lj87
+ID: 13678 | Text: lj88
+ID: 13679 | Text: lj89
+ID: 13680 | Text: lj90
+ID: 13681 | Text: lj91
+ID: 13682 | Text: lj92
+ID: 13683 | Text: lj93
+ID: 13684 | Text: lj94
+ID: 13685 | Text: lj95
+ID: 13686 | Text: lj96
+ID: 13687 | Text: lj97
+ID: 13688 | Text: lj98
+ID: 13689 | Text: lj99
+ID: 13690 | Text: lj100
+ID: 13693 | Text: wom1
+ID: 13694 | Text: wom2
+ID: 13695 | Text: wom3
+ID: 13696 | Text: wom4
+ID: 13697 | Text: wom5
+ID: 13698 | Text: wom6
+ID: 13699 | Text: wom7
+ID: 13700 | Text: wom8
+ID: 13701 | Text: wom9
+ID: 13702 | Text: wom10
+ID: 13703 | Text: wom11
+ID: 13704 | Text: wom12
+ID: 13705 | Text: wom13
+ID: 13706 | Text: wom14
+ID: 13707 | Text: wom15
+ID: 13708 | Text: wom16
+ID: 13709 | Text: Close
+ID: 13712 | Text: Into the Abyss
+ID: 13713 | Text: Wilderness
+ID: 13721 | Text: How many would you like to cook?
+ID: 13745 | Text: Close Window
+ID: 13753 | Text: Close Window
+ID: 13759 | Text: Select an Option
+ID: 13760 | Text: option1
+ID: 13761 | Text: option2
+ID: 13769 | Text: Select an Option
+ID: 13770 | Text: option1
+ID: 13771 | Text: option2
+ID: 13772 | Text: option3
+ID: 13779 | Text: The Rogues Den
+ID: 13780 | Text: The Far Side
+ID: 13796 | Text: Close Window
+ID: 13837 | Text: Neither player will be allowed to wear items on their head.
+ID: 13839 | Text: Neither player will be allowed to wear items on their back.
+ID: 13841 | Text: Neither player will be allowed to wear items around their neck.
+ID: 13843 | Text: Neither player will be allowed to use 2-handed items or items in their right hand.
+ID: 13845 | Text: Neither player will be allowed to wear items on their torso.
+ID: 13847 | Text: Neither player will be allowed to use 2-handed items or items in their left hand.
+ID: 13849 | Text: Neither player will be allowed to wear items on their legs.
+ID: 13851 | Text: Neither player will be allowed to wear items on their hands.
+ID: 13853 | Text: Neither player will be allowed to wear items on their feet.
+ID: 13855 | Text: Neither player will be allowed to wear items on their fingers.
+ID: 13857 | Text: Neither player will be allowed to have items in their quiver.
+ID: 13884 | Text: A
+ID: 13885 | Text: A
+ID: 13886 | Text: A
+ID: 13887 | Text: A
+ID: 13896 | Text: Combination Lock Door
+ID: 13897 | Text: Close Window
+ID: 13899 | Text: E N T E R
+ID: 13900 | Text: The Chosen
+ID: 13902 | Text: Select an Option
+ID: 13903 | Text: option1
+ID: 13904 | Text: option2
+ID: 13905 | Text: option3
+ID: 13906 | Text: option4
+ID: 13907 | Text: option5
+ID: 13919 | Text: Farming XP:
+ID: 13920 | Text: Next Level At:
+ID: 13921 | Text: %1
+ID: 13922 | Text: %1
+ID: 13926 | Text: %1
+ID: 13927 | Text: %1
+ID: 13930 | Text: Line1
+ID: 13931 | Text: Line2
+ID: 13932 | Text: Click here to continue
+ID: 13949 | Text: Close Window
+ID: 13950 | Text: DIAMOND
+ID: 13951 | Text: COINS
+ID: 13952 | Text: RING
+ID: 13953 | Text: U N L O C K
+ID: 13961 | Text: Select an Option
+ID: 13962 | Text: option1
+ID: 13963 | Text: option2
+ID: 13964 | Text: option3
+ID: 13965 | Text: option4
+ID: 13972 | Text: Ground Scape
+ID: 13974 | Text: Mourning's Ends Part 1
+ID: 13976 | Text: Weapon:
+ID: 13977 | Text: %1
+ID: 13978 | Text: Choose Attack Style
+ID: 13985 | Text: Kick
+ID: 13986 | Text: Aim and Fire
+ID: 13987 | Text: (Aggressive)
+ID: 13988 | Text: (Crush)
+ID: 13991 | Text: Close Window
+ID: 14045 | Text: Close
+ID: 14060 | Text: x%1
+ID: 14061 | Text: x%1
+ID: 14141 | Text: Close
+ID: 14163 | Text: x%1
+ID: 14164 | Text: x%1
+ID: 14165 | Text: Page%1
+ID: 14166 | Text: Page%2
+ID: 14167 | Text: Forgettable Melody
+ID: 14168 | Text: Right on Track
+ID: 14169 | Text: Forgettable Tale...
+ID: 14174 | Text: Are you sure you want to destroy this object?
+ID: 14175 | Text: Yes.
+ID: 14176 | Text: No.
+ID: 14182 | Text: option2
+ID: 14183 | Text: option2
+ID: 14184 | Text: Name
+ID: 14185 | Text: Waterbirth Island
+ID: 14186 | Text: The Monsters Below
+ID: 14188 | Text: Pheasant Peasant
+ID: 14189 | Text: Frogland
+ID: 14190 | Text: The Quizmaster
+ID: 14200 | Text: Pick the odd one out.
+ID: 14204 | Text: Close
+ID: 14205 | Text: @yel@Tai Bwo Wannai @red@ Parcel Service
+ID: 14209 | Text: %1 %
+ID: 14211 | Text: @gre@* @yel@Tai Bwo Favour @gre@*
+ID: 14219 | Text: A....a lemming
+ID: 14220 | Text: B....a fryingpan
+ID: 14221 | Text: C....the disenfrachaised youth of 1940's Columbia
+ID: 14222 | Text: Is this:
+ID: 14226 | Text: Close Window
+ID: 14242 | Text: Brew Hoo Hoo!
+ID: 14243 | Text: Evil Bob's Island
+ID: 14254 | Text: open casket
+ID: 14255 | Text: close window
+ID: 14420 | Text: open casket
+ID: 14421 | Text: close window
+ID: 14444 | Text: Select an Option
+ID: 14445 | Text: option2
+ID: 14446 | Text: option3
+ID: 14453 | Text: Dead Can Dance
+ID: 14454 | Text: Wild Side
+ID: 14455 | Text: The Cellar Dwellers
+ID: 14457 | Text: Watch the statue! Fish here!
+ID: 14534 | Text: Iron: %1
+ID: 14535 | Text: Blast Furnace Bar Stock
+ID: 14536 | Text: Close Window
+ID: 14537 | Text: Bronze: %1
+ID: 14551 | Text: Steel: %1
+ID: 14552 | Text: Mithril: %1
+ID: 14553 | Text: Adamantite: %1
+ID: 14554 | Text: Runite: %1
+ID: 14555 | Text: Silver: %1
+ID: 14556 | Text: Gold: %1
+ID: 14557 | Text: Perfect gold: %1
+ID: 14558 | Text: Coal to add: %2
+ID: 14559 | Text: (All)
+ID: 14560 | Text: (All)
+ID: 14561 | Text: (All)
+ID: 14562 | Text: (All)
+ID: 14563 | Text: (All)
+ID: 14564 | Text: (All)
+ID: 14565 | Text: (All)
+ID: 14566 | Text: (All)
+ID: 14567 | Text: (All)
+ID: 14581 | Text: Blast Furnace Plan
+ID: 14582 | Text: Stove
+ID: 14583 | Text: Air Pump
+ID: 14584 | Text: Temp Gauge
+ID: 14585 | Text: Furnace
+ID: 14586 | Text: Dispenser
+ID: 14587 | Text: Conveyer\nBelt
+ID: 14588 | Text: Cogs
+ID: 14589 | Text: Pipes
+ID: 14590 | Text: Coke
+ID: 14595 | Text: Blast Furnace Temp Gauge
+ID: 14596 | Text: Close
+ID: 14602 | Text: Have A Blast
+ID: 14603 | Text: Jungle Troubles
+ID: 14604 | Text: Garden of Tranquillity
+ID: 14605 | Text: 13: Asking for personal details
+ID: 14607 | Text: Close Window
+ID: 14609 | Text: lj1
+ID: 14610 | Text: lj2
+ID: 14611 | Text: lj3
+ID: 14612 | Text: lj4
+ID: 14613 | Text: lj5
+ID: 14614 | Text: lj6
+ID: 14615 | Text: lj7
+ID: 14616 | Text: lj8
+ID: 14617 | Text: lj9
+ID: 14618 | Text: lj10
+ID: 14619 | Text: lj11
+ID: 14621 | Text: >>>
+ID: 14622 | Text: <<<
+ID: 14624 | Text: >>>
+ID: 14625 | Text: <<<
+ID: 14627 | Text: >>>
+ID: 14628 | Text: <<<
+ID: 14630 | Text: >>>
+ID: 14631 | Text: <<<
+ID: 14633 | Text: >>>
+ID: 14634 | Text: <<<
+ID: 14636 | Text: >>>
+ID: 14637 | Text: <<<
+ID: 14639 | Text: >>>
+ID: 14640 | Text: <<<
+ID: 14642 | Text: >>>
+ID: 14643 | Text: <<<
+ID: 14645 | Text: >>>
+ID: 14646 | Text: <<<
+ID: 14648 | Text: >>>
+ID: 14649 | Text: <<<
+ID: 14651 | Text: >>>
+ID: 14652 | Text: <<<
+ID: 14653 | Text: Items I need to get for King Roald's garden:
+ID: 14655 | Text: option1
+ID: 14656 | Text: option1
+ID: 14657 | Text: option3
+ID: 14658 | Text: [A]
+ID: 14659 | Text: [B]
+ID: 14660 | Text: [C]
+ID: 14666 | Text: Pick a kitten
+ID: 14669 | Text:  
+ID: 14759 | Text: What hides would you like tanning?
+ID: 14760 | Text: Close Window
+ID: 14777 | Text: Hide
+ID: 14778 | Text: Hide
+ID: 14779 | Text: Hide
+ID: 14780 | Text: Hide
+ID: 14781 | Text: Hide
+ID: 14782 | Text: Hide
+ID: 14783 | Text: Hide
+ID: 14784 | Text: Hide
+ID: 14785 | Text: Cost
+ID: 14786 | Text: Cost
+ID: 14787 | Text: Cost
+ID: 14788 | Text: Cost
+ID: 14789 | Text: Cost
+ID: 14790 | Text: Cost
+ID: 14791 | Text: Cost
+ID: 14792 | Text: Cost
+ID: 14871 | Text: Blistering Barnacles
+ID: 14872 | Text: Aye Car Rum Ba
+ID: 14883 | Text: 0
+ID: 14884 | Text: 0
+ID: 14885 | Text: 0
+ID: 14886 | Text: 0
+ID: 14887 | Text: 0
+ID: 14888 | Text: 0
+ID: 14889 | Text: 0
+ID: 14890 | Text: 0
+ID: 14891 | Text: 0
+ID: 14892 | Text: 0
+ID: 14912 | Text: Rum Deal
+ID: 14913 | Text: ?
+ID: 14914 | Text: ?
+ID: 14915 | Text: ?
+ID: 14916 | Text: ?
+ID: 14920 | Text: Please enter your FOUR DIGIT PIN using the buttons below.
+ID: 14921 | Text: I don't know it.
+ID: 14922 | Text: Exit
+ID: 14923 | Text: YOUR PIN WILL BE DELETED IN X DAYS
+ID: 15035 | Text: BANK  PIN  SETTINGS
+ID: 15036 | Text: Exit
+ID: 15037 | Text: Messages
+ID: 15070 | Text: Fear and Loathing
+ID: 15074 | Text: Method of Madness
+ID: 15075 | Text: Set a PIN
+ID: 15076 | Text: Change your recovery delay
+ID: 15077 | Text: No Way Out
+ID: 15078 | Text: Change your PIN
+ID: 15079 | Text: Delete your PIN
+ID: 15080 | Text: Change your recovery delay
+ID: 15081 | Text: Wrath and Ruin
+ID: 15082 | Text: Cancel the PIN that's pending
+ID: 15098 | Text: A Soul's Bane
+ID: 15099 | Text: Your Bank PIN status:
+ID: 15105 | Text: Unknown
+ID: 15107 | Text: X days
+ID: 15110 | Text: Do you really wish to do that?
+ID: 15161 | Text: Use the buttons below to change your PIN settings
+ID: 15170 | Text: Dance
+ID: 15171 | Text: Yes, I really want to do that.
+ID: 15176 | Text: No, forget I asked.
+ID: 15180 | Text: Subterranea
+ID: 15191 | Text: Close Window
+ID: 15202 | Text: A
+ID: 15203 | Text: A
+ID: 15204 | Text: A
+ID: 15205 | Text: A
+ID: 15206 | Text: A
+ID: 15207 | Text: A
+ID: 15221 | Text: Close Window
+ID: 15222 | Text: Name your cat ...
+ID: 15233 | Text: E N T E R
+ID: 15234 | Text: Strange Place
+ID: 15235 | Text: A Tail of Two Cats
+ID: 15239 | Text: Centre
+ID: 15240 | Text: North-West
+ID: 15241 | Text: North-East
+ID: 15242 | Text: South-East
+ID: 15243 | Text: South-West
+ID: 15257 | Text: Welcome to Runescape
+ID: 15258 | Text: You last logged in @red@%1@bla@ days ago from @red@%2
+ID: 15259 | Text: 1\n2\n3\n4\n5\n6
+ID: 15260 | Text: Jagex Staff will NEVER email you.\n We use the message centre on this \nwebsite instead.
+ID: 15261 | Text: You have %1 unread messages\nin your message centre.
+ID: 15262 | Text: 1\n2\n3\n4\n5
+ID: 15263 | Text: CLICK HERE TO PLAY
+ID: 15270 | Text: 1\n2\n3\n4
+ID: 15275 | Text: Close Window
+ID: 15293 | Text: Mudskipper Melody
+ID: 15303 | Text: Op 11
+ID: 15306 | Text: Op 12
+ID: 15309 | Text: Op 13
+ID: 15313 | Text: Click the Nth digit...
+ID: 15326 | Text: \n\n\n\nChurn Cheese
+ID: 15327 | Text: What would you like to make in the churn?
+ID: 15333 | Text: \n\n\n\nChurn Butter
+ID: 15334 | Text: \n\n\n\nChurn Cheese
+ID: 15335 | Text: What would you like to make in the churn?
+ID: 15342 | Text: \n\n\n\nChurn Cream
+ID: 15343 | Text: \n\n\n\nChurn Butter
+ID: 15344 | Text: \n\n\n\nChurn Cheese
+ID: 15345 | Text: What would you like to make?
+ID: 15346 | Text: Xenophobe
+ID: 15347 | Text: Mud Battlestaff
+ID: 15349 | Text: Close Window
+ID: 15350 | Text: Grip of the Talon
+ID: 15352 | Text: Shadow of the Storm
+ID: 15355 | Text: Incantation
+ID: 15441 | Text: Silver Casting
+ID: 15442 | Text: Close Window
+ID: 15446 | Text: Make\n Saradomin \nSymbol
+ID: 15449 | Text: You need a \nHoly Symbol\n mould to make\n this item.
+ID: 15453 | Text: Make\n Zamorak\nSymbol
+ID: 15456 | Text: You need an \nUnholy Symbol\n mould to make\n this item.
+ID: 15460 | Text: Make\nSilver\nSickle
+ID: 15463 | Text: You need a \nsickle mould\n to make\n this item.
+ID: 15467 | Text: Make\nLightning\nRod
+ID: 15470 | Text: You need a \nlightning \nrod mould\n to make\n this item.
+ID: 15474 | Text: Make\nTiara
+ID: 15477 | Text: You need a\n Tiara Mould \nto make\n a tiara.
+ID: 15482 | Text: Make demonic\nsigil
+ID: 15485 | Text: You need a\n demonic sigil\nmould to make\nthis item.
+ID: 15487 | Text: Making History
+ID: 15490 | Text: Text
+ID: 15491 | Text: Your password is only as safe as your computer.
+ID: 15492 | Text: Install anti-virus software!
+ID: 15493 | Text: Catch me if you can
+ID: 15494 | Text: Bubble and Squeak
+ID: 15495 | Text: The Noble Rodent
+ID: 15496 | Text: Rat a Tat Tat
+ID: 15497 | Text: Rat Hunt
+ID: 15498 | Text: Sarim's Vermin
+ID: 15499 | Text: Rat Catchers
+ID: 15509 | Text: Players Cat
+ID: 15510 | Text: Opponents Cat
+ID: 15511 | Text: Vs
+ID: 15512 | Text: ACCEPT
+ID: 15513 | Text: DECLINE
+ID: 15514 | Text: Amount
+ID: 15515 | Text: Amount
+ID: 15516 | Text: 0
+ID: 15517 | Text: 0
+ID: 15523 | Text: Wilderness Pond - \nNo canoe trees here.
+ID: 15526 | Text: YES
+ID: 15527 | Text: NO
+ID: 15528 | Text: Do you really want to bet X!
+ID: 15530 | Text: Text
+ID: 15531 | Text: Text
+ID: 15534 | Text: 10
+ID: 15535 | Text: 10
+ID: 15539 | Text: Your cat has been
+ID: 15540 | Text: Defeated
+ID: 15552 | Text: Close Window
+ID: 15553 | Text: Page 1 of 8
+ID: 15563 | Text: PLAY
+ID: 15570 | Text: Close Window
+ID: 15590 | Text: Over to Nardah
+ID: 15591 | Text: Spirits of the Elid
+ID: 15592 | Text: Spirits of the Elid
+ID: 15596 | Text: Rake
+ID: 15597 | Text: %1
+ID: 15598 | Text: Dibber
+ID: 15599 | Text: %1
+ID: 15600 | Text: Spade
+ID: 15601 | Text: %1
+ID: 15602 | Text: Secateurs
+ID: 15603 | Text: %1
+ID: 15604 | Text: Watering Can
+ID: 15605 | Text: %1
+ID: 15606 | Text: Trowel
+ID: 15607 | Text: %1
+ID: 15608 | Text: Buckets
+ID: 15609 | Text: %1
+ID: 15610 | Text: Compost
+ID: 15611 | Text: %1
+ID: 15612 | Text: Super Compost
+ID: 15613 | Text: %1
+ID: 15681 | Text: Amazing Farming Equipment Store
+ID: 15684 | Text: Close Window
+ID: 15685 | Text: Farming rake
+ID: 15686 | Text: %1
+ID: 15687 | Text: Max: 1
+ID: 15688 | Text: Seed dibber
+ID: 15689 | Text: %1
+ID: 15690 | Text: Max: 1
+ID: 15691 | Text: All-purpose spade
+ID: 15692 | Text: %1
+ID: 15693 | Text: Max: 1
+ID: 15694 | Text: Secateurs
+ID: 15695 | Text: %1
+ID: 15696 | Text: Max: 1
+ID: 15697 | Text: Watering Can
+ID: 15698 | Text: 0
+ID: 15699 | Text: Max: 1
+ID: 15701 | Text: %1
+ID: 15702 | Text: Max: 1
+ID: 15703 | Text: Empty buckets
+ID: 15704 | Text: %1
+ID: 15705 | Text: Max: 31
+ID: 15706 | Text: Normal Compost
+ID: 15707 | Text: %1
+ID: 15708 | Text: Max: 255
+ID: 15709 | Text: Super Compost
+ID: 15710 | Text: %1
+ID: 15711 | Text: Max: 255
+ID: 15719 | Text: next
+ID: 15720 | Text: back
+ID: 15721 | Text: The Ballad of Jareesh
+ID: 15722 | Text: Clad all in the robes for She
+ID: 15723 | Text: we travelled north expediently.
+ID: 15724 | Text: To beseech the guardians we were sent,
+ID: 15725 | Text: so to the river's source we went.
+ID: 15726 | Text: Through the cave we had to travel.
+ID: 15727 | Text: There was mystery to unravel.
+ID: 15728 | Text: We came upon a great stone door,
+ID: 15729 | Text: but our priestess knew the score.
+ID: 15730 | Text: She used the great ancestral key.
+ID: 15731 | Text: We passed through very easily.
+ID: 15732 | Text: Three great men all hewn of rock,
+ID: 15733 | Text: the three small chambers they did block.
+ID: 15734 | Text: The first all made of rock quite black,
+ID: 15735 | Text: our fighting men went to attack.
+ID: 15736 | Text: They went with Arrow, blade and spell,
+ID: 15737 | Text: but the man they could not fell.
+ID: 15738 | Text: Many men did fall that day,
+ID: 15739 | Text: while others turned and ran away.
+ID: 15740 | Text: I had little hope at all,
+ID: 15741 | Text: as I watched my kinsmen fall.
+ID: 15742 | Text: My warhammer I boldy heft
+ID: 15743 | Text: and struck a blow which while was deft,
+ID: 15744 | Text: should give scant harm to one so strong,
+ID: 15745 | Text: or so I thought, nay I was wrong.
+ID: 15746 | Text: The rock man fell down with a crash,
+ID: 15747 | Text: which sent up clouds of dust and ash.
+ID: 15748 | Text: Just myself left and alas,
+ID: 15749 | Text: two more rockmen left to pass.
+ID: 15750 | Text: Still buoyed on by my first success
+ID: 15751 | Text: onwards bravely I did press.
+ID: 15752 | Text: The next man was of rock hued  grey
+ID: 15753 | Text: and this one next I planned to slay.
+ID: 15754 | Text: Crushing blows I rained on him,
+ID: 15755 | Text: but things were looking very grim.
+ID: 15756 | Text: Not a scratch could I make.
+ID: 15757 | Text: Anon my limbs began to ache.
+ID: 15758 | Text: The rockman gave a mighty roar
+ID: 15759 | Text: so fierce I hurried for the door.
+ID: 15760 | Text: How to beat that second man,
+ID: 15761 | Text: to this day I have no plan.
+ID: 15762 | Text: My hammer never left a dent.
+ID: 15763 | Text: I never reached whence I was sent.
+ID: 15764 | Text: Close
+ID: 15769 | Text: Your password is only as safe as your computer.
+ID: 15770 | Text: Install anti-virus software!
+ID: 15771 | Text: Message of the week
+ID: 15776 | Text: Your password is only as safe as your computer.
+ID: 15777 | Text: Install anti-virus software!
+ID: 15778 | Text: Message of the week
+ID: 15793 | Text: Your password is only as safe as your computer.
+ID: 15794 | Text: Install anti-virus software!
+ID: 15795 | Text: Message of the week
+ID: 15803 | Text: Your password is only as safe as your computer.
+ID: 15804 | Text: Install anti-virus software!
+ID: 15805 | Text: Message of the week
+ID: 15814 | Text: Your password is only as safe as your computer.
+ID: 15815 | Text: Install anti-virus software!
+ID: 15816 | Text: Message of the week
+ID: 15821 | Text: Your password is only as safe as your computer.
+ID: 15822 | Text: Install anti-virus software!
+ID: 15823 | Text: Message of the week
+ID: 15826 | Text: Title Fight
+ID: 15829 | Text: Victory is Mine
+ID: 15830 | Text: Woe of the Wyvern
+ID: 15833 | Text: Congratulations!
+ID: 15834 | Text: Close
+ID: 15835 | Text: Well done, you defeated the Champion!
+ID: 15838 | Text: You are awarded:
+ID: 15839 | Text: %1 Slayer Xp
+ID: 15840 | Text: %1 Hitpoint Xp
+ID: 15841 | Text: Devious Minds
+ID: 15842 | Text: Diango's Little Helpers
+ID: 15863 | Text: Close
+ID: 15871 | Text: Pick a colour
+ID: 15879 | Text: Level 60 : Bones to Peaches
+ID: 15880 | Text: Turns Bones into Peaches
+ID: 15883 | Text: %1/2
+ID: 15884 | Text: %1/4
+ID: 15886 | Text: %1/4
+ID: 15887 | Text: The Enchanter
+ID: 15888 | Text: Golden Touch
+ID: 15889 | Text: Mind over Matter
+ID: 15890 | Text: Roll the Bones
+ID: 15894 | Text: Alchemy
+ID: 15895 | Text: Pizazz Points:
+ID: 15896 | Text: 9999
+ID: 15897 | Text: Leather Boots:
+ID: 15898 | Text: Adamant Kiteshield:
+ID: 15899 | Text: Adamant Helm:
+ID: 15900 | Text: Emerald:
+ID: 15901 | Text: Rune Longsword:
+ID: 15902 | Text: 999
+ID: 15903 | Text: 999
+ID: 15904 | Text: 999
+ID: 15905 | Text: 999
+ID: 15906 | Text: 999
+ID: 15919 | Text: Enchantment
+ID: 15920 | Text: Pizazz Points:
+ID: 15921 | Text: 9999
+ID: 15930 | Text: Bonus:
+ID: 15933 | Text: Graveyard
+ID: 15934 | Text: Pizazz Points:
+ID: 15935 | Text: 9999
+ID: 15940 | Text: 4
+ID: 15941 | Text: 3
+ID: 15942 | Text: 2
+ID: 15943 | Text: 1
+ID: 15949 | Text: Close Window
+ID: 15950 | Text: Magic Training Arena Shop
+ID: 15951 | Text: Telekinetic Pizazz Points
+ID: 15952 | Text: Enchantment Pizazz Points
+ID: 15953 | Text: Graveyard Pizazz Points
+ID: 15954 | Text: Alchemist Pizazz Points
+ID: 15955 | Text: 99999
+ID: 15956 | Text: 99999
+ID: 15957 | Text: 99999
+ID: 15958 | Text: 99999
+ID: 15959 | Text: (Upgrade)
+ID: 15960 | Text: (Upgrade)
+ID: 15961 | Text: (Upgrade)
+ID: 15964 | Text: Telekinetic
+ID: 15965 | Text: Pizazz Points:
+ID: 15966 | Text: 999999
+ID: 15968 | Text: 999
+ID: 15969 | Text: Solved :
+ID: 15970 | Text: %1
+ID: 16031 | Text: line1
+ID: 16032 | Text: line2
+ID: 16033 | Text: line3
+ID: 16034 | Text: line4
+ID: 16035 | Text: line5
+ID: 16036 | Text: line6
+ID: 16037 | Text: line7
+ID: 16038 | Text: line8
+ID: 16039 | Text: line9
+ID: 16040 | Text: line10
+ID: 16041 | Text: line11
+ID: 16042 | Text: line12
+ID: 16043 | Text: line13
+ID: 16044 | Text: line14
+ID: 16045 | Text: line15
+ID: 16046 | Text: line16
+ID: 16047 | Text: line17
+ID: 16048 | Text: line18
+ID: 16049 | Text: line19
+ID: 16050 | Text: line20
+ID: 16051 | Text: line21
+ID: 16052 | Text: line22
+ID: 16053 | Text: line23
+ID: 16054 | Text: line24
+ID: 16055 | Text: line25
+ID: 16056 | Text: line26
+ID: 16057 | Text: line27
+ID: 16058 | Text: line28
+ID: 16059 | Text: line28
+ID: 16060 | Text: line29
+ID: 16065 | Text: page%1
+ID: 16066 | Text: page%2
+ID: 16127 | Text: First Page
+ID: 16128 | Text: The Hand in the Sand
+ID: 16131 | Text: Close window
+ID: 16132 | Text: Pop the correct balloon animal to find a key
+ID: 16144 | Text: Close Window
+ID: 16145 | Text: Choose your refreshment from the sandwich tray
+ID: 16146 | Text: In the Clink
+ID: 16147 | Text: Pharaoh's Tomb
+ID: 16148 | Text: Lament
+ID: 16149 | Text: Enakhra's Lament
+ID: 16158 | Text: Close Window
+ID: 16159 | Text: Runeversi
+ID: 16160 | Text: 100 vs 100
+ID: 16228 | Text: Runesquares: Options
+ID: 16230 | Text: Challenge
+ID: 16237 | Text: Close Window
+ID: 16238 | Text: 30 seconds
+ID: 16244 | Text: 1 minute
+ID: 16245 | Text: 2 minutes
+ID: 16246 | Text: 15 seconds
+ID: 16247 | Text: Time per move:
+ID: 16251 | Text: Choose piece:
+ID: 16274 | Text: Ranked
+ID: 16344 | Text: Insert a very long name here!
+ID: 16352 | Text: vs
+ID: 16353 | Text: Insert a very long name here!
+ID: 16365 | Text: Turn:
+ID: 16369 | Text: Runesquares
+ID: 16371 | Text: Resign
+ID: 16373 | Text: Offer draw
+ID: 16376 | Text: A very long name
+ID: 16387 | Text: Blah blah blah blah blah blah blah!
+ID: 16391 | Text: Blah blah blah blah blah blah blah!
+ID: 16392 | Text: Blah blah blah blah blah!
+ID: 16395 | Text: Close
+ID: 16572 | Text: Runesquares
+ID: 16573 | Text: Rank: %1
+ID: 16642 | Text: Insert a very long name here!
+ID: 16650 | Text: vs
+ID: 16651 | Text: Insert a very long name here!
+ID: 16663 | Text: Blah blah blah blah blah blah blah!
+ID: 16667 | Text: Blah blah blah blah blah blah blah!
+ID: 16668 | Text: Blah blah blah blah blah!
+ID: 16671 | Text: Close
+ID: 16846 | Text: Runesquares
+ID: 16915 | Text: Insert a very long name here!
+ID: 16923 | Text: vs
+ID: 16924 | Text: Insert a very long name here!
+ID: 16936 | Text: Turn:
+ID: 16940 | Text: Runeversi
+ID: 16942 | Text: Resign
+ID: 16944 | Text: Offer draw
+ID: 16947 | Text: A very long name
+ID: 16991 | Text: Blah blah blah blah blah blah blah!
+ID: 16995 | Text: Blah blah blah blah blah blah blah!
+ID: 16996 | Text: Blah blah blah blah blah!
+ID: 16999 | Text: Close
+ID: 17140 | Text: Runeversi: Options
+ID: 17142 | Text: Challenge
+ID: 17149 | Text: Close Window
+ID: 17150 | Text: 30 seconds
+ID: 17156 | Text: 1 minute
+ID: 17157 | Text: 2 minutes
+ID: 17158 | Text: 15 seconds
+ID: 17159 | Text: Time per move:
+ID: 17163 | Text: Choose piece:
+ID: 17186 | Text: Ranked
+ID: 17190 | Text: Runeversi
+ID: 17191 | Text: Rank: %1
+ID: 17260 | Text: Insert a very long name here!
+ID: 17268 | Text: vs
+ID: 17269 | Text: Insert a very long name here!
+ID: 17281 | Text: Runeversi
+ID: 17282 | Text: Blah blah blah blah blah blah blah!
+ID: 17286 | Text: Blah blah blah blah blah blah blah!
+ID: 17287 | Text: Blah blah blah blah blah!
+ID: 17322 | Text: Close
+ID: 17508 | Text: Cabin Fever
+ID: 17509 | Text: In the Brine
+ID: 17510 | Text: Cabin Fever
+ID: 17513 | Text: Your password is only as safe as your computer.
+ID: 17514 | Text: Install anti-virus software!
+ID: 17515 | Text: Message of the week
+ID: 17524 | Text: Storm Brew
+ID: 17532 | Text: Close Window
+ID: 17533 | Text: Click arrow buttons to move taper.
+ID: 17534 | Text: Press the Light button to light the
+ID: 17535 | Text: candles.
+ID: 17539 | Text: Close Window
+ID: 17618 | Text: 1S
+ID: 17619 | Text: 3E
+ID: 17622 | Text: Close Window
+ID: 17636 | Text: Close Window
+ID: 17660 | Text: 3N
+ID: 17661 | Text: 2E
+ID: 17690 | Text: Close Window
+ID: 17713 | Text: 2N
+ID: 17714 | Text: 3W
+ID: 17715 | Text: 3N
+ID: 17716 | Text: 2W
+ID: 17717 | Text: 3N
+ID: 17777 | Text: Close Window
+ID: 17885 | Text: 8N
+ID: 17886 | Text: 6W
+ID: 17887 | Text: 2S
+ID: 17890 | Text: Close Window
+ID: 17912 | Text: Close Window
+ID: 18059 | Text: Close Window
+ID: 18166 | Text: List of Fairy Queen's Symptoms.
+ID: 18167 | Text: Close
+ID: 18168 | Text:  Extremely weak
+ID: 18169 | Text: High fever
+ID: 18171 | Text: Drifting in and out of coma 
+ID: 18172 | Text: Shallow breath
+ID: 18173 | Text: Fading magical energy
+ID: 18174 | Text: Slow discorporation of ethereal body
+ID: 18175 | Text: The Mad Mole
+ID: 18191 | Text: Close Window
+ID: 18196 | Text: A Stable Dugout.
+ID: 18197 | Text: A Waka.
+ID: 18198 | Text: A Dugout.
+ID: 18199 | Text: A Log.
+ID: 18200 | Text: WHAT SORT OF CANOE WOULD YOU LIKE TO MAKE   ?
+ID: 18225 | Text: Close Window
+ID: 18248 | Text: Lumbridge
+ID: 18249 | Text: Champions \nGuild
+ID: 18250 | Text: Barbarian \n Village
+ID: 18251 | Text: Edgeville
+ID: 18252 | Text: Wilderness Pond - \nNo canoe trees here.
+ID: 18260 | Text: You are here
+ID: 18267 | Text: You are here
+ID: 18270 | Text: You are here
+ID: 18273 | Text: You are here
+ID: 18275 | Text: Davy Jones' Locker
+ID: 18276 | Text: Please Select \nYour Destination
+ID: 18283 | Text: Line1
+ID: 18286 | Text: Line1
+ID: 18287 | Text: Line1
+ID: 18290 | Text: Line1
+ID: 18291 | Text: Line1
+ID: 18292 | Text: Line1
+ID: 18295 | Text: Line1
+ID: 18296 | Text: Line1
+ID: 18297 | Text: Line1
+ID: 18298 | Text: Line1
+ID: 18302 | Text: Chickened Out
+ID: 18304 | Text: Mastermindless
+ID: 18305 | Text: Too Many Cooks...
+ID: 18306 | Text: Recipe for Disaster
+ID: 18417 | Text: Close Window
+ID: 18435 | Text:  
+ID: 18439 | Text: Dwarf
+ID: 18440 | Text: Wartface & Bentnoze
+ID: 18441 | Text: Pirate Pete
+ID: 18442 | Text: Lumbridge Guide
+ID: 18443 | Text: Evil Dave
+ID: 18444 | Text: Skrach 'Bone Cruncher' Uglogwee
+ID: 18445 | Text: Sir Amik Varze
+ID: 18446 | Text: Monkey Ambassador
+ID: 18447 | Text: Close Window
+ID: 18450 | Text: Recipe for Disaster
+ID: 18451 | Text: This quest is comprised of the 8 mini quests highlighted below
+ID: 18455 | Text:  
+ID: 18463 | Text:  
+ID: 18466 | Text: Null and Void
+ID: 18467 | Text: Zombie
+ID: 18468 | Text: Walk
+ID: 18469 | Text: Zombie
+ID: 18472 | Text: Level 64 : Teleport to Ape Atoll
+ID: 18473 | Text: Teleports you to Ape Atoll
+ID: 18476 | Text: %1/2
+ID: 18477 | Text: %1/2
+ID: 18479 | Text: %1/2
+ID: 18481 | Text: %1/1
+ID: 18486 | Text: close window
+ID: 18501 | Text: Close window
+ID: 18507 | Text: Atoll
+ID: 18510 | Text: Feldip
+ID: 18511 | Text: Hills
+ID: 18512 | Text: The ogres follow the scent of the chompy.... 
+ID: 18513 | Text: The ogres travel back with the goods
+ID: 18516 | Text: Fangs for the Memory
+ID: 18517 | Text: In Aid of the Myreque
+ID: 18521 | Text: Make \nSilvthrill \nRod
+ID: 18524 | Text: You need a \n Rod mould \nto make this \nitem.
+ID: 18537 | Text: Canifis
+ID: 18538 | Text: Mort Myre\nSwamp
+ID: 18539 | Text: Hollows
+ID: 18540 | Text: Mort'ton
+ID: 18541 | Text: Burgh de\nRott
+ID: 18542 | Text: Graveyard
+ID: 18543 | Text: Temple
+ID: 18547 | Text: Route 1
+ID: 18548 | Text: Route 1
+ID: 18550 | Text: Route 2
+ID: 18551 | Text: Route 2
+ID: 18553 | Text: Route 1:\n\nTake the route through\nCanifis.\n\nShorter but potentially\nmore dangerous.
+ID: 18554 | Text: Route 2:\n\nTake the route through\nMort Myre Swamp.\n\nLonger but less likely\nto be attacked.
+ID: 18555 | Text: Close Window
+ID: 18559 | Text: Choose your path
+ID: 18569 | Text: S P E C I A L  A T T A C K
+ID: 18570 | Text: Choose Attack Style
+ID: 18574 | Text: Bash
+ID: 18575 | Text: Pound
+ID: 18576 | Text: Focus
+ID: 18577 | Text: (Aggressive)
+ID: 18578 | Text: (Accurate)
+ID: 18579 | Text: (Defensive)
+ID: 18580 | Text: (Crush)
+ID: 18581 | Text: (Crush)
+ID: 18582 | Text: (Crush)
+ID: 18584 | Text: Spell
+ID: 18585 | Text: Choose Spell
+ID: 18586 | Text: Combat Lvl %1
+ID: 18588 | Text: Close Window
+ID: 18589 | Text: Burgh
+ID: 18590 | Text: Mort'ton
+ID: 18591 | Text: Canifis
+ID: 18592 | Text: Mort
+ID: 18593 | Text: DeRott
+ID: 18594 | Text: Myre
+ID: 18595 | Text: Swamp
+ID: 18596 | Text: Hollows
+ID: 18597 | Text: The
+ID: 18605 | Text: Choose a route
+ID: 18607 | Text: Route One
+ID: 18608 | Text: Route One
+ID: 18611 | Text: Route Two
+ID: 18612 | Text: Route Two
+ID: 18615 | Text: Route Three
+ID: 18616 | Text: Route Three
+ID: 18619 | Text: Temple
+ID: 18645 | Text: Slow plod, \ncan evade \nencounters.
+ID: 18646 | Text: Leisurely walk, \nharder to evade \nencounters.
+ID: 18647 | Text: Brisk walk, \nimpossible to \nevade encounters.
+ID: 18653 | Text: Recovery delay:
+ID: 18675 | Text: Rage level. 
+ID: 18678 | Text: Text
+ID: 18684 | Text: Rag and Bone Man
+ID: 18685 | Text: Funny Bunnies
+ID: 18687 | Text: Dance
+ID: 18688 | Text: Rabbit
+ID: 18690 | Text: Pest Control
+ID: 18758 | Text: Void Knights' Training Options
+ID: 18759 | Text: Cancel
+ID: 18767 | Text: Attack
+ID: 18768 | Text: Strength
+ID: 18769 | Text: Defence
+ID: 18770 | Text: Ranged
+ID: 18771 | Text: Magic
+ID: 18772 | Text: Hitpoints
+ID: 18773 | Text: Prayer
+ID: 18780 | Text: Confirm:
+ID: 18783 | Text: Points: %1
+ID: 18784 | Text: Everlasting Fire
+ID: 18797 | Text: %1
+ID: 18798 | Text: %1
+ID: 18799 | Text: %1
+ID: 18800 | Text: %1
+ID: 18932 | Text: Yes
+ID: 18936 | Text: No
+ID: 18944 | Text: Angry
+ID: 18947 | Text: Think
+ID: 18950 | Text: Wave
+ID: 18953 | Text: Shrug
+ID: 18960 | Text: Bow
+ID: 18966 | Text: Beckon
+ID: 18972 | Text: Jump for Joy
+ID: 18975 | Text: Yawn
+ID: 18978 | Text: Dance
+ID: 18981 | Text: Jig
+ID: 18984 | Text: Twirl
+ID: 18988 | Text: Laugh
+ID: 18995 | Text: Cheer
+ID: 19001 | Text: Headbang
+ID: 19004 | Text: Cry
+ID: 19019 | Text: Salute
+ID: 19022 | Text: Goblin Bow
+ID: 19026 | Text: Goblin Salute
+ID: 19047 | Text: Scared
+ID: 19050 | Text: Bunny-hop
+ID: 19056 | Text: Skillcape
+ID: 19063 | Text: Zombie Walk
+ID: 19070 | Text: Zombie Dance
+ID: 19077 | Text: Clap
+ID: 19084 | Text: Panic
+ID: 19091 | Text: Blow Kiss
+ID: 19098 | Text: Raspberry
+ID: 19105 | Text: Glass Wall
+ID: 19112 | Text: Lean
+ID: 19119 | Text: Climb Rope
+ID: 19126 | Text: Glass Box
+ID: 19177 | Text: %1%
+ID: 19181 | Text: Mouse Buttons
+ID: 19182 | Text: (currently 1)
+ID: 19190 | Text: Accept Aid
+ID: 19191 | Text: (currently off)
+ID: 19200 | Text: Run (off)
+ID: 19205 | Text: Energy %1%
+ID: 19209 | Text: Total
+ID: 19220 | Text: Level 0: Lumbridge Home \nTeleport
+ID: 19222 | Text: Requires no runes - recharge time \n30 mins. Warning: This spell takes a \n long time to cast and will be \ninterrupted by combat.
+ID: 19248 | Text: Level 1: Wind Strike
+ID: 19249 | Text: A basic Air missile
+ID: 19252 | Text: %1/1
+ID: 19253 | Text: %1/1
+ID: 19276 | Text: Level 3: Confuse
+ID: 19277 | Text: Reduces your opponent's attack by \n5%
+ID: 19281 | Text: %1/3
+ID: 19282 | Text: %1/2
+ID: 19283 | Text: %1/1
+ID: 19289 | Text: Level 4: Enchant Crossbow Bolt
+ID: 19290 | Text: Minimum level 4 Magic Multiple \nother requirements
+ID: 19319 | Text: Level 5: Water Strike
+ID: 19320 | Text: A basic Water missile
+ID: 19324 | Text: %1/1
+ID: 19325 | Text: %1/1
+ID: 19326 | Text: %1/1
+ID: 19344 | Text: Level 7: Lvl-1 Enchant
+ID: 19345 | Text: For use on sapphire jewellery
+ID: 19348 | Text: %1/1
+ID: 19349 | Text: %1/1
+ID: 19392 | Text: Level 9: Earth Strike
+ID: 19393 | Text: A basic Earth missile
+ID: 19397 | Text: %1/2
+ID: 19398 | Text: %1/1
+ID: 19399 | Text: %1/1
+ID: 19421 | Text: Level 11: Weaken
+ID: 19422 | Text: Reduces your opponent's\nstrength by 5%
+ID: 19426 | Text: %1/3
+ID: 19427 | Text: %1/2
+ID: 19428 | Text: %1/1
+ID: 19450 | Text: Level 13: Fire Strike
+ID: 19451 | Text: A basic Fire missile
+ID: 19455 | Text: %1/3
+ID: 19456 | Text: %1/2
+ID: 19457 | Text: %1/1
+ID: 19479 | Text: Level 15: Bones to Bananas
+ID: 19480 | Text: Changes all held bones into\nbananas
+ID: 19484 | Text: %1/2
+ID: 19485 | Text: %1/2
+ID: 19486 | Text: %1/1
+ID: 19504 | Text: Level 17: Wind Bolt
+ID: 19505 | Text: A low level Air missile
+ID: 19508 | Text: %1/2
+ID: 19509 | Text: %1/1
+ID: 19531 | Text: Level 19: Curse
+ID: 19532 | Text: Reduces your opponent's\ndefence by 5%
+ID: 19536 | Text: %1/2
+ID: 19537 | Text: %1/3
+ID: 19538 | Text: %1/1
+ID: 19560 | Text: Level 20: Bind
+ID: 19561 | Text: Holds your opponent for 5 seconds
+ID: 19565 | Text: %1/3
+ID: 19566 | Text: %1/3
+ID: 19567 | Text: %1/2
+ID: 19585 | Text: Level 21: Low Level Alchemy
+ID: 19586 | Text: Converts an item into gold
+ID: 19589 | Text: %1/3
+ID: 19590 | Text: %1/1
+ID: 19612 | Text: Level 23: Water Bolt
+ID: 19613 | Text: A low level Water missile
+ID: 19617 | Text: %1/2
+ID: 19618 | Text: %1/2
+ID: 19619 | Text: %1/1
+ID: 19641 | Text: Level 25: Varrock Teleport
+ID: 19642 | Text: Teleports you to Varrock
+ID: 19646 | Text: %1/1
+ID: 19647 | Text: %1/3
+ID: 19648 | Text: %1/1
+ID: 19666 | Text: Level 27: Lvl-2 Enchant
+ID: 19667 | Text: For use on emerald jewellery
+ID: 19670 | Text: %1/3
+ID: 19671 | Text: %1/1
+ID: 19693 | Text: Level 29: Earth Bolt
+ID: 19694 | Text: A low level Earth missile
+ID: 19698 | Text: %1/3
+ID: 19699 | Text: %1/2
+ID: 19700 | Text: %1/1
+ID: 19722 | Text: Level 31: Lumbridge Teleport
+ID: 19723 | Text: Teleports you to Lumbridge
+ID: 19727 | Text: %1/1
+ID: 19728 | Text: %1/3
+ID: 19729 | Text: %1/1
+ID: 19747 | Text: Level 33: Telekinetic Grab
+ID: 19748 | Text: Take an item you can see but can't \nreach
+ID: 19751 | Text: %1/1
+ID: 19752 | Text: %1/1
+ID: 19774 | Text: Level 35: Fire Bolt
+ID: 19775 | Text: A low level Fire missile
+ID: 19779 | Text: %1/4
+ID: 19780 | Text: %1/3
+ID: 19781 | Text: %1/1
+ID: 19803 | Text: Level 37: Falador Teleport
+ID: 19804 | Text: Teleports you to Falador
+ID: 19808 | Text: %1/1
+ID: 19809 | Text: %1/3
+ID: 19810 | Text: %1/1
+ID: 19864 | Text: Level 39: Crumble Undead
+ID: 19865 | Text: Hits skeletons, ghosts, shades & \nzombies hard
+ID: 19869 | Text: %1/2
+ID: 19870 | Text: %1/2
+ID: 19871 | Text: %1/1
+ID: 19877 | Text: Level 40: Teleport to House
+ID: 19878 | Text: Teleports you to your house
+ID: 19882 | Text: %1/1
+ID: 19883 | Text: %1/1
+ID: 19884 | Text: %1/1
+ID: 19914 | Text: Level 41: Wind Blast
+ID: 19915 | Text: A medium level Air missile
+ID: 19918 | Text: %1/3
+ID: 19919 | Text: %1/1
+ID: 19937 | Text: Level 43: Superheat Item
+ID: 19938 | Text: Smelt ore without a furnace
+ID: 19941 | Text: %1/4
+ID: 19942 | Text: %1/1
+ID: 19960 | Text: Level 45: Camelot Teleport
+ID: 19961 | Text: Teleports you to Camelot
+ID: 19964 | Text: %1/5
+ID: 19965 | Text: %1/1
+ID: 19987 | Text: Level 47: Water Blast
+ID: 19988 | Text: A medium level Water missile
+ID: 19992 | Text: %1/3
+ID: 19993 | Text: %1/3
+ID: 19994 | Text: %1/1
+ID: 20082 | Text: Level 49: Lvl-3 Enchant
+ID: 20083 | Text: For use on ruby jewellery
+ID: 20086 | Text: %1/5
+ID: 20087 | Text: %1/1
+ID: 20111 | Text: Level 50: Iban Blast
+ID: 20112 | Text: Summons the wrath of Iban
+ID: 20116 | Text: %1/5
+ID: 20117 | Text: %1/1
+ID: 20118 | Text: %1/1
+ID: 20140 | Text: Level 50: Snare
+ID: 20141 | Text: Holds your opponent for 10 \nseconds
+ID: 20145 | Text: %1/4
+ID: 20147 | Text: %1/4
+ID: 20148 | Text: %1/3
+ID: 20170 | Text: Level 50: Magic Dart
+ID: 20171 | Text: A magic dart of slaying
+ID: 20175 | Text: %1/1
+ID: 20176 | Text: %1/1
+ID: 20177 | Text: %1/4
+ID: 20195 | Text: Level 51: Ardougne Teleport
+ID: 20196 | Text: Teleports you to Ardougne
+ID: 20199 | Text: %1/2
+ID: 20200 | Text: %1/2
+ID: 20222 | Text: Level 53: Earth Blast
+ID: 20223 | Text: A medium level Earth missile
+ID: 20227 | Text: %1/4
+ID: 20228 | Text: %1/3
+ID: 20229 | Text: %1/1
+ID: 20247 | Text: Level 55: High Level Alchemy
+ID: 20248 | Text: Converts an item into more gold
+ID: 20251 | Text: %1/5
+ID: 20252 | Text: %1/1
+ID: 20306 | Text: Level 56: Charge Water Orb
+ID: 20307 | Text: Needs to be cast on a water obelisk
+ID: 20311 | Text: %1/30
+ID: 20312 | Text: %1/3
+ID: 20313 | Text: %1/1
+ID: 20331 | Text: Level 57: Lvl-4 Enchant
+ID: 20332 | Text: For use on diamond jewellery
+ID: 20335 | Text: %1/10
+ID: 20336 | Text: %1/1
+ID: 20354 | Text: Level 58: Watchtower Teleport
+ID: 20355 | Text: Teleports you to the Watchtower
+ID: 20358 | Text: %1/2
+ID: 20359 | Text: %1/2
+ID: 20381 | Text: Level 59: Fire Blast
+ID: 20382 | Text: A medium level Fire missile
+ID: 20386 | Text: %1/5
+ID: 20387 | Text: %1/4
+ID: 20388 | Text: %1/1
+ID: 20410 | Text: Level 60: Charge Earth Orb
+ID: 20411 | Text: Needs to be cast on an earth \nobelisk
+ID: 20415 | Text: %1/30
+ID: 20416 | Text: %1/3
+ID: 20417 | Text: %1/1
+ID: 20439 | Text: Level 60: Bones to Peaches
+ID: 20440 | Text: Turns Bones into Peaches
+ID: 20445 | Text: %1/2
+ID: 20446 | Text: %1/4
+ID: 20447 | Text: %1/4
+ID: 20473 | Text: Level 60: Saradomin strike
+ID: 20474 | Text: Summons the power of Saradomin
+ID: 20479 | Text: %1/2
+ID: 20480 | Text: %1/2
+ID: 20481 | Text: %1/4
+ID: 20482 | Text: %1/1
+ID: 20508 | Text: Level 60: Claws of Guthix
+ID: 20509 | Text: Summons the power of Guthix
+ID: 20514 | Text: %1/1
+ID: 20515 | Text: %1/2
+ID: 20516 | Text: %1/4
+ID: 20517 | Text: %1/1
+ID: 20543 | Text: Level 60: Flames of Zamorak
+ID: 20544 | Text: Summons the power of Zamorak
+ID: 20549 | Text: %1/4
+ID: 20550 | Text: %1/2
+ID: 20551 | Text: %1/1
+ID: 20552 | Text: %1/1
+ID: 20570 | Text: Level 61: Trollheim Teleport
+ID: 20571 | Text: Teleports you to Trollheim
+ID: 20574 | Text: %1/2
+ID: 20575 | Text: %1/2
+ID: 20593 | Text: Level 62: Wind Wave
+ID: 20594 | Text: A high level Air missile
+ID: 20597 | Text: %1/5
+ID: 20598 | Text: %1/1
+ID: 20620 | Text: Level 63: Charge Fire Orb
+ID: 20621 | Text: Needs to be cast on a fire obelisk
+ID: 20625 | Text: %1/30
+ID: 20626 | Text: %1/3
+ID: 20627 | Text: %1/1
+ID: 20653 | Text: Level 64: Teleport to Ape Atoll
+ID: 20654 | Text: Teleports you to Ape Atoll
+ID: 20659 | Text: %1/2
+ID: 20660 | Text: %1/2
+ID: 20661 | Text: %1/2
+ID: 20662 | Text: %1/1
+ID: 20684 | Text: Level 65: Water Wave
+ID: 20685 | Text: A high level Water missile
+ID: 20690 | Text: %1/7
+ID: 20691 | Text: %1/5
+ID: 20692 | Text: %1/1
+ID: 20714 | Text: Level 66: Charge Air Orb
+ID: 20715 | Text: Needs to be cast on  an air obelisk
+ID: 20719 | Text: %1/30
+ID: 20720 | Text: %1/3
+ID: 20721 | Text: %1/1
+ID: 20743 | Text: Level 66: Vulnerability
+ID: 20744 | Text: Reduces your opponent's defence\nby 10%
+ID: 20748 | Text: %1/5
+ID: 20749 | Text: %1/5
+ID: 20750 | Text: %1/1
+ID: 20772 | Text: Level 68: Lvl-5 Enchant
+ID: 20773 | Text: For use on dragonstone jewellery
+ID: 20777 | Text: %1/15
+ID: 20778 | Text: %1/15
+ID: 20779 | Text: %1/1
+ID: 20801 | Text: Level 70: Earth Wave
+ID: 20802 | Text: A high level Earth missile
+ID: 20806 | Text: %1/7
+ID: 20807 | Text: %1/5
+ID: 20808 | Text: %1/1
+ID: 20830 | Text: Level 73: Enfeeble
+ID: 20831 | Text: Reduces your opponent's strength\nby 10%
+ID: 20835 | Text: %1/8
+ID: 20836 | Text: %1/8
+ID: 20837 | Text: %1/1
+ID: 20859 | Text: Level 74: Teleother Lumbridge
+ID: 20860 | Text: Teleports target to Lumbridge
+ID: 20864 | Text: %1/1
+ID: 20865 | Text: %1/1
+ID: 20866 | Text: %1/1
+ID: 20888 | Text: Level 75: Fire Wave
+ID: 20889 | Text: A high level Fire missile
+ID: 20893 | Text: %1/7
+ID: 20894 | Text: %1/5
+ID: 20895 | Text: %1/1
+ID: 20917 | Text: Level 79: Entangle
+ID: 20918 | Text: Holds your opponent for 15\nseconds
+ID: 20922 | Text: %1/5
+ID: 20923 | Text: %1/5
+ID: 20924 | Text: %1/4
+ID: 20946 | Text: Level 80: Stun
+ID: 20947 | Text: Reduces your opponent's attack by\n10%
+ID: 20951 | Text: %1/12
+ID: 20952 | Text: %1/12
+ID: 20953 | Text: %1/1
+ID: 20975 | Text: Level 80: Charge
+ID: 20976 | Text: Temporarily increases the power\nof the three arena spells when\nwearing Mage Arena capes
+ID: 20980 | Text: %1/3
+ID: 20981 | Text: %1/3
+ID: 20982 | Text: %1/3
+ID: 21004 | Text: Level 82: Teleother Falador
+ID: 21005 | Text: Teleports target to Falador
+ID: 21009 | Text: %1/1
+ID: 21010 | Text: %1/1
+ID: 21011 | Text: %1/1
+ID: 21033 | Text: Level 85: Tele Block
+ID: 21034 | Text: Stops your target from teleporting
+ID: 21038 | Text: %1/1
+ID: 21039 | Text: %1/1
+ID: 21040 | Text: %1/1
+ID: 21062 | Text: Level 87: Lvl-6 Enchant
+ID: 21063 | Text: For use on onyx jewellery
+ID: 21067 | Text: %1/20
+ID: 21068 | Text: %1/20
+ID: 21069 | Text: %1/1
+ID: 21087 | Text: Level 90: Teleother Camelot
+ID: 21088 | Text: Teleports target to Camelot
+ID: 21091 | Text: %1/2
+ID: 21092 | Text: %1/1
+ID: 21154 | Text: Split Private Chat
+ID: 21155 | Text: (currently off)
+ID: 21163 | Text: Chat Effects
+ID: 21164 | Text: (currently off)
+ID: 21280 | Text: Equip Your Character...
+ID: 21281 | Text: Attack bonus
+ID: 21290 | Text: Defence bonus
+ID: 21296 | Text: Other bonuses
+ID: 21343 | Text: Show Equipment
+ID: 21344 | Text: Stats
+ID: 21756 | Text: Level 0: Edgeville Home \nTeleport
+ID: 21757 | Text:  Requires no runes - recharge time \n30 mins. Warning: This spell takes a\n long time to cast and will be\n interrupted by combat.
+ID: 21783 | Text: Level 50: Smoke Rush
+ID: 21784 | Text: A single target smoke attack
+ID: 21789 | Text: %1/2
+ID: 21790 | Text: %1/2
+ID: 21791 | Text: %1/1
+ID: 21792 | Text: %1/1
+ID: 21818 | Text: Level 52: Shadow Rush
+ID: 21819 | Text: A single target shadow attack
+ID: 21824 | Text: %1/2
+ID: 21825 | Text: %1/2
+ID: 21826 | Text: %1/1
+ID: 21827 | Text: %1/1
+ID: 21833 | Text: Level 54: Paddewwa Teleport
+ID: 21834 | Text: A teleportation spell
+ID: 21839 | Text: %1/2
+ID: 21840 | Text: %1/1
+ID: 21841 | Text: %1/1
+ID: 21879 | Text: Level 56: Blood Rush
+ID: 21880 | Text: A single target blood attack
+ID: 21885 | Text: %1/2
+ID: 21886 | Text: %1/2
+ID: 21887 | Text: %1/1
+ID: 21908 | Text: Level 58: Ice Rush
+ID: 21909 | Text: A single target ice attack
+ID: 21913 | Text: %1/2
+ID: 21914 | Text: %1/2
+ID: 21915 | Text: %1/1
+ID: 21933 | Text: Level 60: Senntisten Teleport
+ID: 21934 | Text: A teleportation spell
+ID: 21940 | Text: %1/2
+ID: 21942 | Text: %1/1
+ID: 21962 | Text: Level 61: Miasmic Rush
+ID: 21963 | Text: A single target miasmic attack
+ID: 21968 | Text: %1/2
+ID: 21969 | Text: %1/1
+ID: 21970 | Text: %1/1
+ID: 21971 | Text: %1/1
+ID: 21993 | Text: Level 62: Smoke Burst
+ID: 21994 | Text: A multi-target smoke attack
+ID: 21999 | Text: %1/4
+ID: 22000 | Text: %1/2
+ID: 22001 | Text: %1/2
+ID: 22002 | Text: %1/2
+ID: 22023 | Text: Level 64: Shadow Burst
+ID: 22024 | Text: A multi-target shadow attack
+ID: 22029 | Text: %1/4
+ID: 22030 | Text: %1/2
+ID: 22031 | Text: %1/2
+ID: 22032 | Text: %1/2
+ID: 22052 | Text: Level 66: Kharyll Teleport
+ID: 22053 | Text: A teleportation spell
+ID: 22056 | Text: %1/2
+ID: 22057 | Text: %1/1
+ID: 22073 | Text: Level 68: Blood Burst
+ID: 22074 | Text: A multi-target blood attack
+ID: 22078 | Text: %1/4
+ID: 22079 | Text: %1/2
+ID: 22080 | Text: %1/2
+ID: 22098 | Text: Level 70: Ice Burst
+ID: 22099 | Text: A multi-target ice attack
+ID: 22103 | Text: %1/4
+ID: 22104 | Text: %1/2
+ID: 22105 | Text: %1/4
+ID: 22123 | Text: Level 72: Lassar Teleport
+ID: 22124 | Text: A teleportation spell
+ID: 22127 | Text: %1/2
+ID: 22128 | Text: %1/4
+ID: 22144 | Text: Level 73: Miasmic Burst
+ID: 22145 | Text: A multi-target miasmic attack
+ID: 22150 | Text: %1/4
+ID: 22151 | Text: %1/1
+ID: 22152 | Text: %1/2
+ID: 22153 | Text: %1/2
+ID: 22174 | Text: Level 74: Smoke Blitz
+ID: 22175 | Text: A single target strong smoke attack
+ID: 22180 | Text: %1/2
+ID: 22181 | Text: %1/2
+ID: 22182 | Text: %1/2
+ID: 22183 | Text: %1/2
+ID: 22203 | Text: Level 76: Shadow Blitz
+ID: 22204 | Text: A single target strong shadow\n attack
+ID: 22209 | Text: %1/2
+ID: 22210 | Text: %1/2
+ID: 22211 | Text: %1/2
+ID: 22212 | Text: %1/2
+ID: 22232 | Text: Level 78: Dareeyak Teleport
+ID: 22233 | Text: A teleportation spell
+ID: 22237 | Text: %1/2
+ID: 22238 | Text: %1/3
+ID: 22239 | Text: %1/2
+ID: 22257 | Text: Level 80: Blood Blitz
+ID: 22258 | Text: A single target strong blood attack
+ID: 22263 | Text: %1/2
+ID: 22264 | Text: %1/4
+ID: 22282 | Text: Level 82: Ice Blitz
+ID: 22283 | Text: A single target strong ice attack
+ID: 22287 | Text: %1/2
+ID: 22288 | Text: %1/2
+ID: 22289 | Text: %1/3
+ID: 22307 | Text: Level 84: Carrallangar Teleport
+ID: 22308 | Text: A teleportation spell
+ID: 22311 | Text: %1/2
+ID: 22312 | Text: %1/2
+ID: 22328 | Text: Level 85: Miasmic Blitz
+ID: 22329 | Text: A single target strong miasmic\nattack
+ID: 22334 | Text: %1/2
+ID: 22335 | Text: %1/1
+ID: 22336 | Text: %1/3
+ID: 22337 | Text: %1/2
+ID: 22357 | Text: Level 86: Smoke Barrage
+ID: 22358 | Text: A multi-target strong smoke attack
+ID: 22363 | Text: %1/2
+ID: 22364 | Text: %1/4
+ID: 22365 | Text: %1/4
+ID: 22366 | Text: %1/4
+ID: 22386 | Text: Level 88: Shadow Barrage
+ID: 22387 | Text: A multi-target strong shadow\n attack
+ID: 22392 | Text: %1/2
+ID: 22393 | Text: %1/4
+ID: 22394 | Text: %1/4
+ID: 22395 | Text: %1/3
+ID: 22415 | Text: Level 90: Annakarl Teleport
+ID: 22416 | Text: A teleportation spell
+ID: 22419 | Text: %1/2
+ID: 22420 | Text: %1/2
+ID: 22436 | Text: Level 92: Blood Barrage
+ID: 22437 | Text: A multi-target strong blood attack
+ID: 22442 | Text: %1/4
+ID: 22443 | Text: %1/4
+ID: 22445 | Text: %1/1
+ID: 22465 | Text: Level 94: Ice Barrage
+ID: 22466 | Text: A multi-target strong ice attack
+ID: 22470 | Text: %1/2
+ID: 22471 | Text: %1/4
+ID: 22472 | Text: %1/6
+ID: 22490 | Text: Level 96: Ghorrock Teleport
+ID: 22491 | Text: A teleportation spell
+ID: 22494 | Text: %1/2
+ID: 22495 | Text: %1/8
+ID: 22652 | Text: Stoner(ette) designing
+ID: 24113 | Text: Spell
+ID: 24133 | Text: Text
+ID: 24137 | Text: %1
+ID: 24209 | Text: 24209
+ID: 24210 | Text: 24210
+ID: 24234 | Text: 24234

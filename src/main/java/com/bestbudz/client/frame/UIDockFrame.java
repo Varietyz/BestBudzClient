@@ -2,28 +2,35 @@ package com.bestbudz.client.frame;
 
 import com.bestbudz.client.ui.manager.UIPanelManager;
 import com.bestbudz.client.ui.panel.*;
-
 import com.bestbudz.client.ui.panel.UIPanel;
-
 import com.bestbudz.config.Configuration;
 import com.bestbudz.config.SettingHandler;
+
+import com.bestbudz.engine.Client;
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-public class UIDockFrame extends JFrame {
+public class UIDockFrame extends JDialog {
 
 	private String lastActivePanelID;
 	private String topVisiblePanelID;
 	private String bottomVisiblePanelID;
 
-	private final Map<String, String> panelPositions = new LinkedHashMap<>();
+	public static final Map<String, String> panelPositions = new LinkedHashMap<>();
 	private JSplitPane splitPane;
 
 	private final UIPanelManager panelManager;
-	private final JPanel toggleBar;
+
+	public static final JPanel toggleBarTop = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
+	public static final JPanel toggleBarBottom = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
+	public static final JScrollPane scrollTop = new JScrollPane(toggleBarTop);
+	public static final JScrollPane scrollBottom = new JScrollPane(toggleBarBottom);
+	private JPanel toggleWrapper;
 
 	private final CardLayout topLayout = new CardLayout();
 	private final CardLayout bottomLayout = new CardLayout();
@@ -32,7 +39,12 @@ public class UIDockFrame extends JFrame {
 	private final JPanel bottomStack = new JPanel(bottomLayout);
 
 	private final Map<String, Component> panelMap = new LinkedHashMap<>();
-	private final Map<String, JToggleButton> toggleButtons = new LinkedHashMap<>();
+	public static final Map<String, JToggleButton> toggleButtons = new LinkedHashMap<>();
+
+	// Login overlay components
+	private LoginOverlayPanel loginOverlay;
+	private JLayeredPane mainLayeredPane; // This will contain everything including toggle bars
+	private JPanel contentPanel; // Container for toggle bars and split pane
 
 	private static UIDockFrame instance;
 
@@ -40,292 +52,240 @@ public class UIDockFrame extends JFrame {
 		return instance;
 	}
 
-	public UIDockFrame() {
+	public UIDockFrame(JFrame owner) {
+		super(owner, false);
 		instance = this;
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setSize(300, 758);
+		setSize(300, 750);
 		setLayout(new BorderLayout());
 		setResizable(true);
 		setUndecorated(true);
 
-		toggleBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
-		add(toggleBar, BorderLayout.NORTH);
-
-		splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(topStack), new JScrollPane(bottomStack));
-		splitPane.setResizeWeight(0.5);
-		add(splitPane, BorderLayout.CENTER);
-
-
+		// Initialize panelManager first
 		panelManager = new UIPanelManager();
 
-		registerPanel(new SettingsPanel());
-		registerPanel(new InventoryPanel());
-		registerPanel(new QuestTabPanel());
-		registerPanel(new AchievementsPanel());
-
-		loadDockPanelLayout(); // 🔄 this will restore visibility
-
-		for (Map.Entry<String, Component> entry : panelMap.entrySet()) {
-			String panelID = entry.getKey();
-			if (!panelPositions.containsKey(panelID)) {
-				panelPositions.put(panelID, "top");
-			}
-		}
-
-
-
-		SwingUtilities.invokeLater(() -> {
-			int fullHeight = splitPane.getHeight();
-			if (fullHeight > 0) {
-				int calculated = Math.round(fullHeight * Configuration.uiDockDividerRatio);
-				splitPane.setDividerLocation(calculated);
-			}
-		});
-
-		SwingUtilities.invokeLater(() -> {
-			int fullHeight = splitPane.getHeight();
-			if (fullHeight > 0) {
-				int calculated = Math.round(fullHeight * Configuration.uiDockDividerRatio);
-				splitPane.setDividerLocation(calculated);
-			}
-
-			// Add save-on-release listener to divider
-			Component divider = ((BasicSplitPaneUI) splitPane.getUI()).getDivider();
-			divider.addMouseListener(new java.awt.event.MouseAdapter() {
-				@Override
-				public void mouseReleased(java.awt.event.MouseEvent e) {
-					saveLayoutState();
-					SettingHandler.save();
-				}
-			});
-		});
+		setupMainLayeredPane();
+		setupPanels();
 
 		setVisible(true);
+		UIDockHelper.updateToggleInteractivity();
 
+		// Start login state monitoring
+		if (!Client.loggedIn) {
+			new Timer(2000, e -> UIDockHelper.updateToggleInteractivity()).start();
+		}
+
+		// Initialize login overlay state
+		if (loginOverlay != null) {
+			loginOverlay.refreshLoginState();
+		}
 	}
 
-	private void registerPanel(final UIPanel uiPanel) {
-		final String id = uiPanel.getPanelID();
-		final Component panel = uiPanel.getComponent();
+	/**
+	 * Sets up the main layered pane that contains everything including toggle bars and login overlay
+	 */
+	private void setupMainLayeredPane() {
+		// Create the main layered pane that will hold everything
+		mainLayeredPane = new JLayeredPane();
+		mainLayeredPane.setPreferredSize(new Dimension(300, 750));
 
-		panelMap.put(id, panel);
-		panelManager.register(uiPanel);
+		// Create content panel that holds toggle bars and split pane
+		contentPanel = new JPanel(new BorderLayout());
+		contentPanel.setOpaque(true);
 
-		final JToggleButton toggle = new JToggleButton(id);
-		toggle.setFocusPainted(false);
-		toggle.setComponentPopupMenu(createTogglePopup(id));
-		toggleButtons.put(id, toggle);
-		toggle.addActionListener(e -> panelSwitcher(id));
-		toggleBar.add(toggle);
+		// Setup toggle bars in the content panel
+		setupToggleBars();
+
+		// Setup main content (split pane) in the content panel
+		setupMainContent();
+
+		// Add content panel to the default layer
+		mainLayeredPane.add(contentPanel, JLayeredPane.DEFAULT_LAYER);
+
+		// Create and add login overlay to top layer (spans entire frame)
+		loginOverlay = new LoginOverlayPanel();
+		mainLayeredPane.add(loginOverlay, JLayeredPane.PALETTE_LAYER);
+
+		// Handle resizing for all components
+		mainLayeredPane.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				updateMainLayeredPaneBounds();
+			}
+		});
+
+		// Add frame resize listener
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				SwingUtilities.invokeLater(() -> updateMainLayeredPaneBounds());
+			}
+		});
+
+		// Add the main layered pane to the frame
+		add(mainLayeredPane, BorderLayout.CENTER);
+
+		// Initial bounds setup
+		SwingUtilities.invokeLater(() -> updateMainLayeredPaneBounds());
 	}
 
+	private void setupToggleBars() {
+		toggleBarTop.setBorder(BorderFactory.createEmptyBorder());
+		toggleBarBottom.setBorder(BorderFactory.createEmptyBorder());
 
+		scrollTop.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollTop.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		scrollTop.setBorder(BorderFactory.createEmptyBorder());
+		scrollTop.setViewportBorder(null);
 
-	private JPopupMenu createTogglePopup(String id) {
-		JPopupMenu popup = new JPopupMenu();
+		scrollBottom.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollBottom.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		scrollBottom.setBorder(BorderFactory.createEmptyBorder());
+		scrollBottom.setViewportBorder(null);
 
-		JMenuItem topItem = new JMenuItem("Dock to Top");
-		topItem.addActionListener(e -> showPanelTop(id));
+		toggleWrapper = new JPanel(new GridLayout(2, 1, 0, 0));
+		toggleWrapper.setBorder(BorderFactory.createEmptyBorder());
+		toggleWrapper.add(scrollTop);
+		toggleWrapper.add(scrollBottom);
 
-		JMenuItem bottomItem = new JMenuItem("Dock to Bottom");
-		bottomItem.addActionListener(e -> showPanelBottom(id));
+		// Add toggle wrapper to content panel (not directly to frame)
+		contentPanel.add(toggleWrapper, BorderLayout.NORTH);
 
-		popup.add(topItem);
-		popup.add(bottomItem);
-		return popup;
+		// Sync scroll bars
+		scrollTop.getHorizontalScrollBar().addAdjustmentListener(e -> {
+			JScrollBar bottomScroll = scrollBottom.getHorizontalScrollBar();
+			int max = bottomScroll.getMaximum() - bottomScroll.getVisibleAmount();
+			int mirrored = max - e.getValue();
+			bottomScroll.setValue(Math.max(0, mirrored));
+		});
+
+		scrollTop.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollBottom.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	}
 
+	private void setupMainContent() {
+		splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topStack, bottomStack);
+		splitPane.setResizeWeight(0.4);
 
-	private void loadDockPanelLayout() {
-		String layout = Configuration.uiDockPanels;
-		if (layout != null && !layout.isEmpty()) {
-			String[] entries = layout.split(",");
-			for (String entry : entries) {
-				String[] parts = entry.split("=");
-				if (parts.length != 2) continue;
+		// Add split pane to content panel (not directly to frame)
+		contentPanel.add(splitPane, BorderLayout.CENTER);
+	}
 
-				String panelID = parts[0].trim();
-				String position = parts[1].trim();
+	/**
+	 * Updates the bounds of all components in the main layered pane
+	 */
+	private void updateMainLayeredPaneBounds() {
+		if (mainLayeredPane != null && contentPanel != null && loginOverlay != null) {
+			Dimension size = mainLayeredPane.getSize();
+			if (size.width > 0 && size.height > 0) {
+				// Content panel fills the entire layered pane
+				contentPanel.setBounds(0, 0, size.width, size.height);
 
-				panelPositions.put(panelID, position);
+				// Login overlay spans the entire layered pane (including toggle bars)
+				loginOverlay.setBounds(0, 0, size.width, size.height);
 
-				Component panel = panelMap.get(panelID);
-				if (panel == null) continue; // ❗ prevent NPE
-
-				if ("top".equalsIgnoreCase(position)) {
-					if (!topStack.isAncestorOf(panel)) {
-						bottomStack.remove(panel);
-						topStack.add(panel, panelID);
-					}
-					if (topVisiblePanelID == null) topVisiblePanelID = panelID;
-				} else if ("bottom".equalsIgnoreCase(position)) {
-					if (!bottomStack.isAncestorOf(panel)) {
-						topStack.remove(panel);
-						bottomStack.add(panel, panelID);
-					}
-					if (bottomVisiblePanelID == null) bottomVisiblePanelID = panelID;
-				}
-
+				// Ensure proper validation
+				contentPanel.revalidate();
+				splitPane.revalidate();
 			}
 		}
-
-		// Restore top and bottom stacks with the most recently known visible panels
-		if (topVisiblePanelID != null) {
-			switchPanel(topStack, topLayout, topVisiblePanelID);
-		}
-		if (bottomVisiblePanelID != null && !bottomVisiblePanelID.equals(topVisiblePanelID)) {
-			switchPanel(bottomStack, bottomLayout, bottomVisiblePanelID);
-		}
-
-		updateToggles(); // ensure toggle button state matches
 	}
 
+	private void setupPanels() {
+		registerPanel(new SettingsPanel());
+		registerPanel(new QuestTabPanel());
+		registerPanel(new AchievementsPanel());
+		registerPanel(new EquipmentPanel());
+		registerPanel(new StonersPanel());
+		registerPanel(new SkillsPanel());
+
+		loadDockPanelLayout();
+	}
+
+	// DELEGATE EVERYTHING ELSE
+	public void registerPanel(UIPanel uiPanel) {
+		UIDockHelper.registerPanel(this, uiPanel);
+	}
+
+	public void loadDockPanelLayout() {
+		UIDockHelper.loadDockPanelLayout(this);
+	}
 
 	public void showPanelTop(String id) {
-		lastActivePanelID = id;
-		topVisiblePanelID = id;
-		panelPositions.put(id, "top");
-		updateDockPanelConfig();
-
-		Component panel = panelMap.get(id);
-		if (bottomStack.isAncestorOf(panel)) {
-			bottomStack.remove(panel);
-			topStack.add(panel, id);
-		}
-
-		switchPanel(topStack, topLayout, id);
-		updateToggles();
-		saveLayoutState(); // ✅ persist to Configuration
+		UIDockHelper.showPanelTop(this, id);
 	}
 
 	public void showPanelBottom(String id) {
-		lastActivePanelID = id;
-		bottomVisiblePanelID = id;
-		panelPositions.put(id, "bottom");
-		updateDockPanelConfig();
-
-		Component panel = panelMap.get(id);
-		if (topStack.isAncestorOf(panel)) {
-			topStack.remove(panel);
-			bottomStack.add(panel, id);
-		}
-
-		switchPanel(bottomStack, bottomLayout, id);
-		updateToggles();
-		saveLayoutState(); // ✅ persist to Configuration
-	}
-
-	private void updateDockPanelConfig() {
-		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<String, String> entry : panelPositions.entrySet()) {
-			sb.append(entry.getKey()).append('=').append(entry.getValue()).append(',');
-		}
-		if (sb.length() > 0) sb.setLength(sb.length() - 1); // remove last comma
-		Configuration.uiDockPanels = sb.toString();
+		UIDockHelper.showPanelBottom(this, id);
 	}
 
 	public void saveLayoutState() {
-		StringBuilder sb = new StringBuilder();
-
-		for (Map.Entry<String, String> entry : panelPositions.entrySet()) {
-			sb.append(entry.getKey()).append('=').append(entry.getValue()).append(',');
-		}
-
-		if (sb.length() > 0)
-			sb.setLength(sb.length() - 1); // trim trailing comma
-
-		Configuration.uiDockPanels = sb.toString();
-
-		if (splitPane.getHeight() > 100) {
-			int fullHeight = splitPane.getHeight();
-			int location = splitPane.getDividerLocation();
-			Configuration.uiDockDividerRatio = Math.max(0f, Math.min(1f, location / (float) fullHeight));
-		}
-
-		Configuration.uiDockLastActive = lastActivePanelID != null ? lastActivePanelID : "";
+		UIDockHelper.saveLayoutState(this);
 	}
 
-
-
-	private void switchPanel(JPanel stack, CardLayout layout, String id) {
-		for (UIPanel p : panelManager.getAllPanels()) {
-			if (p.getPanelID().equals(id)) {
-				p.onActivate();
-			} else {
-				p.onDeactivate();
-			}
-		}
-		layout.show(stack, id);
-		stack.revalidate();
-		stack.repaint();
+	public void updateDockPanelConfig() {
+		UIDockHelper.updateDockPanelConfig(this);
 	}
 
-	private void updateToggles() {
-		for (Map.Entry<String, JToggleButton> entry : toggleButtons.entrySet()) {
-			String id = entry.getKey();
-			JToggleButton toggle = entry.getValue();
-
-			String position = panelPositions.get(id); // top, bottom, or null
-			boolean isVisible = id.equals(topVisiblePanelID) || id.equals(bottomVisiblePanelID);
-
-			// Determine arrow
-			String arrow = position == null ? "•" :
-				position.equals("bottom") ? "↓" : "↑";
-
-			// Tooltip
-			toggle.setToolTipText(
-				(isVisible ? "Currently active • " : "") +
-					(position != null ? "Docked to " + position : "Undocked")
-			);
-
-			// Apply state
-			toggle.setText(arrow + " " + id);
-			toggle.setEnabled(!isVisible);
-			toggle.setSelected(isVisible);
-			toggle.setFont(toggle.getFont().deriveFont(isVisible ? Font.BOLD : Font.PLAIN));
-		}
-		SettingHandler.save(); // ✅ persist to disk
+	public void switchPanel(JPanel stack, CardLayout layout, String id) {
+		UIDockHelper.switchPanel(this, stack, layout, id);
 	}
 
-
-	private String getVisibleCard(JPanel stack) {
-		for (Component comp : stack.getComponents()) {
-			if (comp.isVisible()) {
-				for (Map.Entry<String, Component> entry : panelMap.entrySet()) {
-					if (entry.getValue() == comp) {
-						return entry.getKey();
-					}
-				}
-			}
-		}
-		return null;
+	public void updateToggles() {
+		UIDockHelper.updateToggles(this);
 	}
-
 
 	public void panelSwitcher(String id) {
-		String position = panelPositions.get(id);
-		if ("bottom".equalsIgnoreCase(position)) {
-			showPanelBottom(id);
-		} else {
-			showPanelTop(id); // default to top
-		}
+		UIDockHelper.panelSwitcher(this, id);
 	}
 
 	public UIPanel getPanel(String id) {
 		return panelManager.getPanel(id);
 	}
 
-	public String getPanelPosition(String id) {
+	public static String getPanelPosition(String id) {
 		return panelPositions.getOrDefault(id, "top");
 	}
 
 	public void dockPanelToMatch(String sourcePanelID, String targetPanelID) {
-		String position = getPanelPosition(sourcePanelID);
-		if ("bottom".equalsIgnoreCase(position)) {
-			showPanelBottom(targetPanelID);
-		} else {
-			showPanelTop(targetPanelID);
-		}
+		UIDockHelper.dockPanelToMatch(this, sourcePanelID, targetPanelID);
 	}
 
+	// ACCESSORS (internal use only)
+	public JPanel getToggleBar() { return toggleBarTop; }
+	public JPanel getToggleBarBottom() { return toggleBarBottom; }
+	public JSplitPane getSplitPane() { return splitPane; }
+	public CardLayout getTopLayout() { return topLayout; }
+	public CardLayout getBottomLayout() { return bottomLayout; }
+	public JPanel getTopStack() { return topStack; }
+	public JPanel getBottomStack() { return bottomStack; }
+	public Map<String, String> getPanelPositions() { return panelPositions; }
+	public Map<String, Component> getPanelMap() { return panelMap; }
+	public Map<String, JToggleButton> getToggleButtons() { return toggleButtons; }
+	public UIPanelManager getPanelManager() { return panelManager; }
+
+	public void setLastActivePanelID(String id) { lastActivePanelID = id; }
+	public void setTopVisiblePanelID(String id) { topVisiblePanelID = id; }
+	public void setBottomVisiblePanelID(String id) { bottomVisiblePanelID = id; }
+	public String getLastActivePanelID() { return lastActivePanelID; }
+	public String getTopVisiblePanelID() { return topVisiblePanelID; }
+	public String getBottomVisiblePanelID() { return bottomVisiblePanelID; }
+
+	/**
+	 * Get access to the login overlay for manual refresh if needed
+	 */
+	public LoginOverlayPanel getLoginOverlay() {
+		return loginOverlay;
+	}
+
+	/**
+	 * Clean up resources when closing
+	 */
+	@Override
+	public void dispose() {
+		if (loginOverlay != null) {
+			loginOverlay.dispose();
+		}
+		super.dispose();
+	}
 }

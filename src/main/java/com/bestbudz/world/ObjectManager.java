@@ -850,17 +850,17 @@ public final class ObjectManager {
 			l2 += 0x80000000;
 		byte byte0 = (byte) ((j1 << 6) + j);
 		if (j == 22) {
-				return;
-				/* GROUND DECORATIONS DISABLED FOR PERFORMANCE
 			Animable obj;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj = class46.method578(22, j1, k1, l1, i2, j2, -1);
-			else
-				obj = new Animable_Sub5(i1, j1, 22, l1, i2, k1, j2, class46.anInt781, true);
-			worldController.method280(k, k2, i, obj, byte0, l2, l);
-			if (class46.aBoolean767 && class46.hasActions && class11 != null)
-				class11.method213(i, l);
-			return;*/
+      if (Configuration.enableGroundDecorations) {
+        if (class46.anInt781 == -1 && class46.childrenIDs == null)
+          obj = class46.method578(22, j1, k1, l1, i2, j2, -1);
+        else obj = new Animable_Sub5(i1, j1, 22, l1, i2, k1, j2, class46.anInt781, true);
+        worldController.method280(k, k2, i, obj, byte0, l2, l);
+        if (class46.aBoolean767 && class46.hasActions && class11 != null) class11.method213(i, l);
+        return;
+				} else {
+		  return;
+	  }
 		}
 		if (j == 10 || j == 11) {
 			Animable obj1;

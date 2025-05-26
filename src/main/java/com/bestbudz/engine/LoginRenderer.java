@@ -32,10 +32,6 @@ public class LoginRenderer {
 		final int centerX = canvas.getWidth() / 2;
 		final int centerY = canvas.getHeight() / 2;
 
-
-		//client.resetImageProducers();
-		//client.refreshFrameSize(canvas);
-
 		// Initialize or resize off-screen buffer
 		if (Client.aRSImageProducer_1109 == null
 			|| Client.aRSImageProducer_1109.canvasWidth != Client.frameWidth

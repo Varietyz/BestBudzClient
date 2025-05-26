@@ -50,32 +50,24 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
 		MouseState.x = e.getX();
 		MouseState.y = e.getY();
 
-		System.out.println("[MousePressed] Raw Coordinates: (" + MouseState.x + ", " + MouseState.y + ")");
-		System.out.println("[MousePressed] Button: " + e.getButton());
-
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			MouseState.leftDown = true;
 			MouseState.leftClicked = true;
-			System.out.println("[MousePressed] Left button DOWN. leftDown=" + MouseState.leftDown + ", leftClicked=" + MouseState.leftClicked);
-		}
+}
 
 		if (e.getButton() == MouseEvent.BUTTON3) {
 			MouseState.rightDown = true;
 			MouseState.rightClicked = true;
-			System.out.println("[MousePressed] Right button DOWN. rightDown=" + MouseState.rightDown + ", rightClicked=" + MouseState.rightClicked);
-		}
+}
 
 		MouseState.pressed = true;
 		MouseState.clickEvent = true; // REQUIRED for packet triggering
 
-		System.out.println("[MousePressed] pressed=" + MouseState.pressed + ", clickEvent=" + MouseState.clickEvent);
-	}
+}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// Coordinates might not change on release, but print for tracking
-		System.out.println("[MouseReleased] Raw Coordinates: (" + e.getX() + ", " + e.getY() + ")");
-		System.out.println("[MouseReleased] Button: " + e.getButton());
 
 		MouseState.pressed = false;
 		MouseState.released = true;
@@ -85,16 +77,13 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			MouseState.leftClicked = false;
 			MouseState.leftDown = false;
-			System.out.println("[MouseReleased] Left button UP. leftDown=" + MouseState.leftDown + ", leftClicked=" + MouseState.leftClicked);
-		}
+	}
 
 		if (e.getButton() == MouseEvent.BUTTON3) {
 			MouseState.rightClicked = false;
 			MouseState.rightDown = false;
-			System.out.println("[MouseReleased] Right button UP. rightDown=" + MouseState.rightDown + ", rightClicked=" + MouseState.rightClicked);
 		}
 
-		System.out.println("[MouseReleased] pressed=" + MouseState.pressed + ", released=" + MouseState.released + ", clickEvent=" + MouseState.clickEvent);
 	}
 
 

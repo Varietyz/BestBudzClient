@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'edu.sc.seis.launch4j' version '2.5.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 group = 'com.bestbudz'
@@ -16,8 +17,6 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'src/libs', include: ['*.jar'])
-    implementation 'org.pushing-pixels:substance:5.3'
-    implementation 'org.pushing-pixels:trident:1.2'
     implementation 'org.jcodec:jcodec:0.2.5'
     implementation 'org.jcodec:jcodec-javase:0.2.5'
     implementation 'com.formdev:flatlaf:3.2'
@@ -30,7 +29,7 @@ java {
 }
 
 application {
-    mainClass = 'com.bestbudz.client.Client'
+    mainClass = 'com.bestbudz.engine.ClientLauncher'
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -40,15 +39,15 @@ tasks.withType(JavaCompile).configureEach {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com.bestbudz.client.Client'
+        attributes 'Main-Class': 'com.bestbudz.engine.ClientLauncher'
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 launch4j {
-    mainClassName = 'com.bestbudz.client.Client'
-    jar = "${project.layout.buildDirectory.get().asFile}/libs/${project.name}-${project.version}.jar"
-    outfile = "BestBudzRSPSClient.exe" // NOT A PATH — just name
+    mainClassName = 'com.bestbudz.engine.ClientLauncher'
+    jar = "${project.layout.buildDirectory.get().asFile}/libs/${project.name}-${project.version}-all.jar"
+   outfile = "BestBudzRSPSClient.exe" // NOT A PATH — just name
 
     icon = "C:/RSPS/Extras/BestBudzPotLeaf.ico" // Windows needs forward slashes or escaped backslashes
     headerType = 'gui'

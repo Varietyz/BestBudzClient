@@ -43,4 +43,6 @@ public class Configuration {
   public static float uiDockDividerRatio = 0.5f;
 
   public static String uiDockLastActive = "";
+
+	public static boolean enableGroundDecorations = true;
 }

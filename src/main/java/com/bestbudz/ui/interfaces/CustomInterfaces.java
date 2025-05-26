@@ -126,7 +126,6 @@ public class CustomInterfaces extends RSInterface
 		myProfile(BestBudz);
 		profileTab(BestBudz);
 		profileLeaderboards(BestBudz);
-		tracker(BestBudz);
 		loyaltyShop(BestBudz);
 		questInterface(BestBudz);
 		fireColor(BestBudz);
@@ -741,35 +740,6 @@ public class CustomInterfaces extends RSInterface
 	}
 
 
-	public static void tracker(TextDrawingArea[] bestbudz)
-	{
-		RSInterface tab = addInterface(54100);
-		addSprite(54101, 371);
-		addHoverButton(54102, 17, 21, 21, "Close", 250, 54103, 3);
-		addHoveredButton(54103, 18, 21, 21, 54104);
-		addText(54105, "Tracker", 0xff9933, true, true, -1, bestbudz, 2);
-		addText(54106, "Show's a list of tracked statistics.", 0xff9933, true, true, -1, bestbudz, 0);
-		tab.totalChildren(6);
-		tab.child(0, 54101, 100, 45);
-		tab.child(1, 54102, 390, 52);
-		tab.child(2, 54103, 390, 52);
-		tab.child(3, 54105, 260, 55);
-		tab.child(4, 54106, 260, 285);
-		tab.child(5, 54110, -155, 107);
-		RSInterface scrollInterface = addTabInterface(54110);
-		scrollInterface.width = 524;
-		scrollInterface.height = 166;
-		scrollInterface.scrollMax = 1000;
-		setChildren(50, scrollInterface);
-		int y = 0;
-		for (int i = 0; i < 50; i++)
-		{
-			addHoverText(54111 + i, "", "", bestbudz, 0, 0xcc8000, true, true, 300);
-			setBounds(54111 + i, 260, y, i, scrollInterface);
-			y += 20;
-		}
-	}
-
 	public static void settings(TextDrawingArea[] jaybane) {
 		RSInterface tab = addInterface(28400);
 
@@ -831,75 +801,13 @@ public class CustomInterfaces extends RSInterface
 	public static void stonersTab(TextDrawingArea[] tda)
 	{
 		RSInterface tab = addTabInterface(5065);
-		RSInterface list = interfaceCache[5066];
-		addSprite(16126, 291);
-		addSprite(16127, 292);
-		addText(5067, "Stoners", tda, 1, 0xff9933, true, true);
-		addText(5070, "", tda, 0, 0xff9933, false, true);
-		addText(5071, "", tda, 0, 0xff9933, false, true);
-		addHoveredButton(5072, 294, 29, 29, 5073);
-		addHoveredButton(5074, 296, 29, 29, 5075);
-		tab.totalChildren(9);
-		tab.child(0, 16127, 0, 20);
-		tab.child(1, 5067, 92, 2);
-		tab.child(2, 16126, 0, 18);
-		tab.child(3, 5066, 0, 22);
-		tab.child(4, 16126, 0, 231);
-		tab.child(5, 5072, 4, 240);
-		tab.child(6, 5074, 24, 240);
-		tab.child(7, 5070, 64, 25);
-		tab.child(8, 5071, 106, 237);
-		list.height = 189;
-		list.width = 174;
-		list.scrollMax = 200;
-		for (int id = 5092, i = 0; id <= 5191 && i <= 99; id++, i++)
-		{
-			list.children[i] = id;
-			list.childX[i] = 3;
-			list.childY[i] = list.childY[i] - 7;
-		}
-		for (int id = 5192, i = 100; id <= 5291 && i <= 199; id++, i++)
-		{
-			list.children[i] = id;
-			list.childX[i] = 131;
-			list.childY[i] = list.childY[i] - 7;
-		}
+		tab.totalChildren(0);
 	}
 
 	public static void ignoreTab(TextDrawingArea[] tda)
 	{
 		RSInterface tab = addTabInterface(5715);
-		RSInterface list = interfaceCache[5716];
-		addText(5717, "F You List", tda, 1, 0xff9933, true, true);
-		addText(5720, "Urhh these people..", tda, 0, 0xff9933, false, true);
-		addText(5721, "", tda, 0, 0xff9933, false, true);
-		addHoverButton(5718, 297, 29, 29, "Add Shithead", 501, 5722, 1);
-		addHoveredButton(5722, 298, 29, 29, 5723);
-		addHoverButton(5719, 299, 29, 29, "U aint that bad", 502, 5724, 1);
-		addHoveredButton(5724, 300, 29, 29, 5725);
-		addText(5824, "0 / 100", tda, 0, 0xff9933, false, true, 902, 0);
-		tab.totalChildren(12);
-		tab.child(0, 5717, 92, 5);
-		tab.child(1, 16127, 0, 40);
-		tab.child(2, 16126, 0, 40);
-		tab.child(3, 5716, 0, 42);
-		tab.child(4, 16126, 0, 231);
-		tab.child(5, 5718, 5, 240);
-		tab.child(6, 5722, 4, 240);
-		tab.child(7, 5719, 25, 240);
-		tab.child(8, 5724, 24, 240);
-		tab.child(9, 5720, 64, 25);
-		tab.child(10, 5721, 108, 237);
-		tab.child(11, 5824, 145, 242);
-		list.height = 189;
-		list.width = 174;
-		list.scrollMax = 200;
-		for (int id = 5742, i = 0; id <= 5841 && i <= 99; id++, i++)
-		{
-			list.children[i] = id;
-			list.childX[i] = 3;
-			list.childY[i] = list.childY[i] - 7;
-		}
+		tab.totalChildren(0);
 	}
 
 	public static void expCounter(TextDrawingArea[] jaybane)
@@ -1411,10 +1319,10 @@ public class CustomInterfaces extends RSInterface
 	private static void achievementsTab(TextDrawingArea[] jaybane) // JFRAMED
 	{
 		RSInterface tab = addTabInterface(31000);
-		addSprite(31001, 15);
-		addText(31002, "Achievements", 0xff9040, false, true, 52, jaybane, 2);
-		setChildren(5, tab);
-		setBounds(31001, 0, -3, 0, tab);
+	//	addSprite(31001, 15);
+	//	addText(31002, "Achievements", 0xff9040, false, true, 52, jaybane, 2);
+		setChildren(0, tab);
+	/*	setBounds(31001, 0, -3, 0, tab);
 		setBounds(31002, 45, 5, 1, tab);
 		setBounds(31003, -6, 25, 2, tab);
 		addHoverButton(31004, 13, 25, 25, "Back to Quest tab", -1, 31005, 1);
@@ -1437,6 +1345,8 @@ public class CustomInterfaces extends RSInterface
 		}
 		tab.child(3, 31004, 160, 0);
 		tab.child(4, 31005, 160, 0);
+
+	 */
 	}
 
 	public static void clanChatTab(TextDrawingArea[] bestbudz)
@@ -1608,7 +1518,7 @@ public class CustomInterfaces extends RSInterface
 	public static void questTab(TextDrawingArea[] bestbudz) // JFRAMED
 	{
 		RSInterface tab = addTabInterface(29400);
-		addSprite(29401, 82);
+		/*addSprite(29401, 82);
 		addSprite(29402, 38);
 		addText(29403, "BestBudz", bestbudz, 2, 0xF7AA25, true, true);
 		addText(29407, "Stay high!", bestbudz, 2, 0xF7AA25, true, true);
@@ -1617,8 +1527,9 @@ public class CustomInterfaces extends RSInterface
 		addHoverButton(29410, 351, 15, 15, "Refresh", -1, 29411, 1);
 		addHoveredButton(29411, 352, 15, 15, 29412);
 		addHoverText(29413, "", "", bestbudz, 0, 0x47B320, false, true, 50);
-		tab.scrollMax = 0;
-		tab.totalChildren(11);
+		tab.scrollMax = 0;*/
+		tab.totalChildren(0);
+		/*
 		tab.child(0, 29401, -4, 34);
 		tab.child(1, 29402, -0, 34);
 		tab.child(2, 29402, -0, 229);
@@ -1647,6 +1558,8 @@ public class CustomInterfaces extends RSInterface
 			scrollInterface.child(i, 29501 + i, x, y);
 			y += 18;
 		}
+
+		 */
 	}
 
 }

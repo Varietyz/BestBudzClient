@@ -2,10 +2,15 @@ package com.bestbudz.engine;
 
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.client.frame.UIDockFrame;
+import com.bestbudz.client.frame.UIDockHelper;
 import com.bestbudz.client.ui.panel.AchievementsPanel;
 import com.bestbudz.client.ui.panel.QuestTabPanel;
+import com.bestbudz.client.ui.panel.SkillsPanel;
 import com.bestbudz.client.ui.panel.UIPanel;
+import com.bestbudz.client.util.DockBlocker;
+import com.bestbudz.client.util.DockPanelMapping;
 import com.bestbudz.client.util.DockSync;
+import com.bestbudz.client.util.DockTextUpdatable;
 import com.bestbudz.config.ClientConstants;
 import com.bestbudz.config.ColorConstants;
 import com.bestbudz.config.Configuration;
@@ -128,6 +133,7 @@ import javax.swing.SwingUtilities;
 
 public class Client extends ClientEngine
 {
+	public static String selectedStonerName;
 
 	private int frameCount = 0;
 	private int fps = 0;
@@ -265,9 +271,9 @@ public class Client extends ClientEngine
 	private static final int currencies = 11;
 	private static final Sprite[] currencyImage = new Sprite[currencies];
 	private static final int[][] statsSkillGoal = new int[Skills.SKILLS_COUNT + 1][3];
-	private static final int[] tabAmounts = new int[]{350, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	private static final int[] bankInvTemp = new int[352];
-	private static final int[] bankStackTemp = new int[352];
+	public static final int[] tabAmounts = new int[]{350, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	public static final int[] bankInvTemp = new int[352];
+	public static final int[] bankStackTemp = new int[352];
 	private final boolean canGainXP = true;
 	private final LinkedList<XPGain> gains = new LinkedList<XPGain>();
 
@@ -278,15 +284,15 @@ public class Client extends ClientEngine
 	private final int[] redStonesX = {6, 44, 77, 110, 143, 176, 209, 6, 44, 77, 110, 143, 176, 209},
 		redStonesY = {0, 0, 0, 0, 0, 0, 0, 298, 298, 298, 298, 298, 298, 298},
 		redStonesId = {0, 4, 4, 4, 4, 4, 1, 2, 4, 4, 4, 4, 4, 3};
-	private final int[] tabClickX = {38, 33, 33, 33, 33, 33, 38, 38, 33, 33, 33, 33, 33, 38},
-		tabClickStart = {522, 560, 593, 625, 659, 692, 724, 522, 560, 593, 625, 659, 692, 724},
-		tabClickY = {169, 169, 169, 169, 169, 169, 169, 466, 466, 466, 466, 466, 466, 466};
+	private static final int[] tabClickX = {38, 33, 33, 33, 33, 33, 38, 38, 33, 33, 33, 33, 33, 38};
+	private static final int[] tabClickStart = {522, 560, 593, 625, 659, 692, 724, 522, 560, 593, 625, 659, 692, 724};
+	private static final int[] tabClickY = {169, 169, 169, 169, 169, 169, 169, 466, 466, 466, 466, 466, 466, 466};
 	public static final long[] currentExp = new long[Skills.SKILLS_COUNT];
 	private final int[] anIntArray873;
 	private final boolean[] aBooleanArray876;
 	private final int maxStoners;
 	private final int myStonerIndex;
-	private static final int[] currentStats = new int[Skills.SKILLS_COUNT];
+	public static final int[] currentStats = new int[Skills.SKILLS_COUNT];
 	private static final long[] ignoreListAsLongs = new long[100];
 	private final int[] anIntArray928;
 	private final String[] chatNames;
@@ -361,7 +367,7 @@ public class Client extends ClientEngine
 	public Sprite[] gameComponents = new Sprite[5];
 	public Sprite[] redStones = new Sprite[6];
 	public Sprite[] hpBars = new Sprite[2];
-	public OnDemandFetcher onDemandFetcher;
+	public static OnDemandFetcher onDemandFetcher;
 	public static int focusedDragWidget;
 	public ImageProducer aRSImageProducer_1108;
 	public ImageProducer aRSImageProducer_1112;
@@ -400,13 +406,13 @@ public class Client extends ClientEngine
 	private ImageProducer topFrame;
 	private static int ignoreCount;
 	private long aLong824;
-	private int[][] anIntArrayArray825;
+	private static int[][] anIntArrayArray825;
 	public static int[] stonersNodeIDs;
 	private NodeList[][][] groundArray;
 	private volatile boolean aBoolean831;
 	private Socket aSocket832;
 	private Stream aStream_834;
-	private Npc[] npcArray;
+	private static Npc[] npcArray;
 	private int npcCount;
 	private int[] npcIndices;
 	private int anInt839;
@@ -416,7 +422,7 @@ public class Client extends ClientEngine
 	private int anInt843;
 	public static String aString844;
 	private Stream aStream_847;
-	private boolean aBoolean848;
+	private static boolean aBoolean848;
 	private int[] anIntArray851;
 	private int[] anIntArray852;
 	private int[] anIntArray853;
@@ -435,22 +441,22 @@ public class Client extends ClientEngine
 	public static int anInt886;
 	public static String inputString;
 	private static Stoner[] stonerArray;
-	private int stonerCount;
-	private int[] stonerIndices;
+	private static int stonerCount;
+	private static int[] stonerIndices;
 	private int anInt893;
 	private int[] anIntArray894;
 	private Stream[] aStreamArray895s;
-	private int anInt896;
+	private static int anInt896;
 	public static int stonersCount;
 	private static int anInt900;
-	private int[][] anIntArrayArray901;
+	private static int[][] anIntArrayArray901;
 	private byte[] aByteArray912;
-	private int anInt913;
+	private static int anInt913;
 	public static int crossX;
 	public static int crossY;
 	public static int crossIndex;
 	public static int crossType;
-	private int plane;
+	private static int plane;
 	private boolean loadingError;
 	private int[][] anIntArrayArray929;
 	private static Sprite aClass30_Sub2_Sub1_Sub1_931;
@@ -462,17 +468,17 @@ public class Client extends ClientEngine
 	private int anInt937;
 	private int anInt938;
 	public static int anInt945;
-	private WorldController worldController;
+	private static WorldController worldController;
 	private Sprite[] sideIcons;
-	private int menuScreenArea;
+	private static int menuScreenArea;
 	private static int menuOffsetX;
 	private static int menuOffsetY;
 	private static int menuWidth;
-	private int menuHeight;
+	private static int menuHeight;
 	public static long aLong953;
 	private boolean aBoolean954;
 	public static long[] stonersListAsLongs;
-	private int currentSong;
+	private static int currentSong;
 	private int spriteDrawX;
 	private int spriteDrawY;
 	private static boolean aBoolean972;
@@ -492,14 +498,14 @@ public class Client extends ClientEngine
 	private int pktType;
 	private int anInt1009;
 	private int anInt1010;
-	private int anInt1011;
+	private static int anInt1011;
 	private NodeList aClass19_1013;
 	private int anInt1014;
 	private int anInt1015;
 	private int anInt1016;
 	private boolean aBoolean1017;
 	private int anInt1018;
-	private int anInt1021;
+	private static int anInt1021;
 	private int anInt1022;
 	private static Sprite scrollBar1;
 	private static Sprite scrollBar2;
@@ -512,7 +518,7 @@ public class Client extends ClientEngine
 	private int anInt1037;
 	public static int anInt1039;
 	public static int dialogID;
-	private int anInt1046;
+	private static int anInt1046;
 	private static boolean aBoolean1047;
 	private static int anInt1048;
 	private String aString1049;
@@ -543,10 +549,10 @@ public class Client extends ClientEngine
 	private static int activeInterfaceType;
 	public static int pressX;
 	public static int pressY;
-	private static int[] menuActionCmd2;
-	private static int[] menuActionCmd3;
+	public static int[] menuActionCmd2;
+	public static int[] menuActionCmd3;
 	public static int[] menuActionID;
-	private static int[] menuActionCmd1;
+	public static int[] menuActionCmd1;
 	private Sprite[] headIcons;
 	private Sprite[] skullIcons;
 	private Sprite[] headIconsHint;
@@ -562,10 +568,10 @@ public class Client extends ClientEngine
 	private static int membersInt;
 	public static String aString1121;
 	private ImageProducer aRSImageProducer_1125;
-	private int anInt1131;
+	private static int anInt1131;
 	public static int menuActionRow;
 	private static int spellSelected;
-	private int anInt1137;
+	private static int anInt1137;
 	private static int spellUsableOn;
 	private static String spellTooltip;
 	private Sprite[] aClass30_Sub2_Sub1_Sub1Array1140;
@@ -573,7 +579,7 @@ public class Client extends ClientEngine
 	private static int energy;
 	private static boolean aBoolean1149;
 	public static Sprite[] crosses;
-	private boolean musicEnabled;
+	private static boolean musicEnabled;
 	private Background[] aBackgroundArray1152s;
 	private static int unreadMessages;
 	public static boolean canMute;
@@ -583,7 +589,7 @@ public class Client extends ClientEngine
 	private static int daysSinceRecovChange;
 	private RSSocket socketStream;
 	private int anInt1169;
-	private int minimapInt3;
+	private static int minimapInt3;
 	public static int reportAbuseInterfaceID;
 	private NodeList aClass19_1179;
 	private byte[][] aByteArrayArray1183;
@@ -599,7 +605,7 @@ public class Client extends ClientEngine
 	public static String[] menuActionName;
 	private Sprite aClass30_Sub2_Sub1_Sub1_1201;
 	private Sprite aClass30_Sub2_Sub1_Sub1_1202;
-	private int minimapInt2;
+	private static int minimapInt2;
 	public static String promptInput;
 	private static int anInt1213;
 	private int[][][] intGroundArray;
@@ -607,41 +613,41 @@ public class Client extends ClientEngine
 	private long aLong1220;
 	private int anInt1222;
 	public static int inputDialogState;
-	private int nextSong;
-	private boolean songChanging;
-	private Class11[] aClass11Array1230;
+	private static int nextSong;
+	private static boolean songChanging;
+	private static Class11[] aClass11Array1230;
 	private int[] anIntArray1234;
 	private int[] anIntArray1235;
 	private int[] anIntArray1236;
 	private int anInt1237;
 	private int anInt1238;
-	private boolean aBoolean1242;
-	private int atBoxLoopCycle;
+	private static boolean aBoolean1242;
+	private static int atBoxLoopCycle;
 	private static int atBoxInterface;
 	private static int atBoxIndex;
 	private static int atBoxInterfaceType;
 	private byte[][] aByteArrayArray1247;
 	public static int tradeMode;
-	private int anInt1249;
+	private static int anInt1249;
 	private int anInt1251;
-	private int legacyClickInt;
-	private boolean welcomeScreenRaised;
+	private static int legacyClickInt;
+	private static boolean welcomeScreenRaised;
 	public static boolean messagePromptRaised;
 	private byte[][][] byteGroundArray;
-	private int prevSong;
-	private int destX;
-	private int destY;
-	private int anInt1264;
+	private static int prevSong;
+	private static int destX;
+	private static int destY;
+	private static int anInt1264;
 	private int anInt1265;
 	private int anInt1268;
 	private int anInt1269;
-	private int anInt1278;
-	private int[] bigX;
-	private int[] bigY;
+	private static int anInt1278;
+	private static int[] bigX;
+	private static int[] bigY;
 	private static int itemSelected;
 	private static int anInt1283;
 	private static int anInt1284;
-	private int anInt1285;
+	private static int anInt1285;
 	private static String selectedItemName;
 	private static int modifiableXValue = 0;
 	private GameCanvas canvas;
@@ -1061,7 +1067,7 @@ public class Client extends ClientEngine
 		stream.writeQWord(TextClass.longForName(string));
 	}
 
-	public void sendString(int identifier, String text)
+	public static void sendString(int identifier, String text)
 	{
 		text = identifier + "," + text;
 		stream.createFrame(127);
@@ -1069,13 +1075,13 @@ public class Client extends ClientEngine
 		stream.writeString(text);
 	}
 
-	private void stopMidi()
+	private static void stopMidi()
 	{
 		Signlink.midifade = 0;
 		Signlink.midi = "stop";
 	}
 
-	private boolean menuHasAddStoner(int j)
+	private static boolean menuHasAddStoner(int j)
 	{
 		if (j < 0)
 			return false;
@@ -1478,6 +1484,9 @@ public class Client extends ClientEngine
 
 	public static void buildInterfaceMenu(int y, RSInterface rsinterface, int x, int scrollPosition)
 	{
+		if (DockBlocker.isDocked(rsinterface.id) || DockBlocker.isDocked(rsinterface.parentID)) {
+			return;
+		}
 
 		if (rsinterface == null)
 			rsinterface = RSInterface.interfaceCache[21356];
@@ -2022,7 +2031,7 @@ public class Client extends ClientEngine
 
 	}
 
-	private void updateConfigValues(int i)
+	private static void updateConfigValues(int i)
 	{
 		try
 		{
@@ -2483,7 +2492,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void delStoner(long l)
+	private static void delStoner(long l)
 	{
 		try
 		{
@@ -2848,7 +2857,7 @@ public class Client extends ClientEngine
 			xCameraCurve = i2;
 	}
 
-	private void addStoner(long l)
+	private static void addStoner(long l)
 	{
 		try
 		{
@@ -2957,7 +2966,7 @@ public class Client extends ClientEngine
 		console.openConsole = false;
 	}
 
-	private void method45()
+	private static void method45()
 	{
 		aBoolean1031 = true;
 		for (int j = 0; j < 7; j++)
@@ -3067,7 +3076,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private boolean promptUserForInput(RSInterface class9)
+	private static boolean promptUserForInput(RSInterface class9)
 	{
 		int j = class9.contentType;
 		System.out.println(anInt900);
@@ -3623,7 +3632,7 @@ public class Client extends ClientEngine
 		} while (true);
 	}
 
-	private void method60(int i)
+	private static void method60(int i)
 	{
 		RSInterface class9 = RSInterface.interfaceCache[i];
 		if (class9 == null || class9.children == null)
@@ -4067,7 +4076,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private boolean componentIsClicked(int i, int j, int k)
+	private static boolean componentIsClicked(int i, int j, int k)
 	{
 		int i1 = i >> 14 & 0x7fff;
 		int j1 = worldController.method304(plane, k, j, i);
@@ -4274,7 +4283,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	public void setNorth()
+	public static void setNorth()
 	{
 		anInt1278 = 0;
 		anInt1131 = 0;
@@ -4284,7 +4293,7 @@ public class Client extends ClientEngine
 		minimapInt3 = 0;
 	}
 
-	protected void doAction(int i)
+	protected static void doAction(int i)
 	{
 
 		if (i < 0)
@@ -7401,7 +7410,7 @@ public class Client extends ClientEngine
 	}
 
 
-	private void deterquarryMenuSize() {
+	private static void deterquarryMenuSize() {
 		int boxWidth = getMaxMenuTextWidth() + 8;
 		int boxHeight = 15 * menuActionRow + 22;
 
@@ -7431,7 +7440,7 @@ public class Client extends ClientEngine
 	}
 
 
-	private int getMaxMenuTextWidth() {
+	private static int getMaxMenuTextWidth() {
 		int max = newBoldFont.getTextWidth("Choose already");
 		for (int i = 0; i < menuActionRow; i++) {
 			int width = newBoldFont.getTextWidth(menuActionName[i]);
@@ -7444,7 +7453,7 @@ public class Client extends ClientEngine
 		return Math.max(min, Math.min(max, value));
 	}
 
-	private void processMenuClick(boolean leftClick, boolean rightClick) {
+	public static void processMenuClick(boolean leftClick, boolean rightClick) {
 		if (activeInterfaceType != 0) {
 			System.out.println("🚫 BLOCKED: activeInterfaceType = " + activeInterfaceType);
 			return;
@@ -7482,7 +7491,7 @@ public class Client extends ClientEngine
 		MouseState.rightClicked = false;
 	}
 
-	private boolean isClickInsideOrbBounds() {
+	private static boolean isClickInsideOrbBounds() {
 		if (!Configuration.enableStatusOrbs) return false;
 
 		int orbX = frameWidth - 217 + 155;
@@ -7503,7 +7512,7 @@ public class Client extends ClientEngine
 
 
 
-	private void handleMenuCloseOnOutsideClick() {
+	private static void handleMenuCloseOnOutsideClick() {
 		int x = MouseState.x;
 		int y = MouseState.y;
 
@@ -7520,7 +7529,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void handleMenuClick() {
+	private static void handleMenuClick() {
 		int mouseX = MouseState.x;
 		int mouseY = MouseState.y;
 
@@ -7545,7 +7554,7 @@ public class Client extends ClientEngine
 		if (menuScreenArea == 2) inputTaken = true;
 	}
 
-	private void handleInputFieldSubmission() {
+	private static void handleInputFieldSubmission() {
 		if (RSInterface.currentInputField == null) return;
 
 		if (RSInterface.currentInputField.onlyNumbers) {
@@ -7570,7 +7579,7 @@ public class Client extends ClientEngine
 		RSInterface.currentInputField = null;
 	}
 
-	private boolean handleResizableTabAreaClick(boolean leftClick, boolean rightClick) {
+	private static boolean handleResizableTabAreaClick(boolean leftClick, boolean rightClick) {
 		if (!changeTabArea) return false;
 
 		final int barHeight = (frameWidth >= 1000) ? 37 : 73;
@@ -7583,7 +7592,7 @@ public class Client extends ClientEngine
 		return false;
 	}
 
-	private void handleWidgetDragStart(boolean leftClick, boolean rightClick) {
+	private static void handleWidgetDragStart(boolean leftClick, boolean rightClick) {
 		if (!leftClick || menuActionRow <= 0) return;
 
 		int actionId = menuActionID[menuActionRow - 1];
@@ -7609,7 +7618,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void handleFallbackAction(boolean leftClick, boolean rightClick) {
+	private static void handleFallbackAction(boolean leftClick, boolean rightClick) {
 		if (!rightClick) return;
 
 		if ((leftClick || menuHasAddStoner(menuActionRow - 1)) && menuActionRow > 2) {
@@ -7627,7 +7636,7 @@ public class Client extends ClientEngine
 	}
 
 
-	protected void processTabClick(boolean leftClick, boolean rightClick)
+	protected static void processTabClick(boolean leftClick, boolean rightClick)
 	{
 		if (leftClick)
 		{
@@ -8242,8 +8251,7 @@ public class Client extends ClientEngine
 				sendFrame36(429, 1);
 				resetImageProducers2();
 				setBounds();
-				//canvas.requestFocusInWindow();
-				//canvas.requestFocus();
+
 				return;
 			}
 
@@ -8383,8 +8391,8 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private boolean doWalkTo(int i, int j, int k, int i1, int j1, int k1, int l1, int i2, int j2, boolean flag,
-							 int k2)
+	private static boolean doWalkTo(int i, int j, int k, int i1, int j1, int k1, int l1, int i2, int j2, boolean flag,
+									int k2)
 	{
 		int byte0 = 104;
 		int byte1 = 104;
@@ -8980,7 +8988,7 @@ public class Client extends ClientEngine
 		stream.finishBitAccess();
 	}
 
-	protected void processMainScreenClick(boolean leftClick, boolean rightClick)
+	protected static void processMainScreenClick(boolean leftClick, boolean rightClick)
 	{
 
 		if (anInt1021 != 0)
@@ -9678,6 +9686,9 @@ public class Client extends ClientEngine
 
 	public static void drawInterface(int j, int k, RSInterface class9, int l)
 	{
+		if (class9 == null || DockBlocker.isDocked(class9.id) || DockBlocker.isDocked(class9.parentID)) {
+			return;
+		}
 
 		if (class9.parentID == 197)
 		{
@@ -10403,7 +10414,7 @@ public class Client extends ClientEngine
 						finalMessage = msg[0].concat("\\n").concat(msg[1]);
 					}
 
-					int skillId = child.parentID == 3917 ? finalMessage.split(":")[0].equals("Grades total") ? 25
+					int skillId = child.parentID == 3917 ? finalMessage.split(":")[0].equals("Grades total") ? 21
 						: Skills.getIdByName(finalMessage.split(":")[0]) : 0;
 
 					boolean showGoal = child.parentID == 3917 && statsSkillGoal[skillId][0] > 0;
@@ -10413,7 +10424,7 @@ public class Client extends ClientEngine
 					if (showGoal)
 					{
 						long remainder = 0;
-						if (skillId == 25)
+						if (skillId == 21)
 						{
 							long exp = 0;
 							for (int i = 0; i < Skills.SKILLS_COUNT; i++)
@@ -11134,7 +11145,7 @@ public class Client extends ClientEngine
 		return s.equalsIgnoreCase(myStoner.name);
 	}
 
-	private void setWaveVolume(int i)
+	private static void setWaveVolume(int i)
 	{
 		Signlink.wavevol = i;
 	}
@@ -11373,7 +11384,7 @@ public class Client extends ClientEngine
 		return (!inSafe(x, y));
 	}
 
-	private void addIgnore(long l)
+	private static void addIgnore(long l)
 	{
 		try
 		{
@@ -11692,7 +11703,7 @@ public class Client extends ClientEngine
 			return 3;
 	}
 
-	private void delIgnore(long l)
+	private static void delIgnore(long l)
 	{
 		try
 		{
@@ -11718,7 +11729,7 @@ public class Client extends ClientEngine
 		throw new RuntimeException();
 	}
 
-	private void adjustVolume(boolean flag, int i)
+	private static void adjustVolume(boolean flag, int i)
 	{
 		Signlink.midivol = i;
 		if (flag)
@@ -12600,7 +12611,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	public void sendFrame248(int interfaceID, int sideInterfaceID)
+	public static void sendFrame248(int interfaceID, int sideInterfaceID)
 	{
 		if (backDialogID != -1)
 		{
@@ -12805,7 +12816,12 @@ public class Client extends ClientEngine
 					maxStats[pid] = 1;
 					for (int lvl = 0; lvl < Skills.EXP_FOR_LEVEL.length; lvl++)
 						if (pExp >= Skills.EXP_FOR_LEVEL[lvl])
-							maxStats[pid] = lvl + 2;
+							maxStats[pid] = lvl;
+
+					DockTextUpdatable updatable = UIDockHelper.getUpdatablePanel("Skills");
+					if (UIDockHelper.isPanelVisible("Skills") && updatable instanceof SkillsPanel) {
+						((SkillsPanel) updatable).updateSkill(pid);
+					}
 
 					pktType = -1;
 					return true;
@@ -13537,56 +13553,50 @@ public class Client extends ClientEngine
 					return true;
 
 				case 126:
-					try
-					{
+					try {
 						String text = inStream.readString();
 						int frame = inStream.method435();
 
+						DockPanelMapping mapping = DockPanelMapping.fromFrame(frame);
+						if (mapping != null) {
+							int index = mapping.indexFor(frame);
+							SwingUtilities.invokeLater(() -> {
+								UIPanel panel = UIDockFrame.getInstance().getPanel(mapping.panelID);
+								if (panel instanceof DockTextUpdatable) {
+									((DockTextUpdatable) panel).updateDockText(index, text);
+								}
+							});
+						}
+
+
+						// Text commands
 						if (text.startsWith(":quicks:"))
 							StatusOrbs.clickedQuickPrayers = text.substring(8).equalsIgnoreCase("on");
 						if (text.startsWith(":prayer:"))
 							prayerBook = text.substring(8);
 
-						updateStrings(text, frame);
-						sendFrame126(text, frame);
-
-						// Dock UI
-						if (frame >= 29501 && frame < 29601) {
-							int index = frame - 29501;
-							SwingUtilities.invokeLater(() -> {
-								UIPanel panel = UIDockFrame.getInstance().getPanel("Info Tab");
-								if (panel instanceof QuestTabPanel) {
-									((QuestTabPanel) panel).updateQuestLine(index, text);
-									((QuestTabPanel) panel).showQuestList(); // now uses visibility swapping, not CardLayout
-								}
-							});
-						}
-						if (frame >= 31006 && frame < 31086) {
-							int index = frame - 31006;
-							SwingUtilities.invokeLater(() -> {
-								UIPanel panel = UIDockFrame.getInstance().getPanel("Achievements");
-								if (panel instanceof AchievementsPanel) {
-									((AchievementsPanel) panel).updateAchievement(index, text);
-
-								}
-							});
+						// Only call sendFrame126 if interface exists
+						if (RSInterface.interfaceCache != null && frame >= 0 && frame < RSInterface.interfaceCache.length) {
+							if (RSInterface.interfaceCache[frame] != null) {
+								sendFrame126(text, frame);
+								updateStrings(text, frame);
+							}
 						}
 
-
-						if (frame >= 18144 && frame <= 18244)
-						{
+						// Other frame cases
+						if (frame >= 18144 && frame <= 18244) {
 							clanList[frame - 18144] = text;
 						}
-						if (frame == 8135)
-						{
-							RSInterface.interfaceCache[8135].opacity = 108;
+						if (frame == 8135) {
+							if (RSInterface.interfaceCache[8135] != null)
+								RSInterface.interfaceCache[8135].opacity = 108;
 						}
-					}
-					catch (Exception e)
-					{
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 					pktType = -1;
 					return true;
+
 
 				case 124:
 					try

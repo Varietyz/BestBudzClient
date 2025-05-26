@@ -3034,4 +3034,18 @@ public final class ItemDef {
 		} while (true);
 	}
 
+	public static boolean isValid(int id) {
+		return id > 0 && id < totalItems;
+	}
+
+	public static boolean isRenderable(int id) {
+		try {
+			if (!isValid(id)) return false;
+			ItemDef def = getItemDefinition(id);
+			return def != null && def.modelID > 0;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 }

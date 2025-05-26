@@ -1,13 +1,16 @@
 package com.bestbudz.client.ui.panel;
 
 import com.bestbudz.client.frame.UIDockFrame;
+import com.bestbudz.client.util.DockTextUpdatable;
 import com.bestbudz.engine.Client;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class AchievementsPanel implements UIPanel {
+public class AchievementsPanel implements UIPanel, DockTextUpdatable
+{
+	private Timer achievementRequestTimer;
 
 	private final JPanel panel;
 	private final DefaultListModel<AchievementEntry> listModel;
@@ -31,6 +34,9 @@ public class AchievementsPanel implements UIPanel {
 		panel = new JPanel(new BorderLayout(0, 10));
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		panel.setBackground(Color.BLACK);
+panel.setPreferredSize(null);
+		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		panel.setMinimumSize(new Dimension(0, 0));
 
 		JLabel title = new JLabel("BestBudz");
 		title.setForeground(new Color(0xF7AA25));
@@ -125,14 +131,20 @@ public class AchievementsPanel implements UIPanel {
 		JPanel buttonBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 		buttonBar.setOpaque(false);
 
-		JButton backButton = new JButton("Quest Tab");
+		JButton backButton = new JButton("Info Tab");
 		backButton.setToolTipText("Return to Info Tab");
-		backButton.addActionListener(e -> UIDockFrame.getInstance().dockPanelToMatch("Achievements", "Info Tab"));
+		if (Client.loggedIn) backButton.addActionListener(e -> UIDockFrame.getInstance().dockPanelToMatch("Achievements", "Info Tab"));
 		buttonBar.add(backButton);
 
 		panel.add(header, BorderLayout.NORTH);
 		panel.add(content, BorderLayout.CENTER);
 		panel.add(buttonBar, BorderLayout.SOUTH);
+	}
+
+	@Override
+	public void updateText()
+	{
+
 	}
 
 	@Override
@@ -145,30 +157,49 @@ public class AchievementsPanel implements UIPanel {
 		return panel;
 	}
 
+
 	@Override
 	public void onActivate() {
-		if (!Client.loggedIn || Client.stream == null) {
-			System.out.println("Skipping achievements frame request: not logged in.");
-			return;
-		}
-		try {
-			Client.stream.createFrame(185);
-			Client.stream.writeWord(29404);
-			System.out.println("Requested achievements via frame 29404");
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		// immediate fetch
+		requestAchievements();
+		// start periodic refresh every 5 seconds
+		if (achievementRequestTimer == null) {
+			achievementRequestTimer = new Timer(5000, e -> requestAchievements());
+			achievementRequestTimer.setRepeats(true);
+			achievementRequestTimer.start();
 		}
 	}
 
+
 	@Override
 	public void onDeactivate() {
-		// Optional cleanup
+		if (achievementRequestTimer != null) {
+			achievementRequestTimer.stop();
+			achievementRequestTimer = null;
+		}
 	}
+
 
 	@Override
 	public String getPanelIconPath() {
 		return "sprites/achievements-tab.png";
 	}
+
+	@Override
+	public void updateDockText(int index, String text) {
+		updateAchievement(index, text);
+	}
+
+	private void requestAchievements() {
+		if (!Client.loggedIn || Client.stream == null) return;
+		try {
+			Client.stream.createFrame(185);
+			Client.stream.writeWord(29404);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
 
 	public void updateAchievement(int index, String rawText) {
 		if (index < 0) return;
@@ -185,6 +216,11 @@ public class AchievementsPanel implements UIPanel {
 			listModel.addElement(new AchievementEntry("", color));
 
 		listModel.set(index, new AchievementEntry(cleaned, color));
+	}
+
+	@Override
+	public int[] getBlockedInterfaces() {
+		return new int[] { 29404 };
 	}
 
 }

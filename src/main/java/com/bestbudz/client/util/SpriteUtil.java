@@ -1,5 +1,8 @@
 package com.bestbudz.client.util;
 
+import com.bestbudz.data.ItemDef;
+import com.bestbudz.graphics.sprite.Sprite;
+import com.bestbudz.graphics.sprite.SpriteLoader;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -12,21 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SpriteUtil {
 
 	private static final Map<String, ImageIcon> iconCache = new ConcurrentHashMap<>();
-
-	public static JLabel createIconLabel(String relativePath, int width, int height, String tooltip) {
-		try {
-			ImageIcon icon = loadIconScaled(relativePath, width, 1f);
-			if (icon == null) throw new IllegalStateException("Failed to load icon");
-
-			JLabel label = new JLabel(icon);
-			label.setPreferredSize(new Dimension(width, height));
-			label.setToolTipText(tooltip);
-			return label;
-		} catch (Exception e) {
-			System.err.println("Failed to create icon label: " + e.getMessage());
-			return new JLabel("[X]");
-		}
-	}
 
 	public static ImageIcon loadIconScaled(String path, int size) {
 		return loadIconScaled(path, size, 1f);
@@ -64,4 +52,5 @@ public class SpriteUtil {
 			return null;
 		}
 	}
+
 }
