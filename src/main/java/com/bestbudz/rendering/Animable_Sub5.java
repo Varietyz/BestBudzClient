@@ -46,29 +46,42 @@ Client client;
     anIntArray1600 = class46.childrenIDs;
   }
 
-  private ObjectDef method457() {
-    int i = -1;
-    if (anInt1601 != -1) {
-      try {
-        VarBit varBit = VarBit.cache[anInt1601];
-        int k = varBit.anInt648;
-        int l = varBit.anInt649;
-        int i1 = varBit.anInt650;
-        int j1 = Client.anIntArray1232[i1 - l];
-        i = client.variousSettings[k] >> l & j1;
-      } catch (Exception ex)
-	  {
-		  throw new RuntimeException(ex);
-	  }
-    } else if (anInt1602 != -1) {
-      i = client.variousSettings[anInt1602];
-    }
-    if (i < 0 || i >= anIntArray1600.length || anIntArray1600[i] == -1) {
-      return null;
-    } else {
-      return ObjectDef.forID(anIntArray1600[i]);
-    }
-  }
+	/* Animable_Sub5.java */
+	private ObjectDef method457() {
+		int idx = -1;                               // result of the VarBit / config lookup
+		int[] settings = (client != null) ? client.variousSettings : null;
+
+		/* ---------- guarded VarBit lookup ---------- */
+		if (anInt1601 != -1
+			&& anInt1601 < VarBit.cache.length
+			&& VarBit.cache[anInt1601] != null) {
+
+			VarBit vb   = VarBit.cache[anInt1601];
+			int confId  = vb.anInt648;
+			int least   = vb.anInt649;
+			int most    = vb.anInt650;
+
+			if (settings != null && confId >= 0 && confId < settings.length) {
+				int mask = Client.anIntArray1232[most - least];
+				idx = (settings[confId] >> least) & mask;
+			}
+		}
+
+		/* ---------- direct config lookup ----------- */
+		else if (anInt1602 != -1
+			&& settings != null
+			&& anInt1602 < settings.length) {
+			idx = settings[anInt1602];
+		}
+
+		/* ---------- validity check ----------------- */
+		if (idx < 0 || idx >= anIntArray1600.length)
+			return null;
+
+		int objId = anIntArray1600[idx];
+		return objId == -1 ? null : ObjectDef.forID(objId);
+	}
+
 
   public Model getFinalRenderedModel() {
     int j = -1;

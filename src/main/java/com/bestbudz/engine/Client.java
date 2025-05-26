@@ -807,7 +807,7 @@ public class Client extends ClientEngine
 		anIntArray1180 = Rasterizer.anIntArray1472;
 		Rasterizer.method365(frameWidth, frameHeight);
 		anIntArray1181 = Rasterizer.anIntArray1472;
-		Rasterizer.method365(screenAreaWidth, screenAreaHeight);
+		Rasterizer.method365(frameWidth, frameHeight);
 		anIntArray1182 = Rasterizer.anIntArray1472;
 		int[] ai = new int[9];
 		for (int i8 = 0; i8 < 9; i8++)
@@ -1800,14 +1800,6 @@ public class Client extends ClientEngine
 		{
 		}
 		ObjectDef.mruNodes1.unlinkAll();
-
-		/* Applet
-		if (super.gameFrame != null)
-		{
-			stream.createFrame(210);
-			stream.writeDWord(0x3f008edd);
-		}
-		 */
 
 		if (lowMem && Signlink.cache_dat != null)
 		{
@@ -9792,8 +9784,8 @@ public class Client extends ClientEngine
 	private boolean doWalkTo(int i, int j, int k, int i1, int j1, int k1, int l1, int i2, int j2, boolean flag,
 							 int k2)
 	{
-		byte byte0 = 104;
-		byte byte1 = 104;
+		int byte0 = 104;
+		int byte1 = 104;
 		for (int l2 = 0; l2 < byte0; l2++)
 		{
 			for (int i3 = 0; i3 < byte1; i3++)
@@ -9809,6 +9801,9 @@ public class Client extends ClientEngine
 			|| k3 >= anIntArrayArray901[j2].length) {
 			return false;
 		}
+
+		k2 = Math.max(0, Math.min(103, k2));
+		i2 = Math.max(0, Math.min(103, i2));
 
 		anIntArrayArray901[j2][j1] = 99;
 		anIntArrayArray825[j2][j1] = 0;
@@ -13718,16 +13713,14 @@ public class Client extends ClientEngine
 
 	private DataInputStream openJagGrabInputStream(String s) throws IOException
 	{
-		// Remove all applet/web context logic
 		if (aSocket832 != null) {
 			try {
 				aSocket832.close();
 			} catch (Exception _ex) {
-				// Ignore
 			}
 			aSocket832 = null;
 		}
-		aSocket832 = openSocket(42001); // Or use your configured port!
+		aSocket832 = openSocket(ClientConstants.CLIENT_PORT);
 		aSocket832.setSoTimeout(10000);
 		InputStream inputstream = aSocket832.getInputStream();
 		OutputStream outputstream = aSocket832.getOutputStream();
@@ -15830,7 +15823,8 @@ public class Client extends ClientEngine
 			}
 			int calc = minimapInt1 + anInt896 & 0x7ff;
 			setCameraPos(
-				cameraZoom + (i + cameraZoom - frameHeight / 200),
+				cameraZoom + (frameWidth >= 1024 ? i + cameraZoom - frameHeight / 200 : i)
+					* (WorldController.viewDistance == 10 ? 1 : 3),
 				i, anInt1014, method42(plane, myStoner.y, myStoner.x) - 50, calc, anInt1015);
 		}
 		int j;

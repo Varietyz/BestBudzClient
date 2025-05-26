@@ -1,46 +1,13 @@
 package com.bestbudz.engine;
 
-import com.bestbudz.cache.Signlink;
-import com.bestbudz.config.ClientConstants;
-import com.bestbudz.data.AccountManager;
-import com.bestbudz.data.ItemDef;
-import static com.bestbudz.engine.Client.boldText;
-import static com.bestbudz.engine.Client.cacheSprite;
-import static com.bestbudz.engine.Client.isMembers;
-import static com.bestbudz.engine.Client.newBoldFont;
-import static com.bestbudz.engine.Client.newFancyFont;
-import static com.bestbudz.engine.Client.newRegularFont;
-import static com.bestbudz.engine.Client.regularText;
-import static com.bestbudz.engine.Client.setBounds;
-import static com.bestbudz.engine.Client.smallText;
-import com.bestbudz.entity.EntityDef;
-import com.bestbudz.entity.IdentityKit;
-import com.bestbudz.graphics.Background;
+
 import com.bestbudz.graphics.buffer.ImageProducer;
-import com.bestbudz.graphics.sprite.Sprite;
-import com.bestbudz.graphics.sprite.SpriteLoader;
-import com.bestbudz.graphics.text.RSFont;
-import com.bestbudz.graphics.text.TextDrawingArea;
-import com.bestbudz.network.OnDemandFetcher;
-import com.bestbudz.network.StreamLoader;
-import com.bestbudz.rendering.Animable_Sub5;
-import com.bestbudz.rendering.OverlayFloor;
-import com.bestbudz.rendering.Rasterizer;
-import com.bestbudz.rendering.SequenceFrame;
-import com.bestbudz.rendering.SpotAnim;
-import com.bestbudz.rendering.animation.Animation;
-import com.bestbudz.rendering.model.Model;
+
 import com.bestbudz.ui.Console;
 import com.bestbudz.ui.LoginRenderer;
 import com.bestbudz.ui.MouseDetection;
 import com.bestbudz.ui.RSInterface;
-import com.bestbudz.util.Decompressor;
-import com.bestbudz.world.Class11;
-import com.bestbudz.world.Floor;
-import com.bestbudz.world.ObjectDef;
-import com.bestbudz.world.VarBit;
-import com.bestbudz.world.Varp;
-import com.bestbudz.world.WorldController;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -56,17 +23,11 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.image.BufferStrategy;
 
 public class ClientEngine implements Runnable, MouseListener, MouseMotionListener, MouseWheelListener, KeyListener, FocusListener, WindowListener {
 
-	public final int LEFT = 0;
-	public final int RIGHT = 1;
-	public final int DRAG = 2;
-	public final int RELEASED = 3;
-	public final int MOVE = 4;
+
 	final int[] keyArray = new int[128];
-	private final long[] aLongArray7 = new long[10];
 	private final int[] charQueue = new int[128];
 	public static final Console console = new Console();
 	public LoginRenderer loginRenderer;
@@ -81,12 +42,10 @@ public class ClientEngine implements Runnable, MouseListener, MouseMotionListene
 	public int mouseWheelY;
 	protected int screenGliding;
 	final int minDelay;
-	static int fps;
 	boolean shouldDebug;
 	static ImageProducer fullGameScreen;
 	public final MouseDetection mouseDetection;
 
-	GameCanvas canvas;
 	boolean awtFocus;
 	int idleTime;
 	static int clickMode2;
@@ -98,7 +57,7 @@ public class ClientEngine implements Runnable, MouseListener, MouseMotionListene
 	private int clickY;
 	private int readIndex;
 	private int writeIndex;
-Client client;
+
 	ClientEngine() {
 		delayTime = 20;
 		minDelay = 1;

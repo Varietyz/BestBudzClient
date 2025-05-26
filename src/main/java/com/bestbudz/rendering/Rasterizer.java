@@ -371,7 +371,7 @@ public final class Rasterizer extends DrawingArea
 	public static void drawMaterializedTriangle(int y1, int y2, int y3, int x1, int x2, int x3, int hsl1, int hsl2,
 			int hsl3, int tx1, int tx2, int tx3, int ty1, int ty2, int ty3, int tz1, int tz2, int tz3, int tex,
 			float z1, float z2, float z3) {
-		if (z1 < 0.0F || z2 < 0.0F || z3 < 0.0F) {
+		if (z1 < 0.0F && z2 < 0.0F && z3 < 0.0F) {
 			return;
 		}
 
@@ -1147,9 +1147,10 @@ public final class Rasterizer extends DrawingArea
 
 	public static void method374(int y1, int y2, int y3, int x1, int x2, int x3, int hsl1, int hsl2, int hsl3, float z1,
 			float z2, float z3) {
-		if (y1 < 0 || y1 >= anIntArray1472.length) return;
+		if ((y1 < 0 && y2 < 0 && y3 < 0) || (y1 >= DrawingArea.bottomY && y2 >= DrawingArea.bottomY && y3 >= DrawingArea.bottomY))
+			return;
 
-		if (z1 < 0.0F || z2 < 0.0F || z3 < 0.0F) {
+		if (z1 < 0.0F && z2 < 0.0F && z3 < 0.0F) {
 			return;
 		}
 		int rgb1 = anIntArray1482[hsl1];
@@ -1757,7 +1758,6 @@ public final class Rasterizer extends DrawingArea
 
 	public static void method375(int[] dest, int offset, int x1, int x2, int r1, int g1, int b1, int r2, int g2, int b2,
 			float depth, float depth_slope) {
-		if (x1 < 0 || x1 >= DrawingArea.pixels.length) return;
 
 		int n = x2 - x1;
 		if (n <= 0) {
@@ -1815,7 +1815,7 @@ public final class Rasterizer extends DrawingArea
 	}
 
 	public static void method376(int y1, int y2, int y3, int x1, int x2, int x3, int k1, float z1, float z2, float z3) {
-		if (z1 < 0.0F || z2 < 0.0F || z3 < 0.0F) {
+		if (z1 < 0.0F && z2 < 0.0F && z3 < 0.0F) {
 			return;
 		}
 		int a_to_b = 0;
@@ -2224,7 +2224,7 @@ public final class Rasterizer extends DrawingArea
 				method378_2(y_a, y_b, y_c, x_a, x_b, x_c, l1, l2, l3, tx1, tx2, tx3, ty1, ty2, ty3, tz1, tz2, tz3, tex);
 				return;
 			}
-			if (z1 < 0.0F || z2 < 0.0F || z3 < 0.0F) {
+			if (z1 < 0.0F && z2 < 0.0F && z3 < 0.0F) {
 				return;
 			}
 			l1 = 0x7f - l1 << 1;
