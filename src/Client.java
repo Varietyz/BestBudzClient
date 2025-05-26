@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+//import java.util.logging.Logger;
 
 /**
  * Handles the main client class
@@ -428,7 +429,7 @@ public class Client extends ClientEngine {
 	private final int[] modeX = { 164, 230, 296, 362 }, modeNamesX = { 26, 86, 150, 212, 286, 349, 427 },
 			modeNamesY = { 158, 158, 153, 153, 153, 153, 158 }, channelButtonsX = { 5, 71, 137, 203, 269, 335, 404 };
 
-	private final String[] modeNames = { "All", "Game", "Public", "Secretive", "Cult", "Dealing", "Report Suckers" };
+	private final String[] modeNames = { "All", "Game", "Public", "Private", "Cult", "Dealing", "Report Sucker" };
 
 	public void drawChannelButtons() {
 		final int yOffset = frameMode == ScreenMode.FIXED ? 0 : frameHeight - 165;

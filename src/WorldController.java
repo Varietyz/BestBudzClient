@@ -1606,33 +1606,250 @@ final class WorldController {
 	}
 
 	private void method315(Class43 class43, int i, int j, int k, int l, int i1, int j1, int k1) {
-		// Always use flat shading
-		int color = class43.anInt718;  // Use base color
-		
-		// Calculate screen coordinates
-		int x1 = (j1 << 7) - anInt455;
-		int y1 = (k1 << 7) - anInt457;
-		int x2 = x1 + 128;
-		int y2 = y1 + 128;
-		
-		// Draw flat colored quad using Rasterizer
-		if (x1 >= 0 && x1 < DrawingArea.centerX && y1 >= 0 && y1 < DrawingArea.centerY) {
-			Rasterizer.method374(y1, y2, y2, x1, x2, x2, color, color, color, 0, 0, 0);
+		int l1;
+		int i2 = l1 = (j1 << 7) - anInt455;
+		int j2;
+		int k2 = j2 = (k1 << 7) - anInt457;
+		int l2;
+		int i3 = l2 = i2 + 128;
+		int j3;
+		int k3 = j3 = k2 + 128;
+		int l3 = anIntArrayArrayArray440[i][j1][k1] - anInt456;
+		int i4 = anIntArrayArrayArray440[i][j1 + 1][k1] - anInt456;
+		int j4 = anIntArrayArrayArray440[i][j1 + 1][k1 + 1] - anInt456;
+		int k4 = anIntArrayArrayArray440[i][j1][k1 + 1] - anInt456;
+		int l4 = k2 * l + i2 * i1 >> 16;
+		k2 = k2 * i1 - i2 * l >> 16;
+		i2 = l4;
+		l4 = l3 * k - k2 * j >> 16;
+		k2 = l3 * j + k2 * k >> 16;
+		l3 = l4;
+		if (k2 < 50) {
+			return;
+		}
+		l4 = j2 * l + i3 * i1 >> 16;
+		j2 = j2 * i1 - i3 * l >> 16;
+		i3 = l4;
+		l4 = i4 * k - j2 * j >> 16;
+		j2 = i4 * j + j2 * k >> 16;
+		i4 = l4;
+		if (j2 < 50) {
+			return;
+		}
+		l4 = k3 * l + l2 * i1 >> 16;
+		k3 = k3 * i1 - l2 * l >> 16;
+		l2 = l4;
+		l4 = j4 * k - k3 * j >> 16;
+		k3 = j4 * j + k3 * k >> 16;
+		j4 = l4;
+		if (k3 < 50) {
+			return;
+		}
+		l4 = j3 * l + l1 * i1 >> 16;
+		j3 = j3 * i1 - l1 * l >> 16;
+		l1 = l4;
+		l4 = k4 * k - j3 * j >> 16;
+		j3 = k4 * j + j3 * k >> 16;
+		k4 = l4;
+		if (j3 < 50) {
+			return;
+		}
+		int i5 = Rasterizer.centerX + (i2 << viewDistance) / k2;
+		int j5 = Rasterizer.centerY + (l3 << viewDistance) / k2;
+		int k5 = Rasterizer.centerX + (i3 << viewDistance) / j2;
+		int l5 = Rasterizer.centerY + (i4 << viewDistance) / j2;
+		int i6 = Rasterizer.centerX + (l2 << viewDistance) / k3;
+		int j6 = Rasterizer.centerY + (j4 << viewDistance) / k3;
+		int k6 = Rasterizer.centerX + (l1 << viewDistance) / j3;
+		int l6 = Rasterizer.centerY + (k4 << viewDistance) / j3;
+		Rasterizer.anInt1465 = 0;
+		if ((i6 - k6) * (l5 - l6) - (j6 - l6) * (k5 - k6) > 0) {
+			Rasterizer.aBoolean1462 = i6 < 0 || k6 < 0 || k5 < 0 || i6 > DrawingArea.centerX || k6 > DrawingArea.centerX
+					|| k5 > DrawingArea.centerX;
+			if (aBoolean467 && method318(anInt468, anInt469, j6, l6, l5, i6, k6, k5)) {
+				anInt470 = j1;
+				anInt471 = k1;
+			}
+			if (class43.anInt720 == -1 || class43.anInt720 > 50) {
+				if (class43.anInt718 != 0xbc614e) {
+					if (Configuration.enableTextures && class43.anInt720 != -1) {
+						if (class43.aBoolean721) {
+							Rasterizer.drawMaterializedTriangle(j6, l6, l5, i6, k6, k5, class43.anInt718,
+									class43.anInt719, class43.anInt717, i2, i3, l1, l3, i4, k4, k2, j2, j3,
+									class43.anInt720, k3, j3, j2);
+						} else {
+							Rasterizer.drawMaterializedTriangle(j6, l6, l5, i6, k6, k5, class43.anInt718,
+									class43.anInt719, class43.anInt717, l2, l1, i3, j4, k4, i4, k3, j3, j2,
+									class43.anInt720, k3, j3, j2);
+						}
+					} else {
+						Rasterizer.method374(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719,
+								class43.anInt717, k3, j3, j2);
+					}
+				}
+			} else if (!lowMem) {
+				if (class43.aBoolean721) {
+					Rasterizer.method378(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717,
+							i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720, k3, j3, j2);
+				} else {
+					Rasterizer.method378(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717,
+							l2, l1, i3, j4, k4, i4, k3, j3, j2, class43.anInt720, k3, j3, j2);
+				}
+			} else {
+				int i7 = anIntArray485[class43.anInt720];
+				Rasterizer.method374(j6, l6, l5, i6, k6, k5, method317(i7, class43.anInt718),
+						method317(i7, class43.anInt719), method317(i7, class43.anInt717), k3, j3, j2);
+			}
+		}
+		if ((i5 - k5) * (l6 - l5) - (j5 - l5) * (k6 - k5) > 0) {
+			Rasterizer.aBoolean1462 = i5 < 0 || k5 < 0 || k6 < 0 || i5 > DrawingArea.centerX || k5 > DrawingArea.centerX
+					|| k6 > DrawingArea.centerX;
+			if (aBoolean467 && method318(anInt468, anInt469, j5, l5, l6, i5, k5, k6)) {
+				anInt470 = j1;
+				anInt471 = k1;
+			}
+			if (class43.anInt720 == -1 || class43.anInt720 > 50) {
+				if (class43.anInt716 != 0xbc614e) {
+					if (Configuration.enableTextures && class43.anInt720 != -1) {
+						Rasterizer.drawMaterializedTriangle(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717,
+								class43.anInt719, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720, k2, j2, j3);
+					} else {
+						Rasterizer.method374(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717,
+								class43.anInt719, k2, j2, j3);
+					}
+				}
+			} else {
+				if (!lowMem) {
+					Rasterizer.method378(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719,
+							i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720, k2, j2, j3);
+					return;
+				}
+				int j7 = anIntArray485[class43.anInt720];
+				Rasterizer.method374(j5, l5, l6, i5, k5, k6, method317(j7, class43.anInt716),
+						method317(j7, class43.anInt717), method317(j7, class43.anInt719), k2, j2, j3);
+			}
 		}
 	}
 
 	private void method316(int i, int j, int k, Class40 class40, int l, int i1, int j1) {
-		// Always use flat shading for triangles
-		int color = class40.anIntArray676[0];  // Use first color
-		
-		// Draw flat colored triangle using Rasterizer
-		if (i >= 0 && i < DrawingArea.centerX && i1 >= 0 && i1 < DrawingArea.centerY) {
-			Rasterizer.method374(i1, i1 + j, i1 + k, i, i + l, i + j1, color, color, color, 0, 0, 0);
+		int k1 = class40.anIntArray673.length;
+		for (int l1 = 0; l1 < k1; l1++) {
+			int i2 = class40.anIntArray673[l1] - anInt455;
+			int k2 = class40.anIntArray674[l1] - anInt456;
+			int i3 = class40.anIntArray675[l1] - anInt457;
+			int k3 = i3 * k + i2 * j1 >> 16;
+			i3 = i3 * j1 - i2 * k >> 16;
+			i2 = k3;
+			k3 = k2 * l - i3 * j >> 16;
+			i3 = k2 * j + i3 * l >> 16;
+			k2 = k3;
+			if (i3 < 50) {
+				return;
+			}
+			if (Configuration.enableTextures || class40.anIntArray682 != null) {
+				Class40.anIntArray690[l1] = i2;
+				Class40.anIntArray691[l1] = k2;
+				Class40.anIntArray692[l1] = i3;
+			}
+			Class40.anIntArray688[l1] = Rasterizer.centerX + (i2 << viewDistance) / i3;
+			Class40.anIntArray689[l1] = Rasterizer.centerY + (k2 << viewDistance) / i3;
+			Class40.depthPoint[l1] = i3;
+		}
+
+		Rasterizer.anInt1465 = 0;
+		k1 = class40.anIntArray679.length;
+		for (int j2 = 0; j2 < k1; j2++) {
+			int l2 = class40.anIntArray679[j2];
+			int j3 = class40.anIntArray680[j2];
+			int l3 = class40.anIntArray681[j2];
+			int i4 = Class40.anIntArray688[l2];
+			int j4 = Class40.anIntArray688[j3];
+			int k4 = Class40.anIntArray688[l3];
+			int l4 = Class40.anIntArray689[l2];
+			int i5 = Class40.anIntArray689[j3];
+			int j5 = Class40.anIntArray689[l3];
+			if ((i4 - j4) * (j5 - i5) - (l4 - i5) * (k4 - j4) > 0) {
+				Rasterizer.aBoolean1462 = i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX
+						|| j4 > DrawingArea.centerX || k4 > DrawingArea.centerX;
+				if (aBoolean467 && method318(anInt468, anInt469, l4, i5, j5, i4, j4, k4)) {
+					anInt470 = i;
+					anInt471 = i1;
+				}
+				if (class40.anIntArray682 == null || class40.anIntArray682[j2] == -1
+						|| class40.anIntArray682[j2] > 50) {
+					if (class40.anIntArray676[j2] != 0xbc614e) {
+						if (Configuration.enableTextures && class40.anIntArray682 != null
+								&& class40.anIntArray682[j2] != -1) {
+							if (class40.aBoolean683 || class40.anIntArray682[j2] == 505) {
+								Rasterizer.drawMaterializedTriangle(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
+										class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[0],
+										Class40.anIntArray690[1], Class40.anIntArray690[3], Class40.anIntArray691[0],
+										Class40.anIntArray691[1], Class40.anIntArray691[3], Class40.anIntArray692[0],
+										Class40.anIntArray692[1], Class40.anIntArray692[3], class40.anIntArray682[j2],
+										Class40.depthPoint[l2], Class40.depthPoint[j3], Class40.depthPoint[l3]);
+							} else {
+								Rasterizer.drawMaterializedTriangle(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
+										class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[l2],
+										Class40.anIntArray690[j3], Class40.anIntArray690[l3], Class40.anIntArray691[l2],
+										Class40.anIntArray691[j3], Class40.anIntArray691[l3], Class40.anIntArray692[l2],
+										Class40.anIntArray692[j3], Class40.anIntArray692[l3], class40.anIntArray682[j2],
+										Class40.depthPoint[l2], Class40.depthPoint[j3], Class40.depthPoint[l3]);
+							}
+						} else {
+							Rasterizer.method374(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
+									class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.depthPoint[l2],
+									Class40.depthPoint[j3], Class40.depthPoint[l3]);
+						}
+					}
+				} else if (!lowMem) {
+					if (class40.aBoolean683) {
+						Rasterizer.method378(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
+								class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[0],
+								Class40.anIntArray690[1], Class40.anIntArray690[3], Class40.anIntArray691[0],
+								Class40.anIntArray691[1], Class40.anIntArray691[3], Class40.anIntArray692[0],
+								Class40.anIntArray692[1], Class40.anIntArray692[3], class40.anIntArray682[j2],
+								Class40.depthPoint[l2], Class40.depthPoint[j3], Class40.depthPoint[l3]);
+					} else {
+						Rasterizer.method378(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
+								class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[l2],
+								Class40.anIntArray690[j3], Class40.anIntArray690[l3], Class40.anIntArray691[l2],
+								Class40.anIntArray691[j3], Class40.anIntArray691[l3], Class40.anIntArray692[l2],
+								Class40.anIntArray692[j3], Class40.anIntArray692[l3], class40.anIntArray682[j2],
+								Class40.depthPoint[l2], Class40.depthPoint[j3], Class40.depthPoint[l3]);
+					}
+				} else {
+					int k5 = anIntArray485[class40.anIntArray682[j2]];
+					Rasterizer.method374(l4, i5, j5, i4, j4, k4, method317(k5, class40.anIntArray676[j2]),
+							method317(k5, class40.anIntArray677[j2]), method317(k5, class40.anIntArray678[j2]),
+							Class40.depthPoint[l2], Class40.depthPoint[j3], Class40.depthPoint[l3]);
+				}
+			}
 		}
 	}
 
 	private int method317(int j, int k) {
-		return k; // Just return the base color without any shading
+		k = 127 - k;
+		k = (k * (j & 0x7f)) / 160;
+		if (k < 2)
+			k = 2;
+		else if (k > 126)
+			k = 126;
+		return (j & 0xff80) + k;
+	}
+
+	private boolean method318(int i, int j, int k, int l, int i1, int j1, int k1, int l1) {
+		if (j < k && j < l && j < i1)
+			return false;
+		if (j > k && j > l && j > i1)
+			return false;
+		if (i < j1 && i < k1 && i < l1)
+			return false;
+		if (i > j1 && i > k1 && i > l1)
+			return false;
+		int i2 = (j - k) * (k1 - j1) - (i - j1) * (l - k);
+		int j2 = (j - i1) * (j1 - l1) - (i - l1) * (k - i1);
+		int k2 = (j - l) * (l1 - k1) - (i - k1) * (i1 - l);
+		return i2 * k2 > 0 && k2 * j2 > 0;
 	}
 
 	private void method319() {
@@ -2037,29 +2254,5 @@ final class WorldController {
 		anInt472 = 4;
 		anIntArray473 = new int[anInt472];
 		aClass47ArrayArray474 = new Class47[anInt472][500];
-	}
-
-	private boolean flatShading = false;
-	
-	public void setFlatShading(boolean enabled) {
-		flatShading = enabled;
-	}
-	
-	private final void method316(int i, int j, int k, int l, int i1, int j1, int k1,
-			int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3,
-			int l3, int i4, int j4, int k4) {
-		if (flatShading) {
-			// Use flat color without interpolation
-			for (int y = i1; y < j1; y++) {
-				for (int x = i; x < j; x++) {
-					if (x >= 0 && x < DrawingArea.width && y >= 0 && y < DrawingArea.height) {
-						DrawingArea.pixels[x + y * DrawingArea.width] = k1;
-					}
-				}
-			}
-			return;
-		}
-		
-		// ... existing shading code ...
 	}
 }
