@@ -5,7 +5,7 @@ import com.bestbudz.network.StreamLoader;
 
 public final class Background extends DrawingArea {
 
-  public final int[] anIntArray1451;
+  public int[] anIntArray1451;
   public byte[] aByteArray1450;
   public int anInt1452;
   public int anInt1453;
@@ -14,45 +14,124 @@ public final class Background extends DrawingArea {
   public int anInt1456;
   private int anInt1457;
 
-  public Background(StreamLoader streamLoader, String s, int i) {
-    Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
-    Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
-    stream_1.currentOffset = stream.readUnsignedWord();
-    anInt1456 = stream_1.readUnsignedWord();
-    anInt1457 = stream_1.readUnsignedWord();
-    int j = stream_1.readUnsignedByte();
-    anIntArray1451 = new int[j];
-    for (int k = 0; k < j - 1; k++) {
-      anIntArray1451[k + 1] = stream_1.read3Bytes();
-    }
-    for (int l = 0; l < i; l++) {
-      stream_1.currentOffset += 2;
-      stream.currentOffset += stream_1.readUnsignedWord() * stream_1.readUnsignedWord();
-      stream_1.currentOffset++;
-    }
-    anInt1454 = stream_1.readUnsignedByte();
-    anInt1455 = stream_1.readUnsignedByte();
-    anInt1452 = stream_1.readUnsignedWord();
-    anInt1453 = stream_1.readUnsignedWord();
-    int i1 = stream_1.readUnsignedByte();
-    int j1 = anInt1452 * anInt1453;
-    aByteArray1450 = new byte[j1];
-    if (i1 == 0) {
-      for (int k1 = 0; k1 < j1; k1++) {
-        aByteArray1450[k1] = stream.readSignedByte();
-      }
-      return;
-    }
-    if (i1 == 1) {
-      for (int l1 = 0; l1 < anInt1452; l1++) {
-        for (int i2 = 0; i2 < anInt1453; i2++) {
-          aByteArray1450[l1 + i2 * anInt1452] = stream.readSignedByte();
-        }
-      }
-    }
-  }
+	public Background(StreamLoader streamLoader, String s, int i) {
+		byte[] data = streamLoader.getDataForName(s + ".dat");
+		if (data == null || data.length == 0) {
+			System.err.println("Background data missing or empty: " + s);
+			aByteArray1450 = new byte[0];
+			anInt1452 = 0;
+			anInt1453 = 0;
+			return;
+		}
+		Stream stream = new Stream(data);
 
-  public void method356() {
+		byte[] indexData = streamLoader.getDataForName("index.dat");
+		if (indexData == null || indexData.length == 0) {
+			System.err.println("Background index data missing or empty.");
+			aByteArray1450 = new byte[0];
+			anInt1452 = 0;
+			anInt1453 = 0;
+			return;
+		}
+		Stream stream_1 = new Stream(indexData);
+
+		if (stream.currentOffset + 2 > stream.buffer.length) {
+			System.err.println("Background data too short for header.");
+			aByteArray1450 = new byte[0];
+			anInt1452 = 0;
+			anInt1453 = 0;
+			return;
+		}
+		stream_1.currentOffset = stream.readUnsignedWord();
+
+		if (stream_1.currentOffset + 6 > stream_1.buffer.length) {
+			System.err.println("Background index data too short.");
+			aByteArray1450 = new byte[0];
+			anInt1452 = 0;
+			anInt1453 = 0;
+			return;
+		}
+
+		anInt1456 = stream_1.readUnsignedWord();
+		anInt1457 = stream_1.readUnsignedWord();
+
+		int j = stream_1.readUnsignedByte();
+		anIntArray1451 = new int[j];
+		for (int k = 0; k < j - 1; k++) {
+			if (stream_1.currentOffset + 3 > stream_1.buffer.length) {
+				System.err.println("Background index data incomplete reading runes.");
+				aByteArray1450 = new byte[0];
+				anInt1452 = 0;
+				anInt1453 = 0;
+				return;
+			}
+			anIntArray1451[k + 1] = stream_1.read3Bytes();
+		}
+
+		// Adjust offsets for i layers (skip data)
+		for (int l = 0; l < i; l++) {
+			if (stream_1.currentOffset + 5 > stream_1.buffer.length) {
+				System.err.println("Background index data incomplete adjusting offsets.");
+				aByteArray1450 = new byte[0];
+				anInt1452 = 0;
+				anInt1453 = 0;
+				return;
+			}
+			stream_1.currentOffset += 2;
+			int width = stream_1.readUnsignedWord();
+			int height = stream_1.readUnsignedWord();
+			if (width < 0 || height < 0 || stream_1.currentOffset + (width * height) > stream_1.buffer.length) {
+				System.err.println("Background index data invalid width/height or buffer overflow.");
+				aByteArray1450 = new byte[0];
+				anInt1452 = 0;
+				anInt1453 = 0;
+				return;
+			}
+			stream.currentOffset += width * height;
+			stream_1.currentOffset++;
+		}
+
+		if (stream_1.currentOffset + 6 > stream_1.buffer.length) {
+			System.err.println("Background index data too short for remaining fields.");
+			aByteArray1450 = new byte[0];
+			anInt1452 = 0;
+			anInt1453 = 0;
+			return;
+		}
+
+		anInt1454 = stream_1.readUnsignedByte();
+		anInt1455 = stream_1.readUnsignedByte();
+		anInt1452 = stream_1.readUnsignedWord();
+		anInt1453 = stream_1.readUnsignedWord();
+		int i1 = stream_1.readUnsignedByte();
+
+		int j1 = anInt1452 * anInt1453;
+		if (j1 < 0 || stream.currentOffset + j1 > stream.buffer.length) {
+			System.err.println("Background data length invalid or exceeds buffer size.");
+			aByteArray1450 = new byte[0];
+			return;
+		}
+
+		aByteArray1450 = new byte[j1];
+
+		if (i1 == 0) {
+			for (int k1 = 0; k1 < j1; k1++) {
+				aByteArray1450[k1] = stream.readSignedByte();
+			}
+		} else if (i1 == 1) {
+			for (int l1 = 0; l1 < anInt1452; l1++) {
+				for (int i2 = 0; i2 < anInt1453; i2++) {
+					aByteArray1450[l1 + i2 * anInt1452] = stream.readSignedByte();
+				}
+			}
+		} else {
+			System.err.println("Background format " + i1 + " not supported.");
+			aByteArray1450 = new byte[0];
+		}
+	}
+
+
+	public void method356() {
     anInt1456 /= 2;
     anInt1457 /= 2;
     byte[] abyte0 = new byte[anInt1456 * anInt1457];

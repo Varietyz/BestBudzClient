@@ -1,13 +1,13 @@
 package com.bestbudz.rendering;
 
-import com.bestbudz.client.Client;
+import com.bestbudz.engine.Client;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.world.ObjectDef;
 import com.bestbudz.world.VarBit;
 
 public final class Animable_Sub5 extends Animable {
-
+Client client;
   public static Client clientInstance;
   private final int[] anIntArray1600;
   private final int anInt1601;
@@ -55,11 +55,13 @@ public final class Animable_Sub5 extends Animable {
         int l = varBit.anInt649;
         int i1 = varBit.anInt650;
         int j1 = Client.anIntArray1232[i1 - l];
-        i = clientInstance.variousSettings[k] >> l & j1;
-      } catch (Exception ex) {
-      }
+        i = client.variousSettings[k] >> l & j1;
+      } catch (Exception ex)
+	  {
+		  throw new RuntimeException(ex);
+	  }
     } else if (anInt1602 != -1) {
-      i = clientInstance.variousSettings[anInt1602];
+      i = client.variousSettings[anInt1602];
     }
     if (i < 0 || i >= anIntArray1600.length || anIntArray1600[i] == -1) {
       return null;

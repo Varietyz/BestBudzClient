@@ -1,6 +1,6 @@
 package com.bestbudz.rendering;
 
-import com.bestbudz.client.Client;
+import com.bestbudz.engine.Client;
 import com.bestbudz.rendering.animation.Class18;
 import com.bestbudz.network.Stream;
 
@@ -29,11 +29,9 @@ public final class SequenceFrame {
       for (int j = 0; j < n; ++j) {
         final int k = ay.readUnsignedWord();
         final SequenceFrame[] array6 = animationlist[file];
-        final int n2 = k;
-        final SequenceFrame q = new SequenceFrame();
-        array6[n2] = q;
-        final SequenceFrame q2 = q;
-        q.aClass18_637 = b2;
+		  final SequenceFrame q = new SequenceFrame();
+        array6[k] = q;
+		  q.aClass18_637 = b2;
         final int f = ay.readUnsignedByte();
         int c2 = 0;
         int n3 = -1;
@@ -75,20 +73,22 @@ public final class SequenceFrame {
             ++c2;
           }
         }
-        q2.anInt638 = c2;
-        q2.anIntArray639 = new int[c2];
-        q2.anIntArray640 = new int[c2];
-        q2.anIntArray641 = new int[c2];
-        q2.anIntArray642 = new int[c2];
+        q.anInt638 = c2;
+        q.anIntArray639 = new int[c2];
+        q.anIntArray640 = new int[c2];
+        q.anIntArray641 = new int[c2];
+        q.anIntArray642 = new int[c2];
         for (int l = 0; l < c2; ++l) {
-          q2.anIntArray639[l] = array2[l];
-          q2.anIntArray640[l] = array3[l];
-          q2.anIntArray641[l] = array4[l];
-          q2.anIntArray642[l] = array5[l];
+          q.anIntArray639[l] = array2[l];
+          q.anIntArray640[l] = array3[l];
+          q.anIntArray641[l] = array4[l];
+          q.anIntArray642[l] = array5[l];
         }
       }
-    } catch (Exception ex) {
-    }
+    } catch (Exception ex)
+	{
+		throw new RuntimeException(ex);
+	}
   }
 
   public static void loader(int file, byte[] abyte0) {
@@ -104,10 +104,8 @@ public final class SequenceFrame {
       for (int l1 = 0; l1 < k1; l1++) {
         int i2 = stream.readUnsignedWord();
         SequenceFrame class36 = animationlist[file][i2] = new SequenceFrame();
-        class36.aClass18_637 = class18;
-        class36.aClass18_637 = class18;
 
-        int j2 = stream.readUnsignedByte();
+		  int j2 = stream.readUnsignedByte();
         int l2 = 0;
         int k2 = -1;
         for (int i3 = 0; i3 < j2; i3++) {
@@ -150,8 +148,10 @@ public final class SequenceFrame {
           class36.anIntArray642[k3] = ai3[k3];
         }
       }
-    } catch (Exception exception) {
-    }
+    } catch (Exception exception)
+	{
+		throw new RuntimeException(exception);
+	}
   }
 
   public static void nullLoader() {

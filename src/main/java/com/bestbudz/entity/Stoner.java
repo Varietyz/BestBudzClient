@@ -1,6 +1,6 @@
 package com.bestbudz.entity;
 
-import com.bestbudz.client.Client;
+import com.bestbudz.engine.Client;
 import com.bestbudz.config.Configuration;
 import com.bestbudz.data.ItemDef;
 import com.bestbudz.network.Stream;
@@ -272,7 +272,7 @@ public final class Stoner extends Entity
 					k2 = k1;
 				if (j1 >= 0 && i2 == 5)
 					k2 = j1;
-				if (k2 >= 256 && k2 < 512 && !IdentityKit.cache[k2 - 256].method537())
+				if (k2 >= 256 && k2 < 512 && IdentityKit.cache[k2 - 256].method537())
 					flag = true;
 				if (k2 >= 512 && !ItemDef.getItemDefinition(k2 - 512).method195(gender))
 					flag = true;
@@ -362,8 +362,7 @@ public final class Stoner extends Entity
 			int i1 = equipment[l];
 			if (i1 >= 256 && i1 < 512) {
 				Model model_1 = IdentityKit.cache[i1 - 256].method540();
-				if (model_1 != null)
-					aclass30_sub2_sub4_sub6s[k++] = model_1;
+				aclass30_sub2_sub4_sub6s[k++] = model_1;
 			}
 			if (i1 >= 512) {
 				Model model_2 = ItemDef.getItemDefinition(i1 - 512).getWornModel(gender);

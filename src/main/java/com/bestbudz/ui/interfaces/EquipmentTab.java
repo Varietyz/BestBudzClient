@@ -38,13 +38,12 @@ public class EquipmentTab extends RSInterface {
       Child++;
       Y += 14;
     }
-    int edit = rofl;
-    tab.child(17, 15113, 24, 122 - edit + shift);
-    tab.child(9, 1680, 27, 137 - edit - 1 + shift);
-    tab.child(10, 1681, 27, 153 - edit - 3 + shift);
-    tab.child(11, 1682, 27, 168 - edit - 4 + shift);
-    tab.child(12, 1683, 27, 183 - edit - 5 + shift);
-    tab.child(13, 1684, 27, 197 - edit - 6 + shift);
+	  tab.child(17, 15113, 24, 122 - rofl + shift);
+    tab.child(9, 1680, 27, 137 - rofl - 1 + shift);
+    tab.child(10, 1681, 27, 153 - rofl - 3 + shift);
+    tab.child(11, 1682, 27, 168 - rofl - 4 + shift);
+    tab.child(12, 1683, 27, 183 - rofl - 5 + shift);
+    tab.child(13, 1684, 27, 197 - rofl - 6 + shift);
     tab.child(18, 15114, 24, 211 + shift);
     tab.child(14, 1686, 27, 250 - 24 + shift);
     tab.child(15, 15125, 188, 185);

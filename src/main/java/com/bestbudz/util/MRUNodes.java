@@ -1,6 +1,7 @@
 package com.bestbudz.util;
 
 import com.bestbudz.cache.Signlink;
+import java.util.Objects;
 
 public final class MRUNodes {
 
@@ -26,11 +27,11 @@ public final class MRUNodes {
     try {
       if (spaceLeft == 0) {
         NodeSub nodeSub_1 = nodeSubList.popTail();
-        nodeSub_1.unlink();
+        Objects.requireNonNull(nodeSub_1).unlink();
         nodeSub_1.unlinkSub();
         if (nodeSub_1 == emptyNodeSub) {
           NodeSub nodeSub_2 = nodeSubList.popTail();
-          nodeSub_2.unlink();
+          Objects.requireNonNull(nodeSub_2).unlink();
           nodeSub_2.unlinkSub();
         }
       } else {

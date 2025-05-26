@@ -1,7 +1,7 @@
 package com.bestbudz.network;
 
 import com.bestbudz.cache.Signlink;
-import com.bestbudz.client.Client;
+import com.bestbudz.engine.Client;
 import com.bestbudz.config.ClientConstants;
 import com.bestbudz.util.NodeList;
 import com.bestbudz.util.NodeSubList;
@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 
 public final class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
@@ -62,7 +63,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
             current = null;
           } else {
             if (current.buffer == null && i2 == 0) current.buffer = new byte[l1];
-            if (current.buffer == null && i2 != 0) throw new IOException("missing start of file");
+            if (current.buffer == null) throw new IOException("missing start of file");
           }
         }
         completedSize = i2 * 500;
@@ -100,8 +101,10 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
     } catch (IOException ioexception) {
       try {
         socket.close();
-      } catch (Exception _ex) {
-      }
+      } catch (Exception _ex)
+	  {
+		  throw new RuntimeException(_ex);
+	  }
       socket = null;
       inputStream = null;
       outputStream = null;
@@ -125,7 +128,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
     System.out.println("Maps Loaded: " + j1);
     abyte2 = streamLoader.getDataForName("midi_index");
     stream2 = new Stream(abyte2);
-    j1 = abyte2.length;
+    j1 = Objects.requireNonNull(abyte2).length;
     anIntArray1348 = new int[j1];
     for (int k2 = 0; k2 < j1; k2++) anIntArray1348[k2] = stream2.readUnsignedByte();
 
@@ -180,13 +183,16 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
       outputStream.write(ioBuffer, 0, 4);
       writeLoopCycle = 0;
       anInt1349 = -10000;
-      return;
-    } catch (IOException ioexception) {
-    }
+    } catch (IOException ioexception)
+	{
+		throw new RuntimeException(ioexception);
+	}
     try {
       socket.close();
-    } catch (Exception _ex) {
-    }
+    } catch (Exception _ex)
+	{
+		throw new RuntimeException(_ex);
+	}
     socket = null;
     inputStream = null;
     outputStream = null;
@@ -232,8 +238,10 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
         if (anInt1332 == 0 && clientInstance.decompressors[0] != null) i = 50;
         try {
           Thread.sleep(i);
-        } catch (Exception _ex) {
-        }
+        } catch (Exception _ex)
+		{
+			throw new RuntimeException(_ex);
+		}
         waiting = true;
         for (int j = 0; j < 100; j++) {
           if (!waiting) break;
@@ -275,8 +283,10 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
           if (loopCycle > 750) {
             try {
               socket.close();
-            } catch (Exception _ex) {
-            }
+            } catch (Exception _ex)
+			{
+				throw new RuntimeException(_ex);
+			}
             socket = null;
             inputStream = null;
             outputStream = null;
@@ -422,8 +432,10 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
                 + "]  [id = "
                 + onDemandData_1.ID
                 + "]");
-      } catch (Exception _ex) {
-      }
+      } catch (Exception _ex)
+	  {
+		  throw new RuntimeException(_ex);
+	  }
     }
   }
 

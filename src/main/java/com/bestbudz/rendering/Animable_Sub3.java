@@ -11,8 +11,7 @@ public final class Animable_Sub3 extends Animable {
   public final int anInt1563;
   public final int anInt1564;
   public Animable_Sub3(int i, int j, int l, int i1, int j1, int k1, int l1) {
-    aBoolean1567 = false;
-    aSpotAnim_1568 = SpotAnim.cache[i1];
+	  aSpotAnim_1568 = SpotAnim.cache[i1];
     anInt1560 = i;
     anInt1561 = l1;
     anInt1562 = k1;
@@ -63,8 +62,7 @@ public final class Animable_Sub3 extends Animable {
     for (anInt1570 += cycles; anInt1570 > aSpotAnim_1568.aAnimation_407.method258(anInt1569); ) {
       anInt1570 -= aSpotAnim_1568.aAnimation_407.method258(anInt1569) + 1;
       anInt1569++;
-      if (anInt1569 >= aSpotAnim_1568.aAnimation_407.anInt352
-          && (anInt1569 < 0 || anInt1569 >= aSpotAnim_1568.aAnimation_407.anInt352)) {
+      if (anInt1569 >= aSpotAnim_1568.aAnimation_407.anInt352) {
         anInt1569 = 0;
         aBoolean1567 = true;
       }

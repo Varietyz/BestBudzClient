@@ -2,6 +2,7 @@ package com.bestbudz.rendering;
 
 import com.bestbudz.network.StreamLoader;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 public class OverlayFloor
 {
@@ -30,7 +31,7 @@ public class OverlayFloor
 
 	public static void unpackConfig(StreamLoader streamLoader)
 	{
-		ByteBuffer bb = ByteBuffer.wrap(streamLoader.getDataForName("flo2.dat"));
+		ByteBuffer bb = ByteBuffer.wrap(Objects.requireNonNull(streamLoader.getDataForName("flo2.dat")));
 		int count = bb.getShort();
 		overlayFloor = new OverlayFloor[count];
 		for (int i = 0; i < count; i++)
@@ -224,7 +225,7 @@ public class OverlayFloor
 		anInt399 = method263(anInt394, anInt395, anInt396);
 	}
 
-	private final int method263(int arg0, int arg1, int arg2)
+	private int method263(int arg0, int arg1, int arg2)
 	{
 		if (arg2 > 179)
 		{
@@ -242,8 +243,7 @@ public class OverlayFloor
 		{
 			arg1 /= 2;
 		}
-		int i = (arg0 / 4 << 10) + (arg1 / 32 << 7) + arg2 / 2;
-		return i;
+		return (arg0 / 4 << 10) + (arg1 / 32 << 7) + arg2 / 2;
 	}
 
 }

@@ -45,7 +45,7 @@ public final class StreamLoader {
 
     for (int k = 0; k < dataSize; k++)
       if (anIntArray728[k] == i) {
-        if (abyte0 == null) abyte0 = new byte[anIntArray729[k]];
+		  abyte0 = new byte[anIntArray729[k]];
         if (!aBoolean732) {
           Class13.method225(
               abyte0, anIntArray729[k], aByteArray726, anIntArray730[k], anIntArray731[k]);

@@ -59,7 +59,7 @@ public final class Stream extends NodeSub
 
 	public int readUSmart2() {
 		int baseVal = 0;
-		int lastVal = 0;
+		int lastVal;
 		while ((lastVal = method422()) == 32767) {
 			baseVal += 32767;
 		}
@@ -239,9 +239,7 @@ public final class Stream extends NodeSub
 		currentOffset = 0;
 		byte[] abyte0 = new byte[i];
 		readBytes(i, 0, abyte0);
-		BigInteger biginteger2 = new BigInteger(abyte0);
-		BigInteger biginteger3 = biginteger2;
-		byte[] abyte1 = biginteger3.toByteArray();
+		byte[] abyte1 = new BigInteger(abyte0).toByteArray();
 		currentOffset = 0;
 		writeWordBigEndian(abyte1.length);
 		writeBytes(abyte1, abyte1.length, 0);

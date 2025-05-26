@@ -7,13 +7,12 @@ public final class VarBit
 {
 
 	public static VarBit[] cache;
-	private final boolean aBoolean651;
 	public int anInt648;
 	public int anInt649;
 	public int anInt650;
 	private VarBit()
 	{
-		aBoolean651 = false;
+		boolean aBoolean651 = false;
 	}
 
 	public static void unpackConfig(StreamLoader streamLoader)
@@ -27,9 +26,6 @@ public final class VarBit
 			if (cache[j] == null)
 				cache[j] = new VarBit();
 			cache[j].readValues(stream);
-			if (cache[j].aBoolean651)
-			{
-			}
 		}
 
 		if (stream.currentOffset != stream.buffer.length)

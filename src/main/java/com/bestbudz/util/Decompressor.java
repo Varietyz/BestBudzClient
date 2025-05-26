@@ -53,7 +53,7 @@ public final class Decompressor {
 				int j3 = buffer[7] & 0xff;
 				if(k2 != i || l2 != l1 || j3 != anInt311)
 					return null;
-				if(i3 < 0 || (long)i3 > dataFile.length() / 520L)
+				if((long)i3 > dataFile.length() / 520L)
 					return null;
 				for(int k3 = 0; k3 < i2; k3++)
 					abyte0[k1++] = buffer[k3 + 8];
@@ -67,11 +67,10 @@ public final class Decompressor {
 		}
 	}
 
-	public synchronized boolean method234(int i, byte[] abyte0, int j) {
+	public synchronized void method234(int i, byte[] abyte0, int j) {
 		boolean flag = method235(true, j, i, abyte0);
 		if(!flag)
 			flag = method235(false, j, i, abyte0);
-		return flag;
 	}
 
 	private synchronized boolean method235(boolean flag, int j, int k, byte[] abyte0) {
@@ -120,7 +119,7 @@ public final class Decompressor {
 						int k3 = buffer[7] & 0xff;
 						if(i3 != j || j3 != l1 || k3 != anInt311)
 							return false;
-						if(i2 < 0 || (long)i2 > dataFile.length() / 520L)
+						if((long)i2 > dataFile.length() / 520L)
 							return false;
 					}
 				}

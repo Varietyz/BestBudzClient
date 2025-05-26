@@ -10,25 +10,26 @@ import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.animation.Class18;
 import com.bestbudz.util.compression.Class21;
 import com.bestbudz.world.WorldController;
+import java.util.Objects;
 
 public class Model extends Animable
 {
 	
 	public static boolean[] newmodel;
 	public static int anInt1620;
-	public static Model aModel_1621 = new Model(true);
+	public static final Model aModel_1621 = new Model();
 	public static boolean aBoolean1684;
 	public static int anInt1685;
 	public static int anInt1686;
 	public static int anInt1687;
-	public static int[] anIntArray1688 = new int[1000];
+	public static final int[] anIntArray1688 = new int[1000];
 	public static int[] modelIntArray1;
 	public static int[] modelIntArray2;
 	static Class21[] aClass21Array1661;
 	static OnDemandFetcherParent aOnDemandFetcherParent_1662;
 	static boolean[] aBooleanArray1663 = new boolean[8000];
 	static boolean[] aBooleanArray1664 = new boolean[8000];
-	static int[] anIntArray1665 = new int[8000];
+	static final int[] anIntArray1665 = new int[8000];
 	static int[] anIntArray1666 = new int[8000];
 	static int[] anIntArray1667 = new int[8000];
 	static int[] anIntArray1668 = new int[8000];
@@ -41,9 +42,9 @@ public class Model extends Animable
 	static int[] anIntArray1675 = new int[2000];
 	static int[] anIntArray1676 = new int[2000];
 	static int[] anIntArray1677 = new int[12];
-	static int[] anIntArray1678 = new int[10];
-	static int[] anIntArray1679 = new int[10];
-	static int[] anIntArray1680 = new int[10];
+	static final int[] anIntArray1678 = new int[10];
+	static final int[] anIntArray1679 = new int[10];
+	static final int[] anIntArray1680 = new int[10];
 	static int anInt1681;
 	static int anInt1682;
 	static int anInt1683;
@@ -113,11 +114,11 @@ public class Model extends Animable
 			}
 		}
 	}
-	private Model(boolean flag) {
+	private Model() {
 		aBoolean1618 = true;
 		aBoolean1659 = false;
-		if (!flag)
-			aBoolean1618 = !aBoolean1618;
+		if (!true)
+			aBoolean1618 = false;
 	}
 	public Model(int i, Model[] amodel) {
 		aBoolean1618 = true;
@@ -553,9 +554,10 @@ public class Model extends Animable
 		class21_1.anInt374 = l2;
 		l2 += i2;
 		class21_1.anInt375 = l2;
-		l2 += j2;
-		} catch (Exception _ex) {
-		}
+	} catch (Exception _ex)
+	{
+		throw new RuntimeException(_ex);
+	}
 	}
 
 	public static void method459(int i,
@@ -594,7 +596,7 @@ public class Model extends Animable
 		}
 	}
 
-	public static final int method481(int i, int j, int k) {
+	public static int method481(int i, int j, int k) {
 		if (i == 65535)
 			return 0;
 		if ((k & 2) == 2) {
@@ -614,11 +616,11 @@ public class Model extends Animable
 			return (i & 0xff80) + j;
 	}
 
-	private final void removeColor(int color) {
+	private void removeColor() {
         if (anIntArray1640 != null) {
             for (int triangle = 0; triangle < anInt1630; triangle++) {
                 if (triangle < anIntArray1640.length) {
-                    if (anIntArray1640[triangle] == color) {
+                    if (anIntArray1640[triangle] == 37798) {
                     	anIntArray1631[triangle] = 0;
                     	anIntArray1632[triangle] = 0;
                     	anIntArray1633[triangle] = 0;
@@ -646,7 +648,7 @@ public class Model extends Animable
 		ModelDef_1.anInt370 = numTriangles;
 		ModelDef_1.anInt371 = numTexTriangles;
 		int l1 = nc1.readUnsignedByte();
-		boolean bool = (0x1 & l1 ^ 0xffffffff) == -2;
+		boolean bool = (~(0x1 & l1)) == -2;
 		int i2 = nc1.readUnsignedByte();
 		int j2 = nc1.readUnsignedByte();
 		int k2 = nc1.readUnsignedByte();
@@ -671,7 +673,7 @@ public class Model extends Animable
 		int[] y = null;
 		int[] N = null;
 		short[] D = null;
-		int[] triangleColours2 = new int[numTriangles];
+		int[] triangleColours2;
 		if (numTexTriangles > 0) {
 			O = new byte[numTexTriangles];
 			nc1.currentOffset = 0;
@@ -731,7 +733,6 @@ public class Model extends Animable
 		int j10 = k5;
 		k5 += l4;
 		int k10 = k5;
-		k5 += l4 + i5 * 2;
 		int[] vertexX = new int[numVertices];
 		int[] vertexY = new int[numVertices];
 		int[] vertexZ = new int[numVertices];
@@ -977,18 +978,16 @@ public class Model extends Animable
 		ModelDef_1.anInt370 = numTriangles;
 		ModelDef_1.anInt371 = numTexTriangles;
 		int l1 = nc1.readUnsignedByte();
-		boolean bool = (0x1 & l1 ^ 0xffffffff) == -2;
+		boolean bool = (~(0x1 & l1)) == -2;
 		boolean bool_26_ = (0x8 & l1) == 8;
 		if (!bool_26_) {
 			read525Model(abyte0, modelID);
 			return;
 		}
 		int newformat = 0;
-		if (bool_26_) {
-			nc1.currentOffset -= 7;
-			newformat = nc1.readUnsignedByte();
-			nc1.currentOffset += 6;
-		}
+		nc1.currentOffset -= 7;
+		newformat = nc1.readUnsignedByte();
+		nc1.currentOffset += 6;
 		if (newformat == 15)
 			newmodel[modelID] = true;
 		int i2 = nc1.readUnsignedByte();
@@ -1015,7 +1014,7 @@ public class Model extends Animable
 		int[] y = null;
 		int[] N = null;
 		short[] D = null;
-		int[] triangleColours2 = new int[numTriangles];
+		int[] triangleColours2;
 		if (numTexTriangles > 0) {
 			O = new byte[numTexTriangles];
 			nc1.currentOffset = 0;
@@ -1083,7 +1082,6 @@ public class Model extends Animable
 		int j10 = k5;
 		k5 += l4;
 		int k10 = k5;
-		k5 += l4 + i5 * 2;
 		int[] vertexX = new int[numVertices];
 		int[] vertexY = new int[numVertices];
 		int[] vertexZ = new int[numVertices];
@@ -1257,62 +1255,62 @@ public class Model extends Animable
 				texTrianglesPoint2[k14] = nc2.readUnsignedWord();
 				texTrianglesPoint3[k14] = nc2.readUnsignedWord();
 				if (newformat < 15) {
-					kb[k14] = nc3.readUnsignedWord();
-					if (newformat >= 14)
-						N[k14] = nc3.v(-1);
+					Objects.requireNonNull(kb)[k14] = nc3.readUnsignedWord();
+					if (newformat == 14)
+						Objects.requireNonNull(N)[k14] = nc3.v(-1);
 					else
-						N[k14] = nc3.readUnsignedWord();
-					y[k14] = nc3.readUnsignedWord();
+						Objects.requireNonNull(N)[k14] = nc3.readUnsignedWord();
+					Objects.requireNonNull(y)[k14] = nc3.readUnsignedWord();
 				} else {
-					kb[k14] = nc3.v(-1);
-					N[k14] = nc3.v(-1);
-					y[k14] = nc3.v(-1);
+					Objects.requireNonNull(kb)[k14] = nc3.v(-1);
+					Objects.requireNonNull(N)[k14] = nc3.v(-1);
+					Objects.requireNonNull(y)[k14] = nc3.v(-1);
 				}
-				gb[k14] = nc4.readSignedByte();
-				lb[k14] = nc5.readSignedByte();
-				F[k14] = nc6.readSignedByte();
+				Objects.requireNonNull(gb)[k14] = nc4.readSignedByte();
+				Objects.requireNonNull(lb)[k14] = nc5.readSignedByte();
+				Objects.requireNonNull(F)[k14] = nc6.readSignedByte();
 			}
 			if (i15 == 2) {
 				texTrianglesPoint1[k14] = nc2.readUnsignedWord();
 				texTrianglesPoint2[k14] = nc2.readUnsignedWord();
 				texTrianglesPoint3[k14] = nc2.readUnsignedWord();
 				if (newformat >= 15) {
-					kb[k14] = nc3.v(-1);
-					N[k14] = nc3.v(-1);
-					y[k14] = nc3.v(-1);
+					Objects.requireNonNull(kb)[k14] = nc3.v(-1);
+					Objects.requireNonNull(N)[k14] = nc3.v(-1);
+					Objects.requireNonNull(y)[k14] = nc3.v(-1);
 				} else {
-					kb[k14] = nc3.readUnsignedWord();
+					Objects.requireNonNull(kb)[k14] = nc3.readUnsignedWord();
 					if (newformat < 14)
-						N[k14] = nc3.readUnsignedWord();
+						Objects.requireNonNull(N)[k14] = nc3.readUnsignedWord();
 					else
-						N[k14] = nc3.v(-1);
-					y[k14] = nc3.readUnsignedWord();
+						Objects.requireNonNull(N)[k14] = nc3.v(-1);
+					Objects.requireNonNull(y)[k14] = nc3.readUnsignedWord();
 				}
-				gb[k14] = nc4.readSignedByte();
-				lb[k14] = nc5.readSignedByte();
-				F[k14] = nc6.readSignedByte();
-				cb[k14] = nc6.readSignedByte();
-				J[k14] = nc6.readSignedByte();
+				Objects.requireNonNull(gb)[k14] = nc4.readSignedByte();
+				Objects.requireNonNull(lb)[k14] = nc5.readSignedByte();
+				Objects.requireNonNull(F)[k14] = nc6.readSignedByte();
+				Objects.requireNonNull(cb)[k14] = nc6.readSignedByte();
+				Objects.requireNonNull(J)[k14] = nc6.readSignedByte();
 			}
 			if (i15 == 3) {
 				texTrianglesPoint1[k14] = nc2.readUnsignedWord();
 				texTrianglesPoint2[k14] = nc2.readUnsignedWord();
 				texTrianglesPoint3[k14] = nc2.readUnsignedWord();
 				if (newformat < 15) {
-					kb[k14] = nc3.readUnsignedWord();
+					Objects.requireNonNull(kb)[k14] = nc3.readUnsignedWord();
 					if (newformat < 14)
-						N[k14] = nc3.readUnsignedWord();
+						Objects.requireNonNull(N)[k14] = nc3.readUnsignedWord();
 					else
-						N[k14] = nc3.v(-1);
-					y[k14] = nc3.readUnsignedWord();
+						Objects.requireNonNull(N)[k14] = nc3.v(-1);
+					Objects.requireNonNull(y)[k14] = nc3.readUnsignedWord();
 				} else {
-					kb[k14] = nc3.v(-1);
-					N[k14] = nc3.v(-1);
-					y[k14] = nc3.v(-1);
+					Objects.requireNonNull(kb)[k14] = nc3.v(-1);
+					Objects.requireNonNull(N)[k14] = nc3.v(-1);
+					Objects.requireNonNull(y)[k14] = nc3.v(-1);
 				}
-				gb[k14] = nc4.readSignedByte();
-				lb[k14] = nc5.readSignedByte();
-				F[k14] = nc6.readSignedByte();
+				Objects.requireNonNull(gb)[k14] = nc4.readSignedByte();
+				Objects.requireNonNull(lb)[k14] = nc5.readSignedByte();
+				Objects.requireNonNull(F)[k14] = nc6.readSignedByte();
 			}
 		}
 		if (i2 != 255) {
@@ -1345,8 +1343,6 @@ public class Model extends Animable
 		anIntArray1629 = new int[anInt1626];
 		anIntArray1631 = new int[anInt1630];
 		anIntArray1632 = new int[anInt1630];
-		while (j >= 0)
-			aBoolean1618 = !aBoolean1618;
 		anIntArray1633 = new int[anInt1630];
 		anIntArray1643 = new int[anInt1642];
 		anIntArray1644 = new int[anInt1642];
@@ -1518,7 +1514,7 @@ public class Model extends Animable
 		anIntArray1645 = model.anIntArray1645;
 	}
 
-	private final int method465(Model model, int i) {
+	private int method465(Model model, int i) {
 		int j = -1;
 		int k = model.anIntArray1627[i];
 		int l = model.anIntArray1628[i];
@@ -1692,7 +1688,7 @@ public class Model extends Animable
 		SequenceFrame nextAnim = null;
     	if (nextFrame != -1) {
     		nextAnim = SequenceFrame.method531(nextFrame);
-    		if (nextAnim.aClass18_637 != skinList) {
+    		if (Objects.requireNonNull(nextAnim).aClass18_637 != skinList) {
     			nextAnim = null;
     		}
     	}
@@ -1852,12 +1848,13 @@ public class Model extends Animable
 			anInt1681 = 0;
 			anInt1682 = 0;
 			anInt1683 = 0;
-			for (int k2 = 0; k2 < i1; k2++) {
-				int l3 = ai[k2];
-				if (l3 < anIntArrayArray1657.length) {
+			for (int l3 : ai)
+			{
+				if (l3 < anIntArrayArray1657.length)
+				{
 					int[] ai5 = anIntArrayArray1657[l3];
-					for (int i5 = 0; i5 < ai5.length; i5++) {
-						int j6 = ai5[i5];
+					for (int j6 : ai5)
+					{
 						anInt1681 += anIntArray1627[j6];
 						anInt1682 += anIntArray1628[j6];
 						anInt1683 += anIntArray1629[j6];
@@ -1880,12 +1877,13 @@ public class Model extends Animable
 			}
 		}
 		if (i == 1) {
-			for (int k1 = 0; k1 < i1; k1++) {
-				int l2 = ai[k1];
-				if (l2 < anIntArrayArray1657.length) {
+			for (int l2 : ai)
+			{
+				if (l2 < anIntArrayArray1657.length)
+				{
 					int[] ai1 = anIntArrayArray1657[l2];
-					for (int i4 = 0; i4 < ai1.length; i4++) {
-						int j5 = ai1[i4];
+					for (int j5 : ai1)
+					{
 						anIntArray1627[j5] += j;
 						anIntArray1628[j5] += k;
 						anIntArray1629[j5] += l;
@@ -1897,33 +1895,37 @@ public class Model extends Animable
 			return;
 		}
 		if (i == 2) {
-			for (int l1 = 0; l1 < i1; l1++) {
-				int i3 = ai[l1];
-				if (i3 < anIntArrayArray1657.length) {
+			for (int i3 : ai)
+			{
+				if (i3 < anIntArrayArray1657.length)
+				{
 					int[] ai2 = anIntArrayArray1657[i3];
-					for (int j4 = 0; j4 < ai2.length; j4++) {
-						int k5 = ai2[j4];
+					for (int k5 : ai2)
+					{
 						anIntArray1627[k5] -= anInt1681;
 						anIntArray1628[k5] -= anInt1682;
 						anIntArray1629[k5] -= anInt1683;
 						int k6 = (j & 0xff) * 8;
 						int l6 = (k & 0xff) * 8;
 						int i7 = (l & 0xff) * 8;
-						if (i7 != 0) {
+						if (i7 != 0)
+						{
 							int j7 = modelIntArray1[i7];
 							int i8 = modelIntArray2[i7];
 							int l8 = anIntArray1628[k5] * j7 + anIntArray1627[k5] * i8 >> 16;
 							anIntArray1628[k5] = anIntArray1628[k5] * i8 - anIntArray1627[k5] * j7 >> 16;
 							anIntArray1627[k5] = l8;
 						}
-						if (k6 != 0) {
+						if (k6 != 0)
+						{
 							int k7 = modelIntArray1[k6];
 							int j8 = modelIntArray2[k6];
 							int i9 = anIntArray1628[k5] * j8 - anIntArray1629[k5] * k7 >> 16;
 							anIntArray1629[k5] = anIntArray1628[k5] * k7 + anIntArray1629[k5] * j8 >> 16;
 							anIntArray1628[k5] = i9;
 						}
-						if (l6 != 0) {
+						if (l6 != 0)
+						{
 							int l7 = modelIntArray1[l6];
 							int k8 = modelIntArray2[l6];
 							int j9 = anIntArray1629[k5] * l7 + anIntArray1627[k5] * k8 >> 16;
@@ -1940,12 +1942,13 @@ public class Model extends Animable
 			return;
 		}
 		if (i == 3) {
-			for (int i2 = 0; i2 < i1; i2++) {
-				int j3 = ai[i2];
-				if (j3 < anIntArrayArray1657.length) {
+			for (int j3 : ai)
+			{
+				if (j3 < anIntArrayArray1657.length)
+				{
 					int[] ai3 = anIntArrayArray1657[j3];
-					for (int k4 = 0; k4 < ai3.length; k4++) {
-						int l5 = ai3[k4];
+					for (int l5 : ai3)
+					{
 						anIntArray1627[l5] -= anInt1681;
 						anIntArray1628[l5] -= anInt1682;
 						anIntArray1629[l5] -= anInt1683;
@@ -1961,12 +1964,13 @@ public class Model extends Animable
 			return;
 		}
 		if (i == 5 && anIntArrayArray1658 != null && anIntArray1639 != null) {
-			for (int j2 = 0; j2 < i1; j2++) {
-				int k3 = ai[j2];
-				if (k3 < anIntArrayArray1658.length) {
+			for (int k3 : ai)
+			{
+				if (k3 < anIntArrayArray1658.length)
+				{
 					int[] ai4 = anIntArrayArray1658[k3];
-					for (int l4 = 0; l4 < ai4.length; l4++) {
-						int i6 = ai4[l4];
+					for (int i6 : ai4)
+					{
 						anIntArray1639[i6] += j * 8;
 						if (anIntArray1639[i6] < 0)
 							anIntArray1639[i6] = 0;
@@ -2044,7 +2048,7 @@ public class Model extends Animable
 
 		}
 		for (int triangle = 0; triangle < anInt1630; triangle++) {
-            removeColor(37798);
+            removeColor();
 		}
 		for (int i2 = 0; i2 < anInt1630; i2++) {
 			if (anIntArray1640 != null && anIntArray1639 != null)
@@ -2069,7 +2073,7 @@ public class Model extends Animable
 			}
 
 			int k5 = (int) Math.sqrt(l4 * l4 + i5 * i5 + j5 * j5);
-			if (k5 <= 0)
+			if (k5 == 0)
 				k5 = 1;
 			l4 = (l4 * 256) / k5;
 			i5 = (i5 * 256) / k5;
@@ -2096,7 +2100,7 @@ public class Model extends Animable
 			} else {
 
 				int l5 = i + (k * l4 + l * i5 + i1 * j5) / (k1 + k1 / 2);
-				anIntArray1634[i2] = method481(anIntArray1640[i2], l5,
+				anIntArray1634[i2] = method481(Objects.requireNonNull(anIntArray1640)[i2], l5,
 						anIntArray1637[i2]);
 
 			}
@@ -2204,11 +2208,6 @@ public class Model extends Animable
 			i5 = i5 * k3 - l4 * j3 >> 16;
 				l4 = k5;
 				}
-				if (i != 0) {
-					int l5 = i5 * k2 - j5 * j2 >> 16;
-			j5 = i5 * j2 + j5 * k2 >> 16;
-			i5 = l5;
-				}
 				if (j != 0) {
 					int i6 = j5 * l2 + l4 * i3 >> 16;
 				j5 = j5 * i3 - l4 * l2 >> 16;
@@ -2227,14 +2226,17 @@ public class Model extends Animable
 				anIntArray1668[k4] = l4;
 				anIntArray1669[k4] = i5;
 				anIntArray1670[k4] = j5;
-			} else if (Configuration.enableDistanceFog || !Configuration.enableDistanceFog) {
+			} else
+			{
 				anIntArray1670[k4] = j5;
 			}
 			}
 
 			try {
 				method483(false, false, 0);
-			} catch (Exception _ex) {
+			} catch (Exception _ex)
+			{
+				throw new RuntimeException(_ex);
 			}
 	}
 
@@ -2329,18 +2331,21 @@ public class Model extends Animable
 			anIntArray1668[j7] = k7;
 			anIntArray1669[j7] = l7;
 			anIntArray1670[j7] = i8;
-        } else if (Configuration.enableDistanceFog || !Configuration.enableDistanceFog) {
-        	anIntArray1670[j7] = i8;
+        } else
+		{
+			anIntArray1670[j7] = i8;
 		}
 				}
 
 				try {
 					method483(flag, flag1, i2);
-				} catch (Exception _ex) {
+				} catch (Exception _ex)
+				{
+					throw new RuntimeException(_ex);
 				}
 	}
 
-	private final void method483(boolean flag, boolean flag1, int i) {
+	private void method483(boolean flag, boolean flag1, int i) {
 		for (int j = 0; j < anInt1652; j++)
 			anIntArray1671[j] = 0;
 
@@ -2435,7 +2440,6 @@ public class Model extends Animable
 		int[] ai2 = anIntArrayArray1674[10];
 		int[] ai3 = anIntArray1675;
 		if (i6 == k6) {
-			i6 = 0;
 			k6 = anIntArray1673[11];
 			ai2 = anIntArrayArray1674[11];
 			ai3 = anIntArray1676;
@@ -2507,7 +2511,7 @@ public class Model extends Animable
 		}
 	}
 
-	private final void method484(int i)
+	private void method484(int i)
     {
         if(aBooleanArray1664[i])
         {
@@ -2546,17 +2550,14 @@ public class Model extends Animable
             Rasterizer.method378(anIntArray1666[j], anIntArray1666[k], anIntArray1666[l], anIntArray1665[j], anIntArray1665[k], anIntArray1665[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i], anIntArray1668[l1], anIntArray1668[j2], anIntArray1668[l2], anIntArray1669[l1], anIntArray1669[j2], anIntArray1669[l2], anIntArray1670[l1], anIntArray1670[j2], anIntArray1670[l2], anIntArray1640[i], anIntArray1670[j], anIntArray1670[k], anIntArray1670[l]);
             return;
         }
-        if(i1 == 3)
-        {
-            int k1 = anIntArray1637[i] >> 2;
-            int i2 = anIntArray1643[k1];
-            int k2 = anIntArray1644[k1];
-            int i3 = anIntArray1645[k1];
-            Rasterizer.method378(anIntArray1666[j], anIntArray1666[k], anIntArray1666[l], anIntArray1665[j], anIntArray1665[k], anIntArray1665[l], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], anIntArray1668[i2], anIntArray1668[k2], anIntArray1668[i3], anIntArray1669[i2], anIntArray1669[k2], anIntArray1669[i3], anIntArray1670[i2], anIntArray1670[k2], anIntArray1670[i3], anIntArray1640[i], anIntArray1670[j], anIntArray1670[k], anIntArray1670[l]);
-        }
-    }
+		int k1 = anIntArray1637[i] >> 2;
+		int i2 = anIntArray1643[k1];
+		int k2 = anIntArray1644[k1];
+		int i3 = anIntArray1645[k1];
+		Rasterizer.method378(anIntArray1666[j], anIntArray1666[k], anIntArray1666[l], anIntArray1665[j], anIntArray1665[k], anIntArray1665[l], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], anIntArray1668[i2], anIntArray1668[k2], anIntArray1668[i3], anIntArray1669[i2], anIntArray1669[k2], anIntArray1669[i3], anIntArray1670[i2], anIntArray1670[k2], anIntArray1670[i3], anIntArray1640[i], anIntArray1670[j], anIntArray1670[k], anIntArray1670[l]);
+	}
 
-	private final void method485(int i) {
+	private void method485(int i) {
 		if (anIntArray1640 != null)
 			if (anIntArray1640[i] == 65535)
 				return;
@@ -2693,16 +2694,15 @@ public class Model extends Animable
 	                    int k9 = anIntArray1643[j8];
 	                    int k10 = anIntArray1644[j8];
 	                    int k11 = anIntArray1645[j8];
-	                    Rasterizer.method378(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2], anIntArray1668[k9], anIntArray1668[k10], anIntArray1668[k11], anIntArray1669[k9], anIntArray1669[k10], anIntArray1669[k11], anIntArray1670[k9], anIntArray1670[k10], anIntArray1670[k11], anIntArray1640[i], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
+	                    Rasterizer.method378(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2], anIntArray1668[k9], anIntArray1668[k10], anIntArray1668[k11], anIntArray1669[k9], anIntArray1669[k10], anIntArray1669[k11], anIntArray1670[k9], anIntArray1670[k10], anIntArray1670[k11], Objects.requireNonNull(anIntArray1640)[i], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
 	                } else
-	                if(l7 == 3)
-	                {
-	                    int k8 = anIntArray1637[i] >> 2;
-	                    int l9 = anIntArray1643[k8];
-	                    int l10 = anIntArray1644[k8];
-	                    int l11 = anIntArray1645[k8];
-	                    Rasterizer.method378(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], anIntArray1668[l9], anIntArray1668[l10], anIntArray1668[l11], anIntArray1669[l9], anIntArray1669[l10], anIntArray1669[l11], anIntArray1670[l9], anIntArray1670[l10], anIntArray1670[l11], anIntArray1640[i], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
-	                }
+					{
+						int k8 = anIntArray1637[i] >> 2;
+						int l9 = anIntArray1643[k8];
+						int l10 = anIntArray1644[k8];
+						int l11 = anIntArray1645[k8];
+						Rasterizer.method378(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], anIntArray1668[l9], anIntArray1668[l10], anIntArray1668[l11], anIntArray1669[l9], anIntArray1669[l10], anIntArray1669[l11], anIntArray1670[l9], anIntArray1670[l10], anIntArray1670[l11], Objects.requireNonNull(anIntArray1640)[i], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
+					}
 	            }
 	            if(l == 4)
 	            {
@@ -2732,25 +2732,22 @@ public class Model extends Animable
 	                    int i10 = anIntArray1643[i9];
 	                    int i11 = anIntArray1644[i9];
 	                    int i12 = anIntArray1645[i9];
-	                    Rasterizer.method378(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2], anIntArray1668[i10], anIntArray1668[i11], anIntArray1668[i12], anIntArray1669[i10], anIntArray1669[i11], anIntArray1669[i12], anIntArray1670[i10], anIntArray1670[i11], anIntArray1670[i12], anIntArray1640[i], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
+	                    Rasterizer.method378(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2], anIntArray1668[i10], anIntArray1668[i11], anIntArray1668[i12], anIntArray1669[i10], anIntArray1669[i11], anIntArray1669[i12], anIntArray1670[i10], anIntArray1670[i11], anIntArray1670[i12], Objects.requireNonNull(anIntArray1640)[i], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
 	                    Rasterizer.method378(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3], anIntArray1680[0], anIntArray1680[2], anIntArray1680[3], anIntArray1668[i10], anIntArray1668[i11], anIntArray1668[i12], anIntArray1669[i10], anIntArray1669[i11], anIntArray1669[i12], anIntArray1670[i10], anIntArray1670[i11], anIntArray1670[i12], anIntArray1640[i], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
 	                    return;
 	                }
-	                if(i8 == 3)
-	                {
-	                    int j9 = anIntArray1637[i] >> 2;
-	                    int j10 = anIntArray1643[j9];
-	                    int j11 = anIntArray1644[j9];
-	                    int j12 = anIntArray1645[j9];
-	                    Rasterizer.method378(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], anIntArray1668[j10], anIntArray1668[j11], anIntArray1668[j12], anIntArray1669[j10], anIntArray1669[j11], anIntArray1669[j12], anIntArray1670[j10], anIntArray1670[j11], anIntArray1670[j12], anIntArray1640[i], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
-	                    Rasterizer.method378(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], anIntArray1668[j10], anIntArray1668[j11], anIntArray1668[j12], anIntArray1669[j10], anIntArray1669[j11], anIntArray1669[j12], anIntArray1670[j10], anIntArray1670[j11], anIntArray1670[j12], anIntArray1640[i], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
-	                }
-	            }
+					int j9 = anIntArray1637[i] >> 2;
+					int j10 = anIntArray1643[j9];
+					int j11 = anIntArray1644[j9];
+					int j12 = anIntArray1645[j9];
+					Rasterizer.method378(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], anIntArray1668[j10], anIntArray1668[j11], anIntArray1668[j12], anIntArray1669[j10], anIntArray1669[j11], anIntArray1669[j12], anIntArray1670[j10], anIntArray1670[j11], anIntArray1670[j12], anIntArray1640[i], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
+					Rasterizer.method378(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], anIntArray1668[j10], anIntArray1668[j11], anIntArray1668[j12], anIntArray1669[j10], anIntArray1669[j11], anIntArray1669[j12], anIntArray1670[j10], anIntArray1670[j11], anIntArray1670[j12], anIntArray1640[i], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
+				}
 	        }
 	    }
 
-	private final boolean method486(int i, int j, int k, int l, int i1, int j1,
-			int k1, int l1) {
+	private boolean method486(int i, int j, int k, int l, int i1, int j1,
+							  int k1, int l1) {
 		if (j < k && j < l && j < i1)
 			return false;
 		if (j > k && j > l && j > i1)

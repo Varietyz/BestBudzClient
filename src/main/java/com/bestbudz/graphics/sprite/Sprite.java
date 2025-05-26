@@ -1,7 +1,7 @@
 package com.bestbudz.graphics.sprite;
 
 import com.bestbudz.cache.Signlink;
-import com.bestbudz.client.Client;
+import com.bestbudz.engine.ClientEngine;
 import com.bestbudz.config.Configuration;
 import com.bestbudz.graphics.Background;
 import com.bestbudz.graphics.DrawingArea;
@@ -9,7 +9,6 @@ import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
 import com.bestbudz.util.FileUtility;
 import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
@@ -28,7 +27,7 @@ import javax.swing.ImageIcon;
 public final class Sprite extends DrawingArea
 {
 
-	public String location = Signlink.findCacheDir() + "Sprites/";
+	public final String location = Signlink.findCacheDir() + "Sprites/";
 	public int[] myPixels;
 	public int myWidth;
 	public int myHeight;
@@ -79,7 +78,6 @@ public final class Sprite extends DrawingArea
 			myPixels = new int[myWidth * myHeight];
 			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
 			pixelgrabber.grabPixels();
-			image = null;
 		} catch (Exception exception) {
 			System.out.println(exception);
 		}
@@ -97,7 +95,6 @@ public final class Sprite extends DrawingArea
 			myPixels = new int[myWidth * myHeight];
 			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
 			pixelgrabber.grabPixels();
-			image = null;
 		} catch (Exception _ex) {
 			System.out.println(_ex);
 		}
@@ -116,7 +113,6 @@ public final class Sprite extends DrawingArea
 			myPixels = new int[myWidth * myHeight];
 			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
 			pixelgrabber.grabPixels();
-			image = null;
 			setTransparency(255, 0, 255);
 		} catch (Exception _ex) {
 			System.out.println(_ex);
@@ -140,7 +136,6 @@ public final class Sprite extends DrawingArea
 			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
 			pixelgrabber.grabPixels();
 			setTransparency(0, 0, 0);
-			image = null;
 		} catch (Exception _ex) {
 			System.out.println(_ex);
 		}
@@ -202,7 +197,6 @@ public final class Sprite extends DrawingArea
 			myPixels = new int[myWidth * myHeight];
 			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
 			pixelgrabber.grabPixels();
-			image = null;
 			setTransparency(255, 0, 255);
 		} catch (Exception _ex) {
 			System.out.println(_ex);
@@ -219,22 +213,18 @@ public final class Sprite extends DrawingArea
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		try {
 			int transparency = Transparency.OPAQUE;
-			if (hasAlpha) {
-				transparency = Transparency.BITMASK;
-			}
 			GraphicsDevice gs = ge.getDefaultScreenDevice();
 			GraphicsConfiguration gc = gs.getDefaultConfiguration();
 			bimage = gc.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
-		} catch (HeadlessException e) {
+		} catch (HeadlessException e)
+		{
+			throw new RuntimeException(e);
 		}
 		if (bimage == null) {
 			int type = BufferedImage.TYPE_INT_RGB;
-			if (hasAlpha) {
-				type = BufferedImage.TYPE_INT_ARGB;
-			}
 			bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
 		}
-		Graphics g = bimage.createGraphics();
+		Graphics2D g = bimage.createGraphics();
 		g.drawImage(image, 0, 0, null);
 		g.dispose();
 		return bimage;
@@ -257,8 +247,8 @@ public final class Sprite extends DrawingArea
 
 	public void drawHoverSprite(int x, int y, int offsetX, int offsetY, Sprite hover) {
 		this.drawSprite(x, y);
-		if (Client.instance.mouseX >= offsetX + x && Client.instance.mouseX <= offsetX + x + this.myWidth
-				&& Client.instance.mouseY >= offsetY + y && Client.instance.mouseY <= offsetY + y + this.myHeight) {
+		if (ClientEngine.mouseX >= offsetX + x && ClientEngine.mouseX <= offsetX + x + this.myWidth
+				&& ClientEngine.mouseY >= offsetY + y && ClientEngine.mouseY <= offsetY + y + this.myHeight) {
 			hover.drawSprite(x, y);
 		}
 	}
@@ -299,13 +289,12 @@ public final class Sprite extends DrawingArea
 			destStep += trimRight;
 		}
 		if (!((width <= 0) || (height <= 0))) {
-			set24BitPixels(width, height, DrawingArea.pixels, myPixels, alpha, destOffset, srcOffset, destStep,
+			set24BitPixels(width, height, DrawingArea.pixels, myPixels, destOffset, srcOffset, destStep,
 					srcStep);
 		}
 	}
 
 	public void drawTransparentSprite(int i, int j, int opacity) {
-		int k = opacity;
 		i += drawOffsetX;
 		j += drawOffsetY;
 		int i1 = i + j * DrawingArea.width;
@@ -339,17 +328,17 @@ public final class Sprite extends DrawingArea
 			i2 += i3;
 		}
 		if (!(l1 <= 0 || k1 <= 0)) {
-			method351(j1, l1, DrawingArea.pixels, myPixels, j2, k1, i2, k, i1);
+			method351(j1, l1, DrawingArea.pixels, myPixels, j2, k1, i2, opacity, i1);
 		}
 	}
 
-	private void set24BitPixels(int width, int height, int[] destPixels, int[] srcPixels, int srcAlpha, int destOffset,
+	private void set24BitPixels(int width, int height, int[] destPixels, int[] srcPixels, int destOffset,
 								int srcOffset, int destStep, int srcStep) {
 		int srcColor;
 		int destAlpha;
 		for (int loop = -height; loop < 0; loop++) {
 			for (int loop2 = -width; loop2 < 0; loop2++) {
-				srcAlpha = ((this.myPixels[srcOffset] >> 24) & 255);
+				int srcAlpha = ((this.myPixels[srcOffset] >> 24) & 255);
 				destAlpha = 256 - srcAlpha;
 				srcColor = srcPixels[srcOffset++];
 				if (srcColor != 0 && srcColor != 0xffffff) {
@@ -787,7 +776,9 @@ public final class Sprite extends DrawingArea
 				l3 += DrawingArea.width;
 			}
 
-		} catch (Exception _ex) {
+		} catch (Exception _ex)
+		{
+			throw new RuntimeException(_ex);
 		}
 	}
 
@@ -807,19 +798,17 @@ public final class Sprite extends DrawingArea
 		int radiusSquared = center * center;
 
 		for (int y = -center; y < center; y++) {
-			int dy = y;
-			int baseU = dy * sin;
-			int baseV = dy * cos;
+			int baseU = y * sin;
+			int baseV = y * cos;
 
-			int destY = drawY + center + dy;
+			int destY = drawY + center + y;
 			if (destY < 0 || destY >= DrawingArea.height) continue;
 
 			for (int x = -center; x < center; x++) {
-				int dx = x;
-				if ((dx * dx + dy * dy) > radiusSquared) continue;
+				if ((x * x + y * y) > radiusSquared) continue;
 
-				int u = (dx * cos + baseU) >> 16;
-				int v = (baseV - dx * sin) >> 16;
+				int u = (x * cos + baseU) >> 16;
+				int v = (baseV - x * sin) >> 16;
 
 				int srcX = u + center + spriteOffsetX;
 				int srcY = v + center + spriteOffsetY;
@@ -829,7 +818,7 @@ public final class Sprite extends DrawingArea
 				int color = myPixels[srcX + srcY * myWidth];
 				if (color == 0) continue;
 
-				int destX = drawX + center + dx;
+				int destX = drawX + center + x;
 				if (destX < 0 || destX >= DrawingArea.width) continue;
 
 				DrawingArea.pixels[destX + destY * DrawingArea.width] = color;
@@ -880,6 +869,7 @@ public final class Sprite extends DrawingArea
 		}
 		catch (Exception _ex)
 		{
+			throw new RuntimeException(_ex);
 		}
 	}
 
@@ -917,7 +907,7 @@ public final class Sprite extends DrawingArea
 			k1 += k2;
 		}
 		if (!(j1 <= 0 || i1 <= 0)) {
-			method355(myPixels, j1, background.aByteArray1450, i1, DrawingArea.pixels, 0, k1, k, l1, l);
+			method355(myPixels, j1, background.aByteArray1450, i1, DrawingArea.pixels, k1, k, l1, l);
 		}
 	}
 
@@ -926,7 +916,6 @@ public final class Sprite extends DrawingArea
 	}
 
 	public void drawARGBSprite(int xPos, int yPos, int alpha) {
-		int alphaValue = alpha;
 		xPos += drawOffsetX;
 		yPos += drawOffsetY;
 		int i1 = xPos + yPos * DrawingArea.width;
@@ -960,7 +949,7 @@ public final class Sprite extends DrawingArea
 			i2 += i3;
 		}
 		if (!(spriteWidth <= 0 || spriteHeight <= 0)) {
-			renderARGBPixels(spriteWidth, spriteHeight, myPixels, DrawingArea.pixels, i1, alphaValue, j1, j2, i2);
+			renderARGBPixels(spriteWidth, spriteHeight, myPixels, DrawingArea.pixels, i1, alpha, j1, j2, i2);
 		}
 	}
 
@@ -995,10 +984,11 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-	private void method355(int[] ai, int i, byte[] abyte0, int j, int[] ai1, int k, int l, int i1, int j1, int k1) {
+	private void method355(int[] ai, int i, byte[] abyte0, int j, int[] ai1, int l, int i1, int j1, int k1) {
 		int l1 = -(i >> 2);
 		i = -(i & 3);
 		for (int j2 = -j; j2 < 0; j2++) {
+			int k;
 			for (int k2 = l1; k2 < 0; k2++) {
 				k = ai[k1++];
 				if (k != 0 && abyte0[i1] == 0)

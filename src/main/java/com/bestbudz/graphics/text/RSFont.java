@@ -24,7 +24,7 @@ public class RSFont extends DrawingArea {
   public static String startStrikethrough;
   public static String endColor;
   public static String startImage;
-  public static String startClanImage;
+  public static final String startClanImage;
   public static String endUnderline;
   public static String defaultStrikethrough;
   public static String startShadow;
@@ -132,14 +132,8 @@ public class RSFont extends DrawingArea {
     int i_33_ = i_32_ + is_30_[i];
     int i_34_ = is_28_[i_31_];
     int i_35_ = i_34_ + is_30_[i_31_];
-    int i_36_ = i_32_;
-    if (i_34_ > i_32_) {
-      i_36_ = i_34_;
-    }
-    int i_37_ = i_33_;
-    if (i_35_ < i_33_) {
-      i_37_ = i_35_;
-    }
+	  int i_36_ = Math.max(i_34_, i_32_);
+	  int i_37_ = Math.min(i_35_, i_33_);
     int i_38_ = is_29_[i];
     if (is_29_[i_31_] < i_38_) {
       i_38_ = is_29_[i_31_];
@@ -396,105 +390,81 @@ public class RSFont extends DrawingArea {
   }
 
   private int getColorByName(String color) {
-    if (color.equals("pt1")) {
-      return 0x005eff;
-    }
-    if (color.equals("pt2")) {
-      return 0x336600;
-    }
-    if (color.equals("pt3")) {
-      return 0xA300CC;
-    }
-    if (color.equals("pt4")) {
-      return 0xE6E600;
-    }
-    if (color.equals("pt5")) {
-      return 0xB80000;
-    }
-    if (color.equals("pt6")) {
-      return 0xCC5200;
-    }
-    if (color.equals("pt7")) {
-      return 0x3D991F;
-    }
+	  switch (color)
+	  {
+		  case "pt1":
+			  return 0x005eff;
+		  case "pt2":
+			  return 0x336600;
+		  case "pt3":
+			  return 0xA300CC;
+		  case "pt4":
+			  return 0xE6E600;
+		  case "pt5":
+			  return 0xB80000;
+		  case "pt6":
+			  return 0xCC5200;
+		  case "pt7":
+			  return 0x3D991F;
+	  }
 
-    if (color.endsWith("inf")) {
+	  if (color.endsWith("inf")) {
       return 0xff9933;
     }
 
-    if (color.equals("ceo")) {
-      return 0x1F9100;
-    }
-    if (color.equals("dev")) {
-      return 0xBB2AF5;
-    }
-    if (color.equals("war")) {
-      return 0xF752CB;
-    }
-    if (color.equals("369")) {
-      return 0x336699;
-    }
-    if (color.equals("def")) {
-      return 0xB8934A;
-    }
-    if (color.equals("red")) {
-      return 0xff0000;
-    }
-    if (color.equals("gre")) {
-      return 65280;
-    }
-    if (color.equals("blu")) {
-      return 255;
-    }
-    if (color.equals("yel")) {
-      return 0xffff00;
-    }
-    if (color.equals("cya")) {
-      return 65535;
-    }
-    if (color.equals("mag")) {
-      return 0xff00ff;
-    }
-    if (color.equals("whi")) {
-      return 0xffffff;
-    }
-    if (color.equals("gry")) {
-      return 0x475154;
-    }
-    if (color.equals("bla")) {
-      return 0;
-    }
-    if (color.equals("lre")) {
-      return 0xff9040;
-    }
-    if (color.equals("dre")) {
-      return 0x800000;
-    }
-    if (color.equals("dbl")) {
-      return 128;
-    }
-    if (color.equals("or1")) {
-      return 0xffb000;
-    }
-    if (color.equals("or2")) {
-      return 0xff7000;
-    }
-    if (color.equals("or3")) {
-      return 0xff3000;
-    }
-    if (color.equals("gr1")) {
-      return 0xc0ff00;
-    }
-    if (color.equals("gr2")) {
-      return 0x80ff00;
-    }
-    if (color.equals("gr3")) {
-      return 0x40ff00;
-    }
-    if (color.equals("str")) {
-      strikeThrough = true;
-    }
-    if (color.equals("end")) {
+	  switch (color)
+	  {
+		  case "ceo":
+			  return 0x1F9100;
+		  case "dev":
+			  return 0xBB2AF5;
+		  case "war":
+			  return 0xF752CB;
+		  case "369":
+			  return 0x336699;
+		  case "def":
+			  return 0xB8934A;
+		  case "red":
+			  return 0xff0000;
+		  case "gre":
+			  return 65280;
+		  case "blu":
+			  return 255;
+		  case "yel":
+			  return 0xffff00;
+		  case "cya":
+			  return 65535;
+		  case "mag":
+			  return 0xff00ff;
+		  case "whi":
+			  return 0xffffff;
+		  case "gry":
+			  return 0x475154;
+		  case "bla":
+			  return 0;
+		  case "lre":
+			  return 0xff9040;
+		  case "dre":
+			  return 0x800000;
+		  case "dbl":
+			  return 128;
+		  case "or1":
+			  return 0xffb000;
+		  case "or2":
+			  return 0xff7000;
+		  case "or3":
+			  return 0xff3000;
+		  case "gr1":
+			  return 0xc0ff00;
+		  case "gr2":
+			  return 0x80ff00;
+		  case "gr3":
+			  return 0x40ff00;
+		  case "str":
+			  strikeThrough = true;
+			  break;
+	  }
+	  if (color.equals("end")) {
       strikeThrough = false;
     }
 
@@ -564,8 +534,7 @@ public class RSFont extends DrawingArea {
           if (effectString.equals(startEffect)) {
             character = 60;
           } else if (effectString.equals(endEffect)) {
-            character = 62;
-          } else if (effectString.equals(aRSString_4135)) {
+		  } else if (effectString.equals(aRSString_4135)) {
             character = 160;
           } else if (effectString.equals(aRSString_4162)) {
             character = 173;
@@ -580,20 +549,24 @@ public class RSFont extends DrawingArea {
           } else {
             if (effectString.startsWith(startImage)) {
               try {
-                int imageId = Integer.valueOf(effectString.substring(4));
+                int imageId = Integer.parseInt(effectString.substring(4));
                 Sprite icon = chatImages[imageId];
                 icon.drawSprite(drawX, drawY);
                 drawX += icon.myWidth + icon.drawOffsetX;
-              } catch (Exception exception) {
-              }
+              } catch (Exception exception)
+			  {
+				  throw new RuntimeException(exception);
+			  }
             } else if (effectString.startsWith(startClanImage)) {
               try {
-                int imageId = Integer.valueOf(effectString.substring(5));
+                int imageId = Integer.parseInt(effectString.substring(5));
                 Sprite icon = clanImages[imageId];
                 icon.drawSprite(drawX, drawY + 2);
                 drawX += 11;
-              } catch (Exception exception) {
-              }
+              } catch (Exception exception)
+			  {
+				  throw new RuntimeException(exception);
+			  }
             } else {
               setTextEffects(effectString);
             }
@@ -686,20 +659,10 @@ public class RSFont extends DrawingArea {
     if (substring.startsWith("<img=") || substring.startsWith("</img")) {
       return true;
     }
-    if (substring.substring(0, 5).equals("<clan=") || substring.substring(0, 5).equals("</clan")) {
+	  if (substring.startsWith("<str=") || substring.startsWith("</str")) {
       return true;
     }
-    if (substring.substring(0, 5).equals("<shad=") || substring.substring(0, 5).equals("</shad")) {
-      return true;
-    }
-    if (substring.startsWith("<str=") || substring.startsWith("</str")) {
-      return true;
-    }
-    if (substring.substring(0, 6).equals("<trans=")
-        || substring.substring(0, 6).equals("</trans")) {
-      return true;
-    }
-    return true;
+	  return true;
   }
 
   public void drawBaseStringMoveXY(
@@ -718,8 +681,7 @@ public class RSFont extends DrawingArea {
           if (effectString.equals(startEffect)) {
             character = 60;
           } else if (effectString.equals(endEffect)) {
-            character = 62;
-          } else if (effectString.equals(aRSString_4135)) {
+		  } else if (effectString.equals(aRSString_4135)) {
             character = 160;
           } else if (effectString.equals(aRSString_4162)) {
             character = 173;
@@ -747,7 +709,7 @@ public class RSFont extends DrawingArea {
                   yMod = 0;
                 }
                 modifierOffset++;
-                int iconId = Integer.valueOf(effectString.substring(4));
+                int iconId = Integer.parseInt(effectString.substring(4));
                 Sprite class92 = chatImages[iconId];
                 int iconOffsetY = class92.anInt1445;
                 if (transparency == 256) {
@@ -760,8 +722,10 @@ public class RSFont extends DrawingArea {
                       transparency);
                 }
                 drawX += class92.cropWidth;
-              } catch (Exception exception) {
-              }
+              } catch (Exception exception)
+			  {
+				  throw new RuntimeException(exception);
+			  }
             } else {
               setTextEffects(effectString);
             }
@@ -859,23 +823,23 @@ public class RSFont extends DrawingArea {
         } else if (string.equals(endColor)) {
           textColor = defaultColor;
         } else if (string.startsWith(startTransparency)) {
-          transparency = Integer.valueOf(string.substring(6));
+          transparency = Integer.parseInt(string.substring(6));
         } else if (string.equals(endTransparency)) {
           transparency = defaultTransparency;
         } else if (string.startsWith(startStrikethrough)) {
-          strikethroughColor = Integer.valueOf(string.substring(4));
+          strikethroughColor = Integer.parseInt(string.substring(4));
         } else if (string.equals(defaultStrikethrough)) {
           strikethroughColor = 8388608;
         } else if (string.equals(endStrikethrough)) {
           strikethroughColor = -1;
         } else if (string.startsWith(startUnderline)) {
-          underlineColor = Integer.valueOf(string.substring(2));
+          underlineColor = Integer.parseInt(string.substring(2));
         } else if (string.equals(startDefaultUnderline)) {
           underlineColor = 0;
         } else if (string.equals(endUnderline)) {
           underlineColor = -1;
         } else if (string.startsWith(startShadow)) {
-          textShadowColor = Integer.valueOf(string.substring(5));
+          textShadowColor = Integer.parseInt(string.substring(5));
         } else if (string.equals(startDefaultShadow)) {
           textShadowColor = 0;
         } else if (string.equals(endShadow)) {
@@ -931,8 +895,7 @@ public class RSFont extends DrawingArea {
           if (effectString.equals(startEffect)) {
             character = 60;
           } else if (effectString.equals(endEffect)) {
-            character = 62;
-          } else if (effectString.equals(aRSString_4135)) {
+		  } else if (effectString.equals(aRSString_4135)) {
             character = 160;
           } else if (effectString.equals(aRSString_4162)) {
             character = 173;
@@ -947,16 +910,20 @@ public class RSFont extends DrawingArea {
           } else {
             if (effectString.startsWith(startImage)) {
               try {
-                int iconId = Integer.valueOf(effectString.substring(4));
+                int iconId = Integer.parseInt(effectString.substring(4));
                 finalWidth += chatImages[iconId].cropWidth;
-              } catch (Exception exception) {
-              }
+              } catch (Exception exception)
+			  {
+				  throw new RuntimeException(exception);
+			  }
             } else if (effectString.startsWith(startClanImage)) {
               try {
-                int iconId = Integer.valueOf(effectString.substring(5));
+                int iconId = Integer.parseInt(effectString.substring(5));
                 finalWidth += clanImages[iconId].cropWidth;
-              } catch (Exception exception) {
-              }
+              } catch (Exception exception)
+			  {
+				  throw new RuntimeException(exception);
+			  }
             } else {
               setTextEffects(effectString);
             }

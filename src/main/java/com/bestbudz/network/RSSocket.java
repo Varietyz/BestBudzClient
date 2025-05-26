@@ -1,6 +1,6 @@
 package com.bestbudz.network;
 
-import com.bestbudz.client.ClientEngine;
+import com.bestbudz.engine.ClientEngine;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -94,8 +94,10 @@ public final class RSSocket implements Runnable {
         if (buffIndex == writeIndex)
           try {
             wait();
-          } catch (InterruptedException _ex) {
-          }
+          } catch (InterruptedException _ex)
+		  {
+			  throw new RuntimeException(_ex);
+		  }
         if (!isWriter) return;
         j = writeIndex;
         if (buffIndex >= writeIndex) i = buffIndex - writeIndex;

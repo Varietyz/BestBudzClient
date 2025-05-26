@@ -6,12 +6,13 @@ import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.graphics.Texture;
 import com.bestbudz.network.StreamLoader;
 import com.bestbudz.world.WorldController;
+import java.util.Objects;
 
 public final class Rasterizer extends DrawingArea
 {
 
 	public static final int[] anIntArray1469;
-	public static int textureAmount = 51;
+	public static final int textureAmount = 51;
 	public static boolean lowMem = true;
 	public static boolean aBoolean1462;
 	public static boolean aBoolean1464 = true;
@@ -27,7 +28,7 @@ public final class Rasterizer extends DrawingArea
 	public static int[] anIntArray1482 = new int[0x10000];
 	private static int mipMapLevel;
 	private static boolean aBoolean1463;
-	private static int[] anIntArray1468;
+	private static final int[] anIntArray1468;
 	private static int anInt1473;
 	private static boolean[] aBooleanArray1475 = new boolean[textureAmount];
 	private static int[] anIntArray1476 = new int[textureAmount];
@@ -54,8 +55,6 @@ public final class Rasterizer extends DrawingArea
 	}
 
 	public static void nullLoader() {
-		anIntArray1468 = null;
-		anIntArray1468 = null;
 		anIntArray1470 = null;
 		anIntArray1471 = null;
 		anIntArray1472 = null;
@@ -117,7 +116,9 @@ public final class Rasterizer extends DrawingArea
 				else
 					aBackgroundArray1474s[j].method357();
 				anInt1473++;
-			} catch (Exception _ex) {
+			} catch (Exception _ex)
+			{
+				throw new RuntimeException(_ex);
 			}
 
 	}
@@ -379,7 +380,7 @@ public final class Rasterizer extends DrawingArea
 			return;
 		}
 		setMipmapLevel(y1, y2, y3, x1, x2, x3, tex);
-		int[] ai = Texture.get(tex).mipmaps[mipMapLevel];
+		int[] ai = Objects.requireNonNull(Texture.get(tex)).mipmaps[mipMapLevel];
 		tx2 = tx1 - tx2;
 		ty2 = ty1 - ty2;
 		tz2 = tz1 - tz2;
@@ -1027,12 +1028,10 @@ public final class Rasterizer extends DrawingArea
 		while (k3-- > 0) {
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
-			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
-						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
-						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
-				DrawingArea.depthBuffer[off] = depth;
-			}
+			dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+					+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+					+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+			DrawingArea.depthBuffer[off] = depth;
 			off++;
 			depth += depth_slope;
 			i += j7;
@@ -1040,12 +1039,10 @@ public final class Rasterizer extends DrawingArea
 			hsl1 += hsl2;
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
-			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
-						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
-						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
-				DrawingArea.depthBuffer[off] = depth;
-			}
+			dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+					+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+					+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+			DrawingArea.depthBuffer[off] = depth;
 			off++;
 			depth += depth_slope;
 			i += j7;
@@ -1053,12 +1050,10 @@ public final class Rasterizer extends DrawingArea
 			hsl1 += hsl2;
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
-			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
-						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
-						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
-				DrawingArea.depthBuffer[off] = depth;
-			}
+			dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+					+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+					+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+			DrawingArea.depthBuffer[off] = depth;
 			off++;
 			depth += depth_slope;
 			i += j7;
@@ -1066,12 +1061,10 @@ public final class Rasterizer extends DrawingArea
 			hsl1 += hsl2;
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
-			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
-						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
-						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
-				DrawingArea.depthBuffer[off] = depth;
-			}
+			dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+					+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+					+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+			DrawingArea.depthBuffer[off] = depth;
 			off++;
 			depth += depth_slope;
 			i += j7;
@@ -1079,12 +1072,10 @@ public final class Rasterizer extends DrawingArea
 			hsl1 += hsl2;
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
-			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
-						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
-						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
-				DrawingArea.depthBuffer[off] = depth;
-			}
+			dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+					+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+					+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+			DrawingArea.depthBuffer[off] = depth;
 			off++;
 			depth += depth_slope;
 			i += j7;
@@ -1092,12 +1083,10 @@ public final class Rasterizer extends DrawingArea
 			hsl1 += hsl2;
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
-			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
-						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
-						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
-				DrawingArea.depthBuffer[off] = depth;
-			}
+			dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+					+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+					+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+			DrawingArea.depthBuffer[off] = depth;
 			off++;
 			depth += depth_slope;
 			i += j7;
@@ -1105,12 +1094,10 @@ public final class Rasterizer extends DrawingArea
 			hsl1 += hsl2;
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
-			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
-						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
-						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
-				DrawingArea.depthBuffer[off] = depth;
-			}
+			dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+					+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+					+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+			DrawingArea.depthBuffer[off] = depth;
 			off++;
 			depth += depth_slope;
 			i += j7;
@@ -1118,12 +1105,10 @@ public final class Rasterizer extends DrawingArea
 			hsl1 += hsl2;
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
-			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
-						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
-						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
-				DrawingArea.depthBuffer[off] = depth;
-			}
+			dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+					+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+					+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+			DrawingArea.depthBuffer[off] = depth;
 			off++;
 			depth += depth_slope;
 			i = j4;
@@ -1148,12 +1133,10 @@ public final class Rasterizer extends DrawingArea
 		for (k3 = x2 - x1 & 7; k3-- > 0;) {
 			rgb1 = anIntArray1482[hsl1 >> 8];
 			rgb2 = src[texelPos((j & 0x3f80) + (i >> 7))];
-			if (true) {
-				dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
-						+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
-						+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
-				DrawingArea.depthBuffer[off] = depth;
-			}
+			dst[off] = (((rgb1 >> 16 & 0xff) * (rgb2 >> 17 & 0x7f) << 11) / 3 & 0xff0000)
+					+ (((rgb1 >> 8 & 0xff) * (rgb2 >> 9 & 0x7f) << 3) / 3 & 0xff00)
+					+ (((rgb1 & 0xff) * (rgb2 >> 1 & 0x7f) >> 5) / 3 & 0xff);
+			DrawingArea.depthBuffer[off] = depth;
 			off++;
 			depth += depth_slope;
 			i += j7;
@@ -1164,6 +1147,8 @@ public final class Rasterizer extends DrawingArea
 
 	public static void method374(int y1, int y2, int y3, int x1, int x2, int x3, int hsl1, int hsl2, int hsl3, float z1,
 			float z2, float z3) {
+		if (y1 < 0 || y1 >= anIntArray1472.length) return;
+
 		if (z1 < 0.0F || z2 < 0.0F || z3 < 0.0F) {
 			return;
 		}
@@ -1772,6 +1757,8 @@ public final class Rasterizer extends DrawingArea
 
 	public static void method375(int[] dest, int offset, int x1, int x2, int r1, int g1, int b1, int r2, int g2, int b2,
 			float depth, float depth_slope) {
+		if (x1 < 0 || x1 >= DrawingArea.pixels.length) return;
+
 		int n = x2 - x1;
 		if (n <= 0) {
 			return;
@@ -1797,10 +1784,8 @@ public final class Rasterizer extends DrawingArea
 			depth += depth_slope * (float) x1;
 			if (anInt1465 == 0) {
 				while (--n >= 0) {
-					if (true) {
-						dest[offset] = (r1 & 0xff0000) | (g1 >> 8 & 0xff00) | (b1 >> 16 & 0xff);
-						DrawingArea.depthBuffer[offset] = depth;
-					}
+					dest[offset] = (r1 & 0xff0000) | (g1 >> 8 & 0xff00) | (b1 >> 16 & 0xff);
+					DrawingArea.depthBuffer[offset] = depth;
 					depth += depth_slope;
 					r1 += r2;
 					g1 += g2;
@@ -1816,11 +1801,9 @@ public final class Rasterizer extends DrawingArea
 					rgb = (r1 & 0xff0000) | (g1 >> 8 & 0xff00) | (b1 >> 16 & 0xff);
 					rgb = ((rgb & 0xff00ff) * a2 >> 8 & 0xff00ff) + ((rgb & 0xff00) * a2 >> 8 & 0xff00);
 					dst = dest[offset];
-					if (true) {
-						dest[offset] = rgb + ((dst & 0xff00ff) * a1 >> 8 & 0xff00ff)
-								+ ((dst & 0xff00) * a1 >> 8 & 0xff00);
-						DrawingArea.depthBuffer[offset] = depth;
-					}
+					dest[offset] = rgb + ((dst & 0xff00ff) * a1 >> 8 & 0xff00ff)
+							+ ((dst & 0xff00) * a1 >> 8 & 0xff00);
+					DrawingArea.depthBuffer[offset] = depth;
 					depth += depth_slope;
 					r1 += r2;
 					g1 += g2;
@@ -2198,19 +2181,15 @@ public final class Rasterizer extends DrawingArea
 		if (anInt1465 == 0) {
 			while (--rgb >= 0) {
 				for (int i = 0; i < 4; i++) {
-					if (true) {
-						dest[offset] = loops;
-						DrawingArea.depthBuffer[offset] = depth;
-					}
+					dest[offset] = loops;
+					DrawingArea.depthBuffer[offset] = depth;
 					offset++;
 					depth += depth_slope;
 				}
 			}
 			for (rgb = end_x - start_x & 3; --rgb >= 0;) {
-				if (true) {
-					dest[offset] = loops;
-					DrawingArea.depthBuffer[offset] = depth;
-				}
+				dest[offset] = loops;
+				DrawingArea.depthBuffer[offset] = depth;
 				offset++;
 				depth += depth_slope;
 			}
@@ -2221,21 +2200,17 @@ public final class Rasterizer extends DrawingArea
 		loops = ((loops & 0xff00ff) * src_alpha >> 8 & 0xff00ff) + ((loops & 0xff00) * src_alpha >> 8 & 0xff00);
 		while (--rgb >= 0) {
 			for (int i = 0; i < 4; i++) {
-				if (true) {
-					dest[offset] = loops + ((dest[offset] & 0xff00ff) * dest_alpha >> 8 & 0xff00ff)
-							+ ((dest[offset] & 0xff00) * dest_alpha >> 8 & 0xff00);
-					DrawingArea.depthBuffer[offset] = depth;
-				}
+				dest[offset] = loops + ((dest[offset] & 0xff00ff) * dest_alpha >> 8 & 0xff00ff)
+						+ ((dest[offset] & 0xff00) * dest_alpha >> 8 & 0xff00);
+				DrawingArea.depthBuffer[offset] = depth;
 				offset++;
 				depth += depth_slope;
 			}
 		}
 		for (rgb = end_x - start_x & 3; --rgb >= 0;) {
-			if (true) {
-				dest[offset] = loops + ((dest[offset] & 0xff00ff) * dest_alpha >> 8 & 0xff00ff)
-						+ ((dest[offset] & 0xff00) * dest_alpha >> 8 & 0xff00);
-				DrawingArea.depthBuffer[offset] = depth;
-			}
+			dest[offset] = loops + ((dest[offset] & 0xff00ff) * dest_alpha >> 8 & 0xff00ff)
+					+ ((dest[offset] & 0xff00) * dest_alpha >> 8 & 0xff00);
+			DrawingArea.depthBuffer[offset] = depth;
 			offset++;
 			depth += depth_slope;
 		}
@@ -2829,7 +2804,9 @@ public final class Rasterizer extends DrawingArea
 				k5 += i6;
 				j6 += l6;
 			}
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -2890,10 +2867,8 @@ public final class Rasterizer extends DrawingArea
 				int l;
 				rgb = texture[texelPos((j & 0x3f80) + (i >> 7))];
 				l = shadeValue >> 16;
-				if (true) {
-					dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-					DrawingArea.depthBuffer[dest_off] = depth;
-				}
+				dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
+				DrawingArea.depthBuffer[dest_off] = depth;
 				dest_off++;
 				depth += depth_slope;
 				i += j7;
@@ -2901,10 +2876,8 @@ public final class Rasterizer extends DrawingArea
 				shadeValue += dl;
 				rgb = texture[texelPos((j & 0x3f80) + (i >> 7))];
 				l = shadeValue >> 16;
-				if (true) {
-					dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-					DrawingArea.depthBuffer[dest_off] = depth;
-				}
+				dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
+				DrawingArea.depthBuffer[dest_off] = depth;
 				dest_off++;
 				depth += depth_slope;
 				i += j7;
@@ -2912,10 +2885,8 @@ public final class Rasterizer extends DrawingArea
 				shadeValue += dl;
 				rgb = texture[texelPos((j & 0x3f80) + (i >> 7))];
 				l = shadeValue >> 16;
-				if (true) {
-					dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-					DrawingArea.depthBuffer[dest_off] = depth;
-				}
+				dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
+				DrawingArea.depthBuffer[dest_off] = depth;
 				dest_off++;
 				depth += depth_slope;
 				i += j7;
@@ -2923,10 +2894,8 @@ public final class Rasterizer extends DrawingArea
 				shadeValue += dl;
 				rgb = texture[texelPos((j & 0x3f80) + (i >> 7))];
 				l = shadeValue >> 16;
-				if (true) {
-					dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-					DrawingArea.depthBuffer[dest_off] = depth;
-				}
+				dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
+				DrawingArea.depthBuffer[dest_off] = depth;
 				dest_off++;
 				depth += depth_slope;
 				i += j7;
@@ -2934,10 +2903,8 @@ public final class Rasterizer extends DrawingArea
 				shadeValue += dl;
 				rgb = texture[texelPos((j & 0x3f80) + (i >> 7))];
 				l = shadeValue >> 16;
-				if (true) {
-					dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-					DrawingArea.depthBuffer[dest_off] = depth;
-				}
+				dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
+				DrawingArea.depthBuffer[dest_off] = depth;
 				dest_off++;
 				depth += depth_slope;
 				i += j7;
@@ -2945,10 +2912,8 @@ public final class Rasterizer extends DrawingArea
 				shadeValue += dl;
 				rgb = texture[texelPos((j & 0x3f80) + (i >> 7))];
 				l = shadeValue >> 16;
-				if (true) {
-					dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-					DrawingArea.depthBuffer[dest_off] = depth;
-				}
+				dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
+				DrawingArea.depthBuffer[dest_off] = depth;
 				dest_off++;
 				depth += depth_slope;
 				i += j7;
@@ -2956,10 +2921,8 @@ public final class Rasterizer extends DrawingArea
 				shadeValue += dl;
 				rgb = texture[texelPos((j & 0x3f80) + (i >> 7))];
 				l = shadeValue >> 16;
-				if (true) {
-					dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-					DrawingArea.depthBuffer[dest_off] = depth;
-				}
+				dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
+				DrawingArea.depthBuffer[dest_off] = depth;
 				dest_off++;
 				depth += depth_slope;
 				i += j7;
@@ -2967,10 +2930,8 @@ public final class Rasterizer extends DrawingArea
 				shadeValue += dl;
 				rgb = texture[texelPos((j & 0x3f80) + (i >> 7))];
 				l = shadeValue >> 16;
-				if (true) {
-					dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-					DrawingArea.depthBuffer[dest_off] = depth;
-				}
+				dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
+				DrawingArea.depthBuffer[dest_off] = depth;
 				dest_off++;
 				depth += depth_slope;
 				i += j7;
@@ -2997,10 +2958,8 @@ public final class Rasterizer extends DrawingArea
 				int l;
 				rgb = texture[texelPos((j & 0x3f80) + (i >> 7))];
 				l = shadeValue >> 16;
-				if (true) {
-					dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-					DrawingArea.depthBuffer[dest_off] = depth;
-				}
+				dest[dest_off] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
+				DrawingArea.depthBuffer[dest_off] = depth;
 				dest_off++;
 				depth += depth_slope;
 				i += j7;
@@ -3636,7 +3595,9 @@ public final class Rasterizer extends DrawingArea
 				k5 += i6;
 				j6 += l6;
 			}
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
+			throw new RuntimeException(e);
 		}
 	}
 

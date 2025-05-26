@@ -1,7 +1,6 @@
 package com.bestbudz.graphics.buffer;
 
 import com.bestbudz.graphics.DrawingArea;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -23,7 +22,7 @@ public final class ImageProducer {
     initDrawingArea();
   }
 
-  public void drawGraphics(int y, Graphics graphics, int x) {
+  public void drawGraphics(int y, Graphics2D graphics, int x) {
     graphics.drawImage(bufferedImage, x, y, null);
   }
 

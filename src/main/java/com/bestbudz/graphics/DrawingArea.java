@@ -60,7 +60,7 @@ public class DrawingArea extends NodeSub {
     }
   }
 
-  public static final void filterGrayscale(int x, int y, int width, int height, double amount) {
+  public static void filterGrayscale(int x, int y, int width, int height, double amount) {
     if (amount <= 0) {
       return;
     }
@@ -93,8 +93,7 @@ public class DrawingArea extends NodeSub {
           final int color = lightness << 16 | lightness << 8 | lightness;
           pixels[pos++] = color;
         }
-        pos += offset;
-      }
+	  }
     } else {
       final double divider = 2 * amount + 1;
       while (height-- > 0) {
@@ -111,8 +110,7 @@ public class DrawingArea extends NodeSub {
           final int color = red << 16 | green << 8 | blue;
           pixels[pos++] = color;
         }
-        pos += offset;
-      }
+	  }
     }
   }
 
@@ -449,8 +447,7 @@ public class DrawingArea extends NodeSub {
         final int k4 = (i2 + l2 >> 8 << 16) + (j2 + i3 >> 8 << 8) + (k2 + j3 >> 8);
         pixels[l3++] = k4;
       }
-      l3 += k3;
-    }
+	}
   }
 
   public static void drawHorizontalLine(int x, int y, int length, int color, int alpha) {

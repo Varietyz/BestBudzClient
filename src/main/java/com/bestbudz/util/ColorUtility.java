@@ -12,7 +12,7 @@ public class ColorUtility {
   private static float hue = 0.0f;
 
   public static int getHexColors() {
-    hue += 0.0005;
+    hue += 0.0005F;
     Color base = new Color(Color.HSBtoRGB(hue, sat, bri));
     Color color = new Color(base.getRed(), base.getGreen(), base.getBlue(), 125);
     return color.getRGB();

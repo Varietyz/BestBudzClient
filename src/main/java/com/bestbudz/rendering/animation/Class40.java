@@ -53,15 +53,15 @@ public final class Class40 {
   public final int anInt686;
   public final int anInt687;
   public int[] anIntArray682;
-  public int color61;
-  public int color71;
-  public int color81;
-  public int color91;
-  public int color62;
-  public int color72;
-  public int color82;
-  public int color92;
-  public boolean textured;
+  public final int color61;
+  public final int color71;
+  public final int color81;
+  public final int color91;
+  public final int color62;
+  public final int color72;
+  public final int color82;
+  public final int color92;
+  public final boolean textured;
 
   public Class40(
       int i,
@@ -284,10 +284,7 @@ public final class Class40 {
     if (l2 < i9) {
       i9 = l2;
     }
-    if (l2 > l9) {
-      l9 = l2;
-    }
-    if (l < i9) {
+	  if (l < i9) {
       i9 = l;
     }
     if (l > l9) {
@@ -299,7 +296,5 @@ public final class Class40 {
     if (k2 > l9) {
       l9 = k2;
     }
-    i9 /= 14;
-    l9 /= 14;
   }
 }

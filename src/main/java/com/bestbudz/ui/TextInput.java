@@ -27,7 +27,7 @@ public final class TextInput {
 		for (int k1 = 0; k1 < j; k1++) {
 			char c = aCharArray631[k1];
 			if (flag1 && c >= 'a' && c <= 'z') {
-				aCharArray631[k1] += '\uFFE0';
+				aCharArray631[k1] += '￠';
 				flag1 = false;
 			}
 			if (c == '.' || c == '!' || c == '?')
@@ -59,8 +59,7 @@ public final class TextInput {
 		method526(s, stream);
 		int j = stream.currentOffset;
 		stream.currentOffset = 0;
-		String s1 = method525(j, stream);
-		return s1;
+		return method525(j, stream);
 	}
 
 }

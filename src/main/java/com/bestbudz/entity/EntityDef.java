@@ -1,15 +1,16 @@
 package com.bestbudz.entity;
 
-import com.bestbudz.client.Client;
+import com.bestbudz.engine.Client;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
 import com.bestbudz.world.VarBit;
-import java.io.FileWriter;
+import java.util.Objects;
 
 public final class EntityDef {
+	Client client;
 
   public static EntityDef forID(int i, boolean cached) {
     if (cached) {
@@ -600,79 +601,11 @@ public final class EntityDef {
     for (int index = 0; index < totalNPCs; index++) {
       EntityDef ed = forID(index);
       if (ed == null) continue;
-      if (ed.name == null) continue;
+      if (ed.name == null)
+	  {
+	  }
     }
     boolean dump = false;
-    if (dump) {
-      try {
-        FileWriter fw = new FileWriter(System.getProperty("user.home") + "/Desktop/NPC Dump.txt");
-        for (int id = 0; id < totalNPCs; id++) {
-          EntityDef ed = EntityDef.forID(id);
-          fw.write("case " + id + ":");
-          fw.write(System.getProperty("line.separator"));
-          fw.write("entityDef.name = \"" + ed.name + "\";");
-          fw.write(System.getProperty("line.separator"));
-          fw.write("entityDef.description = \"" + ed.description + "\";");
-          fw.write(System.getProperty("line.separator"));
-          fw.write("entityDef.combatGrade = " + ed.combatGrade + ";");
-          fw.write(System.getProperty("line.separator"));
-          fw.write("entityDef.walkAnim = " + ed.walkAnim + ";");
-          fw.write(System.getProperty("line.separator"));
-          fw.write("entityDef.standAnim = " + ed.standAnim + ";");
-          fw.write(System.getProperty("line.separator"));
-          if (ed.actions != null) {
-            fw.write("entityDef.actions = new String[" + ed.actions.length + "];");
-            fw.write(System.getProperty("line.separator"));
-            for (int range = 0; range < ed.actions.length; range++) {
-              if (ed.actions[range] != null) {
-                fw.write("entityDef.actions[" + range + "] = \"" + ed.actions[range] + "\";");
-                fw.write(System.getProperty("line.separator"));
-              }
-            }
-          }
-          if (ed.anIntArray94 != null) {
-            fw.write("entityDef.models = new int[" + ed.anIntArray94.length + "];");
-            fw.write(System.getProperty("line.separator"));
-            for (int range = 0; range < ed.anIntArray94.length; range++) {
-              fw.write("entityDef.models[" + range + "] = " + ed.anIntArray94[range] + ";");
-              fw.write(System.getProperty("line.separator"));
-            }
-          }
-          if (ed.anIntArray76 != null) {
-            fw.write("entityDef.originalModelColors = new int[" + ed.anIntArray76.length + "];");
-            fw.write(System.getProperty("line.separator"));
-            for (int range = 0; range < ed.anIntArray76.length; range++) {
-              fw.write(
-                  "entityDef.originalModelColors[" + range + "] = " + ed.anIntArray76[range] + ";");
-              fw.write(System.getProperty("line.separator"));
-            }
-          }
-          if (ed.anIntArray70 != null) {
-            fw.write("entityDef.modifiedModelColors = new int[" + ed.anIntArray70.length + "];");
-            fw.write(System.getProperty("line.separator"));
-            for (int range = 0; range < ed.anIntArray70.length; range++) {
-              fw.write(
-                  "entityDef.modifiedModelColors[" + range + "] = " + ed.anIntArray70[range] + ";");
-              fw.write(System.getProperty("line.separator"));
-            }
-          }
-          fw.write("entityDef.anInt91 = " + ed.modelHeight + ";");
-          fw.write(System.getProperty("line.separator"));
-          fw.write("entityDef.anInt86 = " + ed.modelWidth + ";");
-          fw.write(System.getProperty("line.separator"));
-          fw.write("entityDef.aByte68 = " + ed.aByte68 + ";");
-          fw.write(System.getProperty("line.separator"));
-          fw.write("break;");
-          fw.write(System.getProperty("line.separator"));
-          fw.write(System.getProperty("line.separator"));
-        }
-        fw.close();
-        System.out.println("NPC Dump Finished.");
-        System.out.println("Total NPCs: " + totalNPCs);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
   }
 
   public static void nullLoader() {
@@ -690,8 +623,7 @@ public final class EntityDef {
     }
     if (anIntArray73 == null) return null;
     boolean flag1 = false;
-    for (int i = 0; i < anIntArray73.length; i++)
-      if (!Model.method463(anIntArray73[i])) flag1 = true;
+	  for (int value : anIntArray73) if (!Model.method463(value)) flag1 = true;
 
     if (flag1) return null;
     Model[] aclass30_sub2_sub4_sub6s = new Model[anIntArray73.length];
@@ -703,7 +635,7 @@ public final class EntityDef {
     else model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
     if (anIntArray76 != null) {
       for (int k = 0; k < anIntArray76.length; k++)
-        model.replaceColor(anIntArray76[k], anIntArray70[k]);
+        Objects.requireNonNull(model).replaceColor(anIntArray76[k], anIntArray70[k]);
     }
     return model;
   }
@@ -716,8 +648,8 @@ public final class EntityDef {
       int l = varBit.anInt649;
       int i1 = varBit.anInt650;
       int j1 = Client.anIntArray1232[i1 - l];
-      j = clientInstance.variousSettings[k] >> l & j1;
-    } else if (anInt59 != -1) j = clientInstance.variousSettings[anInt59];
+      j = client.variousSettings[k] >> l & j1;
+    } else if (anInt59 != -1) j = client.variousSettings[anInt59];
     if (j < 0 || j >= childrenIDs.length || childrenIDs[j] == -1) return null;
     else return forID(childrenIDs[j]);
   }
@@ -735,11 +667,13 @@ public final class EntityDef {
     Model model = (Model) mruNodes.insertFromCache(interfaceType);
     if (model == null) {
       boolean flag = false;
-      for (int i1 = 0; i1 < anIntArray94.length; i1++) {
-        if (!Model.method463(anIntArray94[i1])) {
-          flag = true;
-        }
-      }
+		for (int i : anIntArray94)
+		{
+			if (!Model.method463(i))
+			{
+				flag = true;
+			}
+		}
       if (flag) {
         return null;
       }
@@ -754,9 +688,9 @@ public final class EntityDef {
       }
       if (anIntArray70 != null) {
         for (int k1 = 0; k1 < anIntArray70.length; k1++)
-          model.replaceColor(anIntArray70[k1], anIntArray76[k1]);
+          Objects.requireNonNull(model).replaceColor(anIntArray70[k1], anIntArray76[k1]);
       }
-      model.calculateNormals();
+      Objects.requireNonNull(model).calculateNormals();
       model.applyLighting(64 + anInt85, 1500 + anInt92, -30, -50, -30, true);
       mruNodes.removeFromCache(model, interfaceType);
     }
@@ -786,8 +720,7 @@ public final class EntityDef {
     Model model = (Model) mruNodes.insertFromCache(interfaceType);
     if (model == null) {
       boolean flag = false;
-      for (int i1 = 0; i1 < anIntArray94.length; i1++)
-        if (!Model.method463(anIntArray94[i1])) flag = true;
+		for (int i : anIntArray94) if (!Model.method463(i)) flag = true;
 
       if (flag) return null;
       Model[] aclass30_sub2_sub4_sub6s = new Model[anIntArray94.length];
@@ -798,9 +731,9 @@ public final class EntityDef {
       else model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
       if (anIntArray76 != null) {
         for (int k1 = 0; k1 < anIntArray76.length; k1++)
-          model.replaceColor(anIntArray76[k1], anIntArray70[k1]);
+          Objects.requireNonNull(model).replaceColor(anIntArray76[k1], anIntArray70[k1]);
       }
-      model.calculateNormals();
+      Objects.requireNonNull(model).calculateNormals();
       model.applyLighting(64 + anInt85, 1500 + anInt92, -30, -50, -30, true);
       mruNodes.removeFromCache(model, interfaceType);
     }

@@ -1,8 +1,9 @@
 package com.bestbudz.ui;
 
-import com.bestbudz.client.Client;
+import com.bestbudz.engine.Client;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.util.ColorUtility;
+import java.util.Objects;
 
 public class Console
 {
@@ -33,7 +34,7 @@ public class Console
 					Client.newRegularFont.drawBasicString(inputConsoleMessages[index], 5, messageY, 0xffffff, 0);
 				}
 			}
-			if (inputConsoleMessages[0].length() <= 0)
+			if (Objects.requireNonNull(inputConsoleMessages[0]).length() == 0)
 			{
 				sendConsoleMessage("Type 'console_commands' for a list of commands or 'clear_console' to clear the console.", false);
 			}
@@ -51,7 +52,7 @@ public class Console
 			sendConsoleMessage("Type 'console_commands' for a list of commands or 'clear_console' to clear the console.", false);
 		}
 		String[] args = consoleCommand.split(" ");
-		if (args == null || args.length <= 0)
+		if (args.length == 0)
 		{
 			return;
 		}

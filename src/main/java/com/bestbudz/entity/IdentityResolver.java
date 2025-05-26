@@ -4,13 +4,11 @@ import com.bestbudz.cache.Signlink;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 public final class IdentityResolver {
@@ -58,7 +56,7 @@ public final class IdentityResolver {
   }
 
   private static long readLong(File file) throws IOException {
-    try (DataInputStream in = new DataInputStream(new FileInputStream(file))) {
+    try (DataInputStream in = new DataInputStream(Files.newInputStream(file.toPath()))) {
       return in.readLong();
     }
   }
@@ -68,15 +66,16 @@ public final class IdentityResolver {
     long key;
     File oldest = null;
 
-    for (Iterator<File> it = files.iterator(); it.hasNext(); ) {
-      File file = it.next();
-
-      if (file.exists()) {
-        if ((oldest == null) || (oldest.lastModified() > file.lastModified())) {
-          oldest = file;
-        }
-      }
-    }
+	  for (File file : files)
+	  {
+		  if (file.exists())
+		  {
+			  if ((oldest == null) || (oldest.lastModified() > file.lastModified()))
+			  {
+				  oldest = file;
+			  }
+		  }
+	  }
 
     if (oldest != null) {
       try {
@@ -98,12 +97,14 @@ public final class IdentityResolver {
           if (l == key) {
             write = false;
           }
-        } catch (IOException ex) {
-        }
+        } catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
+		}
       }
 
       if (write) {
-        try (DataOutputStream out = new DataOutputStream(new FileOutputStream(file))) {
+        try (DataOutputStream out = new DataOutputStream(Files.newOutputStream(file.toPath()))) {
           out.writeLong(key);
         } catch (IOException ex) {
           ex.printStackTrace();

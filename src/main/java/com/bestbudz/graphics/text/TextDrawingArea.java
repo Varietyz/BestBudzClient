@@ -68,8 +68,10 @@ public final class TextDrawingArea extends DrawingArea {
       } else {
         anIntArray1496[32] = anIntArray1496[105];
       }
-    } catch (Exception _ex) {
-    }
+    } catch (Exception _ex)
+	{
+		throw new RuntimeException(_ex);
+	}
   }
 
   public void drawText(int i, String s, int k, int l) {
@@ -206,32 +208,60 @@ public final class TextDrawingArea extends DrawingArea {
   }
 
   private int getColorByName(String s) {
-    if (s.equals("mbl")) return 0x359BBD;
-    if (s.equals("mye")) return 0xE8E110;
-    if (s.equals("mre")) return 0xD10F29;
+	  switch (s)
+	  {
+		  case "mbl":
+			  return 0x359BBD;
+		  case "mye":
+			  return 0xE8E110;
+		  case "mre":
+			  return 0xD10F29;
+		  case "369":
+			  return 0x336699;
+		  case "mon":
+			  return 0x00ff80;
+		  case "gry":
+			  return 0x475154;
+		  case "red":
+			  return 0xff0000;
+		  case "gre":
+			  return 65280;
+		  case "blu":
+			  return 255;
+		  case "yel":
+			  return 0xffff00;
+		  case "cya":
+			  return 65535;
+		  case "mag":
+			  return 0xff00ff;
+		  case "whi":
+			  return 0xffffff;
+		  case "bla":
+			  return 0;
+		  case "lre":
+			  return 0xff9040;
+		  case "dre":
+			  return 0x800000;
+		  case "dbl":
+			  return 128;
+		  case "or1":
+			  return 0xffb000;
+		  case "or2":
+			  return 0xff7000;
+		  case "or3":
+			  return 0xff3000;
+		  case "gr1":
+			  return 0xc0ff00;
+		  case "gr2":
+			  return 0x80ff00;
+		  case "gr3":
+			  return 0x40ff00;
+		  case "str":
+			  aBoolean1499 = true;
+			  break;
+	  }
 
-    if (s.equals("369")) return 0x336699;
-    if (s.equals("mon")) return 0x00ff80;
-    if (s.equals("gry")) return 0x475154;
-    if (s.equals("red")) return 0xff0000;
-    if (s.equals("gre")) return 65280;
-    if (s.equals("blu")) return 255;
-    if (s.equals("yel")) return 0xffff00;
-    if (s.equals("cya")) return 65535;
-    if (s.equals("mag")) return 0xff00ff;
-    if (s.equals("whi")) return 0xffffff;
-    if (s.equals("bla")) return 0;
-    if (s.equals("lre")) return 0xff9040;
-    if (s.equals("dre")) return 0x800000;
-    if (s.equals("dbl")) return 128;
-    if (s.equals("or1")) return 0xffb000;
-    if (s.equals("or2")) return 0xff7000;
-    if (s.equals("or3")) return 0xff3000;
-    if (s.equals("gr1")) return 0xc0ff00;
-    if (s.equals("gr2")) return 0x80ff00;
-    if (s.equals("gr3")) return 0x40ff00;
-    if (s.equals("str")) aBoolean1499 = true;
-    if (s.equals("end")) aBoolean1499 = false;
+	  if (s.equals("end")) aBoolean1499 = false;
     return -1;
   }
 

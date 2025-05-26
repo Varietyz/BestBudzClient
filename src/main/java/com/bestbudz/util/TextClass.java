@@ -80,7 +80,7 @@ public final class TextClass {
 	}
 
 	public static String fixName(String s) {
-		if (s.length() > 0) {
+		if (!s.isEmpty()) {
 			char[] ac = s.toCharArray();
 			for (int j = 0; j < ac.length; j++)
 				if (ac[j] == '_') {
@@ -98,7 +98,7 @@ public final class TextClass {
 	}
 
 	public static String passwordAsterisks(String s) {
-		StringBuffer stringbuffer = new StringBuffer();
+		StringBuilder stringbuffer = new StringBuilder();
 		for (int j = 0; j < s.length(); j++)
 			stringbuffer.append("*");
 		return stringbuffer.toString();

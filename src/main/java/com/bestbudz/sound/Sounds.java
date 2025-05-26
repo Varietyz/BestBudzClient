@@ -9,7 +9,6 @@ public final class Sounds
 	public static final int[] anIntArray326 = new int[5000];
 	private static final Sounds[] aSoundsArray325s = new Sounds[5000];
 	private static byte[] aByteArray327;
-	private static Stream aStream_328;
 	private final Class6[] aClass6Array329;
 	private int anInt330;
 	private int anInt331;
@@ -21,7 +20,7 @@ public final class Sounds
 	public static void unpack(Stream stream)
 	{
 		aByteArray327 = new byte[0x6baa8];
-		aStream_328 = new Stream(aByteArray327);
+		Stream aStream_328 = new Stream(aByteArray327);
 		Class6.method166();
 		do
 		{

@@ -9,10 +9,9 @@ public final class Class43 {
   public final int anInt720;
   public final int anInt722;
   public final boolean textured;
-  public boolean aBoolean721;
+  public final boolean aBoolean721;
   public Class43(int i, int j, int k, int l, int i1, int j1, boolean flag, boolean tex) {
-    aBoolean721 = true;
-    anInt716 = i;
+	  anInt716 = i;
     anInt717 = j;
     anInt718 = k;
     anInt719 = l;

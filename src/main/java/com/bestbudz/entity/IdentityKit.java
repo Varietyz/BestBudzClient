@@ -3,6 +3,7 @@ package com.bestbudz.entity;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.model.Model;
+import java.util.Objects;
 
 public final class IdentityKit
 {
@@ -72,13 +73,13 @@ public final class IdentityKit
 	public boolean method537()
 	{
 		if (anIntArray658 == null)
-			return true;
+			return false;
 		boolean flag = true;
-		for (int j = 0; j < anIntArray658.length; j++)
-			if (!Model.method463(anIntArray658[j]))
+		for (int i : anIntArray658)
+			if (!Model.method463(i))
 				flag = false;
 
-		return flag;
+		return !flag;
 	}
 
 	public Model method538()
@@ -98,7 +99,7 @@ public final class IdentityKit
 		{
 			if (anIntArray659[j] == 0)
 				break;
-			model.replaceColor(anIntArray659[j], anIntArray660[j]);
+			Objects.requireNonNull(model).replaceColor(anIntArray659[j], anIntArray660[j]);
 		}
 
 		return model;

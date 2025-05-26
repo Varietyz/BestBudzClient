@@ -1,7 +1,7 @@
 package com.bestbudz.world;
 
-import com.bestbudz.client.Client;
 import com.bestbudz.config.Configuration;
+import com.bestbudz.engine.GraphicsConfig;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.rendering.Animable;
 import com.bestbudz.rendering.Rasterizer;
@@ -33,7 +33,7 @@ public final class WorldController {
 	public static boolean lowMem = true;
 	public static int anInt470 = -1;
 	public static int anInt471 = -1;
-	public static int viewDistance = 18; // default ~9; try 10, 11, 12
+	public static int viewDistance = GraphicsConfig.VIEW_DISTANCE; // default ~9; try 10, 11, 12
 
 	private static int anInt446;
 	private static int anInt447;
@@ -287,11 +287,11 @@ public final class WorldController {
 	}
 
 	void method279(int i, int j, int k, int l, int i1, int overlaytex,
-			int underlaytex, int k1, int l1, int i2, int j2, int k2, int l2,
+				   int k1, int l1, int i2, int j2, int k2, int l2,
 			int i3, int j3, int k3, int l3, int i4, int j4, int k4, int l4,
 			boolean tex) {
 		if (l == 0) {
-			Class43 class43 = new Class43(k2, l2, i3, j3, underlaytex, k4,
+			Class43 class43 = new Class43(k2, l2, i3, j3, 154, k4,
 					false, tex);
 
 			for (int i5 = i; i5 >= 0; i5--) {
@@ -318,7 +318,7 @@ public final class WorldController {
 			return;
 		}
 
-		Class40 class40 = new Class40(k, k3, j3, i2, overlaytex, underlaytex,
+		Class40 class40 = new Class40(k, k3, j3, i2, overlaytex, 154,
 				i4, i1, k2, k4, i3, j2, l1, k1, l, j4, l3, l2, j, l4, tex);
 
 		for (int k5 = i; k5 >= 0; k5--) {
@@ -424,10 +424,10 @@ public final class WorldController {
 		}
 	}
 
-	public boolean method285(int i, int j, int k, int l, int i1, int j1, int k1, Animable class30_sub2_sub4,
-			boolean flag) {
+	public void method285(int i, int j, int k, int l, int i1, int j1, int k1, Animable class30_sub2_sub4,
+						  boolean flag) {
 		if (class30_sub2_sub4 == null)
-			return true;
+			return;
 		int l1 = k1 - j1;
 		int i2 = i1 - j1;
 		int j2 = k1 + j1;
@@ -446,13 +446,16 @@ public final class WorldController {
 		i2 /= 128;
 		j2 /= 128;
 		k2 /= 128;
-		return method287(i, l1, i2, (j2 - l1) + 1, (k2 - i2) + 1, k1, i1, k, class30_sub2_sub4, j, true, l, (byte) 0);
+		method287(i, l1, i2, (j2 - l1) + 1, (k2 - i2) + 1, k1, i1, k, class30_sub2_sub4, j, true, l, (byte) 0);
 	}
 
-	public boolean method286(int j, int k, Animable class30_sub2_sub4, int l, int i1, int j1, int k1, int l1, int i2,
-			int j2, int k2) {
-		return class30_sub2_sub4 == null || method287(j, l1, k2, (i2 - l1) + 1, (i1 - k2) + 1, j1, k, k1,
+	public void method286(int j, int k, Animable class30_sub2_sub4, int l, int i1, int j1, int k1, int l1, int i2,
+						  int j2, int k2) {
+		if (class30_sub2_sub4 != null)
+		{
+			method287(j, l1, k2, (i2 - l1) + 1, (i1 - k2) + 1, j1, k, k1,
 				class30_sub2_sub4, l, true, j2, (byte) 0);
+		}
 	}
 
 	private boolean method287(int i, int j, int k, int l, int i1, int j1, int k1, int l1, Animable class30_sub2_sub4,
@@ -924,7 +927,8 @@ public final class WorldController {
 						}
 						l1 += l3;
 						l2 += l4;
-						pixelOffset += 512;
+						pixelOffset += DrawingArea.width;
+
 					}
 					return;
 				}
@@ -937,7 +941,8 @@ public final class WorldController {
 					pixels[pixelOffset + 1] = mapColor;
 					pixels[pixelOffset + 2] = mapColor;
 					pixels[pixelOffset + 3] = mapColor;
-					pixelOffset += 512;
+					pixelOffset += DrawingArea.width;
+
 				}
 				return;
 			}
@@ -975,31 +980,31 @@ public final class WorldController {
 							pixels[pixelOffset + 3] = Rasterizer.anIntArray1482[hs1 | (l11 + l21 * 3 >> 4)];
 						}
 					} else {
-						int j1 = k2;
 						if (ai1[ai2[l2++]] != 0) {
 							int lig = 0xff - ((l11 >> 1) * (l11 >> 1) >> 8);
-							pixels[pixelOffset] = ((j1 & 0xff00ff) * lig & ~0xff00ff)
-									+ ((j1 & 0xff00) * lig & 0xff0000) >> 8;
+							pixels[pixelOffset] = ((k2 & 0xff00ff) * lig & ~0xff00ff)
+									+ ((k2 & 0xff00) * lig & 0xff0000) >> 8;
 						}
 						if (ai1[ai2[l2++]] != 0) {
 							int lig = 0xff - ((l11 * 3 + l21 >> 3) * (l11 * 3 + l21 >> 3) >> 8);
-							pixels[pixelOffset + 1] = ((j1 & 0xff00ff) * lig & ~0xff00ff)
-									+ ((j1 & 0xff00) * lig & 0xff0000) >> 8;
+							pixels[pixelOffset + 1] = ((k2 & 0xff00ff) * lig & ~0xff00ff)
+									+ ((k2 & 0xff00) * lig & 0xff0000) >> 8;
 						}
 						if (ai1[ai2[l2++]] != 0) {
 							int lig = 0xff - ((l11 + l21 >> 2) * (l11 + l21 >> 2) >> 8);
-							pixels[pixelOffset + 2] = ((j1 & 0xff00ff) * lig & ~0xff00ff)
-									+ ((j1 & 0xff00) * lig & 0xff0000) >> 8;
+							pixels[pixelOffset + 2] = ((k2 & 0xff00ff) * lig & ~0xff00ff)
+									+ ((k2 & 0xff00) * lig & 0xff0000) >> 8;
 						}
 						if (ai1[ai2[l2++]] != 0) {
 							int lig = 0xff - ((l11 + l21 * 3 >> 3) * (l11 + l21 * 3 >> 3) >> 8);
-							pixels[pixelOffset + 3] = ((j1 & 0xff00ff) * lig & ~0xff00ff)
-									+ ((j1 & 0xff00) * lig & 0xff0000) >> 8;
+							pixels[pixelOffset + 3] = ((k2 & 0xff00ff) * lig & ~0xff00ff)
+									+ ((k2 & 0xff00) * lig & 0xff0000) >> 8;
 						}
 					}
 					l11 += l31;
 					l21 += l41;
-					pixelOffset += 512;
+					pixelOffset += DrawingArea.width;
+
 				}
 				if (j2 != 0 && class40.color61 != 12345678) {
 					pixelOffset -= 512 << 2;
@@ -1026,7 +1031,8 @@ public final class WorldController {
 						}
 						l11 += l31;
 						l21 += l41;
-						pixelOffset += 512;
+						pixelOffset += DrawingArea.width;
+
 					}
 				}
 				return;
@@ -1037,7 +1043,8 @@ public final class WorldController {
 					pixels[pixelOffset + 1] = ai1[ai2[l2++]] != 0 ? k2 : j2;
 					pixels[pixelOffset + 2] = ai1[ai2[l2++]] != 0 ? k2 : j2;
 					pixels[pixelOffset + 3] = ai1[ai2[l2++]] != 0 ? k2 : j2;
-					pixelOffset += 512;
+					pixelOffset += DrawingArea.width;
+
 				}
 				return;
 			}
@@ -1054,7 +1061,8 @@ public final class WorldController {
 				if (ai1[ai2[l2++]] != 0) {
 					pixels[pixelOffset + 3] = k2;
 				}
-				pixelOffset += 512;
+				pixelOffset += DrawingArea.width;
+
 			}
 		} else {
 			int j = 512;
@@ -1321,9 +1329,9 @@ public final class WorldController {
 				if (class30_sub3_1.aClass30_Sub3_1329 != null) {
 					Ground class30_sub3_7 = class30_sub3_1.aClass30_Sub3_1329;
 					if (class30_sub3_7.aClass43_1311 != null) {
-						if (!method320(0, i, j))
+						if (method320(0, i, j))
 							method315(class30_sub3_7.aClass43_1311, 0, anInt458, anInt459, anInt460, anInt461, i, j);
-					} else if (class30_sub3_7.aClass40_1312 != null && !method320(0, i, j))
+					} else if (class30_sub3_7.aClass40_1312 != null && method320(0, i, j))
 						method316(i, anInt458, anInt460, class30_sub3_7.aClass40_1312, anInt459, j, anInt461);
 					Object1 class10 = class30_sub3_7.obj1;
 					if (class10 != null)
@@ -1341,11 +1349,11 @@ public final class WorldController {
 				}
 				boolean flag1 = false;
 				if (class30_sub3_1.aClass43_1311 != null) {
-					if (!method320(l, i, j)) {
+					if (method320(l, i, j)) {
 						flag1 = true;
 						method315(class30_sub3_1.aClass43_1311, l, anInt458, anInt459, anInt460, anInt461, i, j);
 					}
-				} else if (class30_sub3_1.aClass40_1312 != null && !method320(l, i, j)) {
+				} else if (class30_sub3_1.aClass40_1312 != null && method320(l, i, j)) {
 					flag1 = true;
 					method316(i, anInt458, anInt460, class30_sub3_1.aClass40_1312, anInt459, j, anInt461);
 				}
@@ -1387,16 +1395,16 @@ public final class WorldController {
 					} else {
 						class30_sub3_1.anInt1325 = 0;
 					}
-					if ((class10_3.orientation & j2) != 0 && !method321(l, i, j, class10_3.orientation))
+					if ((class10_3.orientation & j2) != 0 && method321(l, i, j, class10_3.orientation))
 						class10_3.aClass30_Sub2_Sub4_278.method443(0, anInt458, anInt459, anInt460, anInt461,
 								class10_3.anInt274 - anInt455, class10_3.anInt273 - anInt456,
 								class10_3.anInt275 - anInt457, class10_3.uid);
-					if ((class10_3.orientation1 & j2) != 0 && !method321(l, i, j, class10_3.orientation1))
+					if ((class10_3.orientation1 & j2) != 0 && method321(l, i, j, class10_3.orientation1))
 						class10_3.aClass30_Sub2_Sub4_279.method443(0, anInt458, anInt459, anInt460, anInt461,
 								class10_3.anInt274 - anInt455, class10_3.anInt273 - anInt456,
 								class10_3.anInt275 - anInt457, class10_3.uid);
 				}
-				if (class26_1 != null && !method322(l, i, j, class26_1.aClass30_Sub2_Sub4_504.modelHeight))
+				if (class26_1 != null && method322(l, i, j, class26_1.aClass30_Sub2_Sub4_504.modelHeight))
 					if ((class26_1.anInt502 & j2) != 0)
 						class26_1.aClass30_Sub2_Sub4_504.method443(class26_1.anInt503, anInt458, anInt459, anInt460,
 								anInt461, class26_1.anInt500 - anInt455, class26_1.anInt499 - anInt456,
@@ -1487,7 +1495,7 @@ public final class WorldController {
 
 				if (flag2) {
 					Object1 class10_1 = class30_sub3_1.obj1;
-					if (!method321(l, i, j, class10_1.orientation))
+					if (method321(l, i, j, class10_1.orientation))
 						class10_1.aClass30_Sub2_Sub4_278.method443(0, anInt458, anInt459, anInt460, anInt461,
 								class10_1.anInt274 - anInt455, class10_1.anInt273 - anInt456,
 								class10_1.anInt275 - anInt457, class10_1.uid);
@@ -1628,7 +1636,7 @@ public final class WorldController {
 			}
 			if (class30_sub3_1.anInt1328 != 0) {
 				Object2 class26 = class30_sub3_1.obj2;
-				if (class26 != null && !method322(l, i, j, class26.aClass30_Sub2_Sub4_504.modelHeight))
+				if (class26 != null && method322(l, i, j, class26.aClass30_Sub2_Sub4_504.modelHeight))
 					if ((class26.anInt502 & class30_sub3_1.anInt1328) != 0)
 						class26.aClass30_Sub2_Sub4_504.method443(class26.anInt503, anInt458, anInt459, anInt460,
 								anInt461, class26.anInt500 - anInt455, class26.anInt499 - anInt456,
@@ -1664,12 +1672,12 @@ public final class WorldController {
 				Object1 class10_2 = class30_sub3_1.obj1;
 				if (class10_2 != null) {
 					if ((class10_2.orientation1 & class30_sub3_1.anInt1328) != 0
-							&& !method321(l, i, j, class10_2.orientation1))
+							&& method321(l, i, j, class10_2.orientation1))
 						class10_2.aClass30_Sub2_Sub4_279.method443(0, anInt458, anInt459, anInt460, anInt461,
 								class10_2.anInt274 - anInt455, class10_2.anInt273 - anInt456,
 								class10_2.anInt275 - anInt457, class10_2.uid);
 					if ((class10_2.orientation & class30_sub3_1.anInt1328) != 0
-							&& !method321(l, i, j, class10_2.orientation))
+							&& method321(l, i, j, class10_2.orientation))
 						class10_2.aClass30_Sub2_Sub4_278.method443(0, anInt458, anInt459, anInt460, anInt461,
 								class10_2.anInt274 - anInt455, class10_2.anInt273 - anInt456,
 								class10_2.anInt275 - anInt457, class10_2.uid);
@@ -2067,9 +2075,9 @@ public final class WorldController {
 	private boolean method320(int i, int j, int k) {
 		int l = anIntArrayArrayArray445[i][j][k];
 		if (l == -anInt448)
-			return false;
-		if (l == anInt448)
 			return true;
+		if (l == anInt448)
+			return false;
 		int i1 = j << 7;
 		int j1 = k << 7;
 		if (method324(i1 + 1, anIntArrayArrayArray440[i][j][k], j1 + 1)
@@ -2077,16 +2085,16 @@ public final class WorldController {
 				&& method324((i1 + 128) - 1, anIntArrayArrayArray440[i][j + 1][k + 1], (j1 + 128) - 1)
 				&& method324(i1 + 1, anIntArrayArrayArray440[i][j][k + 1], (j1 + 128) - 1)) {
 			anIntArrayArrayArray445[i][j][k] = anInt448;
-			return true;
+			return false;
 		} else {
 			anIntArrayArrayArray445[i][j][k] = -anInt448;
-			return false;
+			return true;
 		}
 	}
 
 	private boolean method321(int i, int j, int k, int l) {
-		if (!method320(i, j, k))
-			return false;
+		if (method320(i, j, k))
+			return true;
 		int i1 = j << 7;
 		int j1 = k << 7;
 		int k1 = anIntArrayArrayArray440[i][j][k] - 1;
@@ -2097,94 +2105,94 @@ public final class WorldController {
 			if (l == 1) {
 				if (i1 > anInt455) {
 					if (!method324(i1, k1, j1))
-						return false;
+						return true;
 					if (!method324(i1, k1, j1 + 128))
-						return false;
+						return true;
 				}
 				if (i > 0) {
 					if (!method324(i1, l1, j1))
-						return false;
+						return true;
 					if (!method324(i1, l1, j1 + 128))
-						return false;
+						return true;
 				}
-				return method324(i1, i2, j1) && method324(i1, i2, j1 + 128);
+				return !method324(i1, i2, j1) || !method324(i1, i2, j1 + 128);
 			}
 			if (l == 2) {
 				if (j1 < anInt457) {
 					if (!method324(i1, k1, j1 + 128))
-						return false;
+						return true;
 					if (!method324(i1 + 128, k1, j1 + 128))
-						return false;
+						return true;
 				}
 				if (i > 0) {
 					if (!method324(i1, l1, j1 + 128))
-						return false;
+						return true;
 					if (!method324(i1 + 128, l1, j1 + 128))
-						return false;
+						return true;
 				}
-				return method324(i1, i2, j1 + 128) && method324(i1 + 128, i2, j1 + 128);
+				return !method324(i1, i2, j1 + 128) || !method324(i1 + 128, i2, j1 + 128);
 			}
 			if (l == 4) {
 				if (i1 < anInt455) {
 					if (!method324(i1 + 128, k1, j1))
-						return false;
+						return true;
 					if (!method324(i1 + 128, k1, j1 + 128))
-						return false;
+						return true;
 				}
 				if (i > 0) {
 					if (!method324(i1 + 128, l1, j1))
-						return false;
+						return true;
 					if (!method324(i1 + 128, l1, j1 + 128))
-						return false;
+						return true;
 				}
-				return method324(i1 + 128, i2, j1) && method324(i1 + 128, i2, j1 + 128);
+				return !method324(i1 + 128, i2, j1) || !method324(i1 + 128, i2, j1 + 128);
 			}
 			if (l == 8) {
 				if (j1 > anInt457) {
 					if (!method324(i1, k1, j1))
-						return false;
+						return true;
 					if (!method324(i1 + 128, k1, j1))
-						return false;
+						return true;
 				}
 				if (i > 0) {
 					if (!method324(i1, l1, j1))
-						return false;
+						return true;
 					if (!method324(i1 + 128, l1, j1))
-						return false;
+						return true;
 				}
-				return method324(i1, i2, j1) && method324(i1 + 128, i2, j1);
+				return !method324(i1, i2, j1) || !method324(i1 + 128, i2, j1);
 			}
 		}
 		if (!method324(i1 + 64, j2, j1 + 64))
-			return false;
+			return true;
 		if (l == 16)
-			return method324(i1, i2, j1 + 128);
+			return !method324(i1, i2, j1 + 128);
 		if (l == 32)
-			return method324(i1 + 128, i2, j1 + 128);
+			return !method324(i1 + 128, i2, j1 + 128);
 		if (l == 64)
-			return method324(i1 + 128, i2, j1);
+			return !method324(i1 + 128, i2, j1);
 		if (l == 128) {
-			return method324(i1, i2, j1);
+			return !method324(i1, i2, j1);
 		} else {
 			System.out.println("Warning unsupported wall type");
-			return true;
+			return false;
 		}
 	}
 
 	private boolean method322(int i, int j, int k, int l) {
-		if (!method320(i, j, k))
-			return false;
+		if (method320(i, j, k))
+			return true;
 		int i1 = j << 7;
 		int j1 = k << 7;
-		return method324(i1 + 1, anIntArrayArrayArray440[i][j][k] - l, j1 + 1)
-				&& method324((i1 + 128) - 1, anIntArrayArrayArray440[i][j + 1][k] - l, j1 + 1)
-				&& method324((i1 + 128) - 1, anIntArrayArrayArray440[i][j + 1][k + 1] - l, (j1 + 128) - 1)
-				&& method324(i1 + 1, anIntArrayArrayArray440[i][j][k + 1] - l, (j1 + 128) - 1);
+		return !method324(i1 + 1, anIntArrayArrayArray440[i][j][k] - l, j1 + 1)
+			|| !method324((i1 + 128) - 1, anIntArrayArrayArray440[i][j + 1][k] - l, j1 + 1)
+			|| !method324((i1 + 128) - 1, anIntArrayArrayArray440[i][j + 1][k + 1] - l, (j1 + 128) - 1)
+			|| !method324(i1 + 1, anIntArrayArrayArray440[i][j][k + 1] - l, (j1 + 128) - 1);
 	}
 
 	private boolean method323(int i, int j, int k, int l, int i1, int j1) {
 		if (j == k && l == i1) {
-			if (!method320(i, j, l))
+			if (method320(i, j, l))
 				return false;
 			int k1 = j << 7;
 			int i2 = l << 7;

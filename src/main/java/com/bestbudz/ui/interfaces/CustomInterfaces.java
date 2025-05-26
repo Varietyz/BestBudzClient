@@ -31,9 +31,9 @@ import com.bestbudz.ui.RSInterface;
 
 public class CustomInterfaces extends RSInterface
 {
-	public static String[][] shopCategories = new String[][]{{"Strain Titles", "413"}, {"Weed Titles", "414"},
+	public static final String[][] shopCategories = new String[][]{{"Strain Titles", "413"}, {"Weed Titles", "414"},
 		{"Colors", "407"}};
-	public static String[][][] shopContent = new String[][][]{
+	public static final String[][][] shopContent = new String[][][]{
 		{
 			{"Amnesia", "10"},
 			{"Haze", "10"},

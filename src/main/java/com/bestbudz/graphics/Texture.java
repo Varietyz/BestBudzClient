@@ -1,6 +1,6 @@
 package com.bestbudz.graphics;
 
-import com.bestbudz.client.Client;
+import com.bestbudz.engine.Client;
 import com.bestbudz.network.Stream;
 
 public final class Texture {

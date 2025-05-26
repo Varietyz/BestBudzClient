@@ -1,12 +1,11 @@
 package com.bestbudz.config;
 
 import com.bestbudz.cache.Signlink;
-import com.bestbudz.client.Client;
+import com.bestbudz.engine.Client;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.nio.file.Files;
 
 public class SettingHandler
 {
@@ -177,7 +176,7 @@ public class SettingHandler
 		try
 		{
 			File file = new File(PATH);
-			DataOutputStream out = new DataOutputStream(new FileOutputStream(file));
+			DataOutputStream out = new DataOutputStream(Files.newOutputStream(file.toPath()));
 			out.writeUTF(Client.myUsername);
 			out.writeUTF(Client.myPassword);
 			out.writeUTF(Client.chatColorHex);
@@ -221,7 +220,7 @@ public class SettingHandler
 			{
 				return;
 			}
-			DataInputStream in = new DataInputStream(new FileInputStream(file));
+			DataInputStream in = new DataInputStream(Files.newInputStream(file.toPath()));
 			Client.myUsername = in.readUTF();
 			Client.myPassword = in.readUTF();
 			Client.chatColorHex = in.readUTF();

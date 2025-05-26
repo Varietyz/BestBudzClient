@@ -1,6 +1,6 @@
 package com.bestbudz.data;
 
-import com.bestbudz.client.Client;
+import com.bestbudz.engine.Client;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.network.Stream;
@@ -8,6 +8,7 @@ import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.Rasterizer;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
+import java.util.Objects;
 
 public final class ItemDef {
 
@@ -650,7 +651,7 @@ public final class ItemDef {
 				break;
 
 			case 2568:
-				itemDef.itemActions[2] = "Check charges";
+				Objects.requireNonNull(itemDef.itemActions)[2] = "Check charges";
 				break;
 
 			case 13188:
@@ -2463,27 +2464,27 @@ public final class ItemDef {
 			case 12960:
 			case 13173:
 			case 13175:
-				itemDef.itemActions[0] = "Unpack";
+				Objects.requireNonNull(itemDef.itemActions)[0] = "Unpack";
 				break;
 
 			case 6828:
 				itemDef.name = "Armour set 1";
-				itemDef.itemActions[0] = "Unpack";
+				Objects.requireNonNull(itemDef.itemActions)[0] = "Unpack";
 				break;
 
 			case 6829:
 				itemDef.name = "Armour set 2";
-				itemDef.itemActions[0] = "Unpack";
+				Objects.requireNonNull(itemDef.itemActions)[0] = "Unpack";
 				break;
 
 			case 6830:
 				itemDef.name = "Armour set 3";
-				itemDef.itemActions[0] = "Unpack";
+				Objects.requireNonNull(itemDef.itemActions)[0] = "Unpack";
 				break;
 
 			case 6831:
 				itemDef.name = "Armour set 4";
-				itemDef.itemActions[0] = "Unpack";
+				Objects.requireNonNull(itemDef.itemActions)[0] = "Unpack";
 				break;
 		}
 
@@ -2697,7 +2698,7 @@ public final class ItemDef {
 
 		}
 		if (itemDef.certTemplateID != -1) {
-			int l5 = sprite.cropWidth;
+			int l5 = Objects.requireNonNull(sprite).cropWidth;
 			int j6 = sprite.anInt1445;
 			sprite.cropWidth = 32;
 			sprite.anInt1445 = 32;
@@ -2753,7 +2754,7 @@ public final class ItemDef {
 		}
 		if (modifiedModelColors != null) {
 			for (int i1 = 0; i1 < modifiedModelColors.length; i1++)
-				model.replaceColor(modifiedModelColors[i1],
+				Objects.requireNonNull(model).replaceColor(modifiedModelColors[i1],
 						originalModelColors[i1]);
 
 		}
@@ -2803,12 +2804,12 @@ public final class ItemDef {
 				model = new Model(2, aclass30_sub2_sub4_sub6s);
 			}
 		if (gender == 0 && aByte205 != 0)
-			model.translateCoords(0, aByte205, 0);
+			Objects.requireNonNull(model).translateCoords(0, aByte205, 0);
 		if (gender == 1 && aByte154 != 0)
-			model.translateCoords(0, aByte154, 0);
+			Objects.requireNonNull(model).translateCoords(0, aByte154, 0);
 		if (modifiedModelColors != null) {
 			for (int i1 = 0; i1 < modifiedModelColors.length; i1++)
-				model.replaceColor(modifiedModelColors[i1], originalModelColors[i1]);
+				Objects.requireNonNull(model).replaceColor(modifiedModelColors[i1], originalModelColors[i1]);
 
 		}
 		return model;

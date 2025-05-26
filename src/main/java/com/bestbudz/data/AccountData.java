@@ -2,13 +2,13 @@ package com.bestbudz.data;
 
 public class AccountData {
 
-  public int rank;
+  public final int rank;
 
   public int uses;
 
-  public String username;
+  public final String username;
 
-  public String password;
+  public final String password;
 
   public AccountData(int rank, String username, String password) {
     this.rank = rank;

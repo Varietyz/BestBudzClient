@@ -1,12 +1,10 @@
 package com.bestbudz.cache;
 
-import com.bestbudz.client.Client;
+import com.bestbudz.engine.Client;
 import com.bestbudz.config.Configuration;
-import java.applet.Applet;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +33,6 @@ public final class Signlink implements Runnable {
 	public static int storeid = 32;
 	public static RandomAccessFile cache_dat = null;
 	public static boolean sunjava;
-	public static Applet mainapp = null;
 	public static String dns = null;
 	public static String midi = null;
 	public static int midivol;
@@ -68,7 +65,9 @@ public final class Signlink implements Runnable {
 		if (active) {
 			try {
 				Thread.sleep(500L);
-			} catch (Exception _ex) {
+			} catch (Exception _ex)
+			{
+				throw new RuntimeException(_ex);
 			}
 			active = false;
 		}
@@ -84,7 +83,10 @@ public final class Signlink implements Runnable {
 		while (!active) {
 			try {
 				Thread.sleep(50L);
-			} catch (Exception _ex) { }
+			} catch (Exception _ex)
+			{
+				throw new RuntimeException(_ex);
+			}
 		}
 	}
 
@@ -205,13 +207,16 @@ public final class Signlink implements Runnable {
 		try {
 			File file = new File(s + "uid.dat");
 			if (!file.exists() || file.length() < 4L) {
-				DataOutputStream dataoutputstream = new DataOutputStream(new FileOutputStream(s + "uid.dat"));
+				DataOutputStream dataoutputstream = new DataOutputStream(Files.newOutputStream(Paths.get(s + "uid.dat")));
 				dataoutputstream.writeInt((int) (Math.random() * 99999999D));
 				dataoutputstream.close();
 			}
-		} catch (Exception _ex) { }
+		} catch (Exception _ex)
+		{
+			throw new RuntimeException(_ex);
+		}
 		try {
-			DataInputStream datainputstream = new DataInputStream(new FileInputStream(s + "uid.dat"));
+			DataInputStream datainputstream = new DataInputStream(Files.newInputStream(Paths.get(s + "uid.dat")));
 			int i = datainputstream.readInt();
 			datainputstream.close();
 			return i + 1;
@@ -224,7 +229,9 @@ public final class Signlink implements Runnable {
 		for (socketreq = i; socketreq != 0;)
 			try {
 				Thread.sleep(50L);
-			} catch (Exception _ex) {
+			} catch (Exception _ex)
+			{
+				throw new RuntimeException(_ex);
 			}
 
 		if (socket == null)
@@ -237,7 +244,9 @@ public final class Signlink implements Runnable {
 		for (urlreq = s; urlreq != null;)
 			try {
 				Thread.sleep(50L);
-			} catch (Exception _ex) {
+			} catch (Exception _ex)
+			{
+				throw new RuntimeException(_ex);
 			}
 
 		if (urlstream == null)
@@ -364,6 +373,7 @@ public final class Signlink implements Runnable {
 					}
 					catch (Exception _ex)
 					{
+						throw new RuntimeException(_ex);
 					}
 				if (waveplay)
 				{
@@ -376,25 +386,13 @@ public final class Signlink implements Runnable {
 				}
 				savereq = null;
 			}
-			else if (urlreq != null)
-			{
-				try
-				{
-					System.out.println("urlstream");
-					urlstream = new DataInputStream((new URL(mainapp.getCodeBase(), urlreq)).openStream());
-				}
-				catch (Exception _ex)
-				{
-					urlstream = null;
-				}
-				urlreq = null;
-			}
 			try
 			{
 				Thread.sleep(50L);
 			}
 			catch (Exception _ex)
 			{
+				throw new RuntimeException(_ex);
 			}
 		}
 	}

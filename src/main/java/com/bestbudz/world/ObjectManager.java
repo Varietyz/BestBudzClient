@@ -19,7 +19,7 @@ public final class ObjectManager {
 	public static int anInt131;
 	public static int anInt145 = 99;
 	public static boolean lowMem = true;
-	public final ArrayList<Integer> colors = new ArrayList<Integer>();
+	public final ArrayList<Integer> colors = new ArrayList<>();
 	private final int[] anIntArray124;
 	private final int[] anIntArray125;
 	private final int[] anIntArray126;
@@ -151,18 +151,18 @@ public final class ObjectManager {
 			i3 += 0x80000000;
 		byte byte1 = (byte) ((i << 6) + k);
 		if (k == 22) {
-			Object obj;
+			Animable obj;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj = class46.method578(22, i, l1, i2, j2, k2, -1);
 			else
 				obj = new Animable_Sub5(j1, i, 22, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method280(k1, l2, j, ((Animable) (obj)), byte1, i3, i1);
+			worldController.method280(k1, l2, j, obj, byte1, i3, i1);
 			if (class46.aBoolean767 && class46.hasActions)
 				class11.method213(j, i1);
 			return;
 		}
 		if (k == 10 || k == 11) {
-			Object obj1;
+			Animable obj1;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj1 = class46.method578(10, i, l1, i2, j2, k2, -1);
 			else
@@ -180,49 +180,49 @@ public final class ObjectManager {
 					k4 = class46.anInt744;
 					i5 = class46.anInt761;
 				}
-				worldController.method284(i3, byte1, l2, i5, ((Animable) (obj1)), k4, k1, j5, j, i1);
+				worldController.method284(i3, byte1, l2, i5, obj1, k4, k1, j5, j, i1);
 			}
 			if (class46.aBoolean767)
 				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
 			return;
 		}
 		if (k >= 12) {
-			Object obj2;
+			Animable obj2;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj2 = class46.method578(k, i, l1, i2, j2, k2, -1);
 			else
 				obj2 = new Animable_Sub5(j1, i, k, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method284(i3, byte1, l2, 1, ((Animable) (obj2)), 1, k1, 0, j, i1);
+			worldController.method284(i3, byte1, l2, 1, obj2, 1, k1, 0, j, i1);
 			if (class46.aBoolean767)
 				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
 			return;
 		}
 		if (k == 0) {
-			Object obj3;
+			Animable obj3;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj3 = class46.method578(0, i, l1, i2, j2, k2, -1);
 			else
 				obj3 = new Animable_Sub5(j1, i, 0, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method282(anIntArray152[i], ((Animable) (obj3)), i3, j, byte1, i1, null, l2, 0, k1);
+			worldController.method282(anIntArray152[i], obj3, i3, j, byte1, i1, null, l2, 0, k1);
 			if (class46.aBoolean767)
 				class11.method211(j, i, i1, k, class46.aBoolean757);
 			return;
 		}
 		if (k == 1) {
-			Object obj4;
+			Animable obj4;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj4 = class46.method578(1, i, l1, i2, j2, k2, -1);
 			else
 				obj4 = new Animable_Sub5(j1, i, 1, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method282(anIntArray140[i], ((Animable) (obj4)), i3, j, byte1, i1, null, l2, 0, k1);
+			worldController.method282(anIntArray140[i], obj4, i3, j, byte1, i1, null, l2, 0, k1);
 			if (class46.aBoolean767)
 				class11.method211(j, i, i1, k, class46.aBoolean757);
 			return;
 		}
 		if (k == 2) {
 			int j3 = i + 1 & 3;
-			Object obj11;
-			Object obj12;
+			Animable obj11;
+			Animable obj12;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj11 = class46.method578(2, 4 + i, l1, i2, j2, k2, -1);
 				obj12 = class46.method578(2, j3, l1, i2, j2, k2, -1);
@@ -230,29 +230,29 @@ public final class ObjectManager {
 				obj11 = new Animable_Sub5(j1, 4 + i, 2, i2, j2, l1, k2, class46.anInt781, true);
 				obj12 = new Animable_Sub5(j1, j3, 2, i2, j2, l1, k2, class46.anInt781, true);
 			}
-			worldController.method282(anIntArray152[i], ((Animable) (obj11)), i3, j, byte1, i1, ((Animable) (obj12)), l2, anIntArray152[j3], k1);
+			worldController.method282(anIntArray152[i], obj11, i3, j, byte1, i1, obj12, l2, anIntArray152[j3], k1);
 			if (class46.aBoolean767)
 				class11.method211(j, i, i1, k, class46.aBoolean757);
 			return;
 		}
 		if (k == 3) {
-			Object obj5;
+			Animable obj5;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj5 = class46.method578(3, i, l1, i2, j2, k2, -1);
 			else
 				obj5 = new Animable_Sub5(j1, i, 3, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method282(anIntArray140[i], ((Animable) (obj5)), i3, j, byte1, i1, null, l2, 0, k1);
+			worldController.method282(anIntArray140[i], obj5, i3, j, byte1, i1, null, l2, 0, k1);
 			if (class46.aBoolean767)
 				class11.method211(j, i, i1, k, class46.aBoolean757);
 			return;
 		}
 		if (k == 9) {
-			Object obj6;
+			Animable obj6;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj6 = class46.method578(k, i, l1, i2, j2, k2, -1);
 			else
 				obj6 = new Animable_Sub5(j1, i, k, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method284(i3, byte1, l2, 1, ((Animable) (obj6)), 1, k1, 0, j, i1);
+			worldController.method284(i3, byte1, l2, 1, obj6, 1, k1, 0, j, i1);
 			if (class46.aBoolean767)
 				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
 			return;
@@ -279,12 +279,12 @@ public final class ObjectManager {
 				j2 = i4;
 			}
 		if (k == 4) {
-			Object obj7;
+			Animable obj7;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj7 = class46.method578(4, 0, l1, i2, j2, k2, -1);
 			else
 				obj7 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i * 512, k1, 0, l2, ((Animable) (obj7)), i1, byte1, 0, anIntArray152[i]);
+			worldController.method283(i3, j, i * 512, k1, 0, l2, obj7, i1, byte1, 0, anIntArray152[i]);
 			return;
 		}
 		if (k == 5) {
@@ -292,39 +292,39 @@ public final class ObjectManager {
 			int l4 = worldController.method300(k1, i1, j);
 			if (l4 > 0)
 				j4 = ObjectDef.forID(l4 >> 14 & 0x7fff).anInt775;
-			Object obj13;
+			Animable obj13;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj13 = class46.method578(4, 0, l1, i2, j2, k2, -1);
 			else
 				obj13 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i * 512, k1, anIntArray137[i] * j4, l2, ((Animable) (obj13)), i1, byte1, anIntArray144[i] * j4, anIntArray152[i]);
+			worldController.method283(i3, j, i * 512, k1, anIntArray137[i] * j4, l2, obj13, i1, byte1, anIntArray144[i] * j4, anIntArray152[i]);
 			return;
 		}
 		if (k == 6) {
-			Object obj8;
+			Animable obj8;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj8 = class46.method578(4, 0, l1, i2, j2, k2, -1);
 			else
 				obj8 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i, k1, 0, l2, ((Animable) (obj8)), i1, byte1, 0, 256);
+			worldController.method283(i3, j, i, k1, 0, l2, obj8, i1, byte1, 0, 256);
 			return;
 		}
 		if (k == 7) {
-			Object obj9;
+			Animable obj9;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj9 = class46.method578(4, 0, l1, i2, j2, k2, -1);
 			else
 				obj9 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i, k1, 0, l2, ((Animable) (obj9)), i1, byte1, 0, 512);
+			worldController.method283(i3, j, i, k1, 0, l2, obj9, i1, byte1, 0, 512);
 			return;
 		}
 		if (k == 8) {
-			Object obj10;
+			Animable obj10;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj10 = class46.method578(4, 0, l1, i2, j2, k2, -1);
 			else
 				obj10 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i, k1, 0, l2, ((Animable) (obj10)), i1, byte1, 0, 768);
+			worldController.method283(i3, j, i, k1, 0, l2, obj10, i1, byte1, 0, 768);
 		}
 	}
 
@@ -398,7 +398,7 @@ public final class ObjectManager {
 		 for (int l = 0; l < 4; l++) {
              byte[][] shadowIntensity = aByteArrayArrayArray134[l];
              byte directional_light_initial_intensity = 96;
-             char specular_distribution_factor = '\u0300';
+             char specular_distribution_factor = '̀';
              byte directional_light_x = -50;
              byte directional_light_z = -10;
              byte directional_light_y = -50;
@@ -528,7 +528,7 @@ public final class ObjectManager {
 										96)];
 							if (i19 == 0) {
 								worldController.method279(l, l6, k17, 0, 0,
-										-1, 154, j19, k19, l19, i20,
+										-1, j19, k19, l19, i20,
 										method187(j21, j20),
 										method187(j21, k20),
 										method187(j21, l20),
@@ -615,7 +615,7 @@ public final class ObjectManager {
 								}
 								colors.add(k23);
 								worldController.method279(l, l6, k17, k22,
-									byte4, textureId, 154, j19, k19,
+									byte4, textureId, j19, k19,
 									l19, i20, method187(j21, j20),
 									method187(j21, k20),
 									method187(j21, l20),
@@ -852,18 +852,18 @@ public final class ObjectManager {
 		if (j == 22) {
 			if (!Configuration.enableGroundDecors && !class46.hasActions && !class46.aBoolean736)
 				return;
-			Object obj;
+			Animable obj;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj = class46.method578(22, j1, k1, l1, i2, j2, -1);
 			else
 				obj = new Animable_Sub5(i1, j1, 22, l1, i2, k1, j2, class46.anInt781, true);
-			worldController.method280(k, k2, i, ((Animable) (obj)), byte0, l2, l);
+			worldController.method280(k, k2, i, obj, byte0, l2, l);
 			if (class46.aBoolean767 && class46.hasActions && class11 != null)
 				class11.method213(i, l);
 			return;
 		}
 		if (j == 10 || j == 11) {
-			Object obj1;
+			Animable obj1;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj1 = class46.method578(10, j1, k1, l1, i2, j2, -1);
 			else
@@ -881,7 +881,7 @@ public final class ObjectManager {
 					j4 = class46.anInt744;
 					l4 = class46.anInt761;
 				}
-				if (worldController.method284(l2, byte0, k2, l4, ((Animable) (obj1)), j4, k, i5, i, l) && class46.aBoolean779) {
+				if (worldController.method284(l2, byte0, k2, l4, obj1, j4, k, i5, i, l) && class46.aBoolean779) {
 					Model model;
 					if (obj1 instanceof Model)
 						model = (Model) obj1;
@@ -907,25 +907,25 @@ public final class ObjectManager {
 			return;
 		}
 		if (j >= 12) {
-			Object obj2;
+			Animable obj2;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj2 = class46.method578(j, j1, k1, l1, i2, j2, -1);
 			else
 				obj2 = new Animable_Sub5(i1, j1, j, l1, i2, k1, j2, class46.anInt781, true);
-			worldController.method284(l2, byte0, k2, 1, ((Animable) (obj2)), 1, k, 0, i, l);
-			if (j >= 12 && j <= 17 && j != 13 && k > 0)
+			worldController.method284(l2, byte0, k2, 1, obj2, 1, k, 0, i, l);
+			if (j <= 17 && j != 13 && k > 0)
 				anIntArrayArrayArray135[k][l][i] |= 0x924;
 			if (class46.aBoolean767 && class11 != null)
 				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, l, i, j1);
 			return;
 		}
 		if (j == 0) {
-			Object obj3;
+			Animable obj3;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj3 = class46.method578(0, j1, k1, l1, i2, j2, -1);
 			else
 				obj3 = new Animable_Sub5(i1, j1, 0, l1, i2, k1, j2, class46.anInt781, true);
-			worldController.method282(anIntArray152[j1], ((Animable) (obj3)), l2, i, byte0, l, null, k2, 0, k);
+			worldController.method282(anIntArray152[j1], obj3, l2, i, byte0, l, null, k2, 0, k);
 			if (j1 == 0) {
 				if (class46.aBoolean779) {
 					aByteArrayArrayArray134[k][l][i] = 50;
@@ -947,7 +947,8 @@ public final class ObjectManager {
 				}
 				if (class46.aBoolean764)
 					anIntArrayArrayArray135[k][l + 1][i] |= 0x249;
-			} else if (j1 == 3) {
+			} else
+			{
 				if (class46.aBoolean779) {
 					aByteArrayArrayArray134[k][l][i] = 50;
 					aByteArrayArrayArray134[k][l + 1][i] = 50;
@@ -962,12 +963,12 @@ public final class ObjectManager {
 			return;
 		}
 		if (j == 1) {
-			Object obj4;
+			Animable obj4;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj4 = class46.method578(1, j1, k1, l1, i2, j2, -1);
 			else
 				obj4 = new Animable_Sub5(i1, j1, 1, l1, i2, k1, j2, class46.anInt781, true);
-			worldController.method282(anIntArray140[j1], ((Animable) (obj4)), l2, i, byte0, l, null, k2, 0, k);
+			worldController.method282(anIntArray140[j1], obj4, l2, i, byte0, l, null, k2, 0, k);
 			if (class46.aBoolean779)
 				if (j1 == 0)
 					aByteArrayArrayArray134[k][l][i + 1] = 50;
@@ -975,16 +976,15 @@ public final class ObjectManager {
 					aByteArrayArrayArray134[k][l + 1][i + 1] = 50;
 				else if (j1 == 2)
 					aByteArrayArrayArray134[k][l + 1][i] = 50;
-				else if (j1 == 3)
-					aByteArrayArrayArray134[k][l][i] = 50;
+				else aByteArrayArrayArray134[k][l][i] = 50;
 			if (class46.aBoolean767 && class11 != null)
 				class11.method211(i, j1, l, j, class46.aBoolean757);
 			return;
 		}
 		if (j == 2) {
 			int i3 = j1 + 1 & 3;
-			Object obj11;
-			Object obj12;
+			Animable obj11;
+			Animable obj12;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj11 = class46.method578(2, 4 + j1, k1, l1, i2, j2, -1);
 				obj12 = class46.method578(2, i3, k1, l1, i2, j2, -1);
@@ -992,7 +992,7 @@ public final class ObjectManager {
 				obj11 = new Animable_Sub5(i1, 4 + j1, 2, l1, i2, k1, j2, class46.anInt781, true);
 				obj12 = new Animable_Sub5(i1, i3, 2, l1, i2, k1, j2, class46.anInt781, true);
 			}
-			worldController.method282(anIntArray152[j1], ((Animable) (obj11)), l2, i, byte0, l, ((Animable) (obj12)), k2, anIntArray152[i3], k);
+			worldController.method282(anIntArray152[j1], obj11, l2, i, byte0, l, obj12, k2, anIntArray152[i3], k);
 			if (class46.aBoolean764)
 				if (j1 == 0) {
 					anIntArrayArrayArray135[k][l][i] |= 0x249;
@@ -1003,7 +1003,8 @@ public final class ObjectManager {
 				} else if (j1 == 2) {
 					anIntArrayArrayArray135[k][l + 1][i] |= 0x249;
 					anIntArrayArrayArray135[k][l][i] |= 0x492;
-				} else if (j1 == 3) {
+				} else
+				{
 					anIntArrayArrayArray135[k][l][i] |= 0x492;
 					anIntArrayArrayArray135[k][l][i] |= 0x249;
 				}
@@ -1014,12 +1015,12 @@ public final class ObjectManager {
 			return;
 		}
 		if (j == 3) {
-			Object obj5;
+			Animable obj5;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj5 = class46.method578(3, j1, k1, l1, i2, j2, -1);
 			else
 				obj5 = new Animable_Sub5(i1, j1, 3, l1, i2, k1, j2, class46.anInt781, true);
-			worldController.method282(anIntArray140[j1], ((Animable) (obj5)), l2, i, byte0, l, null, k2, 0, k);
+			worldController.method282(anIntArray140[j1], obj5, l2, i, byte0, l, null, k2, 0, k);
 			if (class46.aBoolean779)
 				if (j1 == 0)
 					aByteArrayArrayArray134[k][l][i + 1] = 50;
@@ -1027,19 +1028,18 @@ public final class ObjectManager {
 					aByteArrayArrayArray134[k][l + 1][i + 1] = 50;
 				else if (j1 == 2)
 					aByteArrayArrayArray134[k][l + 1][i] = 50;
-				else if (j1 == 3)
-					aByteArrayArrayArray134[k][l][i] = 50;
+				else aByteArrayArrayArray134[k][l][i] = 50;
 			if (class46.aBoolean767 && class11 != null)
 				class11.method211(i, j1, l, j, class46.aBoolean757);
 			return;
 		}
 		if (j == 9) {
-			Object obj6;
+			Animable obj6;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj6 = class46.method578(j, j1, k1, l1, i2, j2, -1);
 			else
 				obj6 = new Animable_Sub5(i1, j1, j, l1, i2, k1, j2, class46.anInt781, true);
-			worldController.method284(l2, byte0, k2, 1, ((Animable) (obj6)), 1, k, 0, i, l);
+			worldController.method284(l2, byte0, k2, 1, obj6, 1, k, 0, i, l);
 			if (class46.aBoolean767 && class11 != null)
 				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, l, i, j1);
 			return;
@@ -1066,12 +1066,12 @@ public final class ObjectManager {
 				i2 = l3;
 			}
 		if (j == 4) {
-			Object obj7;
+			Animable obj7;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj7 = class46.method578(4, 0, k1, l1, i2, j2, -1);
 			else
 				obj7 = new Animable_Sub5(i1, 0, 4, l1, i2, k1, j2, class46.anInt781, true);
-			worldController.method283(l2, i, j1 * 512, k, 0, k2, ((Animable) (obj7)), l, byte0, 0, anIntArray152[j1]);
+			worldController.method283(l2, i, j1 * 512, k, 0, k2, obj7, l, byte0, 0, anIntArray152[j1]);
 			return;
 		}
 		if (j == 5) {
@@ -1079,39 +1079,39 @@ public final class ObjectManager {
 			int k4 = worldController.method300(k, l, i);
 			if (k4 > 0)
 				i4 = ObjectDef.forID(k4 >> 14 & 0x7fff).anInt775;
-			Object obj13;
+			Animable obj13;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj13 = class46.method578(4, 0, k1, l1, i2, j2, -1);
 			else
 				obj13 = new Animable_Sub5(i1, 0, 4, l1, i2, k1, j2, class46.anInt781, true);
-			worldController.method283(l2, i, j1 * 512, k, anIntArray137[j1] * i4, k2, ((Animable) (obj13)), l, byte0, anIntArray144[j1] * i4, anIntArray152[j1]);
+			worldController.method283(l2, i, j1 * 512, k, anIntArray137[j1] * i4, k2, obj13, l, byte0, anIntArray144[j1] * i4, anIntArray152[j1]);
 			return;
 		}
 		if (j == 6) {
-			Object obj8;
+			Animable obj8;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj8 = class46.method578(4, 0, k1, l1, i2, j2, -1);
 			else
 				obj8 = new Animable_Sub5(i1, 0, 4, l1, i2, k1, j2, class46.anInt781, true);
-			worldController.method283(l2, i, j1, k, 0, k2, ((Animable) (obj8)), l, byte0, 0, 256);
+			worldController.method283(l2, i, j1, k, 0, k2, obj8, l, byte0, 0, 256);
 			return;
 		}
 		if (j == 7) {
-			Object obj9;
+			Animable obj9;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj9 = class46.method578(4, 0, k1, l1, i2, j2, -1);
 			else
 				obj9 = new Animable_Sub5(i1, 0, 4, l1, i2, k1, j2, class46.anInt781, true);
-			worldController.method283(l2, i, j1, k, 0, k2, ((Animable) (obj9)), l, byte0, 0, 512);
+			worldController.method283(l2, i, j1, k, 0, k2, obj9, l, byte0, 0, 512);
 			return;
 		}
 		if (j == 8) {
-			Object obj10;
+			Animable obj10;
 			if (class46.anInt781 == -1 && class46.childrenIDs == null)
 				obj10 = class46.method578(4, 0, k1, l1, i2, j2, -1);
 			else
 				obj10 = new Animable_Sub5(i1, 0, 4, l1, i2, k1, j2, class46.anInt781, true);
-			worldController.method283(l2, i, j1, k, 0, k2, ((Animable) (obj10)), l, byte0, 0, 768);
+			worldController.method283(l2, i, j1, k, 0, k2, obj10, l, byte0, 0, 768);
 		}
 	}
 
@@ -1218,7 +1218,9 @@ public final class ObjectManager {
 				if (i2 <= 49)
 					stream.readUnsignedByte();
 			} while (true);
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
+			throw new RuntimeException(e);
 		}
 	}
 

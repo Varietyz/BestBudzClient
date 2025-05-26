@@ -11,9 +11,9 @@ public class Entity extends Animable {
   public final int[] hitArray;
   public final int[] hitMarkTypes;
   public final int[] hitsLoopCycle;
-  public int[] hitmarkMove = new int[4];
-  public int[] hitmarkTrans = new int[4];
-  public int[] hitIcon = new int[4];
+  public final int[] hitmarkMove = new int[4];
+  public final int[] hitmarkTrans = new int[4];
+  public final int[] hitIcon = new int[4];
   public int interactingEntity;
   public int anInt1503;
   public int anInt1504;

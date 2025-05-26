@@ -1,6 +1,6 @@
 package com.bestbudz.world;
 
-import com.bestbudz.client.Client;
+import com.bestbudz.engine.Client;
 import com.bestbudz.config.ClientConstants;
 import com.bestbudz.network.OnDemandFetcher;
 import com.bestbudz.network.Stream;
@@ -8,9 +8,10 @@ import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
+import java.util.Objects;
 
 public final class ObjectDef {
-
+Client client;
 	public static final Model[] aModelArray741s = new Model[4];
 	public static boolean lowMem;
 	public static Stream stream;
@@ -368,8 +369,7 @@ public final class ObjectDef {
 	public void method574(OnDemandFetcher class42_sub1) {
 		if (anIntArray773 == null)
 			return;
-		for (int j = 0; j < anIntArray773.length; j++)
-			class42_sub1.method560(anIntArray773[j] & 0xffff, 0);
+		for (int i : anIntArray773) class42_sub1.method560(i & 0xffff, 0);
 	}
 
 	public boolean method577(int i) {
@@ -379,8 +379,7 @@ public final class ObjectDef {
 			if (i != 10)
 				return true;
 			boolean flag1 = true;
-			for (int k = 0; k < anIntArray773.length; k++)
-				flag1 &= Model.method463(anIntArray773[k] & 0xffff);
+			for (int j : anIntArray773) flag1 &= Model.method463(j & 0xffff);
 
 			return flag1;
 		}
@@ -417,8 +416,7 @@ public final class ObjectDef {
 		if (anIntArray773 == null)
 			return true;
 		boolean flag1 = true;
-		for (int i = 0; i < anIntArray773.length; i++)
-			flag1 &= Model.method463(anIntArray773[i] & 0xffff);
+		for (int j : anIntArray773) flag1 &= Model.method463(j & 0xffff);
 		return flag1;
 	}
 
@@ -430,10 +428,10 @@ public final class ObjectDef {
 			int k = varBit.anInt649;
 			int l = varBit.anInt650;
 			int i1 = Client.anIntArray1232[l - k];
-			i = clientInstance.variousSettings[j] >> k & i1;
+			i = client.variousSettings[j] >> k & i1;
 
 		} else if (anInt749 != -1)
-			i = clientInstance.variousSettings[anInt749];
+			i = client.variousSettings[anInt749];
 		if (i < 0 || i >= childrenIDs.length || childrenIDs[i] == -1)
 			return null;
 		else
@@ -446,7 +444,7 @@ public final class ObjectDef {
 		if (anIntArray776 == null) {
 			if (j != 10)
 				return null;
-			l1 = (long) (((long) type << 8) + l) + ((long) (k + 1) << 32);
+			l1 = ((long) type << 8) + l + ((long) (k + 1) << 32);
 			Model model_1 = (Model) mruNodes2.insertFromCache(l1);
 			if (model_1 != null)
 				return model_1;
@@ -484,7 +482,7 @@ public final class ObjectDef {
 
 			if (i1 == -1)
 				return null;
-			l1 = (long) (((long) type << 8) + ((long) i1 << 3) + l) + ((long) (k + 1) << 32);
+			l1 = ((long) type << 8) + ((long) i1 << 3) + l + ((long) (k + 1) << 32);
 			Model model_2 = (Model) mruNodes2.insertFromCache(l1);
 			if (model_2 != null)
 				return model_2;
@@ -507,7 +505,7 @@ public final class ObjectDef {
 		boolean flag2;
 		flag2 = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
 		Model model_3 = new Model(modifiedModelColors == null, SequenceFrame.method532(k),
-				l == 0 && k == -1 && !flag && !flag2, model);
+				l == 0 && k == -1 && !flag && !flag2, Objects.requireNonNull(model));
 		if (k != -1) {
 			model_3.calculateNormals();
 			model_3.method470(k);
@@ -653,7 +651,7 @@ public final class ObjectDef {
 				}
 			}
 		} while (true);
-		if (flag == -1 && name != "null" && name != null) {
+		if (!Objects.equals(name, "null") && name != null) {
 			hasActions = anIntArray773 != null && (anIntArray776 == null || anIntArray776[0] == 10);
 			if (actions != null)
 				hasActions = true;
