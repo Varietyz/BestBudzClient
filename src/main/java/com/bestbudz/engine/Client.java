@@ -12,7 +12,6 @@ import com.bestbudz.data.Skills;
 import com.bestbudz.engine.input.Keyboard;
 import static com.bestbudz.engine.input.Keyboard.console;
 import static com.bestbudz.engine.input.Keyboard.keyArray;
-import com.bestbudz.engine.input.MouseManager;
 import com.bestbudz.engine.input.MouseState;
 import com.bestbudz.entity.Entity;
 import com.bestbudz.entity.EntityDef;
@@ -46,10 +45,32 @@ import com.bestbudz.rendering.SpotAnim;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.sound.Sounds;
-//import com.bestbudz.ui.MouseDetection;
 import com.bestbudz.ui.RSInterface;
 import com.bestbudz.ui.TextInput;
+import com.bestbudz.ui.interfaces.Chatbox;
+import static com.bestbudz.ui.interfaces.Chatbox.buildChatAreaMenu;
+import static com.bestbudz.ui.interfaces.Chatbox.buildSplitPrivateChatMenu;
+import static com.bestbudz.ui.interfaces.Chatbox.changeChat;
+import static com.bestbudz.ui.interfaces.Chatbox.drawChatArea;
+import static com.bestbudz.ui.interfaces.Chatbox.extendChatArea;
+import static com.bestbudz.ui.interfaces.Chatbox.handleChatAreaMenu;
+import static com.bestbudz.ui.interfaces.Chatbox.privateChatMode;
+import static com.bestbudz.ui.interfaces.Chatbox.processChatModeClick;
+import static com.bestbudz.ui.interfaces.Chatbox.publicChatMode;
+import static com.bestbudz.ui.interfaces.Chatbox.pushMessage;
+import static com.bestbudz.ui.interfaces.Chatbox.replyToPM;
+import static com.bestbudz.ui.interfaces.Chatbox.reportAbuseInput;
+import static com.bestbudz.ui.interfaces.Chatbox.rightClickChatButtons;
+import static com.bestbudz.ui.interfaces.Chatbox.splitPrivateChat;
 import com.bestbudz.ui.interfaces.CustomInterfaces;
+import com.bestbudz.ui.interfaces.StatusOrbs;
+import static com.bestbudz.ui.interfaces.StatusOrbs.counterOn;
+import static com.bestbudz.ui.interfaces.StatusOrbs.drawGameOverlays;
+import static com.bestbudz.ui.interfaces.StatusOrbs.drawGameUIorbs;
+import static com.bestbudz.ui.interfaces.StatusOrbs.handleMinimapInteractions;
+import static com.bestbudz.ui.interfaces.StatusOrbs.orbComponents;
+import static com.bestbudz.ui.interfaces.StatusOrbs.orbComponents2;
+import static com.bestbudz.ui.interfaces.StatusOrbs.orbComponents3;
 import com.bestbudz.util.ColorUtility;
 import com.bestbudz.util.Decompressor;
 import com.bestbudz.util.ISAACRandomGen;
@@ -69,9 +90,7 @@ import com.bestbudz.world.ObjectManager;
 import com.bestbudz.world.VarBit;
 import com.bestbudz.world.Varp;
 import com.bestbudz.world.WorldController;
-import static com.sun.javafx.util.Utils.clamp;
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -83,7 +102,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -91,12 +109,9 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import javax.imageio.ImageIO;
@@ -169,7 +184,7 @@ public class Client extends ClientEngine
 	public static String server = "";
 	public static boolean rememberMe = false;
 	public static int openInterfaceID;
-	static int myPrivilege;
+	public static int myPrivilege;
 
 	public static int anInt1211;
 	public static int tabID;
@@ -187,16 +202,15 @@ public class Client extends ClientEngine
 	private static boolean tabAreaAltered;
 	private static int anInt1117;
 	private static int anInt1134;
-	private static int anInt1142;
 	private static int anInt1155;
 
 	private static ImageProducer aRSImageProducer_1163;
 	private static ImageProducer aRSImageProducer_1165;
 	private static ImageProducer aRSImageProducer_1166;
 	private static int anInt1175;
-	private static int[] anIntArray1180;
+	public static int[] anIntArray1180;
 	private static int[] anIntArray1181;
-	private static int[] anIntArray1182;
+	public static int[] anIntArray1182;
 	private static int anInt1188;
 	private static boolean flagged;
 	private static int anInt1226;
@@ -238,18 +252,15 @@ public class Client extends ClientEngine
 	public final Decompressor[] decompressors;
 	public final RSInterface aClass9_1059;
 	private final FogHandler fogHandler = new FogHandler();
-	private final int currencies = 11;
-	private final Sprite[] currencyImage = new Sprite[currencies];
-	private final String[] clanTitles;
-	private final int[][] statsSkillGoal = new int[Skills.SKILLS_COUNT + 1][3];
-	private final int[] tabAmounts = new int[]{350, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	private final int[] bankInvTemp = new int[352];
-	private final int[] bankStackTemp = new int[352];
+	private static final int currencies = 11;
+	private static final Sprite[] currencyImage = new Sprite[currencies];
+	private static final int[][] statsSkillGoal = new int[Skills.SKILLS_COUNT + 1][3];
+	private static final int[] tabAmounts = new int[]{350, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	private static final int[] bankInvTemp = new int[352];
+	private static final int[] bankStackTemp = new int[352];
 	private final boolean canGainXP = true;
 	private final LinkedList<XPGain> gains = new LinkedList<XPGain>();
-	private final int[] modeX = {164, 230, 296, 362}, modeNamesX = {26, 86, 150, 212, 286, 349, 427},
-		modeNamesY = {158, 158, 153, 153, 153, 153, 158}, channelButtonsX = {5, 71, 137, 203, 269, 335, 404};
-	private final String[] modeNames = {"All", "Game", "Public", "Private", "Cult", "Dealing", "Report Sucker"};
+
 	private final int[] sideIconsX = {17, 49, 83, 114, 146, 180, 214, 16, 49, 82, 116, 148, 184, 216},
 		sideIconsY = {9, 7, 6, 5, 2, 3, 7, 306, 306, 306, 302, 305, 303, 303, 303},
 		sideIconsId = {0, 1, 2, 3, 4, 5, 6, 15, 8, 9, 7, 11, 12, -1},
@@ -260,24 +271,20 @@ public class Client extends ClientEngine
 	private final int[] tabClickX = {38, 33, 33, 33, 33, 33, 38, 38, 33, 33, 33, 33, 33, 38},
 		tabClickStart = {522, 560, 593, 625, 659, 692, 724, 522, 560, 593, 625, 659, 692, 724},
 		tabClickY = {169, 169, 169, 169, 169, 169, 169, 466, 466, 466, 466, 466, 466, 466};
-	private final String[] chatTitles, chatColors;
-	private final long[] currentExp;
+	public static final long[] currentExp = new long[Skills.SKILLS_COUNT];
 	private final int[] anIntArray873;
 	private final boolean[] aBooleanArray876;
 	private final int maxStoners;
 	private final int myStonerIndex;
-	private final int[] currentStats;
-	private final long[] ignoreListAsLongs;
+	private static final int[] currentStats = new int[Skills.SKILLS_COUNT];
+	private static final long[] ignoreListAsLongs = new long[100];
 	private final int[] anIntArray928;
-	private final int[] chatTypes;
 	private final String[] chatNames;
 	private final String[] chatMessages;
 	private final String[] clanList = new String[100];
 	private final boolean drawingFlames;
 	private final int[] anIntArray965 = {0xffff00, 0xff0000, 65280, 65535, 0xff00ff, 0xffffff};
 	private final int[] anIntArray968;
-	public int[] shiftedMaskY = new int[33];
-	public int[] shiftedXMask = new int[33];
 	private final int anInt975;
 	private final int[] anIntArray976;
 	private final int[] anIntArray977;
@@ -289,15 +296,15 @@ public class Client extends ClientEngine
 	private final String[] aStringArray983;
 	private final Sprite[] hitMark;
 	private final Sprite[] hitIcon;
-	private final int[] anIntArray990;
-	private final boolean aBoolean994;
+	private static final int[] anIntArray990 = new int[5];
+	private static final boolean aBoolean994 = false;
 	private final int[] anIntArray1030;
-	private final int[] maxStats;
+	private static final int[] maxStats = new int[Skills.SKILLS_COUNT];
 	private final int[] anIntArray1045;
 	private final int[] anIntArray1052;
 	private final int[] anIntArray1057;
-	private final int barFillColor;
-	private final int[] anIntArray1065;
+	private static final int barFillColor = 0x4d4233;
+	private static final int[] anIntArray1065 = new int[7];
 	private final int[] expectedCRCs;
 	private final String[] atStonerActions;
 	private final boolean[] atStonerArray;
@@ -306,23 +313,20 @@ public class Client extends ClientEngine
 	private final int[] anIntArray1177 = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3};
 	private final int[] anIntArray1203;
 	private final int[] anIntArray1207;
-	private final Sprite[] modIcons;
+	public static final Sprite[] modIcons = new Sprite[ClientConstants.ICON_AMOUNT];
 	private final int[] anIntArray1229;
 	private final int[] anIntArray1240;
 	private final int[] anIntArray1241;
 	private final int[] anIntArray1250;
 	private final boolean rsAlreadyLoaded;
 	public int channelRights;
-	public boolean isExtendingChatArea;
+	public static boolean isExtendingChatArea;
 	public float loadPercent = 0.0F;
-	public boolean isPoisoned, clickedQuickPrayers;
-	public int digits = 0;
-	public int xpCounter;
-	public int rights;
+	public static int rights;
 	public String name;
-	public String message;
-	public int chatTypeView;
-	public int clanChatMode;
+	public static String message;
+	public static int chatTypeView;
+	public static int clanChatMode;
 	public int[] anIntArray828;
 	public int[] anIntArray829;
 	public int loginScreenState;
@@ -330,21 +334,18 @@ public class Client extends ClientEngine
 	public int[] anIntArray850;
 	public Background aBackground_966;
 	public Background aBackground_967;
-	public int[] variousSettings;
-	public int dragCycle;
+	public static int[] variousSettings;
+	public static int dragCycle;
 	public int loginFailures;
 	public Sprite[] skillIcons = new Sprite[22];
 	public Sprite[] newHitMarks = new Sprite[4];
-	public Sprite[] channelButtons = new Sprite[4];
-	public Sprite[] fixedGameComponents = new Sprite[4];
+	public static Sprite[] channelButtons = new Sprite[4];
+	public static Sprite[] fixedGameComponents = new Sprite[4];
 	public Sprite[] gameComponents = new Sprite[5];
-	public Sprite[] orbComponents = new Sprite[15];
-	public Sprite[] orbComponents2 = new Sprite[7];
-	public Sprite[] orbComponents3 = new Sprite[10];
 	public Sprite[] redStones = new Sprite[6];
 	public Sprite[] hpBars = new Sprite[2];
 	public OnDemandFetcher onDemandFetcher;
-	public int focusedDragWidget;
+	public static int focusedDragWidget;
 	public ImageProducer aRSImageProducer_1108;
 	public ImageProducer aRSImageProducer_1112;
 	public ImageProducer aRSImageProducer_1113;
@@ -354,13 +355,13 @@ public class Client extends ClientEngine
 	public String loginMessage1;
 	public String loginMessage2;
 	public int drawCount;
-	public int fullscreenInterfaceID;
-	public int anInt1044;
-	public int anInt1129;
-	public int anInt1315;
-	public int anInt1500;
-	public int anInt1501;
-	public RSFont newSmallFont;
+	public static int fullscreenInterfaceID;
+	public static int anInt1044;
+	public static int anInt1129;
+	public static int anInt1315;
+	public static int anInt1500;
+	public static int anInt1501;
+	public static RSFont newSmallFont;
 	public String[] feedKiller = new String[5];
 	public String[] feedVictim = new String[5];
 	public int[] feedWeapon = new int[5];
@@ -369,36 +370,21 @@ public class Client extends ClientEngine
 	public int[] feedAlpha = new int[5];
 	public int[] feedYPos = new int[5];
 	public int killsDisplayed = 5;
-	int stonerIndex = 0;
-	XPGain mainGain = null;
-	List<Sprite> gainSprites = new ArrayList<>();
-	private Sprite stock;
+	static int stonerIndex = 0;
+	private static Sprite stock;
 	private String clanUsername;
 	private String clanMessage;
-	private String clanTitle;
-	private int cButtonHPos;
-	private int cButtonCPos;
-	private int setChannel;
+	public static String clanTitle;
 	private AccountData currentAccount;
-	private Npc npcDisplay;
-	private boolean walkableInterfaceMode = false;
-	private boolean runHover;
-	private boolean prayHover;
-	private boolean hpHover;
-	private boolean prayClicked;
-	private boolean counterOn;
-	private boolean sumHover;
-	private boolean sumActive;
-	private boolean counterHover;
-	private boolean worldHover;
-	private boolean pouchHover;
-	private int[] chatRights;
+	private static Npc npcDisplay;
+	public static boolean walkableInterfaceMode = false;
+	public static boolean prayClicked;
 	private ImageProducer leftFrame;
 	private ImageProducer topFrame;
-	private int ignoreCount;
+	private static int ignoreCount;
 	private long aLong824;
 	private int[][] anIntArrayArray825;
-	private int[] stonersNodeIDs;
+	public static int[] stonersNodeIDs;
 	private NodeList[][][] groundArray;
 	private volatile boolean aBoolean831;
 	private Socket aSocket832;
@@ -411,8 +397,7 @@ public class Client extends ClientEngine
 	private int anInt841;
 	private int anInt842;
 	private int anInt843;
-	private String aString844;
-	private int privateChatMode;
+	public static String aString844;
 	private Stream aStream_847;
 	private boolean aBoolean848;
 	private int[] anIntArray851;
@@ -427,54 +412,53 @@ public class Client extends ClientEngine
 	private Sprite mapFlag;
 	private Sprite mapMarker;
 	private boolean aBoolean872;
-	private int weight;
-	private String reportAbuseInput;
+	private static int weight;
 	private int unknownInt10;
-	private boolean menuOpen;
-	private int anInt886;
-	private String inputString;
-	private Stoner[] stonerArray;
+	public static boolean menuOpen;
+	public static int anInt886;
+	public static String inputString;
+	private static Stoner[] stonerArray;
 	private int stonerCount;
 	private int[] stonerIndices;
 	private int anInt893;
 	private int[] anIntArray894;
 	private Stream[] aStreamArray895s;
 	private int anInt896;
-	private int stonersCount;
-	private int anInt900;
+	public static int stonersCount;
+	private static int anInt900;
 	private int[][] anIntArrayArray901;
 	private byte[] aByteArray912;
 	private int anInt913;
-	private int crossX;
-	private int crossY;
-	private int crossIndex;
-	private int crossType;
+	public static int crossX;
+	public static int crossY;
+	public static int crossIndex;
+	public static int crossType;
 	private int plane;
 	private boolean loadingError;
 	private int[][] anIntArrayArray929;
-	private Sprite aClass30_Sub2_Sub1_Sub1_931;
-	private Sprite aClass30_Sub2_Sub1_Sub1_932;
+	private static Sprite aClass30_Sub2_Sub1_Sub1_931;
+	private static Sprite aClass30_Sub2_Sub1_Sub1_932;
 	private int anInt933;
 	private int anInt934;
 	private int anInt935;
 	private int anInt936;
 	private int anInt937;
 	private int anInt938;
-	public int anInt945;
+	public static int anInt945;
 	private WorldController worldController;
 	private Sprite[] sideIcons;
 	private int menuScreenArea;
-	private int menuOffsetX;
-	private int menuOffsetY;
-	private int menuWidth;
+	private static int menuOffsetX;
+	private static int menuOffsetY;
+	private static int menuWidth;
 	private int menuHeight;
-	private long aLong953;
+	public static long aLong953;
 	private boolean aBoolean954;
-	private long[] stonersListAsLongs;
+	public static long[] stonersListAsLongs;
 	private int currentSong;
 	private int spriteDrawX;
 	private int spriteDrawY;
-	private boolean aBoolean972;
+	private static boolean aBoolean972;
 	private int anInt984;
 	private int anInt985;
 	private Sprite[] hitMarks;
@@ -485,8 +469,8 @@ public class Client extends ClientEngine
 	private int anInt999;
 	private ISAACRandomGen encryption;
 	private Sprite multiOverlay;
-	private String amountOrNameInput;
-	private int daysSinceLastLogin;
+	public static String amountOrNameInput;
+	private static int daysSinceLastLogin;
 	private int pktSize;
 	private int pktType;
 	private int anInt1009;
@@ -500,20 +484,20 @@ public class Client extends ClientEngine
 	private int anInt1018;
 	private int anInt1021;
 	private int anInt1022;
-	private Sprite scrollBar1;
-	private Sprite scrollBar2;
-	private int anInt1026;
-	private boolean aBoolean1031;
+	private static Sprite scrollBar1;
+	private static Sprite scrollBar2;
+	private static int anInt1026;
+	private static boolean aBoolean1031;
 	private Sprite[] mapFunctions;
-	private int baseX;
-	private int baseY;
+	private static int baseX;
+	private static int baseY;
 	private int anInt1036;
 	private int anInt1037;
-	private int anInt1039;
-	private int dialogID;
+	public static int anInt1039;
+	public static int dialogID;
 	private int anInt1046;
-	private boolean aBoolean1047;
-	private int anInt1048;
+	private static boolean aBoolean1047;
+	private static int anInt1048;
 	private String aString1049;
 	private StreamLoader titleStreamLoader;
 	private int anInt1054;
@@ -521,9 +505,9 @@ public class Client extends ClientEngine
 	private NodeList aClass19_1056;
 	private Background[] mapScenes;
 	private int anInt1062;
-	private int stonersListAction;
-	private int mouseInvInterfaceIndex;
-	private int lastActiveInvInterface;
+	public static int stonersListAction;
+	private static int mouseInvInterfaceIndex;
+	private static int lastActiveInvInterface;
 	private int anInt1069;
 	private int anInt1070;
 	private int anInt1071;
@@ -536,16 +520,16 @@ public class Client extends ClientEngine
 	private Sprite mapDotClan;
 	private int anInt1079;
 	private boolean aBoolean1080;
-	private String[] stonersList;
+	public static String[] stonersList;
 	private Stream inStream;
-	private int dragFromSlot;
-	private int activeInterfaceType;
-	public int pressX;
-	public int pressY;
-	private int[] menuActionCmd2;
-	private int[] menuActionCmd3;
-	private int[] menuActionID;
-	private int[] menuActionCmd1;
+	private static int dragFromSlot;
+	private static int activeInterfaceType;
+	public static int pressX;
+	public static int pressY;
+	private static int[] menuActionCmd2;
+	private static int[] menuActionCmd3;
+	public static int[] menuActionID;
+	private static int[] menuActionCmd1;
 	private Sprite[] headIcons;
 	private Sprite[] skullIcons;
 	private Sprite[] headIconsHint;
@@ -554,60 +538,58 @@ public class Client extends ClientEngine
 	private int anInt1100;
 	private int anInt1101;
 	private int anInt1102;
-	private int anInt1104;
+	public static int anInt1104;
 	private ImageProducer aRSImageProducer_1107;
 	private ImageProducer aRSImageProducer_1110;
 	private ImageProducer aRSImageProducer_1111;
-	private int membersInt;
-	private String aString1121;
-	private Sprite compass;
+	private static int membersInt;
+	public static String aString1121;
 	private ImageProducer aRSImageProducer_1125;
 	private int anInt1131;
-	private int menuActionRow;
-	private int spellSelected;
+	public static int menuActionRow;
+	private static int spellSelected;
 	private int anInt1137;
-	private int spellUsableOn;
-	private String spellTooltip;
+	private static int spellUsableOn;
+	private static String spellTooltip;
 	private Sprite[] aClass30_Sub2_Sub1_Sub1Array1140;
 	private boolean aBoolean1141;
-	private int energy;
-	private boolean aBoolean1149;
-	private Sprite[] crosses;
+	private static int energy;
+	private static boolean aBoolean1149;
+	public static Sprite[] crosses;
 	private boolean musicEnabled;
 	private Background[] aBackgroundArray1152s;
-	private int unreadMessages;
-	private boolean canMute;
+	private static int unreadMessages;
+	public static boolean canMute;
 	private boolean aBoolean1159;
 	public boolean aBoolean1160;
 	private ImageProducer aRSImageProducer_1164;
-	private int daysSinceRecovChange;
+	private static int daysSinceRecovChange;
 	private RSSocket socketStream;
 	private int anInt1169;
 	private int minimapInt3;
-	private int reportAbuseInterfaceID;
+	public static int reportAbuseInterfaceID;
 	private NodeList aClass19_1179;
 	private byte[][] aByteArrayArray1183;
 	private int anInt1184;
-	private int minimapInt1;
+	public static int minimapInt1;
 	private int anInt1186;
 	private int anInt1187;
-	private int invOverlayInterfaceID;
+	private static int invOverlayInterfaceID;
 	private int[] anIntArray1190;
 	private int[] anIntArray1191;
-	private int anInt1193;
-	private int splitPrivateChat;
+	private static int anInt1193;
 	private Background mapBack;
-	private String[] menuActionName;
+	public static String[] menuActionName;
 	private Sprite aClass30_Sub2_Sub1_Sub1_1201;
 	private Sprite aClass30_Sub2_Sub1_Sub1_1202;
 	private int minimapInt2;
-	private String promptInput;
-	private int anInt1213;
+	public static String promptInput;
+	private static int anInt1213;
 	private int[][][] intGroundArray;
 	private long aLong1215;
 	private long aLong1220;
 	private int anInt1222;
-	private int inputDialogState;
+	public static int inputDialogState;
 	private int nextSong;
 	private boolean songChanging;
 	private Class11[] aClass11Array1230;
@@ -618,16 +600,16 @@ public class Client extends ClientEngine
 	private int anInt1238;
 	private boolean aBoolean1242;
 	private int atBoxLoopCycle;
-	private int atBoxInterface;
-	private int atBoxIndex;
-	private int atBoxInterfaceType;
+	private static int atBoxInterface;
+	private static int atBoxIndex;
+	private static int atBoxInterfaceType;
 	private byte[][] aByteArrayArray1247;
-	private int tradeMode;
+	public static int tradeMode;
 	private int anInt1249;
 	private int anInt1251;
 	private int legacyClickInt;
 	private boolean welcomeScreenRaised;
-	private boolean messagePromptRaised;
+	public static boolean messagePromptRaised;
 	private byte[][][] byteGroundArray;
 	private int prevSong;
 	private int destX;
@@ -639,29 +621,20 @@ public class Client extends ClientEngine
 	private int anInt1278;
 	private int[] bigX;
 	private int[] bigY;
-	private int itemSelected;
-	private int anInt1283;
-	private int anInt1284;
+	private static int itemSelected;
+	private static int anInt1283;
+	private static int anInt1284;
 	private int anInt1285;
-	private String selectedItemName;
-	private int publicChatMode;
-	private int modifiableXValue = 0;
+	private static String selectedItemName;
+	private static int modifiableXValue = 0;
 	private GameCanvas canvas;
 
 	public Client()
 	{
 		ClientConstants.worldSelected = 1;
-		xpCounter = 0;
 		fullscreenInterfaceID = -1;
-		chatRights = new int[500];
 		chatTypeView = 0;
 		clanChatMode = 0;
-		cButtonHPos = -1;
-		cButtonCPos = 0;
-		chatRights = new int[500];
-		chatColors = new String[500];
-		chatTitles = new String[500];
-		clanTitles = new String[500];
 		server = ClientConstants.SERVER_IPS[ClientConstants.worldSelected - 1];
 		anIntArrayArray825 = new int[208][208];
 		stonersNodeIDs = new int[200];
@@ -674,11 +647,10 @@ public class Client extends ClientEngine
 		aStream_847 = Stream.create();
 		aBoolean848 = true;
 		openInterfaceID = -1;
-		currentExp = new long[Skills.SKILLS_COUNT];
+
 		aBoolean872 = false;
 		anIntArray873 = new int[5];
 		aBooleanArray876 = new boolean[5];
-		reportAbuseInput = "";
 		unknownInt10 = -1;
 		menuOpen = false;
 		inputString = "";
@@ -690,12 +662,11 @@ public class Client extends ClientEngine
 		aStreamArray895s = new Stream[maxStoners];
 		anIntArrayArray901 = new int[208][208];
 		aByteArray912 = new byte[16384];
-		currentStats = new int[Skills.SKILLS_COUNT];
-		ignoreListAsLongs = new long[100];
+
+
 		loadingError = false;
 		anIntArray928 = new int[5];
 		anIntArrayArray929 = new int[208][208];
-		chatTypes = new int[500];
 		chatNames = new String[500];
 		chatMessages = new String[500];
 		sideIcons = new Sprite[17];
@@ -723,8 +694,8 @@ public class Client extends ClientEngine
 		hitMarks = new Sprite[20];
 		hitMark = new Sprite[20];
 		hitIcon = new Sprite[20];
-		anIntArray990 = new int[5];
-		aBoolean994 = false;
+
+
 		amountOrNameInput = "";
 		aClass19_1013 = new NodeList();
 		aBoolean1017 = false;
@@ -733,7 +704,7 @@ public class Client extends ClientEngine
 		aBoolean1031 = false;
 		mapFunctions = new Sprite[100];
 		dialogID = -1;
-		maxStats = new int[Skills.SKILLS_COUNT];
+
 		anIntArray1045 = new int[2000];
 		aBoolean1047 = true;
 		anIntArray1052 = new int[152];
@@ -743,8 +714,8 @@ public class Client extends ClientEngine
 		anIntArray1057 = new int[33];
 		aClass9_1059 = new RSInterface();
 		mapScenes = new Background[100];
-		barFillColor = 0x4d4233;
-		anIntArray1065 = new int[7];
+
+
 		anIntArray1072 = new int[1000];
 		anIntArray1073 = new int[1000];
 		aBoolean1080 = false;
@@ -785,7 +756,7 @@ public class Client extends ClientEngine
 		anIntArray1207 = new int[50];
 		anInt1211 = 78;
 		promptInput = "";
-		modIcons = new Sprite[ClientConstants.ICON_AMOUNT];
+
 		tabID = 3;
 		inputTaken = false;
 		songChanging = true;
@@ -1076,18 +1047,6 @@ public class Client extends ClientEngine
 		stream.writeString(text.substring(2));
 	}
 
-	private int getChatColor()
-	{
-		int convertHexCode = Integer.parseInt(chatColorHex, 16);
-		return convertHexCode;
-	}
-
-	private void changeChat(String color, String name)
-	{
-		chatColorHex = color;
-		sendFrame126("Color chosen: @or2@" + name, 37506);
-		SettingHandler.save();
-	}
 	public static void rebuildFrameSize(int screenWidth, int screenHeight) {
 		try {
 			frameWidth = screenWidth;
@@ -1203,7 +1162,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	public final String methodR(long j)
+	public static final String methodR(long j)
 	{
 		if (j >= 0 && j < 10000)
 			return String.valueOf(j);
@@ -1245,397 +1204,6 @@ public class Client extends ClientEngine
 		if (k >= 2000)
 			k -= 2000;
 		return k == 337;
-	}
-
-	public void drawChannelButtons()
-	{
-		final int yOffset = frameHeight - 165;
-		fixedGameComponents[3].drawSprite(0, 143 + yOffset);
-		String[] text = {"On", "Stoners", "Off", "Hide"};
-		int[] textColor = {65280, 0xffff00, 0xff0000, 65535};
-		switch (cButtonCPos)
-		{
-			case 0:
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-				channelButtons[1].drawSprite(channelButtonsX[cButtonCPos], 143 + yOffset);
-				break;
-		}
-		if (cButtonHPos == cButtonCPos)
-		{
-			switch (cButtonHPos)
-			{
-				case 0:
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-				case 5:
-				case 6:
-				case 7:
-					channelButtons[2].drawSprite(channelButtonsX[cButtonHPos], 143 + yOffset);
-					break;
-			}
-		}
-		else
-		{
-			switch (cButtonHPos)
-			{
-				case 0:
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-				case 5:
-					channelButtons[0].drawSprite(channelButtonsX[cButtonHPos], 143 + yOffset);
-					break;
-				case 6:
-					channelButtons[3].drawSprite(channelButtonsX[cButtonHPos], 143 + yOffset);
-					break;
-			}
-		}
-		int[] modes = {publicChatMode, privateChatMode, clanChatMode, tradeMode};
-		for (int i = 0; i < modeNamesX.length; i++)
-		{
-			smallText.method389(true, modeNamesX[i], 0xffffff, modeNames[i], modeNamesY[i] + yOffset);
-		}
-		for (int i = 0; i < modeX.length; i++)
-		{
-			smallText.method382(textColor[modes[i]], modeX[i], text[modes[i]], 164 + yOffset, true);
-		}
-	}
-
-	public void extendChatArea() {
-		int offsetY = frameHeight - 160;
-		int x = 256;
-		int y = offsetY - 10 - extendChatArea;
-
-		// Start drag if mouse is pressed within the drag box
-		if (!isExtendingChatArea && MouseState.leftDown && MouseState.x >= x && MouseState.x <= x + 8
-			&& MouseState.y >= y && MouseState.y <= y + 9) {
-			isExtendingChatArea = true;
-		}
-
-		// Update drag movement
-		if (isExtendingChatArea) {
-			int height = offsetY - MouseState.y;
-			if (height < frameHeight - 170) {
-				extendChatArea = Math.max(0, height);
-			}
-		}
-
-		// Stop drag on mouse release
-		if (MouseState.released) {
-			isExtendingChatArea = false;
-		}
-	}
-
-
-	private boolean chatStateCheck()
-	{
-		return messagePromptRaised || inputDialogState != 0 || aString844 != null || backDialogID != -1
-			|| dialogID != -1;
-	}
-
-	private void drawChatArea()
-	{
-		int yOffset = frameHeight - 165;
-		Rasterizer.anIntArray1472 = anIntArray1180;
-		if (chatStateCheck())
-		{
-			showChatComponents = true;
-			fixedGameComponents[2].drawSprite(0, yOffset);
-		}
-		if (showChatComponents)
-		{
-			if (changeChatArea && !chatStateCheck())
-			{
-				orbComponents3[6].drawTransparentSprite(256, yOffset - extendChatArea - 3, 112);
-				DrawingArea.drawAlphaGradient(7, 7 + yOffset - extendChatArea, 505, 130 + extendChatArea, 0, 0, 40);
-				DrawingArea.drawAlphaHorizontalLine(7, 6 + yOffset - extendChatArea, 405, 0x6d6a57, 256);
-			}
-			else
-			{
-				fixedGameComponents[2].drawSprite(0, yOffset);
-			}
-		}
-		if (!showChatComponents || changeChatArea)
-		{
-			DrawingArea.drawAlphaPixels(7, frameHeight - 23, 506, 24, 0, 100);
-		}
-		drawChannelButtons();
-		TextDrawingArea textDrawingArea = regularText;
-		if (messagePromptRaised)
-		{
-			extendChatArea = 0;
-			newBoldFont.drawCenteredString(aString1121, 259, 60 + yOffset, 0, -1);
-			newBoldFont.drawCenteredString(promptInput + "*", 259, 80 + yOffset, 128, -1);
-		}
-		else if (inputDialogState == 1)
-		{
-			extendChatArea = 0;
-			newBoldFont.drawCenteredString("Enter amount:", 259, yOffset + 60, 0, -1);
-			newBoldFont.drawCenteredString(amountOrNameInput + "*", 259, 80 + yOffset, 128, -1);
-		}
-		else if (inputDialogState == 2)
-		{
-			extendChatArea = 0;
-			newBoldFont.drawCenteredString("Enter Name:", 259, 60 + yOffset, 0, -1);
-			newBoldFont.drawCenteredString(amountOrNameInput + "*", 259, 80 + yOffset, 128, -1);
-		}
-		else if (aString844 != null)
-		{
-			extendChatArea = 0;
-			newBoldFont.drawCenteredString(aString844, 259, 60 + yOffset, 0, -1);
-			newBoldFont.drawCenteredString("Click to continue", 259, 80 + yOffset, 128, -1);
-		}
-		else if (backDialogID != -1)
-		{
-			extendChatArea = 0;
-			drawInterface(0, 20, RSInterface.interfaceCache[backDialogID], 20 + yOffset);
-		}
-		else if (dialogID != -1)
-		{
-			extendChatArea = 0;
-			drawInterface(0, 20, RSInterface.interfaceCache[dialogID], 20 + yOffset);
-		}
-		else if (showChatComponents)
-		{
-			int j77 = -3;
-			int j = 0;
-			int shadow = changeChatArea ? 0 : -1;
-			DrawingArea.setDrawingArea(121 + yOffset, 7, 498, 7 + yOffset - extendChatArea);
-			for (int k = 0; k < 500; k++)
-			{
-				if (chatMessages[k] != null)
-				{
-					String title;
-					if (chatTitles[k] != null)
-					{
-						title = "<col=" + chatColors[k] + ">" + chatTitles[k] + "</col> ";
-					}
-					else
-					{
-						title = "";
-					}
-					int chatType = chatTypes[k];
-					int yPos = (70 - j77 * 14) + anInt1089 + 5;
-					String s1 = chatNames[k];
-					String timeStamp = getTime();
-					byte stonerRights = 0;
-					if (s1 != null && s1.startsWith("@cr"))
-					{
-						int test1 = Integer.parseInt("" + s1.charAt(3));
-						if (s1.charAt(4) != '@')
-						{
-							test1 = Integer.parseInt(s1.charAt(3) + "" + s1.charAt(4));
-							s1 = s1.substring(6);
-						}
-						else
-						{
-							s1 = s1.substring(5);
-						}
-						stonerRights = (byte) test1;
-					}
-					if (chatType == 0)
-					{
-						if (chatTypeView == 5 || chatTypeView == 0)
-						{
-							newRegularFont.drawBasicString(chatMessages[k], 11, yPos + yOffset,
-								changeChatArea ? 0xFFFFFF : 0, shadow);
-							j++;
-							j77++;
-						}
-					}
-					if ((chatType == 1 || chatType == 2)
-						&& (chatType == 1 || publicChatMode == 0 || publicChatMode == 1 && isStonerOrSelf(s1)))
-					{
-						if (chatTypeView == 1 || chatTypeView == 0)
-						{
-							int xPos = 11;
-							if (Configuration.enableTimeStamps)
-							{
-								newRegularFont.drawBasicString(timeStamp, xPos, yPos + yOffset,
-									changeChatArea ? 0xFFFFFF : 0, shadow);
-								xPos += newRegularFont.getTextWidth(timeStamp);
-							}
-							if (stonerRights == 0)
-							{
-								modIcons[11].drawSprite(xPos - 1, yPos - 12 + yOffset);
-								xPos += 17;
-							}
-							if (stonerRights >= 1)
-							{
-								modIcons[stonerRights - 1].drawSprite(xPos - 1, yPos - 12 + yOffset);
-								xPos += 17;
-							}
-							newRegularFont.drawBasicString(title + s1 + " said: ", xPos - 1, yPos + yOffset,
-								changeChatArea ? 0xFFFFFF : 0, shadow);
-							xPos += newRegularFont.getTextWidth(title + s1) + 8;
-							newRegularFont.drawBasicString(chatMessages[k], xPos + 23, yPos + yOffset,
-								changeChatArea ? 0x7FA9FF : 255, shadow);
-							j++;
-							j77++;
-						}
-					}
-					if ((chatType == 3 || chatType == 7) && (splitPrivateChat == 0 || chatTypeView == 2)
-						&& (chatType == 7 || privateChatMode == 0 || privateChatMode == 1 && isStonerOrSelf(s1)))
-					{
-						if (chatTypeView == 2 || chatTypeView == 0)
-						{
-							int k1 = 11;
-							newRegularFont.drawBasicString("", k1, yPos + yOffset, changeChatArea ? 0xFFFFFF : 0,
-								shadow);
-							k1 += textDrawingArea.getTextWidth("");
-							if (stonerRights >= 1)
-							{
-								modIcons[stonerRights - 1].drawSprite(k1, yPos - 12 + yOffset);
-								k1 += 12;
-							}
-							newRegularFont.drawBasicString(s1 + " said: ", k1, yPos + yOffset,
-								changeChatArea ? 0xFFFFFF : 0,
-								shadow);
-							k1 += textDrawingArea.getTextWidth(s1) + 8;
-							newRegularFont.drawBasicString(chatMessages[k], k1 + 23, yPos + yOffset,
-								changeChatArea ? 0xFF5256 : 0x800000, shadow);
-							j++;
-							j77++;
-						}
-					}
-					if (chatType == 4 && (tradeMode == 0 || tradeMode == 1 && isStonerOrSelf(s1)))
-					{
-						if (chatTypeView == 3 || chatTypeView == 0)
-						{
-							newRegularFont.drawBasicString(s1 + " " + chatMessages[k], 11, yPos + yOffset,
-								changeChatArea ? 0xFF5256 : 0x800080, shadow);
-							j++;
-							j77++;
-						}
-					}
-					if (chatType == 5 && splitPrivateChat == 0 && privateChatMode < 2)
-					{
-						if (chatTypeView == 2 || chatTypeView == 0)
-						{
-							newRegularFont.drawBasicString(s1 + " " + chatMessages[k], 8, yPos + yOffset,
-								changeChatArea ? 0xFF5256 : 0x800000, shadow);
-							j++;
-							j77++;
-						}
-					}
-					if (chatType == 6 && (splitPrivateChat == 0 || chatTypeView == 2) && privateChatMode < 2)
-					{
-						if (chatTypeView == 2 || chatTypeView == 0)
-						{
-							newRegularFont.drawBasicString("You told " + s1 + ":", 11, yPos + yOffset,
-								changeChatArea ? 0xFFFFFF : 0, shadow);
-							newRegularFont.drawBasicString(chatMessages[k],
-								15 + textDrawingArea.getTextWidth("You told :" + s1), yPos + yOffset,
-								changeChatArea ? 0xFF5256 : 0x800000, shadow);
-							j++;
-							j77++;
-						}
-					}
-					if (chatType == 8 && (tradeMode == 0 || tradeMode == 1 && isStonerOrSelf(s1)))
-					{
-						if (chatTypeView == 3 || chatTypeView == 0)
-						{
-							newRegularFont.drawBasicString(s1 + " " + chatMessages[k], 11, yPos + yOffset,
-								changeChatArea ? 0xFF5256 : 0x800000, shadow);
-							j++;
-							j77++;
-						}
-					}
-					if (chatType == 11)
-					{
-						if (chatTypeView == 11)
-						{
-							newRegularFont.drawBasicString(s1 + " " + chatMessages[k], 8, yPos + yOffset,
-								changeChatArea ? 0xFF5256 : 0x800000, shadow);
-							j++;
-							j77++;
-						}
-					}
-				}
-			}
-			DrawingArea.defaultDrawingAreaSize();
-			anInt1211 = j * 14 + 7 + 5;
-			if (anInt1211 < 111)
-			{
-				anInt1211 = 111;
-			}
-			drawScrollbar(114 + extendChatArea, anInt1211 - anInt1089 - 113, 7 + yOffset - extendChatArea, 496,
-				anInt1211 + extendChatArea, changeChatArea);
-			String title;
-			if (myStoner != null && myStoner.title != null)
-			{
-				title = "<col=" + myStoner.titleColor + ">" + myStoner.title + " </col>";
-			}
-			else
-			{
-				title = "";
-			}
-			String stonerName;
-			if (myStoner != null && myStoner.name != null)
-			{
-				stonerName = myStoner.name;
-			}
-			else
-			{
-				stonerName = TextClass.fixName(myUsername);
-			}
-			DrawingArea.setDrawingArea(140 + yOffset, 8, 509, 120 + yOffset);
-			int xPos = 0;
-			int yPos = 0;
-			if (myPrivilege == 0)
-			{
-				cacheSprite[347].drawSprite(
-					textDrawingArea
-						.getTextWidth(myStoner.title + (title.equals(null) ? "" : " ") + stonerName + ": ") + 4,
-					124 + yOffset);
-				newRegularFont.drawBasicString(title + stonerName, 8, 136 + yOffset - 2,
-					changeChatArea ? 0xFFFFFF : 0, changeChatArea ? 0 : -1);
-				textDrawingArea.method385(changeChatArea ? 0xFFFFFF : 0, ": ", 136 + yOffset - 2, 17 + textDrawingArea
-					.getTextWidth(myStoner.title + (title.equals(null) ? "" : " ") + 8 + stonerName));
-				newRegularFont.drawBasicString(inputString + "*",
-					22 + textDrawingArea
-						.getTextWidth(myStoner.title + (title.equals(null) ? "" : " ") + stonerName + ": "),
-					136 + yOffset - 2, changeChatArea ? 0x7FA9FF : 255, changeChatArea ? 0 : -1);
-			}
-			else if (myPrivilege >= 1)
-			{
-				modIcons[myPrivilege - 1].drawSprite(10 + xPos, 122 + yPos + yOffset);
-				cacheSprite[347].drawSprite(
-					textDrawingArea.getTextWidth(
-						myStoner.title + (title.equals(null) ? "" : " ") + stonerName + ": ") + 18,
-					124 + yOffset);
-				xPos += 15;
-				newRegularFont.drawBasicString(title + stonerName, 23, 136 + yOffset - 2,
-					changeChatArea ? 0xFFFFFF : 0, changeChatArea ? 0 : -1);
-				textDrawingArea.method385(changeChatArea ? 0xFFFFFF : 0, ": ", 136 + yOffset - 2, 38
-					+ textDrawingArea.getTextWidth(myStoner.title + (title.equals(null) ? "" : " ") + stonerName));
-				newRegularFont.drawBasicString(inputString + "*",
-					23 + textDrawingArea.getTextWidth(
-						myStoner.title + (title.equals(null) ? "" : " ") + stonerName + ": ") + 13,
-					136 + yOffset - 2, changeChatArea ? 0x7FA9FF : 255, changeChatArea ? 0 : -1);
-			}
-			DrawingArea.defaultDrawingAreaSize();
-			for (int i = 0; i < 505; i++)
-			{
-				int opacity = 100 - (int) (i / 5.05);
-				DrawingArea.method340(0, 1, 121 + yOffset, opacity + 5, 7 + i);
-			}
-		}
-		if (menuOpen)
-		{
-			rightClickMenu(0, 0);
-		}
-
-		//aRSImageProducer_1165.initDrawingArea();
-		Rasterizer.anIntArray1472 = anIntArray1182;
 	}
 
 	public Socket openSocket(int port) throws IOException
@@ -1787,7 +1355,6 @@ public class Client extends ClientEngine
 			stream.createFrame(0);
 			objectManager.method171(aClass11Array1230, worldController);
 			ColorUtility.fadingToColor = getNextInteger(objectManager.colors).getKey();
-			//aRSImageProducer_1165.initDrawingArea();
 			stream.createFrame(0);
 			int k3 = ObjectManager.anInt145;
 			if (k3 > plane)
@@ -2007,7 +1574,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	public void drawTooltip(int xPos, int yPos, String text)
+	public static void drawTooltip(int xPos, int yPos, String text)
 	{
 		String[] results = text.split("\n");
 		int height = (results.length * 16) + 6;
@@ -2030,7 +1597,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void buildInterfaceMenu(int y, RSInterface rsinterface, int x, int scrollPosition)
+	public static void buildInterfaceMenu(int y, RSInterface rsinterface, int x, int scrollPosition)
 	{
 
 		if (rsinterface == null)
@@ -2395,7 +1962,7 @@ public class Client extends ClientEngine
 
 	}
 
-	public void drawTransparentScrollBar(int x, int y, int height, int maxScroll, int pos)
+	public static void drawTransparentScrollBar(int x, int y, int height, int maxScroll, int pos)
 	{
 		orbComponents3[7].drawTransparentSprite(x, y, 120);
 		orbComponents3[8].drawTransparentSprite(x, y + height - 16, 120);
@@ -2415,7 +1982,7 @@ public class Client extends ClientEngine
 			0xffffff, 32);
 	}
 
-	public void drawScrollbar(int height, int pos, int y, int x, int maxScroll, boolean transparent)
+	public static void drawScrollbar(int height, int pos, int y, int x, int maxScroll, boolean transparent)
 	{
 		if (transparent)
 		{
@@ -2575,114 +2142,6 @@ public class Client extends ClientEngine
 			}
 
 	}
-
-	private void processChatModeClick(boolean leftClick, boolean rightClick) {
-		int yOffset = frameHeight - 503;
-
-		updateChatHoverState(yOffset);
-
-		if (!leftClick) return;
-
-		handleChatInputFieldSubmission();
-
-		if (handleChatTabToggle(yOffset)) {
-			stream.createFrame(95);
-			stream.writeWordBigEndian(publicChatMode);
-			stream.writeWordBigEndian(privateChatMode);
-			stream.writeWordBigEndian(tradeMode);
-		}
-	}
-
-	private void updateChatHoverState(int yOffset) {
-		int[][] regions = {
-			{5, 61}, {71, 127}, {137, 193}, {203, 259},
-			{269, 325}, {335, 391}, {404, 515}
-		};
-
-		for (int i = 0; i < regions.length; i++) {
-			int[] bounds = regions[i];
-			if (MouseState.x >= bounds[0] && MouseState.x <= bounds[1]
-				&& MouseState.y >= yOffset + 482 && MouseState.y <= yOffset + 503) {
-				cButtonHPos = i;
-				inputTaken = true;
-				return;
-			}
-		}
-		cButtonHPos = -1;
-		inputTaken = true;
-	}
-
-	private void handleChatInputFieldSubmission() {
-		if (RSInterface.currentInputField == null) return;
-
-		if (RSInterface.currentInputField.onlyNumbers) {
-			try {
-				long amount = Long.parseLong(message.replaceAll(",", ""));
-				amount = Math.max(-Integer.MAX_VALUE, Math.min(Integer.MAX_VALUE, amount));
-				if (amount > 0) {
-					stream.createFrame(208);
-					stream.writeDWord((int) amount);
-				}
-			} catch (Exception ignored) {}
-		} else {
-			stream.createFrame(150);
-			stream.writeWordBigEndian(RSInterface.currentInputField.disabledMessage.length() + 3);
-			stream.writeWord(RSInterface.currentInputField.id);
-			stream.writeString(RSInterface.currentInputField.disabledMessage);
-		}
-
-		RSInterface.currentInputField.disabledMessage = "";
-		RSInterface.currentInputField = null;
-	}
-
-	private boolean handleChatTabToggle(int yOffset) {
-		int[][] bounds = {
-			{5, 61}, {71, 127}, {137, 193}, {203, 259},
-			{269, 325}, {335, 391}, {404, 515}
-		};
-
-		for (int i = 0; i < 6; i++) {
-			int x0 = bounds[i][0];
-			int x1 = bounds[i][1];
-			if (MouseState.x >= x0 && MouseState.x <= x1 &&
-				MouseState.y >= yOffset + 482 && MouseState.y <= yOffset + 505) {
-
-				if (setChannel != i) {
-					cButtonCPos = i;
-					chatTypeView = (i == 1 || i == 4) ? 5 : (i == 2 ? 1 : (i == 3 ? 2 : (i == 5 ? 3 : 0)));
-					setChannel = i;
-					inputTaken = true;
-				} else {
-					showChatComponents = !showChatComponents;
-				}
-				return true;
-			}
-		}
-
-		// Handle Report Button
-		int x0 = bounds[6][0];
-		int x1 = bounds[6][1];
-		if (MouseState.x >= x0 && MouseState.x <= x1 &&
-			MouseState.y >= yOffset + 482 && MouseState.y <= yOffset + 505) {
-
-			if (openInterfaceID == -1) {
-				clearTopInterfaces();
-				reportAbuseInput = "";
-				canMute = false;
-				for (int i = 0; i < RSInterface.interfaceCache.length; i++) {
-					if (RSInterface.interfaceCache[i] == null) continue;
-					if (RSInterface.interfaceCache[i].parentID == 41750) {
-						reportAbuseInterfaceID = openInterfaceID = RSInterface.interfaceCache[i].parentID;
-						break;
-					}
-				}
-			} else {
-				pushMessage("Close yo shit before reporting a sucker xD", 0, "");
-			}
-		}
-		return false;
-	}
-
 
 	private void updateConfigValues(int i)
 	{
@@ -4677,7 +4136,7 @@ public class Client extends ClientEngine
 		loadPercent = percent;
 	}
 
-	private void drawInterfaceRecursive(int i, int j, int k, int l, RSInterface class9, int i1, boolean flag, int j1)
+	private static void drawInterfaceRecursive(int i, int j, int k, int l, RSInterface class9, int i1, boolean flag, int j1)
 	{
 		int anInt992;
 		if (aBoolean972)
@@ -4999,7 +4458,7 @@ public class Client extends ClientEngine
 		}
 		if (l == 475)
 		{
-			xpCounter = 0;
+			StatusOrbs.xpCounter = 0;
 			stream.createFrame(148);
 		}
 		if (l == 476)
@@ -5560,19 +5019,19 @@ public class Client extends ClientEngine
 		}
 		if (l == 1000)
 		{
-			cButtonCPos = 4;
+			Chatbox.cButtonCPos = 4;
 			chatTypeView = 11;
 			inputTaken = true;
 		}
 		if (l == 999)
 		{
-			cButtonCPos = 0;
+			Chatbox.cButtonCPos = 0;
 			chatTypeView = 0;
 			inputTaken = true;
 		}
 		if (l == 998)
 		{
-			cButtonCPos = 1;
+			Chatbox.cButtonCPos = 1;
 			chatTypeView = 5;
 			inputTaken = true;
 		}
@@ -5598,7 +5057,7 @@ public class Client extends ClientEngine
 		}
 		if (l == 993)
 		{
-			cButtonCPos = 2;
+			Chatbox.cButtonCPos = 2;
 			chatTypeView = 1;
 			inputTaken = true;
 		}
@@ -5619,7 +5078,7 @@ public class Client extends ClientEngine
 		}
 		if (l == 989)
 		{
-			cButtonCPos = 3;
+			Chatbox.cButtonCPos = 3;
 			chatTypeView = 2;
 			inputTaken = true;
 		}
@@ -5640,13 +5099,13 @@ public class Client extends ClientEngine
 		}
 		if (l == 984)
 		{
-			cButtonCPos = 5;
+			Chatbox.cButtonCPos = 5;
 			chatTypeView = 3;
 			inputTaken = true;
 		}
 		if (l == 980)
 		{
-			cButtonCPos = 6;
+			Chatbox.cButtonCPos = 6;
 			chatTypeView = 4;
 			inputTaken = true;
 		}
@@ -6212,17 +5671,6 @@ public class Client extends ClientEngine
 			anInt1251 = 0;
 	}
 
-	public void mouseWheelDragged(int i, int j)
-	{
-		if (!MouseManager.mouseWheelDown)
-		{
-			return;
-		}
-		screenGliding = 0;
-		this.anInt1186 += i * 3;
-		this.anInt1187 += (j << 1);
-	}
-
 	void startUp(Graphics2D g)
 	{
 		SpriteLoader.loadSprites();
@@ -6325,7 +5773,7 @@ public class Client extends ClientEngine
 			System.arraycopy(cacheSprite, 475, hitMark, 0, 9);
 
 			System.arraycopy(cacheSprite, 484, hitIcon, 0, 6);
-			compass = new Sprite(streamLoader_2, "compass", 0);
+			StatusOrbs.compass = new Sprite(streamLoader_2, "compass", 0);
 			try
 			{
 				for (int k3 = 0; k3 < 100; k3++)
@@ -6499,8 +5947,6 @@ public class Client extends ClientEngine
 		else
 			mainGameProcessor(g, canvas);
 		processOnDemandQueue();
-		//MouseState.leftClicked = false;
-		//MouseState.rightClicked = false;
 	}
 
 	public void cleanUpForQuit()
@@ -6548,7 +5994,7 @@ public class Client extends ClientEngine
 		cacheSprite = null;
 		mapBack = null;
 		sideIcons = null;
-		compass = null;
+		StatusOrbs.compass = null;
 		hitMarks = null;
 		skillIcons = null;
 		newHitMarks = null;
@@ -7591,263 +7037,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void buildPublicChat(int j)
-	{
-		int l = 0;
-		for (int i1 = 0; i1 < 500; i1++)
-		{
-			if (chatMessages[i1] == null)
-				continue;
-			if (chatTypeView != 1)
-				continue;
-			int j1 = chatTypes[i1];
-			String s = chatNames[i1];
-			int k1 = (70 - l * 14 + 42) + anInt1089 + 4 + 5;
-			if (s != null && s.startsWith("@cr"))
-			{
-				if (s.charAt(4) != '@')
-				{
-					s = s.substring(6);
-				}
-				else
-				{
-					s = s.substring(5);
-				}
-			}
-			if ((j1 == 1 || j1 == 2) && (j1 == 1 || publicChatMode == 0 || publicChatMode == 1 && isStonerOrSelf(s)))
-			{
-				if (j > k1 - 14 && j <= k1 && !s.equals(myStoner.name))
-				{
-					if (myPrivilege >= 1)
-					{
-						menuActionName[menuActionRow] = "Report sucker @gry@" + s;
-						menuActionID[menuActionRow] = 606;
-						menuActionRow++;
-					}
-					menuActionName[menuActionRow] = "Fuck you @red@" + s;
-					menuActionID[menuActionRow] = 42;
-					menuActionRow++;
-					menuActionName[menuActionRow] = "Add stoner @gre@" + s;
-					menuActionID[menuActionRow] = 337;
-					menuActionRow++;
-				}
-				l++;
-			}
-		}
-	}
-
-	private void buildStonerChat(int j)
-	{
-		int l = 0;
-		for (int i1 = 0; i1 < 500; i1++)
-		{
-			if (chatMessages[i1] == null)
-				continue;
-			if (chatTypeView != 2)
-				continue;
-			int j1 = chatTypes[i1];
-			String s = chatNames[i1];
-			int k1 = (70 - l * 14 + 42) + anInt1089 + 4 + 5;
-			if (s != null && s.startsWith("@cr"))
-			{
-				if (s.charAt(4) != '@')
-				{
-					s = s.substring(6);
-				}
-				else
-				{
-					s = s.substring(5);
-				}
-			}
-			if ((j1 == 5 || j1 == 6) && (splitPrivateChat == 0 || chatTypeView == 2)
-				&& (j1 == 6 || privateChatMode == 0 || privateChatMode == 1 && isStonerOrSelf(s)))
-				l++;
-			if ((j1 == 3 || j1 == 7) && (splitPrivateChat == 0 || chatTypeView == 2)
-				&& (j1 == 7 || privateChatMode == 0 || privateChatMode == 1 && isStonerOrSelf(s)))
-			{
-				if (j > k1 - 14 && j <= k1)
-				{
-					if (myPrivilege >= 1)
-					{
-						menuActionName[menuActionRow] = "Report sucker @gry@" + s;
-						menuActionID[menuActionRow] = 606;
-						menuActionRow++;
-					}
-					menuActionName[menuActionRow] = "Fuck you @red@" + s;
-					menuActionID[menuActionRow] = 42;
-					menuActionRow++;
-					menuActionName[menuActionRow] = "Add Stoner @gre@" + s;
-					menuActionID[menuActionRow] = 337;
-					menuActionRow++;
-				}
-				l++;
-			}
-		}
-	}
-
-	private void buildDuelorTrade(int j)
-	{
-		int l = 0;
-		for (int i1 = 0; i1 < 500; i1++)
-		{
-			if (chatMessages[i1] == null)
-				continue;
-			if (chatTypeView != 3 && chatTypeView != 4)
-				continue;
-			int j1 = chatTypes[i1];
-			String s = chatNames[i1];
-			int k1 = (70 - l * 14 + 42) + anInt1089 + 4 + 5;
-			if (s != null && s.startsWith("@cr"))
-			{
-				if (s.charAt(4) != '@')
-				{
-					s = s.substring(6);
-				}
-				else
-				{
-					s = s.substring(5);
-				}
-			}
-			if (chatTypeView == 3 && j1 == 4 && (tradeMode == 0 || tradeMode == 1 && isStonerOrSelf(s)))
-			{
-				if (j > k1 - 14 && j <= k1)
-				{
-					menuActionName[menuActionRow] = "Accept deal @whi@" + s;
-					menuActionID[menuActionRow] = 484;
-					menuActionRow++;
-				}
-				l++;
-			}
-			if (chatTypeView == 4 && j1 == 8 && (tradeMode == 0 || tradeMode == 1 && isStonerOrSelf(s)))
-			{
-				if (j > k1 - 14 && j <= k1)
-				{
-					menuActionName[menuActionRow] = "Accept challenge @whi@" + s;
-					menuActionID[menuActionRow] = 6;
-					menuActionRow++;
-				}
-				l++;
-			}
-			if (j1 == 12)
-			{
-				if (j > k1 - 14 && j <= k1)
-				{
-					menuActionName[menuActionRow] = "Go-to @blu@" + s;
-					menuActionID[menuActionRow] = 915;
-					menuActionRow++;
-				}
-				l++;
-			}
-		}
-	}
-
-	private void buildChatAreaMenu(int j)
-	{
-		int l = 0;
-		for (int i1 = 0; i1 < 500; i1++)
-		{
-			if (chatMessages[i1] == null)
-				continue;
-			int j1 = chatTypes[i1];
-			int k1 = (70 - l * 14 + 42) + anInt1089 + 4 + 5;
-			String s = chatNames[i1];
-			if (chatTypeView == 1)
-			{
-				buildPublicChat(j);
-				break;
-			}
-			if (chatTypeView == 2)
-			{
-				buildStonerChat(j);
-				break;
-			}
-			if (chatTypeView == 3 || chatTypeView == 4)
-			{
-				buildDuelorTrade(j);
-				break;
-			}
-			if (chatTypeView == 5)
-			{
-				break;
-			}
-			if (s != null && s.startsWith("@cr"))
-			{
-				if (s.charAt(4) != '@')
-				{
-					s = s.substring(6);
-				}
-				else
-				{
-					s = s.substring(5);
-				}
-			}
-			if (j1 == 0)
-				l++;
-			if ((j1 == 1 || j1 == 2) && (j1 == 1 || publicChatMode == 0 || publicChatMode == 1 && isStonerOrSelf(s)))
-			{
-				if (j > k1 - 14 && j <= k1 && !s.equals(myStoner.name))
-				{
-					if (myPrivilege >= 1)
-					{
-						menuActionName[menuActionRow] = "Report sucker @gry@" + s;
-						menuActionID[menuActionRow] = 606;
-						menuActionRow++;
-					}
-					menuActionName[menuActionRow] = "Fuck you @red@" + s;
-					menuActionID[menuActionRow] = 42;
-					menuActionRow++;
-					menuActionName[menuActionRow] = "Add stoner @gre@" + s;
-					menuActionID[menuActionRow] = 337;
-					menuActionRow++;
-				}
-				l++;
-			}
-			if ((j1 == 3 || j1 == 7) && splitPrivateChat == 0
-				&& (j1 == 7 || privateChatMode == 0 || privateChatMode == 1 && isStonerOrSelf(s)))
-			{
-				if (j > k1 - 14 && j <= k1)
-				{
-					if (myPrivilege >= 1)
-					{
-						menuActionName[menuActionRow] = "Report sucker @gry@" + s;
-						menuActionID[menuActionRow] = 606;
-						menuActionRow++;
-					}
-					menuActionName[menuActionRow] = "Fuck you @red@" + s;
-					menuActionID[menuActionRow] = 42;
-					menuActionRow++;
-					menuActionName[menuActionRow] = "Add stoner @gre@" + s;
-					menuActionID[menuActionRow] = 337;
-					menuActionRow++;
-				}
-				l++;
-			}
-			if (j1 == 4 && (tradeMode == 0 || tradeMode == 1 && isStonerOrSelf(s)))
-			{
-				if (j > k1 - 14 && j <= k1)
-				{
-					menuActionName[menuActionRow] = "Accept deal @whi@" + s;
-					menuActionID[menuActionRow] = 484;
-					menuActionRow++;
-				}
-				l++;
-			}
-			if ((j1 == 5 || j1 == 6) && splitPrivateChat == 0 && privateChatMode < 2)
-				l++;
-			if (j1 == 8 && (tradeMode == 0 || tradeMode == 1 && isStonerOrSelf(s)))
-			{
-				if (j > k1 - 14 && j <= k1)
-				{
-					menuActionName[menuActionRow] = "Accept challenge @whi@" + s;
-					menuActionID[menuActionRow] = 6;
-					menuActionRow++;
-				}
-				l++;
-			}
-		}
-	}
-
-	private void drawStonersListOrWelcomeScreen(RSInterface class9)
+	private static void drawStonersListOrWelcomeScreen(RSInterface class9)
 	{
 		int j = class9.contentType;
 		if (j >= 1 && j <= 100 || j >= 701 && j <= 800)
@@ -8277,7 +7467,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void rightClickMenu(int xOffSet, int yOffSet) {
+	public static void rightClickMenu(int xOffSet, int yOffSet) {
 		final int PAD_TOP = 1;
 		final int PAD_BOTTOM = 3;
 
@@ -8294,7 +7484,7 @@ public class Client extends ClientEngine
 		tabAreaAltered = true;
 	}
 
-	private void drawMenuBackground(int x, int y, int width, int height) {
+	private static void drawMenuBackground(int x, int y, int width, int height) {
 		int panel = 0x1E1E1E;
 		int border = 0x353535;
 
@@ -8305,7 +7495,7 @@ public class Client extends ClientEngine
 		DrawingArea.drawPixels(1, y + height - 1, x, border, width);
 	}
 
-	private void drawMenuEntries(int x, int y, int width) {
+	private static void drawMenuEntries(int x, int y, int width) {
 		final int hover = 0x2B2B2B;
 
 		for (int i = 0; i < menuActionRow; i++) {
@@ -8547,151 +7737,7 @@ public class Client extends ClientEngine
 	}
 
 
-	private void drawSplitPrivateChat()
-	{
-		if (splitPrivateChat == 0)
-		{
-			return;
-		}
-		TextDrawingArea textDrawingArea = regularText;
-		int i = 0;
-		if (anInt1104 != 0)
-		{
-			i = 1;
-		}
-		for (int j = 0; j < 100; j++)
-		{
-			if (chatMessages[j] != null)
-			{
-				int k = chatTypes[j];
-				String s = chatNames[j];
-				byte byte1 = 0;
-				if (s != null && s.startsWith("@cr1@"))
-				{
-					s = s.substring(5);
-					byte1 = 1;
-				}
-				if (s != null && s.startsWith("@cr2@"))
-				{
-					s = s.substring(5);
-					byte1 = 2;
-				}
-				if (s != null && s.startsWith("@cr3@"))
-				{
-					s = s.substring(5);
-					byte1 = 3;
-				}
-				if (s != null && s.startsWith("@cr4@"))
-				{
-					s = s.substring(5);
-					byte1 = 4;
-				}
-				if (s != null && s.startsWith("@cr5@"))
-				{
-					s = s.substring(5);
-					byte1 = 5;
-				}
-				if (s != null && s.startsWith("@cr6@"))
-				{
-					s = s.substring(5);
-					byte1 = 6;
-				}
-				if (s != null && s.startsWith("@cr7@"))
-				{
-					s = s.substring(5);
-					byte1 = 7;
-				}
-				if (s != null && s.startsWith("@cr8@"))
-				{
-					s = s.substring(5);
-					byte1 = 8;
-				}
-				if (s != null && s.startsWith("@cr9@"))
-				{
-					s = s.substring(5);
-					byte1 = 9;
-				}
-				if (s != null && s.startsWith("@cr10@"))
-				{
-					s = s.substring(6);
-					byte1 = 10;
-				}
-				if (s != null && s.startsWith("@cr11@"))
-				{
-					s = s.substring(6);
-					byte1 = 11;
-				}
-				if (s != null && s.startsWith("@cr12@"))
-				{
-					s = s.substring(6);
-					byte1 = 12;
-				}
-				if (s != null && s.startsWith("@cr13@"))
-				{
-					s = s.substring(6);
-					byte1 = 13;
-				}
-				if (s != null && s.startsWith("@cr14@"))
-				{
-					s = s.substring(6);
-					byte1 = 14;
-				}
-				if ((k == 3 || k == 7)
-					&& (k == 7 || privateChatMode == 0 || privateChatMode == 1 && isStonerOrSelf(s)))
-				{
-					int l = 329 - i * 13;
-
-					l = frameHeight - 170 - i * 13 - extendChatArea;
-
-					int k1 = 4;
-					textDrawingArea.method385(0, "Stoner ", l, k1);
-					textDrawingArea.method385(getChatColor(), "Stoner ", l - 1, k1);
-					k1 += textDrawingArea.getTextWidth("Stoner ");
-					if (byte1 >= 1)
-					{
-						modIcons[byte1 - 1].drawSprite(k1 - 3, l - 15);
-						k1 += 12;
-					}
-					textDrawingArea.method385(0, s + " said: " + chatMessages[j], l, k1);
-					textDrawingArea.method385(getChatColor(), s + " said: " + chatMessages[j], l - 1, k1);
-					if (++i >= 5)
-					{
-						return;
-					}
-				}
-				if (k == 5 && privateChatMode < 2)
-				{
-					int i1 = 329 - i * 13;
-
-					i1 = frameHeight - 170 - i * 13 - extendChatArea;
-
-					textDrawingArea.method385(0, chatMessages[j], i1, 4);
-					textDrawingArea.method385(getChatColor(), chatMessages[j], i1 - 1, 4);
-					if (++i >= 5)
-					{
-						return;
-					}
-				}
-				if (k == 6 && privateChatMode < 2)
-				{
-					int j1 = 329 - i * 13;
-
-					j1 = frameHeight - 170 - i * 13 - extendChatArea;
-
-					textDrawingArea.method385(0, "You told " + s + ": " + chatMessages[j], j1, 4);
-					textDrawingArea.method385(getChatColor(), "You told " + s + ": " + chatMessages[j], j1 - 1, 4);
-					if (++i >= 5)
-					{
-						return;
-					}
-				}
-			}
-
-
-		}
-	}
-
-	private boolean inBounds(int mx, int my, int x, int y, int w, int h) {
+	public static boolean inBounds(int mx, int my, int x, int y, int w, int h) {
 		return mx >= x && mx <= x + w && my >= y && my <= y + h;
 	}
 
@@ -8934,80 +7980,7 @@ public class Client extends ClientEngine
 		welcomeScreenRaised = true;
 	}
 
-	public void rightClickChatButtons()
-	{
-		if (MouseState.y >= frameHeight - 22 && MouseState.y <= frameHeight)
-		{
-			if (MouseState.x >= 5 && MouseState.x <= 61)
-			{
-				menuActionName[1] = "See All";
-				menuActionID[1] = 999;
-				menuActionRow = 2;
-			}
-			else if (MouseState.x >= 71 && MouseState.x <= 127)
-			{
-				menuActionName[1] = "See Game";
-				menuActionID[1] = 998;
-				menuActionRow = 2;
-			}
-			else if (MouseState.x >= 137 && MouseState.x <= 193)
-			{
-				menuActionName[1] = "Blind Public";
-				menuActionID[1] = 997;
-				menuActionName[2] = "Ignore Public";
-				menuActionID[2] = 996;
-				menuActionName[3] = "Stoners Public";
-				menuActionID[3] = 995;
-				menuActionName[4] = "Public";
-				menuActionID[4] = 994;
-				menuActionName[5] = "See Only Public";
-				menuActionID[5] = 993;
-				menuActionRow = 6;
-			}
-			else if (MouseState.x >= 203 && MouseState.x <= 259)
-			{
-				menuActionName[1] = "No PM";
-				menuActionID[1] = 992;
-				menuActionName[2] = "Stoners PM";
-				menuActionID[2] = 991;
-				menuActionName[3] = "Social PM";
-				menuActionID[3] = 990;
-				menuActionName[4] = "See Only PM";
-				menuActionID[4] = 989;
-				menuActionRow = 5;
-			}
-			else if (MouseState.x >= 269 && MouseState.x <= 325)
-			{
-				menuActionName[1] = "No Cult Chat";
-				menuActionID[1] = 1003;
-				menuActionName[2] = "Stoners Cult Chat";
-				menuActionID[2] = 1002;
-				menuActionName[3] = "Cult Chat";
-				menuActionID[3] = 1001;
-				menuActionName[4] = "See Only Cult Chat";
-				menuActionID[4] = 1000;
-				menuActionRow = 5;
-			}
-			else if (MouseState.x >= 335 && MouseState.x <= 391)
-			{
-				menuActionName[1] = "Dont Deal";
-				menuActionID[1] = 987;
-				menuActionName[2] = "Deal With Stoners";
-				menuActionID[2] = 986;
-				menuActionName[3] = "Deal Anyone";
-				menuActionID[3] = 985;
-				menuActionName[4] = "See Only Deals";
-				menuActionID[4] = 984;
-				menuActionRow = 5;
-			}
-			else if (MouseState.x >= 404 && MouseState.x <= 515)
-			{
-				menuActionName[1] = "Report Sucker";
-				menuActionID[1] = 606;
-				menuActionRow = 2;
-			}
-		}
-	}
+
 
 	public void processRightClick() {
 		if (activeInterfaceType != 0)
@@ -9125,28 +8098,7 @@ public class Client extends ClientEngine
 		anInt1315 = 0;
 	}
 
-	private void handleChatAreaMenu(Set<Integer> handled) {
-		if (!showChatComponents) return;
 
-		int chatYStart = frameHeight - (165 + extendChatArea);
-		if (MouseState.x > 0 && MouseState.x < 490 &&
-			MouseState.y > chatYStart && MouseState.y < frameHeight - 40) {
-			if (backDialogID != -1 && handled.add(backDialogID)) {
-				buildInterfaceMenu(20, RSInterface.interfaceCache[backDialogID], frameHeight - 145, 0);
-			} else {
-				buildChatAreaMenu(MouseState.y - (frameHeight - 165));
-			}
-		}
-
-		if (backDialogID != -1 && anInt886 != anInt1039) {
-			inputTaken = true;
-			anInt1039 = anInt886;
-		}
-		if (backDialogID != -1 && anInt1315 != anInt1500) {
-			inputTaken = true;
-			anInt1500 = anInt1315;
-		}
-	}
 
 	private void handleMinimapMenu() {
 		if (MouseState.x > 4 && MouseState.y > 480 && MouseState.x < 516 && MouseState.y < frameHeight) {
@@ -10261,7 +9213,7 @@ public class Client extends ClientEngine
 
 
 
-	private String interfaceIntToString(long j)
+	private static String interfaceIntToString(long j)
 	{
 		if (j < 0x3b9ac9ff)
 			return String.valueOf(j);
@@ -10807,7 +9759,7 @@ public class Client extends ClientEngine
 	}
 
 
-	private boolean buildStonersListMenu(RSInterface class9)
+	private static boolean buildStonersListMenu(RSInterface class9)
 	{
 		int i = class9.contentType;
 		if (i >= 1 && i <= 200 || i >= 701 && i <= 900)
@@ -10860,7 +9812,7 @@ public class Client extends ClientEngine
 
 	}
 
-	public void drawBlackBox(int xPos, int yPos)
+	public static void drawBlackBox(int xPos, int yPos)
 	{
 		DrawingArea.drawPixels(71, yPos - 1, xPos - 2, 0x726451, 1);
 		DrawingArea.drawPixels(69, yPos, xPos + 174, 0x726451, 1);
@@ -10873,7 +9825,7 @@ public class Client extends ClientEngine
 		DrawingArea.method335(0, yPos, 174, 68, 220, xPos);
 	}
 
-	private void drawInterface(int j, int k, RSInterface class9, int l)
+	public static void drawInterface(int j, int k, RSInterface class9, int l)
 	{
 
 		if (class9.parentID == 197)
@@ -11953,7 +10905,7 @@ public class Client extends ClientEngine
 		DrawingArea.setDrawingArea(l1, i1, k1, j1);
 	}
 
-	public int skillHoverIds(int ids)
+	public static int skillHoverIds(int ids)
 	{
 		int[] hoverIds = {24138, 24139, 24140, 24141, 24142, 24143, 24144, 24145, 24146, 24147, 24148, 24149, 24150,
 			24151, 24152, 24153, 24154, 24155, 24156, 24157, 24158, 24159, 24160, 24161};
@@ -12324,7 +11276,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private boolean isStonerOrSelf(String s)
+	public static boolean isStonerOrSelf(String s)
 	{
 		if (s == null)
 			return false;
@@ -12339,21 +11291,6 @@ public class Client extends ClientEngine
 		Signlink.wavevol = i;
 	}
 
-	private int getMoneyOrbColor(long amount)
-	{
-		if (amount >= 0 && amount <= 99999)
-		{
-			return 0xFFFF00;
-		}
-		else if (amount >= 100000 && amount <= 9999999)
-		{
-			return 0xFFFFFF;
-		}
-		else
-		{
-			return 0x00FF80;
-		}
-	}
 
 	private void draw3dScreen() {
 		drawGameOverlays();
@@ -12363,22 +11300,6 @@ public class Client extends ClientEngine
 		drawMiscOverlays();
 		drawClientDiagnostics();
 		drawSystemUpdateCountdown();
-	}
-
-	private void drawGameOverlays() {
-		if (counterOn) drawCounterOnScreen();
-		if (showChatComponents) drawSplitPrivateChat();
-		BannerManager.drawMovingBanner();
-
-		if (crossType == 1) {
-			crosses[crossIndex / 100].drawSprite(crossX - 8, crossY - 8);
-			if (++anInt1142 > 67) {
-				anInt1142 = 0;
-				stream.createFrame(78);
-			}
-		} else if (crossType == 2) {
-			crosses[4 + crossIndex / 100].drawSprite(crossX - 8, crossY - 8);
-		}
 	}
 
 	private void drawContextualInterfaces() {
@@ -12955,7 +11876,7 @@ public class Client extends ClientEngine
 			Signlink.midi = "voladjust";
 	}
 
-	private long extractInterfaceValues(RSInterface class9, int j)
+	public static long extractInterfaceValues(RSInterface class9, int j)
 	{
 		if (class9.valueIndexArray == null || j >= class9.valueIndexArray.length)
 			return -2;
@@ -13141,156 +12062,6 @@ public class Client extends ClientEngine
 		}
 	}
 
-
-	private void drawGameUIorbs()
-	{
-		{
-			gameOrbUIsetup();
-		}
-	}
-
-
-	private void gameOrbUIsetup()
-	{
-		if (Configuration.enableStatusOrbs)
-		{
-			int setXpOrbPosX = 96; // Modify this
-			int setXpOrbPosY = 2; // Modify this
-
-			int xpOrbX = frameWidth - setXpOrbPosX;
-			int xpOrbY = setXpOrbPosY;
-
-			final boolean hoveringXpOrb =
-				MouseState.x >= xpOrbX && MouseState.x <= xpOrbX + 26 &&
-					MouseState.y >= xpOrbY && MouseState.y <= xpOrbY + 26;
-
-			orbComponents3[hoveringXpOrb ? 1 : 0].drawSprite(xpOrbX, xpOrbY);
-			loadAllOrbs(frameWidth - 217);
-		}
-// ──────────────── COMPASS ────────────────
-		{
-			int setCompassPosX = 62;
-			int setCompassPosY = 10;
-
-			int compassX = frameWidth - setCompassPosX;
-			int compassY = setCompassPosY;
-
-			compass.drawRotatedSpriteAt(compassX, compassY, minimapInt1, 256);
-
-		}
-
-
-
-		boolean hoveringLogout =
-			MouseState.x >= frameWidth - 26 && MouseState.x <= frameWidth - 1 &&
-				MouseState.y >= 2 && MouseState.y <= 24;
-		if (hoveringLogout)
-		{
-			cacheSprite[348].drawARGBSprite(frameWidth - 23, 0, 205);
-		}
-		else
-		{
-			cacheSprite[348].drawSprite(frameWidth - 23, 0);
-		}
-		if (tabID == 14)
-		{
-			cacheSprite[349].drawSprite(frameWidth - 23, 0);
-		}
-		if (menuOpen)
-		{
-			rightClickMenu(0, 0);
-		}
-	}
-
-	private void handleMinimapInteractions(boolean leftClick, boolean rightClick) {
-		int frameSize = frameWidth - 217;
-		int orbPosX = frameSize + 155;
-
-		// Hover detection and context menu building
-		hpHover = inBounds(MouseState.x, MouseState.y, orbPosX, 45, 56, 32);
-		prayHover = inBounds(MouseState.x, MouseState.y, orbPosX, 85, 56, 32);
-		runHover = inBounds(MouseState.x, MouseState.y, orbPosX, 125, 56, 32);
-		counterHover = inBounds(MouseState.x, MouseState.y, frameWidth - 96, 2, 26, 26);
-		worldHover = inBounds(MouseState.x, MouseState.y, frameWidth - 41, 203, 30, 30);
-
-		if (Configuration.enablePouch) {
-			pouchHover = inBounds(MouseState.x, MouseState.y, frameWidth - 65, 165, 62, 31);
-		}
-
-		if (leftClick && Configuration.enableStatusOrbs) {
-			if (prayHover) {
-				stream.createFrame(185);
-				stream.writeWord(50010); // toggle quick prayers
-			}
-			if (runHover) {
-				stream.createFrame(185);
-				stream.writeWord(152); // toggle run
-			}
-			if (counterHover) {
-				counterOn = !counterOn; // toggle XP counter visibility
-			}
-			if (pouchHover && Configuration.enablePouch) {
-				stream.createFrame(185);
-				stream.writeWord(713); // mimic "Withdraw from debit"
-			}
-
-		}
-
-
-		if (!rightClick) return; // Prevents unnecessary context menu building on hover only
-
-
-		if (changeChatArea) {
-			if (MouseState.x >= 256 && MouseState.x <= 264 &&
-				MouseState.y >= frameHeight - 170 - extendChatArea &&
-				MouseState.y <= frameHeight - 160 - extendChatArea) {
-				menuActionName[1] = "Drag to Extend Chat";
-				menuActionID[1] = 701;
-				menuActionRow = 2;
-			}
-		}
-
-		if (MouseState.x >= frameWidth - 26 && MouseState.x <= frameWidth - 1 &&
-			MouseState.y >= 2 && MouseState.y <= 24) {
-			menuActionName[1] = "Too stoned..";
-			menuActionID[1] = 1004;
-			menuActionRow = 2;
-		}
-
-		if (Configuration.enableStatusOrbs) {
-			if (counterHover) {
-				menuActionName[3] = counterOn ? "See Gains" : "Unsee Gains";
-				menuActionID[3] = 474;
-				menuActionName[2] = "Reset Gains";
-				menuActionID[2] = 475;
-				menuActionName[1] = "Gains settings";
-				menuActionID[1] = 476;
-				menuActionRow = 4;
-			}
-			if (pouchHover && Configuration.enablePouch) {
-				menuActionName[3] = "Withdraw from debit";
-				menuActionID[3] = 713;
-				menuActionName[2] = "Pay with... ";
-				menuActionID[2] = 715;
-				menuActionName[1] = "inspect debit card";
-				menuActionID[1] = 714;
-				menuActionRow = 4;
-			}
-			if (prayHover) {
-				menuActionName[2] = prayClicked ? "Dont channel necromance powers" : "Channel necromance powers";
-				menuActionID[2] = 1500;
-				menuActionName[1] = "Select necromance powers";
-				menuActionID[1] = 1506;
-				menuActionRow = 3;
-			}
-			if (runHover) {
-				menuActionName[1] = variousSettings[173] == 0 ? "Turn haste mode on" : "Turn haste mode off";
-				menuActionID[1] = 1050;
-				menuActionRow = 2;
-			}
-		}
-	}
-
 	private void npcScreenPos(Entity entity, int i)
 	{
 		calcEntityScreenPos(entity.x, i, entity.y);
@@ -13330,67 +12101,6 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void buildSplitPrivateChatMenu()
-	{
-		if (splitPrivateChat == 0)
-			return;
-		int i = 0;
-		if (anInt1104 != 0)
-			i = 1;
-		for (int j = 0; j < 100; j++)
-			if (chatMessages[j] != null)
-			{
-				int k = chatTypes[j];
-				String s = chatNames[j];
-				if (s != null && s.startsWith("@cr"))
-				{
-					if (s.charAt(4) != '@')
-					{
-						s = s.substring(6);
-					}
-					else
-					{
-						s = s.substring(5);
-					}
-				}
-				if ((k == 3 || k == 7)
-					&& (k == 7 || privateChatMode == 0 || privateChatMode == 1 && isStonerOrSelf(s)))
-				{
-					int offSet = 0;
-					int l = 329 - i * 13;
-
-					l = frameHeight - 170 - i * 13 - extendChatArea;
-
-					if (MouseState.x > 4 && MouseState.y - offSet > l - 10 && MouseState.y - offSet <= l + 3)
-					{
-						int i1 = regularText.getTextWidth("From:  " + s + chatMessages[j]) + 25;
-						if (i1 > 450)
-							i1 = 450;
-						if (MouseState.x < 4 + i1)
-						{
-							if (myPrivilege >= 1)
-							{
-								menuActionName[menuActionRow] = "Report sucker @whi@" + s;
-								menuActionID[menuActionRow] = 2606;
-								menuActionRow++;
-							}
-							menuActionName[menuActionRow] = "Fuck off @whi@" + s;
-							menuActionID[menuActionRow] = 2042;
-							menuActionRow++;
-							menuActionName[menuActionRow] = "Add stoner @whi@" + s;
-							menuActionID[menuActionRow] = 2337;
-							menuActionRow++;
-						}
-					}
-					if (++i >= 5)
-						return;
-				}
-				if ((k == 5 || k == 6) && privateChatMode < 2 && ++i >= 5)
-					return;
-			}
-
-	}
-
 	private void method130(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2)
 	{
 		Class30_Sub1 class30_sub1 = null;
@@ -13422,7 +12132,7 @@ public class Client extends ClientEngine
 		class30_sub1.anInt1294 = j;
 	}
 
-	private boolean interfaceIsSelected(RSInterface class9)
+	private static boolean interfaceIsSelected(RSInterface class9)
 	{
 		if (class9.anIntArray245 == null)
 			return false;
@@ -13530,59 +12240,6 @@ public class Client extends ClientEngine
 					anIntArray840[anInt839++] = i1;
 			}
 		}
-	}
-
-	public void pushMessage(String s, int i, String s1, String title, String color)
-	{
-
-		if (i == 0 && dialogID != -1)
-		{
-			aString844 = s;
-		}
-		if (backDialogID == -1)
-			inputTaken = true;
-		for (int j = 499; j > 0; j--)
-		{
-			chatTypes[j] = chatTypes[j - 1];
-			chatNames[j] = chatNames[j - 1];
-			chatMessages[j] = chatMessages[j - 1];
-			chatRights[j] = chatRights[j - 1];
-			chatTitles[j] = chatTitles[j - 1];
-			chatColors[j] = chatColors[j - 1];
-		}
-		chatTypes[0] = i;
-		chatNames[0] = s1;
-		chatMessages[0] = s;
-		chatRights[0] = rights;
-		chatTitles[0] = title;
-		chatColors[0] = color;
-	}
-
-	public void pushMessage(String s, int i, String s1)
-	{
-		if (i == 0 && dialogID != -1)
-		{
-			aString844 = s;
-		}
-		if (backDialogID == -1)
-		{
-			inputTaken = true;
-		}
-		for (int j = 499; j > 0; j--)
-		{
-			chatTypes[j] = chatTypes[j - 1];
-			chatNames[j] = chatNames[j - 1];
-			chatMessages[j] = chatMessages[j - 1];
-			chatRights[j] = chatRights[j - 1];
-			chatTitles[j] = chatTitles[j - 1];
-			chatColors[j] = chatColors[j - 1];
-			clanTitles[j] = clanTitles[j - 1];
-		}
-		chatTypes[0] = i;
-		chatNames[0] = s1;
-		chatMessages[0] = s;
-		chatRights[0] = rights;
-		clanTitles[0] = clanTitle;
 	}
 
 	private void method137(Stream stream, int j)
@@ -14249,7 +12906,7 @@ public class Client extends ClientEngine
 					aBoolean1160 = false;
 					for (int l = 0; l < 5; l++)
 						aBooleanArray876[l] = false;
-					xpCounter = 0;
+					StatusOrbs.xpCounter = 0;
 					pktType = -1;
 					return true;
 
@@ -15050,13 +13707,9 @@ public class Client extends ClientEngine
 					{
 						String text = inStream.readString();
 						int frame = inStream.method435();
-						//System.out.println("sendstring=" + text + ", frame=" + frame);
-						//if (text.startsWith("www.") || text.startsWith("http://www."))
-						//{
-						//	openURL(text);
-						//}
+
 						if (text.startsWith(":quicks:"))
-							clickedQuickPrayers = text.substring(8).equalsIgnoreCase("on");
+							StatusOrbs.clickedQuickPrayers = text.substring(8).equalsIgnoreCase("on");
 						if (text.startsWith(":prayer:"))
 							prayerBook = text.substring(8);
 
@@ -15108,7 +13761,7 @@ public class Client extends ClientEngine
 					{
 						int skill = inStream.readSignedByte();
 						int exp = inStream.readDWord();
-						xpCounter = inStream.readDWord();
+						StatusOrbs.xpCounter = inStream.readDWord();
 						addXP(skill, exp);
 					}
 					catch (Exception e)
@@ -15470,75 +14123,6 @@ public class Client extends ClientEngine
 		return true;
 	}
 
-	public void openURL(String url)
-	{
-		try
-		{
-			Desktop.getDesktop().browse(new URI(url));
-		}
-		catch (Exception e)
-		{
-		}
-	}
-
-	private void replyToPM()
-	{
-		String name = null;
-		for (int k = 0; k < 100; k++)
-		{
-			if (chatMessages[k] == null)
-			{
-				continue;
-			}
-			int l = chatTypes[k];
-			if ((l == 3) || (l == 7))
-			{
-				name = chatNames[k];
-				break;
-			}
-		}
-		if (name == null)
-		{
-			pushMessage("No one needs you right now, ease up and smoke weed.", 0, "");
-			return;
-		}
-		if (name != null)
-		{
-			if (name.indexOf("@") == 0)
-			{
-				name = name.substring(5);
-			}
-		}
-		long nameAsLong = TextClass.longForName(name.trim());
-		int k3 = -1;
-		for (int i4 = 0; i4 < stonersCount; i4++)
-		{
-			if (stonersListAsLongs[i4] != nameAsLong)
-			{
-				continue;
-			}
-			k3 = i4;
-			break;
-		}
-		if (k3 != -1)
-		{
-			if (stonersNodeIDs[k3] > 0)
-			{
-				inputTaken = true;
-				inputDialogState = 0;
-				messagePromptRaised = true;
-				promptInput = "";
-				stonersListAction = 3;
-				aLong953 = stonersListAsLongs[k3];
-				aString1121 = "Say what u want to " + stonersList[k3];
-			}
-			else
-			{
-				pushMessage("That stoner is way too stoned.", 0, "");
-			}
-		}
-	}
-
 	private void method146(Graphics2D g)
 	{
 		anInt1265++;
@@ -15667,315 +14251,8 @@ public class Client extends ClientEngine
 		xCameraCurve = l1;
 	}
 
-	private void loadAllOrbs(int xOffset) {
-		if (!Configuration.enableStatusOrbs) return;
 
-		// ──────────────── POUCH DRAW ────────────────
-		if (Configuration.enablePouch) {
-			int setPouchPosX = 62; // Modify
-			int pouchPosX = frameWidth - setPouchPosX;
-			int pouchTextPosX = frameWidth - (setPouchPosX - 43);
-			int pouchFillPosX = frameWidth - (setPouchPosX - 16);
-			int pouchIconPosX = frameWidth - (setPouchPosX - 8);
-
-			int setPouchPosY = 165; // Modify
-			int pouchTextPosY = setPouchPosY + 25;
-			int pouchFillPosY = setPouchPosY + 15;
-			int pouchIconPosY = setPouchPosY + 7;
-
-			// { X, Y, TextX, TextY, FillX, FillY, CoinIconX, CoinIconY }
-			final int[] pouchLayout = new int[] { pouchPosX, setPouchPosY, pouchTextPosX, pouchTextPosY, pouchFillPosX, pouchFillPosY, pouchIconPosX, pouchIconPosY };
-
-			int pouchX       = pouchLayout[0];
-			int pouchY       = pouchLayout[1];
-			int coinTextX    = pouchLayout[2];
-			int coinTextY    = pouchLayout[3];
-			int fillX        = pouchLayout[4];
-			int fillY        = pouchLayout[5];
-			int coinIconX    = pouchLayout[6];
-			int coinIconY    = pouchLayout[7];
-
-			DrawingArea.fillCircle(fillX, fillY, 15, 0x6E6D6D);
-			cacheSprite[pouchHover ? 429 : 430].drawSprite(pouchX, pouchY);
-
-			long coins = Long.parseLong(RSInterface.interfaceCache[8135].disabledMessage);
-			smallText.method382(getMoneyOrbColor(coins), coinTextX, formatBestBucks(coins), coinTextY, true);
-
-			cacheSprite[428].drawSprite(coinIconX, coinIconY);
-		}
-
-
-		// ──────────────── ORB CONFIG ────────────────
-
-		int orbPosX = 155;
-		int textPosX = orbPosX + 15;
-		int fillPosX = orbPosX + 27;
-		int iconPosX = orbPosX + 33;
-
-		// { X, Y, TextX, TextY, FillX, FillY, IconX, IconY }
-		// HP
-		// Prayer
-		// Run
-		final int[][] layout = new int[][]{
-			{orbPosX, 45, textPosX, 72, fillPosX, 49, iconPosX, 56}, // HP
-			{orbPosX, 85, textPosX, 111, fillPosX, 88, iconPosX - 3, 92}, // Prayer
-			{orbPosX, 125, textPosX, 152, fillPosX, 129, iconPosX, 134} // Run
-		};
-
-		final int[] currentInterface = { 4016, 4012, 149 };
-		final int[] maximumInterface = { 4017, 4013, 149 };
-
-		final int[] spriteID = {
-			isPoisoned && hpHover ? 13 : 12,
-			prayHover ? 13 : 12,
-			runHover ? 13 : 12
-		};
-
-		final int[] coloredOrbSprite = {
-			0,
-			clickedQuickPrayers ? 8 : 1,
-			variousSettings[173] == 1 ? 9 : 8
-		};
-
-		final int[] orbSprite = {
-			14,
-			2,
-			variousSettings[173] == 1 ? 4 : 3
-		};
-
-		long currentHP = extractInterfaceValues(RSInterface.interfaceCache[4016], 0);
-		long currentEnergy = extractInterfaceValues(RSInterface.interfaceCache[19177], 0);
-
-		for (int i = 0; i < 3; i++) {
-			long current = extractInterfaceValues(RSInterface.interfaceCache[currentInterface[i]], 0);
-			long max = extractInterfaceValues(RSInterface.interfaceCache[maximumInterface[i]], 0);
-			int level = (int)((current / (double) max) * 100D);
-			double percent = (i == 2 ? currentEnergy / 100D : level / 100D);
-			int fillHeight = 26 - (int)(26 * percent);
-
-			// ⬤ Draw base orb + fill
-			orbComponents[spriteID[i]].drawSprite(layout[i][0] + xOffset, layout[i][1]);
-			orbComponents[coloredOrbSprite[i]].drawSprite(layout[i][4] + xOffset, layout[i][5]);
-			orbComponents[6].myHeight = fillHeight;
-			try {
-				orbComponents[6].drawSprite(layout[i][4] + xOffset, layout[i][5]);
-			} catch (Exception ignored) {}
-
-			// ⬤ Draw animated or static icon
-			int iconX = layout[i][6] + xOffset;
-			int iconY = layout[i][7];
-			if (level < 25) {
-				int cycle = 125 + (int)(125 * Math.sin(loopCycle / 7.0));
-				orbComponents[orbSprite[i]].drawSprite1(iconX, iconY, cycle);
-			} else {
-				orbComponents[orbSprite[i]].drawSprite(iconX, iconY);
-			}
-
-			// ⬤ Draw text value
-			String text = (i == 2 ? String.valueOf(currentEnergy) :
-				i == 0 && Configuration.enable10xDamage ? String.valueOf(currentHP * 10) :
-					String.valueOf(current));
-			smallText.method382(getOrbTextColor(i == 2 ? currentEnergy : level), layout[i][2] + xOffset, text, layout[i][3], true);
-		}
-
-	}
-
-
-	private void drawCounterOnScreen()
-	{
-		if (!Configuration.enableStatusOrbs)
-		{
-			return;
-		}
-		int x = frameWidth - 110;
-		int y = -30;
-		digits = xpCounter == 0 ? 1 : 1 + (int) Math.floor(Math.log10(xpCounter));
-		int i = smallText.getTextWidth(Integer.toString(xpCounter))
-			- smallText.getTextWidth(Integer.toString(xpCounter)) / 2;
-		smallText.method382(0xffffff, x - 38 - i - digits - 12, "Gained:", y + 50, true);
-		if (xpCounter >= 0)
-		{
-			smallText.method382(0xffffff, x + 1 - i, "+" + NumberFormat.getIntegerInstance().format(xpCounter), y + 50,
-				true);
-		}
-		int currentIndex = 0;
-		int offsetY = 0;
-		int stop = 40;
-		if (!gains.isEmpty())
-		{
-			Iterator<XPGain> gained = gains.iterator();
-			if ((gains.size() > 1))
-			{
-				if (mainGain == null)
-				{
-					XPGain toGain = null;
-					while (gained.hasNext())
-					{
-						XPGain gain = gained.next();
-
-						if (toGain == null)
-						{
-							toGain = new XPGain(gain.skill, 0);
-						}
-
-						Sprite sprite = cacheSprite[gain.getSkill() + 324];
-
-						if (!gainSprites.contains(sprite))
-						{
-							gainSprites.add(sprite);
-						}
-
-						toGain.xp += gain.getXP();
-						currentIndex++;
-					}
-
-					Collections.reverse(gainSprites);
-					mainGain = toGain;
-				}
-
-				if (mainGain == null)
-				{
-					return;
-				}
-
-				if (mainGain.getY() < stop)
-				{
-					if (mainGain.getY() <= 10)
-					{
-						mainGain.increaseAlpha();
-					}
-					if (mainGain.getY() >= stop - 10)
-					{
-						mainGain.decreaseAlpha();
-					}
-					mainGain.increaseY();
-				}
-				else if (mainGain.getY() >= stop)
-				{
-					mainGain = null;
-					gains.clear();
-					gainSprites.clear();
-				}
-
-				if (mainGain == null)
-				{
-					return;
-				}
-
-				if (mainGain.getY() < stop)
-				{
-					if (variousSettings[1030] == 0)
-					{
-						for (int ii = 0; ii < gainSprites.size(); ii++)
-						{
-							Sprite sprite = gainSprites.get(ii);
-							sprite.drawSprite1(x - ii * 25 - 75 - sprite.myWidth / 2,
-								mainGain.getY() - 5 + offsetY + y + 65 - sprite.myHeight / 2, mainGain.getAlpha());
-						}
-						newSmallFont
-							.drawBasicString(
-								"<trans=" + (mainGain.getAlpha()) + ">+"
-									+ String.format("%,d", mainGain.getXP()) + "xp",
-								x - 55, mainGain.getY() + offsetY + y + 65, 0xFFFFFF, 0);
-					}
-					else if (variousSettings[1030] == 1)
-					{
-						for (int ii = 0; ii < gainSprites.size(); ii++)
-						{
-							Sprite sprite = gainSprites.get(ii);
-							sprite.drawSprite1((-mainGain.getY() + frameWidth - 280) - ii * 25 - (sprite.myWidth / 2),
-								80 - (sprite.myHeight / 2) + currentIndex * 28, mainGain.getAlpha());
-						}
-						newSmallFont.drawBasicString(
-							"<trans=" + (mainGain.getAlpha()) + ">+" + String.format("%,d", mainGain.getXP())
-								+ "xp",
-							-mainGain.getY() + frameWidth - 260,
-							85 + (walkableInterfaceMode ? 36 : 0) + currentIndex * 28, 0xFFFFFF, 0);
-					}
-					else if (variousSettings[1030] == 2)
-					{
-						for (int ii = 0; ii < gainSprites.size(); ii++)
-						{
-							Sprite sprite = gainSprites.get(ii);
-							sprite.drawSprite1(x - ii * 25 - 75 - sprite.myWidth / 2,
-								mainGain.getY() - 5 + offsetY + y + 65 - sprite.myHeight / 2, mainGain.getAlpha());
-						}
-						newSmallFont.drawBasicString(
-							"<trans=" + (mainGain.getAlpha()) + ">+" + String.format("%,d", mainGain.getXP())
-								+ "xp",
-							-mainGain.getY() + frameWidth - 260, mainGain.getY() + offsetY + y + 65, 0xFFFFFF, 0);
-					}
-				}
-			}
-			else
-			{
-				while (gained.hasNext())
-				{
-					XPGain gain = gained.next();
-					if (gain.getY() < stop)
-					{
-						if (gain.getY() <= 10)
-						{
-							gain.increaseAlpha();
-						}
-						if (gain.getY() >= stop - 10)
-						{
-							gain.decreaseAlpha();
-						}
-						gain.increaseY();
-					}
-					else if (gain.getY() >= stop)
-					{
-						gained.remove();
-					}
-					Sprite sprite = cacheSprite[gain.getSkill() + 324];
-					if (gain.getY() < stop)
-					{
-						if (variousSettings[1030] == 0)
-						{
-							sprite.drawSprite1(x - 75 - sprite.myWidth / 2,
-								gain.getY() - 5 + offsetY + y + 65 - sprite.myHeight / 2, gain.getAlpha());
-							newSmallFont.drawBasicString(
-								"<trans=" + (gain.getAlpha()) + ">+" + String.format("%,d", gain.getXP()) + "xp",
-								x - 55, gain.getY() + offsetY + y + 65, 0xFFFFFF, 0);
-						}
-						else if (variousSettings[1030] == 1)
-						{
-							sprite.drawSprite1((-gain.getY() + frameWidth - 280) - (sprite.myWidth / 2),
-								80 - (sprite.myHeight / 2) + currentIndex * 28, gain.getAlpha());
-							newSmallFont.drawBasicString(
-								"<trans=" + (gain.getAlpha()) + ">+" + String.format("%,d", gain.getXP()) + "xp",
-								-gain.getY() + frameWidth - 260,
-								85 + (walkableInterfaceMode ? 36 : 0) + currentIndex * 28, 0xFFFFFF, 0);
-						}
-						else if (variousSettings[1030] == 2)
-						{
-							sprite.drawSprite1(x - 75 - sprite.myWidth / 2,
-								gain.getY() - 5 + offsetY + y + 65 - sprite.myHeight / 2, gain.getAlpha());
-							newSmallFont.drawBasicString(
-								"<trans=" + (gain.getAlpha()) + ">+" + String.format("%,d", gain.getXP()) + "xp",
-								-gain.getY() + frameWidth - 260, gain.getY() + offsetY + y + 65, 0xFFFFFF, 0);
-						}
-					}
-					currentIndex++;
-				}
-			}
-		}
-	}
-
-	public int getOrbTextColor(long statusInt)
-	{
-		if (statusInt >= 75 && statusInt <= Integer.MAX_VALUE)
-			return 0x00FF00;
-		else if (statusInt >= 50 && statusInt <= 74)
-			return 0xFFFF00;
-		else if (statusInt >= 25 && statusInt <= 49)
-			return 0xFF981F;
-		else
-			return 0xFF0000;
-	}
-
-	public void clearTopInterfaces()
+	public static void clearTopInterfaces()
 	{
 		stream.createFrame(130);
 		if (invOverlayInterfaceID != -1)
@@ -16179,7 +14456,7 @@ public class Client extends ClientEngine
 		feedYPos[index] = -1;
 	}
 
-	static final class BannerManager
+	public static final class BannerManager
 	{
 
 		private static Banner banner;
@@ -16285,10 +14562,10 @@ public class Client extends ClientEngine
 		}
 	}
 
-	public class XPGain
+	public static class XPGain
 	{
-		private final int skill;
-		private int xp;
+		public final int skill;
+		public int xp;
 		private int y;
 		private int alpha = 0;
 
