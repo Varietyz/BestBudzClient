@@ -988,7 +988,7 @@ public class RSInterface {
 		Tab.hoverType = -1;
 		Tab.anIntArray245 = new int[] { 1 };
 		Tab.anIntArray212 = new int[] { configID };
-		Tab.valueIndexArray = new int[][] { { 5, configFrame, 0 } };
+		Tab.valueIndexArray = new int[][] { { 5, configFrame, configID } };
 		Tab.disabledSprite = Client.cacheSprite[bID];
 		Tab.enabledSprite = Client.cacheSprite[bID2];
 		Tab.tooltip = tT;

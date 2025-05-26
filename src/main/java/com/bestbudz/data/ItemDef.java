@@ -633,7 +633,7 @@ public final class ItemDef {
 				itemDef.name = "Mysterious Bag";
 				itemDef.itemActions = new String[5];
 				itemDef.itemActions[4] = "Throw-away";
-				itemDef.description = "It's a mysterious bag, magical powers can turn it to gold.".getBytes();
+				itemDef.description = "It's a mysterious bag, magical powers can turn it to gold. But you dont have them..".getBytes();
 				break;
 
 			case 995:
@@ -654,7 +654,7 @@ public final class ItemDef {
 				break;
 
 			case 13188:
-				itemDef.name = "Dragon claws";
+				itemDef.name = "D claws";
 				itemDef.itemActions = new String[5];
 				itemDef.itemActions[1] = "Wear";
 				itemDef.description = "It's a pair of D-claws.".getBytes();

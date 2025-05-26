@@ -99,7 +99,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 			{
 				try
 				{
-					gameFrame = new ClientFrame(this, width, height, resizable, undecorated);
+					gameFrame = new ClientFrame(this, width, height, resizable);
 				}
 				catch (UnsupportedLookAndFeelException e)
 				{
@@ -148,7 +148,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		myWidth = w;
 		myHeight = h;
 
-		gameFrame = new ClientFrame(this, myWidth, myHeight, Client.frameMode == Client.ScreenMode.RESIZABLE, Client.frameMode == Client.ScreenMode.FULLSCREEN);
+		gameFrame = new ClientFrame(this, myWidth, myHeight, Client.frameMode == Client.ScreenMode.RESIZABLE);
 		graphics = getGameComponent().getGraphics();
 		fullGameScreen = new ImageProducer(myWidth, myHeight);
 		startRunnable(this, 1);
@@ -365,8 +365,8 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		int tabInterfaceID = Client.tabInterfaceIDs[Client.tabID];
 		if (tabInterfaceID != -1) {
 			RSInterface tab = RSInterface.interfaceCache[tabInterfaceID];
-			offsetX = Client.frameMode == Client.ScreenMode.FIXED ? Client.frameWidth - 218 : (Client.frameMode == Client.ScreenMode.FIXED ? 28 : Client.frameWidth - 197);
-			offsetY = Client.frameMode == Client.ScreenMode.FIXED ? Client.frameHeight - 298 : (Client.frameMode == Client.ScreenMode.FIXED ? 37 : Client.frameHeight - (Client.frameWidth >= 1000 ? 37 : 74) - 267);
+			offsetX = Client.frameWidth - 197;
+			offsetY =Client.frameHeight - 37 - 267;
 			if (tab.children == null) {
 				return;
 			}
@@ -397,7 +397,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 			int x = (Client.frameWidth / 2) - 256;
 			int y = (Client.frameHeight / 2) - 167;
 			int count = !Client.changeTabArea ? 4 : 3;
-			if (Client.frameMode != Client.ScreenMode.FIXED) {
+
 				for (int i = 0; i < count; i++) {
 					if (x + w > (Client.frameWidth - 225)) {
 						x = x - 30;
@@ -412,14 +412,13 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 						}
 					}
 				}
-			}
 			RSInterface rsi = RSInterface.interfaceCache[Client.openInterfaceID];
 			if (Client.openInterfaceID == 5292) {
-				offsetX = Client.frameMode == Client.ScreenMode.FIXED ? 4 : (Client.frameWidth / 2) - 356;
-				offsetY = Client.frameMode == Client.ScreenMode.FIXED ? 4 : (Client.frameHeight / 2) - 230;
+				offsetX = (Client.frameWidth / 2) - 356;
+				offsetY = (Client.frameHeight / 2) - 230;
 			} else {
-				offsetX = Client.frameMode == Client.ScreenMode.FIXED ? 4 : x;
-				offsetY = Client.frameMode == Client.ScreenMode.FIXED ? 4 : y;
+				offsetX = x;
+				offsetY = y;
 			}
 			for (int index = 0; index < rsi.children.length; index++) {
 				if (RSInterface.interfaceCache[rsi.children[index]].scrollMax > 0) {
@@ -465,13 +464,14 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 			mouseWheelY = y;
 			return;
 		}
-		if (e.isMetaDown()) {
+		if (type == MouseEvent.BUTTON3) {
 			clickMode1 = 2;
 			clickMode2 = 2;
-		} else {
+		} else if (type == MouseEvent.BUTTON1) {
 			clickMode1 = 1;
 			clickMode2 = 1;
 		}
+
 	}
 
 	public final void mouseReleased(MouseEvent e) {
@@ -762,23 +762,7 @@ public class ClientEngine extends Applet implements Runnable, ActionListener, Mo
 		String cmd = e.getActionCommand();
 		if (cmd != null)
 		{
-			if (cmd.equalsIgnoreCase("Order weed in BENELUX"))
-			{
-				Client.instance.launchURL("https://wiet-forum.nl/");
-			}
-			else if (cmd.equalsIgnoreCase("Origins of 420"))
-			{
-				Client.instance.launchURL("https://420waldos.com/");
-			}
-			else if (cmd.equalsIgnoreCase("History of weed"))
-			{
-				Client.instance.launchURL("https://www.history.com/topics/crime/history-of-marijuana");
-			}
-			else if (cmd.equalsIgnoreCase("Discord stoner community"))
-			{
-				Client.instance.launchURL("https://discord.com/invite/c8NNM652qv");
-			}
-			else if (cmd.equalsIgnoreCase("Search item IDs"))
+if (cmd.equalsIgnoreCase("Search item IDs"))
 			{
 				Client.instance.launchURL("https://www.itemdb.biz/");
 			}

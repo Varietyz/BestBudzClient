@@ -41,24 +41,12 @@ public class LoginRenderer {
 			null
 		);
 
-		Client.cacheSprite[
-          Client.frameMode == Client.ScreenMode.FIXED
-                  || client.mouseInRegion(centerX - 83, centerY + 160, centerX - 30, centerY + 197)
-              ? 1
-              : 0]
-          .drawSprite(centerX - 83, centerY + 161);
       Client.cacheSprite[
           Client.frameMode == Client.ScreenMode.RESIZABLE
                   || client.mouseInRegion(centerX - 23, centerY + 160, centerX + 30, centerY + 197)
               ? 3
               : 2]
           .drawSprite(centerX - 23, centerY + 161);
-      Client.cacheSprite[
-          Client.frameMode == Client.ScreenMode.FULLSCREEN
-                  || client.mouseInRegion(centerX + 40, centerY + 160, centerX + 90, centerY + 197)
-              ? 5
-              : 4]
-          .drawSprite(centerX + 37, centerY + 161);
 
       if (client.mouseInRegion(centerX - 64, centerY + 34, centerX + 69, centerY + 77)) {
         Client.cacheSprite[7].drawSprite(centerX - 64, centerY + 34);
@@ -232,14 +220,8 @@ public class LoginRenderer {
     int centerX = Client.frameWidth / 2, centerY = Client.frameHeight / 2;
     if (client.loginScreenState == 0) {
       if (client.clickMode3 == 1
-          && client.clickInRegion(centerX - 83, centerY + 160, centerX - 30, centerY + 197))
-        Client.frameMode(Client.ScreenMode.FIXED);
-      if (client.clickMode3 == 1
           && client.clickInRegion(centerX - 23, centerY + 160, centerX + 30, centerY + 197))
         Client.frameMode(Client.ScreenMode.RESIZABLE);
-      if (client.clickMode3 == 1
-          && client.clickInRegion(centerX + 40, centerY + 160, centerX + 90, centerY + 197))
-        Client.frameMode(Client.ScreenMode.FULLSCREEN);
       if (client.clickMode3 == 1
           && client.clickInRegion(centerX - 108, centerY - 82, centerX + 143, centerY - 55))
         client.loginScreenCursorPos = 0;
@@ -248,7 +230,7 @@ public class LoginRenderer {
         client.loginScreenCursorPos = 1;
       if (client.clickMode3 == 1
           && client.clickInRegion(centerX + 40, centerY + 7, centerX + 127, centerY + 17)) {
-        client.launchURL("https://discord.gg/tp56ZrBYmB");
+        client.launchURL("https://discord.gg/KmwKYtcVNR");
       }
       if (client.clickMode3 == 1
           && client.clickInRegion(centerX - 373, centerY + 203, centerX - 297, centerY + 240)) {

@@ -229,101 +229,83 @@ public final class Rasterizer extends DrawingArea
 
 		return texels;
 	}
+	private static final double GLOBAL_HUE_SHIFT = 0.6; // +10%
+	private static final boolean ENABLE_RED_OVERRIDE = true;
+	private static final boolean ENABLE_YELLOW_SKIP = true;
 
-	private static final double GLOBAL_HUE_SHIFT = 0.3; // shift hue by +10%
 	public static void generateColorPalette(double hueShift) {
-		//d += Math.random() * 0.029999999999999999D - 0.014999999999999999D;
-		int j = 0;
+		int index = 0;
+
 		for (int k = 0; k < 512; k++) {
-			double d1 = (double) (k / 8) / 64D + 0.0078125D;
-			double originalHue = d1;
+			double originalHue = (k / 8.0) / 64.0 + 0.0078125;
+			double hue = modifyHue(originalHue);
 
-			boolean skipHueShift = originalHue >= 0.05D && originalHue <= 0.16D;
+			double saturation = (k & 7) / 8.0 + 0.0625;
+			saturation = Math.min(1.0, saturation * 0.8);
 
-			if (originalHue <= 0.05D || originalHue >= 0.97D) {
-				d1 = 0.30D; // lime
-			} else if (!skipHueShift) {
-				d1 += GLOBAL_HUE_SHIFT;
-				if (d1 > 1.0D) d1 -= 1.0D;
-			}
+			for (int i = 0; i < 128; i++) {
+				double luminance = i / 128.0;
 
+				double r = luminance, g = luminance, b = luminance;
 
+				if (saturation != 0.0) {
+					double q = luminance < 0.5
+						? luminance * (1.0 + saturation)
+						: (luminance + saturation) - (luminance * saturation);
+					double p = 2 * luminance - q;
 
-			double d2 = (double) (k & 7) / 8D + 0.0625D;
-			d2 *= 0.8D; // 🟨 saturation
-			if (d2 > 1.0D) d2 = 1.0D;
-
-			for (int k1 = 0; k1 < 128; k1++) {
-				double d3 = (double) k1 / 128D;
-				double d4 = d3;
-				double d5 = d3;
-				double d6 = d3;
-				if (d2 != 0.0D) {
-					double d7;
-					if (d3 < 0.5D)
-						d7 = d3 * (1.0D + d2);
-					else
-						d7 = (d3 + d2) - d3 * d2;
-					double d8 = 2D * d3 - d7;
-					double d9 = d1 + 0.33333333333333331D;
-					if (d9 > 1.0D)
-						d9--;
-					double d10 = d1;
-					double d11 = d1 - 0.33333333333333331D;
-					if (d11 < 0.0D)
-						d11++;
-					if (6D * d9 < 1.0D)
-						d4 = d8 + (d7 - d8) * 6D * d9;
-					else if (2D * d9 < 1.0D)
-						d4 = d7;
-					else if (3D * d9 < 2D)
-						d4 = d8 + (d7 - d8) * (0.66666666666666663D - d9) * 6D;
-					else
-						d4 = d8;
-					if (6D * d10 < 1.0D)
-						d5 = d8 + (d7 - d8) * 6D * d10;
-					else if (2D * d10 < 1.0D)
-						d5 = d7;
-					else if (3D * d10 < 2D)
-						d5 = d8 + (d7 - d8) * (0.66666666666666663D - d10) * 6D;
-					else
-						d5 = d8;
-					if (6D * d11 < 1.0D)
-						d6 = d8 + (d7 - d8) * 6D * d11;
-					else if (2D * d11 < 1.0D)
-						d6 = d7;
-					else if (3D * d11 < 2D)
-						d6 = d8 + (d7 - d8) * (0.66666666666666663D - d11) * 6D;
-					else
-						d6 = d8;
+					r = hueToRgb(p, q, hue + 1.0 / 3.0);
+					g = hueToRgb(p, q, hue);
+					b = hueToRgb(p, q, hue - 1.0 / 3.0);
 				}
-				int l1 = (int) (d4 * 256D);
-				int i2 = (int) (d5 * 256D);
-				int j2 = (int) (d6 * 256D);
-				int k2 = (l1 << 16) + (i2 << 8) + j2;
-				k2 = adjustColorBrightness(k2, hueShift);
-				if (k2 == 0)
-					k2 = 1;
-				anIntArray1482[j++] = k2;
-			}
 
+				int ri = (int) (r * 256.0);
+				int gi = (int) (g * 256.0);
+				int bi = (int) (b * 256.0);
+
+				int rgb = (ri << 16) | (gi << 8) | bi;
+				rgb = adjustColorBrightness(rgb, hueShift);
+				anIntArray1482[index++] = rgb != 0 ? rgb : 1;
+			}
 		}
 
-		for (int l = 0; l < textureAmount; l++)
-			if (aBackgroundArray1474s[l] != null) {
-				int[] ai = aBackgroundArray1474s[l].anIntArray1451;
-				anIntArrayArray1483[l] = new int[ai.length];
-				for (int j1 = 0; j1 < ai.length; j1++) {
-					anIntArrayArray1483[l][j1] = adjustColorBrightness(ai[j1], hueShift);
-					if ((anIntArrayArray1483[l][j1] & 0xf8f8ff) == 0 && j1 != 0)
-						anIntArrayArray1483[l][j1] = 1;
-				}
-
+		for (int l = 0; l < textureAmount; l++) {
+			if (aBackgroundArray1474s[l] == null) continue;
+			int[] src = aBackgroundArray1474s[l].anIntArray1451;
+			anIntArrayArray1483[l] = new int[src.length];
+			for (int i = 0; i < src.length; i++) {
+				int rgb = adjustColorBrightness(src[i], hueShift);
+				anIntArrayArray1483[l][i] = (rgb & 0xf8f8ff) == 0 && i != 0 ? 1 : rgb;
 			}
+		}
 
-		for (int i1 = 0; i1 < textureAmount; i1++)
-			applyTexture(i1);
+		for (int i = 0; i < textureAmount; i++) {
+			applyTexture(i);
+		}
+	}
 
+	private static double modifyHue(double originalHue) {
+		boolean inYellowRange = originalHue >= 0.05 && originalHue <= 0.16;
+
+		if (ENABLE_RED_OVERRIDE && (originalHue <= 0.05 || originalHue >= 0.97)) {
+			return 0.50; // on red
+		}
+
+		if (ENABLE_YELLOW_SKIP && inYellowRange) {
+			return originalHue;
+		}
+
+		double shifted = originalHue + GLOBAL_HUE_SHIFT;
+		return shifted > 1.0 ? shifted - 1.0 : shifted;
+	}
+
+	private static double hueToRgb(double p, double q, double t) {
+		if (t < 0) t += 1.0;
+		if (t > 1) t -= 1.0;
+		if (t < 1.0 / 6.0) return p + (q - p) * 6.0 * t;
+		if (t < 1.0 / 2.0) return q;
+		if (t < 2.0 / 3.0) return p + (q - p) * (2.0 / 3.0 - t) * 6.0;
+		return p;
 	}
 
 	private static int adjustColorBrightness(int i, double d) {

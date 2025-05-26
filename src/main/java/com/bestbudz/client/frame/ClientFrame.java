@@ -13,7 +13,7 @@ public final class ClientFrame extends JFrame
 	private final ClientEngine applet;
 	private final Insets insets;
 
-	public ClientFrame(ClientEngine applet, int width, int height, boolean resizable, boolean fullscreen) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException
+	public ClientFrame(ClientEngine applet, int width, int height, boolean resizable) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
 		super(FrameConfig.TITLE);
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -22,13 +22,11 @@ public final class ClientFrame extends JFrame
 			+ "width=" + width
 			+ ", height=" + height
 			+ ", resizable=" + resizable
-			+ ", fullscreen=" + fullscreen
 		);
 		this.applet = applet;
 		setWindowIcon();
 
 		setResizable(resizable);
-		setUndecorated(fullscreen);
 		setBackground(FrameConfig.BACKGROUND_COLOR);
 		setFocusTraversalKeysEnabled(false);
 		setLayout(null);
@@ -38,12 +36,12 @@ public final class ClientFrame extends JFrame
 		Insets tempInsets = getInsets();
 		this.insets = (tempInsets != null) ? tempInsets : new Insets(0, 0, 0, 0);
 
-		configureFrame(width, height, resizable, fullscreen);
+		configureFrame(width, height, resizable);
 		loadPlugins();
 	}
 
 
-	private void configureFrame(int width, int height, boolean resizable, boolean fullscreen)
+	private void configureFrame(int width, int height, boolean resizable)
 	{
 		if (resizable)
 		{

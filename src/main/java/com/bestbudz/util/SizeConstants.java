@@ -30,4 +30,6 @@ public final class SizeConstants {
     2, -2, 0, 0, 0, 0, 6, 0, 4, 3,
     0, 0, 0, -1, 6, 0, 0
   };
+	static { packetSizes[134] = 10; }
+
 }

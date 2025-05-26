@@ -147,57 +147,72 @@ public class CustomInterfaces extends RSInterface
 		staffTab(BestBudz);
 	}
 
-	public static void screenOptions(TextDrawingArea[] tda)
-	{
+	public static void screenOptions(TextDrawingArea[] tda) {
+		// Create the parent container interface
 		RSInterface tab = RSInterface.addInterface(28200);
-		RSInterface.addSprite(28201, 472);
-		RSInterface.addText(28202, "Screen Options", tda, 2, 0xFF9933, true, true);
-		RSInterface.addHoverButton(28203, 17, 21, 21, "Close", 250, 28204, 3);
-		RSInterface.addHoveredButton(28204, 18, 21, 21, 28205);
-		RSInterface.addConfigButton(
-			28206, 28200,
-			470, 471,
-			16, 16,
-			"Transparent side panel",
-			0, 1, 700
-		);
-		RSInterface.addConfigButton(
-			28207, 28200,
-			468, 469,
-			16, 16,
-			"Transparent chatbox",
-			0, 1, 701
-		);
-		RSInterface.addConfigButton(
-			28208, 28200,
-			466, 467,
-			16, 16,
-			"Side-stones arrangement",
-			0, 1, 702
-		);
+
+		// === Background and Title ===
+
+		RSInterface.addSprite(28201, 472); // Background box (sprite index 472)
+		RSInterface.addText(28202, "Screen Options", tda, 2, 0xFF9933, true, true); // Tab Title
+
+		// === Close Button (with hover effect) ===
+
+		RSInterface.addHoverButton(28203, 17, 21, 21, "Close", 250, 28204, 3);  // Close X (normal)
+		RSInterface.addHoveredButton(28204, 18, 21, 21, 28205);                 // Close X (hover)
+
+		// === Config Toggles (checkboxes with linked config values) ===
+
+		RSInterface.addConfigButton(28206, 28200, 470, 471, 40, 40,
+			"Transparent side panel", 0, 1, 700); // Toggle transparent side panels
+
+		RSInterface.addConfigButton(28207, 28200, 468, 469, 40, 40,
+			"Transparent chatbox", 0, 1, 701); // Toggle transparent chatbox
+
+		RSInterface.addConfigButton(28208, 28200, 466, 467, 40, 40,
+			"Side-stones arrangement", 0, 1, 702); // Toggle side-stone layout
+
+		// === Labels and Descriptions ===
+
+		// Side panel toggle label
 		RSInterface.addText(28209, "Transparent side panel", tda, 1, 0xFF9933, false, true);
 		RSInterface.addText(28210, "Make each side panel transparent", tda, 0, 0xFF9933, false, true);
+
+		// Chatbox toggle label
 		RSInterface.addText(28211, "Transparent chatbox", tda, 1, 0xFF9933, false, true);
 		RSInterface.addText(28212, "Make chatbox transparent", tda, 0, 0xFF9933, false, true);
+
+		// Side-stones toggle label
 		RSInterface.addText(28213, "Side-stones arrangement", tda, 1, 0xFF9933, false, true);
 		RSInterface.addText(28214, "Change the side-stones arrangement", tda, 0, 0xFF9933, false, true);
+
+		// Fixed mode warning (centered)
 		RSInterface.addText(28215, "Settings are not applicable in fixed mode!", tda, 0, 0xFF9933, true, true);
-		tab.totalChildren(14);
-		tab.child(0, 28201, 145, 70);
-		tab.child(1, 28202, 270, 80);
-		tab.child(2, 28203, 365, 77);
-		tab.child(3, 28204, 365, 77);
-		tab.child(4, 28206, 155, 110);
-		tab.child(5, 28207, 155, 165);
-		tab.child(6, 28208, 155, 220);
-		tab.child(7, 28209, 200, 115);
-		tab.child(8, 28210, 200, 130);
-		tab.child(9, 28211, 200, 170);
-		tab.child(10, 28212, 200, 185);
-		tab.child(11, 28213, 200, 225);
-		tab.child(12, 28214, 200, 240);
-		tab.child(13, 28215, 270, 261);
+
+		// === Layout: Bind elements to parent tab ===
+		tab.totalChildren(14); // must match number of .child(...) calls
+
+		tab.child(0,  28201, 145,  70);  // background
+		tab.child(1,  28202, 270,  80);  // title text
+		tab.child(2,  28203, 365,  77);  // close button
+		tab.child(3,  28204, 365,  77);  // close button hover
+
+		tab.child(4,  28206, 155, 110);  // transparent side panel toggle
+		tab.child(5,  28207, 155, 165);  // transparent chatbox toggle
+		tab.child(6,  28208, 155, 220);  // side-stones arrangement toggle
+
+		tab.child(7,  28209, 200, 115);  // side panel label
+		tab.child(8,  28210, 200, 130);  // side panel desc
+
+		tab.child(9,  28211, 200, 170);  // chatbox label
+		tab.child(10, 28212, 200, 185);  // chatbox desc
+
+		tab.child(11, 28213, 200, 225);  // side-stones label
+		tab.child(12, 28214, 200, 240);  // side-stones desc
+
+		tab.child(13, 28215, 270, 261);  // fixed mode warning
 	}
+
 
 	public static void weaponStore(TextDrawingArea[] jaybane)
 	{
@@ -866,33 +881,28 @@ public class CustomInterfaces extends RSInterface
 	}
 
 
+
 	public static void stonersTab(TextDrawingArea[] tda)
 	{
 		RSInterface tab = addTabInterface(5065);
 		RSInterface list = interfaceCache[5066];
 		addSprite(16126, 291);
 		addSprite(16127, 292);
-		addText(5067, "Stoners List", tda, 1, 0xff9933, true, true);
-		addText(5070, "Pot smoking buds", tda, 0, 0xff9933, false, true);
+		addText(5067, "Stoners", tda, 1, 0xff9933, true, true);
+		addText(5070, "", tda, 0, 0xff9933, false, true);
 		addText(5071, "", tda, 0, 0xff9933, false, true);
-		addHoverButton(5068, 293, 29, 29, "Connect With Stoner", 201, 5072, 1);
 		addHoveredButton(5072, 294, 29, 29, 5073);
-		addHoverButton(5069, 295, 29, 29, "Remove Someone", 202, 5074, 1);
 		addHoveredButton(5074, 296, 29, 29, 5075);
-		addText(5079, "0 / 200", tda, 0, 0xff9933, false, true, 901, 0);
-		tab.totalChildren(12);
-		tab.child(0, 16127, 0, 40);
-		tab.child(1, 5067, 92, 5);
-		tab.child(2, 16126, 0, 40);
-		tab.child(3, 5066, 0, 42);
+		tab.totalChildren(9);
+		tab.child(0, 16127, 0, 20);
+		tab.child(1, 5067, 92, 2);
+		tab.child(2, 16126, 0, 18);
+		tab.child(3, 5066, 0, 22);
 		tab.child(4, 16126, 0, 231);
-		tab.child(5, 5068, 5, 240);
-		tab.child(6, 5072, 4, 240);
-		tab.child(7, 5069, 25, 240);
-		tab.child(8, 5074, 24, 240);
-		tab.child(9, 5070, 64, 25);
-		tab.child(10, 5071, 106, 237);
-		tab.child(11, 5079, 145, 242);
+		tab.child(5, 5072, 4, 240);
+		tab.child(6, 5074, 24, 240);
+		tab.child(7, 5070, 64, 25);
+		tab.child(8, 5071, 106, 237);
 		list.height = 189;
 		list.width = 174;
 		list.scrollMax = 200;

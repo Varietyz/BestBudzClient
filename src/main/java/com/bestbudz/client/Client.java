@@ -73,7 +73,6 @@ import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.File;
@@ -131,7 +130,7 @@ public class Client extends ClientEngine
 	public static boolean showTabComponents = false;
 	public static boolean changeTabArea = true;
 	public static boolean changeChatArea = true;
-	public static boolean transparentTabArea = false;
+	public static boolean transparentTabArea = true;
 	public static int npcBits = 16;
 	public static int extendChatArea = 0;
 	public static Client instance;
@@ -655,9 +654,9 @@ public class Client extends ClientEngine
 		chatTitles = new String[500];
 		clanTitles = new String[500];
 		server = ClientConstants.SERVER_IPS[ClientConstants.worldSelected - 1];
-		anIntArrayArray825 = new int[104][104];
+		anIntArrayArray825 = new int[208][208];
 		stonersNodeIDs = new int[200];
-		groundArray = new NodeList[4][104][104];
+		groundArray = new NodeList[4][208][208];
 		aBoolean831 = false;
 		aStream_834 = new Stream(new byte[5000]);
 		npcArray = new Npc[16384];
@@ -680,13 +679,13 @@ public class Client extends ClientEngine
 		stonerIndices = new int[maxStoners];
 		anIntArray894 = new int[maxStoners];
 		aStreamArray895s = new Stream[maxStoners];
-		anIntArrayArray901 = new int[104][104];
+		anIntArrayArray901 = new int[208][208];
 		aByteArray912 = new byte[16384];
 		currentStats = new int[Skills.SKILLS_COUNT];
 		ignoreListAsLongs = new long[100];
 		loadingError = false;
 		anIntArray928 = new int[5];
-		anIntArrayArray929 = new int[104][104];
+		anIntArrayArray929 = new int[208][208];
 		chatTypes = new int[500];
 		chatNames = new String[500];
 		chatMessages = new String[500];
@@ -801,49 +800,26 @@ public class Client extends ClientEngine
 		if (frameMode != screenMode)
 		{
 			frameMode = screenMode;
-			if (screenMode == ScreenMode.FIXED)
-			{
-				frameWidth = 765;
-				frameHeight = 503;
-				cameraZoom = 600;
-				WorldController.viewDistance = 9;
-				changeChatArea = false;
-				changeTabArea = false;
-			}
-			else if (screenMode == ScreenMode.RESIZABLE)
-			{
 				frameWidth = 1280;
 				frameHeight = 720;
 				WorldController.viewDistance = 35;
 				changeChatArea = true;
 				changeTabArea = true;
-			}
-			else if (screenMode == ScreenMode.FULLSCREEN)
-			{
-				frameWidth = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-				frameHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-				WorldController.viewDistance = 50;
-				changeChatArea = true;
-				changeTabArea = true;
-			}
+
 			rebuildFrameSize(screenMode, frameWidth, frameHeight);
 			setBounds();
 			System.out.println("ScreenMode: " + screenMode.toString());
 		}
-		showChatComponents = screenMode == ScreenMode.FIXED || showChatComponents;
-		showTabComponents = screenMode == ScreenMode.FIXED || showTabComponents;
 	}
 
 	public static void rebuildFrameSize(ScreenMode screenMode, int screenWidth, int screenHeight)
 	{
 		try
 		{
-			screenAreaWidth = (screenMode == ScreenMode.FIXED) ? 512 : screenWidth;
-			screenAreaHeight = (screenMode == ScreenMode.FIXED) ? 334 : screenHeight;
+			screenAreaWidth = screenWidth;
+			screenAreaHeight = screenHeight;
 			frameWidth = screenWidth;
 			frameHeight = screenHeight;
-			instance.refreshFrameSize(screenMode == ScreenMode.FULLSCREEN, screenWidth, screenHeight,
-				screenMode == ScreenMode.RESIZABLE, screenMode != ScreenMode.FIXED);
 			setBounds();
 		}
 		catch (Exception e)
@@ -856,21 +832,9 @@ public class Client extends ClientEngine
 	{
 		Rasterizer.method365(frameWidth, frameHeight);
 		fullScreenTextureArray = Rasterizer.anIntArray1472;
-		Rasterizer.method365(
-			frameMode == ScreenMode.FIXED
-				? (aRSImageProducer_1166 != null ? aRSImageProducer_1166.canvasWidth : 519)
-				: frameWidth,
-			frameMode == ScreenMode.FIXED
-				? (aRSImageProducer_1166 != null ? aRSImageProducer_1166.canvasHeight : 165)
-				: frameHeight);
+		Rasterizer.method365(frameWidth, frameHeight);
 		anIntArray1180 = Rasterizer.anIntArray1472;
-		Rasterizer.method365(
-			frameMode == ScreenMode.FIXED
-				? (aRSImageProducer_1163 != null ? aRSImageProducer_1163.canvasWidth : 250)
-				: frameWidth,
-			frameMode == ScreenMode.FIXED
-				? (aRSImageProducer_1163 != null ? aRSImageProducer_1163.canvasHeight : 335)
-				: frameHeight);
+		Rasterizer.method365(frameWidth, frameHeight);
 		anIntArray1181 = Rasterizer.anIntArray1472;
 		Rasterizer.method365(screenAreaWidth, screenAreaHeight);
 		anIntArray1182 = Rasterizer.anIntArray1472;
@@ -882,37 +846,19 @@ public class Client extends ClientEngine
 			int i9 = Rasterizer.anIntArray1470[k8];
 			ai[i8] = l8 * i9 >> 16;
 		}
-		if (frameMode == ScreenMode.RESIZABLE && (frameWidth >= 766) && (frameWidth <= 1025) && (frameHeight >= 504)
-			&& (frameHeight <= 850))
-		{
-			WorldController.viewDistance = 9;
-			cameraZoom = 375;
-		}
-		else if (frameMode == ScreenMode.FIXED)
-		{
-			WorldController.viewDistance = 9;
-			cameraZoom = 600;
-		}
-		else if (frameMode == ScreenMode.RESIZABLE)
+if (frameMode == ScreenMode.RESIZABLE)
 		{
 			WorldController.viewDistance = 10;
 			cameraZoom = 600;
-		}
-		else if (frameMode == ScreenMode.FULLSCREEN)
-		{
-			WorldController.viewDistance = 10;
-			cameraZoom = 550;
 		}
 		if (extendChatArea > frameHeight - 170)
 		{
 			extendChatArea = frameHeight - 170;
 		}
-		WorldController.method310(500, 800, frameMode == ScreenMode.FIXED ? 512 : frameWidth,
-			frameMode == ScreenMode.FIXED ? 334 : frameHeight, ai);
+		WorldController.method310(500, 800, frameWidth, frameHeight, ai);
 		if (loggedIn)
 		{
-			aRSImageProducer_1165 = new ImageProducer(frameMode == ScreenMode.FIXED ? 512 : frameWidth,
-				frameMode == ScreenMode.FIXED ? 334 : frameHeight);
+			aRSImageProducer_1165 = new ImageProducer(frameWidth, frameHeight);
 		}
 	}
 
@@ -1197,11 +1143,6 @@ public class Client extends ClientEngine
 
 	public boolean getMousePositions()
 	{
-		if (frameMode == ScreenMode.FIXED) {
-			if (super.mouseX > 516 && super.mouseX < 743 && super.mouseY > 0 && super.mouseY < 170) {
-				return false;
-			}
-		}
 
 		if (showChatComponents)
 		{
@@ -1229,9 +1170,6 @@ public class Client extends ClientEngine
 					return false;
 				}
 			}
-		}
-		if (frameMode == ScreenMode.FIXED && super.mouseX > 516 && super.mouseX < 743 && super.mouseY > 0 && super.mouseY < 170) {
-			return false;
 		}
 
 		if (!changeTabArea)
@@ -1272,9 +1210,8 @@ public class Client extends ClientEngine
 		return super.saveClickX >= x1 && super.saveClickX <= x2 && super.saveClickY >= y1 && super.saveClickY <= y2;
 	}
 
-	public boolean mouseMapPosition() {
-		return frameMode == ScreenMode.FIXED &&
-			(super.mouseX < frameWidth - 21 || super.mouseX > frameWidth || super.mouseY < 0 || super.mouseY > 21);
+	public void mouseMapPosition() {
+		return;
 	}
 
 
@@ -1282,8 +1219,8 @@ public class Client extends ClientEngine
 		int boxWidth = regularText.getTextWidth(used == 1 ? s : s1) + 6;
 		int boxHeight = s1 == null ? 25 : 38;
 
-		int centerX = (frameMode == ScreenMode.FIXED ? 512 : FrameConfig.MIN_WIDTH) / 2;
-		int centerY = (frameMode == ScreenMode.FIXED ? 334 : FrameConfig.MIN_HEIGHT) / 2;
+		int centerX = FrameConfig.MIN_WIDTH / 2;
+		int centerY = FrameConfig.MIN_HEIGHT / 2;
 
 		int boxX = centerX - (boxWidth / 2);
 		int boxY = centerY - (boxHeight / 2);
@@ -1355,7 +1292,7 @@ public class Client extends ClientEngine
 
 	public void drawChannelButtons()
 	{
-		final int yOffset = frameMode == ScreenMode.FIXED ? 0 : frameHeight - 165;
+		final int yOffset = frameHeight - 165;
 		fixedGameComponents[3].drawSprite(0, 143 + yOffset);
 		String[] text = {"On", "Stoners", "Off", "Hide"};
 		int[] textColor = {65280, 0xffff00, 0xff0000, 65535};
@@ -1417,11 +1354,6 @@ public class Client extends ClientEngine
 
 	public void extendChatArea()
 	{
-		if (frameMode == ScreenMode.FIXED)
-		{
-			extendChatArea = 0;
-			return;
-		}
 		int offsetY = frameHeight - 160;
 		int x = 256;
 		int y = offsetY - 10 - extendChatArea;
@@ -1448,11 +1380,7 @@ public class Client extends ClientEngine
 
 	private void drawChatArea()
 	{
-		int yOffset = frameMode == ScreenMode.FIXED ? 0 : frameHeight - 165;
-		if (frameMode == ScreenMode.FIXED)
-		{
-			aRSImageProducer_1166.initDrawingArea();
-		}
+		int yOffset = frameHeight - 165;
 		Rasterizer.anIntArray1472 = anIntArray1180;
 		if (chatStateCheck())
 		{
@@ -1740,12 +1668,9 @@ public class Client extends ClientEngine
 		}
 		if (menuOpen)
 		{
-			rightClickMenu(0, frameMode == ScreenMode.FIXED ? 338 : 0);
+			rightClickMenu(0, 0);
 		}
-		if (frameMode == ScreenMode.FIXED)
-		{
-			aRSImageProducer_1166.drawGraphics(338, super.graphics, 0);
-		}
+
 		aRSImageProducer_1165.initDrawingArea();
 		Rasterizer.anIntArray1472 = anIntArray1182;
 	}
@@ -2023,10 +1948,8 @@ public class Client extends ClientEngine
 
 		}
 
-		if (frameMode != ScreenMode.FIXED) {
 			aRSImageProducer_1165.initDrawingArea();
 			DrawingArea.setAllPixelsToZero(); // wipe buffer
-		}
 
 		anInt1071 = 0;
 		for (int k2 = 0; k2 < 104; k2++)
@@ -2110,7 +2033,7 @@ public class Client extends ClientEngine
 				continue;
 			int l = npc.x >> 7;
 			int i1 = npc.y >> 7;
-			if (l < 0 || l >= 104 || i1 < 0 || i1 >= 104)
+			if (l < 0 || l >= 208 || i1 < 0 || i1 >= 208)
 				continue;
 			if (npc.anInt1540 == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64)
 			{
@@ -2694,7 +2617,7 @@ public class Client extends ClientEngine
 
 	public void processChatModeClick()
 	{
-		final int yOffset = frameMode == ScreenMode.FIXED ? 0 : frameHeight - 503;
+		final int yOffset = frameHeight - 503;
 		if (super.mouseX >= 5 && super.mouseX <= 61 && super.mouseY >= yOffset + 482 && super.mouseY <= yOffset + 503)
 		{
 			cButtonHPos = 0;
@@ -2785,8 +2708,7 @@ public class Client extends ClientEngine
 			if (super.saveClickX >= 5 && super.saveClickX <= 61 && super.saveClickY >= yOffset + 482
 				&& super.saveClickY <= yOffset + 505)
 			{
-				if (frameMode != ScreenMode.FIXED)
-				{
+
 					if (setChannel != 0)
 					{
 						cButtonCPos = 0;
@@ -2798,14 +2720,6 @@ public class Client extends ClientEngine
 					{
 						showChatComponents = !showChatComponents;
 					}
-				}
-				else
-				{
-					cButtonCPos = 0;
-					chatTypeView = 0;
-					inputTaken = true;
-					setChannel = 0;
-				}
 				stream.createFrame(95);
 				stream.writeWordBigEndian(publicChatMode);
 				stream.writeWordBigEndian(privateChatMode);
@@ -2814,9 +2728,8 @@ public class Client extends ClientEngine
 			else if (super.saveClickX >= 71 && super.saveClickX <= 127 && super.saveClickY >= yOffset + 482
 				&& super.saveClickY <= yOffset + 505)
 			{
-				if (frameMode != ScreenMode.FIXED)
-				{
-					if (setChannel != 1 && frameMode != ScreenMode.FIXED)
+
+					if (setChannel != 1)
 					{
 						cButtonCPos = 1;
 						chatTypeView = 5;
@@ -2827,14 +2740,7 @@ public class Client extends ClientEngine
 					{
 						showChatComponents = !showChatComponents;
 					}
-				}
-				else
-				{
-					cButtonCPos = 1;
-					chatTypeView = 5;
-					inputTaken = true;
-					setChannel = 1;
-				}
+
 				stream.createFrame(95);
 				stream.writeWordBigEndian(publicChatMode);
 				stream.writeWordBigEndian(privateChatMode);
@@ -2843,9 +2749,8 @@ public class Client extends ClientEngine
 			else if (super.saveClickX >= 137 && super.saveClickX <= 193 && super.saveClickY >= yOffset + 482
 				&& super.saveClickY <= yOffset + 505)
 			{
-				if (frameMode != ScreenMode.FIXED)
-				{
-					if (setChannel != 2 && frameMode != ScreenMode.FIXED)
+
+					if (setChannel != 2)
 					{
 						cButtonCPos = 2;
 						chatTypeView = 1;
@@ -2856,14 +2761,7 @@ public class Client extends ClientEngine
 					{
 						showChatComponents = !showChatComponents;
 					}
-				}
-				else
-				{
-					cButtonCPos = 2;
-					chatTypeView = 1;
-					inputTaken = true;
-					setChannel = 2;
-				}
+
 				stream.createFrame(95);
 				stream.writeWordBigEndian(publicChatMode);
 				stream.writeWordBigEndian(privateChatMode);
@@ -2872,9 +2770,8 @@ public class Client extends ClientEngine
 			else if (super.saveClickX >= 203 && super.saveClickX <= 259 && super.saveClickY >= yOffset + 482
 				&& super.saveClickY <= yOffset + 505)
 			{
-				if (frameMode != ScreenMode.FIXED)
-				{
-					if (setChannel != 3 && frameMode != ScreenMode.FIXED)
+
+					if (setChannel != 3)
 					{
 						cButtonCPos = 3;
 						chatTypeView = 2;
@@ -2885,14 +2782,7 @@ public class Client extends ClientEngine
 					{
 						showChatComponents = !showChatComponents;
 					}
-				}
-				else
-				{
-					cButtonCPos = 3;
-					chatTypeView = 2;
-					inputTaken = true;
-					setChannel = 3;
-				}
+
 				stream.createFrame(95);
 				stream.writeWordBigEndian(publicChatMode);
 				stream.writeWordBigEndian(privateChatMode);
@@ -2901,9 +2791,8 @@ public class Client extends ClientEngine
 			else if (super.saveClickX >= 269 && super.saveClickX <= 325 && super.saveClickY >= yOffset + 482
 				&& super.saveClickY <= yOffset + 505)
 			{
-				if (frameMode != ScreenMode.FIXED)
-				{
-					if (setChannel != 4 && frameMode != ScreenMode.FIXED)
+
+					if (setChannel != 4)
 					{
 						cButtonCPos = 4;
 						chatTypeView = 5;
@@ -2914,14 +2803,6 @@ public class Client extends ClientEngine
 					{
 						showChatComponents = !showChatComponents;
 					}
-				}
-				else
-				{
-					cButtonCPos = 4;
-					chatTypeView = 5;
-					inputTaken = true;
-					setChannel = 4;
-				}
 				stream.createFrame(95);
 				stream.writeWordBigEndian(publicChatMode);
 				stream.writeWordBigEndian(privateChatMode);
@@ -2930,9 +2811,8 @@ public class Client extends ClientEngine
 			else if (super.saveClickX >= 335 && super.saveClickX <= 391 && super.saveClickY >= yOffset + 482
 				&& super.saveClickY <= yOffset + 505)
 			{
-				if (frameMode != ScreenMode.FIXED)
-				{
-					if (setChannel != 5 && frameMode != ScreenMode.FIXED)
+
+					if (setChannel != 5)
 					{
 						cButtonCPos = 5;
 						chatTypeView = 3;
@@ -2943,14 +2823,7 @@ public class Client extends ClientEngine
 					{
 						showChatComponents = !showChatComponents;
 					}
-				}
-				else
-				{
-					cButtonCPos = 5;
-					chatTypeView = 3;
-					inputTaken = true;
-					setChannel = 5;
-				}
+
 				stream.createFrame(95);
 				stream.writeWordBigEndian(publicChatMode);
 				stream.writeWordBigEndian(privateChatMode);
@@ -3479,9 +3352,9 @@ public class Client extends ClientEngine
 
 	public void drawSideIcons()
 	{
-		int xOffset = frameMode == ScreenMode.FIXED ? 0 : frameWidth - 247;
-		int yOffset = frameMode == ScreenMode.FIXED ? 0 : frameHeight - 336;
-		if (frameMode == ScreenMode.FIXED || frameMode != ScreenMode.FIXED && !changeTabArea)
+		int xOffset = frameWidth - 247;
+		int yOffset = frameHeight - 336;
+		if (!changeTabArea)
 		{
 			cacheSprite[370].drawSprite(sideIconsX[8] + xOffset + 168, sideIconsY[7] + yOffset);
 			for (int i = 0; i < sideIconsTab.length; i++)
@@ -3495,24 +3368,7 @@ public class Client extends ClientEngine
 				}
 			}
 		}
-		else if (changeTabArea && frameWidth < 1000) // Flat stackstones?
-		{
-			int[] iconId = {0, 1, 2, 3, 4, 5, 6, 15, 8, 9, 7, 11, 12, -1};
-			int[] iconX = {219, 189, 158, 126, 94, 62, 30, 221, 189, 156, 125, 93, 60, 24};
-			int[] iconY = {65, 66, 68, 69, 72, 70, 68, 31, 31, 32, 32, 32, 32, 28, 32};
-			cacheSprite[370].drawSprite(frameWidth - 29, frameHeight - 29);
-			for (int i = 0; i < sideIconsTab.length; i++)
-			{
-				if (tabInterfaceIDs[sideIconsTab[i]] != -1)
-				{
-					if (iconId[i] != -1)
-					{
-						sideIcons[iconId[i]].drawSprite(frameWidth - iconX[i], frameHeight - iconY[i]);
-					}
-				}
-			}
-		}
-		else if (changeTabArea && frameWidth >= 1000) // Flatstones?
+		else
 		{
 			int[] iconId = {0, 1, 2, 3, 4, 5, 6, 15, 8, 9, 7, 11, 12, -1};
 			int[] iconX = {19, 49, 80, 112, 144, 176, 208, 242, 273, 306, 338, 369, 402, 435};
@@ -3533,29 +3389,16 @@ public class Client extends ClientEngine
 
 	private void drawRedStones()
 	{
-		int xOffset = frameMode == ScreenMode.FIXED ? 0 : frameWidth - 247;
-		int yOffset = frameMode == ScreenMode.FIXED ? 0 : frameHeight - 336;
-		if (frameMode == ScreenMode.FIXED || frameMode != ScreenMode.FIXED && !changeTabArea)
+		int xOffset = frameWidth - 247;
+		int yOffset = frameHeight - 336;
+		if (!changeTabArea)
 		{
 			if (tabInterfaceIDs[tabID] != -1 && tabID != 14)
 			{
 				redStones[redStonesId[tabID]].drawSprite(redStonesX[tabID] + xOffset, redStonesY[tabID] + yOffset);
 			}
 		}
-		else if (changeTabArea && frameWidth < 1000)
-		{
-			int[] stoneX = {226, 194, 162, 130, 99, 65, 34, 219, 195, 161, 130, 98, 65, 33};
-			int[] stoneY = {73, 73, 73, 73, 73, 73, 73, -1, 37, 37, 37, 37, 37, 37, 37};
-			if (tabInterfaceIDs[tabID] != -1 && tabID != 14 && showTabComponents)
-			{
-				if (tabID == 7)
-				{
-					redStones[4].drawSprite(frameWidth - 226, frameHeight - 37);
-				}
-				redStones[4].drawSprite(frameWidth - stoneX[tabID], frameHeight - stoneY[tabID]);
-			}
-		}
-		else if (changeTabArea && frameWidth >= 1000)
+		else
 		{
 			int[] stoneX = {449, 417, 385, 353, 321, 289, 257, 225, 193, 161, 130, 98, 65, 33};
 			if (tabInterfaceIDs[tabID] != -1 && tabID != 14 && showTabComponents)
@@ -3567,18 +3410,11 @@ public class Client extends ClientEngine
 
 	private void drawTabArea()
 	{
-		final int xOffset = frameMode == ScreenMode.FIXED ? 0 : frameWidth - 241;
-		final int yOffset = frameMode == ScreenMode.FIXED ? 0 : frameHeight - 336;
-		if (frameMode == ScreenMode.FIXED)
-		{
-			aRSImageProducer_1163.initDrawingArea();
-		}
+		final int xOffset = frameWidth - 241;
+		final int yOffset = frameHeight - 336;
+
 		Rasterizer.anIntArray1472 = anIntArray1181;
-		if (frameMode == ScreenMode.FIXED)
-		{
-			fixedGameComponents[1].drawSprite(0, 0);
-		}
-		else if (frameMode != ScreenMode.FIXED && !changeTabArea)
+		if (!changeTabArea)
 		{
 			DrawingArea.method335(0x191919, frameHeight - 304, 195, 270, transparentTabArea ? 80 : 256,
 				frameWidth - 217);
@@ -3586,8 +3422,6 @@ public class Client extends ClientEngine
 		}
 		else
 		{
-			if (frameWidth >= 1000)
-			{
 				if (showTabComponents)
 				{
 					DrawingArea.method335(0x191919, frameHeight - 304, 197, 265, transparentTabArea ? 80 : 256,
@@ -3599,26 +3433,6 @@ public class Client extends ClientEngine
 				{
 					redStones[5].drawSprite(x, y);
 				}
-			}
-			else if (frameWidth < 1000)
-			{
-				if (showTabComponents)
-				{
-					DrawingArea.method335(0x191919, frameHeight - 341, 195, 265, transparentTabArea ? 80 : 256,
-						frameWidth - 197);
-					gameComponents[4].drawSprite(frameWidth - 204, frameHeight - 348);
-				}
-				for (int x = frameWidth - 226, y = frameHeight - 73, index = 0; x <= frameWidth - 32
-					&& index < 7; x += 32, index++)
-				{
-					redStones[5].drawSprite(x, y);
-				}
-				for (int x = frameWidth - 226, y = frameHeight - 37, index = 0; x <= frameWidth - 32
-					&& index < 7; x += 32, index++)
-				{
-					redStones[5].drawSprite(x, y);
-				}
-			}
 		}
 		if (invOverlayInterfaceID == -1)
 		{
@@ -3627,12 +3441,12 @@ public class Client extends ClientEngine
 		}
 		if (showTabComponents)
 		{
-			int x = frameMode == ScreenMode.FIXED ? 31 : frameWidth - 215;
-			int y = frameMode == ScreenMode.FIXED ? 37 : frameHeight - 299;
+			int x = frameWidth - 215;
+			int y = frameHeight - 299;
 			if (changeTabArea)
 			{
 				x = frameWidth - 197;
-				y = frameWidth >= 1000 ? frameHeight - 303 : frameHeight - 340;
+				y = frameHeight - 303;
 			}
 			if (invOverlayInterfaceID != -1)
 			{
@@ -3645,12 +3459,7 @@ public class Client extends ClientEngine
 		}
 		if (menuOpen)
 		{
-			rightClickMenu(frameMode == ScreenMode.FIXED ? 516 : 0, frameMode == ScreenMode.FIXED ? 168 : 0);
-		}
-		if (frameMode == ScreenMode.FIXED)
-		{
-			aRSImageProducer_1163.drawGraphics(168, super.graphics, 516);
-			aRSImageProducer_1165.initDrawingArea();
+			rightClickMenu(0, 0);
 		}
 		Rasterizer.anIntArray1472 = anIntArray1182;
 	}
@@ -4049,7 +3858,7 @@ public class Client extends ClientEngine
 				&& stoner.anInt1517 == stoner.anInt1511;
 			int j1 = stoner.x >> 7;
 			int k1 = stoner.y >> 7;
-			if (j1 < 0 || j1 >= 104 || k1 < 0 || k1 >= 104)
+			if (j1 < 0 || j1 >= 204 || k1 < 0 || k1 >= 104)
 			{
 				continue;
 			}
@@ -4490,8 +4299,7 @@ public class Client extends ClientEngine
 		{
 			aRSImageProducer_1165.initDrawingArea();
 			drawLoadingMessages(1, "Rolling one, just for you!", null);
-			aRSImageProducer_1165.drawGraphics(frameMode == ScreenMode.FIXED ? 4 : 0, super.graphics,
-				frameMode == ScreenMode.FIXED ? 4 : 0);
+			aRSImageProducer_1165.drawGraphics(0, super.graphics, 0);
 			loadingStage = 1;
 			aLong824 = System.currentTimeMillis();
 		}
@@ -4875,18 +4683,12 @@ public class Client extends ClientEngine
 					{
 						Point southWest, northEast;
 
-						if (frameMode == ScreenMode.FIXED)
-						{
-							southWest = new Point(56, 81);
-							northEast = new Point(101, 41);
-						}
-						else
-						{
+
 							int xOffset = (frameWidth - 237 - RSInterface.interfaceCache[5292].width) / 2;
 							int yOffset = 36 + ((frameHeight - 503) / 2);
 							southWest = new Point(xOffset + 76, yOffset + 62);
 							northEast = new Point(xOffset + 117, yOffset + 22);
-						}
+
 
 						int[] slots = new int[10];
 
@@ -4910,17 +4712,7 @@ public class Client extends ClientEngine
 						}
 					}
 
-					if (lastActiveInvInterface == -1 && focusedDragWidget == 3214 && frameMode == ScreenMode.FIXED)
-					{
-						if (super.mouseX <= 516 && super.mouseY <= 338 && super.mouseX >= 0 && super.mouseY >= 0)
-						{
-							stream.createFrame(87);
-							stream.method432(RSInterface.interfaceCache[3214].inv[dragFromSlot] - 1);
-							stream.writeWord(focusedDragWidget);
-							stream.method432(dragFromSlot);
-						}
-					}
-					else if (lastActiveInvInterface == focusedDragWidget && mouseInvInterfaceIndex != dragFromSlot)
+					if (lastActiveInvInterface == focusedDragWidget && mouseInvInterfaceIndex != dragFromSlot)
 					{
 						RSInterface class9 = RSInterface.interfaceCache[focusedDragWidget];
 						int j1 = 0;
@@ -5313,8 +5105,7 @@ public class Client extends ClientEngine
 		regularText.drawText(0xffffff, "BestBudz is out of weed!", 18, 119);
 		regularText.drawText(0, "Attempting to add fertilizer.", 34, 117);
 		regularText.drawText(0xffffff, "Attempting to add fertilizer.", 34, 116);
-		aRSImageProducer_1165.drawGraphics(frameMode == ScreenMode.FIXED ? 4 : 0, super.graphics,
-			frameMode == ScreenMode.FIXED ? 4 : 0);
+		aRSImageProducer_1165.drawGraphics(0, super.graphics, 0);
 		anInt1021 = 0;
 		destX = 0;
 		if (rememberMe)
@@ -5569,16 +5360,16 @@ public class Client extends ClientEngine
 						changeChat("1F9C9C", "turquoise");
 						break;
 					case 36004:
-						frameMode(ScreenMode.FIXED);
-						transparentTabArea = false;
-						changeChatArea = false;
-						changeTabArea = false;
+						stream.createFrame(185);
+						stream.writeWord(28206);
 						break;
 					case 36007:
-						frameMode(ScreenMode.RESIZABLE);
+						stream.createFrame(185);
+						stream.writeWord(28207);
 						break;
 					case 36010:
-						frameMode(ScreenMode.FULLSCREEN);
+						stream.createFrame(185);
+						stream.writeWord(28208);
 						break;
 
 					case 19144:
@@ -5945,7 +5736,7 @@ public class Client extends ClientEngine
 		{
 			if (tabInterfaceIDs[14] != -1)
 			{
-				if (frameMode != ScreenMode.FIXED && changeTabArea)
+				if (changeTabArea)
 				{
 					if (tabID == 14)
 					{
@@ -8932,6 +8723,20 @@ public class Client extends ClientEngine
 		}
 		else
 		{
+			/* Block world clicks on blank resizable-bottom strip */
+			if (changeTabArea) {
+				final int barH  = (frameWidth >= 1000) ? 37 : 73;        // height
+				final int barX0 = (frameWidth >= 1000) ? frameWidth-450  // wide layout
+					: frameWidth-226; // narrow layout
+				if (super.saveClickY >= frameHeight - barH && super.saveClickX >= barX0) {
+        /* click fell on blank part of the bottom tab strip
+           – let tab logic run, but skip any scene action   */
+					processTabClick();
+					return;
+				}
+			}
+
+
 			if (j == 1 && menuActionRow > 0)
 			{
 				int i1 = menuActionID[menuActionRow - 1];
@@ -9064,10 +8869,9 @@ public class Client extends ClientEngine
 					&& (k == 7 || privateChatMode == 0 || privateChatMode == 1 && isStonerOrSelf(s)))
 				{
 					int l = 329 - i * 13;
-					if (frameMode != ScreenMode.FIXED)
-					{
+
 						l = frameHeight - 170 - i * 13 - extendChatArea;
-					}
+
 					int k1 = 4;
 					textDrawingArea.method385(0, "Stoner ", l, k1);
 					textDrawingArea.method385(getChatColor(), "Stoner ", l - 1, k1);
@@ -9087,10 +8891,9 @@ public class Client extends ClientEngine
 				if (k == 5 && privateChatMode < 2)
 				{
 					int i1 = 329 - i * 13;
-					if (frameMode != ScreenMode.FIXED)
-					{
+
 						i1 = frameHeight - 170 - i * 13 - extendChatArea;
-					}
+
 					textDrawingArea.method385(0, chatMessages[j], i1, 4);
 					textDrawingArea.method385(getChatColor(), chatMessages[j], i1 - 1, 4);
 					if (++i >= 5)
@@ -9101,10 +8904,9 @@ public class Client extends ClientEngine
 				if (k == 6 && privateChatMode < 2)
 				{
 					int j1 = 329 - i * 13;
-					if (frameMode != ScreenMode.FIXED)
-					{
+
 						j1 = frameHeight - 170 - i * 13 - extendChatArea;
-					}
+
 					textDrawingArea.method385(0, "You told " + s + ": " + chatMessages[j], j1, 4);
 					textDrawingArea.method385(getChatColor(), "You told " + s + ": " + chatMessages[j], j1 - 1, 4);
 					if (++i >= 5)
@@ -9117,40 +8919,39 @@ public class Client extends ClientEngine
 	}
 
 	protected final void minimapHovers() {
-		final boolean fixed = frameMode == ScreenMode.FIXED;
 
 		int frameSize = frameWidth - 217;
 		int orbPosX = frameSize + 155;
 
 		// HP orb
-		int hpX = fixed ? 690 : orbPosX;
-		int hpY = fixed ? 13 : 45;
+		int hpX = orbPosX;
+		int hpY = 45;
 		hpHover = inBounds(super.mouseX, super.mouseY, hpX, hpY, 56, 32);
 
 		// Prayer orb
-		int prayX = fixed ? 518 : orbPosX;
-		int prayY = fixed ? 86 : 85;
+		int prayX = orbPosX;
+		int prayY = 85;
 		prayHover = inBounds(super.mouseX, super.mouseY, prayX, prayY, 56, 32);
 
 		// Run orb
-		int runX = fixed ? 543 : orbPosX;
-		int runY = fixed ? 123 : 125;
+		int runX = orbPosX;
+		int runY = 125;
 		runHover = inBounds(super.mouseX, super.mouseY, runX, runY, 56, 32);
 
 		// XP orb
-		int xpX = fixed ? 517 : frameWidth - 96;
-		int xpY = fixed ? 27 : 2;
+		int xpX = frameWidth - 96;
+		int xpY = 2;
 		counterHover = inBounds(super.mouseX, super.mouseY, xpX, xpY, 26, 26);
 
 		// World orb
-		int worldX = fixed ? 718 : frameWidth - 41;
-		int worldY = fixed ? 22 : 203;
+		int worldX = frameWidth - 41;
+		int worldY = 203;
 		worldHover = inBounds(super.mouseX, super.mouseY, worldX, worldY, 30, 30);
 
 		// Pouch orb
 		if (Configuration.enablePouch) {
-			int pouchX = fixed ? 678 : frameWidth - 65;
-			int pouchY = fixed ? 129 : 165;
+			int pouchX = frameWidth - 65;
+			int pouchY = 165;
 			pouchHover = inBounds(super.mouseX, super.mouseY, pouchX, pouchY, 62, 31);
 		}
 	}
@@ -9164,10 +8965,10 @@ public class Client extends ClientEngine
 	{
 		if (super.clickMode3 == 1)
 		{
-			if (frameMode == ScreenMode.FIXED || frameMode != ScreenMode.FIXED && !changeTabArea)
+			if (!changeTabArea)
 			{
-				int xOffset = frameMode == ScreenMode.FIXED ? 0 : frameWidth - 765;
-				int yOffset = frameMode == ScreenMode.FIXED ? 0 : frameHeight - 503;
+				int xOffset = frameWidth - 765;
+				int yOffset = frameHeight - 503;
 				for (int i = 0; i < tabClickX.length; i++)
 				{
 					if (super.mouseX >= tabClickStart[i] + xOffset
@@ -9179,234 +8980,6 @@ public class Client extends ClientEngine
 						tabAreaAltered = true;
 						break;
 					}
-				}
-			}
-			else if (changeTabArea && frameWidth < 1000)
-			{
-				if (super.saveClickX >= frameWidth - 226 && super.saveClickX <= frameWidth - 195
-					&& super.saveClickY >= frameHeight - 72 && super.saveClickY < frameHeight - 40
-					&& tabInterfaceIDs[0] != -1)
-				{
-					if (tabID == 0)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 0;
-					tabAreaAltered = true;
-
-				}
-				if (super.saveClickX >= frameWidth - 194 && super.saveClickX <= frameWidth - 163
-					&& super.saveClickY >= frameHeight - 72 && super.saveClickY < frameHeight - 40
-					&& tabInterfaceIDs[1] != -1)
-				{
-					if (tabID == 1)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 1;
-					tabAreaAltered = true;
-
-				}
-				if (super.saveClickX >= frameWidth - 162 && super.saveClickX <= frameWidth - 131
-					&& super.saveClickY >= frameHeight - 72 && super.saveClickY < frameHeight - 40
-					&& tabInterfaceIDs[2] != -1)
-				{
-					if (tabID == 2)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 2;
-					tabAreaAltered = true;
-
-				}
-				if (super.saveClickX >= frameWidth - 129 && super.saveClickX <= frameWidth - 98
-					&& super.saveClickY >= frameHeight - 72 && super.saveClickY < frameHeight - 40
-					&& tabInterfaceIDs[3] != -1)
-				{
-					if (tabID == 3)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 3;
-					tabAreaAltered = true;
-
-				}
-				if (super.saveClickX >= frameWidth - 97 && super.saveClickX <= frameWidth - 66
-					&& super.saveClickY >= frameHeight - 72 && super.saveClickY < frameHeight - 40
-					&& tabInterfaceIDs[4] != -1)
-				{
-					if (tabID == 4)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 4;
-					tabAreaAltered = true;
-
-				}
-				if (super.saveClickX >= frameWidth - 65 && super.saveClickX <= frameWidth - 34
-					&& super.saveClickY >= frameHeight - 72 && super.saveClickY < frameHeight - 40
-					&& tabInterfaceIDs[5] != -1)
-				{
-					if (tabID == 5)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 5;
-					tabAreaAltered = true;
-
-				}
-				if (super.saveClickX >= frameWidth - 33 && super.saveClickX <= frameWidth
-					&& super.saveClickY >= frameHeight - 72 && super.saveClickY < frameHeight - 40
-					&& tabInterfaceIDs[6] != -1)
-				{
-					if (tabID == 6)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 6;
-					tabAreaAltered = true;
-
-				}
-
-				if (super.saveClickX >= frameWidth - 226 && super.saveClickX <= frameWidth - 195
-					&& super.saveClickY >= frameHeight - 37 && super.saveClickY < frameHeight
-					&& tabInterfaceIDs[7] != -1)
-				{
-					if (tabID == 7)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 7;
-					tabAreaAltered = true;
-
-				}
-				if (super.saveClickX >= frameWidth - 194 && super.saveClickX <= frameWidth - 163
-					&& super.saveClickY >= frameHeight - 37 && super.saveClickY < frameHeight
-					&& tabInterfaceIDs[8] != -1)
-				{
-					if (tabID == 8)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 8;
-					tabAreaAltered = true;
-
-				}
-				if (super.saveClickX >= frameWidth - 162 && super.saveClickX <= frameWidth - 131
-					&& super.saveClickY >= frameHeight - 37 && super.saveClickY < frameHeight
-					&& tabInterfaceIDs[9] != -1)
-				{
-					if (tabID == 9)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 9;
-					tabAreaAltered = true;
-
-				}
-				if (super.saveClickX >= frameWidth - 129 && super.saveClickX <= frameWidth - 98
-					&& super.saveClickY >= frameHeight - 37 && super.saveClickY < frameHeight
-					&& tabInterfaceIDs[10] != -1)
-				{
-					if (tabID == 10)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 10;
-					tabAreaAltered = true;
-
-				}
-				if (super.saveClickX >= frameWidth - 97 && super.saveClickX <= frameWidth - 66
-					&& super.saveClickY >= frameHeight - 37 && super.saveClickY < frameHeight
-					&& tabInterfaceIDs[11] != -1)
-				{
-					if (tabID == 11)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 11;
-					tabAreaAltered = true;
-
-				}
-				if (super.saveClickX >= frameWidth - 65 && super.saveClickX <= frameWidth - 34
-					&& super.saveClickY >= frameHeight - 37 && super.saveClickY < frameHeight
-					&& tabInterfaceIDs[12] != -1)
-				{
-					if (tabID == 12)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 12;
-					tabAreaAltered = true;
-
-				}
-				if (super.saveClickX >= frameWidth - 33 && super.saveClickX <= frameWidth
-					&& super.saveClickY >= frameHeight - 37 && super.saveClickY < frameHeight
-					&& tabInterfaceIDs[13] != -1)
-				{
-					if (tabID == 13)
-					{
-						showTabComponents = !showTabComponents;
-					}
-					else
-					{
-						showTabComponents = true;
-					}
-					tabID = 13;
-					tabAreaAltered = true;
-
 				}
 			}
 			else if (changeTabArea && frameWidth >= 1000)
@@ -9620,28 +9193,11 @@ public class Client extends ClientEngine
 		DrawingArea.setAllPixelsToZero();
 		fixedGameComponents[0].drawSprite(0, 0);
 		aRSImageProducer_1163 = new ImageProducer(249, 335);
-		aRSImageProducer_1165 = new ImageProducer(frameMode == ScreenMode.FIXED ? 512 : frameWidth,
-			frameMode == ScreenMode.FIXED ? 334 : frameHeight);
+		aRSImageProducer_1165 = new ImageProducer(frameWidth, frameHeight);
 		DrawingArea.setAllPixelsToZero();
 		aRSImageProducer_1125 = new ImageProducer(249, 45);
 		welcomeScreenRaised = true;
 	}
-
-	private void method81(Sprite sprite, int j, int k) {
-		if (frameMode != ScreenMode.FIXED) return;
-
-		int l = k * k + j * j;
-		if (l > 4225 && l < 0x15f90) {
-			int i1 = minimapInt1 + minimapInt2 & 0x7ff;
-			int j1 = Model.modelIntArray1[i1];
-			int k1 = Model.modelIntArray2[i1];
-			j1 = (j1 * 256) / (minimapInt3 + 256);
-			k1 = (k1 * 256) / (minimapInt3 + 256);
-		} else {
-			markMinimap(sprite, k, j);
-		}
-	}
-
 
 	public void rightClickChatButtons()
 	{
@@ -9733,31 +9289,14 @@ public class Client extends ClientEngine
 		}
 		anInt886 = 0;
 		anInt1315 = 0;
-		if (frameMode == ScreenMode.FIXED)
-		{
-			if (super.mouseX > 4 && super.mouseY > 4 && super.mouseX < 516 && super.mouseY < 338)
-			{
-				if (openInterfaceID != -1)
-				{
-					buildInterfaceMenu(4, RSInterface.interfaceCache[openInterfaceID], super.mouseX, 4, super.mouseY,
-						0);
-				}
-				else
-				{
-					build3dScreenMenu();
-				}
-			}
-		}
-		else if (frameMode != ScreenMode.FIXED)
-		{
+
 			if (getMousePositions())
 			{
 				int w = 512, h = 334;
 				int x = (frameWidth / 2) - 256, y = (frameHeight / 2) - 167;
 				int x2 = (frameWidth / 2) + 256, y2 = (frameHeight / 2) + 167;
 				int count = !changeTabArea ? 4 : 3;
-				if (frameMode != ScreenMode.FIXED)
-				{
+
 					for (int i = 0; i < count; i++)
 					{
 						if (x + w > (frameWidth - 225))
@@ -9779,7 +9318,7 @@ public class Client extends ClientEngine
 							}
 						}
 					}
-				}
+
 				if (openInterfaceID == 5292)
 				{
 					if (super.mouseX > (frameWidth / 2) - 356 && super.mouseY > (frameHeight / 2) - 230
@@ -9804,7 +9343,7 @@ public class Client extends ClientEngine
 					build3dScreenMenu();
 				}
 			}
-		}
+
 		if (anInt886 != anInt1026)
 		{
 			anInt1026 = anInt886;
@@ -9817,8 +9356,8 @@ public class Client extends ClientEngine
 		anInt1315 = 0;
 		if (!changeTabArea)
 		{
-			final int yOffset = frameMode == ScreenMode.FIXED ? 0 : frameHeight - 503;
-			final int xOffset = frameMode == ScreenMode.FIXED ? 0 : frameWidth - 765;
+			final int yOffset = frameHeight - 503;
+			final int xOffset = frameWidth - 765;
 			if (super.mouseX > 548 + xOffset && super.mouseX < 740 + xOffset && super.mouseY > 207 + yOffset
 				&& super.mouseY < 468 + yOffset)
 			{
@@ -9834,7 +9373,7 @@ public class Client extends ClientEngine
 				}
 			}
 		}
-		else if (changeTabArea)
+		else
 		{
 			final int yOffset = frameWidth >= 1000 ? 37 : 74;
 			if (super.mouseX > frameWidth - 197 && super.mouseY > frameHeight - yOffset - 267
@@ -9865,18 +9404,18 @@ public class Client extends ClientEngine
 		anInt886 = 0;
 		anInt1315 = 0;
 		if (super.mouseX > 0
-			&& super.mouseY > (frameMode == ScreenMode.FIXED ? 338 : frameHeight - (165 + extendChatArea))
-			&& super.mouseX < 490 && super.mouseY < (frameMode == ScreenMode.FIXED ? 463 : frameHeight - 40)
+			&& super.mouseY > (frameHeight - (165 + extendChatArea))
+			&& super.mouseX < 490 && super.mouseY < (frameHeight - 40)
 			&& showChatComponents)
 		{
 			if (backDialogID != -1)
 			{
 				buildInterfaceMenu(20, RSInterface.interfaceCache[backDialogID], super.mouseX,
-					(frameMode == ScreenMode.FIXED ? 358 : frameHeight - 145), super.mouseY, 0);
+					(frameHeight - 145), super.mouseY, 0);
 			}
-			else if (super.mouseY < (frameMode == ScreenMode.FIXED ? 463 : frameHeight - 40) && super.mouseX < 490)
+			else if (super.mouseY < (frameHeight - 40) && super.mouseX < 490)
 			{
-				buildChatAreaMenu(super.mouseY - (frameMode == ScreenMode.FIXED ? 338 : frameHeight - 165));
+				buildChatAreaMenu(super.mouseY - (frameHeight - 165));
 			}
 		}
 		if (backDialogID != -1 && anInt886 != anInt1039)
@@ -10926,34 +10465,26 @@ public class Client extends ClientEngine
 			return;
 		if (super.clickMode3 == 1)
 		{
-			int i = super.saveClickX - 25 - 547;
-			int j = super.saveClickY - 5 - 3;
-			if (frameMode != ScreenMode.FIXED)
-			{
+			int i;
+			int j;
+
 				i = super.saveClickX - (frameWidth - 182 + 24);
 				j = super.saveClickY - 8;
-			}
 
-			if (frameMode == ScreenMode.FIXED) {
-				if (inCircle(0, 0, i, j, 76) && mouseMapPosition() && !runHover) {
+
+
 			{
 				i -= 73;
 				j -= 75;
 				int k = minimapInt1 + minimapInt2 & 0x7ff;
 				int i1 = Rasterizer.anIntArray1470[k];
 				int j1 = Rasterizer.anIntArray1471[k];
-				i1 = i1 * (minimapInt3 + 256) >> 8;
-				j1 = j1 * (minimapInt3 + 256) >> 8;
 				int k1 = j * i1 + i * j1 >> 11;
 				int l1 = j * j1 - i * i1 >> 11;
 				int i2 = myStoner.x + k1 >> 7;
 				int j2 = myStoner.y - l1 >> 7;
-				if ((myPrivilege == 2 || myPrivilege == 3 || myPrivilege == 4) && controlIsDown)
-				{
-					teleport(baseX + i2, baseY + j2);
-				}
-				else
-				{
+
+
 					boolean flag1 = doWalkTo(1, 0, 0, 0, myStoner.smallY[0], 0, 0, j2, myStoner.smallX[0], true, i2);
 					if (flag1)
 					{
@@ -10969,7 +10500,7 @@ public class Client extends ClientEngine
 						stream.writeWordBigEndian(anInt1264);
 						stream.writeWordBigEndian(63);
 					}
-				}
+
 				anInt1117++;
 				if (anInt1117 > 1151)
 				{
@@ -10995,8 +10526,8 @@ public class Client extends ClientEngine
 			}
 		}
 			}
-		}
-	}
+
+
 
 	private String interfaceIntToString(long j)
 	{
@@ -11527,7 +11058,7 @@ public class Client extends ClientEngine
 				}
 				else
 				{
-					rightClickMenu(frameMode == ScreenMode.FIXED ? 4 : 0, frameMode == ScreenMode.FIXED ? 4 : 0);
+					rightClickMenu(0, 0);
 				}
 			}
 			drawCount++;
@@ -11544,21 +11075,11 @@ public class Client extends ClientEngine
 		if (welcomeScreenRaised)
 		{
 			welcomeScreenRaised = false;
-			if (frameMode == ScreenMode.FIXED)
-			{
-				topFrame.drawGraphics(0, super.graphics, 0);
-				leftFrame.drawGraphics(4, super.graphics, 0);
-			}
 			inputTaken = true;
 			tabAreaAltered = true;
 			if (loadingStage != 2)
 			{
-				if (frameMode == ScreenMode.FIXED)
-				{
-					aRSImageProducer_1165.drawGraphics(frameMode == ScreenMode.FIXED ? 4 : 0, super.graphics,
-						frameMode == ScreenMode.FIXED ? 4 : 0);
-					aRSImageProducer_1164.drawGraphics(0, super.graphics, 516);
-				}
+
 			}
 		}
 		if (invOverlayInterfaceID != -1)
@@ -11570,9 +11091,9 @@ public class Client extends ClientEngine
 		{
 			aClass9_1059.scrollPosition = anInt1211 - anInt1089 - 110;
 			if (super.mouseX >= 496 && super.mouseX <= 511
-				&& super.mouseY > (frameMode == ScreenMode.FIXED ? 345 : frameHeight - 158))
+				&& super.mouseY > (frameHeight - 158))
 				drawInterfaceRecursive(494, 110, super.mouseX,
-					super.mouseY - (frameMode == ScreenMode.FIXED ? 345 : frameHeight - 158), aClass9_1059, 0,
+					super.mouseY - (frameHeight - 158), aClass9_1059, 0,
 					false, anInt1211);
 			int i = anInt1211 - 110 - aClass9_1059.scrollPosition;
 			if (i < 0)
@@ -11613,11 +11134,7 @@ public class Client extends ClientEngine
 			method146();
 		if (loadingStage == 2)
 		{
-			if (frameMode == ScreenMode.FIXED)
-			{
-				drawMinimap();
-				aRSImageProducer_1164.drawGraphics(0, super.graphics, 516);
-			}
+
 		}
 		if (anInt1054 != -1)
 			tabAreaAltered = true;
@@ -11702,23 +11219,9 @@ public class Client extends ClientEngine
 		DrawingArea.method335(0, yPos, 174, 68, 220, xPos);
 	}
 
-	public void refreshScreenOptions()
-	{
-		int[] childIds = {36004, 36007, 36010};
-		int[] enabledIds = {1, 3, 5};
-		int[] disabledIds = {0, 2, 4};
-		ScreenMode[] modes = {ScreenMode.FIXED, ScreenMode.RESIZABLE, ScreenMode.FULLSCREEN};
-		for (int index = 0; index < modes.length; index++)
-		{
-			RSInterface.interfaceCache[childIds[index]]
-				.setSprite(Client.cacheSprite[frameMode == modes[index] ? enabledIds[index] : disabledIds[index]]);
-		}
-	}
-
 	private void drawInterface(int j, int k, RSInterface class9, int l)
 	{
-		refreshScreenOptions();
-		if (class9.parentID == 197 && frameMode != ScreenMode.FIXED)
+		if (class9.parentID == 197)
 		{
 			k = frameWidth - 120;
 			l = 170;
@@ -11855,8 +11358,8 @@ public class Client extends ClientEngine
 										}
 										if (icon != null)
 										{
-											icon.drawSprite1((frameMode == ScreenMode.FIXED ? 60 : x + 4) + 40 * i,
-												(frameMode == ScreenMode.FIXED ? 41 : y + 2), 255, true);
+											icon.drawSprite1((x + 4) + 40 * i,
+												(y + 2), 255, true);
 										}
 										RSInterface.interfaceCache[50013 + i * 4].anInt265 = 0;
 										RSInterface.interfaceCache[50014 + i * 4].anInt265 = 0;
@@ -11873,8 +11376,8 @@ public class Client extends ClientEngine
 										else
 										{
 											cacheSprite[114].drawSprite1(
-												(frameMode == ScreenMode.FIXED ? 59 : x) + 40 * i,
-												(frameMode == ScreenMode.FIXED ? 41 : y), 255, true);
+												(x) + 40 * i,
+												(y), 255, true);
 										}
 										RSInterface.interfaceCache[50014 + i * 4].tooltip = "New section";
 									}
@@ -11884,8 +11387,8 @@ public class Client extends ClientEngine
 										RSInterface.interfaceCache[50014 + i * 4].anInt265 = 0;
 										RSInterface.interfaceCache[50014 + i * 4].tooltip = "New section";
 										RSInterface.interfaceCache[50014 + i * 4].disabledSprite = cacheSprite[112];
-										cacheSprite[114].drawSprite1((frameMode == ScreenMode.FIXED ? 59 : x) + 40 * i,
-											(frameMode == ScreenMode.FIXED ? 41 : y), 255, true);
+										cacheSprite[114].drawSprite1((x) + 40 * i,
+											(y), 255, true);
 									}
 								}
 								catch (Exception e)
@@ -12571,23 +12074,14 @@ public class Client extends ClientEngine
 						yPos = (l2 - boxHeight);
 					}
 
-					if (frameMode == ScreenMode.FIXED)
-					{
-						if (skillHoverIds(child.id) == child.id && xPos + boxWidth + k + class9.width > 765)
-						{
-							xPos = 765 - boxWidth - k - class9.width - 3;
-						}
-					}
-					else
-					{
+
 						if (skillHoverIds(child.id) == child.id && xPos + boxWidth > frameWidth)
 						{
 							xPos = frameWidth - boxWidth - 15;
 						}
-					}
+
 					if (skillHoverIds(child.id) == child.id
-						&& yPos + boxHeight > frameHeight - (frameMode == ScreenMode.FIXED ? yPos + boxHeight - 118
-						: (frameWidth <= 1000 ? 75 : 35)))
+						&& yPos + boxHeight > frameHeight - ((35)))
 					{
 						yPos -= boxHeight + 35;
 					}
@@ -13222,7 +12716,7 @@ public class Client extends ClientEngine
 
 		if (crossType == 1)
 		{
-			int offSet = frameMode == ScreenMode.FIXED ? 4 : 0;
+			int offSet = 0;
 			crosses[crossIndex / 100].drawSprite(crossX - 8 - offSet, crossY - 8 - offSet);
 			anInt1142++;
 			if (anInt1142 > 67)
@@ -13233,7 +12727,7 @@ public class Client extends ClientEngine
 		}
 		if (crossType == 2)
 		{
-			int offSet = frameMode == ScreenMode.FIXED ? 4 : 0;
+			int offSet = 0;
 			crosses[4 + crossIndex / 100].drawSprite(crossX - 8 - offSet, crossY - 8 - offSet);
 		}
 		if (inBarrows(baseX + (myStoner.x - 6 >> 7), baseY + (myStoner.y - 6 >> 7)))
@@ -13293,7 +12787,7 @@ public class Client extends ClientEngine
 			RSInterface rsInterface = RSInterface.interfaceCache[anInt1018];
 			method119(anInt945, anInt1018);
 
-			if (anInt1018 == 11146 && frameMode != ScreenMode.FIXED)
+			if (anInt1018 == 11146)
 			{
 				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], -5);
 			}
@@ -13301,84 +12795,80 @@ public class Client extends ClientEngine
 			{
 				drawInterface(0, frameWidth - rsInterface.width - 253, rsInterface, 0);
 			}
-			else if (anInt1018 == 23300 && frameMode == ScreenMode.RESIZABLE)
+			else if (anInt1018 == 23300)
 			{
 				drawInterface(0, frameWidth / 2 - 780, RSInterface.interfaceCache[anInt1018], 80);
 			}
-			else if ((anInt1018 == 2804 || anInt1018 == 11479) && frameMode != ScreenMode.FIXED)
+			else if ((anInt1018 == 2804 || anInt1018 == 11479))
 			{
 				drawInterface(0, frameWidth / 2 - 1010, RSInterface.interfaceCache[anInt1018], 80);
 			}
-			else if (anInt1018 == 41270 && frameMode != ScreenMode.FIXED)
+			else if (anInt1018 == 41270)
 			{
 				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 8);
 			}
-			else if (anInt1018 == 41250 && frameMode != ScreenMode.FIXED)
+			else if (anInt1018 == 41250)
 			{
 				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 8);
 			}
-			else if (anInt1018 == 201 && frameMode != ScreenMode.FIXED)
+			else if (anInt1018 == 201)
 			{
 				drawInterface(0, frameWidth - 520, RSInterface.interfaceCache[anInt1018], -110);
 			}
-			else if (anInt1018 == 41270 && frameMode != ScreenMode.FIXED)
+			else if (anInt1018 == 41270)
 			{
 				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 8);
 			}
-			else if (anInt1018 == 41250 && frameMode != ScreenMode.FIXED)
+			else if (anInt1018 == 41250)
 			{
 				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 8);
 			}
-			else if (anInt1018 == 59000 && frameMode != ScreenMode.FIXED)
+			else if (anInt1018 == 59000)
 			{
 				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], frameHeight - 495);
 			}
-			else if (anInt1018 == 21119 && frameMode != ScreenMode.FIXED)
+			else if (anInt1018 == 21119)
 			{
 				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 5);
 			}
-			else if (anInt1018 == 21100 && frameMode != ScreenMode.FIXED)
+			else if (anInt1018 == 21100)
 			{
 				drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 5);
 			}
-			else if (anInt1018 == 51200 && frameMode != ScreenMode.FIXED)
+			else if (anInt1018 == 51200)
 			{
 				drawInterface(0, frameWidth - 770, RSInterface.interfaceCache[anInt1018], 25);
 			}
-			else if (anInt1018 == 61750 && frameMode != ScreenMode.FIXED)
+			else if (anInt1018 == 61750)
 			{
 				drawInterface(0, frameWidth - 800, RSInterface.interfaceCache[anInt1018], 5);
 			}
-			else if (anInt1018 == 4535 && frameMode != ScreenMode.FIXED)
+			else if (anInt1018 == 4535)
 			{
 				drawInterface(0, -418, RSInterface.interfaceCache[anInt1018], -285);
 			}
-			else if ((anInt1018 == 15892 || anInt1018 == 15917 || anInt1018 == 15931 || anInt1018 == 15962)
-				&& frameMode != ScreenMode.FIXED)
+			else if ((anInt1018 == 15892 || anInt1018 == 15917 || anInt1018 == 15931 || anInt1018 == 15962))
 			{
 				drawInterface(0, (anInt1018 == 15892 ? -325 : -349), RSInterface.interfaceCache[anInt1018], 25);
 			}
 			else
-				drawInterface(0, frameMode == ScreenMode.FIXED ? 0 : (frameWidth / 2) - -80,
-					RSInterface.interfaceCache[anInt1018],
-					frameMode == ScreenMode.FIXED ? 0 : (frameHeight / 2) - 550);
+				drawInterface(0, (frameWidth / 2) - -80,
+					RSInterface.interfaceCache[anInt1018], (frameHeight / 2) - 550);
 		}
 		if (openInterfaceID == 5292)
 		{
 			method119(anInt945, openInterfaceID);
-			drawInterface(0, frameMode == ScreenMode.FIXED ? 0 : (frameWidth / 2) - 356,
-				RSInterface.interfaceCache[openInterfaceID],
-				frameMode == ScreenMode.FIXED ? 0 : (frameHeight / 2) - 230);
+			drawInterface(0, (frameWidth / 2) - 356,
+				RSInterface.interfaceCache[openInterfaceID], (frameHeight / 2) - 230);
 		}
-		else if (openInterfaceID != -1 && openInterfaceID != 5292)
+		else if (openInterfaceID != -1)
 		{
 			method119(anInt945, openInterfaceID);
 			int w = 512, h = 334;
-			int x = frameMode == ScreenMode.FIXED ? 0 : (frameWidth / 2) - 256;
-			int y = frameMode == ScreenMode.FIXED ? 0 : (frameHeight / 2) - 167;
+			int x = (frameWidth / 2) - 256;
+			int y = (frameHeight / 2) - 167;
 			int count = !changeTabArea ? 4 : 3;
-			if (frameMode != ScreenMode.FIXED)
-			{
+
 				for (int i = 0; i < count; i++)
 				{
 					if (x + w > (frameWidth - 225))
@@ -13398,7 +12888,7 @@ public class Client extends ClientEngine
 						}
 					}
 				}
-			}
+
 			RSInterface rsi = RSInterface.interfaceCache[openInterfaceID];
 			if (rsi == null)
 			{
@@ -13406,7 +12896,7 @@ public class Client extends ClientEngine
 				return;
 			}
 			drawInterface(0, x, rsi, y);
-			System.err.println("[INFO] drawing interface " + openInterfaceID);
+			//System.err.println("[INFO] drawing interface " + openInterfaceID);
 		}
 		if (!menuOpen)
 		{
@@ -13415,12 +12905,11 @@ public class Client extends ClientEngine
 		}
 		else if (menuScreenArea == 0)
 		{
-			rightClickMenu(frameMode == ScreenMode.FIXED ? 4 : 0, frameMode == ScreenMode.FIXED ? 4 : 0);
+			rightClickMenu(0, 0);
 		}
 		if (anInt1055 == 1)
 		{
-			multiOverlay.drawSprite(frameMode == ScreenMode.FIXED ? 472 : frameWidth - 165,
-				frameMode == ScreenMode.FIXED ? 296 : 160);
+			multiOverlay.drawSprite(frameWidth - 165, 160);
 		}
 		if (fpsOn)
 		{
@@ -13441,7 +12930,7 @@ public class Client extends ClientEngine
 		}
 		int x = baseX + (myStoner.x - 6 >> 7);
 		int y = baseY + (myStoner.y - 6 >> 7);
-		final String screenMode = frameMode == ScreenMode.FIXED ? "Fixed" : "Resizable";
+		final String screenMode = "Resizable";
 		if (clientData)
 		{
 			int textColour = 0xffff00;
@@ -13469,7 +12958,7 @@ public class Client extends ClientEngine
 		{
 			int j = anInt1104 / 50;
 			int l = j / 60;
-			int yOffset = frameMode == ScreenMode.FIXED ? 0 : frameHeight - 498;
+			int yOffset = frameHeight - 498;
 			j %= 60;
 			if (j < 10)
 				smallText.method385(0xffff00, "System update in: " + l + ":0" + j, 329 + yOffset, 4);
@@ -14059,99 +13548,35 @@ public class Client extends ClientEngine
 		{
 			s = menuActionName[menuActionRow - 1];
 		}
-
-		if (menuActionRow > 2 && !Configuration.menuHovers)
-		{
-			s = s + "@whi@ / " + (menuActionRow - 2) + " more options";
-		}
-		else
-		{
-			s = s + "@whi@";
-		}
+		s = s + "@gre@";
+		int tooltipWidth   = Integer.sum(newBoldFont.getTextWidth(s.trim()), 4);
+		int tooltipHeight  = 17;
+		int tooltipX       = super.mouseX;
+		int tooltipY       = Math.subtractExact(super.mouseY, 11);
+		int maxX           = Math.subtractExact(Client.screenAreaWidth, tooltipWidth);
+		int maxY           = Math.subtractExact(Client.screenAreaHeight, tooltipHeight);
 
 		if (Configuration.menuHovers && !s.contains("Shuffle over here"))
 		{
-			DrawingArea.drawAlphaPixels(super.mouseX, super.mouseY - 11, newBoldFont.getTextWidth(s.trim()) + 6, 17, 0,
-				100);
-			newBoldFont.drawBasicString(s, super.mouseX + 2, super.mouseY + 2, 0xFFFFFF, 1);
+			tooltipX = Math.min(Math.max(0, tooltipX), maxX);
+			tooltipY = Math.min(Math.max(0, tooltipY), maxY);
+			DrawingArea.drawAlphaPixels(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 0, 100);
+			newBoldFont.drawBasicString(s, Integer.sum(tooltipX, 2), Integer.sum(tooltipY + 10, 2), 0xFFFFFF, 1);
+		} else if (!s.contains("Shuffle over here")) {
+			newBoldFont.drawBasicString(s, (Client.screenAreaWidth / 2) - (tooltipWidth / 2), 15, 0xFFFFFF, 1);
 		}
-		newBoldFont.drawBasicString(s, 4, 15, 0xFFFFFF, 1);
 	}
 
-	private void markMinimap(Sprite sprite, int x, int y)
+	
+	private void drawGameUIorbs()
 	{
-		if (frameMode != ScreenMode.FIXED) return;
-		if (sprite == null)
 		{
-			return;
-		}
-		int k = minimapInt1 + minimapInt2 & 0x7ff;
-		int l = x * x + y * y;
-		if (l > 6400)
-		{
-			return;
-		}
-		int i1 = Model.modelIntArray1[k];
-		int j1 = Model.modelIntArray2[k];
-		i1 = (i1 * 256) / (minimapInt3 + 256);
-		j1 = (j1 * 256) / (minimapInt3 + 256);
-		int k1 = y * i1 + x * j1 >> 16;
-		int l1 = y * j1 - x * i1 >> 16;
-		if (frameMode == ScreenMode.FIXED)
-		{
-			sprite.drawSprite(((94 + k1) - sprite.cropWidth / 2) + 4 + 30, 83 - l1 - sprite.anInt1445 / 2 - 4 + 5);
-		}
-		else
-		{
-			sprite.drawSprite(((77 + k1) - sprite.cropWidth / 2) + 4 + (frameWidth - 167),
-				85 - l1 - sprite.anInt1445 / 2 - 4);
+			gameOrbUIsetup();
 		}
 	}
 
-	private void drawMinimap()
-	{
-		if (frameMode == ScreenMode.FIXED)
-		{
-			drawMinimapFixed();
-		}
-		else
-		{
-			drawMinimapResizable();
-		}
-	}
 
-	private void drawMinimapFixed()
-	{
-		aRSImageProducer_1164.initDrawingArea();
-
-		if (anInt1021 == 2)
-		{
-			fixedGameComponents[0].drawSprite(0, 0);
-
-			paintOrbsAndCompassFixed();
-			if (menuOpen) rightClickMenu(516, 0);
-
-			aRSImageProducer_1164.initDrawingArea();
-			return;
-		}
-		final int cameraYaw = (minimapInt1 + minimapInt2) & 0x7ff;
-		final int centreTileX = 48 + myStoner.x / 32;
-		final int centreTileY = 464 - myStoner.y / 32;
-		minimapImage.method352(
-			151, cameraYaw, anIntArray1229,
-			256 + minimapInt3, anIntArray1052,
-			centreTileY, 9, 54, 146, centreTileX);
-		drawSceneDots();
-		DrawingArea.drawPixels(3, 83, 127, 0xFFFFFF, 3);
-		fixedGameComponents[0].drawSprite(0, 0);
-		paintOrbsAndCompassFixed();
-
-		if (menuOpen) rightClickMenu(516, 0);
-
-		aRSImageProducer_1165.initDrawingArea();
-	}
-
-	private void drawMinimapResizable()
+	private void gameOrbUIsetup()
 	{
 		if (Configuration.enableStatusOrbs)
 		{
@@ -14202,144 +13627,7 @@ public class Client extends ClientEngine
 			rightClickMenu(0, 0);
 		}
 	}
-
-	private void paintOrbsAndCompassFixed()
-	{
-		final boolean hoveringXpOrb =
-			super.mouseX >= 517 && super.mouseX <= 545 &&
-				super.mouseY >= 27 && super.mouseY <= 54;
-
-		orbComponents3[hoveringXpOrb ? 1 : 0].drawSprite(3, 27);
-		if (Configuration.enableStatusOrbs)
-		{
-			loadAllOrbs(0);
-		}
-		compass.method352(33, minimapInt1, anIntArray1057, 256,
-			anIntArray968, 25, 4, 29, 33, 25);
-		final boolean hoveringClose =
-			super.mouseX >= 742 && super.mouseX <= 765 &&
-				super.mouseY >= 0 && super.mouseY <= 24;
-
-		if (hoveringClose)
-		{
-			cacheSprite[348].drawARGBSprite(226, 0, 205);
-		}
-		else
-		{
-			cacheSprite[348].drawSprite(226, 0);
-		}
-		if (tabID == 14)
-		{
-			cacheSprite[349].drawSprite(226, 0);
-		}
-	}
-
-	private void drawSceneDots()
-	{
-		for (int i = 0; i < anInt1071; i++)
-		{
-			int dx = (anIntArray1072[i] * 4 + 2) - myStoner.x / 32;
-			int dy = (anIntArray1073[i] * 4 + 2) - myStoner.y / 32;
-			markMinimap(aClass30_Sub2_Sub1_Sub1Array1140[i], dx, dy);
-		}
-		for (int x = 0; x < 104; x++)
-		{
-			for (int y = 0; y < 104; y++)
-			{
-				NodeList ground = groundArray[plane][x][y];
-				if (ground != null)
-				{
-					int dx = (x * 4 + 2) - myStoner.x / 32;
-					int dy = (y * 4 + 2) - myStoner.y / 32;
-					markMinimap(mapDotItem, dx, dy);
-				}
-			}
-		}
-		for (int i = 0; i < npcCount; i++)
-		{
-			Npc npc = npcArray[npcIndices[i]];
-			if (npc != null && npc.isVisible())
-			{
-				EntityDef ed = (npc.desc.childrenIDs != null) ? npc.desc.method161() : npc.desc;
-				if (ed != null && ed.aBoolean87 && ed.aBoolean84)
-				{
-					int dx = npc.x / 32 - myStoner.x / 32;
-					int dy = npc.y / 32 - myStoner.y / 32;
-					markMinimap(mapDotNPC, dx, dy);
-				}
-			}
-		}
-		for (int i = 0; i < stonerCount; i++)
-		{
-			Stoner p = stonerArray[stonerIndices[i]];
-			if (p != null && p.isVisible())
-			{
-				int dx = p.x / 32 - myStoner.x / 32;
-				int dy = p.y / 32 - myStoner.y / 32;
-
-				long nameHash = TextClass.longForName(p.name);
-				boolean isFriend = false, isClan = false;
-
-				for (int j = 0; j < stonersCount; j++)
-				{
-					if (nameHash == stonersListAsLongs[j] && stonersNodeIDs[j] != 0)
-					{
-						isFriend = true;
-						break;
-					}
-				}
-				for (String s : clanList)
-				{
-					if (s != null && s.equalsIgnoreCase(p.name))
-					{
-						isClan = true;
-						break;
-					}
-				}
-
-				boolean sameTeam = (myStoner.team != 0 && p.team != 0 && myStoner.team == p.team);
-
-				if (isFriend) markMinimap(mapDotStoner, dx, dy);
-				else if (isClan) markMinimap(mapDotClan, dx, dy);
-				else if (sameTeam) markMinimap(mapDotTeam, dx, dy);
-				else markMinimap(mapDotStoner, dx, dy);
-			}
-		}
-		if (anInt855 != 0 && loopCycle % 20 < 10)
-		{
-			if (anInt855 == 1 && anInt1222 >= 0 && anInt1222 < npcArray.length)
-			{
-				Npc n = npcArray[anInt1222];
-				if (n != null)
-				{
-					method81(mapMarker, n.y / 32 - myStoner.y / 32,
-						n.x / 32 - myStoner.x / 32);
-				}
-			}
-			if (anInt855 == 2)
-			{
-				method81(mapMarker,
-					((anInt935 - baseY) * 4 + 2) - myStoner.y / 32,
-					((anInt934 - baseX) * 4 + 2) - myStoner.x / 32);
-			}
-			if (anInt855 == 10 && anInt933 >= 0 && anInt933 < stonerArray.length)
-			{
-				Stoner p = stonerArray[anInt933];
-				if (p != null)
-				{
-					method81(mapMarker, p.y / 32 - myStoner.y / 32,
-						p.x / 32 - myStoner.x / 32);
-				}
-			}
-		}
-		if (destX != 0)
-		{
-			markMinimap(mapFlag,
-				(destX * 4 + 2) - myStoner.x / 32,
-				(destY * 4 + 2) - myStoner.y / 32);
-		}
-	}
-
+	
 	private void npcScreenPos(Entity entity, int i)
 	{
 		calcEntityScreenPos(entity.x, i, entity.y);
@@ -14405,12 +13693,11 @@ public class Client extends ClientEngine
 				if ((k == 3 || k == 7)
 					&& (k == 7 || privateChatMode == 0 || privateChatMode == 1 && isStonerOrSelf(s)))
 				{
-					int offSet = frameMode == ScreenMode.FIXED ? 4 : 0;
+					int offSet = 0;
 					int l = 329 - i * 13;
-					if (frameMode != ScreenMode.FIXED)
-					{
+
 						l = frameHeight - 170 - i * 13 - extendChatArea;
-					}
+					
 					if (super.mouseX > 4 && super.mouseY - offSet > l - 10 && super.mouseY - offSet <= l + 3)
 					{
 						int i1 = regularText.getTextWidth("From:  " + s + chatMessages[j]) + 25;
@@ -15346,19 +14633,24 @@ public class Client extends ClientEngine
 					pktType = -1;
 					return true;
 
-				case 134:
-					int k1 = inStream.readUnsignedByte();
-					inStream.readUnsignedByte();
-					int i10 = inStream.method439();
-					int l15 = inStream.readUnsignedByte();
-					currentExp[k1] = i10;
-					currentStats[k1] = l15;
-					maxStats[k1] = 1;
-					for (int k20 = 0; k20 < Skills.EXP_FOR_LEVEL.length; k20++)
-						if (i10 >= Skills.EXP_FOR_LEVEL[k20])
-							maxStats[k1] = k20 + 2;
+				case 134: {                                    // isolate scope
+					int pid        = inStream.readUnsignedByte();  // profession id
+					int pAdvance   = inStream.readUnsignedByte();  // advances
+					int pExp       = inStream.method439();         // exp   (4 bytes, middle-endian)
+					int pGrade     = inStream.method439();         // grade (4 bytes, middle-endian)
+
+					currentExp[pid]   = pExp;
+					currentStats[pid] = pGrade;
+
+					maxStats[pid] = 1;
+					for (int lvl = 0; lvl < Skills.EXP_FOR_LEVEL.length; lvl++)
+						if (pExp >= Skills.EXP_FOR_LEVEL[lvl])
+							maxStats[pid] = lvl + 2;
+
 					pktType = -1;
 					return true;
+				}
+
 
 				case 71:
 					int l1 = inStream.readUnsignedWord();
@@ -15458,8 +14750,7 @@ public class Client extends ClientEngine
 					aLong824 = System.currentTimeMillis();
 					aRSImageProducer_1165.initDrawingArea();
 					drawLoadingMessages(1, "Rolling a spliff.", null);
-					aRSImageProducer_1165.drawGraphics(frameMode == ScreenMode.FIXED ? 4 : 0, super.graphics,
-						frameMode == ScreenMode.FIXED ? 4 : 0);
+					aRSImageProducer_1165.drawGraphics(0, super.graphics, 0);
 					if (pktType == 73)
 					{
 						int k16 = 0;
@@ -15617,7 +14908,7 @@ public class Client extends ClientEngine
 						class30_sub1_1.anInt1297 -= i17;
 						class30_sub1_1.anInt1298 -= j21;
 						if (class30_sub1_1.anInt1297 < 0 || class30_sub1_1.anInt1298 < 0
-							|| class30_sub1_1.anInt1297 >= 104 || class30_sub1_1.anInt1298 >= 104)
+							|| class30_sub1_1.anInt1297 >= 208 || class30_sub1_1.anInt1298 >= 208)
 							class30_sub1_1.unlink();
 					}
 					if (destX != 0)
@@ -15749,36 +15040,21 @@ public class Client extends ClientEngine
 					}
 					else if (s.startsWith(":transparentTab:"))
 					{
-						if (frameMode != ScreenMode.FIXED)
-						{
+
 							transparentTabArea = !transparentTabArea;
-						}
-						else
-						{
-							pushMessage("Settings are not applicable in fixed mode!", 0, "");
-						}
+
 					}
 					else if (s.startsWith(":transparentChatbox:"))
 					{
-						if (frameMode != ScreenMode.FIXED)
-						{
+
 							changeChatArea = !changeChatArea;
-						}
-						else
-						{
-							pushMessage("Settings are not applicable in fixed mode!", 0, "");
-						}
+
 					}
 					else if (s.startsWith(":sideStones:"))
 					{
-						if (frameMode != ScreenMode.FIXED)
-						{
+
 							changeTabArea = !changeTabArea;
-						}
-						else
-						{
-							pushMessage("Settings are not applicable in fixed mode!", 0, "");
-						}
+
 					}
 					else if (s.startsWith(":advanceColorsTrue:"))
 					{
@@ -16175,8 +15451,8 @@ public class Client extends ClientEngine
 						npcDisplay.desc = EntityDef.forID(npc, false);
 						npcDisplay.anInt1540 = npcDisplay.desc.aByte68;
 						npcDisplay.anInt1504 = npcDisplay.desc.anInt79;
-						npcDisplay.desc.anInt86 = size;
-						npcDisplay.desc.anInt91 = size;
+						npcDisplay.desc.modelWidth = size;
+						npcDisplay.desc.modelHeight = size;
 						npcDisplay.anInt1511 = npcDisplay.desc.standAnim;
 					}
 					catch (Exception e)
@@ -16684,13 +15960,12 @@ public class Client extends ClientEngine
 			}
 		Model.aBoolean1684 = true;
 		Model.anInt1687 = 0;
-		Model.anInt1685 = super.mouseX - (frameMode == ScreenMode.FIXED ? 4 : 0);
-		Model.anInt1686 = super.mouseY - (frameMode == ScreenMode.FIXED ? 4 : 0);
+		Model.anInt1685 = super.mouseX;
+		Model.anInt1686 = super.mouseY;
 		DrawingArea.setAllPixelsToZero();
 		if (Configuration.enableDistanceFog)
 		{
-			DrawingArea.drawPixels(frameMode == ScreenMode.FIXED ? 334 : frameHeight, 0, 0, ColorUtility.fadingToColor,
-				frameMode == ScreenMode.FIXED ? 512 : frameWidth);
+			DrawingArea.drawPixels(frameHeight, 0, 0, ColorUtility.fadingToColor, frameWidth);
 		}
 		worldController.method313(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 		worldController.clearObj5Cache();
@@ -16722,8 +15997,7 @@ public class Client extends ClientEngine
 		}
 		if (inMaze(baseX + (myStoner.x - 6 >> 7)) && filterGrayScale)
 		{
-			DrawingArea.filterGrayscale(0, 0, frameMode == ScreenMode.FIXED ? 512 : frameWidth,
-				frameMode == ScreenMode.FIXED ? 334 : frameHeight, 1);
+			DrawingArea.filterGrayscale(0, 0, frameWidth, frameHeight, 1);
 		}
 		updateEntities();
 		drawHeadIcon();
@@ -16733,19 +16007,17 @@ public class Client extends ClientEngine
 		{
 			displayKillFeed();
 		}
-		if (frameMode != ScreenMode.FIXED)
-		{
+
 			drawChatArea();
-			drawMinimap();
+			drawGameUIorbs();
 			drawTabArea();
-		}
+
 		draw3dScreen();
 		if (console.openConsole)
 		{
-			console.drawConsole(frameMode == ScreenMode.FIXED ? super.myWidth : frameWidth, 334);
+			console.drawConsole(frameWidth, 334);
 		}
-		aRSImageProducer_1165.drawGraphics(frameMode == ScreenMode.FIXED ? 4 : 0, super.graphics,
-			frameMode == ScreenMode.FIXED ? 4 : 0);
+		aRSImageProducer_1165.drawGraphics(0, super.graphics, 0);
 		xCameraPos = l;
 		zCameraPos = i1;
 		yCameraPos = j1;
@@ -16755,14 +16027,6 @@ public class Client extends ClientEngine
 
 	private void processMinimapActions()
 	{
-		final boolean fixed = frameMode == ScreenMode.FIXED;
-		if (frameMode == ScreenMode.FIXED) {
-			if (super.mouseX >= 542 && super.mouseX <= 579 && super.mouseY >= 2 && super.mouseY <= 38) {
-				menuActionName[1] = "Relocate North";
-				menuActionID[1] = 696;
-				menuActionRow = 2;
-			}
-		}
 
 		if (changeChatArea)
 		{
@@ -16774,8 +16038,7 @@ public class Client extends ClientEngine
 				menuActionRow = 2;
 			}
 		}
-		if (fixed ? super.mouseX >= 742 && super.mouseX <= 765 && super.mouseY >= 0 && super.mouseY <= 24
-			: super.mouseX >= frameWidth - 26 && super.mouseX <= frameWidth - 1 && super.mouseY >= 2
+		if (super.mouseX >= frameWidth - 26 && super.mouseX <= frameWidth - 1 && super.mouseY >= 2
 			&& super.mouseY <= 24)
 		{
 			menuActionName[1] = "Too stoned..";
@@ -16793,12 +16056,6 @@ public class Client extends ClientEngine
 				menuActionName[1] = "Gains settings";
 				menuActionID[1] = 476;
 				menuActionRow = 4;
-			}
-			if (worldHover)
-			{
-				menuActionName[1] = "Go places";
-				menuActionID[1] = 850;
-				menuActionRow = 2;
 			}
 			if (pouchHover & Configuration.enablePouch)
 			{
@@ -16830,8 +16087,6 @@ public class Client extends ClientEngine
 	private void loadAllOrbs(int xOffset) {
 		if (!Configuration.enableStatusOrbs) return;
 
-		final boolean fixed = frameMode == ScreenMode.FIXED;
-
 		// ──────────────── POUCH DRAW ────────────────
 		if (Configuration.enablePouch) {
 			int setPouchPosX = 62; // Modify
@@ -16846,9 +16101,7 @@ public class Client extends ClientEngine
 			int pouchIconPosY = setPouchPosY + 7;
 
 			// { X, Y, TextX, TextY, FillX, FillY, CoinIconX, CoinIconY }
-			final int[] pouchLayout = fixed
-				? new int[] { 162, 127, 205, 153, 179, 142, 170, 134 }
-				: new int[] { pouchPosX, setPouchPosY, pouchTextPosX, pouchTextPosY, pouchFillPosX, pouchFillPosY, pouchIconPosX, pouchIconPosY };
+			final int[] pouchLayout = new int[] { pouchPosX, setPouchPosY, pouchTextPosX, pouchTextPosY, pouchFillPosX, pouchFillPosY, pouchIconPosX, pouchIconPosY };
 
 			int pouchX       = pouchLayout[0];
 			int pouchY       = pouchLayout[1];
@@ -16870,11 +16123,6 @@ public class Client extends ClientEngine
 
 
 		// ──────────────── ORB CONFIG ────────────────
-		final int[][] layoutFixed = {
-			{ 0,  45,  15,  72,  27,  49,  33,  56 },  // HP
-			{ 0,  85,  16, 111,  27,  88,  30,  92 },  // Prayer
-			{ 24,121,  40, 148,  51, 125,  58, 130 }   // Run
-		};
 
 		int orbPosX = 155;
 		int textPosX = orbPosX + 15;
@@ -16882,13 +16130,14 @@ public class Client extends ClientEngine
 		int iconPosX = orbPosX + 33;
 
 		// { X, Y, TextX, TextY, FillX, FillY, IconX, IconY }
-		final int[][] layoutResizable = {
+		// HP
+		// Prayer
+		// Run
+		final int[][] layout = new int[][]{
 		  {orbPosX, 45, textPosX, 72, fillPosX, 49, iconPosX, 56}, // HP
 		  {orbPosX, 85, textPosX, 111, fillPosX, 88, iconPosX - 3, 92}, // Prayer
 		  {orbPosX, 125, textPosX, 152, fillPosX, 129, iconPosX, 134} // Run
 		};
-
-		final int[][] layout = fixed ? layoutFixed : layoutResizable;
 
 		final int[] currentInterface = { 4016, 4012, 149 };
 		final int[] maximumInterface = { 4017, 4013, 149 };
@@ -16946,14 +16195,6 @@ public class Client extends ClientEngine
 			smallText.method382(getOrbTextColor(i == 2 ? currentEnergy : level), layout[i][2] + xOffset, text, layout[i][3], true);
 		}
 
-		// ──────────────── WORLD ORB ────────────────
-		if (fixed) {
-			orbComponents2[worldHover ? 6 : 5].drawSprite(202, 20);
-		} else {
-			int worldPosX = frameWidth - 41;
-			int worldPosY = 203;
-			orbComponents2[worldHover ? 4 : 3].drawSprite(worldPosX, worldPosY);
-		}
 	}
 
 
@@ -16963,8 +16204,8 @@ public class Client extends ClientEngine
 		{
 			return;
 		}
-		int x = frameMode == ScreenMode.FIXED ? 500 : frameWidth - 110;
-		int y = frameMode == ScreenMode.FIXED ? -10 : -30;
+		int x = frameWidth - 110;
+		int y = -30;
 		digits = xpCounter == 0 ? 1 : 1 + (int) Math.floor(Math.log10(xpCounter));
 		int i = smallText.getTextWidth(Integer.toString(xpCounter))
 			- smallText.getTextWidth(Integer.toString(xpCounter)) / 2;
@@ -17391,9 +16632,7 @@ public class Client extends ClientEngine
 
 	public enum ScreenMode
 	{
-		FIXED,
-		RESIZABLE,
-		FULLSCREEN
+		RESIZABLE
 	}
 
 	static final class BannerManager
@@ -17435,7 +16674,7 @@ public class Client extends ClientEngine
 			{
 				this.text = text;
 				this.color = color;
-				this.x = frameWidth - (frameMode == ScreenMode.FIXED ? 253 : 155);
+				this.x = frameWidth - (155);
 			}
 
 			public int getColor()
@@ -17466,8 +16705,8 @@ public class Client extends ClientEngine
 					return;
 				}
 
-				int width = frameWidth - (frameMode == ScreenMode.FIXED ? 253 : 155);
-				int delta = 4 * (1 << (int) (width / (765.0 - (frameMode == ScreenMode.FIXED ? 253 : 155))));
+				int width = frameWidth - (155);
+				int delta = 4 * (1 << (int) (width / (765.0 - (155))));
 
 				if (x < width / 2.0)
 				{

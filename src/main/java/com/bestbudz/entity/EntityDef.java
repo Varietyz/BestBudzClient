@@ -46,8 +46,8 @@ public final class EntityDef {
         entityDef.anIntArray76[2] = 54744;
         entityDef.anIntArray76[3] = 55219;
         entityDef.anIntArray76[4] = 55203;
-        entityDef.anInt91 = 128;
-        entityDef.anInt86 = 128;
+        entityDef.modelHeight = 128;
+        entityDef.modelWidth = 128;
         entityDef.aByte68 = 3;
         break;
 
@@ -75,8 +75,8 @@ public final class EntityDef {
         entityDef.anIntArray76[2] = 54744;
         entityDef.anIntArray76[3] = 55219;
         entityDef.anIntArray76[4] = 55203;
-        entityDef.anInt91 = 128;
-        entityDef.anInt86 = 128;
+        entityDef.modelHeight = 128;
+        entityDef.modelWidth = 128;
         entityDef.aByte68 = 3;
         break;
 
@@ -102,8 +102,8 @@ public final class EntityDef {
         entityDef.anIntArray76[2] = 54744;
         entityDef.anIntArray76[3] = 55219;
         entityDef.anIntArray76[4] = 55203;
-        entityDef.anInt91 = 128;
-        entityDef.anInt86 = 128;
+        entityDef.modelHeight = 128;
+        entityDef.modelWidth = 128;
         entityDef.aByte68 = 3;
         break;
 
@@ -131,8 +131,8 @@ public final class EntityDef {
         entityDef.anIntArray76[2] = 54744;
         entityDef.anIntArray76[3] = 55219;
         entityDef.anIntArray76[4] = 55203;
-        entityDef.anInt91 = 128;
-        entityDef.anInt86 = 128;
+        entityDef.modelHeight = 128;
+        entityDef.modelWidth = 128;
         entityDef.aByte68 = 3;
         break;
 
@@ -266,8 +266,8 @@ public final class EntityDef {
         entityDef.anIntArray94 = new int[] {17414, 17415, 17429, 17422};
         entityDef.walkAnim = 4635;
         entityDef.standAnim = 90;
-        entityDef.anInt86 = 50;
-        entityDef.anInt91 = 50;
+        entityDef.modelWidth = 60;
+        entityDef.modelHeight = 60;
         break;
 
       case 4001:
@@ -277,8 +277,8 @@ public final class EntityDef {
         entityDef.anIntArray94 = new int[] {27660, 27665};
         entityDef.walkAnim = 7016;
         entityDef.standAnim = 7017;
-        entityDef.anInt86 = 40;
-        entityDef.anInt91 = 40;
+        entityDef.modelWidth = 60;
+        entityDef.modelHeight = 60;
         break;
 
       case 4002:
@@ -288,8 +288,8 @@ public final class EntityDef {
         entityDef.anIntArray94 = new int[] {11056};
         entityDef.walkAnim = 1684;
         entityDef.standAnim = 1678;
-        entityDef.anInt86 = 100;
-        entityDef.anInt91 = 100;
+        entityDef.modelWidth = 80;
+        entityDef.modelHeight = 80;
         break;
 
       case 4003:
@@ -299,8 +299,8 @@ public final class EntityDef {
         entityDef.anIntArray94 = new int[] {28019, 28021, 28020};
         entityDef.walkAnim = 6977;
         entityDef.standAnim = 6976;
-        entityDef.anInt86 = 25;
-        entityDef.anInt91 = 25;
+        entityDef.modelWidth = 60;
+        entityDef.modelHeight = 60;
         break;
 
       case 4004:
@@ -311,8 +311,8 @@ public final class EntityDef {
         entityDef.combatGrade = 0;
         entityDef.walkAnim = 4070;
         entityDef.standAnim = 6935;
-        entityDef.anInt86 = 25;
-        entityDef.anInt91 = 25;
+        entityDef.modelWidth = 60;
+        entityDef.modelHeight = 60;
         break;
 
       case 4009:
@@ -323,8 +323,8 @@ public final class EntityDef {
         entityDef.combatGrade = 0;
         entityDef.walkAnim = 6965;
         entityDef.standAnim = 6966;
-        entityDef.anInt86 = 70;
-        entityDef.anInt91 = 70;
+        entityDef.modelWidth = 60;
+        entityDef.modelHeight = 60;
         break;
 
       case 4006:
@@ -334,8 +334,8 @@ public final class EntityDef {
         entityDef.anIntArray94 = new int[] {9941, 9943};
         entityDef.standAnim = 2850;
         entityDef.walkAnim = 2849;
-        entityDef.anInt86 = 70;
-        entityDef.anInt91 = 70;
+        entityDef.modelWidth = 60;
+        entityDef.modelHeight = 60;
         break;
 
       case 4007:
@@ -345,8 +345,8 @@ public final class EntityDef {
         entityDef.anIntArray94 = new int[] {9940, 994, 9942};
         entityDef.walkAnim = 2849;
         entityDef.standAnim = 2850;
-        entityDef.anInt86 = 70;
-        entityDef.anInt91 = 70;
+        entityDef.modelWidth = 60;
+        entityDef.modelHeight = 60;
         break;
 
       case 4008:
@@ -356,8 +356,8 @@ public final class EntityDef {
         entityDef.anIntArray94 = new int[] {9941};
         entityDef.walkAnim = 2849;
         entityDef.standAnim = 2850;
-        entityDef.anInt86 = 70;
-        entityDef.anInt91 = 70;
+        entityDef.modelWidth = 60;
+        entityDef.modelHeight = 60;
         break;
 
       case 4010:
@@ -367,29 +367,31 @@ public final class EntityDef {
         entityDef.anIntArray94 = new int[] {9319};
         entityDef.walkAnim = 2651;
         entityDef.standAnim = 2650;
-        entityDef.anInt86 = 25;
-        entityDef.anInt91 = 25;
+        entityDef.modelWidth = 60;
+        entityDef.modelHeight = 60;
         break;
 
       case 963:
         entityDef.anIntArray94 = new int[] {24602, 24605, 24606};
         entityDef.walkAnim = 6236;
         entityDef.standAnim = 6236;
-        entityDef.anInt86 = 128;
-        entityDef.anInt91 = 128;
+        entityDef.modelWidth = 128;
+        entityDef.modelHeight = 128;
         break;
 
       case 964:
         entityDef.anIntArray94 = new int[] {24597, 24598};
         entityDef.walkAnim = 6238;
         entityDef.standAnim = 6239;
-        entityDef.anInt86 = 128;
-        entityDef.anInt91 = 128;
+        entityDef.modelWidth = 128;
+        entityDef.modelHeight = 128;
         break;
 
       case 5547:
         entityDef.actions = new String[5];
         entityDef.actions[0] = "Pick-up";
+		  entityDef.modelWidth = 60;
+		  entityDef.modelHeight = 60;
         break;
 
       case 5559:
@@ -399,6 +401,8 @@ public final class EntityDef {
         entityDef.actions = new String[5];
         entityDef.actions[0] = "Pick-up";
         entityDef.actions[1] = "Metamorphosis";
+		  entityDef.modelWidth = 60;
+		  entityDef.modelHeight = 60;
         break;
 
       case 2130:
@@ -407,6 +411,8 @@ public final class EntityDef {
         entityDef.actions = new String[5];
         entityDef.actions[0] = "Pick-up";
         entityDef.actions[1] = "Metamorphosis";
+		  entityDef.modelWidth = 60;
+		  entityDef.modelHeight = 60;
         break;
 
       case 518:
@@ -650,9 +656,9 @@ public final class EntityDef {
               fw.write(System.getProperty("line.separator"));
             }
           }
-          fw.write("entityDef.anInt91 = " + ed.anInt91 + ";");
+          fw.write("entityDef.anInt91 = " + ed.modelHeight + ";");
           fw.write(System.getProperty("line.separator"));
-          fw.write("entityDef.anInt86 = " + ed.anInt86 + ";");
+          fw.write("entityDef.anInt86 = " + ed.modelWidth + ";");
           fw.write(System.getProperty("line.separator"));
           fw.write("entityDef.aByte68 = " + ed.aByte68 + ";");
           fw.write(System.getProperty("line.separator"));
@@ -757,12 +763,12 @@ public final class EntityDef {
     final Model model_1 = Model.aModel_1621;
     model_1.method464(model, SequenceFrame.method532(currAnim) & SequenceFrame.method532(j));
     if (currAnim != -1 && j != -1) {
-      model_1.modelScale(anInt91, anInt91, anInt86);
+      model_1.modelScale(modelHeight, modelHeight, modelWidth);
     } else if (currAnim != -1) {
       model_1.interpolateFrames(currAnim, nextAnim, nextCycle, currCycle);
     }
-    if (anInt91 != 128 || anInt86 != 128) {
-      model_1.modelScale(anInt91, anInt86, anInt91);
+    if (modelHeight != 128 || modelWidth != 128) {
+      model_1.modelScale(modelHeight, modelWidth, modelHeight);
     }
     model_1.method466();
     model_1.anIntArrayArray1658 = null;
@@ -802,7 +808,7 @@ public final class EntityDef {
     model_1.method464(model, SequenceFrame.method532(k) & SequenceFrame.method532(j));
     if (k != -1 && j != -1) model_1.method471(ai, j, k);
     else if (k != -1) model_1.method470(k);
-    if (anInt91 != 128 || anInt86 != 128) model_1.modelScale(anInt91, anInt91, anInt86);
+    if (modelHeight != 128 || modelWidth != 128) model_1.modelScale(modelHeight, modelHeight, modelWidth);
     model_1.method466();
     model_1.anIntArrayArray1658 = null;
     model_1.anIntArrayArray1657 = null;
@@ -852,8 +858,8 @@ public final class EntityDef {
       else if (i == 92) stream.readUnsignedWord();
       else if (i == 93) aBoolean87 = false;
       else if (i == 95) combatGrade = stream.readUnsignedWord();
-      else if (i == 97) anInt91 = stream.readUnsignedWord();
-      else if (i == 98) anInt86 = stream.readUnsignedWord();
+      else if (i == 97) modelHeight = stream.readUnsignedWord();
+      else if (i == 98) modelWidth = stream.readUnsignedWord();
       else if (i == 99) aBoolean93 = true;
       else if (i == 100) anInt85 = stream.readSignedByte();
       else if (i == 101) anInt92 = stream.readSignedByte() * 5;
@@ -890,9 +896,9 @@ public final class EntityDef {
     anInt79 = 32;
     anInt83 = -1;
     aBoolean84 = true;
-    anInt86 = 128;
+    modelWidth = 128;
     aBoolean87 = true;
-    anInt91 = 128;
+    modelHeight = 128;
     aBoolean93 = false;
   }
 
@@ -921,11 +927,11 @@ public final class EntityDef {
   public int anInt83;
   public boolean aBoolean84;
   public int anInt85;
-  public int anInt86;
+  public int modelWidth;
   public boolean aBoolean87;
   public int[] childrenIDs;
   public byte[] description;
-  public int anInt91;
+  public int modelHeight;
   public int anInt92;
   public boolean aBoolean93;
   public int[] anIntArray94;

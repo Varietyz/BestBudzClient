@@ -182,7 +182,7 @@ public final class Stoner extends Entity
 		title = TextClass.fixName(stream.readString());
 		titlePrefix = stream.readUnsignedByte() == 1;
 
-		combatLevel = stream.readUnsignedByte();
+		combatLevel = stream.readDWord();
 		visible = true;
 		modelCacheKey = 0L;
 		for (int k1 = 0; k1 < 12; k1++)

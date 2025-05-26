@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'edu.sc.seis.launch4j' version '2.5.0'
 }
 
 group = 'com.bestbudz'
@@ -44,3 +45,18 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+launch4j {
+    mainClassName = 'com.bestbudz.client.Client'
+    jar = "${project.layout.buildDirectory.get().asFile}/libs/${project.name}-${project.version}.jar"
+    outfile = "BestBudzRSPSClient.exe" // NOT A PATH — just name
+
+    icon = "C:/RSPS/Extras/BestBudzPotLeaf.ico" // Windows needs forward slashes or escaped backslashes
+    headerType = 'gui'
+    dontWrapJar = false
+    errTitle = 'Launch Error'
+    chdir = '.'
+    stayAlive = false
+    downloadUrl = 'https://adoptium.net'
+    jreMinVersion = '11.0.0'
+    jdkPreference = 'preferJre'
+}
