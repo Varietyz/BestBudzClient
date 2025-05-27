@@ -59,11 +59,11 @@ public final class ClientLauncher {
 			Client.instance = client;
 			Client.instance.refreshFrameSize(canvas, canvas.getWidth(), canvas.getHeight());
 			canvas.createBufferStrategy(GraphicsConfig.BUFFERS);
-
+			GameLoader.setCanvas(canvas);
 			MouseManager mouseManager = new MouseManager();
 			Keyboard keyboard = new Keyboard();
 
-			client.setCanvas(canvas);
+			Client.setCanvas(canvas);
 
 			canvas.addKeyListener(keyboard);
 			canvas.addMouseListener(mouseManager);
@@ -83,18 +83,19 @@ public final class ClientLauncher {
 			uiDock.setLocation(frame.getX() + frame.getWidth(), frame.getY());
 
 			frame.addWindowStateListener(e -> {
-				int state = e.getNewState();
-				if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) {
-					SwingUtilities.invokeLater(() -> {
-						// Sync dock to frame
-						int dockWidth = 300;
-						uiDock.setLocation(frame.getX() + frame.getWidth(), frame.getY());
-						uiDock.setSize(dockWidth, frame.getHeight());
+				boolean maximized = (e.getNewState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH;
+				SwingUtilities.invokeLater(() -> {
+					uiDock.setVisible(!maximized);
+					if (!maximized) {
+						int dockX = frame.getX() + frame.getWidth();
+						uiDock.setLocation(dockX, frame.getY());
+						uiDock.setSize(300, frame.getHeight());
 						uiDock.revalidate();
 						uiDock.repaint();
-					});
-				}
+					}
+				});
 			});
+
 
 			frame.addWindowListener(new WindowAdapter() {
 				@Override

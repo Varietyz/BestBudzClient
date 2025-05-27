@@ -3,8 +3,6 @@ package com.bestbudz.engine;
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.client.frame.UIDockFrame;
 import com.bestbudz.client.frame.UIDockHelper;
-import com.bestbudz.client.ui.panel.AchievementsPanel;
-import com.bestbudz.client.ui.panel.QuestTabPanel;
 import com.bestbudz.client.ui.panel.SkillsPanel;
 import com.bestbudz.client.ui.panel.UIPanel;
 import com.bestbudz.client.util.DockBlocker;
@@ -59,19 +57,10 @@ import com.bestbudz.sound.Sounds;
 import com.bestbudz.ui.RSInterface;
 import com.bestbudz.ui.TextInput;
 import com.bestbudz.ui.interfaces.Chatbox;
-import static com.bestbudz.ui.interfaces.Chatbox.buildChatAreaMenu;
-import static com.bestbudz.ui.interfaces.Chatbox.buildSplitPrivateChatMenu;
-import static com.bestbudz.ui.interfaces.Chatbox.changeChat;
-import static com.bestbudz.ui.interfaces.Chatbox.drawChatArea;
-import static com.bestbudz.ui.interfaces.Chatbox.extendChatArea;
-import static com.bestbudz.ui.interfaces.Chatbox.handleChatAreaMenu;
 import static com.bestbudz.ui.interfaces.Chatbox.privateChatMode;
-import static com.bestbudz.ui.interfaces.Chatbox.processChatModeClick;
 import static com.bestbudz.ui.interfaces.Chatbox.publicChatMode;
 import static com.bestbudz.ui.interfaces.Chatbox.pushMessage;
-import static com.bestbudz.ui.interfaces.Chatbox.replyToPM;
 import static com.bestbudz.ui.interfaces.Chatbox.reportAbuseInput;
-import static com.bestbudz.ui.interfaces.Chatbox.rightClickChatButtons;
 import static com.bestbudz.ui.interfaces.Chatbox.splitPrivateChat;
 import com.bestbudz.ui.interfaces.CustomInterfaces;
 import com.bestbudz.ui.interfaces.StatusOrbs;
@@ -109,8 +98,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -122,8 +109,6 @@ import java.text.NumberFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -211,7 +196,7 @@ public class Client extends ClientEngine
 	private static int anInt924;
 	public static int nodeID = 10;
 	public static boolean isMembers = true;
-	private static boolean lowMem;
+	public static boolean lowMem;
 	private static int anInt986;
 	private static int anInt1005;
 	private static int anInt1051;
@@ -222,7 +207,7 @@ public class Client extends ClientEngine
 	private static int anInt1155;
 
 	private static ImageProducer aRSImageProducer_1163;
-	private static ImageProducer aRSImageProducer_1165;
+	public static ImageProducer aRSImageProducer_1165;
 	private static ImageProducer aRSImageProducer_1166;
 	private static int anInt1175;
 	public static int[] anIntArray1180;
@@ -242,7 +227,7 @@ public class Client extends ClientEngine
 		{
 			LOGIN_BACKGROUND = ImageIO.read(Client.class.getResource("/loading/login_background.png"));
 			System.out.println("[DEBUG] BG: " + LOGIN_BACKGROUND);
-			BACKGROUND = ImageIO.read(Client.class.getResource("/loading/background.png"));
+			BACKGROUND = ImageIO.read(Client.class.getResource("/loading/login_background.png"));
 			System.out.println("[DEBUG] BG: " + BACKGROUND);
 			LOADING_BAR = ImageIO.read(Client.class.getResource("/loading/bar.png"));
 			System.out.println("[DEBUG] BAR: " + LOADING_BAR);
@@ -266,11 +251,11 @@ public class Client extends ClientEngine
 	}
 
 	public final int[] anIntArray969;
-	public final Decompressor[] decompressors;
+	public static final Decompressor[] decompressors = new Decompressor[6];
 	public final RSInterface aClass9_1059;
 	private final FogHandler fogHandler = new FogHandler();
-	private static final int currencies = 11;
-	private static final Sprite[] currencyImage = new Sprite[currencies];
+	public static final int currencies = 11;
+	public static final Sprite[] currencyImage = new Sprite[currencies];
 	private static final int[][] statsSkillGoal = new int[Skills.SKILLS_COUNT + 1][3];
 	public static final int[] tabAmounts = new int[]{350, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	public static final int[] bankInvTemp = new int[352];
@@ -308,7 +293,7 @@ public class Client extends ClientEngine
 		ColorConstants.CHAT_LIGHT_MAGENTA, // light magenta
 		ColorConstants.WHITE_COLOR  // white (kept for contrast pulse)
 	};
-	private final int[] anIntArray968;
+	public static final int[] anIntArray968 = new int[33];
 	private final int anInt975;
 	private final int[] anIntArray976;
 	private final int[] anIntArray977;
@@ -318,63 +303,63 @@ public class Client extends ClientEngine
 	private final int[] anIntArray981;
 	private final int[] anIntArray982;
 	private final String[] aStringArray983;
-	private final Sprite[] hitMark;
-	private final Sprite[] hitIcon;
+	public static final Sprite[] hitMark = new Sprite[20];
+	public static final Sprite[] hitIcon = new Sprite[20];
 	private static final int[] anIntArray990 = new int[5];
 	private static final boolean aBoolean994 = false;
 	private final int[] anIntArray1030;
 	private static final int[] maxStats = new int[Skills.SKILLS_COUNT];
 	private final int[] anIntArray1045;
-	private final int[] anIntArray1052;
-	private final int[] anIntArray1057;
+	public static final int[] anIntArray1052 = new int[152];
+	public static final int[] anIntArray1057 = new int[33];
 	private static final int barFillColor = 0x4d4233;
 	private static final int[] anIntArray1065 = new int[7];
-	private final int[] expectedCRCs;
+	public static final int[] expectedCRCs = new int[9];
 	private final String[] atStonerActions;
 	private final boolean[] atStonerArray;
-	private final int[][][] anIntArrayArrayArray1129;
+	private static final int[][][] anIntArrayArrayArray1129 = new int[4][13][13];
 	private final boolean genericLoadingError;
 	private final int[] anIntArray1177 = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3};
 	private final int[] anIntArray1203;
 	private final int[] anIntArray1207;
 	public static final Sprite[] modIcons = new Sprite[ClientConstants.ICON_AMOUNT];
-	private final int[] anIntArray1229;
+	public static final int[] anIntArray1229 = new int[152];
 	private final int[] anIntArray1240;
 	private final int[] anIntArray1241;
 	private final int[] anIntArray1250;
 	private final boolean rsAlreadyLoaded;
 	public int channelRights;
 	public static boolean isExtendingChatArea;
-	public float loadPercent = 0.0F;
+	public static float loadPercent = 0.0F;
 	public static int rights;
 	public String name;
 	public static String message;
 	public static int chatTypeView;
 	public static int clanChatMode;
-	public int[] anIntArray828;
-	public int[] anIntArray829;
+	public static int[] anIntArray828;
+	public static int[] anIntArray829;
 	public int loginScreenState;
 	public String prayerBook;
-	public int[] anIntArray850;
-	public Background aBackground_966;
-	public Background aBackground_967;
+	public static int[] anIntArray850;
+	public static Background aBackground_966;
+	public static Background aBackground_967;
 	public static int[] variousSettings;
 	public static int dragCycle;
 	public int loginFailures;
-	public Sprite[] skillIcons = new Sprite[22];
-	public Sprite[] newHitMarks = new Sprite[4];
+	public static Sprite[] skillIcons = new Sprite[22];
+	public static Sprite[] newHitMarks = new Sprite[4];
 	public static Sprite[] channelButtons = new Sprite[4];
 	public static Sprite[] fixedGameComponents = new Sprite[4];
-	public Sprite[] gameComponents = new Sprite[5];
-	public Sprite[] redStones = new Sprite[6];
-	public Sprite[] hpBars = new Sprite[2];
+	public static Sprite[] gameComponents = new Sprite[5];
+	public static Sprite[] redStones = new Sprite[6];
+	public static Sprite[] hpBars = new Sprite[2];
 	public static OnDemandFetcher onDemandFetcher;
 	public static int focusedDragWidget;
-	public ImageProducer aRSImageProducer_1108;
-	public ImageProducer aRSImageProducer_1112;
-	public ImageProducer aRSImageProducer_1113;
-	public ImageProducer aRSImageProducer_1114;
-	public ImageProducer aRSImageProducer_1115;
+	public static ImageProducer aRSImageProducer_1108;
+	public static ImageProducer aRSImageProducer_1112;
+	public static ImageProducer aRSImageProducer_1113;
+	public static ImageProducer aRSImageProducer_1114;
+	public static ImageProducer aRSImageProducer_1115;
 	public int loginScreenCursorPos;
 	public String loginMessage1;
 	public String loginMessage2;
@@ -403,15 +388,15 @@ public class Client extends ClientEngine
 	private static Npc npcDisplay;
 	public static boolean walkableInterfaceMode = false;
 	public static boolean prayClicked;
-	private ImageProducer leftFrame;
-	private ImageProducer topFrame;
+	public static ImageProducer leftFrame;
+	public static ImageProducer topFrame;
 	private static int ignoreCount;
-	private long aLong824;
+	public static long aLong824;
 	private static int[][] anIntArrayArray825;
 	public static int[] stonersNodeIDs;
-	private NodeList[][][] groundArray;
-	private volatile boolean aBoolean831;
-	private Socket aSocket832;
+	private static NodeList[][][] groundArray;
+	public static volatile boolean aBoolean831;
+	private static Socket aSocket832;
 	public static Stream aStream_834;
 	private static Npc[] npcArray;
 	private int npcCount;
@@ -424,18 +409,18 @@ public class Client extends ClientEngine
 	public static String aString844;
 	private Stream aStream_847;
 	private static boolean aBoolean848;
-	private int[] anIntArray851;
-	private int[] anIntArray852;
-	private int[] anIntArray853;
+	public static int[] anIntArray851;
+	public static int[] anIntArray852;
+	public static int[] anIntArray853;
 	private int anInt855;
 	private int xCameraPos;
 	private int zCameraPos;
 	private int yCameraPos;
 	private int yCameraCurve;
 	private int xCameraCurve;
-	private Sprite mapFlag;
-	private Sprite mapMarker;
-	private boolean aBoolean872;
+	public static Sprite mapFlag;
+	public static Sprite mapMarker;
+	private static boolean aBoolean872;
 	private static int weight;
 	private int unknownInt10;
 	public static boolean menuOpen;
@@ -457,8 +442,8 @@ public class Client extends ClientEngine
 	public static int crossY;
 	public static int crossIndex;
 	public static int crossType;
-	private static int plane;
-	private boolean loadingError;
+	public static int plane;
+	public static boolean loadingError;
 	private int[][] anIntArrayArray929;
 	private static Sprite aClass30_Sub2_Sub1_Sub1_931;
 	private static Sprite aClass30_Sub2_Sub1_Sub1_932;
@@ -469,8 +454,8 @@ public class Client extends ClientEngine
 	private int anInt937;
 	private int anInt938;
 	public static int anInt945;
-	private static WorldController worldController;
-	private Sprite[] sideIcons;
+	public static WorldController worldController;
+	public static Sprite[] sideIcons;
 	private static int menuScreenArea;
 	private static int menuOffsetX;
 	private static int menuOffsetY;
@@ -484,15 +469,15 @@ public class Client extends ClientEngine
 	private int spriteDrawY;
 	private static boolean aBoolean972;
 	private int anInt984;
-	private int anInt985;
-	private Sprite[] hitMarks;
+	public static int anInt985;
+	public static Sprite[] hitMarks;
 	private int anInt995;
 	private int anInt996;
 	private int anInt997;
 	private int anInt998;
 	private int anInt999;
 	private ISAACRandomGen encryption;
-	private Sprite multiOverlay;
+	public static Sprite multiOverlay;
 	public static String amountOrNameInput;
 	private static int daysSinceLastLogin;
 	private int pktSize;
@@ -500,7 +485,7 @@ public class Client extends ClientEngine
 	private int anInt1009;
 	private int anInt1010;
 	private static int anInt1011;
-	private NodeList aClass19_1013;
+	private static NodeList aClass19_1013;
 	private int anInt1014;
 	private int anInt1015;
 	private int anInt1016;
@@ -508,11 +493,11 @@ public class Client extends ClientEngine
 	private int anInt1018;
 	private static int anInt1021;
 	private int anInt1022;
-	private static Sprite scrollBar1;
-	private static Sprite scrollBar2;
+	public static Sprite scrollBar1;
+	public static Sprite scrollBar2;
 	private static int anInt1026;
 	private static boolean aBoolean1031;
-	private Sprite[] mapFunctions;
+	public static Sprite[] mapFunctions;
 	private static int baseX;
 	private static int baseY;
 	private int anInt1036;
@@ -522,28 +507,28 @@ public class Client extends ClientEngine
 	private static int anInt1046;
 	private static boolean aBoolean1047;
 	private static int anInt1048;
-	private String aString1049;
-	private StreamLoader titleStreamLoader;
+	public static String aString1049;
+	public static StreamLoader titleStreamLoader;
 	private int anInt1054;
 	private int anInt1055;
-	private NodeList aClass19_1056;
-	private Background[] mapScenes;
+	private static NodeList aClass19_1056;
+	public static Background[] mapScenes;
 	private int anInt1062;
 	public static int stonersListAction;
 	private static int mouseInvInterfaceIndex;
 	private static int lastActiveInvInterface;
-	private int anInt1069;
-	private int anInt1070;
-	private int anInt1071;
-	private int[] anIntArray1072;
-	private int[] anIntArray1073;
-	private Sprite mapDotItem;
-	private Sprite mapDotNPC;
-	private Sprite mapDotStoner;
-	private Sprite mapDotTeam;
-	private Sprite mapDotClan;
-	private int anInt1079;
-	private boolean aBoolean1080;
+	public static int anInt1069;
+	public static int anInt1070;
+	private static int anInt1071;
+	private static int[] anIntArray1072;
+	private static int[] anIntArray1073;
+	public static Sprite mapDotItem;
+	public static Sprite mapDotNPC;
+	public static Sprite mapDotStoner;
+	public static Sprite mapDotTeam;
+	public static Sprite mapDotClan;
+	public static int anInt1079;
+	private static boolean aBoolean1080;
 	public static String[] stonersList;
 	private Stream inStream;
 	private static int dragFromSlot;
@@ -554,72 +539,72 @@ public class Client extends ClientEngine
 	public static int[] menuActionCmd3;
 	public static int[] menuActionID;
 	public static int[] menuActionCmd1;
-	private Sprite[] headIcons;
-	private Sprite[] skullIcons;
-	private Sprite[] headIconsHint;
+	public static Sprite[] headIcons;
+	public static Sprite[] skullIcons;
+	public static Sprite[] headIconsHint;
 	private int anInt1098;
 	private int anInt1099;
 	private int anInt1100;
 	private int anInt1101;
 	private int anInt1102;
 	public static int anInt1104;
-	private ImageProducer aRSImageProducer_1107;
-	private ImageProducer aRSImageProducer_1110;
-	private ImageProducer aRSImageProducer_1111;
+	private static ImageProducer aRSImageProducer_1107;
+	public static ImageProducer aRSImageProducer_1110;
+	public static ImageProducer aRSImageProducer_1111;
 	private static int membersInt;
 	public static String aString1121;
-	private ImageProducer aRSImageProducer_1125;
+	private static ImageProducer aRSImageProducer_1125;
 	private static int anInt1131;
 	public static int menuActionRow;
 	private static int spellSelected;
 	private static int anInt1137;
 	private static int spellUsableOn;
 	private static String spellTooltip;
-	private Sprite[] aClass30_Sub2_Sub1_Sub1Array1140;
-	private boolean aBoolean1141;
+	private static Sprite[] aClass30_Sub2_Sub1_Sub1Array1140;
+	private static boolean aBoolean1141;
 	private static int energy;
 	private static boolean aBoolean1149;
 	public static Sprite[] crosses;
 	private static boolean musicEnabled;
-	private Background[] aBackgroundArray1152s;
+	public static Background[] aBackgroundArray1152s;
 	private static int unreadMessages;
 	public static boolean canMute;
-	private boolean aBoolean1159;
+	private static boolean aBoolean1159;
 	public boolean aBoolean1160;
-	private ImageProducer aRSImageProducer_1164;
+	private static ImageProducer aRSImageProducer_1164;
 	private static int daysSinceRecovChange;
 	public static RSSocket socketStream;
 	private int anInt1169;
 	private static int minimapInt3;
 	public static int reportAbuseInterfaceID;
-	private NodeList aClass19_1179;
-	private byte[][] aByteArrayArray1183;
+	private static NodeList aClass19_1179;
+	private static byte[][] aByteArrayArray1183;
 	private int anInt1184;
 	public static int minimapInt1;
 	private int anInt1186;
 	private int anInt1187;
 	private static int invOverlayInterfaceID;
-	private int[] anIntArray1190;
-	private int[] anIntArray1191;
+	public static int[] anIntArray1190;
+	public static int[] anIntArray1191;
 	private static int anInt1193;
-	private Background mapBack;
+	public static Background mapBack;
 	public static String[] menuActionName;
-	private Sprite aClass30_Sub2_Sub1_Sub1_1201;
-	private Sprite aClass30_Sub2_Sub1_Sub1_1202;
+	public static Sprite aClass30_Sub2_Sub1_Sub1_1201;
+	public static Sprite aClass30_Sub2_Sub1_Sub1_1202;
 	private static int minimapInt2;
 	public static String promptInput;
 	private static int anInt1213;
-	private int[][][] intGroundArray;
-	private long aLong1215;
+	public static int[][][] intGroundArray;
+	public static long aLong1215;
 	private long aLong1220;
 	private int anInt1222;
 	public static int inputDialogState;
 	private static int nextSong;
 	private static boolean songChanging;
-	private static Class11[] aClass11Array1230;
-	private int[] anIntArray1234;
-	private int[] anIntArray1235;
-	private int[] anIntArray1236;
+	public static Class11[] aClass11Array1230;
+	private static int[] anIntArray1234;
+	private static int[] anIntArray1235;
+	private static int[] anIntArray1236;
 	private int anInt1237;
 	private int anInt1238;
 	private static boolean aBoolean1242;
@@ -627,14 +612,14 @@ public class Client extends ClientEngine
 	private static int atBoxInterface;
 	private static int atBoxIndex;
 	private static int atBoxInterfaceType;
-	private byte[][] aByteArrayArray1247;
+	private static byte[][] aByteArrayArray1247;
 	public static int tradeMode;
 	private static int anInt1249;
 	private int anInt1251;
 	private static int legacyClickInt;
-	private static boolean welcomeScreenRaised;
+	public static boolean welcomeScreenRaised;
 	public static boolean messagePromptRaised;
-	private byte[][][] byteGroundArray;
+	public static byte[][][] byteGroundArray;
 	private static int prevSong;
 	private static int destX;
 	private static int destY;
@@ -700,9 +685,9 @@ public class Client extends ClientEngine
 		drawingFlames = false;
 		spriteDrawX = -1;
 		spriteDrawY = -1;
-		anIntArray968 = new int[33];
+
 		anIntArray969 = new int[256];
-		decompressors = new Decompressor[6];
+
 		variousSettings = new int[2000];
 		aBoolean972 = false;
 		anInt975 = 50;
@@ -716,8 +701,8 @@ public class Client extends ClientEngine
 		aStringArray983 = new String[anInt975];
 		anInt985 = -1;
 		hitMarks = new Sprite[20];
-		hitMark = new Sprite[20];
-		hitIcon = new Sprite[20];
+
+
 
 
 		amountOrNameInput = "";
@@ -731,11 +716,11 @@ public class Client extends ClientEngine
 
 		anIntArray1045 = new int[2000];
 		aBoolean1047 = true;
-		anIntArray1052 = new int[152];
-		anIntArray1229 = new int[152];
+
+
 		anInt1054 = -1;
 		aClass19_1056 = new NodeList();
-		anIntArray1057 = new int[33];
+
 		aClass9_1059 = new RSInterface();
 		mapScenes = new Background[100];
 
@@ -745,7 +730,7 @@ public class Client extends ClientEngine
 		aBoolean1080 = false;
 		stonersList = new String[200];
 		inStream = Stream.create();
-		expectedCRCs = new int[9];
+
 		menuActionCmd2 = new int[500];
 		menuActionCmd3 = new int[500];
 		menuActionID = new int[500];
@@ -757,7 +742,7 @@ public class Client extends ClientEngine
 		aString1121 = "";
 		atStonerActions = new String[5];
 		atStonerArray = new boolean[5];
-		anIntArrayArrayArray1129 = new int[4][13][13];
+
 		aClass30_Sub2_Sub1_Sub1Array1140 = new Sprite[1000];
 		aBoolean1141 = false;
 		aBoolean1149 = false;
@@ -799,8 +784,7 @@ public class Client extends ClientEngine
 		bigY = new int[4000];
 	}
 
-	public void setCanvas(GameCanvas canvas) {
-		this.canvas = canvas;
+	public static void setCanvas(GameCanvas canvas) {
 	}
 
 
@@ -1017,27 +1001,7 @@ public class Client extends ClientEngine
 	}
 
 
-	private void drawLoadingMessages(int used, String s, String s1) {
-		int boxWidth = regularText.getTextWidth(used == 1 ? s : s1) + 6;
-		int boxHeight = s1 == null ? 25 : 38;
 
-		int centerX = GraphicsConfig.MIN_WIDTH / 2;
-		int centerY = GraphicsConfig.MIN_HEIGHT / 2;
-
-		int boxX = centerX - (boxWidth / 2);
-		int boxY = centerY - (boxHeight / 2);
-
-		DrawingArea.drawPixels(boxHeight, boxY, boxX, 0, boxWidth);
-		DrawingArea.drawPixels(1, boxY, boxX, ColorConstants.WHITE_COLOR, boxWidth); // top
-		DrawingArea.drawPixels(boxHeight, boxY, boxX, ColorConstants.WHITE_COLOR, 1); // left
-		DrawingArea.drawPixels(1, boxY + boxHeight, boxX, ColorConstants.WHITE_COLOR, boxWidth); // bottom
-		DrawingArea.drawPixels(boxHeight, boxY, boxX + boxWidth, ColorConstants.WHITE_COLOR, 1); // right
-
-		regularText.drawText(ColorConstants.WHITE_COLOR, s, boxY + 18, boxX + (boxWidth / 2));
-		if (s1 != null) {
-			regularText.drawText(ColorConstants.WHITE_COLOR, s1, boxY + 31, boxX + (boxWidth / 2));
-		}
-	}
 
 
 	public void addXP(int skillID, int xp)
@@ -1092,7 +1056,7 @@ public class Client extends ClientEngine
 		return k == 337;
 	}
 
-	public Socket openSocket(int port) throws IOException
+	public static Socket openSocket(int port) throws IOException
 	{
 		return new Socket(InetAddress.getByName(ClientConstants.LOCALHOST ? "localhost" : server), port);
 	}
@@ -1103,7 +1067,7 @@ public class Client extends ClientEngine
 		Signlink.midisave(abyte0, abyte0.length);
 	}
 
-	private void method22()
+	private static void method22()
 	{
 		try
 		{
@@ -1312,7 +1276,7 @@ public class Client extends ClientEngine
 
 	}
 
-	private void unlinkMRUNodes()
+	private static void unlinkMRUNodes()
 	{
 		ObjectDef.mruNodes1.unlinkAll();
 		ObjectDef.mruNodes2.unlinkAll();
@@ -1323,7 +1287,7 @@ public class Client extends ClientEngine
 		SpotAnim.aMRUNodes_415.unlinkAll();
 	}
 
-	private void method24(int i)
+	public static void method24(int i)
 	{
 
 		int[] ai = minimapImage.myPixels;
@@ -1389,7 +1353,7 @@ public class Client extends ClientEngine
 
 	}
 
-	private void spawnGroundItem(int i, int j)
+	private static void spawnGroundItem(int i, int j)
 	{
 		NodeList class19 = groundArray[plane][i][j];
 		if (class19 == null)
@@ -2911,7 +2875,7 @@ public class Client extends ClientEngine
 		throw new RuntimeException();
 	}
 
-	private int method42(int i, int j, int k)
+	private static int method42(int i, int j, int k)
 	{
 		int l = k >> 7;
 		int i1 = j >> 7;
@@ -3248,7 +3212,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void method50(int i, int k, int l, int i1, int j1)
+	private static void method50(int i, int k, int l, int i1, int j1)
 	{
 		int k1 = worldController.method300(j1, l, i);
 		if (k1 != 0)
@@ -3403,103 +3367,9 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void loadTitleScreen(Graphics2D g)
-	{
-		aBackground_966 = new Background(titleStreamLoader, "titlebox", 0);
-		aBackground_967 = new Background(titleStreamLoader, "titlebutton", 0);
-		aBackgroundArray1152s = new Background[12];
-		int j = 0;
 
-		for (int k = 0; k < 12; k++)
-			aBackgroundArray1152s[k] = new Background(titleStreamLoader, "runes", k);
 
-		aClass30_Sub2_Sub1_Sub1_1201 = new Sprite(128, 265);
-		aClass30_Sub2_Sub1_Sub1_1202 = new Sprite(128, 265);
-		System.arraycopy(aRSImageProducer_1110.canvasRaster, 0, aClass30_Sub2_Sub1_Sub1_1201.myPixels, 0, 33920);
-
-		System.arraycopy(aRSImageProducer_1111.canvasRaster, 0, aClass30_Sub2_Sub1_Sub1_1202.myPixels, 0, 33920);
-
-		anIntArray851 = new int[256];
-		for (int k1 = 0; k1 < 64; k1++)
-			anIntArray851[k1] = k1 * 0x40000;
-
-		for (int l1 = 0; l1 < 64; l1++)
-			anIntArray851[l1 + 64] = 0xff0000 + 1024 * l1;
-
-		for (int i2 = 0; i2 < 64; i2++)
-			anIntArray851[i2 + 128] = 0xffff00 + 4 * i2;
-
-		for (int j2 = 0; j2 < 64; j2++)
-			anIntArray851[j2 + 192] = ColorConstants.WHITE_COLOR;
-
-		anIntArray852 = new int[256];
-		for (int k2 = 0; k2 < 64; k2++)
-			anIntArray852[k2] = k2 * 1024;
-
-		for (int l2 = 0; l2 < 64; l2++)
-			anIntArray852[l2 + 64] = 65280 + 4 * l2;
-
-		for (int i3 = 0; i3 < 64; i3++)
-			anIntArray852[i3 + 128] = 65535 + 0x40000 * i3;
-
-		for (int j3 = 0; j3 < 64; j3++)
-			anIntArray852[j3 + 192] = ColorConstants.WHITE_COLOR;
-
-		anIntArray853 = new int[256];
-		for (int k3 = 0; k3 < 64; k3++)
-			anIntArray853[k3] = k3 * 4;
-
-		for (int l3 = 0; l3 < 64; l3++)
-			anIntArray853[l3 + 64] = 255 + 0x40000 * l3;
-
-		for (int i4 = 0; i4 < 64; i4++)
-			anIntArray853[i4 + 128] = 0xff00ff + 1024 * i4;
-
-		for (int j4 = 0; j4 < 64; j4++)
-			anIntArray853[j4 + 192] = ColorConstants.WHITE_COLOR;
-
-		anIntArray850 = new int[256];
-		anIntArray1190 = new int[32768];
-		anIntArray1191 = new int[32768];
-		randomizeBackground(null);
-		anIntArray828 = new int[32768];
-		anIntArray829 = new int[32768];
-		drawLoadingText(g, 10, "Looking for weed");
-		if (!aBoolean831)
-		{
-			aBoolean831 = true;
-		}
-	}
-
-	private void loadingStages(Graphics2D g)
-	{
-		if (lowMem && loadingStage == 2 && ObjectManager.anInt131 != plane)
-		{
-			//aRSImageProducer_1165.initDrawingArea();
-			//drawLoadingMessages(1, "Rolling one, just for you!", null);
-			aRSImageProducer_1165.drawGraphics(0, g, 0);
-			loadingStage = 1;
-			aLong824 = System.currentTimeMillis();
-		}
-		if (loadingStage == 1)
-		{
-			int j = method54();
-			if (j != 0 && System.currentTimeMillis() - aLong824 > 0x57e40L)
-			{
-				Signlink.reporterror(
-					myUsername + " glcfb " + aLong1215 + "," + j + "," + lowMem + "," + decompressors[0] + ","
-						+ onDemandFetcher.getNodeCount() + "," + plane + "," + anInt1069 + "," + anInt1070);
-				aLong824 = System.currentTimeMillis();
-			}
-		}
-		if (loadingStage == 2 && plane != anInt985)
-		{
-			anInt985 = plane;
-			method24(plane);
-		}
-	}
-
-	private int method54()
+	public static int method54()
 	{
 		for (int i = 0; i < aByteArrayArray1183.length; i++)
 		{
@@ -3792,8 +3662,34 @@ public class Client extends ClientEngine
 		}
 	}
 
+	public static void loginToGameworld(Graphics2D g)
+	{
+		if (lowMem && loadingStage == 2 && ObjectManager.anInt131 != plane)
+		{
+			aRSImageProducer_1165.drawGraphics(0, g, 0);
+			loadingStage = 1;
+			aLong824 = System.currentTimeMillis();
+		}
+		if (loadingStage == 1)
+		{
+			int j = method54();
+			if (j != 0 && System.currentTimeMillis() - aLong824 > 0x57e40L)
+			{
+				Signlink.reporterror(
+					myUsername + " glcfb " + aLong1215 + "," + j + "," + lowMem + "," + decompressors[0] + ","
+						+ onDemandFetcher.getNodeCount() + "," + plane + "," + anInt1069 + "," + anInt1070);
+				aLong824 = System.currentTimeMillis();
+			}
+		}
+		if (loadingStage == 2 && plane != anInt985)
+		{
+			anInt985 = plane;
+			method24(plane);
+		}
+	}
+
 	private void runCorePhases(Graphics2D g, GameCanvas canvas) {
-		loadingStages(g);
+		loginToGameworld(g);
 		method115();
 		anInt1009++;
 		if (anInt1009 > 750) dropClient(g, canvas);
@@ -3981,7 +3877,7 @@ public class Client extends ClientEngine
 	}
 
 
-	private void method63()
+	private static void method63()
 	{
 		Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetFirst();
 		for (; class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetNext())
@@ -3997,7 +3893,7 @@ public class Client extends ClientEngine
 
 	}
 
-	public void resetImageProducers()
+	public static void resetImageProducers()
 	{
 		if (aRSImageProducer_1107 != null)
 			return;
@@ -4031,14 +3927,7 @@ public class Client extends ClientEngine
 		welcomeScreenRaised = true;
 	}
 
-	public void drawSmoothLoading(Graphics2D g, int percent, String message)
-	{
-		for (float perc = loadPercent; perc < (float) percent; perc = (float) ((double) perc + 0.29999999999999999D))
-		{
-			drawLoadingText(g, (int) perc, message);
-		}
-		loadPercent = percent;
-	}
+
 
 	private static void drawInterfaceRecursive(int i, int j, int k, int l, RSInterface class9, int i1, boolean flag, int j1)
 	{
@@ -4116,7 +4005,7 @@ public class Client extends ClientEngine
 		return true;
 	}
 
-	private StreamLoader streamLoaderForName(int i, String s, String s1, int j, int k, Graphics2D g)
+	public static StreamLoader streamLoaderForName(int i, String s, String s1, int j, int k, Graphics2D g)
 	{
 		byte[] abyte0 = null;
 		int l = 5;
@@ -4140,7 +4029,6 @@ public class Client extends ClientEngine
 		while (abyte0 == null)
 		{
 			String s2 = "Unknown error";
-			drawLoadingText(g, k, "Calling plug " + s);
 			try
 			{
 				int k1 = 0;
@@ -4168,7 +4056,6 @@ public class Client extends ClientEngine
 					j2 += j3;
 					int k3 = (j2 * 100) / i2;
 					if (k3 != k1)
-						drawLoadingText(g, k, "Getting lit " + s + " - " + k3 + "%");
 					k1 = k3;
 				}
 				datainputstream.close();
@@ -4215,12 +4102,10 @@ public class Client extends ClientEngine
 				{
 					if (j1 >= 3)
 					{
-						drawLoadingText(g, k, "Blunt has been killed - please roll another one!");
 						l1 = 10;
 					}
 					else
 					{
-						drawLoadingText(g, k, s2 + " - Rolling joint " + l1);
 					}
 					try
 					{
@@ -4311,10 +4196,6 @@ public class Client extends ClientEngine
 
 		if (l >= 2000)
 			l -= 2000;
-		if (l == 701)
-		{
-			extendChatArea();
-		}
 		if (l == 713)
 		{
 			inputTaken = true;
@@ -4474,40 +4355,28 @@ public class Client extends ClientEngine
 				switch (k)
 				{
 					case 37510:
-						changeChat("FFFFFF", "white");
 						break;
 					case 37513:
-						changeChat("000000", "black");
 						break;
 					case 37516:
-						changeChat("94968F", "grey");
 						break;
 					case 37519:
-						changeChat("ED0C0C", "red");
 						break;
 					case 37522:
-						changeChat("FF700A", "orange");
 						break;
 					case 37525:
-						changeChat("FFF700", "yellow");
 						break;
 					case 37528:
-						changeChat("4AD143", "green");
 						break;
 					case 37531:
-						changeChat("25B8F7", "blue");
 						break;
 					case 37534:
-						changeChat("DD0AF0", "purple");
 						break;
 					case 37537:
-						changeChat("FF21D6", "pink");
 						break;
 					case 37540:
-						changeChat("00FFFF", "cyan");
 						break;
 					case 37543:
-						changeChat("1F9C9C", "turquoise");
 						break;
 					case 36004:
 						stream.createFrame(185);
@@ -5570,270 +5439,7 @@ public class Client extends ClientEngine
 			anInt1251 = 0;
 	}
 
-	void startUp(Graphics2D g)
-	{
-		SpriteLoader.loadSprites();
-		cacheSprite = SpriteLoader.sprites;
-		loginRenderer = new LoginRenderer(this);
-		drawSmoothLoading(g, 50, "Rolling a spliff");
-		if (Signlink.cache_dat != null)
-		{
-			for (int i = 0; i < 6; i++)
-				decompressors[i] = new Decompressor(Signlink.cache_dat, Signlink.cache_idx[i], i + 1);
-		}
-		try
-		{
-			titleStreamLoader = streamLoaderForName(1, "title screen", "title", expectedCRCs[1], 25,g);
-			smallText = new TextDrawingArea(false, "p11_full", titleStreamLoader);
-			regularText = new TextDrawingArea(false, "p12_full", titleStreamLoader);
-			boldText = new TextDrawingArea(false, "b12_full", titleStreamLoader);
-			newSmallFont = new RSFont(false, "p11_full", titleStreamLoader);
-			newRegularFont = new RSFont(false, "p12_full", titleStreamLoader);
-			newBoldFont = new RSFont(false, "b12_full", titleStreamLoader);
-			newFancyFont = new RSFont(true, "q8_full", titleStreamLoader);
-			loadTitleScreen(g);
-			TextDrawingArea aTextDrawingArea_1273 = new TextDrawingArea(true, "q8_full", titleStreamLoader);
-			StreamLoader streamLoader = streamLoaderForName(2, "config", "config", expectedCRCs[2], 30,g );
-			StreamLoader streamLoader_1 = streamLoaderForName(3, "interface", "interface", expectedCRCs[3], 35,g );
-			StreamLoader streamLoader_2 = streamLoaderForName(4, "2d graphics", "media", expectedCRCs[4], 40,g);
-			StreamLoader streamLoader_3 = streamLoaderForName(6, "textures", "textures", expectedCRCs[6], 45,g);
-			streamLoaderForName(8, "sound effects", "sounds", expectedCRCs[8], 55,g);
-			byteGroundArray = new byte[4][104][104];
-			intGroundArray = new int[4][105][105];
-			worldController = new WorldController(intGroundArray);
-			for (int j = 0; j < 4; j++)
-				aClass11Array1230[j] = new Class11();
 
-			minimapImage = new Sprite(512, 512);
-			StreamLoader streamLoader_6 = streamLoaderForName(5, "update list", "versionlist", expectedCRCs[5], 60,g);
-			drawSmoothLoading(g,100, "Looking for lighter");
-			onDemandFetcher = new OnDemandFetcher();
-			onDemandFetcher.start(streamLoader_6, this);
-			SequenceFrame.animationlist = new SequenceFrame[2500][0];
-			Model.method459(onDemandFetcher.getModelCount(), onDemandFetcher);
-			drawSmoothLoading(g,175, "Sparking spliff");
-			Sprite[] clanIcons = new Sprite[10];
-			for (int index = 0; index < newHitMarks.length; index++)
-			{
-				newHitMarks[index] = new Sprite(streamLoader_2, "newhitmarks", index);
-			}
-			for (int index = 0; index < channelButtons.length; index++)
-			{
-				channelButtons[index] = new Sprite(streamLoader_2, "cbuttons", index);
-			}
-			for (int index = 0; index < fixedGameComponents.length; index++)
-			{
-				fixedGameComponents[index] = new Sprite(streamLoader_2, "fixed", index);
-			}
-			for (int index = 0; index < skillIcons.length; index++)
-			{
-				skillIcons[index] = new Sprite(streamLoader_2, "skillicons", index);
-			}
-			for (int index = 0; index < gameComponents.length; index++)
-			{
-				gameComponents[index] = new Sprite(streamLoader_2, "fullscreen", index);
-			}
-			for (int index = 0; index < orbComponents.length; index++)
-			{
-				orbComponents[index] = new Sprite(streamLoader_2, "orbs3", index);
-			}
-			for (int index = 0; index < orbComponents2.length; index++)
-			{
-				orbComponents2[index] = new Sprite(streamLoader_2, "orbs4", index);
-			}
-			for (int index = 0; index < orbComponents3.length; index++)
-			{
-				orbComponents3[index] = new Sprite(streamLoader_2, "orbs5", index);
-			}
-			for (int index = 0; index < redStones.length; index++)
-			{
-				redStones[index] = new Sprite(streamLoader_2, "redstone1", index);
-			}
-			for (int index = 0; index < hpBars.length; index++)
-			{
-				hpBars[index] = new Sprite(streamLoader_2, "hpbars", index);
-			}
-			for (int index = 0; index < clanIcons.length; index++)
-			{
-				clanIcons[index] = new Sprite(streamLoader_2, "clanicons", index);
-			}
-			if (currencies >= 0) System.arraycopy(cacheSprite, 407, currencyImage, 0, currencies);
-			newSmallFont.unpackImages(modIcons, clanIcons);
-			newRegularFont.unpackImages(modIcons, clanIcons);
-			newBoldFont.unpackImages(modIcons, clanIcons);
-			newFancyFont.unpackImages(modIcons, clanIcons);
-			multiOverlay = new Sprite(streamLoader_2, "overlay_multiway", 0);
-			mapBack = new Background(streamLoader_2, "mapback", 0);
-			for (int j3 = 0; j3 <= 16; j3++)
-			{
-				sideIcons[j3] = new Sprite(streamLoader_2, "sideicons", j3);
-			}
-
-			System.arraycopy(cacheSprite, 475, hitMark, 0, 9);
-
-			System.arraycopy(cacheSprite, 484, hitIcon, 0, 6);
-			StatusOrbs.compass = new Sprite(streamLoader_2, "compass", 0);
-			try
-			{
-				for (int k3 = 0; k3 < 100; k3++)
-					mapScenes[k3] = new Background(streamLoader_2, "mapscene", k3);
-			}
-			catch (Exception _ex)
-			{
-			}
-			try
-			{
-				for (int l3 = 0; l3 < 100; l3++)
-					mapFunctions[l3] = new Sprite(streamLoader_2, "mapfunction", l3);
-			}
-			catch (Exception _ex)
-			{
-			}
-			try
-			{
-				for (int i4 = 0; i4 < 20; i4++)
-					hitMarks[i4] = new Sprite(streamLoader_2, "hitmarks", i4);
-			}
-			catch (Exception _ex)
-			{
-			}
-			try
-			{
-				for (int h1 = 0; h1 < 6; h1++)
-					headIconsHint[h1] = new Sprite(streamLoader_2, "headicons_hint", h1);
-			}
-			catch (Exception _ex)
-			{
-			}
-			try
-			{
-				for (int j4 = 0; j4 < 8; j4++)
-					headIcons[j4] = new Sprite(streamLoader_2, "headicons_prayer", j4);
-				for (int j45 = 0; j45 < 3; j45++)
-					skullIcons[j45] = new Sprite(streamLoader_2, "headicons_pk", j45);
-			}
-			catch (Exception _ex)
-			{
-			}
-			mapFlag = new Sprite(streamLoader_2, "mapmarker", 0);
-			mapMarker = new Sprite(streamLoader_2, "mapmarker", 1);
-			for (int k4 = 0; k4 < 8; k4++)
-				crosses[k4] = new Sprite(streamLoader_2, "cross", k4);
-			mapDotItem = new Sprite(streamLoader_2, "mapdots", 0);
-			mapDotNPC = new Sprite(streamLoader_2, "mapdots", 1);
-			mapDotStoner = new Sprite(streamLoader_2, "mapdots", 2);
-			mapDotStoner = new Sprite(streamLoader_2, "mapdots", 3);
-			mapDotTeam = new Sprite(streamLoader_2, "mapdots", 4);
-			mapDotClan = new Sprite(streamLoader_2, "mapdots", 5);
-			scrollBar1 = new Sprite(streamLoader_2, "scrollbar", 0);
-			scrollBar2 = new Sprite(streamLoader_2, "scrollbar", 1);
-			try
-			{
-				for (int l4 = 0; l4 < ClientConstants.ICON_AMOUNT; l4++)
-				{
-					modIcons[l4] = new Sprite(streamLoader_2, "mod_icons", l4);
-				}
-			}
-			catch (Exception e)
-			{
-			}
-			Sprite sprite = new Sprite(streamLoader_2, "screenframe", 0);
-			leftFrame = new ImageProducer(sprite.myWidth, sprite.myHeight);
-			sprite.method346(0, 0);
-			sprite = new Sprite(streamLoader_2, "screenframe", 1);
-			topFrame = new ImageProducer(sprite.myWidth, sprite.myHeight);
-			sprite.method346(0, 0);
-			int i5 = (int) (Math.random() * 21D) - 10;
-			int j5 = (int) (Math.random() * 21D) - 10;
-			int k5 = (int) (Math.random() * 21D) - 10;
-			int l5 = (int) (Math.random() * 41D) - 20;
-			for (int i6 = 0; i6 < 100; i6++)
-			{
-				if (mapFunctions[i6] != null)
-					mapFunctions[i6].method344(i5 + l5, j5 + l5, k5 + l5);
-				if (mapScenes[i6] != null)
-					mapScenes[i6].method360(i5 + l5, j5 + l5, k5 + l5);
-			}
-			drawSmoothLoading(g, 275, "Getting high");
-			Rasterizer.method368(streamLoader_3);
-			Rasterizer.generateColorPalette(0.80000000000000004D);
-			Rasterizer.method367();
-			drawSmoothLoading(g, 325, "Your friend is asking to use ur lighter & you gave it to him");
-			Animation.unpackConfig(streamLoader);
-			ObjectDef.unpackConfig(streamLoader);
-			Floor.unpackConfig(streamLoader);
-			OverlayFloor.unpackConfig(streamLoader);
-			ItemDef.unpackConfig(streamLoader);
-			EntityDef.unpackConfig(streamLoader);
-			IdentityKit.unpackConfig(streamLoader);
-			SpotAnim.unpackConfig(streamLoader);
-			Varp.unpackConfig(streamLoader);
-			VarBit.unpackConfig(streamLoader);
-			ItemDef.isMembers = isMembers;
-			drawSmoothLoading(g,450, "Grinding some weed, getting ready to roll a second.");
-			TextDrawingArea[] aclass30_sub2_sub1_sub4s = {smallText, regularText, boldText, aTextDrawingArea_1273};
-			RSInterface.unpack(streamLoader_1, aclass30_sub2_sub1_sub4s, streamLoader_2);
-			drawSmoothLoading(g, 550, "Looking for lighter once again");
-			for (int j6 = 0; j6 < 33; j6++)
-			{
-				int k6 = 999;
-				int i7 = 0;
-				for (int k7 = 0; k7 < 34; k7++)
-				{
-					if (mapBack.aByteArray1450[k7 + j6 * mapBack.anInt1452] == 0)
-					{
-						if (k6 == 999)
-							k6 = k7;
-						continue;
-					}
-					if (k6 == 999)
-						continue;
-					i7 = k7;
-					break;
-				}
-				anIntArray968[j6] = k6;
-				anIntArray1057[j6] = i7 - k6;
-
-			}
-			for (int l6 = 1; l6 < 153; l6++)
-			{
-				int j7 = 999;
-				int l7 = 0;
-				for (int j8 = 24; j8 < 177; j8++)
-				{
-					if (mapBack.aByteArray1450[j8 + l6 * mapBack.anInt1452] == 0 && (j8 > 34 || l6 > 34))
-					{
-						if (j7 == 999)
-						{
-							j7 = j8;
-						}
-						continue;
-					}
-					if (j7 == 999)
-					{
-						continue;
-					}
-					l7 = j8;
-					break;
-				}
-				anIntArray1052[l6 - 1] = j7 - 24;
-				anIntArray1229[l6 - 1] = l7 - j7;
-			}
-
-			setBounds();
-			Animable_Sub5.clientInstance = this;
-			ObjectDef.clientInstance = this;
-			EntityDef.clientInstance = this;
-			AccountManager.loadAccount();
-			return;
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-			Signlink.reporterror("loaderror " + aString1049 + " " + anInt1079);
-		}
-		loadingError = true;
-	}
 
 	public void processGameLoop(Graphics2D g, GameCanvas canvas)
 	{
@@ -5843,6 +5449,7 @@ public class Client extends ClientEngine
 		loopCycle++;
 		if (!loggedIn)
 			loginRenderer.processLoginScreen(g, canvas);
+
 		else
 			mainGameProcessor(g, canvas);
 		processOnDemandQueue();
@@ -6004,54 +5611,7 @@ public class Client extends ClientEngine
 	}
 
 
-	public void raiseWelcomeScreen()
-	{
-		welcomeScreenRaised = true;
-	}
 
-	public void drawLoadingText(Graphics2D g,int percent, String message)
-	{
-		anInt1079 = percent;
-		aString1049 = message;
-		resetImageProducers();
-
-		if (titleStreamLoader == null)
-		{
-			super.drawLoadingText(g, percent, message);
-			return;
-		}
-
-		aRSImageProducer_1109.initDrawingArea();
-		Graphics2D offscreenG = aRSImageProducer_1109.getImageGraphics();
-
-		if (BACKGROUND != null)
-		{
-			offscreenG.drawImage(
-				BACKGROUND,
-				(Client.frameWidth / 2) - (BACKGROUND.getWidth() / 2),
-				(Client.frameHeight / 2) - (BACKGROUND.getHeight() / 2),
-				null
-			);
-		}
-
-		if (LOADING_BAR != null)
-		{
-			offscreenG.drawImage(
-				LOADING_BAR,
-				(Client.frameWidth / 2) - 274,
-				(Client.frameHeight / 2) - 10,
-				null
-			);
-		}
-		DrawingArea.drawPixels(36, (Client.frameHeight / 2) - 10, ((Client.frameWidth / 2) - 274 + percent), 0x302e2c, (530 - percent));
-		regularText.method382(ColorConstants.WHITE_COLOR, (Client.frameWidth / 2), message, (Client.frameHeight / 2) + 12, true);
-		aRSImageProducer_1109.drawGraphics(0, g,0);
-
-		if (welcomeScreenRaised)
-		{
-			welcomeScreenRaised = false;
-		}
-	}
 
 	private void build3dScreenMenu()
 	{
@@ -6692,10 +6252,6 @@ public class Client extends ClientEngine
 				{
 					inputString = inputString.substring(0, inputString.length() - 1);
 					inputTaken = true;
-				}
-				if (j == 9)
-				{
-					replyToPM();
 				}
 				if ((j == 13 || j == 10) && inputString.length() > 0)
 				{
@@ -7478,7 +7034,6 @@ public class Client extends ClientEngine
 				handleFallbackAction(leftClick, rightClick);
 				processMainScreenClick(leftClick, rightClick);
 				processTabClick(leftClick, rightClick);
-				processChatModeClick(leftClick, rightClick);
 				handleMinimapInteractions(leftClick, rightClick);
 			if (!rightClick && menuActionRow > 0 && !isClickInsideOrbBounds()) {
 				doAction(menuActionRow - 1);
@@ -7885,12 +7440,9 @@ public class Client extends ClientEngine
 
 		Set<Integer> menuHandledInterfaces = new HashSet<>();
 
-		buildChatSplitMenu();
 		handle3DOrInterfaceScreenMenu(menuHandledInterfaces);
 		handleOverlayInterfaces(menuHandledInterfaces);
 		handleTabAreaInterfaces(menuHandledInterfaces);
-		handleChatAreaMenu(menuHandledInterfaces);
-		handleMinimapMenu();
 
 		sortMenuEntries();
 	}
@@ -7903,11 +7455,7 @@ public class Client extends ClientEngine
 		anInt1315 = 0;
 	}
 
-	private void buildChatSplitMenu() {
-		if (showChatComponents) {
-			buildSplitPrivateChatMenu();
-		}
-	}
+
 
 	private void handle3DOrInterfaceScreenMenu(Set<Integer> handled) {
 		if (!getMousePositions()) return;
@@ -7991,14 +7539,6 @@ public class Client extends ClientEngine
 		}
 		anInt886 = 0;
 		anInt1315 = 0;
-	}
-
-
-
-	private void handleMinimapMenu() {
-		if (MouseState.x > 4 && MouseState.y > 480 && MouseState.x < 516 && MouseState.y < frameHeight) {
-			rightClickChatButtons();
-		}
 	}
 
 	private void sortMenuEntries() {
@@ -8931,7 +8471,7 @@ public class Client extends ClientEngine
 		}
 	}
 
-	private void method89(Class30_Sub1 class30_sub1)
+	private static void method89(Class30_Sub1 class30_sub1)
 	{
 		int i = 0;
 		int j = -1;
@@ -9600,9 +9140,7 @@ public class Client extends ClientEngine
 	}
 
 	private void renderChatIfInvalidated() {
-		extendChatArea();
 		if (inputTaken) {
-			drawChatArea();
 			inputTaken = false;
 		}
 	}
@@ -10783,7 +10321,7 @@ public class Client extends ClientEngine
 		return 0;
 	}
 
-	private void randomizeBackground(Background background)
+	public static void randomizeBackground(Background background)
 	{
 		int j = 256;
 		for (int k = 0; k < anIntArray1190.length; k++)
@@ -12023,7 +11561,7 @@ public class Client extends ClientEngine
 		return true;
 	}
 
-	private DataInputStream openJagGrabInputStream(String s) throws IOException
+	private static DataInputStream openJagGrabInputStream(String s) throws IOException
 	{
 		if (aSocket832 != null) {
 			try {
@@ -14103,7 +13641,6 @@ public class Client extends ClientEngine
 			displayKillFeed();
 		}
 
-		drawChatArea();
 		drawGameUIorbs();
 		drawTabArea();
 

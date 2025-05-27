@@ -1,5 +1,6 @@
 package com.bestbudz.engine;
 
+import static com.bestbudz.engine.ClientEngine.loginRenderer;
 import com.bestbudz.graphics.DrawingArea;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -50,9 +51,6 @@ public class GameEngine implements Runnable {
 				continue;
 			}
 
-
-
-
 			BufferStrategy bufferStrategy = canvas.getBufferStrategy();
 			if (bufferStrategy == null) {
 				try {
@@ -71,7 +69,8 @@ public class GameEngine implements Runnable {
 					try {
 						g = (Graphics2D) bufferStrategy.getDrawGraphics();
 						if (!started) {
-							client.startUp(g);
+
+							GameLoader.startUp(g, client);
 
 							started = true;
 						}

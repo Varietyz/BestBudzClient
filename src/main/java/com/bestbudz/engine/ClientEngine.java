@@ -3,10 +3,6 @@ package com.bestbudz.engine;
 import com.bestbudz.engine.input.Keyboard;
 import com.bestbudz.graphics.buffer.ImageProducer;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
@@ -14,8 +10,7 @@ import java.awt.event.WindowListener;
 
 public class ClientEngine implements FocusListener, WindowListener {
 
-	public LoginRenderer loginRenderer;
-	public static long aLong29;
+	public static LoginRenderer loginRenderer;
 	protected int screenGliding;
 	final int minDelay;
 	boolean shouldDebug;
@@ -81,25 +76,4 @@ public class ClientEngine implements FocusListener, WindowListener {
 		thread.setPriority(i);
 	}
 
-	void drawLoadingText(Graphics2D g, int percentage, String loadingText) {
-		Font font = new Font("Helvetica", Font.BOLD, 13);
-		FontMetrics fontmetrics = g.getFontMetrics(font);
-		Font font1 = new Font("Helvetica", Font.PLAIN, 13);
-		FontMetrics fontmetrics1 = g.getFontMetrics(font1);
-
-		g.setColor(Color.black);
-		g.fillRect(0, 0, GraphicsConfig.MIN_WIDTH, GraphicsConfig.MIN_HEIGHT);
-
-		Color color = new Color(140, 17, 17);
-		int y = GraphicsConfig.MIN_HEIGHT / 2 - 18;
-		g.setColor(color);
-		g.drawRect(GraphicsConfig.MIN_WIDTH / 2 - 152, y, 304, 34);
-		g.fillRect(GraphicsConfig.MIN_WIDTH / 2 - 150, y + 2, percentage * 3, 30);
-		g.setColor(Color.black);
-		g.fillRect((GraphicsConfig.MIN_WIDTH / 2 - 150) + percentage * 3, y + 2, 300 - percentage * 3, 30);
-		g.setFont(font);
-		g.setColor(Color.white);
-		g.drawString(loadingText, (GraphicsConfig.MIN_WIDTH - fontmetrics.stringWidth(loadingText)) / 2, y + 22);
-		g.drawString("", (GraphicsConfig.MIN_WIDTH - fontmetrics1.stringWidth("")) / 2, y - 8);
-	}
 }

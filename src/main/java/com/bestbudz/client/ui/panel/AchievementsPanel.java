@@ -131,11 +131,6 @@ panel.setPreferredSize(null);
 		JPanel buttonBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 		buttonBar.setOpaque(false);
 
-		JButton backButton = new JButton("Info Tab");
-		backButton.setToolTipText("Return to Info Tab");
-		if (Client.loggedIn) backButton.addActionListener(e -> UIDockFrame.getInstance().dockPanelToMatch("Achievements", "Info Tab"));
-		buttonBar.add(backButton);
-
 		panel.add(header, BorderLayout.NORTH);
 		panel.add(content, BorderLayout.CENTER);
 		panel.add(buttonBar, BorderLayout.SOUTH);

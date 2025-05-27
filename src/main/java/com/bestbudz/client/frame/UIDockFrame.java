@@ -40,7 +40,7 @@ public class UIDockFrame extends JDialog {
 	public static final Map<String, JToggleButton> toggleButtons = new LinkedHashMap<>();
 
 	// Login overlay components
-	private LoginOverlayPanel loginOverlay;
+	private LoadingScreenPanel loginOverlay;
 	private JLayeredPane mainLayeredPane; // This will contain everything including toggle bars
 	private JPanel contentPanel; // Container for toggle bars and split pane
 
@@ -101,7 +101,7 @@ public class UIDockFrame extends JDialog {
 		mainLayeredPane.add(contentPanel, JLayeredPane.DEFAULT_LAYER);
 
 		// Create and add login overlay to top layer (spans entire frame)
-		loginOverlay = new LoginOverlayPanel(client);
+		loginOverlay = new LoadingScreenPanel(client);
 		mainLayeredPane.add(loginOverlay, JLayeredPane.PALETTE_LAYER);
 
 		// Handle resizing for all components
@@ -272,7 +272,7 @@ public class UIDockFrame extends JDialog {
 	/**
 	 * Get access to the login overlay for manual refresh if needed
 	 */
-	public LoginOverlayPanel getLoginOverlay() {
+	public LoadingScreenPanel getLoginOverlay() {
 		return loginOverlay;
 	}
 

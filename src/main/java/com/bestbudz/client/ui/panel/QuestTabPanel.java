@@ -45,16 +45,7 @@ public class QuestTabPanel implements UIPanel, DockTextUpdatable
 
 		JPanel buttonBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 		buttonBar.setOpaque(false);
-
-		JButton achievementsBtn = new JButton("Achievements");
-		achievementsBtn.setToolTipText("View achievements");
-
-		achievementsBtn.addActionListener(e -> {
-			if (Client.loggedIn) UIDockFrame.getInstance().dockPanelToMatch("Info Tab", "Achievements");
-		});
-
-		buttonBar.add(achievementsBtn);
-
+		
 		questList.setCellRenderer(new DefaultListCellRenderer() {
 			@Override
 			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

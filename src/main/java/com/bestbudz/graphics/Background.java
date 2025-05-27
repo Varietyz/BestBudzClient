@@ -17,7 +17,7 @@ public final class Background extends DrawingArea {
 	public Background(StreamLoader streamLoader, String s, int i) {
 		byte[] data = streamLoader.getDataForName(s + ".dat");
 		if (data == null || data.length == 0) {
-			System.err.println("Background data missing or empty: " + s);
+			//System.err.println("Background data missing or empty: " + s);
 			aByteArray1450 = new byte[0];
 			anInt1452 = 0;
 			anInt1453 = 0;
@@ -27,7 +27,7 @@ public final class Background extends DrawingArea {
 
 		byte[] indexData = streamLoader.getDataForName("index.dat");
 		if (indexData == null || indexData.length == 0) {
-			System.err.println("Background index data missing or empty.");
+			//System.err.println("Background index data missing or empty.");
 			aByteArray1450 = new byte[0];
 			anInt1452 = 0;
 			anInt1453 = 0;
@@ -36,7 +36,7 @@ public final class Background extends DrawingArea {
 		Stream stream_1 = new Stream(indexData);
 
 		if (stream.currentOffset + 2 > stream.buffer.length) {
-			System.err.println("Background data too short for header.");
+			//System.err.println("Background data too short for header.");
 			aByteArray1450 = new byte[0];
 			anInt1452 = 0;
 			anInt1453 = 0;
@@ -45,7 +45,7 @@ public final class Background extends DrawingArea {
 		stream_1.currentOffset = stream.readUnsignedWord();
 
 		if (stream_1.currentOffset + 6 > stream_1.buffer.length) {
-			System.err.println("Background index data too short.");
+			//System.err.println("Background index data too short.");
 			aByteArray1450 = new byte[0];
 			anInt1452 = 0;
 			anInt1453 = 0;
@@ -59,7 +59,7 @@ public final class Background extends DrawingArea {
 		anIntArray1451 = new int[j];
 		for (int k = 0; k < j - 1; k++) {
 			if (stream_1.currentOffset + 3 > stream_1.buffer.length) {
-				System.err.println("Background index data incomplete reading runes.");
+				//System.err.println("Background index data incomplete reading runes.");
 				aByteArray1450 = new byte[0];
 				anInt1452 = 0;
 				anInt1453 = 0;
@@ -71,7 +71,7 @@ public final class Background extends DrawingArea {
 		// Adjust offsets for i layers (skip data)
 		for (int l = 0; l < i; l++) {
 			if (stream_1.currentOffset + 5 > stream_1.buffer.length) {
-				System.err.println("Background index data incomplete adjusting offsets.");
+				//System.err.println("Background index data incomplete adjusting offsets.");
 				aByteArray1450 = new byte[0];
 				anInt1452 = 0;
 				anInt1453 = 0;
@@ -81,7 +81,7 @@ public final class Background extends DrawingArea {
 			int width = stream_1.readUnsignedWord();
 			int height = stream_1.readUnsignedWord();
 			if (width < 0 || height < 0 || stream_1.currentOffset + (width * height) > stream_1.buffer.length) {
-				System.err.println("Background index data invalid width/height or buffer overflow.");
+				//System.err.println("Background index data invalid width/height or buffer overflow.");
 				aByteArray1450 = new byte[0];
 				anInt1452 = 0;
 				anInt1453 = 0;
@@ -92,7 +92,7 @@ public final class Background extends DrawingArea {
 		}
 
 		if (stream_1.currentOffset + 6 > stream_1.buffer.length) {
-			System.err.println("Background index data too short for remaining fields.");
+		//	System.err.println("Background index data too short for remaining fields.");
 			aByteArray1450 = new byte[0];
 			anInt1452 = 0;
 			anInt1453 = 0;
@@ -107,7 +107,7 @@ public final class Background extends DrawingArea {
 
 		int j1 = anInt1452 * anInt1453;
 		if (j1 < 0 || stream.currentOffset + j1 > stream.buffer.length) {
-			System.err.println("Background data length invalid or exceeds buffer size.");
+		//	System.err.println("Background data length invalid or exceeds buffer size.");
 			aByteArray1450 = new byte[0];
 			return;
 		}
@@ -125,7 +125,7 @@ public final class Background extends DrawingArea {
 				}
 			}
 		} else {
-			System.err.println("Background format " + i1 + " not supported.");
+		//	System.err.println("Background format " + i1 + " not supported.");
 			aByteArray1450 = new byte[0];
 		}
 	}

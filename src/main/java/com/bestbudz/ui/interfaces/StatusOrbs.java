@@ -387,7 +387,6 @@ public class StatusOrbs {
 
 	public static void drawGameOverlays() {
 		if (counterOn) drawCounterOnScreen();
-		if (showChatComponents) Chatbox.drawSplitPrivateChat();
 		Client.BannerManager.drawMovingBanner();
 
 		if (crossType == 1) {

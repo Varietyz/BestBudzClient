@@ -3,9 +3,15 @@ package com.bestbudz.client.ui.panel;
 import com.bestbudz.client.util.DockTextUpdatable;
 import com.bestbudz.engine.Client;
 
+import com.bestbudz.ui.TextInput;
+import com.bestbudz.ui.interfaces.Chatbox;
+import com.bestbudz.util.TextClass;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -39,7 +45,7 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		stonerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		stonerList.setVisibleRowCount(20);
 
-		// Left-click -> Socialize
+		// Left-click -> Show message popup
 		stonerList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -47,7 +53,9 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 					int index = stonerList.locationToIndex(e.getPoint());
 					if (index >= 0 && index < listModel.size()) {
 						StonerEntry selected = listModel.get(index);
-						if (selected != null) invokeSocializeMenuAction(selected.name);
+						if (selected != null && selected.isHigh) { // Only allow messaging if they're high
+							showMessageDialog(selected.name);
+						}
 					}
 				}
 			}
@@ -99,7 +107,7 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 					if (entry.isHigh) {
 						stonerList.setToolTipText(
-							"<html><font color='#5FD17A'>Socialize with " + entry.name + "</font></html>"
+							"<html><font color='#5FD17A'>Send message to " + entry.name + "</font></html>"
 						);
 					} else {
 						stonerList.setToolTipText(null); // no tooltip if asleep
@@ -109,29 +117,189 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 				}
 			}
 		});
-
-
-
 	}
 
-	private void invokeSocializeMenuAction(String name) {
-		if (!Client.loggedIn || name == null || name.isEmpty()) return;
+	private void showMessageDialog(String recipientName) {
+		if (!Client.loggedIn || recipientName == null || recipientName.isEmpty()) {
+			return;
+		}
 
-		Client.menuActionRow = 1;
-		Client.menuActionName[0] = "Socialize with @whi@" + name;
-		Client.menuActionID[0] = 639;
-		Client.menuActionCmd1[0] = 0;
-		Client.menuActionCmd2[0] = 0;
-		Client.menuActionCmd3[0] = 0;
-		Client.selectedStonerName = name;
+		// Create custom dialog
+		JDialog messageDialog = new JDialog();
+		messageDialog.setTitle("Send Message to " + recipientName);
+		messageDialog.setModal(true);
+		messageDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		messageDialog.setSize(400, 150);
+		messageDialog.setLocationRelativeTo(this);
+		messageDialog.setResizable(false);
 
-		Client.processMenuClick(true, false);
+		// Style the dialog
+		messageDialog.getContentPane().setBackground(new Color(0x2D2D2D));
+		messageDialog.setLayout(new BorderLayout(10, 10));
+
+		// Message input area
+		JTextArea messageArea = new JTextArea(3, 30);
+		messageArea.setBackground(new Color(0x393939));
+		messageArea.setForeground(Color.WHITE);
+		messageArea.setCaretColor(Color.WHITE);
+		messageArea.setBorder(new EmptyBorder(8, 8, 8, 8));
+		messageArea.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		messageArea.setLineWrap(true);
+		messageArea.setWrapStyleWord(true);
+		messageArea.requestFocusInWindow();
+
+		JScrollPane scrollPane = new JScrollPane(messageArea);
+		scrollPane.setBorder(BorderFactory.createLineBorder(new Color(0x5FD17A), 1));
+		scrollPane.setBackground(new Color(0x393939));
+
+		// Button panel
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		buttonPanel.setBackground(new Color(0x2D2D2D));
+
+		JButton sendButton = new JButton("Send");
+		JButton cancelButton = new JButton("Cancel");
+
+		// Style buttons
+		styleButton(sendButton, new Color(0x5FD17A));
+		styleButton(cancelButton, new Color(0xE06666));
+
+		buttonPanel.add(cancelButton);
+		buttonPanel.add(sendButton);
+
+		// Add components to dialog
+		JLabel instructionLabel = new JLabel("Enter your message:");
+		instructionLabel.setForeground(Color.WHITE);
+		instructionLabel.setBorder(new EmptyBorder(10, 10, 0, 10));
+
+		messageDialog.add(instructionLabel, BorderLayout.NORTH);
+		messageDialog.add(scrollPane, BorderLayout.CENTER);
+		messageDialog.add(buttonPanel, BorderLayout.SOUTH);
+
+		// Button actions
+		ActionListener sendAction = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String message = messageArea.getText().trim();
+				if (!message.isEmpty()) {
+					sendPrivateMessage(recipientName, message);
+					messageDialog.dispose();
+				}
+			}
+		};
+
+		sendButton.addActionListener(sendAction);
+		cancelButton.addActionListener(e -> messageDialog.dispose());
+
+		// Enter key sends message, Escape cancels
+		messageArea.getInputMap(JComponent.WHEN_FOCUSED).put(
+			KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.CTRL_DOWN_MASK), "send");
+		messageArea.getActionMap().put("send", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sendAction.actionPerformed(e);
+			}
+		});
+
+		messageDialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+			KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
+		messageDialog.getRootPane().getActionMap().put("cancel", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				messageDialog.dispose();
+			}
+		});
+
+		// Show dialog
+		SwingUtilities.invokeLater(() -> {
+			messageDialog.setVisible(true);
+			messageArea.requestFocusInWindow();
+		});
+	}
+
+	private void styleButton(JButton button, Color backgroundColor) {
+		button.setBackground(backgroundColor);
+		button.setForeground(Color.WHITE);
+		button.setFocusPainted(false);
+		button.setBorderPainted(false);
+		button.setFont(new Font("SansSerif", Font.BOLD, 11));
+		button.setPreferredSize(new Dimension(80, 30));
+		button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+		// Hover effect
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				button.setBackground(backgroundColor.brighter());
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				button.setBackground(backgroundColor);
+			}
+		});
+	}
+
+	private void sendPrivateMessage(String recipientName, String message) {
+		if (!Client.loggedIn || recipientName == null || recipientName.isEmpty() || message.trim().isEmpty()) {
+			return;
+		}
+
+		try {
+			// Convert recipient name to hash
+			long recipientHash = TextClass.longForName(recipientName);
+
+			// Find the recipient in the stoners list
+			int recipientIndex = -1;
+			for (int i = 0; i < Client.stonersCount; i++) {
+				if (Client.stonersListAsLongs[i] == recipientHash) {
+					recipientIndex = i;
+					break;
+				}
+			}
+
+			// Verify recipient is online and reachable
+			if (recipientIndex == -1 || Client.stonersNodeIDs[recipientIndex] <= 0) {
+				JOptionPane.showMessageDialog(this,
+					recipientName + " is not available for messaging.",
+					"Cannot Send Message",
+					JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+
+			// Send the message using the game's protocol (frame 126)
+			Client.stream.createFrame(126);
+			Client.stream.writeWordBigEndian(0);
+			int frameStart = Client.stream.currentOffset;
+			Client.stream.writeQWord(recipientHash);
+			TextInput.method526(message, Client.stream);
+			Client.stream.writeBytes(Client.stream.currentOffset - frameStart);
+
+			// Process and display the message locally using the correct method
+			String processedMessage = TextInput.processText(message);
+			Chatbox.pushMessage(processedMessage, 6, TextClass.fixName(TextClass.nameForLong(recipientHash)));
+
+			// Handle private chat mode if needed
+			if (Chatbox.privateChatMode == 2) {
+				Chatbox.privateChatMode = 1;
+				Client.stream.createFrame(95);
+				Client.stream.writeWordBigEndian(Chatbox.privateChatMode);
+			}
+
+		} catch (Exception e) {
+			System.err.println("Failed to send private message: " + e.getMessage());
+			e.printStackTrace();
+
+			// Show error dialog
+			JOptionPane.showMessageDialog(this,
+				"Failed to send message to " + recipientName,
+				"Error",
+				JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	@Override
-	public void updateText()
-	{
-
+	public void updateText() {
+		// Implementation remains the same
 	}
 
 	@Override
@@ -164,7 +332,6 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	public void onDeactivate() {
 		refreshTimer.stop(); // 🛑 disable while hidden
 	}
-
 
 	@Override
 	public void updateDockText(int index, String text) {
@@ -222,7 +389,10 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 				setBackground(new Color(0, 0, 0, 0));
 			}
 
-			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			// Only show hand cursor for users who are high
+			setCursor(value.isHigh ?
+				Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) :
+				Cursor.getDefaultCursor());
 			return this;
 		}
 	}
