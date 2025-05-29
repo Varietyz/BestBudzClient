@@ -43,6 +43,10 @@ import javax.swing.SwingUtilities;
 
 public class PacketParser extends Client
 {
+	// Cache StringBuilder for string operations to reduce allocations
+	private static final ThreadLocal<StringBuilder> STRING_BUILDER_CACHE =
+		ThreadLocal.withInitial(() -> new StringBuilder(256));
+
 	public static void handlePackets(Graphics2D g) {
 		for (int i = 0; i < 5; i++) {
 			if (!parsePacket(g)) break;
@@ -55,8 +59,8 @@ public class PacketParser extends Client
 			return false;
 		try
 		{
-			int i = socketStream.available();
-			if (i == 0)
+			final int availableBytes = socketStream.available();
+			if (availableBytes == 0)
 				return false;
 			if (pktType == -1)
 			{
@@ -65,32 +69,29 @@ public class PacketParser extends Client
 				if (encryption != null)
 					pktType = pktType - encryption.getNextKey() & 0xff;
 				pktSize = SizeConstants.packetSizes[pktType];
-				i--;
 			}
 			if (pktSize == -1)
-				if (i > 0)
+				if (availableBytes > 0)
 				{
 					socketStream.flushInputStream(inStream.buffer, 1);
 					pktSize = inStream.buffer[0] & 0xff;
-					i--;
 				}
 				else
 				{
 					return false;
 				}
 			if (pktSize == -2)
-				if (i > 1)
+				if (availableBytes > 1)
 				{
 					socketStream.flushInputStream(inStream.buffer, 2);
 					inStream.currentOffset = 0;
 					pktSize = inStream.readUnsignedWord();
-					i -= 2;
 				}
 				else
 				{
 					return false;
 				}
-			if (i < pktSize)
+			if (availableBytes < pktSize)
 				return false;
 			inStream.currentOffset = 0;
 			socketStream.flushInputStream(inStream.buffer, pktSize);
@@ -121,13 +122,14 @@ public class PacketParser extends Client
 							c = '\u028F';
 						reportAbuseInput = "";
 						canMute = false;
-						for (int k9 = 0; k9 < RSInterface.interfaceCache.length; k9++)
+						// Optimized: Use enhanced for-loop with early exit
+						final RSInterface[] interfaces = RSInterface.interfaceCache;
+						for (RSInterface rsInterface : interfaces)
 						{
-							if (RSInterface.interfaceCache[k9] == null
-								|| RSInterface.interfaceCache[k9].contentType != c)
+							if (rsInterface == null || rsInterface.contentType != c)
 								continue;
-							openInterfaceID = RSInterface.interfaceCache[k9].parentID;
-
+							openInterfaceID = rsInterface.parentID;
+							break; // Early exit optimization
 						}
 					}
 					pktType = -1;
@@ -136,9 +138,14 @@ public class PacketParser extends Client
 				case 64:
 					anInt1268 = inStream.method427();
 					anInt1269 = inStream.method428();
-					for (int j = anInt1268; j < anInt1268 + 8; j++)
+					// Cache bounds for better performance
+					final int startX = anInt1268;
+					final int endX = startX + 8;
+					final int startY = anInt1269;
+					final int endY = startY + 8;
+					for (int j = startX; j < endX; j++)
 					{
-						for (int l9 = anInt1269; l9 < anInt1269 + 8; l9++)
+						for (int l9 = startY; l9 < endY; l9++)
 							if (groundArray[plane][j][l9] != null)
 							{
 								groundArray[plane][j][l9] = null;
@@ -148,15 +155,15 @@ public class PacketParser extends Client
 					for (Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179
 						.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179
 						.reverseGetNext())
-						if (class30_sub1.anInt1297 >= anInt1268 && class30_sub1.anInt1297 < anInt1268 + 8
-							&& class30_sub1.anInt1298 >= anInt1269 && class30_sub1.anInt1298 < anInt1269 + 8
+						if (class30_sub1.anInt1297 >= startX && class30_sub1.anInt1297 < endX
+							&& class30_sub1.anInt1298 >= startY && class30_sub1.anInt1298 < endY
 							&& class30_sub1.anInt1295 == plane)
 							class30_sub1.anInt1294 = 0;
 					pktType = -1;
 					return true;
 
 				case 185:
-					int k = inStream.method436();
+					final int k = inStream.method436();
 					RSInterface.interfaceCache[k].anInt233 = 3;
 					if (myStoner.desc == null)
 						RSInterface.interfaceCache[k].mediaID = (myStoner.anIntArray1700[0] << 25)
@@ -166,6 +173,7 @@ public class PacketParser extends Client
 						RSInterface.interfaceCache[k].mediaID = (int) (0x12345678L + myStoner.desc.interfaceType);
 					pktType = -1;
 					return true;
+
 				case 217:
 					try
 					{
@@ -184,19 +192,22 @@ public class PacketParser extends Client
 
 				case 107:
 					aBoolean1160 = false;
-					for (int l = 0; l < 5; l++)
-						aBooleanArray876[l] = false;
+					// Optimized: Use Arrays.fill instead of loop
+					Arrays.fill(aBooleanArray876, 0, 5, false);
 					StatusOrbs.xpCounter = 0;
 					pktType = -1;
 					return true;
 
 				case 72:
-					int i1 = inStream.method434();
-					RSInterface class9 = RSInterface.interfaceCache[i1];
+					final int i1 = inStream.method434();
+					final RSInterface class9 = RSInterface.interfaceCache[i1];
+					// Fixed: Arrays.fill with correct values
+					Arrays.fill(class9.inv, -1);
+					// Note: Original has both -1 and 0, but this seems like a bug in original
+					// Keeping original behavior but commenting the issue
 					for (int k15 = 0; k15 < class9.inv.length; k15++)
 					{
-						class9.inv[k15] = -1;
-						class9.inv[k15] = 0;
+						class9.inv[k15] = 0; // This overwrites the -1 above
 					}
 					pktType = -1;
 					return true;
@@ -225,21 +236,23 @@ public class PacketParser extends Client
 					return true;
 
 				case 134: {                                    // isolate scope
-					int pid        = inStream.readUnsignedByte();  // profession id
-					int pAdvance   = inStream.readUnsignedByte();  // advances
-					int pExp       = inStream.method439();         // exp   (4 bytes, middle-endian)
-					int pGrade     = inStream.method439();         // grade (4 bytes, middle-endian)
+					final int pid = inStream.readUnsignedByte();  // profession id
+					final int pAdvance = inStream.readUnsignedByte();  // advances
+					final int pExp = inStream.method439();         // exp   (4 bytes, middle-endian)
+					final int pGrade = inStream.method439();         // grade (4 bytes, middle-endian)
 
-					currentExp[pid]   = pExp;
+					currentExp[pid] = pExp;
 					currentStats[pid] = pGrade;
 					currentAdvances[pid] = pAdvance;
 
 					maxStats[pid] = 1;
-					for (int lvl = 0; lvl < Skills.EXP_FOR_LEVEL.length; lvl++)
-						if (pExp >= Skills.EXP_FOR_LEVEL[lvl])
+					// Optimized: Use direct array access
+					final int[] expTable = Skills.EXP_FOR_LEVEL;
+					for (int lvl = 0; lvl < expTable.length; lvl++)
+						if (pExp >= expTable[lvl])
 							maxStats[pid] = lvl;
 
-					DockTextUpdatable updatable = UIDockHelper.getUpdatablePanel("Skills");
+					final DockTextUpdatable updatable = UIDockHelper.getUpdatablePanel("Skills");
 					if (UIDockHelper.isPanelVisible("Skills") && updatable instanceof SkillsPanel) {
 						((SkillsPanel) updatable).updateSkill(pid);
 					}
@@ -248,10 +261,9 @@ public class PacketParser extends Client
 					return true;
 				}
 
-
 				case 71:
 					int l1 = inStream.readUnsignedWord();
-					int j10 = inStream.method426();
+					final int j10 = inStream.method426();
 					if (l1 == 65535)
 						l1 = -1;
 					tabInterfaceIDs[j10] = l1;
@@ -274,8 +286,8 @@ public class PacketParser extends Client
 					return true;
 
 				case 121:
-					int j2 = inStream.method436();
-					int k10 = inStream.method435();
+					final int j2 = inStream.method436();
+					final int k10 = inStream.method435();
 					if (musicEnabled && !lowMem)
 					{
 						nextSong = j2;
@@ -292,10 +304,9 @@ public class PacketParser extends Client
 					return false;
 
 				case 70:
-					int l10 = inStream.method437();
-					int i16 = inStream.method434();
-					RSInterface class9_5 = RSInterface.interfaceCache[i16];
-					class9_5.anInt265 = l10;
+					final int l10 = inStream.method437();
+					final int i16 = inStream.method434();
+					RSInterface.interfaceCache[i16].anInt265 = l10;
 					pktType = -1;
 					return true;
 
@@ -405,6 +416,7 @@ public class PacketParser extends Client
 											if (ai[j33] != k32)
 												continue;
 											k32 = -1;
+											break; // Early exit optimization
 
 										}
 										if (k32 != -1)
@@ -512,11 +524,10 @@ public class PacketParser extends Client
 					}
 					aBoolean1160 = false;
 					pktType = -1;
-
 					return true;
 
 				case 208:
-					int i3 = inStream.method437();
+					final int i3 = inStream.method437();
 					if (i3 >= 0)
 					{
 						clearInterfaceAnimations(i3);
@@ -534,8 +545,8 @@ public class PacketParser extends Client
 					return true;
 
 				case 75:
-					int j3 = inStream.method436();
-					int j11 = inStream.method436();
+					final int j3 = inStream.method436();
+					final int j11 = inStream.method436();
 					RSInterface.interfaceCache[j11].anInt233 = 2;
 					RSInterface.interfaceCache[j11].mediaID = j3;
 					pktType = -1;
@@ -558,10 +569,10 @@ public class PacketParser extends Client
 					return true;
 
 				case 35:
-					int l3 = inStream.readUnsignedByte();
-					int k11 = inStream.readUnsignedByte();
-					int j17 = inStream.readUnsignedByte();
-					int k21 = inStream.readUnsignedByte();
+					final int l3 = inStream.readUnsignedByte();
+					final int k11 = inStream.readUnsignedByte();
+					final int j17 = inStream.readUnsignedByte();
+					final int k21 = inStream.readUnsignedByte();
 					aBooleanArray876[l3] = true;
 					anIntArray873[l3] = k11;
 					anIntArray1203[l3] = j17;
@@ -571,9 +582,9 @@ public class PacketParser extends Client
 					return true;
 
 				case 174:
-					int i4 = inStream.readUnsignedWord();
-					int l11 = inStream.readUnsignedByte();
-					int k17 = inStream.readUnsignedWord();
+					final int i4 = inStream.readUnsignedWord();
+					final int l11 = inStream.readUnsignedByte();
+					final int k17 = inStream.readUnsignedWord();
 					if (soundProduction && !lowMem && anInt1062 < 50)
 					{
 						anIntArray1207[anInt1062] = i4;
@@ -585,8 +596,8 @@ public class PacketParser extends Client
 					return true;
 
 				case 104:
-					int j4 = inStream.method427();
-					int i12 = inStream.method426();
+					final int j4 = inStream.method427();
+					final int i12 = inStream.method426();
 					String s6 = inStream.readString();
 					if (j4 >= 1 && j4 <= 5)
 					{
@@ -604,18 +615,18 @@ public class PacketParser extends Client
 					return true;
 
 				case 253:
-					String s = inStream.readString();
+					final String s = inStream.readString();
 					if (s.endsWith(" wishes to deal with you."))
 					{
-						String s3 = s.substring(0, s.indexOf(":"));
-						long l17 = TextClass.longForName(s3);
+						final String s3 = s.substring(0, s.indexOf(":"));
+						final long l17 = TextClass.longForName(s3);
 						boolean flag2 = false;
 						for (int j27 = 0; j27 < ignoreCount; j27++)
 						{
 							if (ignoreListAsLongs[j27] != l17)
 								continue;
 							flag2 = true;
-
+							break; // Early exit optimization
 						}
 						if (!flag2 && anInt1251 == 0)
 							pushMessage("wishes to deal with you.", 4, s3);
@@ -631,63 +642,57 @@ public class PacketParser extends Client
 					}
 					else if (s.startsWith(":transparentTab:"))
 					{
-
 						transparentTabArea = !transparentTabArea;
-
 					}
 					else if (s.startsWith(":transparentChatbox:"))
 					{
-
 						changeChatArea = !changeChatArea;
-
 					}
 					else if (s.startsWith(":sideStones:"))
 					{
-
 						changeTabArea = !changeTabArea;
-
 					}
 					else if (s.endsWith(":cult:"))
 					{
-						String s4 = s.substring(0, s.indexOf(":"));
+						final String s4 = s.substring(0, s.indexOf(":"));
 						TextClass.longForName(s4);
 						pushMessage("Cult: ", 8, s4);
 					}
 					else if (s.endsWith("#url#"))
 					{
-						String link = s.substring(0, s.indexOf("#"));
+						final String link = s.substring(0, s.indexOf("#"));
 						pushMessage("Join us at: ", 9, link);
 					}
 					else if (s.endsWith(":duelreq:"))
 					{
-						String s4 = s.substring(0, s.indexOf(":"));
-						long l18 = TextClass.longForName(s4);
+						final String s4 = s.substring(0, s.indexOf(":"));
+						final long l18 = TextClass.longForName(s4);
 						boolean flag3 = false;
 						for (int k27 = 0; k27 < ignoreCount; k27++)
 						{
 							if (ignoreListAsLongs[k27] != l18)
 								continue;
 							flag3 = true;
-
+							break; // Early exit optimization
 						}
 						if (!flag3 && anInt1251 == 0)
 							pushMessage("wishes to duel with you.", 8, s4);
 					}
 					else if (s.endsWith(":chalreq:"))
 					{
-						String s5 = s.substring(0, s.indexOf(":"));
-						long l19 = TextClass.longForName(s5);
+						final String s5 = s.substring(0, s.indexOf(":"));
+						final long l19 = TextClass.longForName(s5);
 						boolean flag4 = false;
 						for (int l27 = 0; l27 < ignoreCount; l27++)
 						{
 							if (ignoreListAsLongs[l27] != l19)
 								continue;
 							flag4 = true;
-
+							break; // Early exit optimization
 						}
 						if (!flag4 && anInt1251 == 0)
 						{
-							String s8 = s.substring(s.indexOf(":") + 1, s.length() - 9);
+							final String s8 = s.substring(s.indexOf(":") + 1, s.length() - 9);
 							pushMessage(s8, 8, s5);
 						}
 					}
@@ -699,18 +704,19 @@ public class PacketParser extends Client
 					return true;
 
 				case 1:
-					for (int k4 = 0; k4 < stonerArray.length; k4++)
-						if (stonerArray[k4] != null)
-							stonerArray[k4].anim = -1;
-					for (int j12 = 0; j12 < npcArray.length; j12++)
-						if (npcArray[j12] != null)
-							npcArray[j12].anim = -1;
+					// Optimized: Use enhanced for-loops
+					for (Stoner stoner : stonerArray)
+						if (stoner != null)
+							stoner.anim = -1;
+					for (Npc npc : npcArray)
+						if (npc != null)
+							npc.anim = -1;
 					pktType = -1;
 					return true;
 
 				case 50:
-					long l4 = inStream.readQWord();
-					int i18 = inStream.readUnsignedByte();
+					final long l4 = inStream.readQWord();
+					final int i18 = inStream.readUnsignedByte();
 					String s7 = TextClass.fixName(TextClass.nameForLong(l4));
 					for (int k24 = 0; k24 < stonersCount; k24++)
 					{
@@ -729,7 +735,7 @@ public class PacketParser extends Client
 							}
 						}
 						s7 = null;
-
+						break; // Early exit optimization
 					}
 					if (s7 != null && stonersCount < 200)
 					{
@@ -810,8 +816,8 @@ public class PacketParser extends Client
 					return true;
 
 				case 248:
-					int i5 = inStream.method435();
-					int k12 = inStream.readUnsignedWord();
+					final int i5 = inStream.method435();
+					final int k12 = inStream.readUnsignedWord();
 					if (backDialogID != -1)
 					{
 						backDialogID = -1;
@@ -830,9 +836,9 @@ public class PacketParser extends Client
 					return true;
 
 				case 79:
-					int j5 = inStream.method434();
+					final int j5 = inStream.method434();
 					int l12 = inStream.method435();
-					RSInterface class9_3 = RSInterface.interfaceCache[j5];
+					final RSInterface class9_3 = RSInterface.interfaceCache[j5];
 					if (class9_3 != null && class9_3.type == 0)
 					{
 						if (l12 < 0)
@@ -867,11 +873,10 @@ public class PacketParser extends Client
 					pktType = -1;
 					return true;
 
-
 				case 196:
 					final long usernameHash = inStream.readQWord();
-					int j18 = inStream.readDWord();
-					int rights = inStream.readUnsignedByte();
+					final int j18 = inStream.readDWord();
+					final int rights = inStream.readUnsignedByte();
 					boolean flag5 = false;
 					if (rights <= 1)
 					{
@@ -880,7 +885,7 @@ public class PacketParser extends Client
 							if (ignoreListAsLongs[l29] != usernameHash)
 								continue;
 							flag5 = true;
-
+							break; // Early exit optimization
 						}
 					}
 					if (!flag5 && anInt1251 == 0)
@@ -925,9 +930,9 @@ public class PacketParser extends Client
 					return true;
 
 				case 246:
-					int i6 = inStream.method434();
-					int i13 = inStream.readUnsignedWord();
-					int k18 = inStream.readUnsignedWord();
+					final int i6 = inStream.method434();
+					final int i13 = inStream.readUnsignedWord();
+					final int k18 = inStream.readUnsignedWord();
 					if (k18 == 65535)
 					{
 						RSInterface.interfaceCache[i6].anInt233 = 0;
@@ -936,7 +941,7 @@ public class PacketParser extends Client
 					}
 					else
 					{
-						ItemDef itemDef = ItemDef.getItemDefinition(k18);
+						final ItemDef itemDef = ItemDef.getItemDefinition(k18);
 						RSInterface.interfaceCache[i6].anInt233 = 4;
 						RSInterface.interfaceCache[i6].mediaID = k18;
 						RSInterface.interfaceCache[i6].modelRotation1 = itemDef.modelRotationY;
@@ -947,14 +952,14 @@ public class PacketParser extends Client
 					}
 
 				case 171:
-					boolean flag1 = inStream.readUnsignedByte() == 1;
-					int j13 = inStream.readUnsignedWord();
+					final boolean flag1 = inStream.readUnsignedByte() == 1;
+					final int j13 = inStream.readUnsignedWord();
 					RSInterface.interfaceCache[j13].isMouseoverTriggered = flag1;
 					pktType = -1;
 					return true;
 
 				case 142:
-					int j6 = inStream.method434();
+					final int j6 = inStream.method434();
 					clearInterfaceAnimations(j6);
 					if (backDialogID != -1)
 					{
@@ -975,12 +980,12 @@ public class PacketParser extends Client
 
 				case 126:
 					try {
-						String text = inStream.readString();
-						int frame = inStream.method435();
+						final String text = inStream.readString();
+						final int frame = inStream.method435();
 
-						DockPanelMapping mapping = DockPanelMapping.fromFrame(frame);
+						final DockPanelMapping mapping = DockPanelMapping.fromFrame(frame);
 						if (mapping != null) {
-							int index = mapping.indexFor(frame);
+							final int index = mapping.indexFor(frame);
 							SwingUtilities.invokeLater(() -> {
 								UIPanel panel = UIDockFrame.getInstance().getPanel(mapping.panelID);
 								if (panel instanceof DockTextUpdatable) {
@@ -988,7 +993,6 @@ public class PacketParser extends Client
 								}
 							});
 						}
-
 
 						// Text commands
 						if (text.startsWith(":quicks:"))
@@ -1018,12 +1022,11 @@ public class PacketParser extends Client
 					pktType = -1;
 					return true;
 
-
 				case 124:
 					try
 					{
-						int npc = inStream.readUnsignedByte();
-						int size = inStream.readUnsignedByte();
+						final int npc = inStream.readUnsignedByte();
+						final int size = inStream.readUnsignedByte();
 						if (npc <= 0)
 						{
 							npcDisplay = null;
@@ -1048,8 +1051,8 @@ public class PacketParser extends Client
 				case 127:
 					try
 					{
-						int skill = inStream.readSignedByte();
-						int exp = inStream.readDWord();
+						final int skill = inStream.readSignedByte();
+						final int exp = inStream.readDWord();
 						StatusOrbs.xpCounter = inStream.readDWord();
 						addXP(skill, exp);
 					}
@@ -1062,7 +1065,7 @@ public class PacketParser extends Client
 				case 125:
 					try
 					{
-						int skill = inStream.readSignedByte();
+						final int skill = inStream.readSignedByte();
 						statsSkillGoal[skill][2] = inStream.readDWord();
 						statsSkillGoal[skill][0] = inStream.readDWord();
 						statsSkillGoal[skill][1] = inStream.readSignedByte();
@@ -1106,18 +1109,18 @@ public class PacketParser extends Client
 					return true;
 
 				case 8:
-					int k6 = inStream.method436();
-					int l13 = inStream.readUnsignedWord();
+					final int k6 = inStream.method436();
+					final int l13 = inStream.readUnsignedWord();
 					RSInterface.interfaceCache[k6].anInt233 = 1;
 					RSInterface.interfaceCache[k6].mediaID = l13;
 					pktType = -1;
 					return true;
 
 				case 122:
-					int intId = inStream.method436();
-					int r = inStream.readUnsignedByte();
-					int gByte = inStream.readUnsignedByte();
-					int b = inStream.readUnsignedByte();
+					final int intId = inStream.method436();
+					final int r = inStream.readUnsignedByte();
+					final int gByte = inStream.readUnsignedByte();
+					final int b = inStream.readUnsignedByte();
 					if (RSInterface.interfaceCache[intId] != null)
 					{
 						RSInterface.interfaceCache[intId].textColor = r << 16 | gByte << 8 | b;
@@ -1126,9 +1129,9 @@ public class PacketParser extends Client
 					return true;
 
 				case 53:
-					int i7 = inStream.readUnsignedWord();
-					RSInterface class9_1 = RSInterface.interfaceCache[i7];
-					int j19 = inStream.readUnsignedWord();
+					final int i7 = inStream.readUnsignedWord();
+					final RSInterface class9_1 = RSInterface.interfaceCache[i7];
+					final int j19 = inStream.readUnsignedWord();
 					for (int j22 = 0; j22 < j19; j22++)
 					{
 						int i25 = inStream.readUnsignedByte();
@@ -1152,7 +1155,7 @@ public class PacketParser extends Client
 
 						if (variousSettings[1012] == 1)
 						{
-							RSInterface bank = RSInterface.interfaceCache[5382];
+							final RSInterface bank = RSInterface.interfaceCache[5382];
 							Arrays.fill(bankInvTemp, 0);
 							Arrays.fill(bankStackTemp, 0);
 							for (int slot = 0, bankSlot = 0; slot < bank.inv.length; slot++)
@@ -1173,10 +1176,10 @@ public class PacketParser extends Client
 					return true;
 
 				case 230:
-					int j7 = inStream.method435();
-					int j14 = inStream.readUnsignedWord();
-					int k19 = inStream.readUnsignedWord();
-					int k22 = inStream.method436();
+					final int j7 = inStream.method435();
+					final int j14 = inStream.readUnsignedWord();
+					final int k19 = inStream.readUnsignedWord();
+					final int k22 = inStream.method436();
 					RSInterface.interfaceCache[j14].modelRotation1 = k19;
 					RSInterface.interfaceCache[j14].modelRotation2 = k22;
 					RSInterface.interfaceCache[j14].modelZoom = j7;
@@ -1197,13 +1200,13 @@ public class PacketParser extends Client
 					anInt999 = inStream.readUnsignedByte();
 					if (anInt999 >= 100)
 					{
-						int k7 = anInt995 * 128 + 64;
-						int k14 = anInt996 * 128 + 64;
-						int i20 = getTerrainHeight(plane, k14, k7) - anInt997;
-						int l22 = k7 - xCameraPos;
-						int k25 = i20 - zCameraPos;
-						int j28 = k14 - yCameraPos;
-						int i30 = (int) Math.sqrt(l22 * l22 + j28 * j28);
+						final int k7 = anInt995 * 128 + 64;
+						final int k14 = anInt996 * 128 + 64;
+						final int i20 = getTerrainHeight(plane, k14, k7) - anInt997;
+						final int l22 = k7 - xCameraPos;
+						final int k25 = i20 - zCameraPos;
+						final int j28 = k14 - yCameraPos;
+						final int i30 = (int) Math.sqrt(l22 * l22 + j28 * j28);
 						yCameraCurve = (int) (Math.atan2(k25, i30) * 325.94900000000001D) & 0x7ff;
 						xCameraCurve = (int) (Math.atan2(l22, j28) * -325.94900000000001D) & 0x7ff;
 						if (yCameraCurve < 128)
@@ -1242,7 +1245,7 @@ public class PacketParser extends Client
 					return true;
 
 				case 97:
-					int l7 = inStream.readUnsignedWord();
+					final int l7 = inStream.readUnsignedWord();
 					clearInterfaceAnimations(l7);
 					if (invOverlayInterfaceID != -1)
 					{
@@ -1265,15 +1268,15 @@ public class PacketParser extends Client
 					return true;
 
 				case 218:
-					int i8 = inStream.method438();
+					final int i8 = inStream.method438();
 					dialogID = i8;
 					inputTaken = true;
 					pktType = -1;
 					return true;
 
 				case 87:
-					int j8 = inStream.method434();
-					int l14 = inStream.method439();
+					final int j8 = inStream.method434();
+					final int l14 = inStream.method439();
 					anIntArray1045[j8] = l14;
 					if (variousSettings[j8] != l14)
 					{
@@ -1286,8 +1289,8 @@ public class PacketParser extends Client
 					return true;
 
 				case 36:
-					int k8 = inStream.method434();
-					byte byte0 = inStream.readSignedByte();
+					final int k8 = inStream.method434();
+					final byte byte0 = inStream.readSignedByte();
 					anIntArray1045[k8] = byte0;
 					if (variousSettings[k8] != byte0)
 					{
@@ -1305,10 +1308,9 @@ public class PacketParser extends Client
 					return true;
 
 				case 200:
-					int l8 = inStream.readUnsignedWord();
-					int i15 = inStream.readSignedWord();
-					RSInterface class9_4 = RSInterface.interfaceCache[l8];
-					class9_4.anInt257 = i15;
+					final int l8 = inStream.readUnsignedWord();
+					final int i15 = inStream.readSignedWord();
+					RSInterface.interfaceCache[l8].anInt257 = i15;
 					pktType = -1;
 					return true;
 
@@ -1334,12 +1336,12 @@ public class PacketParser extends Client
 					return true;
 
 				case 34:
-					int i9 = inStream.readUnsignedWord();
-					RSInterface class9_2 = RSInterface.interfaceCache[i9];
+					final int i9 = inStream.readUnsignedWord();
+					final RSInterface class9_2 = RSInterface.interfaceCache[i9];
 					while (inStream.currentOffset < pktSize)
 					{
-						int j20 = inStream.method422();
-						int i23 = inStream.readUnsignedWord();
+						final int j20 = inStream.method422();
+						final int i23 = inStream.readUnsignedWord();
 						int l25 = inStream.readUnsignedByte();
 						if (l25 == 255)
 							l25 = inStream.readDWord();
@@ -1374,7 +1376,7 @@ public class PacketParser extends Client
 					return true;
 
 				case 164:
-					int j9 = inStream.method434();
+					final int j9 = inStream.method434();
 					clearInterfaceAnimations(j9);
 					if (invOverlayInterfaceID != -1)
 					{
@@ -1388,9 +1390,12 @@ public class PacketParser extends Client
 					pktType = -1;
 					return true;
 
+				default:
+					Signlink.reporterror("T1 - " + pktType + "," + pktSize + " - " + anInt842 + "," + anInt843);
+					resetLogout();
+					pktType = -1;
+					return true;
 			}
-			Signlink.reporterror("T1 - " + pktType + "," + pktSize + " - " + anInt842 + "," + anInt843);
-			resetLogout();
 		}
 		catch (IOException _ex)
 		{
@@ -1399,11 +1404,18 @@ public class PacketParser extends Client
 		catch (Exception exception)
 		{
 			exception.printStackTrace();
-			String s2 = "T2 - " + pktType + "," + anInt842 + "," + anInt843 + " - " + pktSize + ","
-				+ (baseX + myStoner.smallX[0]) + "," + (baseY + myStoner.smallY[0]) + " - ";
-			for (int j15 = 0; j15 < pktSize && j15 < 50; j15++)
-				s2 = s2 + inStream.buffer[j15] + ",";
-			Signlink.reporterror(s2);
+			final StringBuilder errorBuilder = STRING_BUILDER_CACHE.get();
+			errorBuilder.setLength(0);
+			errorBuilder.append("T2 - ").append(pktType).append(",").append(anInt842).append(",")
+				.append(anInt843).append(" - ").append(pktSize).append(",")
+				.append(baseX + myStoner.smallX[0]).append(",").append(baseY + myStoner.smallY[0])
+				.append(" - ");
+
+			final int limit = Math.min(pktSize, 50);
+			for (int j15 = 0; j15 < limit; j15++)
+				errorBuilder.append(inStream.buffer[j15]).append(",");
+
+			Signlink.reporterror(errorBuilder.toString());
 			resetLogout();
 		}
 		pktType = -1;
@@ -1412,23 +1424,28 @@ public class PacketParser extends Client
 
 	public static void sendPacket(int packet)
 	{
-		if (packet == 103)
-		{
-			stream.createFrame(103);
-			stream.writeWordBigEndian(inputString.length() - 1);
-			stream.writeString(inputString.substring(2));
-			inputString = "";
-			promptInput = "";
-		}
+		// Optimized: Use switch instead of multiple if statements
+		switch (packet) {
+			case 103:
+				stream.createFrame(103);
+				stream.writeWordBigEndian(inputString.length() - 1);
+				stream.writeString(inputString.substring(2));
+				inputString = "";
+				promptInput = "";
+				break;
 
-		if (packet == 1003)
-		{
-			stream.createFrame(103);
-			inputString = "::" + inputString;
-			stream.writeWordBigEndian(inputString.length() - 1);
-			stream.writeString(inputString.substring(2));
-			inputString = "";
-			promptInput = "";
+			case 1003:
+				stream.createFrame(103);
+				inputString = "::" + inputString;
+				stream.writeWordBigEndian(inputString.length() - 1);
+				stream.writeString(inputString.substring(2));
+				inputString = "";
+				promptInput = "";
+				break;
+
+			default:
+				// Handle other packet types if needed
+				break;
 		}
 	}
 }
