@@ -1,7 +1,7 @@
 package com.bestbudz.entity;
 
-import com.bestbudz.engine.Client;
-import com.bestbudz.config.Configuration;
+import com.bestbudz.engine.core.Client;
+import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.data.ItemDef;
 import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.SequenceFrame;
@@ -219,7 +219,7 @@ public final class Stoner extends Entity
 			if (super.anim >= 0 && super.anInt1529 == 0) {
 				final Animation seq = Animation.anims[super.anim];
 				k = seq.anIntArray353[super.anInt1527];
-				if (Configuration.enableTweening && super.nextAnimFrame != -1) {
+				if (SettingsConfig.enableTweening && super.nextAnimFrame != -1) {
 					nextAnim = seq.anIntArray353[super.anInt1527];
 					currCycle = seq.anIntArray355[super.anInt1527];
 					nextCycle = super.anInt1528;
@@ -227,7 +227,7 @@ public final class Stoner extends Entity
 			} else if (super.anInt1517 >= 0) {
 				final Animation seq = Animation.anims[super.anInt1517];
 				k = seq.anIntArray353[super.anInt1518];
-				if (Configuration.enableTweening && super.nextIdleAnimFrame != -1) {
+				if (SettingsConfig.enableTweening && super.nextIdleAnimFrame != -1) {
 					nextAnim = seq.anIntArray353[super.nextIdleAnimFrame];
 					currCycle = seq.anIntArray355[super.anInt1518];
 					nextCycle = super.anInt1519;
@@ -238,7 +238,7 @@ public final class Stoner extends Entity
 		if (super.anim >= 0 && super.anInt1529 == 0) {
 			final Animation animation = Animation.anims[super.anim];
 			k = animation.anIntArray353[super.anInt1527];
-			if (Configuration.enableTweening && super.nextAnimFrame != -1) {
+			if (SettingsConfig.enableTweening && super.nextAnimFrame != -1) {
 				nextAnim = animation.anIntArray353[super.nextAnimFrame];
 				currCycle = animation.anIntArray355[super.anInt1527];
 				nextCycle = super.anInt1528;
@@ -257,7 +257,7 @@ public final class Stoner extends Entity
 		} else if (super.anInt1517 >= 0) {
 			Animation seq = Animation.anims[super.anInt1517];
 			k = seq.anIntArray353[super.anInt1518];
-			if (Configuration.enableTweening && super.nextIdleAnimFrame != -1) {
+			if (SettingsConfig.enableTweening && super.nextIdleAnimFrame != -1) {
 				nextAnim = seq.anIntArray353[super.nextIdleAnimFrame];
 				currCycle = seq.anIntArray355[super.anInt1518];
 				nextCycle = super.anInt1519;

@@ -1,8 +1,8 @@
 package com.bestbudz.ui;
 
-import com.bestbudz.engine.Client;
-import com.bestbudz.config.ClientConstants;
+import com.bestbudz.engine.core.Client;
 import com.bestbudz.data.ItemDef;
+import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.entity.EntityDef;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.graphics.text.TextDrawingArea;
@@ -13,8 +13,6 @@ import com.bestbudz.rendering.model.Model;
 import com.bestbudz.ui.interfaces.CustomInterfaces;
 import com.bestbudz.util.MRUNodes;
 import com.bestbudz.util.TextClass;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 
 public class RSInterface {
 
@@ -219,7 +217,7 @@ public class RSInterface {
 			}
 			if (rsInterface.type == 4) {
 				rsInterface.disabledMessage = stream.readString().replaceAll("RuneScape",
-					ClientConstants.CLIENT_NAME);
+					EngineConfig.TITLE);
 				rsInterface.enabledMessage = stream.readString();
 			}
 			if (rsInterface.type == 1 || rsInterface.type == 3 || rsInterface.type == 4)
@@ -2233,7 +2231,7 @@ public class RSInterface {
 		rsinterface.anInt219 = 0;
 		rsinterface.textHoverColor = hoveredColor;
 		rsinterface.anInt239 = 0;
-		if (ClientConstants.DEBUG_MODE) {
+		if (EngineConfig.DEBUG_MODE) {
 			rsinterface.tooltip = tooltip + ", " + rsinterface.id;
 		} else {
 			rsinterface.tooltip = tooltip;

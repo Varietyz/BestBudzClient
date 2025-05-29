@@ -1,6 +1,6 @@
 package com.bestbudz.entity;
 
-import com.bestbudz.config.Configuration;
+import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.rendering.Animable;
 import com.bestbudz.rendering.animation.Animation;
 
@@ -121,8 +121,8 @@ public class Entity extends Animable {
         hitIcon[i1] = icon;
         hitmarkMove[i1] = 5;
         hitmarkTrans[i1] = 230;
-        hitArray[i1] = Configuration.enable10xDamage ? damage * 10 : damage;
-        if (damage > 0 && Configuration.enable10xDamage) {
+        hitArray[i1] = SettingsConfig.enable10xDamage ? damage * 10 : damage;
+        if (damage > 0 && SettingsConfig.enable10xDamage) {
           hitArray[i1] += new java.util.Random().nextInt(9);
         }
         hitMarkTypes[i1] = markType;

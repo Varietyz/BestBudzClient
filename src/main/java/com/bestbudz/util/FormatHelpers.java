@@ -1,6 +1,6 @@
 package com.bestbudz.util;
 
-import static com.bestbudz.config.ColorConstants.*;
+import static com.bestbudz.engine.config.ColorConfig.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -27,6 +27,19 @@ public class FormatHelpers {
 			return j / 0xf4240 + "M";
 	}
 
+	public static final String formatKMValue(long j)
+	{
+		if (j >= 0 && j < 10000)
+			return String.valueOf(j);
+		if (j >= 10000 && j < 10000000)
+			return j / 1000 + "K";
+		if (j >= 10000000 && j < 999999999)
+			return j / 1000000 + "M";
+		if (j >= 999999999)
+			return "*";
+		else
+			return "?";
+	}
 	public static String getTime()
 	{
 		Calendar calendar = new GregorianCalendar();

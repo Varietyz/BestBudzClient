@@ -1,6 +1,6 @@
 package com.bestbudz.entity;
 
-import com.bestbudz.engine.Client;
+import com.bestbudz.engine.core.Client;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.SequenceFrame;

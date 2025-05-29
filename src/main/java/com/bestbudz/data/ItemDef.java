@@ -1,6 +1,6 @@
 package com.bestbudz.data;
 
-import com.bestbudz.engine.Client;
+import com.bestbudz.engine.core.Client;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.network.Stream;

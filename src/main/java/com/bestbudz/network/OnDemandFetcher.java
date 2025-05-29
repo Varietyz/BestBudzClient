@@ -1,8 +1,8 @@
 package com.bestbudz.network;
 
 import com.bestbudz.cache.Signlink;
-import com.bestbudz.engine.Client;
-import com.bestbudz.config.ClientConstants;
+import com.bestbudz.engine.core.Client;
+import com.bestbudz.engine.config.NetworkConfig;
 import com.bestbudz.util.NodeList;
 import com.bestbudz.util.NodeSubList;
 import java.io.ByteArrayInputStream;
@@ -83,8 +83,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
             k1 += inputStream.read(abyte0, k1 + i1, expectedSize - k1))
           ;
         if (expectedSize + completedSize >= abyte0.length && current != null) {
-          if (clientInstance.decompressors[0] != null)
-            clientInstance.decompressors[current.dataType + 1].method234(
+          if (Client.decompressors[0] != null)
+            Client.decompressors[current.dataType + 1].method234(
                 abyte0.length, abyte0, current.ID);
           if (!current.incomplete && current.dataType == 3) {
             current.incomplete = true;
@@ -166,7 +166,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
         long l = System.currentTimeMillis();
         if (l - openSocketTime < 4000L) return;
         openSocketTime = l;
-        socket = clientInstance.openSocket(ClientConstants.SERVER_PORT + Client.portOff);
+        socket = clientInstance.openSocket(NetworkConfig.SERVER_PORT + Client.portOff);
         inputStream = socket.getInputStream();
         outputStream = socket.getOutputStream();
         outputStream.write(15);

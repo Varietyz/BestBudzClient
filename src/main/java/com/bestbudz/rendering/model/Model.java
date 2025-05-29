@@ -1,6 +1,6 @@
 package com.bestbudz.rendering.model;
 
-import com.bestbudz.config.Configuration;
+import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.network.OnDemandFetcherParent;
 import com.bestbudz.network.Stream;
@@ -1670,7 +1670,7 @@ public class Model extends Animable
 	}
 
 	public void interpolateFrames(int frame, int nextFrame, int cycle, int length) {
-		if (!Configuration.enableTweening) {
+		if (!SettingsConfig.enableTweening) {
 			method470(frame);
 			return;
 		}

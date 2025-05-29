@@ -1,6 +1,6 @@
 package com.bestbudz.world;
 
-import com.bestbudz.config.Configuration;
+import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
 
@@ -45,7 +45,7 @@ public final class Floor {
 				return;
 			} else if(i == 1) {
 				anInt390 = stream.read3Bytes();
-				if (Configuration.snow) {
+				if (SettingsConfig.snow) {
 					anInt390 = 0xffffff;
 				}
 				method262(anInt390);

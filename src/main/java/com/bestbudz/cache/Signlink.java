@@ -1,7 +1,6 @@
 package com.bestbudz.cache;
 
-import com.bestbudz.engine.Client;
-import com.bestbudz.config.Configuration;
+import com.bestbudz.engine.core.Client;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;

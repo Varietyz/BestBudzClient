@@ -1,6 +1,6 @@
 package com.bestbudz.graphics.text;
 
-import com.bestbudz.config.ColorConstants;
+import com.bestbudz.engine.config.ColorConfig;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.graphics.rsDrawingArea;
 import com.bestbudz.graphics.sprite.Sprite;
@@ -123,56 +123,56 @@ public class RSFont extends DrawingArea {
 
 	public static String handleOldSyntax(String text) {
 		// remapped color tags to a modern palette
-		text = text.replaceAll("@gry@", "<col=" + Integer.toHexString(ColorConstants.COLOR_LIME_YELLOW) + ">");
-		text = text.replaceAll("@pt2@", "<col=" + Integer.toHexString(ColorConstants.COLOR_CORAL_PEACH) + ">");
-		text = text.replaceAll("@pt1@", "<col=" + Integer.toHexString(ColorConstants.COLOR_LIGHT_ORANGE) + ">");
-		text = text.replaceAll("@pt7@", "<col=" + Integer.toHexString(ColorConstants.CHAT_BABY_BLUE) + ">");
-		text = text.replaceAll("@pt6@", "<col=" + Integer.toHexString(ColorConstants.CHAT_LIGHT_MAGENTA) + ">");
-		text = text.replaceAll("@pt3@", "<col=" + Integer.toHexString(ColorConstants.COLOR_BRIGHT_YELLOW) + ">");
-		text = text.replaceAll("@pt4@", "<col=" + Integer.toHexString(ColorConstants.CHAT_MINT_AQUA) + ">");
-		text = text.replaceAll("@pt5@", "<col=" + Integer.toHexString(ColorConstants.COLOR_SOFT_ROSE) + ">");
-		text = text.replaceAll("@red@", "<col=" + Integer.toHexString(ColorConstants.CHAT_SOFT_PINK) + ">");
-		text = text.replaceAll("@gre@", "<col=" + Integer.toHexString(ColorConstants.CHAT_BABY_BLUE) + ">");
-		text = text.replaceAll("@blu@", "<col=" + Integer.toHexString(ColorConstants.COLOR_LIME_GREEN) + ">");
-		text = text.replaceAll("@yel@", "<col=" + Integer.toHexString(ColorConstants.COLOR_PASTEL_VIOLET) + ">");
-		text = text.replaceAll("@cya@", "<col=" + Integer.toHexString(ColorConstants.COLOR_SPRING_GREEN) + ">");
-		text = text.replaceAll("@mag@", "<col=" + Integer.toHexString(ColorConstants.COLOR_BRIGHT_YELLOW) + ">");
-		text = text.replaceAll("@whi@", "<col=" + Integer.toHexString(ColorConstants.COLOR_FROST_TEAL) + ">");
-		text = text.replaceAll("@lre@", "<col=" + Integer.toHexString(ColorConstants.COLOR_DUSTY_PERIWINKLE) + ">");
-		text = text.replaceAll("@dre@", "<col=" + Integer.toHexString(ColorConstants.COLOR_SUNFLOWER_YELLOW) + ">");
-		text = text.replaceAll("@bla@", "<col=" + Integer.toHexString(ColorConstants.COLOR_LIGHT_AMBER) + ">");
-		text = text.replaceAll("@or1@", "<col=" + Integer.toHexString(ColorConstants.COLOR_CYAN_TURQUOISE) + ">");
-		text = text.replaceAll("@or2@", "<col=" + Integer.toHexString(ColorConstants.COLOR_LAVENDER) + ">");
-		text = text.replaceAll("@or3@", "<col=" + Integer.toHexString(ColorConstants.COLOR_ROSE_PINK) + ">");
-		text = text.replaceAll("@gr1@", "<col=" + Integer.toHexString(ColorConstants.COLOR_SOFT_PEACH) + ">");
-		text = text.replaceAll("@gr2@", "<col=" + Integer.toHexString(ColorConstants.COLOR_CORAL_ORANGE) + ">");
-		text = text.replaceAll("@gr3@", "<col=" + Integer.toHexString(ColorConstants.COLOR_CREAM_ROSE) + ">");
+		text = text.replaceAll("@gry@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LIME_YELLOW) + ">");
+		text = text.replaceAll("@pt2@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CORAL_PEACH) + ">");
+		text = text.replaceAll("@pt1@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LIGHT_ORANGE) + ">");
+		text = text.replaceAll("@pt7@", "<col=" + Integer.toHexString(ColorConfig.CHAT_BABY_BLUE) + ">");
+		text = text.replaceAll("@pt6@", "<col=" + Integer.toHexString(ColorConfig.CHAT_LIGHT_MAGENTA) + ">");
+		text = text.replaceAll("@pt3@", "<col=" + Integer.toHexString(ColorConfig.COLOR_BRIGHT_YELLOW) + ">");
+		text = text.replaceAll("@pt4@", "<col=" + Integer.toHexString(ColorConfig.CHAT_MINT_AQUA) + ">");
+		text = text.replaceAll("@pt5@", "<col=" + Integer.toHexString(ColorConfig.COLOR_SOFT_ROSE) + ">");
+		text = text.replaceAll("@red@", "<col=" + Integer.toHexString(ColorConfig.CHAT_SOFT_PINK) + ">");
+		text = text.replaceAll("@gre@", "<col=" + Integer.toHexString(ColorConfig.CHAT_BABY_BLUE) + ">");
+		text = text.replaceAll("@blu@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LIME_GREEN) + ">");
+		text = text.replaceAll("@yel@", "<col=" + Integer.toHexString(ColorConfig.COLOR_PASTEL_VIOLET) + ">");
+		text = text.replaceAll("@cya@", "<col=" + Integer.toHexString(ColorConfig.COLOR_SPRING_GREEN) + ">");
+		text = text.replaceAll("@mag@", "<col=" + Integer.toHexString(ColorConfig.COLOR_BRIGHT_YELLOW) + ">");
+		text = text.replaceAll("@whi@", "<col=" + Integer.toHexString(ColorConfig.COLOR_FROST_TEAL) + ">");
+		text = text.replaceAll("@lre@", "<col=" + Integer.toHexString(ColorConfig.COLOR_DUSTY_PERIWINKLE) + ">");
+		text = text.replaceAll("@dre@", "<col=" + Integer.toHexString(ColorConfig.COLOR_SUNFLOWER_YELLOW) + ">");
+		text = text.replaceAll("@bla@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LIGHT_AMBER) + ">");
+		text = text.replaceAll("@or1@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CYAN_TURQUOISE) + ">");
+		text = text.replaceAll("@or2@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LAVENDER) + ">");
+		text = text.replaceAll("@or3@", "<col=" + Integer.toHexString(ColorConfig.COLOR_ROSE_PINK) + ">");
+		text = text.replaceAll("@gr1@", "<col=" + Integer.toHexString(ColorConfig.COLOR_SOFT_PEACH) + ">");
+		text = text.replaceAll("@gr2@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CORAL_ORANGE) + ">");
+		text = text.replaceAll("@gr3@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CREAM_ROSE) + ">");
 
 		// uppercase variants
-		text = text.replaceAll("@RED@", "<col=" + Integer.toHexString(ColorConstants.CHAT_SOFT_PINK) + ">");
-		text = text.replaceAll("@GRE@", "<col=" + Integer.toHexString(ColorConstants.CHAT_BABY_BLUE) + ">");
-		text = text.replaceAll("@BLU@", "<col=" + Integer.toHexString(ColorConstants.COLOR_LIME_GREEN) + ">");
-		text = text.replaceAll("@YEL@", "<col=" + Integer.toHexString(ColorConstants.COLOR_PASTEL_VIOLET) + ">");
-		text = text.replaceAll("@CYA@", "<col=" + Integer.toHexString(ColorConstants.COLOR_SPRING_GREEN) + ">");
-		text = text.replaceAll("@MAG@", "<col=" + Integer.toHexString(ColorConstants.COLOR_BRIGHT_YELLOW) + ">");
-		text = text.replaceAll("@WHI@", "<col=" + Integer.toHexString(ColorConstants.COLOR_FROST_TEAL) + ">");
-		text = text.replaceAll("@LRE@", "<col=" + Integer.toHexString(ColorConstants.COLOR_DUSTY_PERIWINKLE) + ">");
-		text = text.replaceAll("@DRE@", "<col=" + Integer.toHexString(ColorConstants.COLOR_SUNFLOWER_YELLOW) + ">");
-		text = text.replaceAll("@BLA@", "<col=" + Integer.toHexString(ColorConstants.COLOR_LIGHT_AMBER) + ">");
-		text = text.replaceAll("@OR1@", "<col=" + Integer.toHexString(ColorConstants.COLOR_CYAN_TURQUOISE) + ">");
-		text = text.replaceAll("@OR2@", "<col=" + Integer.toHexString(ColorConstants.COLOR_LAVENDER) + ">");
-		text = text.replaceAll("@OR3@", "<col=" + Integer.toHexString(ColorConstants.COLOR_ROSE_PINK) + ">");
-		text = text.replaceAll("@GR1@", "<col=" + Integer.toHexString(ColorConstants.COLOR_SOFT_PEACH) + ">");
-		text = text.replaceAll("@GR2@", "<col=" + Integer.toHexString(ColorConstants.COLOR_CORAL_ORANGE) + ">");
-		text = text.replaceAll("@GR3@", "<col=" + Integer.toHexString(ColorConstants.COLOR_CREAM_ROSE) + ">");
+		text = text.replaceAll("@RED@", "<col=" + Integer.toHexString(ColorConfig.CHAT_SOFT_PINK) + ">");
+		text = text.replaceAll("@GRE@", "<col=" + Integer.toHexString(ColorConfig.CHAT_BABY_BLUE) + ">");
+		text = text.replaceAll("@BLU@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LIME_GREEN) + ">");
+		text = text.replaceAll("@YEL@", "<col=" + Integer.toHexString(ColorConfig.COLOR_PASTEL_VIOLET) + ">");
+		text = text.replaceAll("@CYA@", "<col=" + Integer.toHexString(ColorConfig.COLOR_SPRING_GREEN) + ">");
+		text = text.replaceAll("@MAG@", "<col=" + Integer.toHexString(ColorConfig.COLOR_BRIGHT_YELLOW) + ">");
+		text = text.replaceAll("@WHI@", "<col=" + Integer.toHexString(ColorConfig.COLOR_FROST_TEAL) + ">");
+		text = text.replaceAll("@LRE@", "<col=" + Integer.toHexString(ColorConfig.COLOR_DUSTY_PERIWINKLE) + ">");
+		text = text.replaceAll("@DRE@", "<col=" + Integer.toHexString(ColorConfig.COLOR_SUNFLOWER_YELLOW) + ">");
+		text = text.replaceAll("@BLA@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LIGHT_AMBER) + ">");
+		text = text.replaceAll("@OR1@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CYAN_TURQUOISE) + ">");
+		text = text.replaceAll("@OR2@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LAVENDER) + ">");
+		text = text.replaceAll("@OR3@", "<col=" + Integer.toHexString(ColorConfig.COLOR_ROSE_PINK) + ">");
+		text = text.replaceAll("@GR1@", "<col=" + Integer.toHexString(ColorConfig.COLOR_SOFT_PEACH) + ">");
+		text = text.replaceAll("@GR2@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CORAL_ORANGE) + ">");
+		text = text.replaceAll("@GR3@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CREAM_ROSE) + ">");
 
 		// specials
-		text = text.replaceAll("@ric@", "<col=" + Integer.toHexString(ColorConstants.COLOR_WARM_PEACH) + ">");
+		text = text.replaceAll("@ric@", "<col=" + Integer.toHexString(ColorConfig.COLOR_WARM_PEACH) + ">");
 		text = text.replaceAll("@cr1@", "<img=0>");
 		text = text.replaceAll("@cr2@", "<img=1>");
 		text = text.replaceAll("@cr3@", "<img=2>");
 		text = text.replaceAll("@don@", "<img=3>");
-		text = text.replaceAll("@mbl@", "<col=" + Integer.toHexString(ColorConstants.COLOR_LAVENDER_PINK) + ">");
+		text = text.replaceAll("@mbl@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LAVENDER_PINK) + ">");
 
 		return text;
 	}

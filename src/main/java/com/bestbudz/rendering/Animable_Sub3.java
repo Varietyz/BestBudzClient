@@ -1,6 +1,6 @@
 package com.bestbudz.rendering;
 
-import com.bestbudz.config.Configuration;
+import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.rendering.model.Model;
 
 public final class Animable_Sub3 extends Animable {
@@ -27,7 +27,7 @@ public final class Animable_Sub3 extends Animable {
     Model model_1 = new Model(true, SequenceFrame.method532(j), false, model);
     if (!aBoolean1567) {
       model_1.calculateNormals();
-      if (Configuration.enableTweening && nextAnimFrameId != -1) {
+      if (SettingsConfig.enableTweening && nextAnimFrameId != -1) {
         model_1.interpolateFrames(
             j,
             aSpotAnim_1568.aAnimation_407.anIntArray353[nextAnimFrameId],
@@ -66,7 +66,7 @@ public final class Animable_Sub3 extends Animable {
         anInt1569 = 0;
         aBoolean1567 = true;
       }
-      if (Configuration.enableTweening) {
+      if (SettingsConfig.enableTweening) {
         nextAnimFrameId = anInt1569 + 1;
       }
       if (nextAnimFrameId >= aSpotAnim_1568.aAnimation_407.anInt352) {

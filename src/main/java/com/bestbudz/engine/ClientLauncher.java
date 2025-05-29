@@ -1,11 +1,15 @@
 package com.bestbudz.engine;
 
 import com.bestbudz.cache.Signlink;
-import com.bestbudz.client.frame.UIDockFrame;
-import com.bestbudz.client.util.DockSync;
-import com.bestbudz.config.SettingHandler;
-import com.bestbudz.engine.input.Keyboard;
-import com.bestbudz.engine.input.MouseManager;
+import com.bestbudz.dock.frame.UIDockFrame;
+import com.bestbudz.engine.core.Client;
+import com.bestbudz.ui.handling.SettingHandler;
+import com.bestbudz.engine.config.EngineConfig;
+import com.bestbudz.engine.core.GameCanvas;
+import com.bestbudz.engine.core.GameEngine;
+import com.bestbudz.engine.core.GameLoader;
+import com.bestbudz.ui.handling.input.Keyboard;
+import com.bestbudz.ui.handling.input.MouseManager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.event.ComponentAdapter;
@@ -27,8 +31,8 @@ public final class ClientLauncher {
 			Signlink.storeid = 32;
 			Signlink.startpriv(InetAddress.getLocalHost());
 
-			GraphicsConfig.MIN_WIDTH = Client.frameWidth;
-			GraphicsConfig.MIN_HEIGHT = Client.frameHeight;
+			EngineConfig.MIN_WIDTH = Client.frameWidth;
+			EngineConfig.MIN_HEIGHT = Client.frameHeight;
 
 			try {
 				UIManager.setLookAndFeel(new FlatDarkLaf());
@@ -36,7 +40,7 @@ public final class ClientLauncher {
 				System.err.println("Failed to initialize FlatLaf");
 			}
 
-			final JFrame frame = new JFrame(GraphicsConfig.TITLE);
+			final JFrame frame = new JFrame(EngineConfig.TITLE);
 			GameCanvas canvas = new GameCanvas();
 			frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			frame.setResizable(true);
@@ -58,7 +62,7 @@ public final class ClientLauncher {
 			Client client = new Client();
 			Client.instance = client;
 			Client.instance.refreshFrameSize(canvas, canvas.getWidth(), canvas.getHeight());
-			canvas.createBufferStrategy(GraphicsConfig.BUFFERS);
+			canvas.createBufferStrategy(EngineConfig.BUFFERS);
 			GameLoader.setCanvas(canvas);
 			MouseManager mouseManager = new MouseManager();
 			Keyboard keyboard = new Keyboard();

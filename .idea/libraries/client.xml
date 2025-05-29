@@ -3,7 +3,7 @@
     <CLASSES />
     <JAVADOC />
     <SOURCES>
-      <root url="file://$PROJECT_DIR$/src/main/java/com/bestbudz/client" />
+      <root url="file://$PROJECT_DIR$/src/main/java/com/bestbudz/dock" />
     </SOURCES>
   </library>
 </component>

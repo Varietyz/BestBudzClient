@@ -25,7 +25,6 @@ import static com.bestbudz.ui.interfaces.teleports.PvpTeleports.pvpTeleport;
 import static com.bestbudz.ui.interfaces.teleports.SkillingTeleports.skillingTeleport;
 import static com.bestbudz.ui.interfaces.teleports.TrainingTeleports.trainingTeleport;
 
-import com.bestbudz.config.SettingHandler;
 import com.bestbudz.graphics.text.TextDrawingArea;
 import com.bestbudz.ui.RSInterface;
 
@@ -115,7 +114,6 @@ public class CustomInterfaces extends RSInterface
 		dropTable(BestBudz);
 		itemDetails(BestBudz);
 		chatColor(BestBudz);
-		expCounter(BestBudz);
 		stonersTab(BestBudz);
 		ignoreTab(BestBudz);
 		advance(BestBudz);
@@ -810,31 +808,6 @@ public class CustomInterfaces extends RSInterface
 		tab.totalChildren(0);
 	}
 
-	public static void expCounter(TextDrawingArea[] jaybane)
-	{
-		RSInterface tab = addInterface(32800);
-		addSprite(32801, 369);
-		addHoverButton(32802, 17, 20, 20, "Close", 250, 32803, 3);
-		addHoveredButton(32803, 18, 20, 20, 32804);
-		addText(32805, "Exp Tracker Settings", 0xff9933, true, true, -1, jaybane, 2);
-		addConfigButton(32806, 32800, 289, 290, 14, 15, "Select", 0, 5, 1030);
-		addConfigButton(32807, 32800, 289, 290, 14, 15, "Select", 1, 5, 1030);
-		addConfigButton(32808, 32800, 289, 290, 14, 15, "Select", 2, 5, 1030);
-		addText(32809, "Normal", 0xff9933, false, true, -1, jaybane, 1);
-		addText(32810, "Sideways", 0xff9933, false, true, -1, jaybane, 1);
-		addText(32811, "Scrambled", 0xff9933, false, true, -1, jaybane, 1);
-		tab.totalChildren(10);
-		tab.child(0, 32801, 105, 45);
-		tab.child(1, 32802, 391, 52);
-		tab.child(2, 32803, 391, 52);
-		tab.child(3, 32805, 263, 54);
-		tab.child(4, 32806, 165, 140);
-		tab.child(5, 32807, 165, 165);
-		tab.child(6, 32808, 165, 190);
-		tab.child(7, 32809, 190, 140);
-		tab.child(8, 32810, 190, 165);
-		tab.child(9, 32811, 190, 190);
-	}
 
 	public static void chatColor(TextDrawingArea[] jaybane)
 	{

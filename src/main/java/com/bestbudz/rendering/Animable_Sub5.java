@@ -1,6 +1,6 @@
 package com.bestbudz.rendering;
 
-import com.bestbudz.engine.Client;
+import com.bestbudz.engine.core.Client;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.world.ObjectDef;

@@ -1,7 +1,6 @@
 package com.bestbudz.world;
 
-import com.bestbudz.config.Configuration;
-import com.bestbudz.engine.GraphicsConfig;
+import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.rendering.Animable;
 import com.bestbudz.rendering.Rasterizer;
@@ -33,7 +32,7 @@ public final class WorldController {
 	public static boolean lowMem = true;
 	public static int anInt470 = -1;
 	public static int anInt471 = -1;
-	public static int viewDistance = GraphicsConfig.VIEW_DISTANCE;
+	public static int viewDistance = EngineConfig.VIEW_DISTANCE;
 
 	private static int anInt446;
 	private static int anInt447;
@@ -99,8 +98,8 @@ public final class WorldController {
 	private int obj5CacheCurrPos;
 	private int anInt488;
 	public WorldController(int[][][] ai) {
-		int i = GraphicsConfig.REGION_RENDER;
-		int j = GraphicsConfig.REGION_RENDER;
+		int i = EngineConfig.REGION_RENDER;
+		int j = EngineConfig.REGION_RENDER;
 		int k = 8;
 		aBoolean434 = true;
 		obj5Cache = new Object5[5000];
@@ -886,7 +885,7 @@ public final class WorldController {
 	}
 /*
 	public void method309(int[] pixels, int pixelOffset, int z, int x, int y) {
-		if (Configuration.enableHDMinimap) {
+		if (SettingsConfig.enableHDMinimap) {
 			Ground class30_sub3 = groundArray[z][x][y];
 			if (class30_sub3 == null) {
 				return;
@@ -2154,7 +2153,7 @@ public final class WorldController {
     /* bring the sample heights on the *target* plane down into the same
        reference frame as the occluder on plane-0 by cancelling the vertical
        128-unit offset for every plane above 0                                */
-		final int planeOffset = plane * GraphicsConfig.PLANE_HEIGHT;
+		final int planeOffset = plane * EngineConfig.PLANE_HEIGHT;
 
 		/* four corners of the tile (00, 10, 11, 01) */
 		int h00 = anIntArrayArrayArray440[plane][tileX    ][tileY    ] - planeOffset - modelHeight;

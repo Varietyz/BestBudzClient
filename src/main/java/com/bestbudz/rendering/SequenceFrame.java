@@ -1,6 +1,6 @@
 package com.bestbudz.rendering;
 
-import com.bestbudz.engine.Client;
+import com.bestbudz.engine.core.Client;
 import com.bestbudz.rendering.animation.Class18;
 import com.bestbudz.network.Stream;
 
@@ -85,7 +85,7 @@ public final class SequenceFrame {
 			}
 		} catch (Exception ex) {
 			System.err.println("❌ Failed to load sequence block " + file + ": " + ex.getMessage());
-			// Skip loading but do NOT crash the client
+			// Skip loading but do NOT crash the dock
 		}
 	}
 

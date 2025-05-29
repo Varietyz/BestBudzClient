@@ -1,6 +1,6 @@
 package com.bestbudz.graphics.text;
 
-import com.bestbudz.config.ColorConstants;
+import com.bestbudz.engine.config.ColorConfig;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
@@ -211,51 +211,51 @@ public final class TextDrawingArea extends DrawingArea {
 	private int getColorByName(String s) {
 		switch (s) {
 			case "mbl":
-				return ColorConstants.COLOR_LAVENDER_PINK;
+				return ColorConfig.COLOR_LAVENDER_PINK;
 			case "mye":
-				return ColorConstants.CHAT_MINT_AQUA;
+				return ColorConfig.CHAT_MINT_AQUA;
 			case "mre":
-				return ColorConstants.CHAT_LIGHT_MAGENTA;
+				return ColorConfig.CHAT_LIGHT_MAGENTA;
 			case "369":
-				return ColorConstants.COLOR_LILAC;
+				return ColorConfig.COLOR_LILAC;
 			case "mon":
-				return ColorConstants.COLOR_PEACH_ORANGE;
+				return ColorConfig.COLOR_PEACH_ORANGE;
 			case "gry":
-				return ColorConstants.COLOR_LIME_YELLOW;
+				return ColorConfig.COLOR_LIME_YELLOW;
 			case "red":
-				return ColorConstants.CHAT_SOFT_PINK;
+				return ColorConfig.CHAT_SOFT_PINK;
 			case "gre":
-				return ColorConstants.CHAT_BABY_BLUE;
+				return ColorConfig.CHAT_BABY_BLUE;
 			case "blu":
-				return ColorConstants.COLOR_LIME_GREEN;
+				return ColorConfig.COLOR_LIME_GREEN;
 			case "yel":
-				return ColorConstants.COLOR_PASTEL_VIOLET;
+				return ColorConfig.COLOR_PASTEL_VIOLET;
 			case "cya":
-				return ColorConstants.COLOR_SPRING_GREEN;
+				return ColorConfig.COLOR_SPRING_GREEN;
 			case "mag":
-				return ColorConstants.COLOR_BRIGHT_YELLOW;
+				return ColorConfig.COLOR_BRIGHT_YELLOW;
 			case "whi":
-				return ColorConstants.COLOR_FROST_TEAL;
+				return ColorConfig.COLOR_FROST_TEAL;
 			case "bla":
-				return ColorConstants.COLOR_LIGHT_AMBER;
+				return ColorConfig.COLOR_LIGHT_AMBER;
 			case "lre":
-				return ColorConstants.COLOR_DUSTY_PERIWINKLE;
+				return ColorConfig.COLOR_DUSTY_PERIWINKLE;
 			case "dre":
-				return ColorConstants.COLOR_SUNFLOWER_YELLOW;
+				return ColorConfig.COLOR_SUNFLOWER_YELLOW;
 			case "dbl":
-				return ColorConstants.COLOR_MINTY_GREEN;
+				return ColorConfig.COLOR_MINTY_GREEN;
 			case "or1":
-				return ColorConstants.COLOR_CYAN_TURQUOISE;
+				return ColorConfig.COLOR_CYAN_TURQUOISE;
 			case "or2":
-				return ColorConstants.COLOR_LAVENDER;
+				return ColorConfig.COLOR_LAVENDER;
 			case "or3":
-				return ColorConstants.COLOR_ROSE_PINK;
+				return ColorConfig.COLOR_ROSE_PINK;
 			case "gr1":
-				return ColorConstants.COLOR_SOFT_PEACH;
+				return ColorConfig.COLOR_SOFT_PEACH;
 			case "gr2":
-				return ColorConstants.COLOR_CORAL_ORANGE;
+				return ColorConfig.COLOR_CORAL_ORANGE;
 			case "gr3":
-				return ColorConstants.COLOR_CREAM_ROSE;
+				return ColorConfig.COLOR_CREAM_ROSE;
 			case "str":
 				aBoolean1499 = true;
 				break;

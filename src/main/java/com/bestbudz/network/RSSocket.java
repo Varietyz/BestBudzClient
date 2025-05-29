@@ -1,6 +1,6 @@
 package com.bestbudz.network;
 
-import com.bestbudz.engine.ClientEngine;
+import com.bestbudz.engine.core.ClientEngine;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,7 +11,7 @@ public final class RSSocket implements Runnable {
   private final InputStream inputStream;
   private final OutputStream outputStream;
   private final Socket socket;
-  private final ClientEngine engine;
+  public final ClientEngine engine;
   private boolean closed;
   private byte[] buffer;
 

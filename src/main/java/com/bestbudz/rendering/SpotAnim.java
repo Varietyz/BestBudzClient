@@ -6,7 +6,8 @@ import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
 
-public final class SpotAnim {
+public final class SpotAnim
+{
 
 	public static SpotAnim[] cache;
 	public static MRUNodes aMRUNodes_415 = new MRUNodes(30);
@@ -91,5 +92,6 @@ public final class SpotAnim {
 		aMRUNodes_415.removeFromCache(model, anInt404);
 		return model;
 	}
+
 
 }

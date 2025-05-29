@@ -1,6 +1,6 @@
 package com.bestbudz.ui;
 
-import com.bestbudz.engine.Client;
+import com.bestbudz.engine.core.Client;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.util.ColorUtility;
 import java.util.Objects;

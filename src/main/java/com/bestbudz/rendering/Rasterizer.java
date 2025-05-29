@@ -1,6 +1,6 @@
 package com.bestbudz.rendering;
 
-import com.bestbudz.config.Configuration;
+import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.graphics.Background;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.graphics.Texture;
@@ -333,7 +333,7 @@ public final class Rasterizer extends DrawingArea
 			mipMapLevel = 0;
 			return;
 		}
-		if (!Configuration.enableMipMapping) {
+		if (!SettingsConfig.enableMipMapping) {
 			if (mipMapLevel != 0) {
 				mipMapLevel = 0;
 			}

@@ -1,7 +1,7 @@
 package com.bestbudz.world;
 
-import com.bestbudz.engine.Client;
-import com.bestbudz.config.ClientConstants;
+import com.bestbudz.engine.core.Client;
+import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.network.OnDemandFetcher;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
@@ -294,7 +294,7 @@ Client client;
 				break;
 
 		}
-		if (ClientConstants.DEBUG_MODE)
+		if (EngineConfig.DEBUG_MODE)
 		{
 			if (class46.name == null || class46.name.equalsIgnoreCase("null"))
 			{
