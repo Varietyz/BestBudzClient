@@ -1881,7 +1881,8 @@ public static final int[] anIntArray1240 = new int[100];
 		} while (true);
 	}
 
-	private void mainGameProcessor(Graphics2D g, GameCanvas canvas) {
+	private void mainGameProcessor(Graphics2D g, GameCanvas canvas) throws IOException
+	{
 		boolean leftClick = MouseState.leftClicked;
 		boolean rightClick = MouseState.rightClicked;
 
@@ -2050,7 +2051,7 @@ public static final int[] anIntArray1240 = new int[100];
 		}
 	}
 
-	public void processGameLoop(Graphics2D g, GameCanvas canvas)
+	public void processGameLoop(Graphics2D g, GameCanvas canvas) throws IOException
 	{
 		if (rsAlreadyLoaded || loadingError || genericLoadingError)
 			return;

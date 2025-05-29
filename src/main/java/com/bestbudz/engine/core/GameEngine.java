@@ -5,6 +5,7 @@ import static com.bestbudz.ui.handling.Camera.calcCameraPos;
 import com.bestbudz.graphics.DrawingArea;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import java.io.IOException;
 
 public class GameEngine implements Runnable {
 	private final GameCanvas canvas;
@@ -88,7 +89,12 @@ public class GameEngine implements Runnable {
 						}
 
 						client.processDrawing(g, canvas);
-					} finally {
+					}
+					catch (IOException e)
+					{
+						throw new RuntimeException(e);
+					}
+					finally {
 						if (g != null) g.dispose();
 					}
 					contentsRestored = bufferStrategy.contentsRestored();
