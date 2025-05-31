@@ -24,3 +24,4 @@ gradle-app.setting
 .gitignore
 /src/main/runtime
 *.bak
+*.zip

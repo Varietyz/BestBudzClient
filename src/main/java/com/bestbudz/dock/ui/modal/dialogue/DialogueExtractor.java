@@ -1,25 +1,25 @@
-package com.bestbudz.dock.ui.modal.dialogue.helper;
+package com.bestbudz.dock.ui.modal.dialogue;
 
 import com.bestbudz.ui.RSInterface;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CORRECT DialogueExtractor - Matches your server's actual button IDs
+ * DialogueExtractor - Extract text and options directly from RSInterface objects
+ * This supplements the DialogueCore mapping system with direct interface reading
  */
 public class DialogueExtractor {
 
 	/**
-	 * Extract dialogue options - Using correct text extraction
+	 * Extract dialogue options from interface
 	 */
 	public static String[] extractDialogueOptions(RSInterface dialogueInterface) {
 		if (dialogueInterface == null) return null;
 
 		int interfaceId = dialogueInterface.id;
+		System.out.println("🎭 EXTRACTOR: Extracting options for interface " + interfaceId);
 
-		System.out.println("=== EXTRACTING OPTIONS FOR: " + interfaceId + " ===");
-
-		// Handle your server's option interfaces - get text from correct children
+		// Handle option interfaces
 		switch (interfaceId) {
 			case 2459: // 2 options
 				return getOptionsFromChildren(new int[]{2461, 2462});
@@ -30,116 +30,55 @@ public class DialogueExtractor {
 			case 2492: // 5 options
 				return getOptionsFromChildren(new int[]{2494, 2495, 2496, 2497, 2498});
 
-			// Item interfaces - get text from correct children
+			// Item interfaces
 			case 8880: // Make-X
 				return getOptionsFromChildren(new int[]{8889, 8893, 8897});
 			case 6231: // 2 items
 				return getOptionsFromChildren(new int[]{6232, 6233});
-			case 306: // Single item - no options, should show continue
+			case 306: // Single item - no options
 				return null;
 		}
 
-		System.out.println("No options found for interface: " + interfaceId);
 		return null;
 	}
 
 	/**
-	 * Extract option child IDs - CRITICAL: Use your server's ACTUAL button IDs
+	 * Extract option button IDs
 	 */
 	public static int[] extractOptionChildIds(RSInterface dialogueInterface) {
 		if (dialogueInterface == null) return null;
 
 		int interfaceId = dialogueInterface.id;
 
-		System.out.println("=== EXTRACTING CHILD IDS FOR: " + interfaceId + " ===");
-
-		// Return the ACTUAL clickable button IDs from your DialogueConstants
+		// Return the ACTUAL clickable button IDs
 		switch (interfaceId) {
 			case 2459: // 2 options
-				int[] twoOptionIds = {9157, 9158};
-				System.out.println("2-option button IDs: " + java.util.Arrays.toString(twoOptionIds));
-				return twoOptionIds;
-
+				return new int[]{9157, 9158};
 			case 2469: // 3 options
-				int[] threeOptionIds = {9167, 9168, 9169};
-				System.out.println("3-option button IDs: " + java.util.Arrays.toString(threeOptionIds));
-				return threeOptionIds;
-
+				return new int[]{9167, 9168, 9169};
 			case 2480: // 4 options
-				int[] fourOptionIds = {9178, 9179, 9180, 9181};
-				System.out.println("4-option button IDs: " + java.util.Arrays.toString(fourOptionIds));
-				return fourOptionIds;
-
+				return new int[]{9178, 9179, 9180, 9181};
 			case 2492: // 5 options
-				int[] fiveOptionIds = {9190, 9191, 9192, 9193, 9194};
-				System.out.println("5-option button IDs: " + java.util.Arrays.toString(fiveOptionIds));
-				return fiveOptionIds;
-
-			// For item interfaces, still use the item sprite IDs (these should be correct)
+				return new int[]{9190, 9191, 9192, 9193, 9194};
 			case 8880: // Make-X
-				int[] makeXIds = {8883, 8884, 8885};
-				System.out.println("Make-X item button IDs: " + java.util.Arrays.toString(makeXIds));
-				return makeXIds;
-
+				return new int[]{8883, 8884, 8885};
 			case 6231: // 2 items
-				int[] twoItemIds = {6235, 6236};
-				System.out.println("2-item button IDs: " + java.util.Arrays.toString(twoItemIds));
-				return twoItemIds;
-
+				return new int[]{6235, 6236};
 			case 306: // Single item
-				System.out.println("Single item continue ID: 306");
 				return new int[]{306};
 		}
 
-		System.out.println("No child IDs found for interface: " + interfaceId);
 		return null;
 	}
 
 	/**
-	 * Extract continue button text
-	 */
-	public static String extractContinueButtonText(RSInterface dialogueInterface) {
-		if (dialogueInterface == null) return null;
-
-		int interfaceId = dialogueInterface.id;
-
-		System.out.println("=== CHECKING CONTINUE FOR: " + interfaceId + " ===");
-
-		// These interfaces should have continue buttons based on your DialogueManager
-		if (interfaceId == 4882 || interfaceId == 4887 || interfaceId == 4893 || interfaceId == 4900 || // NPC
-			interfaceId == 968 || interfaceId == 973 || interfaceId == 979 || interfaceId == 986 || // Player
-			interfaceId == 356 || interfaceId == 359 || interfaceId == 363 || interfaceId == 368 || interfaceId == 374 || // Statement
-			interfaceId == 306) { // Single item
-			System.out.println("Interface " + interfaceId + " should have continue button");
-			return "Continue";
-		}
-
-		// Option interfaces and Make-X interfaces don't have continue
-		System.out.println("Interface " + interfaceId + " should NOT have continue button");
-		return null;
-	}
-
-	/**
-	 * Extract continue child ID
-	 */
-	public static int extractContinueChildId(RSInterface dialogueInterface) {
-		if (extractContinueButtonText(dialogueInterface) != null) {
-			int interfaceId = dialogueInterface.id;
-			System.out.println("Continue child ID for " + interfaceId + " is: " + interfaceId);
-			return interfaceId;
-		}
-		return -1;
-	}
-
-	/**
-	 * Extract all dialogue text - enhanced to handle your server's patterns
+	 * Extract all dialogue text
 	 */
 	public static String extractAllDialogueText(RSInterface dialogueInterface) {
 		if (dialogueInterface == null) return "Dialogue";
 
 		int interfaceId = dialogueInterface.id;
-
-		System.out.println("=== EXTRACTING TEXT FOR: " + interfaceId + " ===");
+		System.out.println("🎭 EXTRACTOR: Extracting text for interface " + interfaceId);
 
 		// For item interfaces, create descriptive text
 		if (interfaceId == 8880) {
@@ -165,9 +104,12 @@ public class DialogueExtractor {
 		} else if (interfaceId == 306) {
 			// Single item - get text from child 308
 			return getTextFromChild(308);
+		} else if (interfaceId == 2400) {
+			// Mining interface - get text from child 18028
+			return getTextFromChild(18028);
 		}
 
-		// For regular dialogues, extract text from known patterns based on your DialogueManager
+		// For regular dialogues, extract text from known patterns
 		String text = extractDialogueTextByType(interfaceId);
 		if (text != null && !text.trim().isEmpty()) {
 			return text;
@@ -175,21 +117,21 @@ public class DialogueExtractor {
 
 		// Fallback: try to get text from the interface itself
 		if (dialogueInterface.disabledMessage != null && !dialogueInterface.disabledMessage.trim().isEmpty()) {
-			return DialogueTextCleaner.cleanAndFilterText(dialogueInterface.disabledMessage.trim());
+			return cleanText(dialogueInterface.disabledMessage.trim());
 		}
 
-		return "Dialogue text not found";
+		return "Interface " + interfaceId;
 	}
 
 	/**
-	 * Extract NPC name - enhanced for your server
+	 * Extract NPC name
 	 */
 	public static String extractNpcName(RSInterface dialogueInterface) {
 		if (dialogueInterface == null) return "NPC";
 
 		int interfaceId = dialogueInterface.id;
 
-		// Get NPC name from known dialogue patterns based on your DialogueManager
+		// Get NPC name from known dialogue patterns
 		String name = extractNpcNameByType(interfaceId);
 		if (name != null && !name.trim().isEmpty()) {
 			return name;
@@ -199,23 +141,36 @@ public class DialogueExtractor {
 		if (interfaceId == 8880) return "Crafting";
 		if (interfaceId == 6231) return "Item Selection";
 		if (interfaceId == 306) return "Item Information";
+		if (interfaceId == 2400) return "Mining Interface";
 
 		return "NPC";
 	}
 
-	// Helper method to check if interface has inputs
-	public static String extractInputField(RSInterface dialogueInterface) {
-		// Your server doesn't seem to use input fields in dialogue interfaces
-		return null;
-	}
-
-	public static InputFieldInfo extractInputChildId(RSInterface dialogueInterface) {
-		// No input fields in dialogue interfaces based on your server code
-		return new InputFieldInfo(-1, false);
-	}
-
+	/**
+	 * Check if interface is an item interface
+	 */
 	public static boolean isItemInterface(int interfaceId) {
-		return interfaceId == 306 || interfaceId == 6231 || interfaceId == 8880 || interfaceId == 6179;
+		return interfaceId == 306 || interfaceId == 6231 || interfaceId == 8880 ||
+			interfaceId == 6179 || interfaceId == 2400;
+	}
+
+	/**
+	 * Extract continue button text
+	 */
+	public static String extractContinueButtonText(RSInterface dialogueInterface) {
+		if (dialogueInterface == null) return null;
+
+		int interfaceId = dialogueInterface.id;
+
+		// These interfaces should have continue buttons
+		if (interfaceId == 4882 || interfaceId == 4887 || interfaceId == 4893 || interfaceId == 4900 || // NPC
+			interfaceId == 968 || interfaceId == 973 || interfaceId == 979 || interfaceId == 986 || // Player
+			interfaceId == 356 || interfaceId == 359 || interfaceId == 363 || interfaceId == 368 || interfaceId == 374 || // Statement
+			interfaceId == 306) { // Single item
+			return "Continue";
+		}
+
+		return null;
 	}
 
 	// Helper methods
@@ -225,8 +180,8 @@ public class DialogueExtractor {
 		for (int childId : childIds) {
 			String text = getTextFromChild(childId);
 			if (text != null && !text.trim().isEmpty()) {
-				options.add(text.trim());
-				System.out.println("Found option: '" + text.trim() + "' from child " + childId);
+				options.add(cleanText(text.trim()));
+				System.out.println("🎭 EXTRACTOR: Found option: '" + text.trim() + "' from child " + childId);
 			}
 		}
 
@@ -234,18 +189,22 @@ public class DialogueExtractor {
 	}
 
 	private static String getTextFromChild(int childId) {
-		if (childId > 0 && childId < RSInterface.interfaceCache.length) {
-			RSInterface child = RSInterface.interfaceCache[childId];
-			if (child != null && child.disabledMessage != null) {
-				return child.disabledMessage;
+		try {
+			if (childId > 0 && childId < RSInterface.interfaceCache.length) {
+				RSInterface child = RSInterface.interfaceCache[childId];
+				if (child != null && child.disabledMessage != null) {
+					return child.disabledMessage;
+				}
 			}
+		} catch (Exception e) {
+			System.err.println("🎭 EXTRACTOR: Error getting text from child " + childId + ": " + e.getMessage());
 		}
 		return null;
 	}
 
-	// Extract dialogue text by interface type based on your DialogueManager
+	// Extract dialogue text by interface type
 	private static String extractDialogueTextByType(int interfaceId) {
-		// NPC dialogues - get text from line children (skip name)
+		// NPC dialogues
 		if (interfaceId == 4882) return getTextFromChild(4885);
 		if (interfaceId == 4887) return combineText(4890, 4891);
 		if (interfaceId == 4893) return combineText(4896, 4897, 4898);
@@ -264,7 +223,7 @@ public class DialogueExtractor {
 		if (interfaceId == 368) return combineText(369, 370, 371, 372);
 		if (interfaceId == 374) return combineText(375, 376, 377, 378, 379);
 
-		// Add timed dialogues based on your DialogueManager
+		// Timed dialogues
 		if (interfaceId == 12378) return combineText(12381, 12382);
 		if (interfaceId == 12383) return combineText(12386, 12387, 12388);
 		if (interfaceId == 11891) return combineText(11894, 11895, 11896, 11897);
@@ -283,7 +242,7 @@ public class DialogueExtractor {
 		return null;
 	}
 
-	// Extract NPC name by interface type based on your DialogueManager
+	// Extract NPC name by interface type
 	private static String extractNpcNameByType(int interfaceId) {
 		if (interfaceId == 4882) return getTextFromChild(4884);
 		if (interfaceId == 4887) return getTextFromChild(4889);
@@ -322,14 +281,90 @@ public class DialogueExtractor {
 		return sb.length() > 0 ? sb.toString() : null;
 	}
 
-	// Input field info class
-	public static class InputFieldInfo {
-		public final int childId;
-		public final boolean isNumeric;
+	private static String cleanText(String text) {
+		if (text == null) return "";
 
-		public InputFieldInfo(int childId, boolean isNumeric) {
-			this.childId = childId;
-			this.isNumeric = isNumeric;
+		// Remove HTML tags
+		text = text.replaceAll("<[^>]*>", "");
+
+		// Clean up whitespace
+		text = text.replaceAll("\\s+", " ").trim();
+
+		// Remove special characters that might cause issues
+		text = text.replaceAll("[\\x00-\\x1F\\x7F]", "");
+
+		return text;
+	}
+
+	/**
+	 * Enhanced method to supplement DialogueCore with direct interface reading
+	 */
+	public static void supplementDialogueCore(DialogueCore dialogueCore, int interfaceId) {
+		try {
+			if (interfaceId <= 0 || interfaceId >= RSInterface.interfaceCache.length) return;
+
+			RSInterface dialogueInterface = RSInterface.interfaceCache[interfaceId];
+			if (dialogueInterface == null) return;
+
+			System.out.println("🎭 EXTRACTOR: Supplementing DialogueCore for interface " + interfaceId);
+
+			// Extract and apply text if DialogueCore doesn't have it
+			String[] lines = dialogueCore.getLines();
+			if (lines.length == 0 || (lines.length == 1 && lines[0].isEmpty())) {
+				String extractedText = extractAllDialogueText(dialogueInterface);
+				if (extractedText != null && !extractedText.trim().isEmpty()) {
+					System.out.println("🎭 EXTRACTOR: Adding extracted text: " + extractedText);
+					dialogueCore.handleStringPacket(308, extractedText); // Use frame 308 as default
+				}
+			}
+
+			// Extract and apply options if DialogueCore doesn't have them
+			String[] options = dialogueCore.getOptions();
+			if (options.length == 0) {
+				String[] extractedOptions = extractDialogueOptions(dialogueInterface);
+				if (extractedOptions != null) {
+					System.out.println("🎭 EXTRACTOR: Adding extracted options: " + java.util.Arrays.toString(extractedOptions));
+					// Apply options to appropriate frames based on interface type
+					if (interfaceId == 2459) {
+						for (int i = 0; i < extractedOptions.length && i < 2; i++) {
+							dialogueCore.handleStringPacket(2461 + i, extractedOptions[i]);
+						}
+					} else if (interfaceId == 2469) {
+						for (int i = 0; i < extractedOptions.length && i < 3; i++) {
+							dialogueCore.handleStringPacket(2471 + i, extractedOptions[i]);
+						}
+					} else if (interfaceId == 2480) {
+						for (int i = 0; i < extractedOptions.length && i < 4; i++) {
+							dialogueCore.handleStringPacket(2482 + i, extractedOptions[i]);
+						}
+					} else if (interfaceId == 2492) {
+						for (int i = 0; i < extractedOptions.length && i < 5; i++) {
+							dialogueCore.handleStringPacket(2494 + i, extractedOptions[i]);
+						}
+					}
+				}
+			}
+
+			// Extract and apply NPC name if not present
+			if (dialogueCore.getTitle().isEmpty()) {
+				String extractedName = extractNpcName(dialogueInterface);
+				if (extractedName != null && !extractedName.equals("NPC")) {
+					System.out.println("🎭 EXTRACTOR: Adding extracted NPC name: " + extractedName);
+					// Apply to appropriate title frame based on interface type
+					if (interfaceId == 4882) {
+						dialogueCore.handleStringPacket(4884, extractedName);
+					} else if (interfaceId == 4887) {
+						dialogueCore.handleStringPacket(4889, extractedName);
+					} else if (interfaceId == 4893) {
+						dialogueCore.handleStringPacket(4895, extractedName);
+					} else if (interfaceId == 4900) {
+						dialogueCore.handleStringPacket(4902, extractedName);
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			System.err.println("🎭 EXTRACTOR: Error supplementing DialogueCore: " + e.getMessage());
 		}
 	}
 }

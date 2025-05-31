@@ -20,7 +20,7 @@ public class RSInterface {
 	public static StreamLoader aClass44;
 	public static RSInterface[] interfaceCache;
 	public static RSInterface currentInputField = null;
-	private static MRUNodes aMRUNodes_238;
+	public static MRUNodes aMRUNodes_238;
 	public boolean drawsTransparent;
 	public Sprite disabledSprite;
 	public int anInt208;
@@ -84,12 +84,10 @@ public class RSInterface {
 	public int modelRotation2;
 	public int[] childY;
 	public Sprite disabledHover;
-	public Sprite enabledHover;
-	public int transparency;
 	public String popupString;
 	public String hoverText;
-	private int anInt255;
-	private int anInt256;
+	public int anInt255;
+	public int anInt256;
 
 	public RSInterface() {
 
@@ -185,7 +183,7 @@ public class RSInterface {
 						if (streamLoader_1 != null && !s1.isEmpty()) {
 							int i5 = s1.lastIndexOf(",");
 							rsInterface.sprites[j2] = method207(Integer.parseInt(s1.substring(i5 + 1)), streamLoader_1,
-									s1.substring(0, i5));
+								s1.substring(0, i5));
 						}
 					}
 				}
@@ -233,13 +231,13 @@ public class RSInterface {
 				if (streamLoader_1 != null && !s.isEmpty()) {
 					int i4 = s.lastIndexOf(",");
 					rsInterface.disabledSprite = method207(Integer.parseInt(s.substring(i4 + 1)), streamLoader_1,
-							s.substring(0, i4));
+						s.substring(0, i4));
 				}
 				s = stream.readString();
 				if (streamLoader_1 != null && !s.isEmpty()) {
 					int j4 = s.lastIndexOf(",");
 					rsInterface.enabledSprite = method207(Integer.parseInt(s.substring(j4 + 1)), streamLoader_1,
-							s.substring(0, j4));
+						s.substring(0, j4));
 				}
 			}
 			if (rsInterface.type == 6) {
@@ -297,7 +295,7 @@ public class RSInterface {
 				rsInterface.disabledMessage = stream.readString();
 
 			if (rsInterface.atActionType == 1 || rsInterface.atActionType == 4 || rsInterface.atActionType == 5
-					|| rsInterface.atActionType == 6) {
+				|| rsInterface.atActionType == 6) {
 				rsInterface.tooltip = stream.readString();
 
 				if (rsInterface.tooltip.isEmpty()) {
@@ -321,6 +319,26 @@ public class RSInterface {
 		CustomInterfaces.unpackInterfaces(textDrawingAreas);
 		aMRUNodes_238 = null;
 
+	}
+
+	public static void setChildren(int total, RSInterface i) {
+		i.children = new int[total];
+		i.childX = new int[total];
+		i.childY = new int[total];
+	}
+
+	public static Sprite imageLoader(int i, String s) {
+		long l = (TextClass.method585(s) << 8) + (long) i;
+		Sprite sprite = (Sprite) aMRUNodes_238.insertFromCache(l);
+		if (sprite != null)
+			return sprite;
+		try {
+			sprite = new Sprite(s + " " + i);
+			aMRUNodes_238.removeFromCache(sprite, l);
+		} catch (Exception exception) {
+			return null;
+		}
+		return sprite;
 	}
 
 	public static void homeTeleport(TextDrawingArea[] TDA) {
@@ -354,41 +372,6 @@ public class RSInterface {
 		rsi.disabledMessage = text;
 	}
 
-	public static void addTooltip(int id, String text) {
-		RSInterface rsi = addInterface(id);
-		rsi.id = id;
-		rsi.type = 0;
-		rsi.isMouseoverTriggered = true;
-		rsi.hoverType = -1;
-		addTooltipBox(id + 1, text);
-		rsi.totalChildren(1);
-		rsi.child(0, id + 1, 0, 0);
-	}
-
-	protected static Sprite CustomSpriteLoader(int id, String s) {
-		long l = (TextClass.method585(s) << 8) + (long) id;
-		Sprite sprite = (Sprite) aMRUNodes_238.insertFromCache(l);
-		if (sprite != null) {
-			return sprite;
-		}
-		try {
-			sprite = new Sprite("/Attack/" + id + s);
-			aMRUNodes_238.removeFromCache(sprite, l);
-		} catch (Exception exception) {
-			return null;
-		}
-		return sprite;
-	}
-
-	public static RSInterface addInterface(int id) {
-		RSInterface rsi = interfaceCache[id] = new RSInterface();
-		rsi.id = id;
-		rsi.parentID = id;
-		rsi.width = 512;
-		rsi.height = 334;
-		return rsi;
-	}
-
 	public static void addText(int id, String text, TextDrawingArea[] tda, int idx, int color, boolean centered) {
 		RSInterface rsi = interfaceCache[id] = new RSInterface();
 		if (centered)
@@ -401,68 +384,9 @@ public class RSInterface {
 		rsi.type = 4;
 	}
 
-	public static void textColor(int id, int color) {
-		RSInterface rsi = interfaceCache[id];
-		rsi.textColor = color;
-	}
-
 	public static void textSize(int id, TextDrawingArea[] tda, int idx) {
 		RSInterface rsi = interfaceCache[id];
 		rsi.textDrawingAreas = tda[idx];
-	}
-
-	public static void addCacheSprite(int id, int sprite1, int sprite2, String sprites) {
-		RSInterface rsi = interfaceCache[id] = new RSInterface();
-		rsi.disabledSprite = method207(sprite1, aClass44, sprites);
-		rsi.enabledSprite = method207(sprite2, aClass44, sprites);
-		rsi.parentID = id;
-		rsi.id = id;
-		rsi.type = 5;
-	}
-
-	public static void sprite1(int id, int sprite) {
-		RSInterface class9 = interfaceCache[id];
-		class9.disabledSprite = CustomSpriteLoader(sprite, "");
-	}
-
-	public static void addActionButton(int id, int sprite, int sprite2, int width, int height, String s) {
-		RSInterface rsi = interfaceCache[id] = new RSInterface();
-		rsi.disabledSprite = CustomSpriteLoader(sprite, "");
-		if (sprite2 == sprite)
-			rsi.enabledSprite = CustomSpriteLoader(sprite, "a");
-		else
-			rsi.enabledSprite = CustomSpriteLoader(sprite2, "");
-		rsi.tooltip = s;
-		rsi.contentType = 0;
-		rsi.atActionType = 1;
-		rsi.width = width;
-		rsi.hoverType = 52;
-		rsi.parentID = id;
-		rsi.id = id;
-		rsi.type = 5;
-		rsi.height = height;
-	}
-
-	public static void addToggleButton(int id, int sprite, int setconfig, int width, int height, String s) {
-		RSInterface rsi = addInterface(id);
-		rsi.disabledSprite = CustomSpriteLoader(sprite, "");
-		rsi.enabledSprite = CustomSpriteLoader(sprite, "a");
-		rsi.anIntArray212 = new int[1];
-		rsi.anIntArray212[0] = 1;
-		rsi.anIntArray245 = new int[1];
-		rsi.anIntArray245[0] = 1;
-		rsi.valueIndexArray = new int[1][3];
-		rsi.valueIndexArray[0][0] = 5;
-		rsi.valueIndexArray[0][1] = setconfig;
-		rsi.valueIndexArray[0][2] = 0;
-		rsi.atActionType = 4;
-		rsi.width = width;
-		rsi.hoverType = -1;
-		rsi.parentID = id;
-		rsi.id = id;
-		rsi.type = 5;
-		rsi.height = height;
-		rsi.tooltip = s;
 	}
 
 	public static void removeSomething(int id) {
@@ -470,307 +394,8 @@ public class RSInterface {
 		RSInterface rsi = interfaceCache[id] = new RSInterface();
 	}
 
-	public static void Sidebar0(TextDrawingArea[] tda)
-	{
-		Sidebar0a(1698, 1701, 7499, "Chop", "Hack", "Smash", "Dodge", 42, 75, 127, 75, 39, 128, 125, 128, 122, 103, 40,
-			50, 122, 50, 40, 103, tda);
-		Sidebar0a(2276, 2279, 7574, "Stab", "Lunge", "Slash", "Dodge", 43, 75, 124, 75, 41, 128, 125, 128, 122, 103, 40,
-			50, 122, 50, 40, 103, tda);
-		Sidebar0a(2423, 2426, 7599, "Chop", "Slash", "Lunge", "Dodge", 42, 75, 125, 75, 40, 128, 125, 128, 122, 103, 40,
-			50, 122, 50, 40, 103, tda);
-		Sidebar0a(3796, 3799, 7624, "Pound", "Pummel", "Spike", "Dodge", 39, 75, 121, 75, 41, 128, 125, 128, 122, 103,
-			40, 50, 122, 50, 40, 103, tda);
-		Sidebar0a(4679, 4682, 7674, "Lunge", "Swipe", "Pound", "Dodge", 40, 75, 124, 75, 39, 128, 125, 128, 122, 103,
-			40, 50, 122, 50, 40, 103, tda);
-		Sidebar0a(4705, 4708, 7699, "Chop", "Slash", "Smash", "Dodge", 42, 75, 125, 75, 39, 128, 125, 128, 122, 103, 40,
-			50, 122, 50, 40, 103, tda);
-		Sidebar0a(5570, 5573, 7724, "Spike", "Impale", "Smash", "Dodge", 41, 75, 123, 75, 39, 128, 125, 128, 122, 103,
-			40, 50, 122, 50, 40, 103, tda);
-		Sidebar0a(7762, 7765, 7800, "Chop", "Slash", "Lunge", "Dodge", 42, 75, 125, 75, 40, 128, 125, 128, 122, 103, 40,
-			50, 122, 50, 40, 103, tda);
-		Sidebar0b(776, 779, "Reap", "Chop", "Jab", "Dodge", 42, 75, 126, 75, 46, 128, 125, 128, 122, 103, 122, 50, 40,
-			103, 40, 50, tda);
-		Sidebar0c(425, 428, 7474, "Pound", "Pummel", "Dodge", 39, 75, 121, 75, 42, 128, 40, 103, 40, 50, 122, 50, tda);
-		Sidebar0c(1749, 1752, 7524, "Accurate", "Rapid", "Longrange", 33, 75, 125, 75, 29, 128, 40, 103, 40, 50, 122,
-			50, tda);
-		Sidebar0c(1764, 1767, 7549, "Accurate", "Rapid", "Longrange", 33, 75, 125, 75, 29, 128, 40, 103, 40, 50, 122,
-			50, tda);
-		Sidebar0c(4446, 4449, 7649, "Accurate", "Rapid", "Longrange", 33, 75, 125, 75, 29, 128, 40, 103, 40, 50, 122,
-			50, tda);
-		Sidebar0c(5855, 5857, 7749, "Punch", "Kick", "Duck", 40, 75, 129, 75, 42, 128, 40, 50, 122, 50, 40, 103, tda);
-		Sidebar0c(6103, 6132, 6117, "Bash", "Pound", "Dodge", 43, 75, 124, 75, 42, 128, 40, 103, 40, 50, 122, 50, tda);
-		Sidebar0c(8460, 8463, 8493, "Jab", "Swipe", "Fend", 46, 75, 124, 75, 43, 128, 40, 103, 40, 50, 122, 50, tda);
-		Sidebar0c(12290, 12293, 12323, "Flick", "Lash", "Deflect", 44, 75, 127, 75, 36, 128, 40, 50, 40, 103, 122, 50,
-			tda);
-		Sidebar0d(328, 331, "Bash", "Pound", "Focus", 42, 66, 39, 101, 41, 136, 40, 120, 40, 50, 40, 85, tda);
 
-		RSInterface rsi = addInterface(19300);
-		textSize(3983, tda, 0);
-		addToggleButton(150, 150, 172, 150, 44, " ");
 
-		rsi.totalChildren(2, 2, 2);
-		rsi.child(0, 3983, 52, 25);
-		rsi.child(1, 150, 21, 153);
-
-		rsi = interfaceCache[3983];
-		rsi.centerText = true;
-		rsi.textColor = 0xff981f;
-	}
-
-	public static void Sidebar0a(int id, int id2, int id3, String text1, String text2, String text3, String text4,
-								 int str1x, int str1y, int str2x, int str2y, int str3x, int str3y, int str4x, int str4y, int img1x,
-								 int img1y, int img2x, int img2y, int img3x, int img3y, int img4x, int img4y, TextDrawingArea[] tda)
-	{
-		RSInterface rsi = addInterface(id);
-		addText(id2, "-2", tda, 3, 0xff981f, true);
-		addText(id2 + 11, text1, tda, 0, 0xff981f, false);
-		addText(id2 + 12, text2, tda, 0, 0xff981f, false);
-		addText(id2 + 13, text3, tda, 0, 0xff981f, false);
-		addText(id2 + 14, text4, tda, 0, 0xff981f, false);
-		rsi.specialBar(id3);
-
-		rsi.width = 190;
-		rsi.height = 261;
-
-		int last = 15;
-		int frame = 0;
-		rsi.totalChildren(last, last, last);
-
-		rsi.child(frame, id2 + 3, 21, 46);
-		frame++;
-		rsi.child(frame, id2 + 4, 104, 99);
-		frame++;
-		rsi.child(frame, id2 + 5, 21, 99);
-		frame++;
-		rsi.child(frame, id2 + 6, 105, 46);
-		frame++;
-
-		rsi.child(frame, id2 + 7, img1x, img1y);
-		frame++;
-		rsi.child(frame, id2 + 8, img2x, img2y);
-		frame++;
-		rsi.child(frame, id2 + 9, img3x, img3y);
-		frame++;
-		rsi.child(frame, id2 + 10, img4x, img4y);
-		frame++;
-
-		rsi.child(frame, id2 + 11, str1x, str1y);
-		frame++;
-		rsi.child(frame, id2 + 12, str2x, str2y);
-		frame++;
-		rsi.child(frame, id2 + 13, str3x, str3y);
-		frame++;
-		rsi.child(frame, id2 + 14, str4x, str4y);
-		frame++;
-
-		rsi.child(frame, 19300, 0, 0);
-		frame++;
-		rsi.child(frame, id2, 94, 4);
-		frame++;
-		rsi.child(frame, id3, 21, 205);
-		frame++;
-
-		for (int i = id2 + 3; i < id2 + 7; i++)
-		{
-			rsi = interfaceCache[i];
-			rsi.disabledSprite = CustomSpriteLoader(19301, "");
-			rsi.enabledSprite = CustomSpriteLoader(19301, "a");
-			rsi.width = 68;
-			rsi.height = 44;
-		}
-	}
-
-	public static void Sidebar0b(int id, int id2, String text1, String text2, String text3, String text4, int str1x,
-								 int str1y, int str2x, int str2y, int str3x, int str3y, int str4x, int str4y, int img1x, int img1y,
-								 int img2x, int img2y, int img3x, int img3y, int img4x, int img4y, TextDrawingArea[] tda)
-	{
-		RSInterface rsi = addInterface(id);
-		addText(id2, "-2", tda, 3, 0xff981f, true);
-		addText(id2 + 11, text1, tda, 0, 0xff981f, false);
-		addText(id2 + 12, text2, tda, 0, 0xff981f, false);
-		addText(id2 + 13, text3, tda, 0, 0xff981f, false);
-		addText(id2 + 14, text4, tda, 0, 0xff981f, false);
-
-		rsi.width = 190;
-		rsi.height = 261;
-
-		int last = 14;
-		int frame = 0;
-		rsi.totalChildren(last, last, last);
-
-		rsi.child(frame, id2 + 3, 21, 46);
-		frame++;
-		rsi.child(frame, id2 + 4, 104, 99);
-		frame++;
-		rsi.child(frame, id2 + 5, 21, 99);
-		frame++;
-		rsi.child(frame, id2 + 6, 105, 46);
-		frame++;
-
-		rsi.child(frame, id2 + 7, img1x, img1y);
-		frame++;
-		rsi.child(frame, id2 + 8, img2x, img2y);
-		frame++;
-		rsi.child(frame, id2 + 9, img3x, img3y);
-		frame++;
-		rsi.child(frame, id2 + 10, img4x, img4y);
-		frame++;
-
-		rsi.child(frame, id2 + 11, str1x, str1y);
-		frame++;
-		rsi.child(frame, id2 + 12, str2x, str2y);
-		frame++;
-		rsi.child(frame, id2 + 13, str3x, str3y);
-		frame++;
-		rsi.child(frame, id2 + 14, str4x, str4y);
-		frame++;
-
-		rsi.child(frame, 19300, 0, 0);
-		frame++;
-		rsi.child(frame, id2, 94, 4);
-		frame++;
-
-		for (int i = id2 + 3; i < id2 + 7; i++)
-		{
-			rsi = interfaceCache[i];
-			rsi.disabledSprite = CustomSpriteLoader(19301, "");
-			rsi.enabledSprite = CustomSpriteLoader(19301, "a");
-			rsi.width = 68;
-			rsi.height = 44;
-		}
-	}
-
-	public static void Sidebar0c(int id, int id2, int id3, String text1, String text2, String text3, int str1x,
-								 int str1y, int str2x, int str2y, int str3x, int str3y, int img1x, int img1y, int img2x, int img2y,
-								 int img3x, int img3y, TextDrawingArea[] tda)
-	{
-		RSInterface rsi = addInterface(id);
-		addText(id2, "-2", tda, 3, 0xff981f, true);
-		addText(id2 + 9, text1, tda, 0, 0xff981f, false);
-		addText(id2 + 10, text2, tda, 0, 0xff981f, false);
-		addText(id2 + 11, text3, tda, 0, 0xff981f, false);
-		rsi.specialBar(id3);
-
-		rsi.width = 190;
-		rsi.height = 261;
-
-		int last = 12;
-		int frame = 0;
-		rsi.totalChildren(last, last, last);
-
-		rsi.child(frame, id2 + 3, 21, 99);
-		frame++;
-		rsi.child(frame, id2 + 4, 105, 46);
-		frame++;
-		rsi.child(frame, id2 + 5, 21, 46);
-		frame++;
-
-		rsi.child(frame, id2 + 6, img1x, img1y);
-		frame++;
-		rsi.child(frame, id2 + 7, img2x, img2y);
-		frame++;
-		rsi.child(frame, id2 + 8, img3x, img3y);
-		frame++;
-
-		rsi.child(frame, id2 + 9, str1x, str1y);
-		frame++;
-		rsi.child(frame, id2 + 10, str2x, str2y);
-		frame++;
-		rsi.child(frame, id2 + 11, str3x, str3y);
-		frame++;
-
-		rsi.child(frame, 19300, 0, 0);
-		frame++;
-		rsi.child(frame, id2, 94, 4);
-		frame++;
-		rsi.child(frame, id3, 21, 205);
-		frame++;
-
-		for (int i = id2 + 3; i < id2 + 6; i++)
-		{
-			rsi = interfaceCache[i];
-			rsi.disabledSprite = CustomSpriteLoader(19301, "");
-			rsi.enabledSprite = CustomSpriteLoader(19301, "a");
-			rsi.width = 68;
-			rsi.height = 44;
-		}
-	}
-
-	public static void Sidebar0d(int id, int id2, String text1, String text2, String text3, int str1x, int str1y,
-								 int str2x, int str2y, int str3x, int str3y, int img1x, int img1y, int img2x, int img2y, int img3x,
-								 int img3y, TextDrawingArea[] tda)
-	{
-		RSInterface rsi = addInterface(id);
-		addText(id2, "-2", tda, 3, 0xff981f, true);
-		addText(id2 + 9, text1, tda, 0, 0xff981f, false);
-		addText(id2 + 10, text2, tda, 0, 0xff981f, false);
-		addText(id2 + 11, text3, tda, 0, 0xff981f, false);
-		removeSomething(353);
-		addText(354, "Spell", tda, 0, 0xff981f, false);
-
-		addCacheSprite(337, 19, 0, "combaticons");
-		addCacheSprite(338, 13, 0, "combaticons2");
-		addCacheSprite(339, 14, 0, "combaticons2");
-		removeSomething(349);
-		addToggleButton(350, 350, 108, 68, 44, "Pick");
-
-		rsi.width = 190;
-		rsi.height = 261;
-
-		int last = 15;
-		int frame = 0;
-		rsi.totalChildren(last, last, last);
-
-		rsi.child(frame, id2 + 3, 20, 115);
-		frame++;
-		rsi.child(frame, id2 + 4, 20, 80);
-		frame++;
-		rsi.child(frame, id2 + 5, 20, 45);
-		frame++;
-
-		rsi.child(frame, id2 + 6, img1x, img1y);
-		frame++;
-		rsi.child(frame, id2 + 7, img2x, img2y);
-		frame++;
-		rsi.child(frame, id2 + 8, img3x, img3y);
-		frame++;
-
-		rsi.child(frame, id2 + 9, str1x, str1y);
-		frame++;
-		rsi.child(frame, id2 + 10, str2x, str2y);
-		frame++;
-		rsi.child(frame, id2 + 11, str3x, str3y);
-		frame++;
-
-		rsi.child(frame, 349, 105, 46);
-		frame++;
-		rsi.child(frame, 350, 104, 106);
-		frame++;
-
-		rsi.child(frame, 353, 125, 74);
-		frame++;
-		rsi.child(frame, 354, 125, 134);
-		frame++;
-
-		rsi.child(frame, 19300, 0, 0);
-		frame++;
-		rsi.child(frame, id2, 94, 4);
-		frame++;
-	}
-
-	public static RSInterface addTab(int id) {
-		RSInterface Tab = interfaceCache[id] = new RSInterface();
-		Tab.id = id;
-		Tab.parentID = id;
-		Tab.type = 0;
-		Tab.atActionType = 0;
-		Tab.contentType = 0;
-		Tab.width = 512;
-		Tab.height = 334;
-		Tab.opacity = (byte) 0;
-		Tab.textColor = 0;
-		return Tab;
-	}
 
 	public static void addText(int id, String text, TextDrawingArea[] wid, int idx, int color) {
 		RSInterface rsinterface = addTab(id);
@@ -792,82 +417,6 @@ public class RSInterface {
 		rsinterface.anInt219 = 0;
 		rsinterface.textHoverColor = 0;
 		rsinterface.anInt239 = 0;
-	}
-
-	public static void addTransparentSprite(int id, int spriteId, String spriteName, int transparency) {
-		RSInterface tab = interfaceCache[id] = new RSInterface();
-		tab.id = id;
-		tab.parentID = id;
-		tab.type = 5;
-		tab.atActionType = 0;
-		tab.contentType = 0;
-		tab.transparency = (byte) transparency;
-		tab.hoverType = 52;
-		tab.disabledSprite = imageLoader(spriteId, spriteName);
-		tab.enabledSprite = imageLoader(spriteId, spriteName);
-		tab.width = 512;
-		tab.height = 334;
-		tab.drawsTransparent = true;
-	}
-
-	public static void Pestpanel(TextDrawingArea[] tda) {
-		RSInterface RSinterface = addInterface(21119);
-		addText(21120, "What", 0x999999, false, true, 52, tda, 1);
-		addText(21121, "What", 0x33cc00, false, true, 52, tda, 1);
-		addText(21122, "(Need 5 to 25 stoners)", 0xFFcc33, false, true, 52, tda, 1);
-		addText(21123, "Points", 0x33ccff, false, true, 52, tda, 1);
-		int last = 4;
-		RSinterface.children = new int[last];
-		RSinterface.childX = new int[last];
-		RSinterface.childY = new int[last];
-		setBounds(21120, 15, 12, 0, RSinterface);
-		setBounds(21121, 15, 30, 1, RSinterface);
-		setBounds(21122, 15, 48, 2, RSinterface);
-		setBounds(21123, 15, 66, 3, RSinterface);
-	}
-
-	public static void Pestpanel2(TextDrawingArea[] tda) {
-		RSInterface RSinterface = addInterface(21100);
-		addSprite(21101, 0, "Pest Control/PEST1");
-		addSprite(21102, 1, "Pest Control/PEST1");
-		addSprite(21103, 2, "Pest Control/PEST1");
-		addSprite(21104, 3, "Pest Control/PEST1");
-		addSprite(21105, 4, "Pest Control/PEST1");
-		addSprite(21106, 5, "Pest Control/PEST1");
-		addText(21107, "", 0xCC00CC, false, true, 52, tda, 1);
-		addText(21108, "", 0xf7dd45, false, true, 52, tda, 1);
-		addText(21109, "", 0xFFFF44, false, true, 52, tda, 1);
-		addText(21110, "", 0xCC0000, false, true, 52, tda, 1);
-		addText(21111, "250", 0x99FF33, false, true, 52, tda, 1);
-		addText(21112, "250", 0x99FF33, false, true, 52, tda, 1);
-		addText(21113, "250", 0x99FF33, false, true, 52, tda, 1);
-		addText(21114, "250", 0x99FF33, false, true, 52, tda, 1);
-		addText(21115, "200", 0x99FF33, false, true, 52, tda, 1);
-		addText(21116, "0", 0x99FF33, false, true, 52, tda, 1);
-		addText(21117, "Tick-tocks Remaining:", 0xFFFFFF, false, true, 52, tda, 0);
-		addText(21118, "", 0xFFFFFF, false, true, 52, tda, 0);
-		int last = 18;
-		RSinterface.children = new int[last];
-		RSinterface.childX = new int[last];
-		RSinterface.childY = new int[last];
-		setBounds(21101, 361, 26, 0, RSinterface);
-		setBounds(21102, 396, 26, 1, RSinterface);
-		setBounds(21103, 436, 26, 2, RSinterface);
-		setBounds(21104, 474, 26, 3, RSinterface);
-		setBounds(21105, 3, 21, 4, RSinterface);
-		setBounds(21106, 3, 50, 5, RSinterface);
-		setBounds(21107, 371, 60, 6, RSinterface);
-		setBounds(21108, 409, 60, 7, RSinterface);
-		setBounds(21109, 443, 60, 8, RSinterface);
-		setBounds(21110, 479, 60, 9, RSinterface);
-		setBounds(21111, 362, 10, 10, RSinterface);
-		setBounds(21112, 398, 10, 11, RSinterface);
-		setBounds(21113, 436, 10, 12, RSinterface);
-		setBounds(21114, 475, 10, 13, RSinterface);
-		setBounds(21115, 32, 32, 14, RSinterface);
-		setBounds(21116, 32, 62, 15, RSinterface);
-		setBounds(21117, 8, 88, 16, RSinterface);
-		setBounds(21118, 87, 88, 17, RSinterface);
 	}
 
 	public static void addPriceChecker(int index) {
@@ -899,23 +448,6 @@ public class RSInterface {
 		rsi.parentID = 48542;
 		rsi.id = 4393;
 		rsi.type = 2;
-	}
-
-	public static void addHoverBox(int id, int ParentID, String text, String text2, int configId, int configFrame) {
-		RSInterface rsi = addTabInterface(id);
-		rsi.id = id;
-		rsi.parentID = ParentID;
-		rsi.type = 8;
-		rsi.enabledMessage = text;
-		rsi.disabledMessage = text2;
-		rsi.anIntArray245 = new int[1];
-		rsi.anIntArray212 = new int[1];
-		rsi.anIntArray245[0] = 1;
-		rsi.anIntArray212[0] = configId;
-		rsi.valueIndexArray = new int[1][3];
-		rsi.valueIndexArray[0][0] = 5;
-		rsi.valueIndexArray[0][1] = configFrame;
-		rsi.valueIndexArray[0][2] = 0;
 	}
 
 	public static void addText(int id, String text, TextDrawingArea[] tda, int idx, int color, boolean center,
@@ -957,22 +489,6 @@ public class RSInterface {
 		RSInterface.disabledMessage = s;
 		RSInterface.enabledMessage = "";
 		RSInterface.textColor = k;
-	}
-
-	public static void addButton(int id, int sid, String spriteName, String tooltip, int w, int h) {
-		RSInterface tab = interfaceCache[id] = new RSInterface();
-		tab.id = id;
-		tab.parentID = id;
-		tab.type = 5;
-		tab.atActionType = 1;
-		tab.contentType = 0;
-		tab.opacity = (byte) 0;
-		tab.hoverType = 52;
-		tab.disabledSprite = imageLoader(sid, spriteName);
-		tab.enabledSprite = imageLoader(sid, spriteName);
-		tab.width = w;
-		tab.height = h;
-		tab.tooltip = tooltip;
 	}
 
 	public static void addConfigButton(int ID, int pID, int bID, int bID2, int width, int height, String tT,
@@ -1099,22 +615,6 @@ public class RSInterface {
 		tab.enabledSprite = Client.cacheSprite[k];
 	}
 
-	public static void addTransparentSprite(int id, int spriteId, String spriteName) {
-		RSInterface tab = interfaceCache[id] = new RSInterface();
-		tab.id = id;
-		tab.parentID = id;
-		tab.type = 5;
-		tab.atActionType = 0;
-		tab.contentType = 0;
-		tab.opacity = (byte) 0;
-		tab.hoverType = 52;
-		tab.disabledSprite = imageLoader(spriteId, spriteName);
-		tab.enabledSprite = imageLoader(spriteId, spriteName);
-		tab.width = 512;
-		tab.height = 334;
-		tab.drawsTransparent = true;
-	}
-
 	public static void addTransparentSprite(int id, int spriteId) {
 		RSInterface tab = interfaceCache[id] = new RSInterface();
 		tab.id = id;
@@ -1131,77 +631,9 @@ public class RSInterface {
 		tab.drawsTransparent = true;
 	}
 
-	public static RSInterface addScreenInterface(int id) {
-		RSInterface tab = interfaceCache[id] = new RSInterface();
-		tab.id = id;
-		tab.parentID = id;
-		tab.type = 0;
-		tab.atActionType = 0;
-		tab.contentType = 0;
-		tab.width = 512;
-		tab.height = 334;
-		tab.opacity = (byte) 0;
-		tab.hoverType = 0;
-		return tab;
-	}
 
-	public static RSInterface addTabInterface(int id) {
-		RSInterface tab = interfaceCache[id] = new RSInterface();
-		tab.id = id;
-		tab.parentID = id;
-		tab.type = 0;
-		tab.atActionType = 0;
-		tab.contentType = 0;
-		tab.width = 512;
-		tab.height = 700;
-		tab.opacity = (byte) 0;
-		tab.hoverType = -1;
-		return tab;
-	}
 
-	public static void addHover(int i, int j, int k, int l, int i1, String s, int j1, int k1, String s1) {
-		RSInterface rsinterface = addTabInterface(i);
-		rsinterface.id = i;
-		rsinterface.parentID = i;
-		rsinterface.type = 5;
-		rsinterface.atActionType = j;
-		rsinterface.contentType = k;
-		rsinterface.hoverType = l;
-		rsinterface.enabledSprite = imageLoader(i1, s);
-		rsinterface.disabledSprite = imageLoader(i1, s);
-		rsinterface.width = j1;
-		rsinterface.height = k1;
-		rsinterface.tooltip = s1;
-	}
 
-	public static void addHovered(int i, int j, String s, int k, int l, int i1) {
-		RSInterface rsinterface = addTabInterface(i);
-		rsinterface.parentID = i;
-		rsinterface.id = i;
-		rsinterface.type = 0;
-		rsinterface.atActionType = 0;
-		rsinterface.width = k;
-		rsinterface.height = l;
-		rsinterface.isMouseoverTriggered = true;
-		rsinterface.hoverType = -1;
-		addSprite(i1, j, s);
-		setChildren(1, rsinterface);
-		setBounds(i1, 0, 0, 0, rsinterface);
-	}
-
-	public static Sprite imageLoader(int i, String s) {
-		long l = (TextClass.method585(s) << 8) + (long) i;
-		Sprite sprite = (Sprite) aMRUNodes_238.insertFromCache(l);
-		if (sprite != null)
-			return sprite;
-		try {
-			sprite = new Sprite(s + " " + i);
-			aMRUNodes_238.removeFromCache(sprite, l);
-		} catch (Exception exception) {
-			return null;
-		}
-		return sprite;
-	}
 
 	protected static Sprite method207(int i, StreamLoader streamLoader, String s) {
 		long l = (TextClass.method585(s) << 8) + (long) i;
@@ -1565,11 +997,7 @@ public class RSInterface {
 		setBounds(ID + 7, 142, 92, 8, INT);
 	}
 
-	public static void setChildren(int total, RSInterface i) {
-		i.children = new int[total];
-		i.childX = new int[total];
-		i.childY = new int[total];
-	}
+
 
 	public static void configureLunar(TextDrawingArea[] TDA) {
 		homeTeleport();
@@ -1878,37 +1306,6 @@ public class RSInterface {
 		tab.tooltip = text;
 	}
 
-	public static void addHovered(int i, int sprite, int w, int h, int IMAGEID) {
-		RSInterface hover = addTabInterface(i);
-		hover.parentID = i;
-		hover.id = i;
-		hover.type = 0;
-		hover.atActionType = 0;
-		hover.width = w;
-		hover.height = h;
-		hover.isMouseoverTriggered = true;
-		hover.hoverType = -1;
-		hover.disabledSprite = Client.cacheSprite[sprite];
-		hover.enabledSprite = Client.cacheSprite[sprite];
-		setChildren(1, hover);
-		setBounds(IMAGEID, 0, 0, 0, hover);
-	}
-
-	public static void addHover(int i, int j, int k, int l, int sprite, int j1, int k1, String s1) {
-		RSInterface rsinterface = addTabInterface(i);
-		rsinterface.id = i;
-		rsinterface.parentID = i;
-		rsinterface.type = 5;
-		rsinterface.atActionType = j;
-		rsinterface.contentType = k;
-		rsinterface.hoverType = l;
-		rsinterface.disabledSprite = Client.cacheSprite[sprite];
-		rsinterface.enabledSprite = Client.cacheSprite[sprite];
-		rsinterface.width = j1;
-		rsinterface.height = k1;
-		rsinterface.tooltip = s1;
-	}
-
 	public static void addContainer(int id, int contentType, int width, int height, String... actions) {
 		RSInterface container = addInterface(id);
 		container.parentID = id;
@@ -1995,33 +1392,6 @@ public class RSInterface {
 		rsint.isMouseoverTriggered = true;
 	}
 
-	public static void addHoveredConfigButton(RSInterface original, int ID, int IMAGEID, Sprite disabledID,
-			Sprite enabledID) {
-		RSInterface rsint = addTabInterface(ID);
-		rsint.parentID = original.id;
-		rsint.id = ID;
-		rsint.type = 0;
-		rsint.atActionType = 0;
-		rsint.contentType = 0;
-		rsint.width = original.width;
-		rsint.height = original.height;
-		rsint.opacity = 0;
-		rsint.hoverType = -1;
-		RSInterface hover = addInterface(IMAGEID);
-		hover.type = 5;
-		hover.width = original.width;
-		hover.height = original.height;
-		hover.anIntArray245 = original.anIntArray245;
-		hover.anIntArray212 = original.anIntArray212;
-		hover.valueIndexArray = original.valueIndexArray;
-		hover.disabledSprite = disabledID;
-		hover.enabledSprite = enabledID;
-		rsint.totalChildren(1);
-		setBounds(IMAGEID, 0, 0, 0, rsint);
-		rsint.tooltip = original.tooltip;
-		rsint.isMouseoverTriggered = true;
-	}
-
 	public static void addHoverConfigButton(int id, int hoverOver, int disabledID, int enabledID, int width, int height,
 			String tooltip, int[] anIntArray245, int[] anIntArray212, int[][] valueIndexArray) {
 		RSInterface rsint = addTabInterface(id);
@@ -2039,26 +1409,6 @@ public class RSInterface {
 		rsint.valueIndexArray = valueIndexArray;
 		rsint.disabledSprite = Client.cacheSprite[disabledID];
 		rsint.enabledSprite = Client.cacheSprite[enabledID];
-		rsint.tooltip = tooltip;
-	}
-
-	public static void addHoverConfigButton(int id, int hoverOver, Sprite disabledID, Sprite enabledID, int width,
-			int height, String tooltip, int[] anIntArray245, int[] anIntArray212, int[][] valueIndexArray) {
-		RSInterface rsint = addTabInterface(id);
-		rsint.parentID = id;
-		rsint.id = id;
-		rsint.type = 5;
-		rsint.atActionType = 5;
-		rsint.contentType = 206;
-		rsint.width = width;
-		rsint.height = height;
-		rsint.opacity = 0;
-		rsint.hoverType = hoverOver;
-		rsint.anIntArray245 = anIntArray245;
-		rsint.anIntArray212 = anIntArray212;
-		rsint.valueIndexArray = valueIndexArray;
-		rsint.disabledSprite = disabledID;
-		rsint.enabledSprite = enabledID;
 		rsint.tooltip = tooltip;
 	}
 
@@ -2238,32 +1588,6 @@ public class RSInterface {
 		}
 	}
 
-	public static void achievementItem(int index) {
-		RSInterface rsi = interfaceCache[index] = new RSInterface();
-		rsi.actions = new String[10];
-		rsi.spritesX = new int[20];
-		rsi.invStackSizes = new int[25];
-		rsi.inv = new int[30];
-		rsi.spritesY = new int[20];
-		rsi.children = new int[0];
-		rsi.childX = new int[0];
-		rsi.childY = new int[0];
-		rsi.centerText = true;
-		rsi.aBoolean227 = false;
-		rsi.aBoolean235 = false;
-		rsi.usableItemInterface = false;
-		rsi.isBoxInterface = false;
-		rsi.aBoolean259 = true;
-		rsi.textShadow = false;
-		rsi.invSpritePadX = 30;
-		rsi.invSpritePadY = 30;
-		rsi.height = 5;
-		rsi.width = 4;
-		rsi.parentID = 64809;
-		rsi.id = 4393;
-		rsi.type = 2;
-	}
-
 	public static void itemsOnDeathDATA(TextDrawingArea[] wid)
 	{
 		RSInterface rsinterface = addInterface(17115);
@@ -2360,35 +1684,43 @@ public class RSInterface {
 		rsinterface.childX[19] = 0;
 		rsinterface.childY[19] = 228;
 	}
-
-	public static void itemDisplay(int index, int itemSpaceX, int itemSpaceY, int itemX, int itemY, int zoom,
-			String... options) {
-		RSInterface rsi = interfaceCache[index] = new RSInterface();
-		rsi.actions = new String[options.length];
-		System.arraycopy(options, 0, rsi.actions, 0, options.length);
-		rsi.spritesX = new int[20];
-		rsi.invStackSizes = new int[30];
-		rsi.inv = new int[30];
-		rsi.spritesY = new int[20];
-		rsi.children = new int[0];
-		rsi.childX = new int[0];
-		rsi.childY = new int[0];
-		rsi.centerText = true;
-		rsi.aBoolean227 = false;
-		rsi.aBoolean235 = false;
-		rsi.usableItemInterface = false;
-		rsi.isBoxInterface = false;
-		rsi.aBoolean259 = true;
-		rsi.textShadow = false;
-		rsi.invSpritePadX = itemSpaceX;
-		rsi.invSpritePadY = itemSpaceY;
-		rsi.height = itemY;
-		rsi.width = itemX;
-		rsi.parentID = index;
-		rsi.id = 4393;
-		rsi.type = 2;
-		rsi.modelZoom = zoom;
+	public static RSInterface addInterface(int id) {
+		RSInterface rsi = interfaceCache[id] = new RSInterface();
+		rsi.id = id;
+		rsi.parentID = id;
+		rsi.width = 512;
+		rsi.height = 334;
+		return rsi;
 	}
+
+	public static RSInterface addTab(int id) {
+		RSInterface Tab = interfaceCache[id] = new RSInterface();
+		Tab.id = id;
+		Tab.parentID = id;
+		Tab.type = 0;
+		Tab.atActionType = 0;
+		Tab.contentType = 0;
+		Tab.width = 512;
+		Tab.height = 334;
+		Tab.opacity = (byte) 0;
+		Tab.textColor = 0;
+		return Tab;
+	}
+
+	public static RSInterface addTabInterface(int id) {
+		RSInterface tab = interfaceCache[id] = new RSInterface();
+		tab.id = id;
+		tab.parentID = id;
+		tab.type = 0;
+		tab.atActionType = 0;
+		tab.contentType = 0;
+		tab.width = 512;
+		tab.height = 700;
+		tab.opacity = (byte) 0;
+		tab.hoverType = -1;
+		return tab;
+	}
+
 
 	public static void itemDisplay(int index, int itemSpaceX, int itemSpaceY, int itemX, int itemY, String... options) {
 		RSInterface rsi = interfaceCache[index] = new RSInterface();
@@ -2645,49 +1977,6 @@ public class RSInterface {
 		rsinterface.height = 4;
 	}
 
-	public static void monsterItem(int index) {
-		RSInterface rsi = interfaceCache[index] = new RSInterface();
-		rsi.actions = new String[10];
-		rsi.spritesX = new int[20];
-		rsi.invStackSizes = new int[25];
-		rsi.inv = new int[30];
-		rsi.spritesY = new int[20];
-		rsi.children = new int[0];
-		rsi.childX = new int[0];
-		rsi.childY = new int[0];
-		rsi.centerText = true;
-		rsi.aBoolean227 = false;
-		rsi.aBoolean235 = false;
-		rsi.usableItemInterface = false;
-		rsi.isBoxInterface = false;
-		rsi.aBoolean259 = true;
-		rsi.textShadow = false;
-		rsi.invSpritePadX = 30;
-		rsi.invSpritePadY = 30;
-		rsi.height = 5;
-		rsi.width = 4;
-		rsi.parentID = 59806;
-		rsi.id = 4393;
-		rsi.type = 2;
-	}
-
-	public static void addNpc(int ID) {
-		RSInterface t = interfaceCache[ID] = new RSInterface();
-		t.id = ID;
-		t.parentID = ID;
-		t.type = 6;
-		t.atActionType = 0;
-		t.contentType = 329;
-		t.width = 136;
-		t.height = 168;
-		t.opacity = 0;
-		t.hoverType = 0;
-		t.modelZoom = 560;
-		t.modelRotation1 = 150;
-		t.modelRotation2 = 0;
-		t.anInt257 = -1;
-		t.anInt258 = -1;
-	}
 
 	public static void addInputField(int parentId, int id, int characterLimit, int defaultColor, int defaultHoverColor,
 			int selectedColor, int selectedHoverColor, String text, int width, int height, boolean onlyNumbers,
@@ -2711,10 +2000,6 @@ public class RSInterface {
 		field.actions = new String[] { "Clear", "Edit" };
 	}
 
-	public static void addDropdownMenu(int i, String[] strings, int j, int k, int l, int m, int n, int o, int p)
-	{
-	}
-
 	public void setText(String text) {
 		disabledMessage = text;
 	}
@@ -2732,53 +2017,6 @@ public class RSInterface {
 		children = new int[id];
 		childX = new int[x];
 		childY = new int[y];
-	}
-
-	public void specialBar(int id)
-	{
-		addActionButton(id - 12, 7587, -1, 150, 26, "Use @gre@Haaayyaaaah");
-		for (int i = id - 11; i < id; i++)
-			removeSomething(i);
-
-		RSInterface rsi = interfaceCache[id - 12];
-		rsi.width = 150;
-		rsi.height = 26;
-
-		rsi = interfaceCache[id];
-		rsi.width = 150;
-		rsi.height = 26;
-
-		rsi.child(0, id - 12, 0, 0);
-
-		rsi.child(12, id + 1, 3, 7);
-
-		rsi.child(23, id + 12, 16, 8);
-
-		for (int i = 13; i < 23; i++)
-		{
-			rsi.childY[i] -= 1;
-		}
-
-		rsi = interfaceCache[id + 1];
-		rsi.type = 5;
-		rsi.disabledSprite = CustomSpriteLoader(7600, "");
-
-		for (int i = id + 2; i < id + 12; i++)
-		{
-			rsi = interfaceCache[i];
-			rsi.type = 5;
-		}
-
-		sprite1(id + 2, 7601);
-		sprite1(id + 3, 7602);
-		sprite1(id + 4, 7603);
-		sprite1(id + 5, 7604);
-		sprite1(id + 6, 7605);
-		sprite1(id + 7, 7606);
-		sprite1(id + 8, 7607);
-		sprite1(id + 9, 7608);
-		sprite1(id + 10, 7609);
-		sprite1(id + 11, 7610);
 	}
 
 	public void child(int id, int interID, int x, int y) {

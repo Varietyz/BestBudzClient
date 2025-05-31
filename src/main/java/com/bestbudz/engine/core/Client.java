@@ -1,6 +1,9 @@
 package com.bestbudz.engine.core;
 
+import com.bestbudz.dock.frame.UIDockFrame;
+import com.bestbudz.dock.ui.manager.UIModalManager;
 import static com.bestbudz.engine.core.GameState.runSceneRendering;
+import com.bestbudz.graphics.FogUtil;
 import static com.bestbudz.ui.handling.Errors.showErrorScreen;
 import static com.bestbudz.ui.handling.Camera.setCameraPos;
 import static com.bestbudz.ui.handling.input.Keyboard.console;
@@ -147,7 +150,7 @@ public class Client extends ClientEngine
 	public static final int[] currentStats = new int[Skills.SKILLS_COUNT];
 	public static final long[] ignoreListAsLongs = new long[100];
 	public static final int[] anIntArray928 = new int[5];
-	public static final String[] chatMessages = new String[500];
+	public static String[] chatMessages = new String[500];
 	public static final String[] clanList = new String[100];
 	public static final int[] anIntArray965 = {
 		ColorConfig.CHAT_COLOR, // pastel yellow
@@ -545,7 +548,7 @@ public static final int[] anIntArray1240 = new int[100];
 	public static int anInt1005;
 	public static int anInt1051;
 	public static int anInt1097;
-	public static boolean fpsOn = false;
+	public static boolean fpsOn = true;
 	public static int[][] anIntArrayArray825;
 	public static int anInt839;
 	public static int[] anIntArray840;
@@ -573,6 +576,7 @@ public static final int[] anIntArray1240 = new int[100];
 	private static ImageProducer aRSImageProducer_1107;
 	private static Sprite[] aClass30_Sub2_Sub1_Sub1Array1140;
 	private static ImageProducer aRSImageProducer_1164;
+	private UIModalManager uiModalManager;
 
 	static {
 		try {
@@ -614,9 +618,9 @@ public static final int[] anIntArray1240 = new int[100];
 		chatTypeView = 0;
 		clanChatMode = 0;
 		server = NetworkConfig.SERVER_IPS[EngineConfig.worldSelected - 1];
-		anIntArrayArray825 = new int[208][208];
+		anIntArrayArray825 = new int[104][104];
 		stonersNodeIDs = new int[200];
-		groundArray = new NodeList[4][208][208];
+		groundArray = new NodeList[4][104][104];
 		aBoolean831 = false;
 		aStream_834 = new Stream(new byte[5000]);
 		npcArray = new Npc[16384];
@@ -633,10 +637,10 @@ public static final int[] anIntArray1240 = new int[100];
 		stonerIndices = new int[maxStoners];
 		anIntArray894 = new int[maxStoners];
 		aStreamArray895s = new Stream[maxStoners];
-		anIntArrayArray901 = new int[208][208];
+		anIntArrayArray901 = new int[104][104];
 		aByteArray912 = new byte[16384];
 		loadingError = false;
-		anIntArrayArray929 = new int[208][208];
+		anIntArrayArray929 = new int[104][104];
 		chatNames = new String[500];
 		sideIcons = new Sprite[17];
 		aBoolean954 = true;
@@ -708,6 +712,13 @@ public static final int[] anIntArray1240 = new int[100];
 		bigX = new int[4000];
 		bigY = new int[4000];
 	}
+
+
+	public UIModalManager getUIModalManager() {
+		UIDockFrame dockFrame = UIDockFrame.getInstance();
+		return dockFrame != null ? dockFrame.getModalManager() : null;
+	}
+
 
 	public static void setCanvas(GameCanvas canvas) {
 	}
@@ -1713,32 +1724,32 @@ public static final int[] anIntArray1240 = new int[100];
 		{
 			DrawingArea.drawPixels(frameHeight, 0, 0, ColorUtility.fadingToColor, frameWidth);
 		}
-		worldController.method313(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
+		GameState.safeRenderWorld(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 		worldController.clearObj5Cache();
-		if (SettingsConfig.enableDistanceFog)
-		{
-			if (!ColorUtility.switchColor)
-			{
-				if (fogHandler.fogColor != ColorUtility.fadingToColor)
-				{
+		if (SettingsConfig.enableDistanceFog) {
+			// Simple color animation - no frame skipping
+			if (!ColorUtility.switchColor) {
+				if (fogHandler.fogColor != ColorUtility.fadingToColor) {
 					ColorUtility.switchColor = true;
 				}
 			}
-			if (ColorUtility.switchColor)
-			{
+
+			if (ColorUtility.switchColor) {
 				ColorUtility.fadeStep++;
-				if (ColorUtility.fadeStep >= 100)
-				{
+				if (ColorUtility.fadeStep >= 100) {
 					ColorUtility.fadeStep = 1;
 					ColorUtility.switchColor = false;
 					fogHandler.fogColor = ColorUtility.fadingToColor;
-				}
-				else
-				{
-					fogHandler.fogColor = ColorUtility.fadeColors(new Color(fogHandler.fogColor),
-						new Color(ColorUtility.fadingToColor), ColorUtility.fadeStep);
+				} else {
+					fogHandler.fogColor = ColorUtility.fadeColors(
+						new Color(fogHandler.fogColor),
+						new Color(ColorUtility.fadingToColor),
+						ColorUtility.fadeStep
+					);
 				}
 			}
+
+			// Simple fog rendering
 			fogHandler.renderFog(aRSImageProducer_1165.canvasRaster, aRSImageProducer_1165.depthBuffer);
 		}
 		if (inMaze(baseX + (myStoner.x - 6 >> 7)) && filterGrayScale)

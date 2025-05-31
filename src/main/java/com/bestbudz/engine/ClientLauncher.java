@@ -2,6 +2,7 @@ package com.bestbudz.engine;
 
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.dock.frame.UIDockFrame;
+import com.bestbudz.dock.ui.manager.UIModalManager;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.ui.handling.SettingHandler;
 import com.bestbudz.engine.config.EngineConfig;
@@ -21,6 +22,8 @@ import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 
 public final class ClientLauncher {
+	private UIModalManager uiModalManager;
+
 	public static void main(String[] args) {
 		try {
 			SettingHandler.load();
@@ -61,6 +64,7 @@ public final class ClientLauncher {
 
 			Client client = new Client();
 			Client.instance = client;
+
 			Client.instance.refreshFrameSize(canvas, canvas.getWidth(), canvas.getHeight());
 			canvas.createBufferStrategy(EngineConfig.BUFFERS);
 			GameLoader.setCanvas(canvas);
@@ -85,6 +89,8 @@ public final class ClientLauncher {
 			// 🪟 UI Dock Frame
 			UIDockFrame uiDock = new UIDockFrame(frame);
 			uiDock.setLocation(frame.getX() + frame.getWidth(), frame.getY());
+
+
 
 			frame.addWindowStateListener(e -> {
 				boolean maximized = (e.getNewState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH;
@@ -146,5 +152,9 @@ public final class ClientLauncher {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
+	}
+
+	public UIModalManager getUIModalManager() {
+		return uiModalManager;
 	}
 }

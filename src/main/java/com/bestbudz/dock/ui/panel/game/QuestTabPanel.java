@@ -1,5 +1,6 @@
 package com.bestbudz.dock.ui.panel.game;
 
+import com.bestbudz.dock.util.RainbowHoverUtil;
 import com.bestbudz.dock.util.DockTextUpdatable;
 import com.bestbudz.dock.util.UIPanel;
 import com.bestbudz.engine.core.Client;
@@ -44,9 +45,10 @@ public class QuestTabPanel implements UIPanel, DockTextUpdatable
 				if (index == clickedIndex) {
 					label.setBackground(SELECTED_COLOR); // flash green
 					label.setForeground(WHITE_UI_COLOR);
-				} else if (index == hoverIndex) {
-					label.setBackground(HOVER_COLOR); // hover color
-					label.setForeground(WHITE_UI_COLOR);
+				} else  if (index == hoverIndex) {
+					// You could apply a rainbow color here
+					Color rainbowColor = RainbowHoverUtil.getNextHoverColor(); // You'd need to make this public
+					label.setBackground(rainbowColor);
 				} else {
 					label.setBackground(new Color(30, 30, 30));
 					label.setForeground(TITLE_COLOR);

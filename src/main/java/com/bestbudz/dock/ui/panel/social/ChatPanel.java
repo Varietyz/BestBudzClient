@@ -1,13 +1,11 @@
 package com.bestbudz.dock.ui.panel.social;
 
+import com.bestbudz.dock.util.RainbowHoverUtil;
 import com.bestbudz.dock.ui.panel.social.chat.ChatCore;
 import com.bestbudz.dock.ui.panel.social.chat.ChatInteractionHandler;
 import com.bestbudz.dock.ui.panel.social.chat.ChatRenderer;
 import com.bestbudz.dock.util.UIPanel;
 import com.bestbudz.dock.ui.panel.social.chat.ChatCore.ChatMessageData;
-import com.bestbudz.dock.ui.modal.dialogue.logic.DialogueCore;
-import com.bestbudz.dock.ui.modal.dialogue.logic.DialogueCore.DialogueData;
-import com.bestbudz.dock.ui.modal.DialogueModal;
 import com.bestbudz.dock.util.DockTextUpdatable;
 import com.bestbudz.engine.core.Client;
 import static com.bestbudz.engine.config.ColorConfig.*;
@@ -25,19 +23,16 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Enhanced ChatPanel with Separated Chat and Dialogue Systems
+ * Enhanced ChatPanel with Separated Chat
  *
- * UPDATED: Now uses separated ChatCore and DialogueCore
+ * UPDATED: Now uses separated ChatCore
  * Features:
  * - ChatCore: Handles chat messages only
- * - DialogueCore: Handles dialogue system in separate modal
  * - Clean separation of concerns
- * - No dialogue messages in chat display
  */
 public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 	ChatCore.MessageProcessor,
-	ChatInteractionHandler.ChatInputCallback,
-	DialogueCore.DialogueEventListener {
+	ChatInteractionHandler.ChatInputCallback {
 
 	// UI Components
 	private JScrollPane scrollPane;
@@ -47,14 +42,8 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 	private StyledDocument chatDocument;
 	private JPanel mainChatContainer;
 
-	// Modal dialogue system
-	private DialogueModal dialogueModal;
-	private boolean isModalVisible = false;
-	private DialogueData lastDialogue = null;
-
 	// Separated core systems
 	private ChatCore chatCore;
-	private DialogueCore dialogueCore;
 	private ChatRenderer chatRenderer;
 	private ChatInteractionHandler interactionHandler;
 
@@ -76,14 +65,11 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 	}
 
 	/**
-	 * Initialize core components - now with separated chat and dialogue cores
+	 * Initialize core components - now with separated chatcore
 	 */
 	private void initializeComponents() {
 		// Initialize chat core for chat functionality
 		chatCore = new ChatCore(this);
-
-		// Initialize dialogue core for dialogue functionality
-		dialogueCore = new DialogueCore(this);
 	}
 
 	/**
@@ -96,7 +82,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 
 		createChatDisplay();
 		createInputArea();
-		createModalSystem();
 
 		// Initialize helper classes after UI is created
 		chatRenderer = new ChatRenderer(chatDocument, chatCore);
@@ -200,23 +185,8 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 		button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		button.addActionListener(this::onSendMessage);
 
-		button.addMouseListener(new MouseAdapter() {
-			private final Color originalColor = button.getBackground();
+		RainbowHoverUtil.applyRainbowHover(button);
 
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				button.setBackground(new Color(
-					Math.min(255, originalColor.getRed() + 30),
-					Math.min(255, originalColor.getGreen() + 30),
-					Math.min(255, originalColor.getBlue() + 30)
-				));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				button.setBackground(originalColor);
-			}
-		});
 
 		return button;
 	}
@@ -225,7 +195,7 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 	 * Add placeholder behavior to input field
 	 */
 	private void addInputFieldBehavior(JTextField field) {
-		final String placeholder = "Message...";
+		final String placeholder = "";
 		final Color placeholderColor = LIGHT_GRAY_COLOR;
 
 		field.addFocusListener(new FocusAdapter() {
@@ -282,73 +252,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 	}
 
 	/**
-	 * Create the modal dialogue system
-	 */
-	private void createModalSystem() {
-		// Modal will be created when needed as a separate JDialog window
-	}
-
-	/**
-	 * Show the dialogue modal as a separate window with proper positioning
-	 */
-	private void showDialogueModal(DialogueData dialogue) {
-		// Prevent flickering by checking if we already have this dialogue
-		if (isModalVisible && lastDialogue != null &&
-			lastDialogue.dialogueId == dialogue.dialogueId &&
-			lastDialogue.message.equals(dialogue.message)) {
-			return; // Same dialogue, don't recreate
-		}
-
-		// Close existing modal first
-		if (isModalVisible && dialogueModal != null) {
-			hideDialogueModal();
-		}
-
-		lastDialogue = dialogue;
-
-		// Find parent window for the dialog
-		Window parentWindow = SwingUtilities.getWindowAncestor(this);
-
-		// Create new modal dialog with DialogueCore (not ChatCore)
-		dialogueModal = new DialogueModal(parentWindow, dialogueCore, this::hideDialogueModal);
-
-		// Show dialogue
-		dialogueModal.showDialogue(dialogue);
-
-		isModalVisible = true;
-
-		// Optional: Add notification to chat that dialogue opened
-		try {
-			chatRenderer.addDialogueNotification(dialogue.npcName, dialogue.dialogueId);
-			scrollToBottom();
-		} catch (Exception e) {
-			// Ignore if chat notification fails
-		}
-	}
-
-	/**
-	 * Hide the dialogue modal
-	 */
-	private void hideDialogueModal() {
-		if (dialogueModal != null) {
-			dialogueModal.setVisible(false);
-			dialogueModal.dispose();
-			dialogueModal = null;
-		}
-
-		isModalVisible = false;
-		lastDialogue = null;
-
-		// Optional: Add notification to chat that dialogue closed
-		try {
-			chatRenderer.appendSystemMessage("Dialogue closed");
-			scrollToBottom();
-		} catch (Exception e) {
-			// Ignore if chat notification fails
-		}
-	}
-
-	/**
 	 * Start the update scheduler for periodic message checking
 	 */
 	private void startUpdateScheduler() {
@@ -366,7 +269,7 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 	}
 
 	/**
-	 * Check for new messages and dialogue updates
+	 * Check for new message updates
 	 */
 	private void checkForUpdates() {
 		if (!Client.loggedIn || isDisposed) return;
@@ -380,14 +283,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 					hasNewMessages = true;
 					break;
 				}
-			}
-
-			// Check for active dialogues using DialogueCore
-			DialogueData activeDialogue = dialogueCore.getActiveDialogue();
-			if (activeDialogue != null && !isModalVisible) {
-				SwingUtilities.invokeLater(() -> showDialogueModal(activeDialogue));
-			} else if (activeDialogue == null && isModalVisible) {
-				SwingUtilities.invokeLater(this::hideDialogueModal);
 			}
 
 			if (hasNewMessages) {
@@ -435,42 +330,9 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 		}
 	}
 
-	// DialogueCore.DialogueEventListener implementation
-	@Override
-	public void onDialogueOpened(DialogueData dialogue) {
-		SwingUtilities.invokeLater(() -> {
-			if (!isModalVisible) {
-				showDialogueModal(dialogue);
-			}
-		});
-	}
-
-	@Override
-	public void onDialogueClosed() {
-		SwingUtilities.invokeLater(() -> {
-			if (isModalVisible) {
-				hideDialogueModal();
-			}
-		});
-	}
-
-	@Override
-	public void onDialogueResponse(int optionIndex, int dialogueId) {
-		// Optional: Add feedback to chat
-		SwingUtilities.invokeLater(() -> {
-			try {
-				String feedback = optionIndex >= 0 ?
-					"Selected option " + (optionIndex + 1) : "Continued dialogue";
-				chatRenderer.appendSystemMessage(feedback);
-				scrollToBottom();
-			} catch (Exception e) {
-				// Ignore if feedback fails
-			}
-		});
-	}
 
 	/**
-	 * Update the chat display (ONLY chat messages - no dialogues)
+	 * Update the chat display
 	 */
 	private void updateDisplay() {
 		if (!Client.loggedIn || isDisposed) return;
@@ -499,7 +361,7 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 	}
 
 	/**
-	 * Get CHAT messages from game chatbox (excludes dialogue messages)
+	 * Get CHAT messages from game chatbox
 	 */
 	private List<ChatMessageData> getGameMessages(int currentChannel) {
 		List<ChatMessageData> messages = new ArrayList<>();
@@ -510,11 +372,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 				String username = (i < Chatbox.chatNames.length) ? Chatbox.chatNames[i] : null;
 				int messageType = (i < Chatbox.chatTypes.length) ? Chatbox.chatTypes[i] : 0;
 				int rights = (Chatbox.chatRights != null && i < Chatbox.chatRights.length) ? Chatbox.chatRights[i] : 0;
-
-				// Skip dialogue messages - they're handled by DialogueCore/DialogueModal
-				if (isDialogueMessageType(messageType)) {
-					continue;
-				}
 
 				String title = null;
 				String titleColor = null;
@@ -559,12 +416,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 		return messages;
 	}
 
-	/**
-	 * Check if message type is dialogue-related (should be excluded from chat)
-	 */
-	private boolean isDialogueMessageType(int messageType) {
-		return messageType == 20 || messageType == 21 || messageType == 22; // Dialogue message types
-	}
 
 	/**
 	 * Helper method to get chat title with fallback
@@ -746,14 +597,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 			chatCore.dispose();
 		}
 
-		if (dialogueCore != null) {
-			dialogueCore.dispose();
-		}
-
-		// Dispose modal if still open
-		if (dialogueModal != null) {
-			dialogueModal.dispose();
-		}
 
 		// Dispose interaction handler
 		if (interactionHandler != null) {

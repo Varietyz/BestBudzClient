@@ -298,7 +298,7 @@ public class PacketParser extends Client
 				case 174: // sound effect
 					handleSoundEffectOptimized();
 					pktType = -1;
-					return true;
+					return false;
 
 				case 104: // player option
 					handlePlayerOptionOptimized();
@@ -393,7 +393,7 @@ public class PacketParser extends Client
 
 				case 202: // FREE AND OPEN PROTOCOL
 					pktType = -1;
-					return true;
+					return false;
 
 				case 201: // player index
 					handlePlayerIndexOptimized();
@@ -535,6 +535,12 @@ public class PacketParser extends Client
 		try {
 			final String text = inStream.readString();
 			final int frame = inStream.method435();
+			System.out.println("🎭 RAW STRING PACKET: Frame " + frame + " = '" + text + "'");
+
+			UIDockFrame instance = UIDockFrame.getInstance();
+			if (instance != null && instance.getModalManager() != null) {
+				instance.getModalManager().feedStringPacket(frame, text);
+			}
 
 			final DockPanelMapping mapping = DockPanelMapping.fromFrame(frame);
 			if (mapping != null) {
@@ -1069,6 +1075,9 @@ public class PacketParser extends Client
 	private static void handleInterfaceNPCHeadOptimized() {
 		final int j3 = inStream.method436();
 		final int j11 = inStream.method436();
+
+		System.out.println("🎭 RAW STRING PACKET: j3 & j11 = " + j3 + " ' " + j11 + " '");
+
 		final RSInterface rsInterface = INTERFACE_CACHE[j11];
 		rsInterface.anInt233 = 2;
 		rsInterface.mediaID = j3;
@@ -1271,6 +1280,14 @@ public class PacketParser extends Client
 		final int interfaceId = inStream.method434();
 		final int zoom = inStream.readUnsignedWord();
 		final int itemId = inStream.readUnsignedWord();
+
+		System.out.println("🎭 RAW STRING PACKET: ItemModel InterfaceID" + interfaceId + " & zoom'" + zoom + "&& item id" + itemId);
+
+		UIDockFrame instance = UIDockFrame.getInstance();
+		if (instance != null && instance.getModalManager() != null) {
+			instance.getModalManager().feedItemDisplay(interfaceId, itemId, 1);
+		}
+
 		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
 
 		if (itemId == 65535) {
@@ -1592,10 +1609,13 @@ public class PacketParser extends Client
 			tabAreaAltered = true;
 		}
 
+		UIDockFrame.handleDialogueInterface(interfaceId, INTERFACE_CACHE[interfaceId]);
+
 		backDialogID = interfaceId;
 		inputTaken = true;
 		openInterfaceID = -1;
 		aBoolean1149 = false;
+		System.out.println("🎭 PACKET 164: Chat box interface " + interfaceId);
 	}
 
 	// Error handling optimized for performance

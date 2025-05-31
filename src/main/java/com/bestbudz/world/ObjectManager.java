@@ -1,5 +1,6 @@
 package com.bestbudz.world;
 
+import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.network.OnDemandFetcher;
 import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.Animable;
@@ -363,8 +364,7 @@ public final class ObjectManager {
 					if (i_261_ > 0 && i_262_ > 0 && i_261_ < 103 && i_262_ < 103)
 					{
 						ObjectDef class46 = ObjectDef.forID(i_252_);
-						if (i_260_ != 22 || class46.hasActions || class46.aBoolean736)
-						{
+						if (i_260_ != 22 || SettingsConfig.enableGroundDecorations || class46.hasActions || class46.aBoolean736) {
 							bool &= class46.method579();
 							bool_255_ = true;
 						}
@@ -849,16 +849,17 @@ public final class ObjectManager {
 			l2 += 0x80000000;
 		byte byte0 = (byte) ((j1 << 6) + j);
 		if (j == 22) {
-			Animable obj;
-
-        if (class46.anInt781 == -1 && class46.childrenIDs == null)
-          obj = class46.method578(22, j1, k1, l1, i2, j2, -1);
-        else obj = new Animable_Sub5(i1, j1, 22, l1, i2, k1, j2, class46.anInt781, true);
-        worldController.method280(k, k2, i, obj, byte0, l2, l);
-        if (class46.aBoolean767 && class46.hasActions && class11 != null) class11.method213(i, l);
-        return;
-
-
+			if (!SettingsConfig.enableGroundDecorations && !class46.hasActions && !class46.aBoolean736)
+				return;
+			Object obj;
+			if (class46.anInt781 == -1 && class46.childrenIDs == null)
+				obj = class46.method578(22, j1, k1, l1, i2, j2, -1);
+			else
+				obj = new Animable_Sub5(i1, j1, 22, l1, i2, k1, j2, class46.anInt781, true);
+			worldController.method280(k, k2, i, ((Animable) (obj)), byte0, l2, l);
+			if (class46.aBoolean767 && class46.hasActions && class11 != null)
+				class11.method213(i, l);
+			return;
 		}
 		if (j == 10 || j == 11) {
 			Animable obj1;

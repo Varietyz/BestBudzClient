@@ -36,7 +36,7 @@ public final class Rasterizer extends DrawingArea
 	private static int[][][] anIntArrayArray1478;
 	private static int[][][] anIntArrayArray1479 = new int[textureAmount][][];
 	private static int[][] anIntArrayArray1483 = new int[textureAmount][];
-
+	public static boolean isRenderingItem = false;
 	static {
 		anIntArray1468 = new int[512];
 		anIntArray1469 = new int[2048];
@@ -1142,6 +1142,17 @@ public final class Rasterizer extends DrawingArea
 			i += j7;
 			j += l7;
 			hsl1 += hsl2;
+		}
+	}
+
+	public static void method374Flat(int y1, int y2, int y3, int x1, int x2, int x3,
+									 int hsl1, int hsl2, int hsl3, float z1, float z2, float z3) {
+		int faceColor = hsl1;
+
+		if (SettingsConfig.enableFlatShading && !isRenderingItem) {
+			method374(y1, y2, y3, x1, x2, x3, faceColor, faceColor, faceColor, z1, z2, z3);
+		} else {
+			method374(y1, y2, y3, x1, x2, x3, hsl1, hsl2, hsl3, z1, z2, z3);
 		}
 	}
 

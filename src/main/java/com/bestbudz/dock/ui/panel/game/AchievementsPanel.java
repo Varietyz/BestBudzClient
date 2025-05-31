@@ -1,5 +1,6 @@
 package com.bestbudz.dock.ui.panel.game;
 
+import com.bestbudz.dock.util.RainbowHoverUtil;
 import com.bestbudz.dock.util.DockTextUpdatable;
 import com.bestbudz.dock.util.UIPanel;
 import com.bestbudz.engine.core.Client;
@@ -59,9 +60,11 @@ panel.setPreferredSize(null);
 					label.setForeground(entry.color);
 				}
 
-				label.setBackground(index == clickedIndex
-					? HOVER_COLOR
-					: index == hoverIndex ? new Color(50, 50, 30) : new Color(30, 30, 30));
+				if (index == hoverIndex) {
+					// You could apply a rainbow color here
+					Color rainbowColor = RainbowHoverUtil.getNextHoverColor(); // You'd need to make this public
+					label.setBackground(rainbowColor);
+				}
 
 				return label;
 			}

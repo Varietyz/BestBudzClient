@@ -2533,7 +2533,7 @@ public class Model extends Animable
             i1 = anIntArray1637[i] & 3;
         if(i1 == 0)
         {
-            Rasterizer.method374(anIntArray1666[j], anIntArray1666[k], anIntArray1666[l], anIntArray1665[j], anIntArray1665[k], anIntArray1665[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i], anIntArray1670[j], anIntArray1670[k], anIntArray1670[l]);
+            Rasterizer.method374Flat(anIntArray1666[j], anIntArray1666[k], anIntArray1666[l], anIntArray1665[j], anIntArray1665[k], anIntArray1665[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i], anIntArray1670[j], anIntArray1670[k], anIntArray1670[l]);
             return;
         }
         if(i1 == 1)
@@ -2683,7 +2683,7 @@ public class Model extends Animable
 	                else
 	                    l7 = anIntArray1637[i] & 3;
 	                if(l7 == 0)
-	                    Rasterizer.method374(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2], -1F, -1F, -1F);
+	                    Rasterizer.method374Flat(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2], -1F, -1F, -1F);
 	                else
 	                if(l7 == 1)
 	                    Rasterizer.method376(i7, j7, k7, j3, j4, j5, modelIntArray3[anIntArray1634[i]], -1F, -1F, -1F);
@@ -2715,8 +2715,8 @@ public class Model extends Animable
 	                    i8 = anIntArray1637[i] & 3;
 	                if(i8 == 0)
 	                {
-	                    Rasterizer.method374(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2], -1F, -1F, -1F);
-	                    Rasterizer.method374(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3], anIntArray1680[0], anIntArray1680[2], anIntArray1680[3], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
+	                    Rasterizer.method374Flat(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2], -1F, -1F, -1F);
+	                    Rasterizer.method374Flat(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3], anIntArray1680[0], anIntArray1680[2], anIntArray1680[3], anIntArray1670[i1], anIntArray1670[j1], anIntArray1670[k1]);
 	                    return;
 	                }
 	                if(i8 == 1)

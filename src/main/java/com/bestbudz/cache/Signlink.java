@@ -23,9 +23,18 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.lang.ref.WeakReference;
+import java.util.Map;
 
+/**
+ * Optimized Signlink with intelligent cache management and memory optimization
+ * Addresses memory spikes from file I/O operations and cache synchronization
+ */
 public final class Signlink implements Runnable {
 
+	// Original constants and fields
 	public static final int clientversion = 317;
 	public static final RandomAccessFile[] cache_idx = new RandomAccessFile[6];
 	public static int uid;
@@ -56,6 +65,23 @@ public final class Signlink implements Runnable {
 	private static int midipos;
 	private static boolean waveplay;
 	private static int wavepos;
+
+	// NEW: Cache optimization fields
+	private static final Map<String, WeakReference<byte[]>> fileCache = new ConcurrentHashMap<>();
+	private static final Map<String, Long> fileCacheAccessTimes = new ConcurrentHashMap<>();
+	private static final ReentrantReadWriteLock cacheLock = new ReentrantReadWriteLock();
+	private static final int MAX_FILE_CACHE_SIZE = 50;
+	private static final int MAX_CACHED_FILE_SIZE = 512 * 1024; // 512KB max per file
+	private static final long CACHE_CLEANUP_INTERVAL = 60000; // 1 minute
+
+	// Performance monitoring
+	private static long totalFilesProcessed = 0;
+	private static long totalBytesProcessed = 0;
+	private static long cacheHits = 0;
+	private static long cacheMisses = 0;
+	private static long lastCacheCleanup = 0;
+	private static String cachedCacheDir = null;
+
 	private Signlink() {
 	}
 
@@ -64,8 +90,7 @@ public final class Signlink implements Runnable {
 		if (active) {
 			try {
 				Thread.sleep(500L);
-			} catch (Exception _ex)
-			{
+			} catch (Exception _ex) {
 				throw new RuntimeException(_ex);
 			}
 			active = false;
@@ -82,126 +107,405 @@ public final class Signlink implements Runnable {
 		while (!active) {
 			try {
 				Thread.sleep(50L);
-			} catch (Exception _ex)
-			{
+			} catch (Exception _ex) {
 				throw new RuntimeException(_ex);
 			}
 		}
 	}
 
-	public static String findCacheDir()
-	{
-		Path cacheDir = Paths.get(System.getProperty("user.home"), ".BestBudzCache");
-		String theme = "bestbudz";
+	/**
+	 * Enhanced cache directory finder with caching and optimization
+	 */
+	public static String findCacheDir() {
+		// Return cached result if available
+		if (cachedCacheDir != null) {
+			return cachedCacheDir;
+		}
 
-		try
-		{
-			Files.createDirectories(cacheDir);
-			Set<Path> expected = new HashSet<>(syncOnce("/caches/fixed", cacheDir));
-			expected.addAll(syncOnce("/caches/" + theme, cacheDir));
-			deleteStale(cacheDir, expected);
+		cacheLock.writeLock().lock();
+		try {
+			// Double-check after acquiring lock
+			if (cachedCacheDir != null) {
+				return cachedCacheDir;
+			}
+
+			Path cacheDir = Paths.get(System.getProperty("user.home"), ".BestBudzCache");
+			String theme = "bestbudz";
+
+			try {
+				Files.createDirectories(cacheDir);
+
+				// Optimized cache synchronization with memory management
+				Set<Path> expected = new HashSet<>();
+				expected.addAll(syncOnceOptimized("/caches/fixed", cacheDir));
+				expected.addAll(syncOnceOptimized("/caches/" + theme, cacheDir));
+				deleteStaleOptimized(cacheDir, expected);
+
+			} catch (IOException | URISyntaxException ex) {
+				throw new RuntimeException("Failed to synchronise cache", ex);
+			}
+
+			cachedCacheDir = cacheDir.toAbsolutePath() + File.separator;
+			return cachedCacheDir;
+
+		} finally {
+			cacheLock.writeLock().unlock();
 		}
-		catch (IOException | URISyntaxException ex)
-		{
-			throw new RuntimeException("Failed to synchronise cache", ex);
-		}
-		return cacheDir.toAbsolutePath() + File.separator;
 	}
 
-	private static Set<Path> syncOnce(String resourceRoot, Path targetDir)
-		throws IOException, URISyntaxException
-	{
+	/**
+	 * Optimized cache synchronization with memory management
+	 */
+	private static Set<Path> syncOnceOptimized(String resourceRoot, Path targetDir)
+		throws IOException, URISyntaxException {
 
-		Set<Path> embedded = new HashSet<>();
-		String root = resourceRoot.startsWith("/") ? resourceRoot.substring(1)
-			: resourceRoot;
-		URL url = Client.class.getResource('/' + root + '/');
-		if (url != null && "file".equals(url.getProtocol()))
-		{
-			Path rootPath = Paths.get(url.toURI());
-			try (Stream<Path> s = Files.walk(rootPath))
-			{
-				s.filter(Files::isRegularFile).forEach(src -> {
-					Path rel = rootPath.relativize(src);
+		cacheLock.readLock().lock();
+		try {
+			Set<Path> embedded = new HashSet<>();
+			String root = resourceRoot.startsWith("/") ? resourceRoot.substring(1) : resourceRoot;
+			URL url = Client.class.getResource('/' + root + '/');
+
+			if (url != null && "file".equals(url.getProtocol())) {
+				Path rootPath = Paths.get(url.toURI());
+				try (Stream<Path> s = Files.walk(rootPath)) {
+					s.filter(Files::isRegularFile).forEach(src -> {
+						Path rel = rootPath.relativize(src);
+						embedded.add(rel);
+						copyIfMissingOptimized(src, targetDir.resolve(rel));
+					});
+				}
+				return embedded;
+			}
+
+			String jarPath = Client.class
+				.getProtectionDomain()
+				.getCodeSource()
+				.getLocation()
+				.toURI()
+				.getPath();
+
+			try (JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"))) {
+				Enumeration<JarEntry> e = jar.entries();
+				int processedCount = 0;
+
+				while (e.hasMoreElements()) {
+					JarEntry je = e.nextElement();
+					if (je.isDirectory()) continue;
+
+					String name = je.getName();
+					if (!name.startsWith(root + '/')) continue;
+
+					Path rel = Paths.get(root).relativize(Paths.get(name));
 					embedded.add(rel);
-					copyIfMissing(src, targetDir.resolve(rel));
-				});
+
+					Path dest = targetDir.resolve(rel);
+					if (Files.notExists(dest)) {
+						Files.createDirectories(dest.getParent());
+
+						// Check file size before caching
+						long fileSize = je.getSize();
+						if (fileSize > 0 && fileSize <= MAX_CACHED_FILE_SIZE) {
+							// Try to use cached data first
+							byte[] cachedData = getCachedFileData(name);
+							if (cachedData != null) {
+								Files.write(dest, cachedData);
+								cacheHits++;
+							} else {
+								// Read and cache file data
+								try (InputStream in = jar.getInputStream(je)) {
+									byte[] fileData = readAllBytesCompat(in);
+									Files.write(dest, fileData);
+									cacheFileData(name, fileData);
+									cacheMisses++;
+									totalBytesProcessed += fileData.length;
+								}
+							}
+						} else {
+							// Large files - direct copy without caching
+							try (InputStream in = jar.getInputStream(je)) {
+								Files.copy(in, dest);
+								cacheMisses++;
+							}
+						}
+
+						System.out.println("[CACHE] + " + rel);
+					}
+
+					processedCount++;
+					totalFilesProcessed++;
+
+					// Periodic memory management during large operations
+					if (processedCount % 100 == 0) {
+						performPeriodicCacheCleanup();
+					}
+				}
 			}
 			return embedded;
-		}
-		String jarPath = Client.class
-			.getProtectionDomain()
-			.getCodeSource()
-			.getLocation()
-			.toURI()
-			.getPath();
 
-		try (JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8")))
-		{
-			Enumeration<JarEntry> e = jar.entries();
-			while (e.hasMoreElements())
-			{
-				JarEntry je = e.nextElement();
-				if (je.isDirectory()) continue;
-
-				String name = je.getName();
-				if (!name.startsWith(root + '/')) continue;
-
-				Path rel = Paths.get(root).relativize(Paths.get(name));
-				embedded.add(rel);
-
-				Path dest = targetDir.resolve(rel);
-				if (Files.notExists(dest))
-				{
-					Files.createDirectories(dest.getParent());
-					try (InputStream in = jar.getInputStream(je))
-					{
-						Files.copy(in, dest);
-					}
-					System.out.println("[CACHE] + " + rel);
-				}
-			}
-		}
-		return embedded;
-	}
-
-	private static void deleteStale(Path cacheDir, Set<Path> keep) throws IOException
-	{
-		try (Stream<Path> s = Files.walk(cacheDir))
-		{
-			s.filter(Files::isRegularFile).forEach(p -> {
-				Path rel = cacheDir.relativize(p);
-				if (!keep.contains(rel))
-				{
-					try
-					{
-						Files.deleteIfExists(p);
-					}
-					catch (IOException ignored)
-					{
-					}
-				}
-			});
+		} finally {
+			cacheLock.readLock().unlock();
 		}
 	}
 
-	private static void copyIfMissing(Path src, Path dest)
-	{
-		if (Files.notExists(dest))
-		{
-			try
-			{
+	/**
+	 * Optimized file copying with caching
+	 */
+	private static void copyIfMissingOptimized(Path src, Path dest) {
+		if (Files.notExists(dest)) {
+			try {
 				Files.createDirectories(dest.getParent());
-				Files.copy(src, dest);
+
+				// Check if we can cache this file
+				long fileSize = Files.size(src);
+				if (fileSize <= MAX_CACHED_FILE_SIZE) {
+					String cacheKey = src.toString();
+					byte[] cachedData = getCachedFileData(cacheKey);
+
+					if (cachedData != null) {
+						Files.write(dest, cachedData);
+						cacheHits++;
+					} else {
+						byte[] fileData = readAllBytesCompat(Files.newInputStream(src));
+						Files.copy(src, dest);
+						cacheFileData(cacheKey, fileData);
+						cacheMisses++;
+						totalBytesProcessed += fileData.length;
+					}
+				} else {
+					// Large files - direct copy
+					Files.copy(src, dest);
+					cacheMisses++;
+				}
+
 				System.out.println("[COPIED-CACHE] Was missing " + dest.getFileName());
-			}
-			catch (IOException ex)
-			{
+				totalFilesProcessed++;
+
+			} catch (IOException ex) {
 				throw new UncheckedIOException(ex);
 			}
 		}
 	}
 
+	/**
+	 * Optimized stale file deletion with batching
+	 */
+	private static void deleteStaleOptimized(Path cacheDir, Set<Path> keep) throws IOException {
+		try (Stream<Path> s = Files.walk(cacheDir)) {
+			s.filter(Files::isRegularFile)
+				.filter(p -> !keep.contains(cacheDir.relativize(p)))
+				.forEach(p -> {
+					try {
+						Files.deleteIfExists(p);
+						// Remove from cache if deleted
+						String cacheKey = p.toString();
+						fileCache.remove(cacheKey);
+						fileCacheAccessTimes.remove(cacheKey);
+					} catch (IOException ignored) {
+					}
+				});
+		}
+	}
+
+	/**
+	 * File data caching methods
+	 */
+	private static byte[] getCachedFileData(String key) {
+		WeakReference<byte[]> ref = fileCache.get(key);
+		if (ref != null) {
+			byte[] data = ref.get();
+			if (data != null) {
+				fileCacheAccessTimes.put(key, System.currentTimeMillis());
+				return data;
+			} else {
+				fileCache.remove(key);
+				fileCacheAccessTimes.remove(key);
+			}
+		}
+		return null;
+	}
+
+	private static void cacheFileData(String key, byte[] data) {
+		if (data == null || data.length == 0 || data.length > MAX_CACHED_FILE_SIZE) {
+			return;
+		}
+
+		// Clean up cache if it's getting too large
+		if (fileCache.size() >= MAX_FILE_CACHE_SIZE) {
+			cleanupOldestFileCache();
+		}
+
+		fileCache.put(key, new WeakReference<>(data));
+		fileCacheAccessTimes.put(key, System.currentTimeMillis());
+	}
+
+	private static void cleanupOldestFileCache() {
+		if (fileCacheAccessTimes.isEmpty()) return;
+
+		// Remove oldest 30% of cache entries
+		int removeCount = Math.max(1, fileCacheAccessTimes.size() * 3 / 10);
+
+		fileCacheAccessTimes.entrySet().stream()
+			.sorted(Map.Entry.comparingByValue())
+			.limit(removeCount)
+			.forEach(entry -> {
+				String key = entry.getKey();
+				fileCache.remove(key);
+				fileCacheAccessTimes.remove(key);
+			});
+	}
+
+	private static void performPeriodicCacheCleanup() {
+		long currentTime = System.currentTimeMillis();
+		if (currentTime - lastCacheCleanup > CACHE_CLEANUP_INTERVAL) {
+			lastCacheCleanup = currentTime;
+
+			// Clean up dead weak references
+			fileCache.entrySet().removeIf(entry -> entry.getValue().get() == null);
+
+			// Remove stale access times
+			fileCacheAccessTimes.entrySet().removeIf(entry -> !fileCache.containsKey(entry.getKey()));
+
+			// Check memory usage
+			long memoryUsage = getCurrentMemoryUsage();
+			if (memoryUsage > 300) { // 300KB threshold
+				performEmergencyCacheCleanup();
+			}
+		}
+	}
+
+	private static void performEmergencyCacheCleanup() {
+		System.out.println("Signlink: Emergency cache cleanup at " + getCurrentMemoryUsage() + "KB");
+
+		// Clear file cache
+		fileCache.clear();
+		fileCacheAccessTimes.clear();
+
+		// Force garbage collection
+		System.gc();
+
+		System.out.println("Signlink: Memory after cleanup: " + getCurrentMemoryUsage() + "KB");
+	}
+
+	private static long getCurrentMemoryUsage() {
+		Runtime runtime = Runtime.getRuntime();
+		return (runtime.totalMemory() - runtime.freeMemory()) / 1024;
+	}
+
+	/**
+	 * Enhanced wave saving with memory optimization
+	 */
+	public static synchronized boolean wavesave(byte[] abyte0, int i) {
+		if (i > 0x1e8480) return false;
+		if (savereq != null) return false;
+
+		// Check memory before proceeding
+		if (getCurrentMemoryUsage() > 280) {
+			performPeriodicCacheCleanup();
+		}
+
+		wavepos = (wavepos + 1) % 5;
+		savelen = i;
+		savebuf = abyte0;
+		waveplay = true;
+		savereq = "sound" + wavepos + ".wav";
+		return true;
+	}
+
+	/**
+	 * Enhanced MIDI saving with memory optimization
+	 */
+	public static synchronized void midisave(byte[] abyte0, int i) {
+		if (i > 0x1e8480) return;
+		if (savereq != null) return;
+
+		// Check memory before proceeding
+		if (getCurrentMemoryUsage() > 280) {
+			performPeriodicCacheCleanup();
+		}
+
+		midipos = (midipos + 1) % 5;
+		savelen = i;
+		savebuf = abyte0;
+		midiplay = true;
+		savereq = "jingle" + midipos + ".mid";
+	}
+
+	/**
+	 * Enhanced run method with memory management
+	 */
+	public void run() {
+		active = true;
+		System.out.println("[CACHE] (signlink) active – opening cache files");
+		uid = getuid(findCacheDir());
+
+		try {
+			cache_dat = new RandomAccessFile(findCacheDir() + "main_file_cache.dat", "rw");
+			for (int i = 0; i < cache_idx.length; i++) {
+				cache_idx[i] = new RandomAccessFile(findCacheDir() + "main_file_cache.idx" + i, "rw");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		int cleanupCounter = 0;
+
+		for (int i = threadliveid; threadliveid == i;) {
+			if (socketreq != 0) {
+				try {
+					socket = new Socket(socketip, socketreq);
+				} catch (Exception _ex) {
+					socket = null;
+				}
+				socketreq = 0;
+			} else if (threadreq != null) {
+				Thread thread = new Thread(threadreq);
+				thread.setDaemon(true);
+				thread.start();
+				thread.setPriority(threadreqpri);
+				threadreq = null;
+			} else if (dnsreq != null) {
+				try {
+					dns = InetAddress.getByName(dnsreq).getHostName();
+				} catch (Exception _ex) {
+					dns = "unknown";
+				}
+				dnsreq = null;
+			} else if (savereq != null) {
+				if (savebuf != null) {
+					try {
+						FileOutputStream fileoutputstream = new FileOutputStream(findCacheDir() + savereq);
+						fileoutputstream.write(savebuf, 0, savelen);
+						fileoutputstream.close();
+						totalBytesProcessed += savelen;
+					} catch (Exception _ex) {
+						throw new RuntimeException(_ex);
+					}
+				}
+				if (waveplay) {
+					waveplay = false;
+				}
+				if (midiplay) {
+					midi = findCacheDir() + savereq;
+					midiplay = false;
+				}
+				savereq = null;
+			}
+
+			// Periodic memory management
+			cleanupCounter++;
+			if (cleanupCounter % 100 == 0) { // Every ~5 seconds (50ms * 100)
+				performPeriodicCacheCleanup();
+			}
+
+			try {
+				Thread.sleep(50L);
+			} catch (Exception _ex) {
+				throw new RuntimeException(_ex);
+			}
+		}
+	}
+
+	// Original methods remain unchanged
 	private static int getuid(String s) {
 		try {
 			File file = new File(s + "uid.dat");
@@ -210,8 +514,7 @@ public final class Signlink implements Runnable {
 				dataoutputstream.writeInt((int) (Math.random() * 99999999D));
 				dataoutputstream.close();
 			}
-		} catch (Exception _ex)
-		{
+		} catch (Exception _ex) {
 			throw new RuntimeException(_ex);
 		}
 		try {
@@ -228,8 +531,7 @@ public final class Signlink implements Runnable {
 		for (socketreq = i; socketreq != 0;)
 			try {
 				Thread.sleep(50L);
-			} catch (Exception _ex)
-			{
+			} catch (Exception _ex) {
 				throw new RuntimeException(_ex);
 			}
 
@@ -243,8 +545,7 @@ public final class Signlink implements Runnable {
 		for (urlreq = s; urlreq != null;)
 			try {
 				Thread.sleep(50L);
-			} catch (Exception _ex)
-			{
+			} catch (Exception _ex) {
 				throw new RuntimeException(_ex);
 			}
 
@@ -264,21 +565,6 @@ public final class Signlink implements Runnable {
 		threadreq = runnable;
 	}
 
-	public static synchronized boolean wavesave(byte[] abyte0, int i) {
-		if (i > 0x1e8480)
-			return false;
-		if (savereq != null) {
-			return false;
-		} else {
-			wavepos = (wavepos + 1) % 5;
-			savelen = i;
-			savebuf = abyte0;
-			waveplay = true;
-			savereq = "sound" + wavepos + ".wav";
-			return true;
-		}
-	}
-
 	public static synchronized boolean wavereplay() {
 		if (savereq != null) {
 			return false;
@@ -290,108 +576,50 @@ public final class Signlink implements Runnable {
 		}
 	}
 
-	public static synchronized void midisave(byte[] abyte0, int i) {
-		if (i > 0x1e8480)
-			return;
-		if (savereq != null) {
-		} else {
-			midipos = (midipos + 1) % 5;
-			savelen = i;
-			savebuf = abyte0;
-			midiplay = true;
-			savereq = "jingle" + midipos + ".mid";
-		}
-	}
-
 	public static void reporterror(String s) {
 		System.out.println("Error: " + s);
 	}
 
-	public void run()
-	{
+	// NEW: Public API for cache statistics and management
+	public static String getCacheStatistics() {
+		long hitRate = (cacheHits + cacheMisses) > 0 ?
+			(cacheHits * 100) / (cacheHits + cacheMisses) : 0;
 
-		active = true;
-		System.out.println("[CACHE] (signlink) active – opening cache files");
-		uid = getuid(findCacheDir());
-		try
-		{
-			cache_dat = new RandomAccessFile(findCacheDir() + "main_file_cache.dat", "rw");
-			for (int i = 0; i < cache_idx.length; i++)
-			{
-				cache_idx[i] = new RandomAccessFile(
-					findCacheDir() + "main_file_cache.idx" + i, "rw"
-				);
+		return String.format("Signlink Cache - Files: %d, Bytes: %dKB, Hits: %d, Misses: %d, " +
+				"Hit Rate: %d%%, Cached: %d, Memory: %dKB",
+			totalFilesProcessed, totalBytesProcessed / 1024,
+			cacheHits, cacheMisses, hitRate,
+			fileCache.size(), getCurrentMemoryUsage());
+	}
+
+	public static void forceCleanup() {
+		performEmergencyCacheCleanup();
+		System.out.println("Signlink: Forced cleanup completed");
+	}
+
+	public static void clearCacheDir() {
+		cachedCacheDir = null;
+		System.out.println("Signlink: Cache directory cleared, will be recalculated on next access");
+	}
+
+	/**
+	 * Java 8 compatible method to read all bytes from InputStream
+	 */
+	private static byte[] readAllBytesCompat(InputStream inputStream) throws IOException {
+		try {
+			// Use a reasonable buffer size
+			byte[] buffer = new byte[8192];
+			int bytesRead;
+			java.io.ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
+
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				outputStream.write(buffer, 0, bytesRead);
 			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		for (int i = threadliveid; threadliveid == i; )
-		{
-			if (socketreq != 0)
-			{
-				try
-				{
-					socket = new Socket(socketip, socketreq);
-				}
-				catch (Exception _ex)
-				{
-					socket = null;
-				}
-				socketreq = 0;
-			}
-			else if (threadreq != null)
-			{
-				Thread thread = new Thread(threadreq);
-				thread.setDaemon(true);
-				thread.start();
-				thread.setPriority(threadreqpri);
-				threadreq = null;
-			}
-			else if (dnsreq != null)
-			{
-				try
-				{
-					dns = InetAddress.getByName(dnsreq).getHostName();
-				}
-				catch (Exception _ex)
-				{
-					dns = "unknown";
-				}
-				dnsreq = null;
-			}
-			else if (savereq != null)
-			{
-				if (savebuf != null)
-					try
-					{
-						FileOutputStream fileoutputstream = new FileOutputStream(findCacheDir() + savereq);
-						fileoutputstream.write(savebuf, 0, savelen);
-						fileoutputstream.close();
-					}
-					catch (Exception _ex)
-					{
-						throw new RuntimeException(_ex);
-					}
-				if (waveplay)
-				{
-					waveplay = false;
-				}
-				if (midiplay)
-				{
-					midi = findCacheDir() + savereq;
-					midiplay = false;
-				}
-				savereq = null;
-			}
-			try
-			{
-				Thread.sleep(50L);
-			}
-			catch (Exception _ex)
-			{
-				throw new RuntimeException(_ex);
+
+			return outputStream.toByteArray();
+		} finally {
+			if (inputStream != null) {
+				inputStream.close();
 			}
 		}
 	}

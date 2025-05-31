@@ -77,7 +77,7 @@ public final class WorldController {
 	private final int anInt438;
 	private final int anInt439;
 	private final int[][][] anIntArrayArrayArray440;
-	private final Ground[][][] groundArray;
+	public final Ground[][][] groundArray;
 	private final Object5[] obj5Cache;
 	private final int[][][] anIntArrayArrayArray445;
 	private final int[] anIntArray486;

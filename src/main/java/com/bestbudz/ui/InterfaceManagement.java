@@ -2,6 +2,9 @@ package com.bestbudz.ui;
 
 import com.bestbudz.data.ItemDef;
 import com.bestbudz.data.Skills;
+import com.bestbudz.dock.frame.UIDockFrame;
+import com.bestbudz.dock.ui.manager.UIModalManager;
+import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.engine.core.Client;
 import static com.bestbudz.ui.handling.RightClickMenu.drawContextMenu;
 import static com.bestbudz.ui.handling.RightClickMenu.drawTooltip;
@@ -19,7 +22,6 @@ import static com.bestbudz.ui.TabArea.commitTabState;
 import static com.bestbudz.ui.TabArea.drawTabArea;
 import static com.bestbudz.engine.core.login.WelcomeScreen.clearWelcomeState;
 import static com.bestbudz.engine.util.ClientDiagnostics.drawClientDiagnostics;
-import static com.bestbudz.engine.util.ClientDiagnostics.drawSystemUpdateCountdown;
 import com.bestbudz.graphics.DrawingArea;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.rendering.Rasterizer;
@@ -37,6 +39,7 @@ import static com.bestbudz.world.InLocation.inWilderness;
 import com.bestbudz.world.VarBit;
 import java.awt.Graphics2D;
 import java.util.Set;
+import javax.swing.SwingUtilities;
 
 public class InterfaceManagement extends Client
 {
@@ -46,8 +49,7 @@ public class InterfaceManagement extends Client
 		drawOpenInterface();
 		drawContextMenu();
 		drawMiscOverlays();
-		drawClientDiagnostics();
-		drawSystemUpdateCountdown();
+		if (EngineConfig.DIAGNOSTIC_MODE) drawClientDiagnostics();
 	}
 
 	public static void drawGameScreen(Graphics2D g) {
@@ -71,17 +73,18 @@ public class InterfaceManagement extends Client
 		anInt945 = 0;
 	}
 
-	public static void clearTopInterfaces()
-	{
+	public static void clearTopInterfaces() {
+		System.out.println("🎭 INTERFACE: clearTopInterfaces called");
+		UIDockFrame.handleCloseInterface();
+
+		// EXISTING: Your normal clear logic
 		stream.createFrame(130);
-		if (invOverlayInterfaceID != -1)
-		{
+		if (invOverlayInterfaceID != -1) {
 			invOverlayInterfaceID = -1;
 			aBoolean1149 = false;
 			tabAreaAltered = true;
 		}
-		if (backDialogID != -1)
-		{
+		if (backDialogID != -1) {
 			backDialogID = -1;
 			inputTaken = true;
 			aBoolean1149 = false;
@@ -89,6 +92,7 @@ public class InterfaceManagement extends Client
 		openInterfaceID = -1;
 		fullscreenInterfaceID = -1;
 	}
+
 
 	public static void drawInterfaceRecursive(int i, int j, int k, int l, RSInterface class9, int i1, boolean flag, int j1)
 	{
@@ -378,6 +382,10 @@ public class InterfaceManagement extends Client
 	public static void drawOpenInterface() {
 		if (openInterfaceID == -1) return;
 
+		// DEBUG: Log all interface opens
+		//System.out.println("🎭 INTERFACE: Drawing interface ID: " + openInterfaceID);
+
+		// EXISTING: Your normal interface drawing code continues as fallback...
 		updateInterfaceAnimations(anInt945, openInterfaceID);
 
 		if (openInterfaceID == 5292) {
@@ -387,7 +395,7 @@ public class InterfaceManagement extends Client
 
 		RSInterface rsi = RSInterface.interfaceCache[openInterfaceID];
 		if (rsi == null) {
-			System.err.println("[WARN] Tried to draw interface " + openInterfaceID + " but it’s null");
+			System.err.println("[WARN] Tried to draw interface " + openInterfaceID + " but it's null");
 			return;
 		}
 
@@ -403,8 +411,6 @@ public class InterfaceManagement extends Client
 
 		drawInterface(0, x, rsi, y);
 	}
-
-
 
 	public static void drawMiscOverlays() {
 		if (anInt1055 == 1) multiOverlay.drawSprite(frameWidth - 165, 160);
@@ -791,4 +797,7 @@ public class InterfaceManagement extends Client
 			class9_1.anInt208 = 0;
 		}
 	}
+
+
+
 }

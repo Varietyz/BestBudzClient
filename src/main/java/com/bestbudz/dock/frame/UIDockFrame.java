@@ -1,6 +1,7 @@
 package com.bestbudz.dock.frame;
 
 import com.bestbudz.dock.ui.manager.UIPanelManager;
+import com.bestbudz.dock.ui.manager.UIModalManager;
 import com.bestbudz.dock.ui.panel.client.BubbleBudzPanel;
 import com.bestbudz.dock.ui.panel.client.SettingsPanel;
 import com.bestbudz.dock.ui.panel.game.AchievementsPanel;
@@ -11,10 +12,12 @@ import com.bestbudz.dock.util.UIPanel;
 
 import com.bestbudz.dock.ui.panel.social.ChatPanel;
 import com.bestbudz.engine.core.Client;
+import java.awt.event.ActionEvent;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -29,6 +32,7 @@ public class UIDockFrame extends JDialog {
 	private JSplitPane splitPane;
 
 	private final UIPanelManager panelManager;
+	private final UIModalManager modalManager; // New modal manager
 
 	public static final JPanel toggleBarTop = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
 	public static final JPanel toggleBarBottom = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
@@ -65,11 +69,15 @@ public class UIDockFrame extends JDialog {
 		setResizable(true);
 		setUndecorated(true);
 
-		// Initialize panelManager first
+		// Initialize managers first
 		panelManager = new UIPanelManager();
+
+		// Initialize modal manager with this frame as parent and the client
+		modalManager = new UIModalManager(this, Client.instance);
 
 		setupMainLayeredPane();
 		setupPanels();
+		setupKeyboardShortcuts();
 
 		setVisible(true);
 		UIDockHelper.updateToggleInteractivity();
@@ -83,6 +91,107 @@ public class UIDockFrame extends JDialog {
 		if (loginOverlay != null) {
 			loginOverlay.refreshLoginState();
 		}
+
+		// Configure modal manager based on user preferences
+		configureModalManager();
+	}
+
+	/**
+	 * Configure the modal manager with default settings
+	 */
+	private void configureModalManager() {
+		// Enable debug mode if in development
+		boolean debugMode = Boolean.getBoolean("dock.debug") || System.getProperty("env", "prod").equals("dev");
+		modalManager.setDebugMode(debugMode);
+
+		// Modal dialogues enabled by default, but can be configured
+		boolean useModals = !Boolean.getBoolean("dock.disableModals");
+		modalManager.setUseModalDialogues(useModals);
+
+		if (debugMode) {
+			System.out.println("Modal manager configured - Debug: " + debugMode + ", Modals: " + useModals);
+		}
+	}
+
+	/**
+	 * Setup keyboard shortcuts for the dock frame including modal shortcuts
+	 */
+	private void setupKeyboardShortcuts() {
+		// Get the root pane's input map for global shortcuts
+		InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		ActionMap actionMap = getRootPane().getActionMap();
+
+		// ESC key - Close all modals or minimize dock
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "closeModalsOrMinimize");
+		actionMap.put("closeModalsOrMinimize", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (modalManager.hasVisibleModals()) {
+					modalManager.closeAllModals();
+				} else {
+					setVisible(false);
+				}
+			}
+		});
+
+		// F12 - Toggle modal debug mode
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0), "toggleModalDebug");
+		actionMap.put("toggleModalDebug", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boolean currentDebug = modalManager.isDebugMode();
+				modalManager.setDebugMode(!currentDebug);
+				showTemporaryMessage("Modal Debug: " + (!currentDebug ? "ON" : "OFF"));
+			}
+		});
+
+		// Ctrl+M - Toggle modal dialogues on/off
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK), "toggleModalDialogues");
+		actionMap.put("toggleModalDialogues", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boolean currentUse = modalManager.isUsingModalDialogues();
+				modalManager.setUseModalDialogues(!currentUse);
+				showTemporaryMessage("Modal Dialogues: " + (!currentUse ? "ON" : "OFF"));
+			}
+		});
+
+		// Ctrl+Shift+T - Show test dialogue (development only)
+		if (modalManager.isDebugMode()) {
+			inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK), "testDialogue");
+			actionMap.put("testDialogue", new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					showTestDialogue();
+				}
+			});
+		}
+	}
+
+	/**
+	 * Show a temporary message in the UI (could be implemented as a toast or status update)
+	 */
+	private void showTemporaryMessage(String message) {
+		// For now, just print to console, but this could be a toast notification
+		System.out.println("UI Message: " + message);
+
+		// Optionally show a temporary modal
+		modalManager.showConfirmation("Information", message, null, null);
+	}
+
+	/**
+	 * Show test dialogue for development purposes
+	 */
+	private void showTestDialogue() {
+		if (!modalManager.isDebugMode()) return;
+
+		// Show a test confirmation
+		modalManager.showConfirmation(
+			"Test Dialogue",
+			"This is a test dialogue. Modal system is working correctly!",
+			() -> System.out.println("Test dialogue confirmed"),
+			() -> System.out.println("Test dialogue cancelled")
+		);
 	}
 
 	/**
@@ -206,7 +315,133 @@ public class UIDockFrame extends JDialog {
 		loadDockPanelLayout();
 	}
 
-	// DELEGATE EVERYTHING ELSE
+	// MODAL INTEGRATION METHODS
+
+	/**
+	 * Show dialogue modal for game interface - Main integration point
+	 */
+	public void showDialogue(int interfaceId, Object rsInterface) {
+		if (modalManager != null) {
+			modalManager.showDialogue(interfaceId, rsInterface);
+		}
+	}
+
+	/**
+	 * Show input prompt modal
+	 */
+	public void showInputPrompt(String inputType, String prompt) {
+		if (modalManager != null) {
+			modalManager.showInputPrompt(inputType, prompt);
+		}
+	}
+
+	/**
+	 * Handle server closing dialogue (called when opcode 219 is received)
+	 */
+	public void onServerCloseDialogue() {
+		if (modalManager != null) {
+			modalManager.onServerCloseDialogue();
+		}
+	}
+
+	/**
+	 * Show confirmation dialog
+	 */
+	public void showConfirmation(String title, String message, Runnable onConfirm, Runnable onCancel) {
+		if (modalManager != null) {
+			modalManager.showConfirmation(title, message, onConfirm, onCancel);
+		}
+	}
+
+	/**
+	 * Show progress dialog
+	 */
+	public void showProgress(String title, String message, boolean indeterminate) {
+		if (modalManager != null) {
+			modalManager.showProgress(title, message, indeterminate);
+		}
+	}
+
+	/**
+	 * Check if dialogue modal is currently active
+	 */
+	public boolean isDialogueActive() {
+		return modalManager != null && modalManager.isDialogueActive();
+	}
+
+	/**
+	 * Get current dialogue interface ID
+	 */
+	public int getCurrentDialogueInterfaceId() {
+		return modalManager != null ? modalManager.getCurrentDialogueInterfaceId() : -1;
+	}
+
+	/**
+	 * Check if any modals are visible
+	 */
+	public boolean hasVisibleModals() {
+		return modalManager != null && modalManager.hasVisibleModals();
+	}
+
+	/**
+	 * Close all modals
+	 */
+	public void closeAllModals() {
+		if (modalManager != null) {
+			modalManager.closeAllModals();
+		}
+	}
+
+	/**
+	 * Get the modal manager instance for advanced usage
+	 */
+	public UIModalManager getModalManager() {
+		return modalManager;
+	}
+
+	/**
+	 * Configure modal settings
+	 */
+	public void configureModals(boolean useModalDialogues, boolean debugMode) {
+		if (modalManager != null) {
+			modalManager.setUseModalDialogues(useModalDialogues);
+			modalManager.setDebugMode(debugMode);
+		}
+	}
+
+	// INTEGRATION WITH CLIENT PACKET HANDLING
+
+	/**
+	 * This method should be called from your client's packet handler when a dialogue interface is opened (opcode 164)
+	 */
+	public static void handleDialogueInterface(int interfaceId, Object rsInterface) {
+		UIDockFrame instance = getInstance();
+		if (instance != null) {
+			instance.showDialogue(interfaceId, rsInterface);
+		}
+	}
+
+	/**
+	 * This method should be called from your client's packet handler when interfaces are closed (opcode 219)
+	 */
+	public static void handleCloseInterface() {
+		UIDockFrame instance = getInstance();
+		if (instance != null) {
+			instance.onServerCloseDialogue();
+		}
+	}
+
+	/**
+	 * This method should be called when an input prompt is needed (e.g., "Enter amount")
+	 */
+	public static void handleInputPrompt(String inputType, String prompt) {
+		UIDockFrame instance = getInstance();
+		if (instance != null) {
+			instance.showInputPrompt(inputType, prompt);
+		}
+	}
+
+	// DELEGATE EVERYTHING ELSE (Original methods preserved)
 	public void registerPanel(UIPanel uiPanel) {
 		UIDockHelper.registerPanel(this, uiPanel);
 	}
@@ -287,9 +522,15 @@ public class UIDockFrame extends JDialog {
 	 */
 	@Override
 	public void dispose() {
+		// Dispose modal manager first
+		if (modalManager != null) {
+			modalManager.dispose();
+		}
+
 		if (loginOverlay != null) {
 			loginOverlay.dispose();
 		}
+
 		super.dispose();
 	}
 }

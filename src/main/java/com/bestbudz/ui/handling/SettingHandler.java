@@ -15,7 +15,7 @@ public class SettingHandler
 		"Tweening", "Fog", "Mip Mapping", "Moving Textures", "Status Orbs",
 		"Roofs", "Debit Card", "Kill Feed", "Hover Menus", "Entity Feed", "HP Bars",
 		"Hitmarkers",
-		"x10 Damage", "Attack Priority", "Time Stamps", "Ground Decorations"
+		"x10 Damage", "Attack Priority", "Time Stamps", "Ground Decorations", "Flat Shading"
 	};
 	private final static String PATH = Signlink.findCacheDir() + "/settings.dat";
 
@@ -36,8 +36,9 @@ public class SettingHandler
 		SettingsConfig.enable10xDamage = false;
 		SettingsConfig.entityAttackPriority = false;
 		SettingsConfig.enableTimeStamps = false;
+		SettingsConfig.enableGroundDecorations = true;
+		SettingsConfig.enableFlatShading = true;
 		Client.loadingStage = 1;
-		Client.minimapImage.method343();
 	}
 
 	public static void save()
@@ -65,6 +66,8 @@ public class SettingHandler
 			out.writeBoolean(SettingsConfig.enable10xDamage);
 			out.writeBoolean(SettingsConfig.entityAttackPriority);
 			out.writeBoolean(SettingsConfig.enableTimeStamps);
+			out.writeBoolean(SettingsConfig.enableGroundDecorations);
+			out.writeBoolean(SettingsConfig.enableFlatShading);
 			out.writeUTF(SettingsConfig.uiDockPanels);
 			out.writeFloat(SettingsConfig.uiDockDividerRatio); // ✅ persist ratio
 			out.writeUTF(SettingsConfig.uiDockLastActive);
@@ -106,6 +109,8 @@ public class SettingHandler
 			SettingsConfig.enable10xDamage = in.readBoolean();
 			SettingsConfig.entityAttackPriority = in.readBoolean();
 			SettingsConfig.enableTimeStamps = in.readBoolean();
+			SettingsConfig.enableGroundDecorations = in.readBoolean();
+			SettingsConfig.enableFlatShading = in.readBoolean();
 			try {
 				SettingsConfig.uiDockPanels = in.readUTF();
 			} catch (Exception ignored) {

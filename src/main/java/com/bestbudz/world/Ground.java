@@ -23,7 +23,7 @@ public final class Ground extends Node {
   int anInt1320;
   int anInt1321;
   boolean aBoolean1322;
-  boolean aBoolean1323;
+  public boolean aBoolean1323;
   boolean aBoolean1324;
   int anInt1325;
   int anInt1326;

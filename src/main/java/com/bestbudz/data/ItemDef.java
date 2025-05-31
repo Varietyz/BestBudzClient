@@ -2643,11 +2643,13 @@ public final class ItemDef {
 			k3 = (int) ((double) k3 * 1.04D);
 		int l3 = Rasterizer.anIntArray1470[itemDef.modelRotationY] * k3 >> 16;
 		int i4 = Rasterizer.anIntArray1471[itemDef.modelRotationY] * k3 >> 16;
+		Rasterizer.isRenderingItem = true;
 		model.method482(itemDef.modelRotationX, itemDef.anInt204,
 				itemDef.modelRotationY, itemDef.modelOffset1, l3
 						+ model.modelHeight / 2 + itemDef.modelOffset2,
 				i4
 						+ itemDef.modelOffset2);
+		Rasterizer.isRenderingItem = false;
 		for (int i5 = 31; i5 >= 0; i5--) {
 			for (int j4 = 31; j4 >= 0; j4--)
 				if (enabledSprite.myPixels[i5 + j4 * 32] == 0)

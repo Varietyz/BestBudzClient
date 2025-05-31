@@ -123,7 +123,7 @@ public class RightClickMenu extends Client
 
 	public static void processMenuClick(boolean leftClick, boolean rightClick) {
 		if (activeInterfaceType != 0) {
-			System.out.println("🚫 BLOCKED: activeInterfaceType = " + activeInterfaceType);
+			//System.out.println("🚫 BLOCKED: activeInterfaceType = " + activeInterfaceType);
 			return;
 		}
 

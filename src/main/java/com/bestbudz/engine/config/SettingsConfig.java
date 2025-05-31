@@ -42,4 +42,8 @@ public class SettingsConfig
   public static float uiDockDividerRatio = 0.5f;
 
   public static String uiDockLastActive = "";
+
+  public static boolean enableGroundDecorations;
+
+	public static boolean enableFlatShading;
 }

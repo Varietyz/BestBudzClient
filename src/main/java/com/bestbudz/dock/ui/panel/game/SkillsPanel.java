@@ -1,5 +1,6 @@
 package com.bestbudz.dock.ui.panel.game;
 
+import com.bestbudz.dock.util.RainbowHoverUtil;
 import com.bestbudz.dock.util.DockTextUpdatable;
 import com.bestbudz.dock.util.SpriteUtil;
 import com.bestbudz.dock.util.UIPanel;
@@ -244,6 +245,9 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		));
 		button.setFocusPainted(false);
 		button.setPreferredSize(new Dimension(55, 18));
+
+		RainbowHoverUtil.applyRainbowHover(button);
+
 		return button;
 	}
 

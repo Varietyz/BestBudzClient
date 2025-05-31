@@ -1,5 +1,6 @@
 package com.bestbudz.dock.ui.panel.social;
 
+import com.bestbudz.dock.util.RainbowHoverUtil;
 import com.bestbudz.dock.util.DockTextUpdatable;
 import com.bestbudz.dock.util.UIPanel;
 import com.bestbudz.engine.core.Client;
@@ -220,18 +221,7 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		button.setPreferredSize(new Dimension(80, 30));
 		button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-		// Hover effect
-		button.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				button.setBackground(backgroundColor.brighter());
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				button.setBackground(backgroundColor);
-			}
-		});
+		RainbowHoverUtil.applyRainbowHover(button);
 	}
 
 	private void sendPrivateMessage(String recipientName, String message) {
@@ -375,7 +365,8 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 			statusLabel.setForeground(value.isHigh ? ONLINE_COLOR : OFFLINE_COLOR);
 
 			if (isSelected) {
-				setBackground(GRAPHITE_COLOR);
+				Color rainbowColor = RainbowHoverUtil.getNextHoverColor(); // You'd need to make this public
+				setBackground(rainbowColor);
 			} else {
 				setBackground(MAIN_FRAME_COLOR);
 			}
