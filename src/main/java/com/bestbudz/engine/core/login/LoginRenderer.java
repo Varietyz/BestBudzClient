@@ -19,13 +19,15 @@ import com.bestbudz.util.TextClass;
 import java.awt.*;
 
 public class LoginRenderer {
+
 	private final Client client;
-	private final World[] worlds = {
+	public final World[] worlds = {
 		new World(1, "BestBudz", "Main world"),
 		new World(2, "Pointless", "Economy-free"),
 		new World(3, "Development", "Testing"),
 		new World(4, "Staff World", "Staff-only")
 	};
+
 	private int worldHover = -1;
 
 	// Three-region layout: Top login strip, Left world panel, Bottom accounts
@@ -569,7 +571,7 @@ public class LoginRenderer {
 		Rect(int x, int y, int w, int h) { this.x = x; this.y = y; this.w = w; this.h = h; }
 	}
 
-	private static class World {
+	public static class World {
 		final int id;
 		final String name, desc;
 		World(int id, String name, String desc) { this.id = id; this.name = name; this.desc = desc; }

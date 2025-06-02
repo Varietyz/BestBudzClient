@@ -29,7 +29,7 @@ import static com.bestbudz.engine.core.Client.tabID;
 import static com.bestbudz.engine.core.Client.variousSettings;
 import com.bestbudz.ui.handling.input.MouseState;
 import static com.bestbudz.ui.InterfaceManagement.extractInterfaceValues;
-import com.bestbudz.graphics.DrawingArea;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.ui.RSInterface;
 import static com.bestbudz.util.FormatHelpers.formatBestBucks;

@@ -5,9 +5,11 @@ import com.bestbudz.dock.ui.manager.UIModalManager;
 import com.bestbudz.dock.ui.panel.client.BubbleBudzPanel;
 import com.bestbudz.dock.ui.panel.client.SettingsPanel;
 import com.bestbudz.dock.ui.panel.game.AchievementsPanel;
-import com.bestbudz.dock.ui.panel.game.QuestTabPanel;
+import com.bestbudz.dock.ui.panel.game.InfoTabPanel;
 import com.bestbudz.dock.ui.panel.game.SkillsPanel;
+import com.bestbudz.dock.ui.panel.shops.ShopPanel;
 import com.bestbudz.dock.ui.panel.social.StonersPanel;
+import com.bestbudz.dock.ui.panel.teleports.TeleportPanel;
 import com.bestbudz.dock.util.UIPanel;
 
 import com.bestbudz.dock.ui.panel.social.ChatPanel;
@@ -94,6 +96,19 @@ public class UIDockFrame extends JDialog {
 
 		// Configure modal manager based on user preferences
 		configureModalManager();
+	}
+
+	private void setupPanels() {
+		registerPanel(new SettingsPanel());
+		registerPanel(new InfoTabPanel());
+		registerPanel(new AchievementsPanel());
+		registerPanel(new ChatPanel());
+		registerPanel(new StonersPanel());
+		registerPanel(new SkillsPanel());
+		registerPanel(new TeleportPanel());
+		registerPanel(new ShopPanel());
+
+		loadDockPanelLayout();
 	}
 
 	/**
@@ -302,17 +317,6 @@ public class UIDockFrame extends JDialog {
 				splitPane.revalidate();
 			}
 		}
-	}
-
-	private void setupPanels() {
-		registerPanel(new SettingsPanel());
-		registerPanel(new QuestTabPanel());
-		registerPanel(new AchievementsPanel());
-		registerPanel(new ChatPanel());
-		registerPanel(new StonersPanel());
-		registerPanel(new SkillsPanel());
-
-		loadDockPanelLayout();
 	}
 
 	// MODAL INTEGRATION METHODS

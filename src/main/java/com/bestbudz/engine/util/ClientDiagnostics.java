@@ -1,14 +1,13 @@
 package com.bestbudz.engine.util;
 
 import com.bestbudz.engine.config.EngineConfig;
-import com.bestbudz.graphics.DrawingArea;
+import static com.bestbudz.engine.config.EngineConfig.worldSelected;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import java.lang.management.*;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.io.File;
 import com.bestbudz.engine.config.ColorConfig;
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.engine.core.GameState;
 import com.bestbudz.engine.core.GameLoader;
 import com.bestbudz.ui.handling.input.MouseState;
 import com.bestbudz.entity.Stoner;
@@ -74,7 +73,12 @@ public class ClientDiagnostics extends Client {
 
 	private static DiagnosticSection createHeaderSection() {
 		DiagnosticSection section = new DiagnosticSection("[BestBudz]", COL_HEADER);
-		section.addLine("Version", String.valueOf(EngineConfig.ENGINE_VERSION), COL_VALUE);
+		if (worldSelected == 3){
+			section.addLine("Version", String.valueOf(EngineConfig.DEV_ENGINE_VERSION), COL_VALUE);
+		}else{
+			section.addLine("Version", String.valueOf(EngineConfig.ENGINE_VERSION), COL_VALUE);
+		}
+
 		return section;
 	}
 

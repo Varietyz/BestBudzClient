@@ -3,7 +3,7 @@ package com.bestbudz.ui;
 import com.bestbudz.data.ItemDef;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.config.ColorConfig;
-import com.bestbudz.graphics.DrawingArea;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 
 public class NotificationMessages extends Client
 {

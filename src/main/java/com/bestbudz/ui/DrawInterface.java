@@ -12,11 +12,11 @@ import static com.bestbudz.ui.InterfaceManagement.extractInterfaceValues;
 import static com.bestbudz.ui.InterfaceManagement.interfaceIntToString;
 import static com.bestbudz.ui.InterfaceManagement.interfaceIsSelected;
 import static com.bestbudz.engine.core.login.WelcomeScreen.drawStonersListOrWelcomeScreen;
-import com.bestbudz.graphics.DrawingArea;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.graphics.text.RSFont;
 import com.bestbudz.graphics.text.TextDrawingArea;
-import com.bestbudz.rendering.Rasterizer;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 import static com.bestbudz.util.FormatHelpers.formatKMValue;
@@ -661,6 +661,7 @@ public class DrawInterface extends Client
 						sprite = child.disabledSprite;
 					if (spellSelected == 1 && child.id == spellID && spellID != 0 && sprite != null)
 					{
+
 						sprite.drawSprite(k2, l2, ColorConfig.WHITE_COLOR);
 						if (child.drawsTransparent)
 						{

@@ -146,7 +146,7 @@ public class PacketParser extends Client
 
 			// Buffer size optimization hint for Netty
 			if (pktSize > EXPECTED_PACKET_SIZE * 2) {
-				System.err.println("Large packet detected: " + pktSize + " bytes (type: " + pktType + ")");
+				//System.err.println("Large packet detected: " + pktSize + " bytes (type: " + pktType + ")");
 			}
 
 			inStream.currentOffset = 0;

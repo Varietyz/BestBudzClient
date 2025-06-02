@@ -58,10 +58,6 @@ public class SettingsPanelConfig {
 	 * Initialize all setting definitions with their getters, setters, and callbacks.
 	 */
 	private void initializeSettings() {
-		// Graphics settings
-		addSetting("Tweening",
-			() -> SettingsConfig.enableTweening,
-			value -> SettingsConfig.enableTweening = value);
 
 		addSetting("Fog",
 			() -> SettingsConfig.enableDistanceFog,

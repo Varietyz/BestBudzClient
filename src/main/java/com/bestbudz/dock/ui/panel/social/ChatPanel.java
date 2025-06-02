@@ -1,109 +1,66 @@
 package com.bestbudz.dock.ui.panel.social;
 
 import com.bestbudz.dock.util.RainbowHoverUtil;
-import com.bestbudz.dock.ui.panel.social.chat.ChatCore;
-import com.bestbudz.dock.ui.panel.social.chat.ChatInteractionHandler;
-import com.bestbudz.dock.ui.panel.social.chat.ChatRenderer;
 import com.bestbudz.dock.util.UIPanel;
-import com.bestbudz.dock.ui.panel.social.chat.ChatCore.ChatMessageData;
 import com.bestbudz.dock.util.DockTextUpdatable;
 import com.bestbudz.engine.core.Client;
 import static com.bestbudz.engine.config.ColorConfig.*;
 import com.bestbudz.ui.interfaces.Chatbox;
+import com.bestbudz.ui.TextInput;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Enhanced ChatPanel with Separated Chat
- *
- * UPDATED: Now uses separated ChatCore
- * Features:
- * - ChatCore: Handles chat messages only
- * - Clean separation of concerns
+ * Simple ChatPanel - Minimal Logic with Reversed Display Order
+ * Just displays messages as they come, no complex timestamp tracking or sorting
  */
-public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
-	ChatCore.MessageProcessor,
-	ChatInteractionHandler.ChatInputCallback {
+public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
-	// UI Components
 	private JScrollPane scrollPane;
 	private JTextPane chatDisplay;
 	private JTextField inputField;
 	private JComboBox<String> channelSelector;
-	private StyledDocument chatDocument;
-	private JPanel mainChatContainer;
+	private StyledDocument document;
 
-	// Separated core systems
-	private ChatCore chatCore;
-	private ChatRenderer chatRenderer;
-	private ChatInteractionHandler interactionHandler;
-
-	// Threading for updates
 	private ScheduledExecutorService updateScheduler;
 	private volatile boolean isDisposed = false;
-	private volatile boolean autoScroll = true;
 
-	// Message tracking with timestamps
-	private final Map<String, Long> messageOnceTimestamps = new HashMap<>();
+	// Simple tracking - just remember what we've already displayed
+	private String lastDisplayedContent = "";
 
-	// Color scheme
-
+	private static final String[] CHANNELS = {"All", "Public", "Private", "Trade"};
 
 	public ChatPanel() {
-		initializeComponents();
 		initializeUI();
 		startUpdateScheduler();
 	}
 
-	/**
-	 * Initialize core components - now with separated chatcore
-	 */
-	private void initializeComponents() {
-		// Initialize chat core for chat functionality
-		chatCore = new ChatCore(this);
-	}
-
-	/**
-	 * Initialize UI components and layout
-	 */
 	private void initializeUI() {
 		setLayout(new BorderLayout());
 		setOpaque(false);
-		setBorder(new EmptyBorder(10, 10, 10, 10));
+		setBorder(new EmptyBorder(10, 10, 5, 10));
 
-		createChatDisplay();
-		createInputArea();
-
-		// Initialize helper classes after UI is created
-		chatRenderer = new ChatRenderer(chatDocument, chatCore);
-		interactionHandler = new ChatInteractionHandler(chatDisplay, inputField, chatCore, this);
-
-		SwingUtilities.invokeLater(this::loadInitialMessages);
-	}
-
-	/**
-	 * Create the main chat display area
-	 */
-	private void createChatDisplay() {
-		chatDisplay = new JTextPane();
+		// Chat display
+		chatDisplay = new JTextPane() {
+			@Override
+			public boolean getScrollableTracksViewportWidth() {
+				return true; // Force text to wrap to viewport width
+			}
+		};
 		chatDisplay.setEditable(false);
 		chatDisplay.setOpaque(true);
 		chatDisplay.setBackground(CHAT_BACKGROUND_COLOR);
 		chatDisplay.setForeground(WHITE_UI_COLOR);
 		chatDisplay.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		chatDisplay.setMargin(new Insets(10, 10, 10, 10));
-		chatDocument = chatDisplay.getStyledDocument();
-
-		chatDisplay.addMouseWheelListener(this::handleScrollWheel);
+		chatDisplay.setMargin(new Insets(12, 12, 2, 12));
+		document = chatDisplay.getStyledDocument();
 
 		scrollPane = new JScrollPane(chatDisplay);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -111,42 +68,49 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 		scrollPane.setOpaque(false);
 		scrollPane.getViewport().setOpaque(false);
 		scrollPane.setBorder(BorderFactory.createLineBorder(SCROLLBAR_COLOR, 1, true));
-		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-		styleScrollBar();
+		// Hide scrollbar UI but keep functionality
+		scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+		scrollPane.getVerticalScrollBar().setOpaque(false);
 
-		// Simple container for chat
-		mainChatContainer = new JPanel(new BorderLayout());
-		mainChatContainer.setOpaque(false);
-		mainChatContainer.add(scrollPane, BorderLayout.CENTER);
+		add(scrollPane, BorderLayout.CENTER);
 
-		add(mainChatContainer, BorderLayout.CENTER);
-	}
-
-	/**
-	 * Create the input area with channel selector and send button
-	 */
-	private void createInputArea() {
+		// Input area
 		JPanel inputPanel = new JPanel(new BorderLayout(8, 0));
 		inputPanel.setOpaque(false);
 		inputPanel.setBorder(new EmptyBorder(8, 0, 0, 0));
 
 		// Channel selector
-		channelSelector = new JComboBox<>(ChatCore.CHANNELS);
+		channelSelector = new JComboBox<>(CHANNELS);
 		channelSelector.setBackground(CHAT_INPUT_BACKGROUND_COLOR);
 		channelSelector.setForeground(WHITE_UI_COLOR);
 		channelSelector.setBorder(BorderFactory.createLineBorder(SCROLLBAR_COLOR, 1));
-		channelSelector.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		channelSelector.setPreferredSize(new Dimension(85, 32));
-		channelSelector.addActionListener(this::onChannelChange);
+		channelSelector.addActionListener(e -> updateDisplay());
 
 		// Input field
-		inputField = createInputField();
+		inputField = new JTextField();
+		inputField.setBackground(CHAT_INPUT_BACKGROUND_COLOR);
+		inputField.setForeground(WHITE_UI_COLOR);
+		inputField.setCaretColor(WHITE_UI_COLOR);
+		inputField.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(SCROLLBAR_COLOR, 1),
+			new EmptyBorder(6, 12, 6, 12)
+		));
+		inputField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		inputField.addActionListener(this::sendMessage);
 
 		// Send button
-		JButton sendButton = createSendButton();
+		JButton sendButton = new JButton("Send");
+		sendButton.setBackground(BUTTON_COLOR);
+		sendButton.setForeground(WHITE_UI_COLOR);
+		sendButton.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+		sendButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		sendButton.setFocusPainted(false);
+		sendButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		sendButton.addActionListener(this::sendMessage);
+		RainbowHoverUtil.applyRainbowHover(sendButton);
 
-		// Layout
 		inputPanel.add(channelSelector, BorderLayout.WEST);
 		inputPanel.add(inputField, BorderLayout.CENTER);
 		inputPanel.add(sendButton, BorderLayout.EAST);
@@ -154,106 +118,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 		add(inputPanel, BorderLayout.SOUTH);
 	}
 
-	/**
-	 * Create and configure the message input field
-	 */
-	private JTextField createInputField() {
-		JTextField field = new JTextField();
-		field.setBackground(CHAT_INPUT_BACKGROUND_COLOR);
-		field.setForeground(WHITE_UI_COLOR);
-		field.setCaretColor(WHITE_UI_COLOR);
-		field.setBorder(BorderFactory.createCompoundBorder(
-			BorderFactory.createLineBorder(SCROLLBAR_COLOR, 1),
-			new EmptyBorder(6, 12, 6, 12)
-		));
-		field.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		field.addActionListener(this::onSendMessage);
-		addInputFieldBehavior(field);
-		return field;
-	}
-
-	/**
-	 * Create and configure the send button
-	 */
-	private JButton createSendButton() {
-		JButton button = new JButton("Send");
-		button.setBackground(BUTTON_COLOR);
-		button.setForeground(WHITE_UI_COLOR);
-		button.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-		button.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		button.setFocusPainted(false);
-		button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		button.addActionListener(this::onSendMessage);
-
-		RainbowHoverUtil.applyRainbowHover(button);
-
-
-		return button;
-	}
-
-	/**
-	 * Add placeholder behavior to input field
-	 */
-	private void addInputFieldBehavior(JTextField field) {
-		final String placeholder = "";
-		final Color placeholderColor = LIGHT_GRAY_COLOR;
-
-		field.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				if (field.getText().equals(placeholder)) {
-					field.setText("");
-					field.setForeground(WHITE_UI_COLOR);
-				}
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				if (field.getText().trim().isEmpty()) {
-					field.setText(placeholder);
-					field.setForeground(placeholderColor);
-				}
-			}
-		});
-
-		field.setText(placeholder);
-		field.setForeground(placeholderColor);
-	}
-
-	/**
-	 * Style the scroll bar to match theme
-	 */
-	private void styleScrollBar() {
-		JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
-		verticalBar.setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
-			@Override
-			protected void configureScrollBarColors() {
-				this.thumbColor = SCROLLBAR_COLOR;
-				this.trackColor = CHAT_BACKGROUND_COLOR;
-			}
-
-			@Override
-			protected JButton createDecreaseButton(int orientation) {
-				return createZeroSizeButton();
-			}
-
-			@Override
-			protected JButton createIncreaseButton(int orientation) {
-				return createZeroSizeButton();
-			}
-
-			private JButton createZeroSizeButton() {
-				JButton button = new JButton();
-				button.setPreferredSize(new Dimension(0, 0));
-				return button;
-			}
-		});
-		verticalBar.setPreferredSize(new Dimension(12, 0));
-	}
-
-	/**
-	 * Start the update scheduler for periodic message checking
-	 */
 	private void startUpdateScheduler() {
 		updateScheduler = Executors.newSingleThreadScheduledExecutor(r -> {
 			Thread t = new Thread(r, "ChatPanel-Update");
@@ -262,160 +126,171 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 		});
 
 		updateScheduler.scheduleWithFixedDelay(() -> {
-			if (!isDisposed) {
-				checkForUpdates();
+			if (!isDisposed && Client.loggedIn) {
+				SwingUtilities.invokeLater(this::checkForUpdates);
 			}
-		}, 200, 200, TimeUnit.MILLISECONDS);
+		}, 500, 500, TimeUnit.MILLISECONDS);
 	}
 
-	/**
-	 * Check for new message updates
-	 */
 	private void checkForUpdates() {
 		if (!Client.loggedIn || isDisposed) return;
 
-		try {
-			boolean hasNewMessages = false;
-
-			// Check for regular chat messages
-			for (int i = 0; i < 50; i++) {
-				if (Chatbox.chatMessages[i] != null && !Chatbox.chatMessages[i].trim().isEmpty()) {
-					hasNewMessages = true;
-					break;
-				}
+		// Simple check - just see if chat content changed
+		StringBuilder currentContent = new StringBuilder();
+		for (int i = 0; i < 100; i++) {
+			if (Chatbox.chatMessages[i] != null) {
+				currentContent.append(Chatbox.chatMessages[i]);
 			}
+		}
 
-			if (hasNewMessages) {
-				SwingUtilities.invokeLater(this::updateDisplay);
-			}
-		} catch (Exception e) {
-			System.err.println("Error in chat update check: " + e.getMessage());
+		String current = currentContent.toString();
+		if (!current.equals(lastDisplayedContent)) {
+			lastDisplayedContent = current;
+			updateDisplay();
 		}
 	}
 
-	// ChatCore.MessageProcessor implementation
-	@Override
-	public void onSystemMessage(String message) {
-		if (!isDisposed) {
-			SwingUtilities.invokeLater(() -> appendSystemMessage(message));
-		}
-	}
-
-	@Override
-	public void refreshDisplay() {
-		if (!isDisposed) {
-			SwingUtilities.invokeLater(this::updateDisplay);
-		}
-	}
-
-	// ChatInteractionHandler.ChatInputCallback implementation
-	@Override
-	public void onMessageSent(String message) {
-		try {
-			chatCore.sendPublicChat(message);
-			inputField.setText("Message...");
-			inputField.setForeground(LIGHT_GRAY_COLOR); // Reset to placeholder
-			inputField.requestFocusInWindow();
-		} catch (Exception ex) {
-			System.err.println("Error sending message: " + ex.getMessage());
-		}
-	}
-
-	@Override
-	public void onPrivateMessageRequest(String username) {
-		try {
-			interactionHandler.startPrivateMessage(username);
-		} catch (Exception ex) {
-			System.err.println("Error starting private message: " + ex.getMessage());
-		}
-	}
-
-
-	/**
-	 * Update the chat display
-	 */
 	private void updateDisplay() {
 		if (!Client.loggedIn || isDisposed) return;
 
 		try {
-			chatDocument.remove(0, chatDocument.getLength());
+			// Remember scroll position
+			JScrollBar vBar = scrollPane.getVerticalScrollBar();
+			boolean wasAtBottom = vBar.getValue() >= (vBar.getMaximum() - vBar.getVisibleAmount() - 10);
 
-			int currentChannel = channelSelector.getSelectedIndex();
-			List<ChatMessageData> messages = getGameMessages(currentChannel);
+			// Clear and rebuild
+			document.remove(0, document.getLength());
 
-			if (messages.isEmpty()) {
-				chatRenderer.addWelcomeMessage();
-			} else {
-				renderMessages(messages);
+			int selectedChannel = channelSelector.getSelectedIndex();
+
+			// Display messages in reverse order (99 to 0 instead of 0 to 99)
+			for (int i = 99; i >= 0; i--) {
+				if (Chatbox.chatMessages[i] != null && !Chatbox.chatMessages[i].trim().isEmpty()) {
+					String message = Chatbox.chatMessages[i];
+					String username = (i < Chatbox.chatNames.length) ? Chatbox.chatNames[i] : null;
+					int messageType = (i < Chatbox.chatTypes.length) ? Chatbox.chatTypes[i] : 0;
+					int rights = (i < Chatbox.chatRights.length) ? Chatbox.chatRights[i] : 0;
+
+					// Get title and title color
+					String title = null;
+					String titleColor = null;
+					try {
+						title = getChatTitle(i);
+						titleColor = getChatTitleColor(i);
+					} catch (Exception e) {
+						// Fallback if title access fails
+					}
+
+					if (shouldShowMessage(messageType, selectedChannel)) {
+						addMessage(message, username, messageType, rights, title, titleColor);
+					}
+				}
 			}
 
-			if (autoScroll) {
-				scrollToBottom();
+			// Auto-scroll if we were at bottom
+			if (wasAtBottom) {
+				SwingUtilities.invokeLater(() -> {
+					vBar.setValue(vBar.getMaximum());
+				});
 			}
+
+		} catch (Exception e) {
+			System.err.println("Error updating chat: " + e.getMessage());
+		}
+	}
+
+	private boolean shouldShowMessage(int messageType, int channel) {
+		switch (channel) {
+			case 0: return true; // All
+			case 1: return messageType == 1 || messageType == 2; // Public
+			case 2: return messageType == 3 || messageType == 5 || messageType == 6 || messageType == 7; // Private
+			case 3: return messageType == 4 || messageType == 8; // Trade
+			default: return true;
+		}
+	}
+
+	private void addMessage(String message, String username, int messageType, int rights, String title, String titleColor) {
+		try {
+			Color baseColor = getMessageColor(messageType);
+
+			if (username != null && !username.trim().isEmpty()) {
+				// Clean username (remove @cr tags)
+				String cleanUsername = cleanUsername(username);
+
+				// Add rank if present
+				if (rights > 0) {
+					Style rankStyle = document.addStyle("rank", null);
+					StyleConstants.setForeground(rankStyle, new Color(255, 215, 0));
+					StyleConstants.setBold(rankStyle, true);
+					document.insertString(document.getLength(), getRankSymbol(rights) + " ", rankStyle);
+				}
+
+				// Add title if present
+				if (title != null && !title.trim().isEmpty()) {
+					String cleanTitle = processTitleText(title);
+					Color titleColorObj = parseTitleColor(titleColor);
+
+					Style titleStyle = document.addStyle("title", null);
+					StyleConstants.setForeground(titleStyle, titleColorObj);
+					document.insertString(document.getLength(), cleanTitle + " ", titleStyle);
+				}
+
+				// Add username
+				Style usernameStyle = document.addStyle("username", null);
+				StyleConstants.setForeground(usernameStyle, new Color(114, 137, 218));
+				StyleConstants.setBold(usernameStyle, true);
+				document.insertString(document.getLength(), cleanUsername + ": ", usernameStyle);
+			}
+
+			// Add message with color code support
+			addFormattedMessage(message, baseColor);
+			document.insertString(document.getLength(), "\n", null);
 
 		} catch (BadLocationException e) {
-			System.err.println("Error updating display: " + e.getMessage());
-		} catch (Exception e) {
-			System.err.println("Unexpected error in updateDisplay: " + e.getMessage());
+			// Ignore
 		}
 	}
 
 	/**
-	 * Get CHAT messages from game chatbox
+	 * Get rank symbol for rights level
 	 */
-	private List<ChatMessageData> getGameMessages(int currentChannel) {
-		List<ChatMessageData> messages = new ArrayList<>();
-
-		for (int i = 0; i < 500; i++) {
-			if (Chatbox.chatMessages[i] != null && !Chatbox.chatMessages[i].trim().isEmpty()) {
-				String message = Chatbox.chatMessages[i];
-				String username = (i < Chatbox.chatNames.length) ? Chatbox.chatNames[i] : null;
-				int messageType = (i < Chatbox.chatTypes.length) ? Chatbox.chatTypes[i] : 0;
-				int rights = (Chatbox.chatRights != null && i < Chatbox.chatRights.length) ? Chatbox.chatRights[i] : 0;
-
-				String title = null;
-				String titleColor = null;
-				try {
-					title = getChatTitle(i);
-					titleColor = getChatTitleColor(i);
-				} catch (Exception e) {
-					// Fallback if title access fails
-				}
-
-				if (chatCore.shouldShowMessage(messageType, currentChannel)) {
-					// Create unique identifier for message
-					String messageId = message + "|" + (username != null ? username : "") + "|" + messageType;
-
-					// Assign timestamp once per unique message
-					if (!messageOnceTimestamps.containsKey(messageId)) {
-						messageOnceTimestamps.put(messageId, System.currentTimeMillis());
-					}
-
-					long timestamp = messageOnceTimestamps.get(messageId);
-
-					ChatMessageData msgData = new ChatMessageData(message, username, messageType, rights, title, titleColor, timestamp);
-					messages.add(msgData);
-				}
-			}
+	private String getRankSymbol(int rights) {
+		switch (rights) {
+			case 1: return "★";
+			case 2: return "♦";
+			case 3: return "♠";
+			case 4: return "♣";
+			case 5: return "♥";
+			default: return "◦";
 		}
-
-		// Clean up old timestamps to prevent memory leaks
-		if (messageOnceTimestamps.size() > 1000) {
-			List<Map.Entry<String, Long>> sortedEntries = new ArrayList<>(messageOnceTimestamps.entrySet());
-			sortedEntries.sort(Map.Entry.<String, Long>comparingByValue().reversed());
-
-			messageOnceTimestamps.clear();
-			for (int i = 0; i < 500 && i < sortedEntries.size(); i++) {
-				Map.Entry<String, Long> entry = sortedEntries.get(i);
-				messageOnceTimestamps.put(entry.getKey(), entry.getValue());
-			}
-		}
-
-		// Sort messages by timestamp (oldest first)
-		messages.sort((a, b) -> Long.compare(a.timestamp, b.timestamp));
-		return messages;
 	}
 
+	/**
+	 * Process title text for color codes
+	 */
+	private String processTitleText(String title) {
+		if (title == null) return null;
+		return title.replaceAll("<[^>]+>", "");
+	}
+
+	/**
+	 * Parse title color from hex string to Color object
+	 */
+	private Color parseTitleColor(String colorHex) {
+		if (colorHex == null || colorHex.isEmpty()) {
+			return new Color(255, 255, 255);
+		}
+
+		try {
+			if (colorHex.startsWith("#")) {
+				colorHex = colorHex.substring(1);
+			}
+			int rgb = Integer.parseInt(colorHex, 16);
+			return new Color(rgb);
+		} catch (NumberFormatException e) {
+			return new Color(255, 255, 255);
+		}
+	}
 
 	/**
 	 * Helper method to get chat title with fallback
@@ -456,80 +331,248 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 	}
 
 	/**
-	 * Render all messages using ChatRenderer
+	 * Clean username by removing @cr tags
 	 */
-	private void renderMessages(List<ChatMessageData> messages) throws BadLocationException {
-		// Show last 100 messages for performance
-		int startIndex = Math.max(0, messages.size() - 100);
+	private String cleanUsername(String username) {
+		if (username == null) return "";
+		if (username.startsWith("@cr")) {
+			int endIndex = username.indexOf("@", 3);
+			if (endIndex > 0) {
+				return username.substring(endIndex + 1);
+			}
+		}
+		return username;
+	}
 
-		for (int i = startIndex; i < messages.size(); i++) {
-			ChatMessageData msg = messages.get(i);
-			chatRenderer.renderMessage(msg);
+	/**
+	 * Add message with RuneScape color code support and proper text wrapping
+	 */
+	private void addFormattedMessage(String message, Color defaultColor) throws BadLocationException {
+		if (message == null) return;
+
+		// Remove image tags and HTML-style formatting tags
+		String processedMessage = message.replaceAll("<img=\\d+>", "");
+		processedMessage = cleanHtmlTags(processedMessage);
+
+		// Force word wrapping by breaking long strings
+		processedMessage = wrapLongText(processedMessage);
+
+		// Check for RuneScape style color codes (@red@, @gre@, etc.)
+		if (hasColorCodes(processedMessage)) {
+			addColorCodedMessage(processedMessage, defaultColor);
+		} else {
+			// Regular message
+			Style messageStyle = document.addStyle("message", null);
+			StyleConstants.setForeground(messageStyle, defaultColor);
+			document.insertString(document.getLength(), processedMessage, messageStyle);
 		}
 	}
 
 	/**
-	 * Add system message using ChatRenderer
+	 * Clean HTML-style tags like <col=FFFF64>, <shad=0>, </shad>, </col>, etc.
 	 */
-	private void appendSystemMessage(String message) {
-		try {
-			chatRenderer.appendSystemMessage(message);
-			scrollToBottom();
-		} catch (BadLocationException e) {
-			// Ignore
+	private String cleanHtmlTags(String text) {
+		if (text == null) return null;
+
+		// Remove color tags: <col=FFFF64>, </col>
+		text = text.replaceAll("<col=[^>]*>", "");
+		text = text.replaceAll("</col>", "");
+
+		// Remove shadow tags: <shad=0>, </shad>
+		text = text.replaceAll("<shad=[^>]*>", "");
+		text = text.replaceAll("</shad>", "");
+
+		// Remove any other HTML-style tags
+		text = text.replaceAll("<[^>]+>", "");
+
+		return text;
+	}
+
+	/**
+	 * Wrap long text to prevent overflow
+	 */
+	private String wrapLongText(String text) {
+		if (text == null || text.length() <= 60) return text;
+
+		StringBuilder wrapped = new StringBuilder();
+		String[] words = text.split(" ");
+		int lineLength = 0;
+
+		for (String word : words) {
+			// If a single word is too long, break it up
+			if (word.length() > 50) {
+				if (lineLength > 0) {
+					wrapped.append("\n");
+					lineLength = 0;
+				}
+				// Break long words into chunks
+				while (word.length() > 50) {
+					wrapped.append(word.substring(0, 50)).append("\n");
+					word = word.substring(50);
+					lineLength = 0;
+				}
+				if (!word.isEmpty()) {
+					wrapped.append(word);
+					lineLength = word.length();
+				}
+			} else {
+				// Normal word wrapping
+				if (lineLength + word.length() + 1 > 60) {
+					wrapped.append("\n").append(word);
+					lineLength = word.length();
+				} else {
+					if (lineLength > 0) {
+						wrapped.append(" ");
+						lineLength++;
+					}
+					wrapped.append(word);
+					lineLength += word.length();
+				}
+			}
+		}
+
+		return wrapped.toString();
+	}
+
+	/**
+	 * Check if message has color codes
+	 */
+	private boolean hasColorCodes(String message) {
+		return message != null && message.matches(".*@\\w{3,}@.*");
+	}
+
+	/**
+	 * Add message with color code processing and proper wrapping
+	 */
+	private void addColorCodedMessage(String message, Color defaultColor) throws BadLocationException {
+		// First wrap the message to prevent overflow
+		String wrappedMessage = wrapLongText(message);
+
+		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(@\\w+@)");
+		java.util.regex.Matcher matcher = pattern.matcher(wrappedMessage);
+
+		int lastEnd = 0;
+		Color currentColor = defaultColor;
+
+		while (matcher.find()) {
+			// Add text before the color code
+			if (matcher.start() > lastEnd) {
+				String textPart = wrappedMessage.substring(lastEnd, matcher.start());
+				if (!textPart.isEmpty()) {
+					Style style = document.addStyle("colored", null);
+					StyleConstants.setForeground(style, currentColor);
+					document.insertString(document.getLength(), textPart, style);
+				}
+			}
+
+			// Extract and apply color code
+			String colorCode = matcher.group(1);
+			String colorName = colorCode.substring(1, colorCode.length() - 1);
+			Color newColor = getColorFromName(colorName);
+
+			// Only change color if we found a valid color
+			if (!newColor.equals(Color.WHITE) ||
+				colorName.toLowerCase().equals("whi") ||
+				colorName.toLowerCase().equals("white")) {
+				currentColor = newColor;
+			} else {
+				// If it's not a recognized color, just add the text as-is
+				Style style = document.addStyle("colored", null);
+				StyleConstants.setForeground(style, currentColor);
+				document.insertString(document.getLength(), colorCode, style);
+			}
+
+			lastEnd = matcher.end();
+		}
+
+		// Add remaining text after last color code
+		if (lastEnd < wrappedMessage.length()) {
+			String remaining = wrappedMessage.substring(lastEnd);
+			if (!remaining.isEmpty()) {
+				Style style = document.addStyle("colored", null);
+				StyleConstants.setForeground(style, currentColor);
+				document.insertString(document.getLength(), remaining, style);
+			}
 		}
 	}
 
 	/**
-	 * Load initial messages on startup
+	 * Get color from RuneScape color name
 	 */
-	private void loadInitialMessages() {
-		updateChannelFromGame();
-		updateDisplay();
+	private Color getColorFromName(String colorName) {
+		if (colorName == null) return Color.WHITE;
+
+		String name = colorName.toLowerCase();
+		switch (name) {
+			case "red": return new Color(255, 0, 0);
+			case "gre": case "green": return new Color(0, 255, 0);
+			case "blu": case "blue": return new Color(0, 0, 255);
+			case "yel": case "yellow": return new Color(255, 255, 0);
+			case "cya": case "cyan": return new Color(0, 255, 255);
+			case "mag": case "magenta": return new Color(255, 0, 255);
+			case "whi": case "white": return new Color(255, 255, 255);
+			case "bla": case "black": return new Color(0, 0, 0);
+			case "ora": case "orange": return new Color(255, 165, 0);
+			case "pur": case "purple": return new Color(128, 0, 128);
+			case "gry": case "gray": case "grey": return new Color(128, 128, 128);
+			case "or1": return new Color(255, 165, 0);
+			case "or2": return new Color(255, 140, 0);
+			case "or3": return new Color(255, 69, 0);
+			default: return Color.WHITE;
+		}
 	}
 
-	// Event handlers
-	private void onSendMessage(ActionEvent e) {
+	private Color getMessageColor(int messageType) {
+		switch (messageType) {
+			case 0: return new Color(250, 166, 26); // System
+			case 1:
+			case 2: return new Color(185, 187, 190); // Public
+			case 3:
+			case 5:
+			case 6:
+			case 7: return new Color(237, 66, 69); // Private
+			case 4:
+			case 8: return new Color(163, 190, 140); // Trade
+			default: return new Color(220, 221, 222); // Default
+		}
+	}
+
+	private void sendMessage(ActionEvent e) {
 		String message = inputField.getText().trim();
+		if (message.isEmpty() || !Client.loggedIn) return;
 
-		if (message.equals("Message...") || message.isEmpty() || !Client.loggedIn) {
-			return;
+		try {
+			if (Client.stream != null) {
+				Client.stream.createFrame(4);
+				Client.stream.writeWordBigEndian(0);
+				int blockStart = Client.stream.currentOffset;
+
+				Client.stream.method425(0);
+				Client.stream.method425(0);
+
+				Client.aStream_834.currentOffset = 0;
+				TextInput.method526(message, Client.aStream_834);
+				Client.stream.method441(0, Client.aStream_834.buffer, Client.aStream_834.currentOffset);
+
+				Client.stream.writeBytes(Client.stream.currentOffset - blockStart);
+
+				String processedText = TextInput.processText(message);
+				Client.myStoner.textSpoken = processedText;
+				Client.myStoner.anInt1513 = 0;
+				Client.myStoner.anInt1531 = 0;
+				Client.myStoner.textCycle = 150;
+
+				Chatbox.pushMessage(processedText, 2, Client.myStoner.name, Client.myStoner.title, Client.myStoner.titleColor);
+			}
+
+			inputField.setText("");
+			inputField.requestFocusInWindow();
+
+		} catch (Exception ex) {
+			System.err.println("Error sending message: " + ex.getMessage());
 		}
-
-		onMessageSent(message); // Call the callback method directly
 	}
 
-	private void onChannelChange(ActionEvent e) {
-		int selectedChannel = channelSelector.getSelectedIndex();
-		chatCore.setGameChatTypeView(selectedChannel);
-
-		// Notify interaction handler about channel change
-		interactionHandler.onChannelChanged(selectedChannel);
-
-		updateDisplay();
-	}
-
-	private void handleScrollWheel(MouseWheelEvent e) {
-		JScrollBar vBar = scrollPane.getVerticalScrollBar();
-		autoScroll = vBar.getValue() >= vBar.getMaximum() - vBar.getVisibleAmount() - 50;
-	}
-
-	private void updateChannelFromGame() {
-		int gameChannel = chatCore.getChannelFromGameState();
-		if (gameChannel != channelSelector.getSelectedIndex()) {
-			channelSelector.setSelectedIndex(gameChannel);
-		}
-	}
-
-	public void scrollToBottom() {
-		SwingUtilities.invokeLater(() -> {
-			JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
-			verticalBar.setValue(verticalBar.getMaximum());
-			autoScroll = true;
-		});
-	}
-
-	// UIPanel implementation
 	@Override
 	public String getPanelID() {
 		return "Chat";
@@ -542,26 +585,17 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 
 	@Override
 	public void onActivate() {
-		if (!Client.loggedIn) return;
-
-		SwingUtilities.invokeLater(() -> {
+		if (Client.loggedIn) {
 			updateDisplay();
 			inputField.requestFocusInWindow();
-		});
-
-		updateChannelFromGame();
-
-		if (updateScheduler == null || updateScheduler.isShutdown()) {
-			startUpdateScheduler();
 		}
 	}
 
 	@Override
 	public void onDeactivate() {
-		// Keep scheduler running
+		// Nothing needed
 	}
 
-	// DockTextUpdatable implementation
 	@Override
 	public void updateText() {
 		if (Client.loggedIn && !isDisposed) {
@@ -571,36 +605,13 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable,
 
 	@Override
 	public void updateDockText(int index, String text) {
-		if (Client.loggedIn && !isDisposed) {
-			SwingUtilities.invokeLater(this::updateDisplay);
-		}
+		updateText();
 	}
 
-	// Cleanup
 	public void dispose() {
 		isDisposed = true;
-
 		if (updateScheduler != null && !updateScheduler.isShutdown()) {
 			updateScheduler.shutdown();
-			try {
-				if (!updateScheduler.awaitTermination(1, TimeUnit.SECONDS)) {
-					updateScheduler.shutdownNow();
-				}
-			} catch (InterruptedException e) {
-				updateScheduler.shutdownNow();
-				Thread.currentThread().interrupt();
-			}
-		}
-
-		// Dispose both cores
-		if (chatCore != null) {
-			chatCore.dispose();
-		}
-
-
-		// Dispose interaction handler
-		if (interactionHandler != null) {
-			interactionHandler.dispose();
 		}
 	}
 }

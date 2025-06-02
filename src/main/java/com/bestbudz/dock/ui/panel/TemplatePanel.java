@@ -2,6 +2,8 @@ package com.bestbudz.dock.ui.panel;
 
 import com.bestbudz.dock.util.DockTextUpdatable;
 import com.bestbudz.dock.util.UIPanel;
+import com.bestbudz.dock.util.ButtonHandler;
+import com.bestbudz.dock.util.RainbowHoverUtil;
 import com.bestbudz.engine.core.Client;
 
 import javax.swing.*;
@@ -15,9 +17,15 @@ import java.awt.*;
  * 1. Copy this template and rename the class
  * 2. Update getPanelID() to return your panel's unique name
  * 3. Add your content in initializeComponents() and setupLayout()
- * 4. Register in UIDockFrame: registerPanel(new YourPanel());
- * 5. If using RSInterfaces, add to DockPanelMapping:
+ * 4. Use ButtonHandler.createButton() or addClickableButton() for interactions
+ * 5. Register in UIDockFrame: registerPanel(new YourPanel());
+ * 6. If using RSInterfaces, add to DockPanelMapping:
  *    YOUR_PANEL(interfaceId1, interfaceId2, "Your Panel Name", YourPanel.class);
+ *
+ * BUTTON CREATION:
+ * - Create any component (JButton, JLabel, JPanel, etc.)
+ * - Call makeClickable(component, interfaceId) to add interface functionality
+ * - Call addRainbowHover(component) to add animated hover effects
  *
  * STYLING: (Below colors are defined in com.bestbudz.engine.config.ColorConfig.java)
  *  CONFIG_NAME = COLOR
@@ -42,6 +50,7 @@ import java.awt.*;
  * - Standard lifecycle methods (onActivate/onDeactivate)
  * - DockTextUpdatable support for server data updates
  * - Proper layout management and sizing
+ * - Integrated ButtonHandler for interface interactions
  */
 public class TemplatePanel extends JPanel implements UIPanel, DockTextUpdatable {
 
@@ -97,15 +106,16 @@ public class TemplatePanel extends JPanel implements UIPanel, DockTextUpdatable 
 		add(scrollPane, BorderLayout.CENTER);
 
 		// Optional: Add buttons or controls to bottom
-		// add(createButtonPanel(), BorderLayout.SOUTH);
+		add(createButtonPanel(), BorderLayout.SOUTH);
 	}
 
 	/**
 	 * Sample content - replace with your actual panel content
+	 * Shows how to make components clickable and add rainbow effects
 	 */
 	private void addSampleContent() {
-		// Example: Add some labels
-		for (int i = 1; i <= 10; i++) {
+		// Regular labels
+		for (int i = 1; i <= 5; i++) {
 			JLabel sampleLabel = new JLabel("Sample Item " + i);
 			sampleLabel.setForeground(Color.WHITE);
 			sampleLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
@@ -113,37 +123,118 @@ public class TemplatePanel extends JPanel implements UIPanel, DockTextUpdatable 
 			sampleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			contentPanel.add(sampleLabel);
 		}
+
+		// Clickable button with rainbow hover
+		JButton button = new JButton("Action Button");
+		makeClickableWithRainbow(button, 29001);
+		addContentItem(button);
+
+		// Clickable label with rainbow hover
+		JLabel clickableLabel = new JLabel("Click me!");
+		clickableLabel.setForeground(Color.CYAN);
+		clickableLabel.setBorder(new EmptyBorder(4, 4, 4, 4));
+		makeClickableWithRainbow(clickableLabel, 29002);
+		addContentItem(clickableLabel);
+
+		// Just rainbow hover (no click action)
+		JLabel rainbowLabel = new JLabel("Hover for rainbow effect");
+		rainbowLabel.setForeground(Color.WHITE);
+		rainbowLabel.setBorder(new EmptyBorder(4, 4, 4, 4));
+		addRainbowHover(rainbowLabel);
+		addContentItem(rainbowLabel);
 	}
 
 	/**
-	 * Example button panel creation (uncomment in setupLayout() if needed)
+	 * Make any component clickable to send interface packets
+	 * Works with JButton, JLabel, JPanel, or any JComponent
+	 * @param component The component to make clickable
+	 * @param interfaceId Interface ID to send when clicked
+	 */
+	public void makeClickable(JComponent component, int interfaceId) {
+		if (component instanceof JButton) {
+			// For buttons, use ActionListener
+			((JButton) component).addActionListener(ButtonHandler.createButtonListener(interfaceId));
+		} else {
+			// For other components, use MouseListener and add hand cursor
+			component.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			component.addMouseListener(ButtonHandler.createClickListener(interfaceId));
+		}
+	}
+
+	/**
+	 * Add rainbow hover effect to any component
+	 * @param component The component to add rainbow hover to
+	 */
+	public void addRainbowHover(JComponent component) {
+		if (component instanceof JButton) {
+			RainbowHoverUtil.applyRainbowHover((JButton) component);
+		} else if (component instanceof JPanel) {
+			Color originalBg = component.getBackground();
+			Color hoverBg = originalBg != null ? originalBg.brighter() : Color.DARK_GRAY;
+			RainbowHoverUtil.applyRainbowHoverToPanel((JPanel) component, originalBg, hoverBg);
+		} else {
+			Color originalBg = component.getBackground();
+			if (originalBg == null) originalBg = Color.DARK_GRAY;
+			RainbowHoverUtil.applyRainbowHover(component, originalBg);
+		}
+	}
+
+	/**
+	 * Make component clickable AND add rainbow hover in one call
+	 * @param component The component to enhance
+	 * @param interfaceId Interface ID to send when clicked
+	 */
+	public void makeClickableWithRainbow(JComponent component, int interfaceId) {
+		makeClickable(component, interfaceId);
+		addRainbowHover(component);
+	}
+
+	/**
+	 * Example button panel with interface actions and rainbow effects
 	 */
 	private JPanel createButtonPanel() {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 		buttonPanel.setOpaque(false);
 
-		JButton exampleButton = new JButton("Example Action");
-		exampleButton.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		exampleButton.addActionListener(e -> handleButtonClick());
+		JButton refreshButton = new JButton("Refresh");
+		makeClickableWithRainbow(refreshButton, 29010);
 
-		buttonPanel.add(exampleButton);
+		JButton actionButton = new JButton("Action");
+		makeClickableWithRainbow(actionButton, 29011);
+
+		JButton settingsButton = new JButton("Settings");
+		makeClickableWithRainbow(settingsButton, 29012);
+
+		buttonPanel.add(refreshButton);
+		buttonPanel.add(actionButton);
+		buttonPanel.add(settingsButton);
+
 		return buttonPanel;
 	}
 
 	/**
-	 * Example button click handler
+	 * Create a row of action buttons with optional rainbow effects
+	 * @param buttonData Array of [text, interfaceId] pairs
+	 * @param useRainbow Whether to add rainbow hover effects
 	 */
-	private void handleButtonClick() {
-		if (!Client.loggedIn) return;
+	public JPanel createActionButtonRow(Object[][] buttonData, boolean useRainbow) {
+		JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+		buttonRow.setOpaque(false);
 
-		// Example: Send packet to server
-		try {
-			// Client.stream.createFrame(185);
-			// Client.stream.writeWord(buttonId);
-			System.out.println("Button clicked in " + getPanelID());
-		} catch (Exception ex) {
-			System.err.println("Error in button click: " + ex.getMessage());
+		for (Object[] data : buttonData) {
+			String text = (String) data[0];
+			int interfaceId = (Integer) data[1];
+
+			JButton button = new JButton(text);
+			if (useRainbow) {
+				makeClickableWithRainbow(button, interfaceId);
+			} else {
+				makeClickable(button, interfaceId);
+			}
+			buttonRow.add(button);
 		}
+
+		return buttonRow;
 	}
 
 	/**
@@ -222,7 +313,8 @@ public class TemplatePanel extends JPanel implements UIPanel, DockTextUpdatable 
 		if (!Client.loggedIn) return;
 
 		// Panel activation logic
-		// Example: Refresh data, send packets, start timers
+		// Example: Send activation packet
+		ButtonHandler.sendClick(29000); // Example activation interface ID
 		System.out.println(getPanelID() + " panel activated");
 	}
 
@@ -240,6 +332,9 @@ public class TemplatePanel extends JPanel implements UIPanel, DockTextUpdatable 
 		// Handle server text updates
 		// Example: Update specific labels or content based on index
 		System.out.println("Received dock text update [" + index + "]: " + text);
+
+		// You could update specific UI elements based on the index
+		// For example, if this is a dynamic list that gets updated from server
 	}
 
 	/**
@@ -257,6 +352,6 @@ public class TemplatePanel extends JPanel implements UIPanel, DockTextUpdatable 
 	 */
 	// @Override
 	// public int[] getBlockedInterfaces() {
-	//     return new int[] { interfaceId1, interfaceId2 };
+	//     return new int[] { 29000, 29001, 29002 }; // Example blocked interface IDs
 	// }
 }

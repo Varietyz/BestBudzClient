@@ -23,14 +23,14 @@ public final class Skills {
 	public static final int WEEDSMOKING = 16;
 	public static final int ACCOMPLISHER = 17;
 	public static final int MERCENARY = 18;
-	public static final int CULTIVATION = 19;
+	public static final int BANKSTANDING = 19;
 	public static final int CONSUMER = 20;
 
 	public static final String[] SKILL_NAMES = {
 		"assault", "aegis", "vigour", "life", "sagittarius", "necromance",
 		"mage", "foodie", "lumbering", "woodcarving", "fisher", "pyromaniac",
 		"handiness", "forging", "quarrying", "thc-hempistry", "weedsmoking",
-		"accomplisher", "mercenary", "cultivation", "consumer", "grades total"
+		"accomplisher", "mercenary", "bankstanding", "consumer", "grades total"
 	};
 
 	public static final boolean[] SKILL_ENABLED = new boolean[SKILLS_COUNT];
@@ -110,7 +110,7 @@ public final class Skills {
 		SKILL_ENABLED[WEEDSMOKING] = true;
 		SKILL_ENABLED[ACCOMPLISHER] = true;
 		SKILL_ENABLED[MERCENARY] = true;
-		SKILL_ENABLED[CULTIVATION] = true;
+		SKILL_ENABLED[BANKSTANDING] = true;
 		SKILL_ENABLED[CONSUMER] = true;
 	}
 

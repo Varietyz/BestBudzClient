@@ -1,0 +1,4 @@
+ObjectManager has infinite cache growth
+Rasterizer has texture memory leaks
+WorldController has visibility array accumulation
+GameState lacks coordination between components

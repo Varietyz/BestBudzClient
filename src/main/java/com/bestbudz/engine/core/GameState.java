@@ -1,16 +1,15 @@
 package com.bestbudz.engine.core;
 
 import com.bestbudz.cache.Signlink;
-import static com.bestbudz.ui.handling.Camera.calcCameraPos;
-import static com.bestbudz.ui.handling.Camera.updateCameraPosition;
-import com.bestbudz.rendering.Rasterizer;
+import static com.bestbudz.engine.core.gamerender.Camera.calcCameraPos;
+import static com.bestbudz.engine.core.gamerender.Camera.updateCameraPosition;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
 import static com.bestbudz.rendering.SpotAnim2.updatePendingSpotAnimations;
 import com.bestbudz.rendering.model.Model;
 import static com.bestbudz.ui.interfaces.Chatbox.handleTextFieldInput;
 import com.bestbudz.util.ColorUtility;
-import static com.bestbudz.world.GroundItem.spawnGroundItem;
 import com.bestbudz.world.ObjectDef;
-import com.bestbudz.world.ObjectManager;
+import com.bestbudz.engine.core.gamerender.ObjectManager;
 import java.awt.Graphics2D;
 
 /**
@@ -53,6 +52,15 @@ public class GameState extends Client {
 	private static int cachedMapHeight = DEFAULT_MAP_SIZE;
 	private static boolean dimensionsCached = false;
 
+	// ===== CAMERA VALIDATION =====
+	private static int lastValidXCameraPos = 0;
+	private static int lastValidYCameraPos = 0;
+	private static int lastValidXCameraCurve = 0;
+	private static int lastValidZCameraPos = 0;
+	private static int lastValidJ = 0;
+	private static int lastValidYCameraCurve = 0;
+	private static boolean hasValidPosition = false;
+
 	/**
 	 * Main scene rendering method with safety checks and camera bounds validation
 	 */
@@ -81,162 +89,114 @@ public class GameState extends Client {
 	}
 
 	/**
-	 * Safe camera bounds validation before calling WorldController rendering
-	 * This prevents the ArrayIndexOutOfBoundsException in method313/method314
-	 */
-	public static boolean validateCameraBounds(int xCameraPos, int yCameraPos, int xCameraCurve,
-											   int zCameraPos, int j, int yCameraCurve) {
-		try {
-			// Validate camera position bounds against map dimensions
-			// The WorldController uses these coordinates to determine which tiles to render
-
-			// Calculate the rendering bounds that would be used
-			int minX = (xCameraPos - 50) / 128; // Approximate tile calculation
-			int maxX = (xCameraPos + 50) / 128;
-			int minY = (yCameraPos - 50) / 128;
-			int maxY = (yCameraPos + 50) / 128;
-
-			// Clamp to safe bounds (0 to mapSize-1)
-			boolean needsClamping = false;
-
-			if (minX < 0 || maxX >= cachedMapWidth || minY < 0 || maxY >= cachedMapHeight) {
-				needsClamping = true;
-				logWarning("Camera bounds exceed map limits: " +
-					"X range: " + minX + "-" + maxX + " (map: 0-" + (cachedMapWidth-1) + "), " +
-					"Y range: " + minY + "-" + maxY + " (map: 0-" + (cachedMapHeight-1) + ")");
-			}
-
-			// Additional validation for extreme values
-			if (Math.abs(xCameraPos) > 50000 || Math.abs(yCameraPos) > 50000 ||
-				Math.abs(zCameraPos) > 10000) {
-				logError("Extreme camera position detected: " +
-					"xCameraPos=" + xCameraPos + ", yCameraPos=" + yCameraPos + ", zCameraPos=" + zCameraPos);
-				return false;
-			}
-
-			if (needsClamping) {
-				logDebug("Camera position may cause rendering bounds issues - validation failed");
-				return false;
-			}
-
-			return true;
-
-		} catch (Exception e) {
-			logError("Error in validateCameraBounds: " + e.getMessage());
-			return false;
-		}
-	}
-
-	/**
-	 * Safe wrapper for WorldController.method313 with bounds validation and fallback rendering
+	 * DEBUG: Let's see exactly what's causing the bounds errors
 	 */
 	public static void safeRenderWorld(int xCameraPos, int yCameraPos, int xCameraCurve,
 									   int zCameraPos, int j, int yCameraCurve) {
 		totalRenderCalls++;
 
 		try {
-			// STEP 1: Validate camera bounds before attempting rendering
-			if (!validateCameraBounds(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve)) {
-				// Camera bounds are problematic - use fallback immediately
-				validationPreventedErrors++;
+			// DETAILED DEBUGGING: Check all the variables that might cause bounds issues
+			if (renderingErrors > 0 && renderingErrors % 50 == 0) {
+				logError("=== BOUNDS DEBUG ANALYSIS ===");
+				logError("Camera Params: xCameraPos=" + xCameraPos + ", yCameraPos=" + yCameraPos + ", zCameraPos=" + zCameraPos);
+				logError("Camera Curves: xCameraCurve=" + xCameraCurve + ", yCameraCurve=" + yCameraCurve + ", j=" + j);
 
-				if (DEBUG_LOGGING && validationPreventedErrors % 100 == 0) {
-					logDebug("Validation prevented error #" + validationPreventedErrors + " - using fallback rendering");
+				// Check map dimensions
+				if (byteGroundArray != null) {
+					logError("Map dimensions - byteGroundArray planes: " + byteGroundArray.length);
+					for (int plane = 0; plane < Math.min(4, byteGroundArray.length); plane++) {
+						if (byteGroundArray[plane] != null) {
+							logError("  Plane " + plane + ": " + byteGroundArray[plane].length + "x" +
+								(byteGroundArray[plane].length > 0 && byteGroundArray[plane][0] != null ?
+									byteGroundArray[plane][0].length : "null"));
+						}
+					}
 				}
-				attemptFallbackRendering(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
-				return;
+
+				// Check what coordinates the camera would actually try to access
+				// The rendering system probably calculates tile coordinates from camera position
+				int tileX = xCameraPos >> 7;  // Divide by 128 for tile coordinates
+				int tileY = yCameraPos >> 7;
+				logError("Calculated tile coordinates: tileX=" + tileX + ", tileY=" + tileY);
+
+				// Check if these tile coordinates are within array bounds
+				if (byteGroundArray != null && byteGroundArray.length > 0 && byteGroundArray[0] != null) {
+					int maxTileX = byteGroundArray[0].length - 1;
+					int maxTileY = byteGroundArray[0].length > 0 && byteGroundArray[0][0] != null ?
+						byteGroundArray[0][0].length - 1 : -1;
+					logError("Max valid tile coordinates: maxTileX=" + maxTileX + ", maxTileY=" + maxTileY);
+
+					if (tileX < 0 || tileX > maxTileX || tileY < 0 || tileY > maxTileY) {
+						logError("*** TILE COORDINATES OUT OF BOUNDS! ***");
+						logError("tileX=" + tileX + " (valid: 0-" + maxTileX + ")");
+						logError("tileY=" + tileY + " (valid: 0-" + maxTileY + ")");
+					}
+				}
+
+				// Check rendering viewport calculations
+				// The renderer probably calculates a viewing area around the camera
+				int viewStartX = (xCameraPos - 50) / 128;  // Rough estimate of viewing area
+				int viewEndX = (xCameraPos + 50) / 128;
+				int viewStartY = (yCameraPos - 50) / 128;
+				int viewEndY = (yCameraPos + 50) / 128;
+				logError("Estimated view area: X(" + viewStartX + " to " + viewEndX + ") Y(" + viewStartY + " to " + viewEndY + ")");
+
+				// Check other relevant variables
+				logError("Other variables: baseX=" + baseX + ", baseY=" + baseY + ", plane=" + plane);
+				logError("anInt1069=" + anInt1069 + ", anInt1070=" + anInt1070);
+				logError("=== END BOUNDS DEBUG ===");
 			}
 
-			// STEP 2: Bounds validation passed - try normal rendering
+			// Try normal rendering
 			if (worldController != null) {
 				worldController.method313(xCameraPos, yCameraPos, xCameraCurve,
 					zCameraPos, j, yCameraCurve);
+
+				// Success - cache this position
+				lastValidXCameraPos = xCameraPos;
+				lastValidYCameraPos = yCameraPos;
+				lastValidXCameraCurve = xCameraCurve;
+				lastValidZCameraPos = zCameraPos;
+				lastValidJ = j;
+				lastValidYCameraCurve = yCameraCurve;
+				hasValidPosition = true;
+
 			} else {
 				logError("worldController is null in safeRenderWorld");
 			}
 
 		} catch (ArrayIndexOutOfBoundsException e) {
-			// Track rendering errors but reduce log spam
 			renderingErrors++;
-			long currentTime = System.currentTimeMillis();
 
-			// Only log every 50 errors or every 5 seconds
-			if (renderingErrors - lastLoggedErrorCount >= 50 ||
-				currentTime - lastRenderErrorTime > 5000) {
+			// DETAILED ERROR ANALYSIS
+			logError("BOUNDS ERROR DETAILS:");
+			logError("Error message: " + e.getMessage());
+			logError("Stack trace element: " + (e.getStackTrace().length > 0 ? e.getStackTrace()[0] : "none"));
 
-				logError("Rendering bounds errors: " + renderingErrors + " total (validation should have caught this)");
-				logError("Sample camera params: xCameraPos=" + xCameraPos + ", yCameraPos=" + yCameraPos +
-					", zCameraPos=" + zCameraPos);
-				logError("Validation stats: " + validationPreventedErrors + " prevented, " +
-					renderingErrors + " missed out of " + totalRenderCalls + " total calls");
+			// Calculate what the renderer might be trying to access
+			int tileX = xCameraPos >> 7;
+			int tileY = yCameraPos >> 7;
+			logError("Camera tile coords: tileX=" + tileX + ", tileY=" + tileY);
 
-				lastLoggedErrorCount = renderingErrors;
-				lastRenderErrorTime = currentTime;
+
+			// Use cached position fallback
+			if (hasValidPosition && worldController != null) {
+				try {
+					worldController.method313(lastValidXCameraPos, lastValidYCameraPos, lastValidXCameraCurve,
+						lastValidZCameraPos, lastValidJ, lastValidYCameraCurve);
+					logDebug("Successfully used cached position fallback");
+					return;
+				} catch (ArrayIndexOutOfBoundsException e2) {
+					logError("Even cached position failed: " + e2.getMessage());
+				}
 			}
 
-			// Try fallback rendering strategies
-			attemptFallbackRendering(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
+			// Final fallback - skip frame
+			logDebug("Skipping frame due to bounds error");
 
 		} catch (Exception e) {
-			logError("Error in safeRenderWorld: " + e.getMessage());
-		}
-	}
-
-	/**
-	 * Attempt fallback rendering strategies when normal rendering fails
-	 */
-	private static void attemptFallbackRendering(int xCameraPos, int yCameraPos, int xCameraCurve,
-												 int zCameraPos, int j, int yCameraCurve) {
-		try {
-			// Strategy 1: Adjust camera position to center of current region
-			int regionX = ((xCameraPos + 6400) / 128) * 128;
-			int regionY = ((yCameraPos + 6400) / 128) * 128;
-
-			// Clamp to reasonable bounds
-			regionX = Math.max(6400, Math.min(13312, regionX)); // Typical RuneScape world bounds
-			regionY = Math.max(6400, Math.min(13312, regionY));
-
-			if (DEBUG_LOGGING) {
-				logDebug("Attempting fallback rendering: " +
-					"Original(" + xCameraPos + "," + yCameraPos + ") -> " +
-					"Fallback(" + regionX + "," + regionY + ")");
-			}
-
-			try {
-				worldController.method313(regionX, regionY, xCameraCurve,
-					zCameraPos, j, yCameraCurve);
-				return; // Success with fallback position
-			} catch (ArrayIndexOutOfBoundsException e2) {
-				if (DEBUG_LOGGING) {
-					logDebug("Fallback position also failed: " + e2.getMessage());
-				}
-			}
-
-			// Strategy 2: Use safe center coordinates
-			int safeX = 6464; // Center of a typical starting region
-			int safeY = 6464;
-			int safeZ = Math.max(-1000, Math.min(1000, zCameraPos)); // Clamp Z coordinate
-
-			try {
-				worldController.method313(safeX, safeY, xCameraCurve,
-					safeZ, j, yCameraCurve);
-				if (DEBUG_LOGGING) {
-					logDebug("Using safe center coordinates for rendering");
-				}
-				return; // Success with safe coordinates
-			} catch (ArrayIndexOutOfBoundsException e3) {
-				if (DEBUG_LOGGING) {
-					logDebug("Safe coordinates also failed: " + e3.getMessage());
-				}
-			}
-
-			// Strategy 3: Skip rendering this frame (better than crash)
-			if (DEBUG_LOGGING) {
-				logDebug("All rendering strategies failed - skipping frame");
-			}
-
-		} catch (Exception e) {
-			logError("Error in attemptFallbackRendering: " + e.getMessage());
+			logError("Other error in safeRenderWorld: " + e.getMessage());
 		}
 	}
 
@@ -656,9 +616,6 @@ public class GameState extends Client {
 			// GROUND DECORATION FIX: Initialize ground decorations explicitly
 			initializeGroundDecorations();
 
-			// Spawn ground items with bounds checking
-			spawnGroundItemsSafe();
-
 			anInt1051 = (anInt1051 + 1) % 99;
 			updatePendingSpotAnimations();
 
@@ -778,13 +735,6 @@ public class GameState extends Client {
 					if (tileData != 0) {
 						decorationCount++;
 
-						// Force decoration processing for this tile
-						try {
-							// This might need to call specific decoration placement methods
-							processDecorationTile(plane, x, y, tileData);
-						} catch (Exception e) {
-							logDebug("Error processing decoration at (" + x + "," + y + "): " + e.getMessage());
-						}
 					}
 				}
 			}
@@ -796,25 +746,6 @@ public class GameState extends Client {
 		}
 	}
 
-	/**
-	 * Process decoration data for a specific tile
-	 */
-	private static void processDecorationTile(int plane, int x, int y, byte tileData) {
-		// This method would need to be implemented based on your decoration system
-		// It might involve calling specific ObjectManager methods or WorldController methods
-
-		// Example calls that might be needed (you'll need to adjust based on your code):
-		try {
-			if (worldController != null) {
-				// These are example method calls - adjust to match your actual decoration methods
-				// worldController.addDecoration(plane, x, y, tileData);
-				// worldController.refreshTile(plane, x, y);
-				// objectManager.placeDecoration(x, y, plane, tileData);
-			}
-		} catch (Exception e) {
-			logDebug("Error in processDecorationTile: " + e.getMessage());
-		}
-	}
 
 	/**
 	 * Refresh the decoration cache to ensure proper rendering
@@ -823,16 +754,6 @@ public class GameState extends Client {
 		try {
 			logDebug("Refreshing decoration cache");
 
-			// Force any decoration-related caches to refresh
-			if (ObjectDef.mruNodes1 != null) {
-				// This might help ensure decoration objects are properly cached
-				// ObjectDef.mruNodes1.clear(); // Uncomment if needed
-			}
-
-			// If there are decoration-specific caches, refresh them here
-			// This is where you'd call methods like:
-			// DecorationCache.refresh();
-			// GroundDecorationManager.initialize();
 
 			logDebug("Decoration cache refresh completed");
 
@@ -850,28 +771,6 @@ public class GameState extends Client {
 			return true;
 		} catch (NoSuchMethodException e) {
 			return false;
-		}
-	}
-
-	/**
-	 * Safe ground item spawning with bounds checking
-	 */
-	private static void spawnGroundItemsSafe() {
-		logDebug("Spawning ground items for " + cachedMapWidth + "x" + cachedMapHeight + " area");
-
-		try {
-			for (int x = 0; x < cachedMapWidth; x++) {
-				for (int y = 0; y < cachedMapHeight; y++) {
-					try {
-						spawnGroundItem(x, y);
-					} catch (Exception e) {
-						logError("Error spawning ground item at (" + x + "," + y + "): " + e.getMessage());
-						// Continue with next item
-					}
-				}
-			}
-		} catch (Exception e) {
-			logError("Error in spawnGroundItemsSafe: " + e.getMessage());
 		}
 	}
 
@@ -1474,76 +1373,7 @@ public class GameState extends Client {
 		return sb.toString();
 	}
 
-	/**
-	 * Manual cleanup trigger for testing and emergency situations
-	 */
-	public static void forceCleanup() {
-		if (!isResetting) {
-			logInfo("Force cleanup triggered");
 
-			long memoryBefore = getCurrentMemoryUsage();
-			System.gc();
-			long memoryAfter = getCurrentMemoryUsage();
-
-			logInfo("Force cleanup completed - Memory: " + memoryBefore + "KB -> " + memoryAfter + "KB");
-		} else {
-			logDebug("Force cleanup skipped - reset in progress");
-		}
-	}
-
-	/**
-	 * Reset cached dimensions (useful for map changes)
-	 */
-	public static void resetCachedDimensions() {
-		dimensionsCached = false;
-		cachedMapWidth = DEFAULT_MAP_SIZE;
-		cachedMapHeight = DEFAULT_MAP_SIZE;
-		logInfo("Cached dimensions reset to defaults");
-	}
-
-	/**
-	 * Force decoration refresh - can be called manually if decorations aren't showing
-	 */
-	public static void forceDecorationRefresh() {
-		logInfo("Force decoration refresh triggered");
-
-		try {
-			if (isResetting) {
-				logDebug("Reset in progress, skipping decoration refresh");
-				return;
-			}
-
-			// Re-initialize ground decorations
-			initializeGroundDecorations();
-
-			// Force world controller to refresh all decoration layers
-			if (worldController != null) {
-				try {
-					worldController.method275(0); // Refresh all planes
-					logDebug("WorldController decoration refresh completed");
-				} catch (Exception e) {
-					logError("Error refreshing WorldController: " + e.getMessage());
-				}
-			}
-
-			// Force ground item respawn (may include decorative items)
-			spawnGroundItemsSafe();
-
-			logInfo("Force decoration refresh completed");
-
-		} catch (Exception e) {
-			logError("Error in forceDecorationRefresh: " + e.getMessage());
-		}
-	}
-
-	/**
-	 * Enable or disable debug logging
-	 */
-	public static void setDebugLogging(boolean enabled) {
-		// This would need to be implemented with a mutable field
-		// For now, we use the constant DEBUG_LOGGING
-		logInfo("Debug logging " + (enabled ? "enabled" : "disabled"));
-	}
 
 	// ===== LOGGING METHODS =====
 
@@ -1568,12 +1398,5 @@ public class GameState extends Client {
 	 */
 	private static void logError(String message) {
 		System.err.println("[GameState ERROR] " + message);
-	}
-
-	/**
-	 * Log warning message
-	 */
-	private static void logWarning(String message) {
-		System.out.println("[GameState WARN] " + message);
 	}
 }

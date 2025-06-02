@@ -3,7 +3,6 @@ package com.bestbudz.ui;
 import com.bestbudz.data.ItemDef;
 import com.bestbudz.data.Skills;
 import com.bestbudz.dock.frame.UIDockFrame;
-import com.bestbudz.dock.ui.manager.UIModalManager;
 import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.engine.core.Client;
 import static com.bestbudz.ui.handling.RightClickMenu.drawContextMenu;
@@ -22,9 +21,9 @@ import static com.bestbudz.ui.TabArea.commitTabState;
 import static com.bestbudz.ui.TabArea.drawTabArea;
 import static com.bestbudz.engine.core.login.WelcomeScreen.clearWelcomeState;
 import static com.bestbudz.engine.util.ClientDiagnostics.drawClientDiagnostics;
-import com.bestbudz.graphics.DrawingArea;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.graphics.sprite.Sprite;
-import com.bestbudz.rendering.Rasterizer;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
 import static com.bestbudz.ui.interfaces.StatusOrbs.drawGameOverlays;
 import static com.bestbudz.world.InLocation.inBarrows;
 import static com.bestbudz.world.InLocation.inCyclops;
@@ -39,7 +38,6 @@ import static com.bestbudz.world.InLocation.inWilderness;
 import com.bestbudz.world.VarBit;
 import java.awt.Graphics2D;
 import java.util.Set;
-import javax.swing.SwingUtilities;
 
 public class InterfaceManagement extends Client
 {

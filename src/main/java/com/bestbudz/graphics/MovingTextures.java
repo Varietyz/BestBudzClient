@@ -2,7 +2,7 @@ package com.bestbudz.graphics;
 
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.config.SettingsConfig;
-import com.bestbudz.rendering.Rasterizer;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
 
 public class MovingTextures extends Client
 {

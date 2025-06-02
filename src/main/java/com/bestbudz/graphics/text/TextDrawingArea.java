@@ -1,7 +1,7 @@
 package com.bestbudz.graphics.text;
 
 import com.bestbudz.engine.config.ColorConfig;
-import com.bestbudz.graphics.DrawingArea;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
 import java.util.Random;

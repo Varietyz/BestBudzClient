@@ -1,8 +1,6 @@
 package com.bestbudz.dock.ui.modal.dialogue;
 
 import com.bestbudz.dock.ui.modal.style.ModalStyle;
-import com.bestbudz.engine.core.Client;
-import com.bestbudz.ui.RSInterface;
 
 import javax.swing.*;
 import java.awt.*;

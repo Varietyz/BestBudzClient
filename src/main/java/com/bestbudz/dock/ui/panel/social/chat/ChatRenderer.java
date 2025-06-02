@@ -11,12 +11,12 @@ import java.util.regex.Pattern;
 /**
  * ChatRenderer - Handles CHAT message rendering only
  *
- * UPDATED: Dialogue rendering removed - now handled by DialogueModal
+ * UPDATED: Fixed timestamp handling for system messages and improved message organization
  * Responsibilities:
  * - Render regular chat messages with colors and formatting
  * - Handle color codes and text processing for chat
  * - Manage styles and text formatting for chat display
- * - NO dialogue rendering (moved to DialogueModal)
+ * - Proper timestamp assignment for all message types
  */
 public class ChatRenderer {
 
@@ -48,7 +48,7 @@ public class ChatRenderer {
 			return;
 		}
 
-		// Add timestamp if enabled
+		// Add timestamp if enabled - use the message's actual timestamp
 		if (SettingsConfig.enableTimeStamps) {
 			String timestamp = chatCore.getFormattedTimestamp(msg.timestamp);
 			Style timestampStyle = createStyle("timestamp", TIMESTAMP_COLOR, 11, false, false);
@@ -275,19 +275,26 @@ public class ChatRenderer {
 	}
 
 	/**
-	 * Add system message with timestamp
+	 * Add system message with specific timestamp (FIXED)
 	 */
-	public void appendSystemMessage(String message) throws BadLocationException {
+	public void appendSystemMessage(String message, long timestamp) throws BadLocationException {
 		if (SettingsConfig.enableTimeStamps) {
-			String timestamp = chatCore.getFormattedTimestamp(System.currentTimeMillis());
+			String timeStr = chatCore.getFormattedTimestamp(timestamp);
 			Style systemStyle = createStyle("system_msg", SYSTEM_COLOR, 12, false, false);
 			StyleConstants.setItalic(systemStyle, true);
-			document.insertString(document.getLength(), "[" + timestamp + "] [System] " + message + "\n", systemStyle);
+			document.insertString(document.getLength(), "[" + timeStr + "] [System] " + message + "\n", systemStyle);
 		} else {
 			Style systemStyle = createStyle("system_msg", SYSTEM_COLOR, 12, false, false);
 			StyleConstants.setItalic(systemStyle, true);
 			document.insertString(document.getLength(), "[System] " + message + "\n", systemStyle);
 		}
+	}
+
+	/**
+	 * Add system message with current timestamp (for backwards compatibility)
+	 */
+	public void appendSystemMessage(String message) throws BadLocationException {
+		appendSystemMessage(message, System.currentTimeMillis());
 	}
 
 	/**

@@ -7,7 +7,7 @@ import com.bestbudz.engine.config.SettingsConfig;
 import static com.bestbudz.ui.handling.ActionHandler.doAction;
 import static com.bestbudz.network.packets.SendFrames.processBankSwap;
 import static com.bestbudz.network.packets.SendFrames.swapInventoryItem;
-import com.bestbudz.rendering.Rasterizer;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.ui.RSInterface;
 import com.bestbudz.world.ObjectDef;
 import static com.bestbudz.world.WalkTo.doWalkTo;

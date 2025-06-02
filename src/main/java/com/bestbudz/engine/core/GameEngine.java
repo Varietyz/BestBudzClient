@@ -1,8 +1,8 @@
 package com.bestbudz.engine.core;
 
 import com.bestbudz.engine.config.EngineConfig;
-import static com.bestbudz.ui.handling.Camera.calcCameraPos;
-import com.bestbudz.graphics.DrawingArea;
+import static com.bestbudz.engine.core.gamerender.Camera.calcCameraPos;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.io.IOException;

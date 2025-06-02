@@ -2,7 +2,7 @@ package com.bestbudz.rendering;
 
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.world.ObjectDef;
-import com.bestbudz.world.ObjectManager;
+import com.bestbudz.engine.core.gamerender.ObjectManager;
 
 public class GameObject extends Client
 {

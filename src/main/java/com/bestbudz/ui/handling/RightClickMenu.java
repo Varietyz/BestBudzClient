@@ -20,7 +20,7 @@ import static com.bestbudz.ui.TabArea.handleTabAreaInterfaces;
 import static com.bestbudz.ui.TabArea.processTabClick;
 import com.bestbudz.entity.EntityDef;
 import com.bestbudz.entity.Stoner;
-import com.bestbudz.graphics.DrawingArea;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.ui.RSInterface;
 import static com.bestbudz.ui.interfaces.StatusOrbs.handleMinimapInteractions;
 import static com.bestbudz.util.FormatHelpers.combatDiffColor;

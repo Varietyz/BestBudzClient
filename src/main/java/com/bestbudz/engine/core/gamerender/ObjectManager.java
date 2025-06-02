@@ -1,4 +1,4 @@
-package com.bestbudz.world;
+package com.bestbudz.engine.core.gamerender;
 
 import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.network.OnDemandFetcher;
@@ -6,8 +6,11 @@ import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.Animable;
 import com.bestbudz.rendering.Animable_Sub5;
 import com.bestbudz.rendering.OverlayFloor;
-import com.bestbudz.rendering.Rasterizer;
 import com.bestbudz.rendering.model.Model;
+import com.bestbudz.world.Class11;
+import com.bestbudz.world.Class4;
+import com.bestbudz.world.Floor;
+import com.bestbudz.world.ObjectDef;
 import java.util.ArrayList;
 
 public final class ObjectManager {
@@ -36,6 +39,7 @@ public final class ObjectManager {
 	private final int anInt147;
 	private final byte[][][] aByteArrayArrayArray148;
 	private final byte[][][] aByteArrayArrayArray149;
+
 	public ObjectManager(byte[][][] abyte0, int[][][] ai) {
 		anInt145 = 99;
 		anInt146 = 104;
@@ -140,192 +144,253 @@ public final class ObjectManager {
 	}
 
 	public static void method188(WorldController worldController, int i, int j, int k, int l, Class11 class11, int[][][] ai, int i1, int j1, int k1) {
-		int l1 = ai[l][i1][j];
-		int i2 = ai[l][i1 + 1][j];
-		int j2 = ai[l][i1 + 1][j + 1];
-		int k2 = ai[l][i1][j + 1];
-		int l2 = l1 + i2 + j2 + k2 >> 2;
-		ObjectDef class46 = ObjectDef.forID(j1);
-		int i3 = i1 + (j << 7) + (j1 << 14) + 0x40000000;
-		if (!class46.hasActions)
-			i3 += 0x80000000;
-		byte byte1 = (byte) ((i << 6) + k);
-		if (k == 22) {
-			Animable obj;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj = class46.method578(22, i, l1, i2, j2, k2, -1);
-			else
-				obj = new Animable_Sub5(j1, i, 22, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method280(k1, l2, j, obj, byte1, i3, i1);
-			if (class46.aBoolean767 && class46.hasActions)
-				class11.method213(j, i1);
-			return;
-		}
-		if (k == 10 || k == 11) {
-			Animable obj1;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj1 = class46.method578(10, i, l1, i2, j2, k2, -1);
-			else
-				obj1 = new Animable_Sub5(j1, i, 10, i2, j2, l1, k2, class46.anInt781, true);
-			if (obj1 != null) {
-				int j5 = 0;
-				if (k == 11)
-					j5 += 256;
-				int k4;
-				int i5;
-				if (i == 1 || i == 3) {
-					k4 = class46.anInt761;
-					i5 = class46.anInt744;
-				} else {
-					k4 = class46.anInt744;
-					i5 = class46.anInt761;
+		// Pre-calculate height values once
+		final int l1 = ai[l][i1][j];
+		final int i2 = ai[l][i1 + 1][j];
+		final int j2 = ai[l][i1 + 1][j + 1];
+		final int k2 = ai[l][i1][j + 1];
+		final int l2 = (l1 + i2 + j2 + k2) >> 2;
+
+		// Cache ObjectDef lookup
+		final ObjectDef class46 = ObjectDef.forID(j1);
+
+		// Pre-calculate common values
+		final int i3 = calculateI3(i1, j, j1, class46.hasActions);
+		final byte byte1 = (byte)((i << 6) + k);
+
+		// Use switch statement for better branch prediction and JIT optimization
+		switch (k) {
+			case 0:
+			case 1:
+			case 3:
+				handleWallObjects(worldController, class11, i, j, k, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+				break;
+
+			case 2:
+				handleCornerWall(worldController, class11, i, j, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+				break;
+
+			case 4:
+			case 6:
+			case 7:
+			case 8:
+				handleDiagonalWalls(worldController, i, j, k, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+				break;
+
+			case 5:
+				handleSlopedWall(worldController, i, j, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+				break;
+
+			case 9:
+				handleDecorativeWall(worldController, class11, i, j, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+				break;
+
+			case 10:
+			case 11:
+				handleFloorDecorations(worldController, class11, i, j, k, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+				break;
+
+			case 22:
+				handleGroundObject(worldController, class11, i, j, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+				break;
+
+			default:
+				if (k >= 12) {
+					handleLargeObjects(worldController, class11, i, j, k, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
 				}
-				worldController.method284(i3, byte1, l2, i5, obj1, k4, k1, j5, j, i1);
-			}
-			if (class46.aBoolean767)
-				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
-			return;
+				break;
 		}
-		if (k >= 12) {
-			Animable obj2;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj2 = class46.method578(k, i, l1, i2, j2, k2, -1);
-			else
-				obj2 = new Animable_Sub5(j1, i, k, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method284(i3, byte1, l2, 1, obj2, 1, k1, 0, j, i1);
-			if (class46.aBoolean767)
-				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
-			return;
+	}
+
+	// Helper method to calculate i3 value
+	private static int calculateI3(int i1, int j, int j1, boolean hasActions) {
+		int i3 = i1 + (j << 7) + (j1 << 14) + 0x40000000;
+		if (!hasActions) {
+			i3 += 0x80000000;
 		}
-		if (k == 0) {
-			Animable obj3;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj3 = class46.method578(0, i, l1, i2, j2, k2, -1);
-			else
-				obj3 = new Animable_Sub5(j1, i, 0, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method282(anIntArray152[i], obj3, i3, j, byte1, i1, null, l2, 0, k1);
-			if (class46.aBoolean767)
-				class11.method211(j, i, i1, k, class46.aBoolean757);
-			return;
+		return i3;
+	}
+
+	// Helper method for creating Animable objects (reduces code duplication)
+	private static Animable createAnimable(ObjectDef class46, int j1, int i, int k, int l1, int i2, int j2, int k2) {
+		if (class46.anInt781 == -1 && class46.childrenIDs == null) {
+			return class46.method578(k, i, l1, i2, j2, k2, -1);
+		} else {
+			return new Animable_Sub5(j1, i, k, i2, j2, l1, k2, class46.anInt781, true);
 		}
-		if (k == 1) {
-			Animable obj4;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj4 = class46.method578(1, i, l1, i2, j2, k2, -1);
-			else
-				obj4 = new Animable_Sub5(j1, i, 1, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method282(anIntArray140[i], obj4, i3, j, byte1, i1, null, l2, 0, k1);
-			if (class46.aBoolean767)
-				class11.method211(j, i, i1, k, class46.aBoolean757);
-			return;
+	}
+
+	// Optimized handler methods
+	private static void handleWallObjects(WorldController worldController, Class11 class11, int i, int j, int k,
+										  int l2, ObjectDef class46, int i3, byte byte1, int i1, int j1,
+										  int l1, int i2, int j2, int k2, int k1) {
+		final Animable obj = createAnimable(class46, j1, i, k, l1, i2, j2, k2);
+		final int direction = (k == 0 || k == 3) ? anIntArray152[i] : anIntArray140[i];
+
+		worldController.method282(direction, obj, i3, j, byte1, i1, null, l2, 0, k1);
+
+		if (class46.aBoolean767) {
+			class11.method211(j, i, i1, k, class46.aBoolean757);
 		}
-		if (k == 2) {
-			int j3 = i + 1 & 3;
-			Animable obj11;
-			Animable obj12;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj11 = class46.method578(2, 4 + i, l1, i2, j2, k2, -1);
-				obj12 = class46.method578(2, j3, l1, i2, j2, k2, -1);
-			} else {
-				obj11 = new Animable_Sub5(j1, 4 + i, 2, i2, j2, l1, k2, class46.anInt781, true);
-				obj12 = new Animable_Sub5(j1, j3, 2, i2, j2, l1, k2, class46.anInt781, true);
-			}
-			worldController.method282(anIntArray152[i], obj11, i3, j, byte1, i1, obj12, l2, anIntArray152[j3], k1);
-			if (class46.aBoolean767)
-				class11.method211(j, i, i1, k, class46.aBoolean757);
-			return;
+	}
+
+	private static void handleCornerWall(WorldController worldController, Class11 class11, int i, int j,
+										 int l2, ObjectDef class46, int i3, byte byte1, int i1, int j1,
+										 int l1, int i2, int j2, int k2, int k1) {
+		final int j3 = (i + 1) & 3;
+		final Animable obj11 = createAnimable(class46, j1, 4 + i, 2, l1, i2, j2, k2);
+		final Animable obj12 = createAnimable(class46, j1, j3, 2, l1, i2, j2, k2);
+
+		worldController.method282(anIntArray152[i], obj11, i3, j, byte1, i1, obj12, l2, anIntArray152[j3], k1);
+
+		if (class46.aBoolean767) {
+			class11.method211(j, i, i1, 2, class46.aBoolean757);
 		}
-		if (k == 3) {
-			Animable obj5;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj5 = class46.method578(3, i, l1, i2, j2, k2, -1);
-			else
-				obj5 = new Animable_Sub5(j1, i, 3, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method282(anIntArray140[i], obj5, i3, j, byte1, i1, null, l2, 0, k1);
-			if (class46.aBoolean767)
-				class11.method211(j, i, i1, k, class46.aBoolean757);
-			return;
+	}
+
+	private static void handleDiagonalWalls(WorldController worldController, int i, int j, int k,
+											int l2, ObjectDef class46, int i3, byte byte1, int i1, int j1,
+											int l1, int i2, int j2, int k2, int k1) {
+		// Apply height transformation if needed
+		final int[] heights = class46.aBoolean762 ?
+			transformHeights(new int[]{l1, i2, j2, k2}, i) :
+			new int[]{l1, i2, j2, k2};
+
+		final Animable obj = createAnimable(class46, j1, 0, 4, heights[0], heights[1], heights[2], heights[3]);
+
+		// Calculate parameters based on k value
+		final int rotation, offsetX, offsetZ, direction;
+		switch (k) {
+			case 4:
+				rotation = i * 512;
+				offsetX = offsetZ = 0;
+				direction = anIntArray152[i];
+				break;
+			case 6:
+				rotation = i;
+				offsetX = offsetZ = 0;
+				direction = 256;
+				break;
+			case 7:
+				rotation = i;
+				offsetX = offsetZ = 0;
+				direction = 512;
+				break;
+			case 8:
+				rotation = i;
+				offsetX = offsetZ = 0;
+				direction = 768;
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid k value for diagonal wall: " + k);
 		}
-		if (k == 9) {
-			Animable obj6;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj6 = class46.method578(k, i, l1, i2, j2, k2, -1);
-			else
-				obj6 = new Animable_Sub5(j1, i, k, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method284(i3, byte1, l2, 1, obj6, 1, k1, 0, j, i1);
-			if (class46.aBoolean767)
-				class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
-			return;
+
+		worldController.method283(i3, j, rotation, k1, offsetX, l2, obj, i1, byte1, offsetZ, direction);
+	}
+
+	private static void handleSlopedWall(WorldController worldController, int i, int j,
+										 int l2, ObjectDef class46, int i3, byte byte1, int i1, int j1,
+										 int l1, int i2, int j2, int k2, int k1) {
+		final int j4 = 16;
+		final int l4 = worldController.method300(k1, i1, j);
+		final int actualJ4 = (l4 > 0) ? ObjectDef.forID((l4 >> 14) & 0x7fff).anInt775 : j4;
+
+		final Animable obj = createAnimable(class46, j1, 0, 4, l1, i2, j2, k2);
+
+		worldController.method283(i3, j, i * 512, k1, anIntArray137[i] * actualJ4, l2, obj, i1, byte1,
+			anIntArray144[i] * actualJ4, anIntArray152[i]);
+	}
+
+	private static void handleDecorativeWall(WorldController worldController, Class11 class11, int i, int j,
+											 int l2, ObjectDef class46, int i3, byte byte1, int i1, int j1,
+											 int l1, int i2, int j2, int k2, int k1) {
+		final Animable obj = createAnimable(class46, j1, i, 9, l1, i2, j2, k2);
+
+		worldController.method284(i3, byte1, l2, 1, obj, 1, k1, 0, j, i1);
+
+		if (class46.aBoolean767) {
+			class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
 		}
-		if (class46.aBoolean762)
-			if (i == 1) {
-				int k3 = k2;
-				k2 = j2;
-				j2 = i2;
-				i2 = l1;
-				l1 = k3;
-			} else if (i == 2) {
-				int l3 = k2;
-				k2 = i2;
-				i2 = l3;
-				l3 = j2;
-				j2 = l1;
-				l1 = l3;
-			} else if (i == 3) {
-				int i4 = k2;
-				k2 = l1;
-				l1 = i2;
-				i2 = j2;
-				j2 = i4;
-			}
-		if (k == 4) {
-			Animable obj7;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj7 = class46.method578(4, 0, l1, i2, j2, k2, -1);
-			else
-				obj7 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i * 512, k1, 0, l2, obj7, i1, byte1, 0, anIntArray152[i]);
-			return;
+	}
+
+	private static void handleFloorDecorations(WorldController worldController, Class11 class11, int i, int j, int k,
+											   int l2, ObjectDef class46, int i3, byte byte1, int i1, int j1,
+											   int l1, int i2, int j2, int k2, int k1) {
+		final Animable obj = createAnimable(class46, j1, i, 10, l1, i2, j2, k2);
+
+		if (obj != null) {
+			final int j5 = (k == 11) ? 256 : 0;
+			final boolean isRotated = (i == 1 || i == 3);
+			final int k4 = isRotated ? class46.anInt761 : class46.anInt744;
+			final int i5 = isRotated ? class46.anInt744 : class46.anInt761;
+
+			worldController.method284(i3, byte1, l2, i5, obj, k4, k1, j5, j, i1);
 		}
-		if (k == 5) {
-			int j4 = 16;
-			int l4 = worldController.method300(k1, i1, j);
-			if (l4 > 0)
-				j4 = ObjectDef.forID(l4 >> 14 & 0x7fff).anInt775;
-			Animable obj13;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj13 = class46.method578(4, 0, l1, i2, j2, k2, -1);
-			else
-				obj13 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i * 512, k1, anIntArray137[i] * j4, l2, obj13, i1, byte1, anIntArray144[i] * j4, anIntArray152[i]);
-			return;
+
+		if (class46.aBoolean767) {
+			class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
 		}
-		if (k == 6) {
-			Animable obj8;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj8 = class46.method578(4, 0, l1, i2, j2, k2, -1);
-			else
-				obj8 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i, k1, 0, l2, obj8, i1, byte1, 0, 256);
-			return;
+	}
+
+	private static void handleGroundObject(WorldController worldController, Class11 class11, int i, int j,
+										   int l2, ObjectDef class46, int i3, byte byte1, int i1, int j1,
+										   int l1, int i2, int j2, int k2, int k1) {
+		final Animable obj = createAnimable(class46, j1, i, 22, l1, i2, j2, k2);
+
+		worldController.method280(k1, l2, j, obj, byte1, i3, i1);
+
+		if (class46.aBoolean767 && class46.hasActions) {
+			class11.method213(j, i1);
 		}
-		if (k == 7) {
-			Animable obj9;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj9 = class46.method578(4, 0, l1, i2, j2, k2, -1);
-			else
-				obj9 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i, k1, 0, l2, obj9, i1, byte1, 0, 512);
-			return;
+	}
+
+	private static void handleLargeObjects(WorldController worldController, Class11 class11, int i, int j, int k,
+										   int l2, ObjectDef class46, int i3, byte byte1, int i1, int j1,
+										   int l1, int i2, int j2, int k2, int k1) {
+		final Animable obj = createAnimable(class46, j1, i, k, l1, i2, j2, k2);
+
+		worldController.method284(i3, byte1, l2, 1, obj, 1, k1, 0, j, i1);
+
+		if (class46.aBoolean767) {
+			class11.method212(class46.aBoolean757, class46.anInt744, class46.anInt761, i1, j, i);
 		}
-		if (k == 8) {
-			Animable obj10;
-			if (class46.anInt781 == -1 && class46.childrenIDs == null)
-				obj10 = class46.method578(4, 0, l1, i2, j2, k2, -1);
-			else
-				obj10 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.anInt781, true);
-			worldController.method283(i3, j, i, k1, 0, l2, obj10, i1, byte1, 0, 768);
+	}
+
+	// Helper method for height transformation
+	private static int[] transformHeights(int[] heights, int i) {
+		final int[] result = heights.clone();
+
+		switch (i) {
+			case 1:
+				// Rotate once: k2 -> j2 -> i2 -> l1 -> k2
+				final int temp1 = result[3]; // k2
+				result[3] = result[2]; // k2 = j2
+				result[2] = result[1]; // j2 = i2
+				result[1] = result[0]; // i2 = l1
+				result[0] = temp1;     // l1 = k2
+				break;
+
+			case 2:
+				// Rotate twice: swap opposite corners
+				final int temp2a = result[3]; // k2
+				result[3] = result[1]; // k2 = i2
+				result[1] = temp2a;    // i2 = k2
+				final int temp2b = result[2]; // j2
+				result[2] = result[0]; // j2 = l1
+				result[0] = temp2b;    // l1 = j2
+				break;
+
+			case 3:
+				// Rotate three times: k2 -> l1 -> i2 -> j2 -> k2
+				final int temp3 = result[3]; // k2
+				result[3] = result[0]; // k2 = l1
+				result[0] = result[1]; // l1 = i2
+				result[1] = result[2]; // i2 = j2
+				result[2] = temp3;     // j2 = k2
+				break;
 		}
+
+		return result;
 	}
 
 	public static boolean method189(int i, byte[] is, int i_250_)
@@ -612,7 +677,9 @@ public final class ObjectManager {
 									k23 = Rasterizer.method369(25);
 									j23 = -1;
 								}
-								colors.add(k23);
+								if (colors.size() < 256 && !colors.contains(k23)) {
+									colors.add(k23); // Only add unique colors up to 256 limit
+								} // Prevent infinite growth
 								worldController.method279(l, l6, k17, k22,
 									byte4, textureId, j19, k19,
 									l19, i20, method187(j21, j20),

@@ -13,8 +13,6 @@ public class SettingsConfig
 
   public static boolean enableDistanceFog;
 
-  public static boolean enableTweening;
-
   public static boolean enableMipMapping;
 
   public static boolean enableRoofs;

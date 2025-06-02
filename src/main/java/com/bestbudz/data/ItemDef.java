@@ -1,11 +1,11 @@
 package com.bestbudz.data;
 
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.graphics.DrawingArea;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
-import com.bestbudz.rendering.Rasterizer;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
 import java.util.Objects;
@@ -546,7 +546,7 @@ public final class ItemDef {
 				break;
 
 			case 13219:
-				itemDef.name = "Cultivation master cape";
+				itemDef.name = "BankStanding master cape";
 				itemDef.itemActions = new String[5];
 				itemDef.itemActions[1] = "Wear";
 				itemDef.itemActions[4] = "Drop";
@@ -559,7 +559,7 @@ public final class ItemDef {
 				itemDef.anInt165 = 65336;
 				itemDef.anInt200 = 65336;
 				itemDef.stackable = false;
-				itemDef.description = "It's a Cultivation master cape.".getBytes();
+				itemDef.description = "It's a BankStanding master cape.".getBytes();
 				break;
 
 			case 13220:
@@ -1110,24 +1110,24 @@ public final class ItemDef {
 				break;
 
 			case 9810:
-				itemDef.name = "Cultivation cape";
+				itemDef.name = "BankStanding cape";
 				itemDef.itemActions = new String[5];
 				itemDef.itemActions[1] = "Wear";
-				itemDef.description = "A professionist cape of Cultivation.".getBytes();
+				itemDef.description = "A professionist cape of BankStanding.".getBytes();
 				break;
 
 			case 9811:
-				itemDef.name = "Cultivation cape (s)";
+				itemDef.name = "BankStanding cape (s)";
 				itemDef.itemActions = new String[5];
 				itemDef.itemActions[1] = "Wear";
-				itemDef.description = "A professionist silk cape of Cultivation.".getBytes();
+				itemDef.description = "A professionist silk cape of BankStanding.".getBytes();
 				break;
 
 			case 9812:
-				itemDef.name = "Cultivation hood";
+				itemDef.name = "BankStanding hood";
 				itemDef.itemActions = new String[5];
 				itemDef.itemActions[1] = "Wear";
-				itemDef.description = "A professionist hood of Cultivation.".getBytes();
+				itemDef.description = "A professionist hood of BankStanding.".getBytes();
 				break;
 
 			case 9813:

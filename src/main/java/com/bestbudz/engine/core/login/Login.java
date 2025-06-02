@@ -3,8 +3,8 @@ package com.bestbudz.engine.core.login;
 import static com.bestbudz.cache.ResetIDKits.resetIdentityKits;
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.data.ItemDef;
+import static com.bestbudz.engine.config.EngineConfig.worldSelected;
 import com.bestbudz.engine.config.NetworkConfig;
-import com.bestbudz.engine.core.GameState;
 import static com.bestbudz.engine.core.GameState.resetGameState;
 import com.bestbudz.ui.handling.SettingHandler;
 import com.bestbudz.data.AccountData;
@@ -18,13 +18,13 @@ import com.bestbudz.entity.IdentityResolver;
 import com.bestbudz.entity.Npc;
 import com.bestbudz.entity.Stoner;
 import com.bestbudz.network.RSSocket;
-import com.bestbudz.rendering.Rasterizer;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
 import static com.bestbudz.ui.DialogHandling.sendFrame36;
 import static com.bestbudz.ui.interfaces.Chatbox.splitPrivateChat;
 import com.bestbudz.util.ISAACRandomGen;
 import com.bestbudz.util.NodeList;
 import com.bestbudz.util.TextClass;
-import com.bestbudz.world.ObjectManager;
+import com.bestbudz.engine.core.gamerender.ObjectManager;
 import com.bestbudz.world.Varp;
 import java.awt.Graphics2D;
 import java.io.IOException;
@@ -76,7 +76,7 @@ public class Login extends Client
 				//	loginRenderer.displayLoginScreen(g, canvas);
 			}
 
-			server = NetworkConfig.SERVER_IPS[EngineConfig.worldSelected - 1];
+			server = NetworkConfig.SERVER_IPS[worldSelected - 1];
 			socketStream = new RSSocket(client, openSocket(NetworkConfig.SERVER_PORT + portOff));
 
 			long l = TextClass.longForName(username);
@@ -116,7 +116,11 @@ public class Login extends Client
 				aStream_847.writeWordBigEndian(flag ? 18 : 16);
 				aStream_847.writeWordBigEndian(stream.currentOffset + 36 + 1 + 1 + 2);
 				aStream_847.writeWordBigEndian(255);
-				aStream_847.writeWord(EngineConfig.ENGINE_VERSION);
+				if (worldSelected == 3){
+					aStream_847.writeWord(EngineConfig.DEV_ENGINE_VERSION);
+				}else{
+					aStream_847.writeWord(EngineConfig.ENGINE_VERSION);
+				}
 				aStream_847.writeWordBigEndian(lowMem ? 1 : 0);
 
 				for (int l1 = 0; l1 < 9; l1++)

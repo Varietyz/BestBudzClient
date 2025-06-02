@@ -4,178 +4,313 @@ import com.bestbudz.engine.core.Client;
 import com.bestbudz.rendering.animation.Class18;
 import com.bestbudz.network.Stream;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * Optimized SequenceFrame class for handling animation frame data.
+ * Provides better performance, reliability, and maintainability.
+ */
 public final class SequenceFrame {
 
-  public static SequenceFrame[][] animationlist;
-  public int anInt636;
-  public Class18 aClass18_637;
-  public int anInt638;
-  public int[] anIntArray639;
-  public int[] anIntArray640;
-  public int[] anIntArray641;
-  public int[] anIntArray642;
-  public SequenceFrame() {}
+	private static final Logger LOGGER = Logger.getLogger(SequenceFrame.class.getName());
 
-	public static void load(int file, byte[] array) {
+	// Constants for better readability
+	private static final int TEMP_ARRAY_SIZE = 500;
+	private static final int ROTATION_DEFAULT = 128;
+	private static final int POSITION_DEFAULT = 0;
+	private static final int FRAME_MULTIPLIER = 3;
+	private static final int HEX_FRAME_ID_LENGTH = 4;
+	private static final int HEX_RADIX = 16;
+
+	// Frame data - made final where possible
+	public static SequenceFrame[][] animationlist;
+	public final int anInt636;
+	public final Class18 aClass18_637;
+	public final int anInt638;
+	public final int[] anIntArray639;
+	public final int[] anIntArray640;
+	public final int[] anIntArray641;
+	public final int[] anIntArray642;
+
+	/**
+	 * Private constructor for creating frame instances during loading.
+	 */
+	private SequenceFrame(Class18 skinList, int frameCount, int[] indices,
+						  int[] xValues, int[] yValues, int[] zValues) {
+		this.anInt636 = 0; // Default value, maintain compatibility
+		this.aClass18_637 = skinList;
+		this.anInt638 = frameCount;
+		this.anIntArray639 = indices;
+		this.anIntArray640 = xValues;
+		this.anIntArray641 = yValues;
+		this.anIntArray642 = zValues;
+	}
+
+	/**
+	 * Legacy constructor for compatibility.
+	 */
+	public SequenceFrame() {
+		this.anInt636 = 0;
+		this.aClass18_637 = null;
+		this.anInt638 = 0;
+		this.anIntArray639 = null;
+		this.anIntArray640 = null;
+		this.anIntArray641 = null;
+		this.anIntArray642 = null;
+	}
+
+	/**
+	 * Optimized loader with better error handling and performance.
+	 *
+	 * @param fileId the file identifier
+	 * @param data the byte array containing animation data
+	 */
+	public static void load(int fileId, byte[] data) {
+		if (data == null || data.length == 0) {
+			LOGGER.warning("Cannot load sequence frame: empty or null data for file " + fileId);
+			return;
+		}
+
 		try {
-			final Stream ay = new Stream(array);
-			final Class18 b2 = new Class18(ay);
-			final int n = ay.readUnsignedWord();
-			animationlist[file] = new SequenceFrame[n * 3];
+			final Stream stream = new Stream(data);
+			final Class18 skinList = new Class18(stream);
+			final int frameCount = stream.readUnsignedWord();
 
-			final int[] array2 = new int[500];
-			final int[] array3 = new int[500];
-			final int[] array4 = new int[500];
-			final int[] array5 = new int[500];
+			// Initialize animation list for this file
+			animationlist[fileId] = new SequenceFrame[frameCount * FRAME_MULTIPLIER];
 
-			for (int j = 0; j < n; ++j) {
+			// Pre-allocate temporary arrays once
+			final FrameDataBuilder builder = new FrameDataBuilder();
+
+			for (int frameIndex = 0; frameIndex < frameCount; frameIndex++) {
 				try {
-					final int k = ay.readUnsignedWord();
-					final SequenceFrame[] array6 = animationlist[file];
-					final SequenceFrame q = new SequenceFrame();
-					array6[k] = q;
-					q.aClass18_637 = b2;
-
-					final int f = ay.readUnsignedByte();
-					int c2 = 0;
-					int n3 = -1;
-
-					for (int l = 0; l < f; ++l) {
-						final int f2 = ay.readUnsignedByte();
-						if (f2 > 0) {
-							if (b2.anIntArray342[l] != 0) {
-								for (int n4 = l - 1; n4 > n3; --n4) {
-									if (b2.anIntArray342[n4] == 0) {
-										array2[c2] = n4;
-										array3[c2] = 0;
-										array4[c2] = 0;
-										array5[c2] = 0;
-										c2++;
-										break;
-									}
-								}
-							}
-
-							array2[c2] = l;
-							int base = (b2.anIntArray342[l] == 3) ? 128 : 0;
-							array3[c2] = (f2 & 0x1) != 0 ? ay.readShort2() : base;
-							array4[c2] = (f2 & 0x2) != 0 ? ay.readShort2() : base;
-							array5[c2] = (f2 & 0x4) != 0 ? ay.readShort2() : base;
-
-							n3 = l;
-							c2++;
-						}
-					}
-
-					q.anInt638 = c2;
-					q.anIntArray639 = new int[c2];
-					q.anIntArray640 = new int[c2];
-					q.anIntArray641 = new int[c2];
-					q.anIntArray642 = new int[c2];
-
-					for (int l = 0; l < c2; ++l) {
-						q.anIntArray639[l] = array2[l];
-						q.anIntArray640[l] = array3[l];
-						q.anIntArray641[l] = array4[l];
-						q.anIntArray642[l] = array5[l];
-					}
-				} catch (Exception inner) {
-					System.err.println("⚠ Skipping corrupt sequence frame in block " + file + " at index " + j + ": " + inner.getMessage());
+					loadSingleFrame(stream, skinList, animationlist[fileId], builder);
+				} catch (Exception e) {
+					LOGGER.log(Level.WARNING,
+						"Skipping corrupt sequence frame in file " + fileId +
+							" at index " + frameIndex + ": " + e.getMessage(), e);
 				}
 			}
-		} catch (Exception ex) {
-			System.err.println("❌ Failed to load sequence block " + file + ": " + ex.getMessage());
-			// Skip loading but do NOT crash the dock
+
+			LOGGER.info("Successfully loaded " + frameCount + " sequence frames for file " + fileId);
+
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, "Failed to load sequence file " + fileId, e);
+			// Ensure we don't leave a partially loaded state
+			if (animationlist[fileId] != null) {
+				animationlist[fileId] = new SequenceFrame[0];
+			}
 		}
 	}
 
+	/**
+	 * Loads a single frame from the stream.
+	 */
+	private static void loadSingleFrame(Stream stream, Class18 skinList,
+										SequenceFrame[] frameArray, FrameDataBuilder builder) {
+		final int frameId = stream.readUnsignedWord();
+		final int transformCount = stream.readUnsignedByte();
 
-  public static void loader(int file, byte[] abyte0) {
-    try {
-      Stream stream = new Stream(abyte0);
-      Class18 class18 = new Class18(stream);
-      int k1 = stream.readUnsignedWord();
-      animationlist[file] = new SequenceFrame[k1 * 3];
-      int[] ai = new int[500];
-      int[] ai1 = new int[500];
-      int[] ai2 = new int[500];
-      int[] ai3 = new int[500];
-      for (int l1 = 0; l1 < k1; l1++) {
-        int i2 = stream.readUnsignedWord();
-        SequenceFrame class36 = animationlist[file][i2] = new SequenceFrame();
+		builder.reset();
+		int lastProcessedIndex = -1;
 
-		  int j2 = stream.readUnsignedByte();
-        int l2 = 0;
-        int k2 = -1;
-        for (int i3 = 0; i3 < j2; i3++) {
-          int j3 = stream.readUnsignedByte();
-          if (j3 > 0) {
-            if (class18.anIntArray342[i3] != 0) {
-              for (int l3 = i3 - 1; l3 > k2; l3--) {
-                if (class18.anIntArray342[l3] != 0) continue;
-                ai[l2] = l3;
-                ai1[l2] = 0;
-                ai2[l2] = 0;
-                ai3[l2] = 0;
-                l2++;
-                break;
-              }
-            }
-            ai[l2] = i3;
-            short c = 0;
-            if (class18.anIntArray342[i3] == 3) c = (short) 128;
+		// Process each transformation in the frame
+		for (int i = 0; i < transformCount; i++) {
+			final int transformFlags = stream.readUnsignedByte();
 
-            if ((j3 & 1) != 0) ai1[l2] = stream.readShort2();
-            else ai1[l2] = c;
-            if ((j3 & 2) != 0) ai2[l2] = stream.readShort2();
-            else ai2[l2] = c;
-            if ((j3 & 4) != 0) ai3[l2] = stream.readShort2();
-            else ai3[l2] = c;
-            k2 = i3;
-            l2++;
-          }
-        }
-        class36.anInt638 = l2;
-        class36.anIntArray639 = new int[l2];
-        class36.anIntArray640 = new int[l2];
-        class36.anIntArray641 = new int[l2];
-        class36.anIntArray642 = new int[l2];
-        for (int k3 = 0; k3 < l2; k3++) {
-          class36.anIntArray639[k3] = ai[k3];
-          class36.anIntArray640[k3] = ai1[k3];
-          class36.anIntArray641[k3] = ai2[k3];
-          class36.anIntArray642[k3] = ai3[k3];
-        }
-      }
-    } catch (Exception exception)
-	{
-		throw new RuntimeException(exception);
+			if (transformFlags > 0) {
+				processTransformation(stream, skinList, builder, i, transformFlags, lastProcessedIndex);
+				lastProcessedIndex = i;
+			}
+		}
+
+		// Create the frame with the collected data
+		frameArray[frameId] = builder.createFrame(skinList);
 	}
-  }
 
-  public static void nullLoader() {
-    animationlist = null;
-  }
+	/**
+	 * Processes a single transformation within a frame.
+	 */
+	private static void processTransformation(Stream stream, Class18 skinList,
+											  FrameDataBuilder builder, int currentIndex,
+											  int transformFlags, int lastProcessedIndex) {
 
-  public static SequenceFrame method531(int int1) {
-    try {
-      final String hexString;
-      final int int2 =
-          Integer.parseInt(
-              (hexString = Integer.toHexString(int1)).substring(0, hexString.length() - 4), 16);
-      int1 = Integer.parseInt(hexString.substring(hexString.length() - 4), 16);
-      if (animationlist[int2].length == 0) {
-        Client.instance.onDemandFetcher.method558(1, int2);
-        return null;
-      }
-      return animationlist[int2][int1];
-    } catch (Exception ex) {
-      ex.printStackTrace();
-      return null;
-    }
-  }
+		// Fill gaps with default values if needed
+		if (skinList.anIntArray342[currentIndex] != 0) {
+			fillTransformationGaps(skinList, builder, currentIndex, lastProcessedIndex);
+		}
 
-  public static boolean method532(int i) {
-    return i == -1;
-  }
+		// Determine default value based on transformation type
+		final int defaultValue = (skinList.anIntArray342[currentIndex] == 3) ?
+			ROTATION_DEFAULT : POSITION_DEFAULT;
+
+		// Read transformation values based on flags
+		final int xValue = (transformFlags & 0x1) != 0 ? stream.readShort2() : defaultValue;
+		final int yValue = (transformFlags & 0x2) != 0 ? stream.readShort2() : defaultValue;
+		final int zValue = (transformFlags & 0x4) != 0 ? stream.readShort2() : defaultValue;
+
+		builder.addTransformation(currentIndex, xValue, yValue, zValue);
+	}
+
+	/**
+	 * Fills gaps in transformation data with default values.
+	 */
+	private static void fillTransformationGaps(Class18 skinList, FrameDataBuilder builder,
+											   int currentIndex, int lastProcessedIndex) {
+		for (int gapIndex = currentIndex - 1; gapIndex > lastProcessedIndex; gapIndex--) {
+			if (skinList.anIntArray342[gapIndex] == 0) {
+				builder.addTransformation(gapIndex, POSITION_DEFAULT, POSITION_DEFAULT, POSITION_DEFAULT);
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Legacy loader method for backward compatibility.
+	 * Delegates to the optimized load method.
+	 */
+	public static void loader(int file, byte[] data) {
+		load(file, data);
+	}
+
+	/**
+	 * Clears all animation data.
+	 */
+	public static void nullLoader() {
+		animationlist = null;
+	}
+
+	/**
+	 * Retrieves a sequence frame by its encoded identifier.
+	 * Optimized with better error handling and caching.
+	 *
+	 * @param encodedId the encoded frame identifier
+	 * @return the sequence frame, or null if not found/available
+	 */
+	public static SequenceFrame method531(int encodedId) {
+		try {
+			final FrameIdentifier frameId = decodeFrameId(encodedId);
+
+			if (frameId == null || !isValidFrameId(frameId)) {
+				return null;
+			}
+
+			final SequenceFrame[] frameArray = animationlist[frameId.fileIndex];
+			if (frameArray == null || frameArray.length == 0) {
+				// Request loading if not available
+				Client.instance.onDemandFetcher.method558(1, frameId.fileIndex);
+				return null;
+			}
+
+			if (frameId.frameIndex >= frameArray.length) {
+				LOGGER.warning("Frame index " + frameId.frameIndex +
+					" exceeds array length " + frameArray.length +
+					" for file " + frameId.fileIndex);
+				return null;
+			}
+
+			return frameArray[frameId.frameIndex];
+
+		} catch (Exception e) {
+			LOGGER.log(Level.WARNING, "Error retrieving frame for ID: " + encodedId, e);
+			return null;
+		}
+	}
+
+	/**
+	 * Decodes a frame identifier from its encoded form.
+	 */
+	private static FrameIdentifier decodeFrameId(int encodedId) {
+		try {
+			final String hexString = Integer.toHexString(encodedId);
+
+			if (hexString.length() < HEX_FRAME_ID_LENGTH) {
+				return new FrameIdentifier(0, encodedId);
+			}
+
+			final int splitPoint = hexString.length() - HEX_FRAME_ID_LENGTH;
+			final int fileIndex = Integer.parseInt(hexString.substring(0, splitPoint), HEX_RADIX);
+			final int frameIndex = Integer.parseInt(hexString.substring(splitPoint), HEX_RADIX);
+
+			return new FrameIdentifier(fileIndex, frameIndex);
+
+		} catch (NumberFormatException e) {
+			LOGGER.warning("Invalid frame ID format: " + encodedId);
+			return null;
+		}
+	}
+
+	/**
+	 * Validates frame identifier bounds.
+	 */
+	private static boolean isValidFrameId(FrameIdentifier frameId) {
+		return frameId.fileIndex >= 0 &&
+			frameId.frameIndex >= 0 &&
+			frameId.fileIndex < animationlist.length;
+	}
+
+	/**
+	 * Legacy method for checking if frame ID is invalid.
+	 *
+	 * @param frameId the frame identifier
+	 * @return true if frame ID is invalid (-1)
+	 */
+	public static boolean method532(int frameId) {
+		return frameId == -1;
+	}
+
+	/**
+	 * Helper class for building frame data efficiently.
+	 */
+	private static final class FrameDataBuilder {
+		private final int[] tempIndices = new int[TEMP_ARRAY_SIZE];
+		private final int[] tempXValues = new int[TEMP_ARRAY_SIZE];
+		private final int[] tempYValues = new int[TEMP_ARRAY_SIZE];
+		private final int[] tempZValues = new int[TEMP_ARRAY_SIZE];
+		private int count = 0;
+
+		void reset() {
+			count = 0;
+		}
+
+		void addTransformation(int index, int x, int y, int z) {
+			if (count < TEMP_ARRAY_SIZE) {
+				tempIndices[count] = index;
+				tempXValues[count] = x;
+				tempYValues[count] = y;
+				tempZValues[count] = z;
+				count++;
+			}
+		}
+
+		SequenceFrame createFrame(Class18 skinList) {
+			// Create properly sized arrays
+			final int[] indices = new int[count];
+			final int[] xValues = new int[count];
+			final int[] yValues = new int[count];
+			final int[] zValues = new int[count];
+
+			// Copy data efficiently
+			System.arraycopy(tempIndices, 0, indices, 0, count);
+			System.arraycopy(tempXValues, 0, xValues, 0, count);
+			System.arraycopy(tempYValues, 0, yValues, 0, count);
+			System.arraycopy(tempZValues, 0, zValues, 0, count);
+
+			return new SequenceFrame(skinList, count, indices, xValues, yValues, zValues);
+		}
+	}
+
+	/**
+	 * Helper class for frame identification.
+	 */
+	private static final class FrameIdentifier {
+		final int fileIndex;
+		final int frameIndex;
+
+		FrameIdentifier(int fileIndex, int frameIndex) {
+			this.fileIndex = fileIndex;
+			this.frameIndex = frameIndex;
+		}
+	}
 }

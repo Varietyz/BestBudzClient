@@ -1,6 +1,9 @@
 package com.bestbudz.graphics;
 
-public class rsDrawingArea extends DrawingArea {
+import com.bestbudz.engine.core.gamerender.DrawingArea;
+
+public class rsDrawingArea extends DrawingArea
+{
 
   public static int height;
   public static int bottomX;

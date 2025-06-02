@@ -1,6 +1,7 @@
 package com.bestbudz.world;
 
 import com.bestbudz.engine.core.Client;
+import com.bestbudz.engine.core.gamerender.WorldController;
 import static com.bestbudz.ui.handling.input.Keyboard.keyArray;
 import com.bestbudz.ui.handling.input.MouseState;
 

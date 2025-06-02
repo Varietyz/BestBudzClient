@@ -60,7 +60,7 @@ public class SkillsPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		SKILL_BUTTON_MAP.put("weedsmoking", 94151);
 		SKILL_BUTTON_MAP.put("accomplisher", 94157);
 		SKILL_BUTTON_MAP.put("mercenary", 94166);
-		SKILL_BUTTON_MAP.put("cultivation", 94167);
+		SKILL_BUTTON_MAP.put("bankstanding", 94167);
 		SKILL_BUTTON_MAP.put("consumer", 94165);
 	}
 

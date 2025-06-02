@@ -3,9 +3,8 @@ package com.bestbudz.engine.core;
 import com.bestbudz.dock.frame.UIDockFrame;
 import com.bestbudz.dock.ui.manager.UIModalManager;
 import static com.bestbudz.engine.core.GameState.runSceneRendering;
-import com.bestbudz.graphics.FogUtil;
 import static com.bestbudz.ui.handling.Errors.showErrorScreen;
-import static com.bestbudz.ui.handling.Camera.setCameraPos;
+import static com.bestbudz.engine.core.gamerender.Camera.setCameraPos;
 import static com.bestbudz.ui.handling.input.Keyboard.console;
 import static com.bestbudz.ui.handling.input.Keyboard.keyArray;
 import static com.bestbudz.ui.handling.input.MouseActions.handleClickPacket;
@@ -20,7 +19,7 @@ import static com.bestbudz.entity.EntityMovement.updateAllStoners;
 import static com.bestbudz.entity.ParseAndUpdateEntities.parseStoners;
 import static com.bestbudz.entity.ParseAndUpdateEntities.renderNPCs;
 import static com.bestbudz.entity.UpdateEntities.updateEntities;
-import static com.bestbudz.graphics.DrawingArea.pixels;
+import static com.bestbudz.engine.core.gamerender.DrawingArea.pixels;
 import static com.bestbudz.graphics.HeadIcon.drawHeadIcon;
 import static com.bestbudz.graphics.MovingTextures.updateMovingTextures;
 import static com.bestbudz.rendering.Roofing.getRoofPlane;
@@ -60,9 +59,9 @@ import com.bestbudz.entity.IdentityKit;
 import com.bestbudz.entity.Npc;
 import com.bestbudz.entity.Stoner;
 import com.bestbudz.graphics.Background;
-import com.bestbudz.graphics.DrawingArea;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.graphics.FogHandler;
-import com.bestbudz.graphics.Texture;
+import com.bestbudz.engine.core.gamerender.Texture;
 import com.bestbudz.graphics.buffer.ImageProducer;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.graphics.text.RSFont;
@@ -76,7 +75,7 @@ import com.bestbudz.rendering.Animable_Sub3;
 import com.bestbudz.rendering.Animable_Sub4;
 import com.bestbudz.rendering.Animable_Sub5;
 import com.bestbudz.rendering.OverlayFloor;
-import com.bestbudz.rendering.Rasterizer;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.SpotAnim;
 import com.bestbudz.rendering.animation.Animation;
@@ -95,9 +94,9 @@ import com.bestbudz.world.Object2;
 import com.bestbudz.world.Object3;
 import com.bestbudz.world.Object5;
 import com.bestbudz.world.ObjectDef;
-import com.bestbudz.world.ObjectManager;
+import com.bestbudz.engine.core.gamerender.ObjectManager;
 import com.bestbudz.world.Varp;
-import com.bestbudz.world.WorldController;
+import com.bestbudz.engine.core.gamerender.WorldController;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -743,7 +742,7 @@ public static final int[] anIntArray1240 = new int[100];
 			ai[i8] = l8 * i9 >> 16;
 		}
 
-			WorldController.viewDistance = EngineConfig.CAMERA_VIEW_DISTANCE;
+			WorldController.viewDistance = 10;
 			cameraZoom = EngineConfig.CAMERA_ZOOM;
 
 		if (extendChatArea > frameHeight - 170)
@@ -1676,9 +1675,16 @@ public static final int[] anIntArray1240 = new int[100];
 				i = anIntArray1203[4] + 128;
 			}
 			int calc = minimapInt1 + anInt896 & 0x7ff;
+// Calculate pure camera distance (not view area)
+			int cameraDistance = cameraZoom + i;
+
+// Apply screen size compensation without affecting view area
+			if (frameWidth >= 1024) {
+				cameraDistance += (cameraZoom - frameHeight / 200);
+			}
+
 			setCameraPos(
-				cameraZoom + (frameWidth >= 1024 ? i + cameraZoom - frameHeight / 200 : i)
-					* (WorldController.viewDistance == 10 ? 1 : 3),
+				cameraDistance,  // Just camera distance - no view multiplier
 				i, anInt1014, getTerrainHeight(plane, myStoner.y, myStoner.x) - 50, calc, anInt1015);
 		}
 		int j;
@@ -1727,31 +1733,9 @@ public static final int[] anIntArray1240 = new int[100];
 		GameState.safeRenderWorld(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 		worldController.clearObj5Cache();
 		if (SettingsConfig.enableDistanceFog) {
-			// Simple color animation - no frame skipping
-			if (!ColorUtility.switchColor) {
-				if (fogHandler.fogColor != ColorUtility.fadingToColor) {
-					ColorUtility.switchColor = true;
-				}
-			}
-
-			if (ColorUtility.switchColor) {
-				ColorUtility.fadeStep++;
-				if (ColorUtility.fadeStep >= 100) {
-					ColorUtility.fadeStep = 1;
-					ColorUtility.switchColor = false;
-					fogHandler.fogColor = ColorUtility.fadingToColor;
-				} else {
-					fogHandler.fogColor = ColorUtility.fadeColors(
-						new Color(fogHandler.fogColor),
-						new Color(ColorUtility.fadingToColor),
-						ColorUtility.fadeStep
-					);
-				}
-			}
-
-			// Simple fog rendering
 			fogHandler.renderFog(aRSImageProducer_1165.canvasRaster, aRSImageProducer_1165.depthBuffer);
 		}
+
 		if (inMaze(baseX + (myStoner.x - 6 >> 7)) && filterGrayScale)
 		{
 			DrawingArea.filterGrayscale(0, 0, frameWidth, frameHeight, 1);

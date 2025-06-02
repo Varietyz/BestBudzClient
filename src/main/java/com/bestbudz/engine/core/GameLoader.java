@@ -17,7 +17,7 @@ import com.bestbudz.network.OnDemandFetcher;
 import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.Animable_Sub5;
 import com.bestbudz.rendering.OverlayFloor;
-import com.bestbudz.rendering.Rasterizer;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.SpotAnim;
 import com.bestbudz.rendering.animation.Animation;
@@ -33,7 +33,7 @@ import com.bestbudz.world.Floor;
 import com.bestbudz.world.ObjectDef;
 import com.bestbudz.world.VarBit;
 import com.bestbudz.world.Varp;
-import com.bestbudz.world.WorldController;
+import com.bestbudz.engine.core.gamerender.WorldController;
 
 import java.awt.Graphics2D;
 import java.lang.ref.WeakReference;
@@ -126,8 +126,8 @@ public class GameLoader extends Client {
 			streamLoaderForName(8, "sound effects", "sounds", expectedCRCs[8], 55, g);
 
 			// PHASE 3: World systems - exactly as original
-			byteGroundArray = new byte[4][104][104];
-			intGroundArray = new int[4][105][105];
+			byteGroundArray = new byte[4][208][208];
+			intGroundArray = new int[4][209][209];
 			worldController = new WorldController(intGroundArray);
 			for (int j = 0; j < 4; j++)
 				aClass11Array1230[j] = new Class11();

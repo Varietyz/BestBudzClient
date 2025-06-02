@@ -7,10 +7,10 @@ import com.bestbudz.util.Node;
 public final class Ground extends Node {
 
   public final Object5[] obj5Array;
-  final int anInt1308;
-  final int anInt1309;
-  final int anInt1310;
-  final int[] anIntArray1319;
+  public final int anInt1308;
+  public final int anInt1309;
+  public final int anInt1310;
+  public final int[] anIntArray1319;
   public Class43 aClass43_1311;
   public Class40 aClass40_1312;
   public Object1 obj1;
@@ -18,17 +18,17 @@ public final class Ground extends Node {
   public Object3 obj3;
   public Object4 obj4;
   public Ground aClass30_Sub3_1329;
-  int anInt1307;
-  int anInt1317;
-  int anInt1320;
-  int anInt1321;
-  boolean aBoolean1322;
+  public int anInt1307;
+  public int anInt1317;
+  public int anInt1320;
+  public int anInt1321;
+  public boolean aBoolean1322;
   public boolean aBoolean1323;
-  boolean aBoolean1324;
-  int anInt1325;
-  int anInt1326;
-  int anInt1327;
-  int anInt1328;
+  public boolean aBoolean1324;
+  public int anInt1325;
+  public int anInt1326;
+  public int anInt1327;
+  public int anInt1328;
   public Ground(int i, int j, int k) {
     obj5Array = new Object5[5];
     anIntArray1319 = new int[5];

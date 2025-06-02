@@ -4,9 +4,10 @@ public final class EngineConfig
 {
 	public static final String TITLE = "BestBudz";
 	public static final int ENGINE_VERSION = 227; //(OLD= 227)
+	public static final int DEV_ENGINE_VERSION = 420;
 
 	public static final boolean DIAGNOSTIC_MODE = true;
-	public static boolean DEBUG_MODE = false;
+	public static boolean DEBUG_MODE = true;
 
 	public static final int VIEW_DISTANCE = 10;
 	public static final int CAMERA_VIEW_DISTANCE = 10;

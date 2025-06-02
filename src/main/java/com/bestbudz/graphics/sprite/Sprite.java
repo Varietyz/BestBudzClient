@@ -3,7 +3,7 @@ package com.bestbudz.graphics.sprite;
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.ui.handling.input.MouseState;
 import com.bestbudz.graphics.Background;
-import com.bestbudz.graphics.DrawingArea;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
 import com.bestbudz.util.FileUtility;
@@ -779,11 +779,6 @@ public final class Sprite extends DrawingArea
 					int g = (c1 >> 8 & 0xff) * a1 + (c2 >> 8 & 0xff) * a2 + (c3 >> 8 & 0xff) * a3
 							+ (c4 >> 8 & 0xff) * a4 >> 8 & 0xff00;
 					int b = (c1 & 0xff) * a1 + (c2 & 0xff) * a2 + (c3 & 0xff) * a3 + (c4 & 0xff) * a4 >> 16;
-					//if (SettingsConfig.enableHDMinimap) {
-					//	DrawingArea.pixels[j4++] = r | g | b;
-					//} else {
-					//	DrawingArea.pixels[j4++] = myPixels[(k4 >> 16) + (l4 >> 16) * myWidth];
-					//}
 					k4 += i3;
 					l4 -= l2;
 				}

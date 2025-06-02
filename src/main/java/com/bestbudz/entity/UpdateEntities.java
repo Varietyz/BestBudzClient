@@ -3,7 +3,7 @@ package com.bestbudz.entity;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.config.ColorConfig;
 import com.bestbudz.engine.config.SettingsConfig;
-import com.bestbudz.graphics.DrawingArea;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import static com.bestbudz.graphics.Hitmark.hitmarkDraw;
 import com.bestbudz.graphics.sprite.Sprite;
 import static com.bestbudz.ui.interfaces.Chatbox.publicChatMode;

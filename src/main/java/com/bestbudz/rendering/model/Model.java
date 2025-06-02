@@ -1,15 +1,14 @@
 package com.bestbudz.rendering.model;
 
-import com.bestbudz.engine.config.SettingsConfig;
-import com.bestbudz.graphics.DrawingArea;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.network.OnDemandFetcherParent;
 import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.Animable;
-import com.bestbudz.rendering.Rasterizer;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.animation.Class18;
 import com.bestbudz.util.compression.Class21;
-import com.bestbudz.world.WorldController;
+import com.bestbudz.engine.core.gamerender.WorldController;
 import java.util.Objects;
 
 public class Model extends Animable
@@ -1669,103 +1668,184 @@ public class Model extends Animable
 		}
 	}
 
+	/**
+	 * Interpolates between animation frames for smooth animation transitions.
+	 *
+	 * @param frame current frame index
+	 * @param nextFrame next frame index for interpolation
+	 * @param cycle current cycle position
+	 * @param length total cycle length
+	 */
 	public void interpolateFrames(int frame, int nextFrame, int cycle, int length) {
-		if (!SettingsConfig.enableTweening) {
-			method470(frame);
+		// Early validation - consolidated checks
+		if (anIntArrayArray1657 == null || frame == -1) {
 			return;
 		}
-		if (anIntArrayArray1657 == null) {
-			return;
-		}
-		if (frame == -1) {
-			return;
-		}
+
 		final SequenceFrame currAnim = SequenceFrame.method531(frame);
 		if (currAnim == null) {
 			return;
 		}
+
 		final Class18 skinList = currAnim.aClass18_637;
-		SequenceFrame nextAnim = null;
-    	if (nextFrame != -1) {
-    		nextAnim = SequenceFrame.method531(nextFrame);
-    		if (Objects.requireNonNull(nextAnim).aClass18_637 != skinList) {
-    			nextAnim = null;
-    		}
-    	}
-    	anInt1681 = 0;
-    	anInt1682 = 0;
-    	anInt1683 = 0;
+		if (skinList == null) {
+			return;
+		}
+
+		// Reset transformation accumulators
+		anInt1681 = 0;
+		anInt1682 = 0;
+		anInt1683 = 0;
+
+		// Get next frame for interpolation if available
+		final SequenceFrame nextAnim = getValidNextFrame(nextFrame, skinList);
+
 		if (nextAnim == null) {
-			for (int index = 0; index < currAnim.anInt638; index++) {
-				int anim = currAnim.anIntArray639[index];
-				method472(skinList.anIntArray342[anim], skinList.anIntArrayArray343[anim], currAnim.anIntArray640[index], currAnim.anIntArray641[index], currAnim.anIntArray642[index]);
-			}
+			// No interpolation - process current frame only
+			processCurrentFrameOnly(currAnim, skinList);
 		} else {
-	    	int currFrameId = 0;
-	    	int nextFrameId = 0;
-		    for (int index = 0; index < skinList.length; index++) {
-  		    	boolean interpolate = currFrameId < currAnim.anInt638 && currAnim.anIntArray639[currFrameId] == index;
-				boolean interpolate2 = nextFrameId < nextAnim.anInt638 && nextAnim.anIntArray639[nextFrameId] == index;
-				if (interpolate || interpolate2) {
-					int defaultModifier = 0;
-					int opcode = skinList.anIntArray342[index];
-					if (opcode == 3) {
-						defaultModifier = 128;
-					}
-					int currAnimX;
-					int currAnimY;
-					int currAnimZ;
-					if (interpolate) {
-						currAnimX = currAnim.anIntArray640[currFrameId];
-						currAnimY = currAnim.anIntArray641[currFrameId];
-						currAnimZ = currAnim.anIntArray642[currFrameId];
-						currFrameId++;
-					} else {
-						currAnimX = defaultModifier;
-						currAnimY = defaultModifier;
-						currAnimZ = defaultModifier;
-					}
-					int nextAnimX;
-					int nextAnimY;
-					int nextAnimZ;
-					if (interpolate2) {
-						nextAnimX = nextAnim.anIntArray640[nextFrameId];
-						nextAnimY = nextAnim.anIntArray641[nextFrameId];
-						nextAnimZ = nextAnim.anIntArray642[nextFrameId];
-						nextFrameId++;
-					} else {
-						nextAnimX = defaultModifier;
-						nextAnimY = defaultModifier;
-						nextAnimZ = defaultModifier;
-					}
-					int interpolatedX;
-					int interpolatedY;
-					int interpolatedZ;
-					if (opcode == 2) {
-						int deltaX = nextAnimX - currAnimX & 0xff;
-						int deltaY = nextAnimY - currAnimY & 0xff;
-						int deltaZ = nextAnimZ - currAnimZ & 0xff;
-						if (deltaX >= 128) {
-							deltaX -= 256;
-						}
-						if (deltaY >= 128) {
-							deltaY -= 256;
-						}
-						if (deltaZ >= 128) {
-							deltaZ -= 256;
-						}
-						interpolatedX = currAnimX + deltaX * cycle / length & 0xff;
-						interpolatedY = currAnimY + deltaY * cycle / length & 0xff;
-						interpolatedZ = currAnimZ + deltaZ * cycle / length & 0xff;
-					} else {
-						interpolatedX = currAnimX + (nextAnimX - currAnimX) * cycle / length;
-						interpolatedY = currAnimY + (nextAnimY - currAnimY) * cycle / length;
-						interpolatedZ = currAnimZ + (nextAnimZ - currAnimZ) * cycle / length;
-					}
-					method472(opcode, skinList.anIntArrayArray343[index], interpolatedX, interpolatedY, interpolatedZ);
-		    	}
-		    }
-	    }
+			// Full interpolation between frames
+			processInterpolatedFrames(currAnim, nextAnim, skinList, cycle, length);
+		}
+	}
+
+	/**
+	 * Gets the next frame if it's valid for interpolation.
+	 * Returns null if the frame is invalid or incompatible.
+	 */
+	private SequenceFrame getValidNextFrame(int nextFrame, Class18 skinList) {
+		if (nextFrame == -1) {
+			return null;
+		}
+
+		final SequenceFrame nextAnim = SequenceFrame.method531(nextFrame);
+		if (nextAnim == null || nextAnim.aClass18_637 != skinList) {
+			return null;
+		}
+
+		return nextAnim;
+	}
+
+	/**
+	 * Processes animation when only current frame is available (no interpolation).
+	 */
+	private void processCurrentFrameOnly(SequenceFrame currAnim, Class18 skinList) {
+		final int frameCount = currAnim.anInt638;
+		final int[] frameIndices = currAnim.anIntArray639;
+		final int[] frameX = currAnim.anIntArray640;
+		final int[] frameY = currAnim.anIntArray641;
+		final int[] frameZ = currAnim.anIntArray642;
+		final int[] opcodes = skinList.anIntArray342;
+		final int[][] transformations = skinList.anIntArrayArray343;
+
+		for (int i = 0; i < frameCount; i++) {
+			final int animIndex = frameIndices[i];
+			method472(opcodes[animIndex], transformations[animIndex],
+				frameX[i], frameY[i], frameZ[i]);
+		}
+	}
+
+	/**
+	 * Processes interpolated animation between current and next frames.
+	 */
+	private void processInterpolatedFrames(SequenceFrame currAnim, SequenceFrame nextAnim,
+										   Class18 skinList, int cycle, int length) {
+
+		// Cache frequently accessed arrays
+		final int skinLength = skinList.length;
+		final int[] opcodes = skinList.anIntArray342;
+		final int[][] transformations = skinList.anIntArrayArray343;
+
+		// Current frame data
+		final int currFrameCount = currAnim.anInt638;
+		final int[] currIndices = currAnim.anIntArray639;
+		final int[] currX = currAnim.anIntArray640;
+		final int[] currY = currAnim.anIntArray641;
+		final int[] currZ = currAnim.anIntArray642;
+
+		// Next frame data
+		final int nextFrameCount = nextAnim.anInt638;
+		final int[] nextIndices = nextAnim.anIntArray639;
+		final int[] nextX = nextAnim.anIntArray640;
+		final int[] nextY = nextAnim.anIntArray641;
+		final int[] nextZ = nextAnim.anIntArray642;
+
+		// Interpolation parameters - calculate once
+		final float interpolationRatio = (float) cycle / length;
+		final float invRatio = 1.0f - interpolationRatio;
+
+		int currFrameId = 0;
+		int nextFrameId = 0;
+
+		for (int index = 0; index < skinLength; index++) {
+			// Check if this index needs processing
+			final boolean hasCurrFrame = currFrameId < currFrameCount && currIndices[currFrameId] == index;
+			final boolean hasNextFrame = nextFrameId < nextFrameCount && nextIndices[nextFrameId] == index;
+
+			if (!hasCurrFrame && !hasNextFrame) {
+				continue; // Skip if no animation data for this index
+			}
+
+			final int opcode = opcodes[index];
+			final int defaultModifier = (opcode == 3) ? 128 : 0;
+
+			// Get current frame values
+			final int currAnimX, currAnimY, currAnimZ;
+			if (hasCurrFrame) {
+				currAnimX = currX[currFrameId];
+				currAnimY = currY[currFrameId];
+				currAnimZ = currZ[currFrameId];
+				currFrameId++;
+			} else {
+				currAnimX = defaultModifier;
+				currAnimY = defaultModifier;
+				currAnimZ = defaultModifier;
+			}
+
+			// Get next frame values
+			final int nextAnimX, nextAnimY, nextAnimZ;
+			if (hasNextFrame) {
+				nextAnimX = nextX[nextFrameId];
+				nextAnimY = nextY[nextFrameId];
+				nextAnimZ = nextZ[nextFrameId];
+				nextFrameId++;
+			} else {
+				nextAnimX = defaultModifier;
+				nextAnimY = defaultModifier;
+				nextAnimZ = defaultModifier;
+			}
+
+			// Calculate interpolated values based on opcode
+			final int interpolatedX, interpolatedY, interpolatedZ;
+			if (opcode == 2) {
+				// Rotation interpolation with proper angle wrapping
+				interpolatedX = interpolateRotation(currAnimX, nextAnimX, interpolationRatio);
+				interpolatedY = interpolateRotation(currAnimY, nextAnimY, interpolationRatio);
+				interpolatedZ = interpolateRotation(currAnimZ, nextAnimZ, interpolationRatio);
+			} else {
+				// Linear interpolation for position/scale
+				interpolatedX = Math.round(currAnimX * invRatio + nextAnimX * interpolationRatio);
+				interpolatedY = Math.round(currAnimY * invRatio + nextAnimY * interpolationRatio);
+				interpolatedZ = Math.round(currAnimZ * invRatio + nextAnimZ * interpolationRatio);
+			}
+
+			method472(opcode, transformations[index], interpolatedX, interpolatedY, interpolatedZ);
+		}
+	}
+
+	/**
+	 * Interpolates rotation values with proper angle wrapping.
+	 * Handles the 0-255 rotation range with wraparound.
+	 */
+	private int interpolateRotation(int current, int next, float ratio) {
+		// Calculate shortest rotation path
+		int delta = (next - current) & 0xFF;
+		if (delta >= 128) {
+			delta -= 256;
+		}
+
+		// Interpolate and wrap result
+		return (current + Math.round(delta * ratio)) & 0xFF;
 	}
 
 	public void method470(int i) {

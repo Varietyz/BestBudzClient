@@ -5,8 +5,8 @@ import static com.bestbudz.ui.handling.RightClickMenu.rightClickMenu;
 import com.bestbudz.ui.handling.input.MouseState;
 import static com.bestbudz.ui.BuildInterface.buildInterfaceMenu;
 import static com.bestbudz.ui.DrawInterface.drawInterface;
-import com.bestbudz.graphics.DrawingArea;
-import com.bestbudz.rendering.Rasterizer;
+import com.bestbudz.engine.core.gamerender.DrawingArea;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
 import java.util.Set;
 
 public class TabArea extends Client

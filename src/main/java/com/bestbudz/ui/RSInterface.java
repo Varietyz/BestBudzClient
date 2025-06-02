@@ -1066,7 +1066,7 @@ public class RSInterface {
 		addLunar3RunesSmallBox(30202, 9075, 554, 555, 1, 6, 6, 30003, 30004, 81, "Mage Imbue",
 				"Combine runes without a talisman", TDA, 183, 0, 5);
 		addLunar3RunesBigBox(30210, 9075, 561, 557, 2, 1, 14, 30010, 30006, 82, "Fertile Soil",
-				"Fertilise a cultivation patch with super\\ncompost", TDA, 184, 4, 2);
+				"Fertilise a bankstanding patch with super\\ncompost", TDA, 184, 4, 2);
 		addLunar3RunesBigBox(30218, 9075, 557, 555, 2, 11, 9, 30006, 30004, 83, "Boost Potion Share",
 				"Shares a potion with up to 4 nearby\\nstoners", TDA, 185, 0, 5);
 		addLunar3RunesSmallBox(30226, 9075, 563, 555, 2, 2, 9, 30012, 30004, 84, "Fisher Guild Teleport",

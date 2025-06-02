@@ -183,8 +183,8 @@ public final class EntityDef {
         break;
 
       case 732:
-        entityDef.name = "Cultivation/THC-hempistry";
-        entityDef.description = "It's a cultivation and thc-hempistry store.".getBytes();
+        entityDef.name = "BankStanding/THC-hempistry";
+        entityDef.description = "It's a bankstanding and thc-hempistry store.".getBytes();
         entityDef.actions = new String[5];
         entityDef.actions[0] = "Deal";
         break;

@@ -10,7 +10,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.*;
 import java.awt.*;
 
-public class QuestTabPanel implements UIPanel, DockTextUpdatable
+public class InfoTabPanel implements UIPanel, DockTextUpdatable
 {
 
 	private final DefaultListModel<String> listModel = new DefaultListModel<>();
@@ -22,7 +22,7 @@ public class QuestTabPanel implements UIPanel, DockTextUpdatable
 	public static int clickedIndex = -1;
 	public static Timer clickFadeTimer;
 
-	public QuestTabPanel() {
+	public InfoTabPanel() {
 		panel = new JPanel(new BorderLayout(0, 10));
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		panel.setBackground(MAIN_FRAME_COLOR);

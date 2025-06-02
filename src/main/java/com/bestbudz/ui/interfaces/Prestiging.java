@@ -76,7 +76,7 @@ public class Prestiging extends RSInterface {
     addHoveredButton(51087, 320, 104, 30, 51088);
     addHoverButton(51089, "", 0, 104, 30, "Advance Lumbering", 0, 51090, 1);
     addHoveredButton(51090, 321, 104, 30, 51091);
-    addHoverButton(51092, "", 0, 104, 30, "Advance Cultivation", 0, 51093, 1);
+    addHoverButton(51092, "", 0, 104, 30, "Advance BankStanding", 0, 51093, 1);
     addHoveredButton(51093, 322, 104, 30, 51094);
 
     tab.totalChildren(72);

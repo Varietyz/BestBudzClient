@@ -527,11 +527,6 @@ public class Chatbox extends Client{
 								System.out.println(i + " " + def.anInt781);
 							}
 						}
-						if (inputString.equals("::debug"))
-						{
-							EngineConfig.DEBUG_MODE = !EngineConfig.DEBUG_MODE;
-							loadingStage = 1;
-						}
 						if (inputString.equals("::textids"))
 						{
 							for (int index = 0; index < RSInterface.interfaceCache.length; index++)

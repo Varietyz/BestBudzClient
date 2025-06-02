@@ -1,4 +1,4 @@
-package com.bestbudz.ui.handling;
+package com.bestbudz.engine.core.gamerender;
 
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.engine.core.Client;
@@ -8,6 +8,137 @@ import static com.bestbudz.world.TerrainHeight.getTerrainHeight;
 
 public class Camera extends Client
 {
+	// ===== ADD THESE FIELDS TO THE Camera CLASS =====
+// Add these static fields at the top of the Camera class
+	private static int minValidXCameraPos = Integer.MIN_VALUE;
+	private static int maxValidXCameraPos = Integer.MAX_VALUE;
+	private static int minValidYCameraPos = Integer.MIN_VALUE;
+	private static int maxValidYCameraPos = Integer.MAX_VALUE;
+	private static boolean boundsLearned = false;
+
+	// ===== REPLACE THE calcCameraPos() METHOD =====
+	public static void calcCameraPos()
+	{
+		int i = anInt1098 * 128 + 64;
+		int j = anInt1099 * 128 + 64;
+		int k = getTerrainHeight(plane, j, i) - anInt1100;
+
+		// Store the original camera positions before modification
+		int originalXCameraPos = xCameraPos;
+		int originalYCameraPos = yCameraPos;
+
+		if (xCameraPos < i)
+		{
+			xCameraPos += anInt1101 + ((i - xCameraPos) * anInt1102) / 1000;
+			if (xCameraPos > i)
+				xCameraPos = i;
+		}
+		if (xCameraPos > i)
+		{
+			xCameraPos -= anInt1101 + ((xCameraPos - i) * anInt1102) / 1000;
+			if (xCameraPos < i)
+				xCameraPos = i;
+		}
+		if (zCameraPos < k)
+		{
+			zCameraPos += anInt1101 + ((k - zCameraPos) * anInt1102) / 1000;
+			if (zCameraPos > k)
+				zCameraPos = k;
+		}
+		if (zCameraPos > k)
+		{
+			zCameraPos -= anInt1101 + ((zCameraPos - k) * anInt1102) / 1000;
+			if (zCameraPos < k)
+				zCameraPos = k;
+		}
+		if (yCameraPos < j)
+		{
+			yCameraPos += anInt1101 + ((j - yCameraPos) * anInt1102) / 1000;
+			if (yCameraPos > j)
+				yCameraPos = j;
+		}
+		if (yCameraPos > j)
+		{
+			yCameraPos -= anInt1101 + ((yCameraPos - j) * anInt1102) / 1000;
+			if (yCameraPos < j)
+				yCameraPos = j;
+		}
+
+		// APPLY BOUNDS CLAMPING HERE - before the final camera calculations
+		clampCameraToBounds();
+
+		i = anInt995 * 128 + 64;
+		j = anInt996 * 128 + 64;
+		k = getTerrainHeight(plane, j, i) - anInt997;
+		int l = i - xCameraPos;
+		int i1 = k - zCameraPos;
+		int j1 = j - yCameraPos;
+		int k1 = (int) Math.sqrt(l * l + j1 * j1);
+		int l1 = (int) (Math.atan2(i1, k1) * 325.94900000000001D) & 0x7ff;
+		int i2 = (int) (Math.atan2(l, j1) * -325.94900000000001D) & 0x7ff;
+		if (l1 < 128)
+			l1 = 128;
+		if (l1 > 383)
+			l1 = 383;
+		if (yCameraCurve < l1)
+		{
+			yCameraCurve += anInt998 + ((l1 - yCameraCurve) * anInt999) / 1000;
+			if (yCameraCurve > l1)
+				yCameraCurve = l1;
+		}
+		if (yCameraCurve > l1)
+		{
+			yCameraCurve -= anInt998 + ((yCameraCurve - l1) * anInt999) / 1000;
+			if (yCameraCurve < l1)
+				yCameraCurve = l1;
+		}
+		int j2 = i2 - xCameraCurve;
+		if (j2 > 1024)
+			j2 -= 2048;
+		if (j2 < -1024)
+			j2 += 2048;
+		if (j2 > 0)
+		{
+			xCameraCurve += anInt998 + (j2 * anInt999) / 1000;
+			xCameraCurve &= 0x7ff;
+		}
+		if (j2 < 0)
+		{
+			xCameraCurve -= anInt998 + (-j2 * anInt999) / 1000;
+			xCameraCurve &= 0x7ff;
+		}
+		int k2 = i2 - xCameraCurve;
+		if (k2 > 1024)
+			k2 -= 2048;
+		if (k2 < -1024)
+			k2 += 2048;
+		if (k2 < 0 && j2 > 0 || k2 > 0 && j2 < 0)
+			xCameraCurve = i2;
+	}
+
+// ===== REPLACE THE clampCameraToBounds() METHOD IN Camera CLASS =====
+	/**
+	 * Simple bounds clamping - elevation is now handled in checkAndApplyElevation()
+	 */
+	private static void clampCameraToBounds()
+	{
+		// This method is now simplified since elevation is handled elsewhere
+		if (boundsLearned) {
+			// Simple clamping without elevation logic
+			if (xCameraPos < minValidXCameraPos) {
+				xCameraPos = minValidXCameraPos;
+			} else if (xCameraPos > maxValidXCameraPos) {
+				xCameraPos = maxValidXCameraPos;
+			}
+
+			if (yCameraPos < minValidYCameraPos) {
+				yCameraPos = minValidYCameraPos;
+			} else if (yCameraPos > maxValidYCameraPos) {
+				yCameraPos = maxValidYCameraPos;
+			}
+		}
+	}
+
 	public static void updateCameraPosition()
 	{
 		try
@@ -188,96 +319,5 @@ public class Camera extends Client
 		yCameraCurve = k;
 		xCameraCurve = j1;
 	}
-
-	public static void calcCameraPos()
-	{
-		int i = anInt1098 * 128 + 64;
-		int j = anInt1099 * 128 + 64;
-		int k = getTerrainHeight(plane, j, i) - anInt1100;
-		if (xCameraPos < i)
-		{
-			xCameraPos += anInt1101 + ((i - xCameraPos) * anInt1102) / 1000;
-			if (xCameraPos > i)
-				xCameraPos = i;
-		}
-		if (xCameraPos > i)
-		{
-			xCameraPos -= anInt1101 + ((xCameraPos - i) * anInt1102) / 1000;
-			if (xCameraPos < i)
-				xCameraPos = i;
-		}
-		if (zCameraPos < k)
-		{
-			zCameraPos += anInt1101 + ((k - zCameraPos) * anInt1102) / 1000;
-			if (zCameraPos > k)
-				zCameraPos = k;
-		}
-		if (zCameraPos > k)
-		{
-			zCameraPos -= anInt1101 + ((zCameraPos - k) * anInt1102) / 1000;
-			if (zCameraPos < k)
-				zCameraPos = k;
-		}
-		if (yCameraPos < j)
-		{
-			yCameraPos += anInt1101 + ((j - yCameraPos) * anInt1102) / 1000;
-			if (yCameraPos > j)
-				yCameraPos = j;
-		}
-		if (yCameraPos > j)
-		{
-			yCameraPos -= anInt1101 + ((yCameraPos - j) * anInt1102) / 1000;
-			if (yCameraPos < j)
-				yCameraPos = j;
-		}
-		i = anInt995 * 128 + 64;
-		j = anInt996 * 128 + 64;
-		k = getTerrainHeight(plane, j, i) - anInt997;
-		int l = i - xCameraPos;
-		int i1 = k - zCameraPos;
-		int j1 = j - yCameraPos;
-		int k1 = (int) Math.sqrt(l * l + j1 * j1);
-		int l1 = (int) (Math.atan2(i1, k1) * 325.94900000000001D) & 0x7ff;
-		int i2 = (int) (Math.atan2(l, j1) * -325.94900000000001D) & 0x7ff;
-		if (l1 < 128)
-			l1 = 128;
-		if (l1 > 383)
-			l1 = 383;
-		if (yCameraCurve < l1)
-		{
-			yCameraCurve += anInt998 + ((l1 - yCameraCurve) * anInt999) / 1000;
-			if (yCameraCurve > l1)
-				yCameraCurve = l1;
-		}
-		if (yCameraCurve > l1)
-		{
-			yCameraCurve -= anInt998 + ((yCameraCurve - l1) * anInt999) / 1000;
-			if (yCameraCurve < l1)
-				yCameraCurve = l1;
-		}
-		int j2 = i2 - xCameraCurve;
-		if (j2 > 1024)
-			j2 -= 2048;
-		if (j2 < -1024)
-			j2 += 2048;
-		if (j2 > 0)
-		{
-			xCameraCurve += anInt998 + (j2 * anInt999) / 1000;
-			xCameraCurve &= 0x7ff;
-		}
-		if (j2 < 0)
-		{
-			xCameraCurve -= anInt998 + (-j2 * anInt999) / 1000;
-			xCameraCurve &= 0x7ff;
-		}
-		int k2 = i2 - xCameraCurve;
-		if (k2 > 1024)
-			k2 -= 2048;
-		if (k2 < -1024)
-			k2 += 2048;
-		if (k2 < 0 && j2 > 0 || k2 > 0 && j2 < 0)
-			xCameraCurve = i2;
-	}
-
 
 }

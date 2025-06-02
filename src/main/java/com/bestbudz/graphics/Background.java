@@ -1,9 +1,11 @@
 package com.bestbudz.graphics;
 
+import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
 
-public final class Background extends DrawingArea {
+public final class Background extends DrawingArea
+{
 
   public int[] anIntArray1451;
   public byte[] aByteArray1450;

@@ -1,9 +1,6 @@
 package com.bestbudz.dock.ui.modal.dialogue;
 
 import com.bestbudz.engine.core.Client;
-import static com.bestbudz.engine.core.Client.inputString;
-import static com.bestbudz.engine.core.Client.stream;
-import com.bestbudz.network.packets.PacketParser;
 import java.util.HashMap;
 import java.util.Map;
 

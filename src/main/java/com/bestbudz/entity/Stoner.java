@@ -1,7 +1,6 @@
 package com.bestbudz.entity;
 
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.data.ItemDef;
 import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.SequenceFrame;
@@ -215,19 +214,20 @@ public final class Stoner extends Entity
 		int i1 = -1;
 		int j1 = -1;
 		int k1 = -1;
+
 		if (desc != null) {
 			if (super.anim >= 0 && super.anInt1529 == 0) {
 				final Animation seq = Animation.anims[super.anim];
 				k = seq.anIntArray353[super.anInt1527];
-				if (SettingsConfig.enableTweening && super.nextAnimFrame != -1) {
-					nextAnim = seq.anIntArray353[super.anInt1527];
+				if (super.nextAnimFrame != -1) {
+					nextAnim = seq.anIntArray353[super.nextAnimFrame];
 					currCycle = seq.anIntArray355[super.anInt1527];
 					nextCycle = super.anInt1528;
 				}
 			} else if (super.anInt1517 >= 0) {
 				final Animation seq = Animation.anims[super.anInt1517];
 				k = seq.anIntArray353[super.anInt1518];
-				if (SettingsConfig.enableTweening && super.nextIdleAnimFrame != -1) {
+				if (super.nextIdleAnimFrame != -1) {
 					nextAnim = seq.anIntArray353[super.nextIdleAnimFrame];
 					currCycle = seq.anIntArray355[super.anInt1518];
 					nextCycle = super.anInt1519;
@@ -235,10 +235,13 @@ public final class Stoner extends Entity
 			}
 			return desc.method164(-1, k, nextAnim, currCycle, nextCycle, null);
 		}
+
+		// Cache animation reference to avoid repeated array access
+		Animation animation = null;
 		if (super.anim >= 0 && super.anInt1529 == 0) {
-			final Animation animation = Animation.anims[super.anim];
+			animation = Animation.anims[super.anim];
 			k = animation.anIntArray353[super.anInt1527];
-			if (SettingsConfig.enableTweening && super.nextAnimFrame != -1) {
+			if (super.nextAnimFrame != -1) {
 				nextAnim = animation.anIntArray353[super.nextAnimFrame];
 				currCycle = animation.anIntArray355[super.anInt1527];
 				nextCycle = super.anInt1528;
@@ -255,14 +258,15 @@ public final class Stoner extends Entity
 				l += (long) k1 - equipment[3] << 48;
 			}
 		} else if (super.anInt1517 >= 0) {
-			Animation seq = Animation.anims[super.anInt1517];
+			final Animation seq = Animation.anims[super.anInt1517];
 			k = seq.anIntArray353[super.anInt1518];
-			if (SettingsConfig.enableTweening && super.nextIdleAnimFrame != -1) {
+			if (super.nextIdleAnimFrame != -1) {
 				nextAnim = seq.anIntArray353[super.nextIdleAnimFrame];
 				currCycle = seq.anIntArray355[super.anInt1518];
 				nextCycle = super.anInt1519;
 			}
 		}
+
 		Model model_1 = (Model) mruNodes.insertFromCache(l);
 		if (model_1 == null) {
 			boolean flag = false;
@@ -285,8 +289,9 @@ public final class Stoner extends Entity
 					return null;
 			}
 		}
+
 		if (model_1 == null) {
-			Model[] aclass30_sub2_sub4_sub6s = new Model[12];
+			final Model[] modelParts = new Model[12];
 			int j2 = 0;
 			for (int l2 = 0; l2 < 12; l2++) {
 				int i3 = equipment[l2];
@@ -295,22 +300,22 @@ public final class Stoner extends Entity
 				if (j1 >= 0 && l2 == 5)
 					i3 = j1;
 				if (i3 >= 256 && i3 < 512) {
-					Model model_3 = IdentityKit.cache[i3 - 256].method538();
+					final Model model_3 = IdentityKit.cache[i3 - 256].method538();
 					if (model_3 != null)
-						aclass30_sub2_sub4_sub6s[j2++] = model_3;
+						modelParts[j2++] = model_3;
 				}
 				if (i3 >= 512) {
-					Model model_4 = ItemDef.getItemDefinition(i3 - 512).getInventoryModel(gender);
+					final Model model_4 = ItemDef.getItemDefinition(i3 - 512).getInventoryModel(gender);
 					if (model_4 != null)
-						aclass30_sub2_sub4_sub6s[j2++] = model_4;
+						modelParts[j2++] = model_4;
 				}
 			}
 
-			model_1 = new Model(j2, aclass30_sub2_sub4_sub6s);
+			model_1 = new Model(j2, modelParts);
 			for (int j3 = 0; j3 < 5; j3++)
 				if (anIntArray1700[j3] != 0) {
 					model_1.replaceColor(Client.anIntArrayArray1003[j3][0],
-							Client.anIntArrayArray1003[j3][anIntArray1700[j3]]);
+						Client.anIntArrayArray1003[j3][anIntArray1700[j3]]);
 					if (j3 == 1)
 						model_1.replaceColor(Client.anIntArray1204[0], Client.anIntArray1204[anIntArray1700[j3]]);
 				}
@@ -321,9 +326,11 @@ public final class Stoner extends Entity
 			mruNodes.removeFromCache(model_1, l);
 			lastModelKey = l;
 		}
+
 		if (aBoolean1699)
 			return model_1;
-		Model model_2 = Model.aModel_1621;
+
+		final Model model_2 = Model.aModel_1621;
 		model_2.method464(model_1, SequenceFrame.method532(k) & SequenceFrame.method532(i1));
 		if (k != -1 && i1 != -1) {
 			model_2.method471(Animation.anims[super.anim].anIntArray357, i1, k);

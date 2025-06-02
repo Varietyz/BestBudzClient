@@ -1230,34 +1230,7 @@ public class CustomInterfaces extends RSInterface
 	private static void achievementsTab(TextDrawingArea[] jaybane) // JFRAMED
 	{
 		RSInterface tab = addTabInterface(31000);
-	//	addSprite(31001, 15);
-	//	addText(31002, "Achievements", 0xff9040, false, true, 52, jaybane, 2);
 		setChildren(0, tab);
-	/*	setBounds(31001, 0, -3, 0, tab);
-		setBounds(31002, 45, 5, 1, tab);
-		setBounds(31003, -6, 25, 2, tab);
-		addHoverButton(31004, 13, 25, 25, "Back to Quest tab", -1, 31005, 1);
-		addHoveredButton(31005, 14, 25, 25, 31096);
-		RSInterface scrollInterface = addTabInterface(31003);
-		scrollInterface.width = 179;
-		scrollInterface.height = 236;
-		scrollInterface.scrollMax = 5 + 15 * 80;
-		setChildren(80, scrollInterface);
-		int y = 5;
-		for (int i = 0; i < 80; i++)
-		{
-			addHoverText(31006 + i, "", "View", jaybane, 0, 0xff0000, false, true, 300);
-			setBounds(31006 + i, 11, y, i, scrollInterface);
-			if (i == 4)
-			{
-				y += 15;
-			}
-			y += 15;
-		}
-		tab.child(3, 31004, 160, 0);
-		tab.child(4, 31005, 160, 0);
-
-	 */
 	}
 
 	public static void clanChatTab(TextDrawingArea[] bestbudz)
@@ -1429,48 +1402,7 @@ public class CustomInterfaces extends RSInterface
 	public static void questTab(TextDrawingArea[] bestbudz) // JFRAMED
 	{
 		RSInterface tab = addTabInterface(29400);
-		/*addSprite(29401, 82);
-		addSprite(29402, 38);
-		addText(29403, "BestBudz", bestbudz, 2, 0xF7AA25, true, true);
-		addText(29407, "Stay high!", bestbudz, 2, 0xF7AA25, true, true);
-		addHoverButton(29404, 84, 25, 25, "Achievements", -1, 29405, 1);
-		addHoveredButton(29405, 85, 25, 25, 29406);
-		addHoverButton(29410, 351, 15, 15, "Refresh", -1, 29411, 1);
-		addHoveredButton(29411, 352, 15, 15, 29412);
-		addHoverText(29413, "", "", bestbudz, 0, 0x47B320, false, true, 50);
-		tab.scrollMax = 0;*/
 		tab.totalChildren(0);
-		/*
-		tab.child(0, 29401, -4, 34);
-		tab.child(1, 29402, -0, 34);
-		tab.child(2, 29402, -0, 229);
-		tab.child(3, 29403, 92, 9);
-		tab.child(4, 29404, 160, 4);
-		tab.child(5, 29405, 160, 4);
-		tab.child(6, 29407, 92, 239);
-		tab.child(7, 29500, 10, 36);
-		tab.child(8, 29410, 160, 36);
-		tab.child(9, 29411, 160, 36);
-		tab.child(10, 29413, 8, 22);
-		RSInterface scrollInterface = addTabInterface(29500);
-		scrollInterface.parentID = 29400;
-		scrollInterface.scrollPosition = 0;
-		scrollInterface.atActionType = 0;
-		scrollInterface.contentType = 0;
-		scrollInterface.width = 165;
-		scrollInterface.height = 193;
-		scrollInterface.scrollMax = 1520;
-		int x = 7, y = 9;
-		int amountOfLines = 100;
-		scrollInterface.totalChildren(amountOfLines);
-		for (int i = 0; i < amountOfLines; i++)
-		{
-			addHoverText(29501 + i, "", "", bestbudz, 0, 0x47B320, false, true, 168);
-			scrollInterface.child(i, 29501 + i, x, y);
-			y += 18;
-		}
-
-		 */
 	}
 
 }

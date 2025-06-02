@@ -12,7 +12,7 @@ public class SettingHandler
 {
 
 	public final static String[] strings = {
-		"Tweening", "Fog", "Mip Mapping", "Moving Textures", "Status Orbs",
+		"Fog", "Mip Mapping", "Moving Textures", "Status Orbs",
 		"Roofs", "Debit Card", "Kill Feed", "Hover Menus", "Entity Feed", "HP Bars",
 		"Hitmarkers",
 		"x10 Damage", "Attack Priority", "Time Stamps", "Ground Decorations", "Flat Shading"
@@ -21,7 +21,6 @@ public class SettingHandler
 
 	public static void defaultSettings()
 	{
-		SettingsConfig.enableTweening = true;
 		SettingsConfig.enableDistanceFog = true;
 		SettingsConfig.enableMipMapping = true;
 		SettingsConfig.enableMovingTextures = true;
@@ -51,7 +50,6 @@ public class SettingHandler
 			out.writeUTF(Client.myPassword);
 			out.writeUTF(Client.chatColorHex);
 			out.writeBoolean(Client.rememberMe);
-			out.writeBoolean(SettingsConfig.enableTweening);
 			out.writeBoolean(SettingsConfig.enableDistanceFog);
 			out.writeBoolean(SettingsConfig.enableMipMapping);
 			out.writeBoolean(SettingsConfig.enableMovingTextures);
@@ -94,7 +92,6 @@ public class SettingHandler
 			Client.myPassword = in.readUTF();
 			Client.chatColorHex = in.readUTF();
 			Client.rememberMe = in.readBoolean();
-			SettingsConfig.enableTweening = in.readBoolean();
 			SettingsConfig.enableDistanceFog = in.readBoolean();
 			SettingsConfig.enableMipMapping = in.readBoolean();
 			SettingsConfig.enableMovingTextures = in.readBoolean();
