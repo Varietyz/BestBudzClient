@@ -14,7 +14,7 @@ import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.engine.core.GameCanvas;
 import static com.bestbudz.ui.handling.input.Keyboard.console;
 import com.bestbudz.ui.handling.input.MouseState;
-import com.bestbudz.entity.IdentityResolver;
+import com.bestbudz.cache.IdentityResolver;
 import com.bestbudz.entity.Npc;
 import com.bestbudz.entity.Stoner;
 import com.bestbudz.network.RSSocket;
@@ -35,7 +35,7 @@ public class Login extends Client
 	{
 		if (lowMem && loadingStage == 2 && ObjectManager.anInt131 != plane)
 		{
-			aRSImageProducer_1165.drawGraphics(0, g, 0);
+			mainGameRendering.drawGraphics(0, g, 0);
 			loadingStage = 1;
 			aLong824 = System.currentTimeMillis();
 		}

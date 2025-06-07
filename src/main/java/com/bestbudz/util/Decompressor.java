@@ -5,164 +5,188 @@ import java.io.RandomAccessFile;
 
 public final class Decompressor {
 
-	private static final byte[] buffer = new byte[520];
 	private final RandomAccessFile dataFile;
 	private final RandomAccessFile indexFile;
-	private final int anInt311;
+	private final int fileId;
 
-	public Decompressor(RandomAccessFile randomaccessfile, RandomAccessFile randomaccessfile1, int j) {
-		anInt311 = j;
-		dataFile = randomaccessfile;
-		indexFile = randomaccessfile1;
+	// Thread-local buffers to avoid synchronization
+	private static final ThreadLocal<byte[]> BUFFER = ThreadLocal.withInitial(() -> new byte[520]);
+
+	public Decompressor(RandomAccessFile dataFile, RandomAccessFile indexFile, int fileId) {
+		this.fileId = fileId;
+		this.dataFile = dataFile;
+		this.indexFile = indexFile;
 	}
 
-	public synchronized byte[] decompress(int i) {
+	public byte[] decompress(int entryId) {
+		byte[] buffer = BUFFER.get();
+
 		try {
-			seekTo(indexFile, i * 6);
-			int l;
-			for(int j = 0; j < 6; j += l)
-			{
-				l = indexFile.read(buffer, j, 6 - j);
-				if(l == -1)
-					return null;
-			}
-			int i1 = ((buffer[0] & 0xff) << 16) + ((buffer[1] & 0xff) << 8) + (buffer[2] & 0xff);
-			int j1 = ((buffer[3] & 0xff) << 16) + ((buffer[4] & 0xff) << 8) + (buffer[5] & 0xff);
-
-			if(j1 <= 0 || (long)j1 > dataFile.length() / 520L)
+			// Read index entry
+			indexFile.seek(entryId * 6);
+			if (indexFile.read(buffer, 0, 6) != 6) {
 				return null;
-			byte[] abyte0 = new byte[i1];
-			int k1 = 0;
-			for(int l1 = 0; k1 < i1; l1++) {
-				if(j1 == 0)
-					return null;
-				seekTo(dataFile, j1 * 520);
-				int k = 0;
-				int i2 = i1 - k1;
-				if(i2 > 512)
-					i2 = 512;
-				int j2;
-				for(; k < i2 + 8; k += j2) {
-					j2 = dataFile.read(buffer, k, (i2 + 8) - k);
-					if(j2 == -1)
-						return null;
-				}
-				int k2 = ((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff);
-				int l2 = ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff);
-				int i3 = ((buffer[4] & 0xff) << 16) + ((buffer[5] & 0xff) << 8) + (buffer[6] & 0xff);
-				int j3 = buffer[7] & 0xff;
-				if(k2 != i || l2 != l1 || j3 != anInt311)
-					return null;
-				if((long)i3 > dataFile.length() / 520L)
-					return null;
-				for(int k3 = 0; k3 < i2; k3++)
-					abyte0[k1++] = buffer[k3 + 8];
-
-				j1 = i3;
 			}
 
-			return abyte0;
-		} catch(IOException _ex) {
+			int dataSize = ((buffer[0] & 0xff) << 16) + ((buffer[1] & 0xff) << 8) + (buffer[2] & 0xff);
+			int firstBlock = ((buffer[3] & 0xff) << 16) + ((buffer[4] & 0xff) << 8) + (buffer[5] & 0xff);
+
+			if (firstBlock <= 0 || firstBlock > dataFile.length() / 520) {
+				return null;
+			}
+
+			byte[] result = new byte[dataSize];
+			int bytesRead = 0;
+			int currentBlock = firstBlock;
+			int blockIndex = 0;
+
+			while (bytesRead < dataSize) {
+				if (currentBlock == 0) {
+					return null;
+				}
+
+				dataFile.seek(currentBlock * 520);
+				int chunkSize = Math.min(512, dataSize - bytesRead);
+				int totalToRead = chunkSize + 8;
+
+				if (dataFile.read(buffer, 0, totalToRead) != totalToRead) {
+					return null;
+				}
+
+				// Validate block header
+				int blockEntryId = ((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff);
+				int blockNumber = ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff);
+				int nextBlock = ((buffer[4] & 0xff) << 16) + ((buffer[5] & 0xff) << 8) + (buffer[6] & 0xff);
+				int blockFileId = buffer[7] & 0xff;
+
+				if (blockEntryId != entryId || blockNumber != blockIndex || blockFileId != fileId) {
+					return null;
+				}
+
+				if (nextBlock > dataFile.length() / 520) {
+					return null;
+				}
+
+				// Copy data
+				System.arraycopy(buffer, 8, result, bytesRead, chunkSize);
+				bytesRead += chunkSize;
+				currentBlock = nextBlock;
+				blockIndex++;
+			}
+
+			return result;
+		} catch (IOException e) {
 			return null;
 		}
 	}
 
-	public synchronized void method234(int i, byte[] abyte0, int j) {
-		boolean flag = method235(true, j, i, abyte0);
-		if(!flag)
-			flag = method235(false, j, i, abyte0);
+	public void method234(int dataSize, byte[] data, int entryId) {
+		if (!writeEntry(true, entryId, dataSize, data)) {
+			writeEntry(false, entryId, dataSize, data);
+		}
 	}
 
-	private synchronized boolean method235(boolean flag, int j, int k, byte[] abyte0) {
+	private boolean writeEntry(boolean overwrite, int entryId, int dataSize, byte[] data) {
+		byte[] buffer = BUFFER.get();
+
 		try {
-			int l;
-			if(flag) {
-				seekTo(indexFile, j * 6);
-				int k1;
-				for(int i1 = 0; i1 < 6; i1 += k1) {
-					k1 = indexFile.read(buffer, i1, 6 - i1);
-					if(k1 == -1)
-						return false;
-				}
-				l = ((buffer[3] & 0xff) << 16) + ((buffer[4] & 0xff) << 8) + (buffer[5] & 0xff);
-				if(l <= 0 || (long)l > dataFile.length() / 520L)
+			int currentBlock;
+
+			if (overwrite) {
+				// Try to reuse existing blocks
+				indexFile.seek(entryId * 6);
+				if (indexFile.read(buffer, 0, 6) != 6) {
 					return false;
+				}
+
+				currentBlock = ((buffer[3] & 0xff) << 16) + ((buffer[4] & 0xff) << 8) + (buffer[5] & 0xff);
+				if (currentBlock <= 0 || currentBlock > dataFile.length() / 520) {
+					return false;
+				}
 			} else {
-				l = (int)((dataFile.length() + 519L) / 520L);
-				if(l == 0)
-					l = 1;
+				// Allocate new blocks at end of file
+				currentBlock = (int) ((dataFile.length() + 519) / 520);
+				if (currentBlock == 0) {
+					currentBlock = 1;
+				}
 			}
-			buffer[0] = (byte)(k >> 16);
-			buffer[1] = (byte)(k >> 8);
-			buffer[2] = (byte)k;
-			buffer[3] = (byte)(l >> 16);
-			buffer[4] = (byte)(l >> 8);
-			buffer[5] = (byte)l;
-			seekTo(indexFile, j * 6);
+
+			// Write index entry
+			buffer[0] = (byte) (dataSize >> 16);
+			buffer[1] = (byte) (dataSize >> 8);
+			buffer[2] = (byte) dataSize;
+			buffer[3] = (byte) (currentBlock >> 16);
+			buffer[4] = (byte) (currentBlock >> 8);
+			buffer[5] = (byte) currentBlock;
+
+			indexFile.seek(entryId * 6);
 			indexFile.write(buffer, 0, 6);
-			int j1 = 0;
-			for(int l1 = 0; j1 < k; l1++) {
-				int i2 = 0;
-				if(flag) 	{
-					seekTo(dataFile, l * 520);
-					int j2;
-					int l2;
-					for(j2 = 0; j2 < 8; j2 += l2) {
-						l2 = dataFile.read(buffer, j2, 8 - j2);
-						if(l2 == -1)
-							break;
-					}
-					if(j2 == 8) {
-						int i3 = ((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff);
-						int j3 = ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff);
-						i2 = ((buffer[4] & 0xff) << 16) + ((buffer[5] & 0xff) << 8) + (buffer[6] & 0xff);
-						int k3 = buffer[7] & 0xff;
-						if(i3 != j || j3 != l1 || k3 != anInt311)
+
+			int bytesWritten = 0;
+			int blockIndex = 0;
+
+			while (bytesWritten < dataSize) {
+				int nextBlock = 0;
+
+				if (overwrite) {
+					// Try to read existing block header to get next block
+					dataFile.seek(currentBlock * 520);
+					if (dataFile.read(buffer, 0, 8) == 8) {
+						int blockEntryId = ((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff);
+						int blockNumber = ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff);
+						nextBlock = ((buffer[4] & 0xff) << 16) + ((buffer[5] & 0xff) << 8) + (buffer[6] & 0xff);
+						int blockFileId = buffer[7] & 0xff;
+
+						// Validate existing block
+						if (blockEntryId != entryId || blockNumber != blockIndex || blockFileId != fileId ||
+							nextBlock > dataFile.length() / 520) {
 							return false;
-						if((long)i2 > dataFile.length() / 520L)
-							return false;
+						}
 					}
 				}
-				if(i2 == 0) {
-					flag = false;
-					i2 = (int)((dataFile.length() + 519L) / 520L);
-					if(i2 == 0)
-						i2++;
-					if(i2 == l)
-						i2++;
+
+				if (nextBlock == 0) {
+					// Need new block
+					overwrite = false;
+					nextBlock = (int) ((dataFile.length() + 519) / 520);
+					if (nextBlock == 0) {
+						nextBlock++;
+					}
+					if (nextBlock == currentBlock) {
+						nextBlock++;
+					}
 				}
-				if(k - j1 <= 512)
-					i2 = 0;
-				buffer[0] = (byte)(j >> 8);
-				buffer[1] = (byte)j;
-				buffer[2] = (byte)(l1 >> 8);
-				buffer[3] = (byte)l1;
-				buffer[4] = (byte)(i2 >> 16);
-				buffer[5] = (byte)(i2 >> 8);
-				buffer[6] = (byte)i2;
-				buffer[7] = (byte)anInt311;
-				seekTo(dataFile, l * 520);
+
+				// If this is the last block, no next block
+				if (dataSize - bytesWritten <= 512) {
+					nextBlock = 0;
+				}
+
+				// Write block header
+				buffer[0] = (byte) (entryId >> 8);
+				buffer[1] = (byte) entryId;
+				buffer[2] = (byte) (blockIndex >> 8);
+				buffer[3] = (byte) blockIndex;
+				buffer[4] = (byte) (nextBlock >> 16);
+				buffer[5] = (byte) (nextBlock >> 8);
+				buffer[6] = (byte) nextBlock;
+				buffer[7] = (byte) fileId;
+
+				dataFile.seek(currentBlock * 520);
 				dataFile.write(buffer, 0, 8);
-				int k2 = k - j1;
-				if(k2 > 512)
-					k2 = 512;
-				dataFile.write(abyte0, j1, k2);
-				j1 += k2;
-				l = i2;
+
+				// Write data
+				int chunkSize = Math.min(512, dataSize - bytesWritten);
+				dataFile.write(data, bytesWritten, chunkSize);
+
+				bytesWritten += chunkSize;
+				currentBlock = nextBlock;
+				blockIndex++;
 			}
 
 			return true;
-		} catch(IOException _ex) {
+		} catch (IOException e) {
 			return false;
 		}
 	}
-
-	private synchronized void seekTo(RandomAccessFile randomaccessfile, int j) throws IOException {
-		try {
-			randomaccessfile.seek(j);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 }

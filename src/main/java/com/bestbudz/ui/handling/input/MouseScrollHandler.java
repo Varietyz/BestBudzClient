@@ -27,7 +27,7 @@ public class MouseScrollHandler {
 			int offsetX;
 			int offsetY;
 
-			for (int i = 0; i < (!Client.changeTabArea ? 4 : 3); i++) {
+			for (int i = 0; i < (3); i++) {
 				if (x + w > Client.frameWidth - 225) x = Math.max(0, x - 30);
 				if (y + h > Client.frameHeight - 182) y = Math.max(0, y - 30);
 			}

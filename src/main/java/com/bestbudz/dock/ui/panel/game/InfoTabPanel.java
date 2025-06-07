@@ -133,19 +133,6 @@ public class InfoTabPanel implements UIPanel, DockTextUpdatable
 			}
 			});
 
-// Auto-refresh every 60 seconds
-		new Timer(60_000, e -> {
-			if (Client.loggedIn) {
-				try {
-					Client.stream.createFrame(185);
-					Client.stream.writeWord(29410);
-					System.out.println("Auto-refreshing info tab.");
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-		}).start();
-
 
 	}
 

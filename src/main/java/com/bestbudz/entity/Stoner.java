@@ -1,5 +1,6 @@
 package com.bestbudz.entity;
 
+import com.bestbudz.cache.IdentityKit;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.data.ItemDef;
 import com.bestbudz.network.Stream;

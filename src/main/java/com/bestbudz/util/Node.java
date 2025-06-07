@@ -4,7 +4,7 @@ public class Node {
 
   public long id;
   public Node prev;
-
+  public Node next;
   public final void unlink() {
     if (next == null) {
     } else {
@@ -14,5 +14,4 @@ public class Node {
       next = null;
     }
   }
-  public Node next;
 }

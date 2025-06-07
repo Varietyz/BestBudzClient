@@ -4,6 +4,7 @@ import com.bestbudz.cache.Signlink;
 import static com.bestbudz.data.XP.addXP;
 import com.bestbudz.dock.frame.UIDockFrame;
 import com.bestbudz.dock.frame.UIDockHelper;
+import com.bestbudz.dock.ui.panel.bank.BankPanel;
 import com.bestbudz.dock.ui.panel.game.SkillsPanel;
 import com.bestbudz.dock.util.UIPanel;
 import com.bestbudz.dock.ui.panel.DockPanelMapping;
@@ -97,7 +98,32 @@ public class PacketParser extends Client
 			// Performance monitoring hook
 		}
 	}
+	/**
+	 * Notifies dock panels when specific interfaces are updated
+	 */
+	private static void notifyDockPanelUpdates(int interfaceId) {
+		SwingUtilities.invokeLater(() -> {
+			try {
+				UIDockFrame instance = UIDockFrame.getInstance();
+				if (instance == null) return;
 
+				// Bank interface updates
+				if (interfaceId == 5382) {
+					UIPanel bankPanel = instance.getPanel("Bank");
+					if (bankPanel instanceof BankPanel) {
+						((BankPanel) bankPanel).updateBankData();
+					}
+				}
+
+				// Add other interface notifications here as needed
+				// if (interfaceId == XXXX) { ... }
+
+			} catch (Exception e) {
+				// Silent fail if dock is not available
+				System.err.println("Failed to notify dock panels: " + e.getMessage());
+			}
+		});
+	}
 	public static boolean parsePacket(Graphics2D g)
 	{
 		if (socketStream == null)
@@ -386,10 +412,9 @@ public class PacketParser extends Client
 					pktType = -1;
 					return true;
 
-				case 125: // skill goal
-					handleSkillGoalOptimized();
+				case 125: // FREE AND OPEN PROTOCOL
 					pktType = -1;
-					return true;
+					return false;
 
 				case 202: // FREE AND OPEN PROTOCOL
 					pktType = -1;
@@ -535,7 +560,7 @@ public class PacketParser extends Client
 		try {
 			final String text = inStream.readString();
 			final int frame = inStream.method435();
-			System.out.println("🎭 RAW STRING PACKET: Frame " + frame + " = '" + text + "'");
+			//System.out.println("🎭 RAW STRING PACKET: Frame " + frame + " = '" + text + "'");
 
 			UIDockFrame instance = UIDockFrame.getInstance();
 			if (instance != null && instance.getModalManager() != null) {
@@ -553,11 +578,7 @@ public class PacketParser extends Client
 				});
 			}
 
-			// Optimized text command handling
-			if (text.startsWith(":quicks:"))
-				StatusOrbs.clickedQuickPrayers = text.substring(8).equalsIgnoreCase("on");
-			else if (text.startsWith(":prayer:"))
-				prayerBook = text.substring(8);
+
 
 			// Bounds check optimization
 			if (frame >= 0 && frame < INTERFACE_CACHE.length) {
@@ -634,12 +655,6 @@ public class PacketParser extends Client
 		}
 		else if (s.startsWith(":transparentTab:")) {
 			transparentTabArea = !transparentTabArea;
-		}
-		else if (s.startsWith(":transparentChatbox:")) {
-			changeChatArea = !changeChatArea;
-		}
-		else if (s.startsWith(":sideStones:")) {
-			changeTabArea = !changeTabArea;
 		}
 		else if (s.indexOf(CULT_SUFFIX) == s.length() - CULT_SUFFIX.length()) {
 			final String s4 = s.substring(0, s.indexOf(":"));
@@ -1360,17 +1375,6 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleSkillGoalOptimized() {
-		try {
-			final int skill = inStream.readSignedByte();
-			statsSkillGoal[skill][2] = inStream.readDWord();
-			statsSkillGoal[skill][0] = inStream.readDWord();
-			statsSkillGoal[skill][1] = inStream.readSignedByte();
-		} catch (Exception e) {
-			// Silent catch as in original
-		}
-	}
-
 	private static void handlePlayerIndexOptimized() {
 		try {
 			stonerIndex = inStream.readUnsignedWord();
@@ -1418,6 +1422,11 @@ public class PacketParser extends Client
 		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
 		final int itemCount = inStream.readUnsignedWord();
 
+		// Debug logging for bank updates
+		if (interfaceId == 5382) {
+			System.out.println("🏦 Bank inventory update - Interface: " + interfaceId + ", Items: " + itemCount);
+		}
+
 		for (int i = 0; i < itemCount; i++) {
 			int stackSize = inStream.readUnsignedByte();
 			if (stackSize == 255) stackSize = inStream.method440();
@@ -1451,7 +1460,24 @@ public class PacketParser extends Client
 					}
 				}
 			}
+
+			// Debug: Log first few bank items
+			if (interfaceId == 5382) {
+				System.out.println("🏦 Bank tab amounts: " + Arrays.toString(Arrays.copyOf(tabAmounts, 5)));
+				int nonEmptySlots = 0;
+				for (int i = 0; i < Math.min(10, rsInterface.inv.length); i++) {
+					if (rsInterface.inv[i] > 0) {
+						nonEmptySlots++;
+						System.out.println("🏦 Slot " + i + ": Item " + (rsInterface.inv[i] - 1) +
+							" x" + rsInterface.invStackSizes[i]);
+					}
+				}
+				System.out.println("🏦 Total non-empty slots in first 10: " + nonEmptySlots);
+			}
 		}
+
+		// Notify dock panels of the update
+		notifyDockPanelUpdates(interfaceId);
 	}
 
 	private static void handleInterfaceModelRotationOptimized() {
@@ -1587,6 +1613,11 @@ public class PacketParser extends Client
 		final int interfaceId = inStream.readUnsignedWord();
 		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
 
+		// Debug logging for bank updates
+		if (interfaceId == 5382) {
+			System.out.println("🏦 Bank item update - Interface: " + interfaceId);
+		}
+
 		while (inStream.currentOffset < pktSize) {
 			final int slot = inStream.method422();
 			final int itemId = inStream.readUnsignedWord();
@@ -1596,8 +1627,16 @@ public class PacketParser extends Client
 			if (slot >= 0 && slot < rsInterface.inv.length) {
 				rsInterface.inv[slot] = itemId;
 				rsInterface.invStackSizes[slot] = stackSize;
+
+				// Debug individual item updates for bank
+				if (interfaceId == 5382 && itemId > 0) {
+					System.out.println("🏦 Bank slot " + slot + " updated: Item " + (itemId - 1) + " x" + stackSize);
+				}
 			}
 		}
+
+		// Notify dock panels of the update
+		notifyDockPanelUpdates(interfaceId);
 	}
 
 	private static void handleBackDialogOptimized() {

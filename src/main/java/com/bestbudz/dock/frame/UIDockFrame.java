@@ -2,8 +2,12 @@ package com.bestbudz.dock.frame;
 
 import com.bestbudz.dock.ui.manager.UIPanelManager;
 import com.bestbudz.dock.ui.manager.UIModalManager;
+import com.bestbudz.dock.ui.panel.bank.BankPanel;
+import com.bestbudz.dock.ui.panel.character.AppearancePanel;
 import com.bestbudz.dock.ui.panel.client.BubbleBudzPanel;
 import com.bestbudz.dock.ui.panel.client.SettingsPanel;
+import com.bestbudz.dock.ui.panel.debug.DiagnosticPanel;
+import com.bestbudz.dock.ui.panel.emote.EmotePanel;
 import com.bestbudz.dock.ui.panel.game.AchievementsPanel;
 import com.bestbudz.dock.ui.panel.game.InfoTabPanel;
 import com.bestbudz.dock.ui.panel.game.SkillsPanel;
@@ -107,6 +111,10 @@ public class UIDockFrame extends JDialog {
 		registerPanel(new SkillsPanel());
 		registerPanel(new TeleportPanel());
 		registerPanel(new ShopPanel());
+    	registerPanel(new AppearancePanel());
+    	registerPanel(new DiagnosticPanel());
+		registerPanel(new EmotePanel());
+		registerPanel(new BankPanel());
 
 		loadDockPanelLayout();
 	}

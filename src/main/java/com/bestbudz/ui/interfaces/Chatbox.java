@@ -524,7 +524,7 @@ public class Chatbox extends Client{
 									continue;
 								}
 
-								System.out.println(i + " " + def.anInt781);
+								System.out.println("[Chatbox] "+i + " " + def.anInt781);
 							}
 						}
 						if (inputString.equals("::textids"))

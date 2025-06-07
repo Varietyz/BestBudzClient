@@ -3,7 +3,7 @@ package com.bestbudz.engine.core.login;
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.config.ColorConfig;
-import com.bestbudz.entity.IdentityKit;
+import com.bestbudz.cache.IdentityKit;
 import com.bestbudz.entity.Stoner;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;

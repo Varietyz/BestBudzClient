@@ -13,6 +13,7 @@ import com.bestbudz.rendering.model.Model;
 import com.bestbudz.ui.interfaces.CustomInterfaces;
 import com.bestbudz.util.MRUNodes;
 import com.bestbudz.util.TextClass;
+import java.util.Arrays;
 
 public class RSInterface {
 
@@ -111,8 +112,27 @@ public class RSInterface {
 			RSInterface rsInterface = interfaceCache[k] = new RSInterface();
 			rsInterface.id = k;
 			rsInterface.parentID = i;
+
+			/*
+			if (k == 3559 || i == 3559) {
+				System.out.println("=== APPEARANCE INTERFACE DETECTED ===");
+				System.out.println("Interface ID: " + k);
+				System.out.println("Parent ID: " + i);
+				System.out.println("Loading interface 3559 or child...");
+			}
+			 */
+
 			rsInterface.type = stream.readUnsignedByte();
 			rsInterface.atActionType = stream.readUnsignedByte();
+
+			/*
+			if (k == 3559) {
+				System.out.println("Interface 3559 details:");
+				System.out.println("  Type: " + rsInterface.type);
+				System.out.println("  ActionType: " + rsInterface.atActionType);
+			}
+			 */
+
 			rsInterface.contentType = stream.readUnsignedWord();
 			rsInterface.width = stream.readUnsignedWord();
 			rsInterface.height = stream.readUnsignedWord();
@@ -309,6 +329,17 @@ public class RSInterface {
 						rsInterface.tooltip = "Continue";
 				}
 			}
+/*
+			if (k == 3559) {
+				System.out.println("Interface 3559 fully loaded!");
+				System.out.println("  Width: " + rsInterface.width);
+				System.out.println("  Height: " + rsInterface.height);
+				System.out.println("  Children: " + (rsInterface.children != null ? rsInterface.children.length : "none"));
+				if (rsInterface.children != null) {
+					System.out.println("  Child IDs: " + Arrays.toString(rsInterface.children));
+				}
+			}
+ */
 		}
 
 		aClass44 = streamLoader;
@@ -1709,6 +1740,7 @@ public class RSInterface {
 
 	public static RSInterface addTabInterface(int id) {
 		RSInterface tab = interfaceCache[id] = new RSInterface();
+		if (tab.id == 3917) id = -1;
 		tab.id = id;
 		tab.parentID = id;
 		tab.type = 0;

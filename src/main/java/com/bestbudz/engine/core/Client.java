@@ -2,7 +2,16 @@ package com.bestbudz.engine.core;
 
 import com.bestbudz.dock.frame.UIDockFrame;
 import com.bestbudz.dock.ui.manager.UIModalManager;
+import static com.bestbudz.engine.ClientLauncher.gpuContextManager;
+import static com.bestbudz.engine.ClientLauncher.gpuInitialized;
+import static com.bestbudz.engine.ClientLauncher.initializeGPUAfterGraphicsLoad;
 import static com.bestbudz.engine.core.GameState.runSceneRendering;
+import static com.bestbudz.engine.core.GameState.validateGPUStateIfNeeded;
+import com.bestbudz.engine.gpu.GPUContextManager;
+import com.bestbudz.engine.gpu.GPURenderingEngine;
+import static com.bestbudz.engine.gpu.GPURenderingEngine.initialized;
+import com.bestbudz.engine.gpu.GPUShaders;
+import static com.bestbudz.engine.gpu.OpenGLRasterizer.renderDebugTriangle;
 import static com.bestbudz.ui.handling.Errors.showErrorScreen;
 import static com.bestbudz.engine.core.gamerender.Camera.setCameraPos;
 import static com.bestbudz.ui.handling.input.Keyboard.console;
@@ -19,7 +28,6 @@ import static com.bestbudz.entity.EntityMovement.updateAllStoners;
 import static com.bestbudz.entity.ParseAndUpdateEntities.parseStoners;
 import static com.bestbudz.entity.ParseAndUpdateEntities.renderNPCs;
 import static com.bestbudz.entity.UpdateEntities.updateEntities;
-import static com.bestbudz.engine.core.gamerender.DrawingArea.pixels;
 import static com.bestbudz.graphics.HeadIcon.drawHeadIcon;
 import static com.bestbudz.graphics.MovingTextures.updateMovingTextures;
 import static com.bestbudz.rendering.Roofing.getRoofPlane;
@@ -55,7 +63,7 @@ import com.bestbudz.ui.handling.input.MouseState;
 import com.bestbudz.engine.core.login.Login;
 import com.bestbudz.entity.Entity;
 import com.bestbudz.entity.EntityDef;
-import com.bestbudz.entity.IdentityKit;
+import com.bestbudz.cache.IdentityKit;
 import com.bestbudz.entity.Npc;
 import com.bestbudz.entity.Stoner;
 import com.bestbudz.graphics.Background;
@@ -97,7 +105,6 @@ import com.bestbudz.world.ObjectDef;
 import com.bestbudz.engine.core.gamerender.ObjectManager;
 import com.bestbudz.world.Varp;
 import com.bestbudz.engine.core.gamerender.WorldController;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
@@ -127,7 +134,6 @@ public class Client extends ClientEngine
 	public static final RSInterface aClass9_1059 = new RSInterface();
 	public static final int currencies = 11;
 	public static final Sprite[] currencyImage = new Sprite[currencies];
-	public static final int[][] statsSkillGoal = new int[Skills.SKILLS_COUNT + 1][3];
 	public static final int[] tabAmounts = new int[]{350, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	public static final int[] bankInvTemp = new int[352];
 	public static final int[] bankStackTemp = new int[352];
@@ -207,9 +213,7 @@ public static final int[] anIntArray1240 = new int[100];
 	public static int screenAreaWidth = 1280;
 	public static int screenAreaHeight = 720;
 	public static int cameraZoom = EngineConfig.CAMERA_ZOOM;
-	public static boolean showChatComponents = false;
 	public static boolean showTabComponents = false;
-	public static boolean changeTabArea = true;
 	public static boolean changeChatArea = true;
 	public static boolean transparentTabArea = true;
 	public static int npcBits = 16;
@@ -257,7 +261,7 @@ public static final int[] anIntArray1240 = new int[100];
 	public static int anInt1117;
 	public static int anInt1134;
 	public static int anInt1155;
-	public static ImageProducer aRSImageProducer_1165;
+	public static ImageProducer mainGameRendering;
 	public static int anInt1175;
 	public static int[] anIntArray1180;
 	public static int[] anIntArray1181;
@@ -276,7 +280,7 @@ public static final int[] anIntArray1240 = new int[100];
 	public static int[] anIntArray828;
 	public static int[] anIntArray829;
 	public static int loginScreenState;
-	public static String prayerBook;
+	//public static String prayerBook;
 	public static int[] anIntArray850;
 		public static Background aBackground_966;
 	public static Background aBackground_967;
@@ -752,7 +756,7 @@ public static final int[] anIntArray1240 = new int[100];
 		WorldController.method310(500, 800, frameWidth, frameHeight, ai);
 		if (loggedIn)
 		{
-			aRSImageProducer_1165 = new ImageProducer(frameWidth, frameHeight);
+			mainGameRendering = new ImageProducer(frameWidth, frameHeight);
 		}
 	}
 
@@ -792,16 +796,6 @@ public static final int[] anIntArray1240 = new int[100];
 		ObjectDef.lowMem = false;
 	}
 
-	public static void rebuildFrameSize(int screenWidth, int screenHeight) {
-		try {
-			frameWidth = screenWidth;
-			frameHeight = screenHeight;
-			setBounds();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	public static void stopMidi()
 	{
 		Signlink.midifade = 0;
@@ -821,7 +815,7 @@ public static final int[] anIntArray1240 = new int[100];
 		ItemDef.mruNodes2.unlinkAll();
 		ItemDef.mruNodes1.unlinkAll();
 		Stoner.mruNodes.unlinkAll();
-		SpotAnim.aMRUNodes_415.unlinkAll();
+		//SpotAnim.aMRUNodes_415.unlinkAll();
 	}
 
 	public static StreamLoader streamLoaderForName(int i, String s, String s1, int j, int k, Graphics2D g)
@@ -971,7 +965,7 @@ public static final int[] anIntArray1240 = new int[100];
 		DrawingArea.setAllPixelsToZero();
 		fixedGameComponents[0].drawSprite(0, 0);
 		aRSImageProducer_1163 = new ImageProducer(249, 335);
-		aRSImageProducer_1165 = new ImageProducer(frameWidth, frameHeight);
+		mainGameRendering = new ImageProducer(frameWidth, frameHeight);
 		DrawingArea.setAllPixelsToZero();
 		aRSImageProducer_1125 = new ImageProducer(249, 45);
 		welcomeScreenRaised = true;
@@ -1733,7 +1727,7 @@ public static final int[] anIntArray1240 = new int[100];
 		GameState.safeRenderWorld(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 		worldController.clearObj5Cache();
 		if (SettingsConfig.enableDistanceFog) {
-			fogHandler.renderFog(aRSImageProducer_1165.canvasRaster, aRSImageProducer_1165.depthBuffer);
+			fogHandler.renderFog(mainGameRendering.canvasRaster, mainGameRendering.depthBuffer);
 		}
 
 		if (inMaze(baseX + (myStoner.x - 6 >> 7)) && filterGrayScale)
@@ -1757,13 +1751,17 @@ public static final int[] anIntArray1240 = new int[100];
 		{
 			console.drawConsole(frameWidth, 334);
 		}
-		aRSImageProducer_1165.drawGraphics(0, g,
+		mainGameRendering.drawGraphics(0, g,
 			0);
+
+
 		xCameraPos = l;
 		zCameraPos = i1;
 		yCameraPos = j1;
 		yCameraCurve = k1;
 		xCameraCurve = l1;
+
+
 	}
 
 	public static void resetAllImageProducers()
@@ -1775,7 +1773,7 @@ public static final int[] anIntArray1240 = new int[100];
 		aRSImageProducer_1166 = null;
 		aRSImageProducer_1164 = null;
 		aRSImageProducer_1163 = null;
-		aRSImageProducer_1165 = null;
+		mainGameRendering = null;
 		aRSImageProducer_1125 = null;
 		aRSImageProducer_1107 = null;
 		aRSImageProducer_1108 = null;
@@ -1790,29 +1788,172 @@ public static final int[] anIntArray1240 = new int[100];
 		welcomeScreenRaised = true;
 	}
 
-	public void refreshFrameSize(GameCanvas canvas, int lockedW, int lockedH) {
+	public void refreshFrameSize(GameCanvas canvas, int lockedW, int lockedH) throws InterruptedException
+	{
 		if (lockedW <= 0 || lockedH <= 0) return;
 
-		frameWidth = lockedW;
-		frameHeight = lockedH;
-		screenAreaWidth = lockedW;
-		screenAreaHeight = lockedH;
+		System.out.println("[Client] === STARTING RESIZE: " + lockedW + "x" + lockedH + " ===");
 
-		setBounds();
+		boolean wasGPUEnabled = false;
+		GPUContextManager.ContextToken contextToken = null;
 
-		int[] pixels = new int[lockedW * lockedH];
-		float[] z = new float[lockedW * lockedH];
-		DrawingArea.initDrawingArea(lockedW, lockedH, pixels, z);
-		Rasterizer.method365(lockedW, lockedH);
-		Client.aRSImageProducer_1109 = new ImageProducer(lockedW, lockedH); // Offscreen
-		Client.aRSImageProducer_1109.initDrawingArea();
-		DockSync.refreshHeight(lockedH);
-		System.out.println("Client size set to: " + lockedW + "x" + lockedH);
-		System.out.println("Pixels : " + pixels.length);
-		System.out.println("Expected: " + (lockedW * lockedH));
-		if (pixels.length != lockedW * lockedH) {
-			Thread.dumpStack();
-			throw new RuntimeException("❌ Fatal: Pixel buffer length mismatch after resize");
+		try {
+			// ===== STEP 1: SMART GPU STATE CHECK =====
+			wasGPUEnabled = GPURenderingEngine.isEnabled() && gpuInitialized;
+
+			if (wasGPUEnabled) {
+				System.out.println("[Client] GPU active - performing safe shutdown for resize");
+
+				try {
+					// Acquire context for cleanup
+					if (gpuContextManager != null) {
+						contextToken = gpuContextManager.acquireContext("Resize Cleanup", 2000);
+						if (contextToken != null && contextToken.isValid()) {
+							// Clean up GPU resources
+							GPURenderingEngine.cleanup();
+							System.out.println("[Client] ✅ GPU cleaned up for resize");
+						}
+					}
+				} catch (Exception e) {
+					System.err.println("[Client] ⚠️ Error during GPU cleanup: " + e.getMessage());
+					wasGPUEnabled = false; // Don't try to restore if cleanup failed
+				} finally {
+					if (contextToken != null) {
+						try {
+							contextToken.close();
+							contextToken = null;
+						} catch (Exception e) {
+							System.err.println("[Client] Error releasing cleanup context: " + e.getMessage());
+						}
+					}
+				}
+			}
+
+			// ===== STEP 2: CPU-ONLY RESIZE =====
+			System.out.println("[Client] Performing resize to " + lockedW + "x" + lockedH);
+
+			// Create new buffers
+			int[] newPixels = new int[lockedW * lockedH];
+			float[] newDepthBuffer = new float[lockedW * lockedH];
+			java.util.Arrays.fill(newPixels, 0);
+			java.util.Arrays.fill(newDepthBuffer, Float.MAX_VALUE);
+
+			// Update DrawingArea with new dimensions - this will handle GPU/CPU mode internally
+			DrawingArea.initDrawingArea(lockedH, lockedW, newPixels, newDepthBuffer);
+
+			// Update global size variables
+			frameWidth = lockedW;
+			frameHeight = lockedH;
+			screenAreaWidth = lockedW;
+			screenAreaHeight = lockedH;
+
+			// Update other systems that depend on screen size
+			setBounds();
+
+			// Create new ImageProducers with correct dimensions
+			Client.aRSImageProducer_1109 = new ImageProducer(lockedW, lockedH);
+			DrawingArea.setCurrentImageProducer(Client.aRSImageProducer_1109);
+
+			// Update dock system
+			DockSync.refreshHeight(lockedH);
+
+			System.out.println("[Client] ✅ Core resize complete");
+
+			// ===== STEP 3: GPU RESTORATION =====
+			if (wasGPUEnabled) {
+				System.out.println("[Client] Restoring GPU with new dimensions...");
+
+				// Small delay to ensure buffers are stable
+				Thread.sleep(100);
+
+				try {
+					// Re-acquire context for restoration
+					contextToken = gpuContextManager.acquireContext("Resize Restore", 3000);
+
+					if (contextToken != null && contextToken.isValid()) {
+						// Re-initialize GPU with new dimensions
+						GPURenderingEngine.initialize();
+
+						if (GPURenderingEngine.isEnabled()) {
+							// Update GPU shaders with new screen size
+							GPUShaders.setScreenSize(lockedW, lockedH);
+
+							// Update global GPU state
+							gpuInitialized = true;
+
+							System.out.println("[Client] ✅ GPU restored successfully with new dimensions");
+						} else {
+							System.err.println("[Client] ⚠️ GPU failed to restore, continuing with CPU rendering");
+							gpuInitialized = false;
+						}
+					} else {
+						System.err.println("[Client] ⚠️ Failed to acquire GPU context for restore");
+						gpuInitialized = false;
+					}
+
+				} catch (Exception e) {
+					System.err.println("[Client] ❌ GPU restoration failed: " + e.getMessage());
+					e.printStackTrace();
+					gpuInitialized = false;
+
+					System.err.println("[Client] 🔧 Continuing with CPU rendering after GPU failure");
+
+				} finally {
+					if (contextToken != null) {
+						try {
+							contextToken.close();
+						} catch (Exception e) {
+							System.err.println("[Client] Error releasing restore context: " + e.getMessage());
+						}
+					}
+				}
+			}
+
+			System.out.println("[Client] === RESIZE COMPLETE: " + lockedW + "x" + lockedH + " ===");
+
+		} catch (Exception e) {
+			System.err.println("[Client] ❌ Resize failed: " + e.getMessage());
+			e.printStackTrace();
+
+			// Emergency fallback - ensure we're in a working state
+			try {
+				if (contextToken != null) {
+					contextToken.close();
+				}
+
+				// Disable GPU as emergency fallback
+				gpuInitialized = false;
+
+				System.err.println("[Client] 🔧 Emergency fallback - GPU disabled");
+
+			} catch (Exception fallbackError) {
+				System.err.println("[Client] ❌ Emergency fallback failed: " + fallbackError.getMessage());
+				throw fallbackError;
+			}
+
+			throw e;
+		}
+	}
+
+	// Helper method to validate resize dimensions
+	private void validateResizeParameters(int width, int height) {
+		if (width < 256 || height < 256) {
+			throw new IllegalArgumentException("Minimum resize dimensions are 256x256");
+		}
+		if (width > 4096 || height > 4096) {
+			throw new IllegalArgumentException("Maximum resize dimensions are 4096x4096");
+		}
+	}
+
+	// Helper method to safely check GPU state during resize
+	private boolean isGPUSafeForResize() {
+		try {
+			return GPURenderingEngine.isEnabled() &&
+				gpuContextManager != null &&
+				gpuInitialized;
+		} catch (Exception e) {
+			System.err.println("[Client] Error checking GPU state: " + e.getMessage());
+			return false;
 		}
 	}
 
@@ -1886,6 +2027,8 @@ public static final int[] anIntArray1240 = new int[100];
 
 		if (!loggedIn) return;
 
+		validateGPUStateIfNeeded();
+
 		handleClickPacket(leftClick, rightClick);       // 🔄 Needs update to accept args
 		handleMovementKeys();
 		handleFocusPacket();
@@ -1896,8 +2039,19 @@ public static final int[] anIntArray1240 = new int[100];
 		handleWalkToObject();
 		handleInputClearOnClick(leftClick, rightClick); // 🔄 Also needs update
 		processMenuClick(leftClick, rightClick);        // 🔄 Also needs update
-		handleInputTick(leftClick, rightClick);                     // 🔄 Also needs update
+		handleInputTick(leftClick, rightClick);
+
+		if (EngineConfig.ENABLE_GPU){
+			if (!initialized) {
+				initializeGPUAfterGraphicsLoad();
+			}
+		}
+
 		runSceneRendering(g);
+		if (GPURenderingEngine.isEnabled()) {
+			GPUShaders.flushAllBatches();
+		}
+
 		handleIdle();
 		tryFlushStream(g, canvas);
 
@@ -2018,7 +2172,7 @@ public static final int[] anIntArray1240 = new int[100];
 		regularText.drawText(ColorConfig.WHITE_COLOR, "BestBudz is out of weed!", 18, 119);
 		regularText.drawText(0, "Attempting to add fertilizer.", 34, 117);
 		regularText.drawText(ColorConfig.WHITE_COLOR, "Attempting to add fertilizer.", 34, 116);
-		aRSImageProducer_1165.drawGraphics(0, g, 0);
+		mainGameRendering.drawGraphics(0, g, 0);
 		anInt1021 = 0;
 		destX = 0;
 		if (rememberMe)
@@ -2033,6 +2187,7 @@ public static final int[] anIntArray1240 = new int[100];
 		loginFailures = 0;
 		setBounds();
 		Login.login(myUsername, myPassword, true,g, canvas, this);
+
 		SettingHandler.save();
 		console.openConsole = false;
 		if (!loggedIn)
@@ -2045,7 +2200,6 @@ public static final int[] anIntArray1240 = new int[100];
 		{
 		}
 	}
-
 	public void processGameLoop(Graphics2D g, GameCanvas canvas) throws IOException
 	{
 		if (rsAlreadyLoaded || loadingError || genericLoadingError)
@@ -2054,8 +2208,8 @@ public static final int[] anIntArray1240 = new int[100];
 		loopCycle++;
 		if (!loggedIn)
 			loginRenderer.processLoginScreen(g, canvas);
-
 		else
+
 			mainGameProcessor(g, canvas);
 		processOnDemandQueue();
 	}
@@ -2099,7 +2253,7 @@ public static final int[] anIntArray1240 = new int[100];
 		leftFrame = null;
 		topFrame = null;
 		aRSImageProducer_1164 = null;
-		aRSImageProducer_1165 = null;
+		mainGameRendering = null;
 		aRSImageProducer_1166 = null;
 		aRSImageProducer_1125 = null;
 		cacheSprite = null;
@@ -2174,7 +2328,7 @@ public static final int[] anIntArray1240 = new int[100];
 		RSInterface.interfaceCache = null;
 		Animation.anims = null;
 		SpotAnim.cache = null;
-		SpotAnim.aMRUNodes_415 = null;
+		//SpotAnim.aMRUNodes_415 = null;
 		Varp.cache = null;
 		Stoner.mruNodes = null;
 		Rasterizer.nullLoader();
@@ -2185,29 +2339,37 @@ public static final int[] anIntArray1240 = new int[100];
 		System.gc();
 	}
 
-	public void processDrawing(Graphics2D g, GameCanvas canvas)
-	{
+	public void processDrawing(Graphics2D g, GameCanvas canvas) {
+		// Quick validation before rendering
+		int expected = screenAreaWidth * screenAreaHeight;
+		if (DrawingArea.pixels == null || DrawingArea.pixels.length != expected) {
+			System.err.println("❌ Buffer mismatch detected - expected: " + expected +
+				", actual: " + (DrawingArea.pixels != null ? DrawingArea.pixels.length : "null"));
 
-		int expected = Client.screenAreaWidth * Client.screenAreaHeight;
-		if (pixels.length != expected) {
-			System.err.println("❌ DrawingArea out of sync: " + pixels.length + " vs " + expected);
-			Thread.dumpStack();
-			System.exit(1);
+			// Simple fix: recreate buffers with correct size
+			DrawingArea.pixels = new int[expected];
+			DrawingArea.depthBuffer = new float[expected];
+			DrawingArea.width = screenAreaWidth;
+			DrawingArea.height = screenAreaHeight;
+			java.util.Arrays.fill(DrawingArea.pixels, 0);
+			java.util.Arrays.fill(DrawingArea.depthBuffer, Float.MAX_VALUE);
+
+			System.err.println("🔧 Emergency buffer fix applied");
 		}
 
-		if (rsAlreadyLoaded || loadingError || genericLoadingError)
-		{
-			showErrorScreen(g); // Pass Graphics to showErrorScreen
+		// Rest of method unchanged...
+		if (rsAlreadyLoaded || loadingError || genericLoadingError) {
+			showErrorScreen(g);
 			return;
 		}
 		if (!loggedIn)
-			loginRenderer.displayLoginScreen(g, canvas); // Pass Graphics
+			loginRenderer.displayLoginScreen(g, canvas);
 		else
-			drawGameScreen(g); // Pass Graphics
+			drawGameScreen(g);
 		anInt1213 = 0;
 		frameCount++;
 		long now = System.currentTimeMillis();
-		if (now - lastFpsTime >= 1000) { // 1 second passed
+		if (now - lastFpsTime >= 1000) {
 			fps = frameCount;
 			frameCount = 0;
 			lastFpsTime = now;

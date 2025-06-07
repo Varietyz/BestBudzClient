@@ -8,22 +8,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Optimized SequenceFrame class for handling animation frame data.
- * Provides better performance, reliability, and maintainability.
+ * Simplified SequenceFrame class for handling animation frame data.
  */
 public final class SequenceFrame {
 
 	private static final Logger LOGGER = Logger.getLogger(SequenceFrame.class.getName());
 
-	// Constants for better readability
-	private static final int TEMP_ARRAY_SIZE = 500;
+	// Constants
 	private static final int ROTATION_DEFAULT = 128;
 	private static final int POSITION_DEFAULT = 0;
 	private static final int FRAME_MULTIPLIER = 3;
-	private static final int HEX_FRAME_ID_LENGTH = 4;
-	private static final int HEX_RADIX = 16;
 
-	// Frame data - made final where possible
+	// Frame data
 	public static SequenceFrame[][] animationlist;
 	public final int anInt636;
 	public final Class18 aClass18_637;
@@ -34,11 +30,11 @@ public final class SequenceFrame {
 	public final int[] anIntArray642;
 
 	/**
-	 * Private constructor for creating frame instances during loading.
+	 * Main constructor for creating frame instances.
 	 */
-	private SequenceFrame(Class18 skinList, int frameCount, int[] indices,
-						  int[] xValues, int[] yValues, int[] zValues) {
-		this.anInt636 = 0; // Default value, maintain compatibility
+	public SequenceFrame(Class18 skinList, int frameCount, int[] indices,
+						 int[] xValues, int[] yValues, int[] zValues) {
+		this.anInt636 = 0;
 		this.aClass18_637 = skinList;
 		this.anInt638 = frameCount;
 		this.anIntArray639 = indices;
@@ -48,7 +44,7 @@ public final class SequenceFrame {
 	}
 
 	/**
-	 * Legacy constructor for compatibility.
+	 * Default constructor for compatibility.
 	 */
 	public SequenceFrame() {
 		this.anInt636 = 0;
@@ -61,10 +57,7 @@ public final class SequenceFrame {
 	}
 
 	/**
-	 * Optimized loader with better error handling and performance.
-	 *
-	 * @param fileId the file identifier
-	 * @param data the byte array containing animation data
+	 * Loads animation frames from byte data.
 	 */
 	public static void load(int fileId, byte[] data) {
 		if (data == null || data.length == 0) {
@@ -73,31 +66,54 @@ public final class SequenceFrame {
 		}
 
 		try {
-			final Stream stream = new Stream(data);
-			final Class18 skinList = new Class18(stream);
-			final int frameCount = stream.readUnsignedWord();
+			Stream stream = new Stream(data);
+			Class18 skinList = new Class18(stream);
+
+			// Check if we have enough data to read frame count
+			if (stream.currentOffset + 2 > data.length) {
+				LOGGER.warning("Insufficient data to read frame count for file " + fileId);
+				return;
+			}
+
+			int frameCount = stream.readUnsignedWord();
+
+			// Validate frame count is reasonable
+			if (frameCount < 0 || frameCount > 10000) {
+				LOGGER.warning("Invalid frame count " + frameCount + " for file " + fileId);
+				return;
+			}
 
 			// Initialize animation list for this file
 			animationlist[fileId] = new SequenceFrame[frameCount * FRAME_MULTIPLIER];
 
-			// Pre-allocate temporary arrays once
-			final FrameDataBuilder builder = new FrameDataBuilder();
-
+			int successfulFrames = 0;
 			for (int frameIndex = 0; frameIndex < frameCount; frameIndex++) {
 				try {
-					loadSingleFrame(stream, skinList, animationlist[fileId], builder);
+					// Check if we have enough remaining data before attempting to load
+					if (stream.currentOffset >= data.length) {
+						LOGGER.warning("Reached end of data at frame " + frameIndex + " of " + frameCount +
+							" for file " + fileId + ". Successfully loaded " + successfulFrames + " frames.");
+						break;
+					}
+
+					loadSingleFrame(stream, skinList, animationlist[fileId]);
+					successfulFrames++;
 				} catch (Exception e) {
 					LOGGER.log(Level.WARNING,
 						"Skipping corrupt sequence frame in file " + fileId +
 							" at index " + frameIndex + ": " + e.getMessage(), e);
+					// Stop processing if we hit buffer overflow errors
+					if (e instanceof ArrayIndexOutOfBoundsException) {
+						LOGGER.warning("Buffer overflow detected, stopping frame loading for file " + fileId);
+						break;
+					}
 				}
 			}
 
-			LOGGER.info("Successfully loaded " + frameCount + " sequence frames for file " + fileId);
+			LOGGER.info("Loaded " + successfulFrames + " of " + frameCount + " frames for file " + fileId);
 
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Failed to load sequence file " + fileId, e);
-			// Ensure we don't leave a partially loaded state
 			if (animationlist[fileId] != null) {
 				animationlist[fileId] = new SequenceFrame[0];
 			}
@@ -107,68 +123,141 @@ public final class SequenceFrame {
 	/**
 	 * Loads a single frame from the stream.
 	 */
-	private static void loadSingleFrame(Stream stream, Class18 skinList,
-										SequenceFrame[] frameArray, FrameDataBuilder builder) {
-		final int frameId = stream.readUnsignedWord();
-		final int transformCount = stream.readUnsignedByte();
+	private static void loadSingleFrame(Stream stream, Class18 skinList, SequenceFrame[] frameArray) {
+		// Check if we have enough data to read frame header
+		if (stream.currentOffset + 3 > stream.buffer.length) {
+			throw new ArrayIndexOutOfBoundsException("Not enough data to read frame header");
+		}
 
-		builder.reset();
+		int frameId = stream.readUnsignedWord();
+		int transformCount = stream.readUnsignedByte();
+
+		// Validate frame ID
+		if (frameId < 0 || frameId >= frameArray.length) {
+			LOGGER.warning("Invalid frame ID " + frameId + ", skipping frame");
+			return;
+		}
+
+		// Validate transform count
+		if (transformCount < 0 || transformCount > 1000) {
+			LOGGER.warning("Invalid transform count " + transformCount + " for frame " + frameId + ", skipping frame");
+			return;
+		}
+
+		// Collect transformation data
+		int[] indices = new int[transformCount];
+		int[] xValues = new int[transformCount];
+		int[] yValues = new int[transformCount];
+		int[] zValues = new int[transformCount];
+		int actualCount = 0;
+
 		int lastProcessedIndex = -1;
 
-		// Process each transformation in the frame
 		for (int i = 0; i < transformCount; i++) {
-			final int transformFlags = stream.readUnsignedByte();
+			// Check if we have data to read the transform flags
+			if (stream.currentOffset >= stream.buffer.length) {
+				LOGGER.warning("Reached end of buffer at transform " + i + " of " + transformCount);
+				break;
+			}
+
+			int transformFlags = stream.readUnsignedByte();
+
+			// Validate transform flags (should be 0-7 for 3 bits)
+			if (transformFlags < 0 || transformFlags > 7) {
+				LOGGER.warning("Invalid transform flags " + transformFlags + " at index " + i + ", skipping");
+				continue;
+			}
 
 			if (transformFlags > 0) {
-				processTransformation(stream, skinList, builder, i, transformFlags, lastProcessedIndex);
+				// Validate skinList bounds
+				if (i >= skinList.anIntArray342.length) {
+					LOGGER.warning("Transform index " + i + " exceeds skinList bounds, skipping");
+					continue;
+				}
+
+				// Fill gaps with default values if needed
+				if (skinList.anIntArray342[i] != 0) {
+					for (int gapIndex = i - 1; gapIndex > lastProcessedIndex; gapIndex--) {
+						if (gapIndex >= 0 && gapIndex < skinList.anIntArray342.length &&
+							skinList.anIntArray342[gapIndex] == 0) {
+							if (actualCount < transformCount) {
+								indices[actualCount] = gapIndex;
+								xValues[actualCount] = POSITION_DEFAULT;
+								yValues[actualCount] = POSITION_DEFAULT;
+								zValues[actualCount] = POSITION_DEFAULT;
+								actualCount++;
+							}
+							break;
+						}
+					}
+				}
+
+				// Determine default value based on transformation type
+				int defaultValue = (skinList.anIntArray342[i] == 3) ? ROTATION_DEFAULT : POSITION_DEFAULT;
+
+				// Check if we have enough data to read the transformation values
+				int bytesNeeded = 0;
+				if ((transformFlags & 0x1) != 0) bytesNeeded += 2; // x value
+				if ((transformFlags & 0x2) != 0) bytesNeeded += 2; // y value
+				if ((transformFlags & 0x4) != 0) bytesNeeded += 2; // z value
+
+				if (stream.currentOffset + bytesNeeded > stream.buffer.length) {
+					LOGGER.warning("Not enough data to read transformation values");
+					break;
+				}
+
+				// Read transformation values based on flags
+				int xValue = (transformFlags & 0x1) != 0 ? stream.readShort2() : defaultValue;
+				int yValue = (transformFlags & 0x2) != 0 ? stream.readShort2() : defaultValue;
+				int zValue = (transformFlags & 0x4) != 0 ? stream.readShort2() : defaultValue;
+
+				// Validate and clean transformation values
+				xValue = cleanTransformValue(xValue, "X", frameId, i);
+				yValue = cleanTransformValue(yValue, "Y", frameId, i);
+				zValue = cleanTransformValue(zValue, "Z", frameId, i);
+
+				if (actualCount < transformCount) {
+					indices[actualCount] = i;
+					xValues[actualCount] = xValue;
+					yValues[actualCount] = yValue;
+					zValues[actualCount] = zValue;
+					actualCount++;
+				}
+
 				lastProcessedIndex = i;
 			}
 		}
 
-		// Create the frame with the collected data
-		frameArray[frameId] = builder.createFrame(skinList);
-	}
-
-	/**
-	 * Processes a single transformation within a frame.
-	 */
-	private static void processTransformation(Stream stream, Class18 skinList,
-											  FrameDataBuilder builder, int currentIndex,
-											  int transformFlags, int lastProcessedIndex) {
-
-		// Fill gaps with default values if needed
-		if (skinList.anIntArray342[currentIndex] != 0) {
-			fillTransformationGaps(skinList, builder, currentIndex, lastProcessedIndex);
+		// Skip creating frame if no valid transformations were found
+		if (actualCount == 0) {
+			LOGGER.warning("No valid transformations found for frame " + frameId + ", skipping");
+			return;
 		}
 
-		// Determine default value based on transformation type
-		final int defaultValue = (skinList.anIntArray342[currentIndex] == 3) ?
-			ROTATION_DEFAULT : POSITION_DEFAULT;
+		// Create properly sized arrays for the actual data
+		int[] finalIndices = new int[actualCount];
+		int[] finalXValues = new int[actualCount];
+		int[] finalYValues = new int[actualCount];
+		int[] finalZValues = new int[actualCount];
 
-		// Read transformation values based on flags
-		final int xValue = (transformFlags & 0x1) != 0 ? stream.readShort2() : defaultValue;
-		final int yValue = (transformFlags & 0x2) != 0 ? stream.readShort2() : defaultValue;
-		final int zValue = (transformFlags & 0x4) != 0 ? stream.readShort2() : defaultValue;
+		System.arraycopy(indices, 0, finalIndices, 0, actualCount);
+		System.arraycopy(xValues, 0, finalXValues, 0, actualCount);
+		System.arraycopy(yValues, 0, finalYValues, 0, actualCount);
+		System.arraycopy(zValues, 0, finalZValues, 0, actualCount);
 
-		builder.addTransformation(currentIndex, xValue, yValue, zValue);
-	}
-
-	/**
-	 * Fills gaps in transformation data with default values.
-	 */
-	private static void fillTransformationGaps(Class18 skinList, FrameDataBuilder builder,
-											   int currentIndex, int lastProcessedIndex) {
-		for (int gapIndex = currentIndex - 1; gapIndex > lastProcessedIndex; gapIndex--) {
-			if (skinList.anIntArray342[gapIndex] == 0) {
-				builder.addTransformation(gapIndex, POSITION_DEFAULT, POSITION_DEFAULT, POSITION_DEFAULT);
-				break;
-			}
+		// Check if the entire frame data appears corrupted
+		if (isFrameDataCorrupted(finalIndices, finalXValues, finalYValues, finalZValues, actualCount)) {
+			LOGGER.warning("Frame " + frameId + " appears to contain corrupted data, skipping");
+			return;
 		}
+
+		// Create the frame only if we have valid data
+		frameArray[frameId] = new SequenceFrame(skinList, actualCount, finalIndices,
+			finalXValues, finalYValues, finalZValues);
 	}
 
 	/**
 	 * Legacy loader method for backward compatibility.
-	 * Delegates to the optimized load method.
 	 */
 	public static void loader(int file, byte[] data) {
 		load(file, data);
@@ -183,34 +272,39 @@ public final class SequenceFrame {
 
 	/**
 	 * Retrieves a sequence frame by its encoded identifier.
-	 * Optimized with better error handling and caching.
-	 *
-	 * @param encodedId the encoded frame identifier
-	 * @return the sequence frame, or null if not found/available
 	 */
 	public static SequenceFrame method531(int encodedId) {
 		try {
-			final FrameIdentifier frameId = decodeFrameId(encodedId);
+			int fileIndex, frameIndex;
 
-			if (frameId == null || !isValidFrameId(frameId)) {
+			// Decode the frame ID
+			String hexString = Integer.toHexString(encodedId);
+			if (hexString.length() < 4) {
+				fileIndex = 0;
+				frameIndex = encodedId;
+			} else {
+				int splitPoint = hexString.length() - 4;
+				fileIndex = Integer.parseInt(hexString.substring(0, splitPoint), 16);
+				frameIndex = Integer.parseInt(hexString.substring(splitPoint), 16);
+			}
+
+			// Validate bounds
+			if (fileIndex < 0 || frameIndex < 0 || fileIndex >= animationlist.length) {
 				return null;
 			}
 
-			final SequenceFrame[] frameArray = animationlist[frameId.fileIndex];
+			SequenceFrame[] frameArray = animationlist[fileIndex];
 			if (frameArray == null || frameArray.length == 0) {
 				// Request loading if not available
-				Client.instance.onDemandFetcher.method558(1, frameId.fileIndex);
+				Client.instance.onDemandFetcher.method558(1, fileIndex);
 				return null;
 			}
 
-			if (frameId.frameIndex >= frameArray.length) {
-				LOGGER.warning("Frame index " + frameId.frameIndex +
-					" exceeds array length " + frameArray.length +
-					" for file " + frameId.fileIndex);
+			if (frameIndex >= frameArray.length) {
 				return null;
 			}
 
-			return frameArray[frameId.frameIndex];
+			return frameArray[frameIndex];
 
 		} catch (Exception e) {
 			LOGGER.log(Level.WARNING, "Error retrieving frame for ID: " + encodedId, e);
@@ -219,98 +313,73 @@ public final class SequenceFrame {
 	}
 
 	/**
-	 * Decodes a frame identifier from its encoded form.
-	 */
-	private static FrameIdentifier decodeFrameId(int encodedId) {
-		try {
-			final String hexString = Integer.toHexString(encodedId);
-
-			if (hexString.length() < HEX_FRAME_ID_LENGTH) {
-				return new FrameIdentifier(0, encodedId);
-			}
-
-			final int splitPoint = hexString.length() - HEX_FRAME_ID_LENGTH;
-			final int fileIndex = Integer.parseInt(hexString.substring(0, splitPoint), HEX_RADIX);
-			final int frameIndex = Integer.parseInt(hexString.substring(splitPoint), HEX_RADIX);
-
-			return new FrameIdentifier(fileIndex, frameIndex);
-
-		} catch (NumberFormatException e) {
-			LOGGER.warning("Invalid frame ID format: " + encodedId);
-			return null;
-		}
-	}
-
-	/**
-	 * Validates frame identifier bounds.
-	 */
-	private static boolean isValidFrameId(FrameIdentifier frameId) {
-		return frameId.fileIndex >= 0 &&
-			frameId.frameIndex >= 0 &&
-			frameId.fileIndex < animationlist.length;
-	}
-
-	/**
 	 * Legacy method for checking if frame ID is invalid.
-	 *
-	 * @param frameId the frame identifier
-	 * @return true if frame ID is invalid (-1)
 	 */
 	public static boolean method532(int frameId) {
 		return frameId == -1;
 	}
 
 	/**
-	 * Helper class for building frame data efficiently.
+	 * Cleans and validates transformation values, removing corrupted data.
 	 */
-	private static final class FrameDataBuilder {
-		private final int[] tempIndices = new int[TEMP_ARRAY_SIZE];
-		private final int[] tempXValues = new int[TEMP_ARRAY_SIZE];
-		private final int[] tempYValues = new int[TEMP_ARRAY_SIZE];
-		private final int[] tempZValues = new int[TEMP_ARRAY_SIZE];
-		private int count = 0;
-
-		void reset() {
-			count = 0;
+	private static int cleanTransformValue(int value, String axis, int frameId, int transformIndex) {
+		// Check for extreme values that indicate corruption
+		if (value < -32768 || value > 32767) {
+			LOGGER.warning("Extreme " + axis + " value " + value + " in frame " + frameId +
+				" transform " + transformIndex + ", clamping to valid range");
+			return Math.max(-32768, Math.min(32767, value));
 		}
 
-		void addTransformation(int index, int x, int y, int z) {
-			if (count < TEMP_ARRAY_SIZE) {
-				tempIndices[count] = index;
-				tempXValues[count] = x;
-				tempYValues[count] = y;
-				tempZValues[count] = z;
-				count++;
-			}
+		// Check for suspicious patterns that might indicate corruption
+		// Values like 0xFFFF, 0x0000 repeated might be corruption
+		if (value == 0xFFFF || value == -1) {
+			LOGGER.fine("Suspicious " + axis + " value " + value + " in frame " + frameId +
+				" transform " + transformIndex + ", replacing with default");
+			return axis.equals("X") || axis.equals("Y") || axis.equals("Z") ?
+				POSITION_DEFAULT : ROTATION_DEFAULT;
 		}
 
-		SequenceFrame createFrame(Class18 skinList) {
-			// Create properly sized arrays
-			final int[] indices = new int[count];
-			final int[] xValues = new int[count];
-			final int[] yValues = new int[count];
-			final int[] zValues = new int[count];
-
-			// Copy data efficiently
-			System.arraycopy(tempIndices, 0, indices, 0, count);
-			System.arraycopy(tempXValues, 0, xValues, 0, count);
-			System.arraycopy(tempYValues, 0, yValues, 0, count);
-			System.arraycopy(tempZValues, 0, zValues, 0, count);
-
-			return new SequenceFrame(skinList, count, indices, xValues, yValues, zValues);
+		// For rotation values, ensure they're within reasonable range (0-255 typically)
+		if (axis.equals("Rotation") && (value < 0 || value > 255)) {
+			LOGGER.fine("Invalid rotation value " + value + " in frame " + frameId +
+				" transform " + transformIndex + ", wrapping to valid range");
+			return ((value % 256) + 256) % 256;
 		}
+
+		return value;
 	}
 
 	/**
-	 * Helper class for frame identification.
+	 * Additional validation to clean entire frames of obviously corrupted data.
 	 */
-	private static final class FrameIdentifier {
-		final int fileIndex;
-		final int frameIndex;
+	private static boolean isFrameDataCorrupted(int[] indices, int[] xValues, int[] yValues, int[] zValues, int count) {
+		if (count == 0) return true;
 
-		FrameIdentifier(int fileIndex, int frameIndex) {
-			this.fileIndex = fileIndex;
-			this.frameIndex = frameIndex;
+		int zeroCount = 0;
+		int extremeCount = 0;
+
+		for (int i = 0; i < count; i++) {
+			// Count zero values
+			if (xValues[i] == 0 && yValues[i] == 0 && zValues[i] == 0) {
+				zeroCount++;
+			}
+
+			// Count extreme values
+			if (Math.abs(xValues[i]) > 10000 || Math.abs(yValues[i]) > 10000 || Math.abs(zValues[i]) > 10000) {
+				extremeCount++;
+			}
 		}
+
+		// If more than 80% of values are zero, likely corrupted
+		if ((double)zeroCount / count > 0.8) {
+			return true;
+		}
+
+		// If more than 50% of values are extreme, likely corrupted
+		if ((double)extremeCount / count > 0.5) {
+			return true;
+		}
+
+		return false;
 	}
 }

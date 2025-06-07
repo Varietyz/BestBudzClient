@@ -455,7 +455,6 @@ public class LoginRenderer {
 				if (clickIn(l.worldBtns[i])) {
 					EngineConfig.worldSelected = worlds[i].id;
 					SettingsConfig.economyWorld = EngineConfig.worldSelected != 2;
-					Client.rebuildFrameSize(Client.frameWidth, Client.frameHeight);
 					break;
 				}
 			}
@@ -533,8 +532,9 @@ public class LoginRenderer {
 			Client.aRSImageProducer_1109.canvasWidth != Client.frameWidth ||
 			Client.aRSImageProducer_1109.canvasHeight != Client.frameHeight) {
 			Client.aRSImageProducer_1109 = new ImageProducer(Client.frameWidth, Client.frameHeight);
+			Client.aRSImageProducer_1109.initDrawingArea();
 		}
-		Client.aRSImageProducer_1109.initDrawingArea();
+
 	}
 
 	private String getPasswordDisplay() {

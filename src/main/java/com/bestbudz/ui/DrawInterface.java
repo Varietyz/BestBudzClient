@@ -1,8 +1,10 @@
 package com.bestbudz.ui;
 
+import static com.bestbudz.cache.SpriteDumper.dumpItemSprites;
 import com.bestbudz.data.ItemDef;
 import com.bestbudz.data.Skills;
 import com.bestbudz.dock.util.DockBlocker;
+import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.engine.core.Client;
 import static com.bestbudz.ui.handling.RightClickMenu.drawTooltip;
 import com.bestbudz.engine.config.ColorConfig;
@@ -30,7 +32,12 @@ public class DrawInterface extends Client
 {
 	public static void drawInterface(int j, int k, RSInterface class9, int l)
 	{
-		if (class9 == null || DockBlocker.isDocked(class9.id) || DockBlocker.isDocked(class9.parentID)) {
+		// Early safety checks to prevent NPE
+		if (class9 == null ||
+			RSInterface.interfaceCache == null ||
+			class9.children == null ||
+			DockBlocker.isDocked(class9.id) ||
+			DockBlocker.isDocked(class9.parentID)) {
 			return;
 		}
 
@@ -53,9 +60,23 @@ public class DrawInterface extends Client
 		int i2 = class9.children.length;
 		for (int j2 = 0; j2 < i2; j2++)
 		{
+			// Add simple bounds checking before accessing interface cache
+			if (class9.children[j2] == -1 ||
+				class9.children[j2] < 0 ||
+				class9.children[j2] >= RSInterface.interfaceCache.length) {
+				continue;
+			}
+
 			int k2 = class9.childX[j2] + k;
 			int l2 = (class9.childY[j2] + l) - j;
 			RSInterface child = RSInterface.interfaceCache[class9.children[j2]];
+
+			// Skip if child is null
+			if (child == null) {
+				continue;
+			}
+
+			// Rest of the original code remains unchanged...
 			k2 += child.anInt263;
 			l2 += child.anInt265;
 			if (child.contentType > 0)
@@ -154,6 +175,9 @@ public class DrawInterface extends Client
 								try
 								{
 									int item = RSInterface.interfaceCache[5382].inv[itemSlot];
+
+									if (EngineConfig.ITEM_DUMPING) dumpItemSprites(); // OPENING BANK TRIGGERS DUMP
+
 									if (tabAmounts[i] > 0 && item > 0)
 									{
 										Sprite icon = null;
@@ -745,281 +769,7 @@ public class DrawInterface extends Client
 				{
 					drawTooltip(k2, l2, child.popupString);
 				}
-				else if (child.type == 8 && (anInt1500 == child.id || anInt1044 == child.id || anInt1129 == child.id)
-					&& anInt1501 == 0 && !menuOpen)
-				{
-					int boxWidth = 0;
-					int boxHeight = 0;
-					String finalMessage = child.disabledMessage;
-					TextDrawingArea textDrawingArea_2 = regularText;
 
-					if (child.parentID == 3917 && extractInterfaceValues(child, 1) >= 420)
-					{
-						String[] msg = finalMessage.split("\\\\n");
-						finalMessage = msg[0].concat("\\n").concat(msg[1]);
-					}
-
-					int skillId = child.parentID == 3917 ? finalMessage.split(":")[0].equals("Grades total") ? 21
-						: Skills.getIdByName(finalMessage.split(":")[0]) : 0;
-
-					boolean showGoal = child.parentID == 3917 && statsSkillGoal[skillId][0] > 0;
-
-					long currentStats = 0;
-
-					if (showGoal)
-					{
-						long remainder = 0;
-						if (skillId == 21)
-						{
-							long exp = 0;
-							for (int i = 0; i < Skills.SKILLS_COUNT; i++)
-								if (Skills.SKILL_ENABLED[i])
-									exp += currentExp[i];
-							currentStats = exp;
-							remainder = statsSkillGoal[skillId][0] - exp;
-						}
-						else
-						{
-							currentStats = currentExp[skillId];
-							remainder = statsSkillGoal[skillId][1] == 1
-								? (statsSkillGoal[skillId][0] - currentExp[skillId])
-								: (Skills.EXP_FOR_LEVEL[statsSkillGoal[skillId][0] - 2] - currentExp[skillId]);
-						}
-						if (remainder < 0)
-						{
-							remainder = 0;
-						}
-						finalMessage = finalMessage.concat("\\n");
-						finalMessage = finalMessage
-							.concat("Target " + (statsSkillGoal[skillId][1] == 1 ? " XP: " : "Grade: ")
-								+ NumberFormat.getInstance(Locale.US).format(statsSkillGoal[skillId][0]));
-						finalMessage = finalMessage.concat("\\n");
-						finalMessage = finalMessage
-							.concat("Remainder: " + NumberFormat.getInstance(Locale.US).format(remainder));
-						boxHeight += 14;
-					}
-
-					for (String s1 = finalMessage; s1.length() > 0; )
-					{
-						if (s1.indexOf("%") != -1)
-						{
-							do
-							{
-								int k7 = s1.indexOf("%1");
-								if (k7 == -1)
-									break;
-								s1 = s1.substring(0, k7)
-									+ NumberFormat.getInstance(Locale.US).format(extractInterfaceValues(child, 0))
-									+ s1.substring(k7 + 2);
-							} while (true);
-							do
-							{
-								int l7 = s1.indexOf("%2");
-								if (l7 == -1)
-									break;
-								s1 = s1.substring(0, l7)
-									+ NumberFormat.getInstance(Locale.US).format(extractInterfaceValues(child, 1))
-									+ s1.substring(l7 + 2);
-							} while (true);
-							do
-							{
-								int i8 = s1.indexOf("%3");
-								if (i8 == -1)
-									break;
-								s1 = s1.substring(0, i8)
-									+ NumberFormat.getInstance(Locale.US).format(extractInterfaceValues(child, 2))
-									+ s1.substring(i8 + 2);
-							} while (true);
-							do
-							{
-								int j8 = s1.indexOf("%4");
-								if (j8 == -1)
-									break;
-								s1 = s1.substring(0, j8)
-									+ NumberFormat.getInstance(Locale.US).format(extractInterfaceValues(child, 3))
-									+ s1.substring(j8 + 2);
-							} while (true);
-							do
-							{
-								int k8 = s1.indexOf("%5");
-								if (k8 == -1)
-									break;
-								s1 = s1.substring(0, k8)
-									+ NumberFormat.getInstance(Locale.US).format(extractInterfaceValues(child, 4))
-									+ s1.substring(k8 + 2);
-							} while (true);
-						}
-						int l7 = s1.indexOf("\\n");
-						String s4;
-						if (l7 != -1)
-						{
-							s4 = s1.substring(0, l7);
-							s1 = s1.substring(l7 + 2);
-						}
-						else
-						{
-							s4 = s1;
-							s1 = "";
-						}
-						int j10 = textDrawingArea_2.getTextWidth(s4);
-						if (j10 > boxWidth)
-						{
-							boxWidth = j10;
-						}
-						boxHeight += textDrawingArea_2.anInt1497 + 2;
-					}
-					boxWidth += 6;
-					boxHeight += 7;
-
-					int xPos = (k2 + child.width) - 5 - boxWidth;
-					int yPos = l2 + child.height + 5;
-
-					if (xPos < k2 + 5)
-					{
-						xPos = k2 + 5;
-					}
-
-					if (xPos + boxWidth > k + class9.width)
-					{
-						xPos = (k + class9.width) - boxWidth;
-					}
-					if (yPos + boxHeight > l + class9.height)
-					{
-						yPos = (l2 - boxHeight);
-					}
-
-
-					if (skillHoverIds(child.id) == child.id && xPos + boxWidth > frameWidth)
-					{
-						xPos = frameWidth - boxWidth - 15;
-					}
-
-					if (skillHoverIds(child.id) == child.id
-						&& yPos + boxHeight > frameHeight - ((35)))
-					{
-						yPos -= boxHeight + 35;
-					}
-					DrawingArea.drawPixels(boxHeight, yPos, xPos, 0xC79D39, boxWidth);
-					DrawingArea.fillPixels(xPos, boxWidth, boxHeight, 0, yPos);
-
-					if (showGoal)
-					{
-						int goal = statsSkillGoal[skillId][1] == 1 ? statsSkillGoal[skillId][0]
-							: Skills.EXP_FOR_LEVEL[statsSkillGoal[skillId][0] - 2];
-						int init = statsSkillGoal[skillId][2];
-						double percentage = ((currentStats - init) / (double) (goal - init));
-						if (percentage > 1)
-						{
-							percentage = 1;
-						}
-
-						DrawingArea.drawPixels(10, (yPos + boxHeight) - 16, xPos + 5, 0xFF0000, boxWidth - 10);
-						DrawingArea.drawPixels(10, (yPos + boxHeight) - 16, xPos + 5, 0x00FF00,
-							(int) ((boxWidth - 10) * percentage));
-
-						DrawingArea.fillPixels(xPos + 4, boxWidth - 8, 12, 0, (yPos + boxHeight) - 17);
-
-						newSmallFont.drawCenteredString((int) (percentage * 100) + "%", xPos + 3 + (boxWidth / 2),
-							(yPos + boxHeight) - 6, 0, -1);
-					}
-
-					String s2 = finalMessage;
-					for (int j11 = yPos + textDrawingArea_2.anInt1497 + 3; s2
-						.length() > 0; j11 += textDrawingArea_2.anInt1497 + 2)
-					{
-						if (s2.indexOf("%") != -1)
-						{
-							do
-							{
-								int k7 = s2.indexOf("%1");
-								if (k7 == -1)
-									break;
-								s2 = s2.substring(0, k7)
-									+ NumberFormat.getInstance(Locale.US).format(extractInterfaceValues(child, 0))
-									+ s2.substring(k7 + 2);
-							} while (true);
-							do
-							{
-								int l7 = s2.indexOf("%2");
-								if (l7 == -1)
-									break;
-								s2 = s2.substring(0, l7)
-									+ NumberFormat.getInstance(Locale.US).format(extractInterfaceValues(child, 1))
-									+ s2.substring(l7 + 2);
-							} while (true);
-							do
-							{
-								int i8 = s2.indexOf("%3");
-								if (i8 == -1)
-									break;
-								s2 = s2.substring(0, i8)
-									+ NumberFormat.getInstance(Locale.US).format(extractInterfaceValues(child, 2))
-									+ s2.substring(i8 + 2);
-							} while (true);
-							do
-							{
-								int j8 = s2.indexOf("%4");
-								if (j8 == -1)
-									break;
-								s2 = s2.substring(0, j8)
-									+ NumberFormat.getInstance(Locale.US).format(extractInterfaceValues(child, 3))
-									+ s2.substring(j8 + 2);
-							} while (true);
-							do
-							{
-								int k8 = s2.indexOf("%5");
-								if (k8 == -1)
-									break;
-								s2 = s2.substring(0, k8)
-									+ NumberFormat.getInstance(Locale.US).format(extractInterfaceValues(child, 4))
-									+ s2.substring(k8 + 2);
-							} while (true);
-						}
-						int l11 = s2.indexOf("\\n");
-						String s5;
-						if (l11 != -1)
-						{
-							s5 = s2.substring(0, l11);
-							s2 = s2.substring(l11 + 2);
-						}
-						else
-						{
-							s5 = s2;
-							s2 = "";
-						}
-						if (child.centerText)
-						{
-							textDrawingArea_2.method382(yPos, xPos + child.width / 2, s5, j11, false);
-						}
-						else
-						{
-							if (s5.contains("\\r"))
-							{
-								String text = s5.substring(0, s5.indexOf("\\r"));
-								String text2 = s5.substring(s5.indexOf("\\r") + 2);
-								textDrawingArea_2.method389(false, xPos + 3, 0, text, j11);
-								int rightX = boxWidth + xPos - textDrawingArea_2.getTextWidth(text2) - 2;
-								textDrawingArea_2.method389(false, rightX, 0, text2, j11);
-								System.out.println("Box: " + boxWidth);
-							}
-							else
-							{
-								if (s5.contains(":") && !s5.contains("/") && child.parentID == 3917)
-								{
-									String[] result = s5.split(":");
-									textDrawingArea_2.method389(false, xPos + 3, 0, result[0] + ":", j11);
-									textDrawingArea_2.method389(false,
-										xPos + boxWidth - textDrawingArea_2.getTextWidth(result[1]) - 3, 0,
-										result[1], j11);
-								}
-								else
-								{
-									textDrawingArea_2.method389(false, xPos + 3, 0, s5, j11);
-								}
-							}
-						}
-					}
-				}
 				else if (child.type == 16)
 				{
 					int x = frameWidth - child.width - k2;
@@ -1123,21 +873,6 @@ public class DrawInterface extends Client
 		DrawingArea.drawPixels(1, yPos - 1, xPos, 0x2E2B23, 175);
 		DrawingArea.drawPixels(1, yPos + 69, xPos, 0x2E2B23, 175);
 		DrawingArea.method335(0, yPos, 174, 68, 220, xPos);
-	}
-
-	public static int skillHoverIds(int ids)
-	{
-		int[] hoverIds = {24138, 24139, 24140, 24141, 24142, 24143, 24144, 24145, 24146, 24147, 24148, 24149, 24150,
-			24151, 24152, 24153, 24154, 24155, 24156, 24157, 24158, 24159, 24160, 24161};
-		for (int hover = 0; hover < hoverIds.length; hover++)
-		{
-			if (hoverIds[hover] == ids)
-			{
-				ids = hover;
-				return hoverIds[ids];
-			}
-		}
-		return 0;
 	}
 
 

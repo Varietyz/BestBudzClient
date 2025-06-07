@@ -4,15 +4,12 @@ import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
-import com.bestbudz.util.MRUNodes;
 
-public final class SpotAnim
-{
+public final class SpotAnim {
 
 	public static SpotAnim[] cache;
-	public static MRUNodes aMRUNodes_415 = new MRUNodes(30);
-	private final int[] anIntArray408;
-	private final int[] anIntArray409;
+	private final int[] originalColors;
+	private final int[] replacementColors;
 	public Animation aAnimation_407;
 	public int anInt410;
 	public int anInt411;
@@ -22,10 +19,11 @@ public final class SpotAnim
 	private int anInt404;
 	private int anInt405;
 	private int anInt406;
+
 	private SpotAnim() {
 		anInt406 = -1;
-		anIntArray408 = new int[6];
-		anIntArray409 = new int[6];
+		originalColors = new int[6];
+		replacementColors = new int[6];
 		anInt410 = 128;
 		anInt411 = 128;
 	}
@@ -33,65 +31,76 @@ public final class SpotAnim
 	public static void unpackConfig(StreamLoader streamLoader) {
 		Stream stream = new Stream(streamLoader.getDataForName("spotanim.dat"));
 		int length = stream.readUnsignedWord();
-		System.out.println("Graphics Loaded: "+length);
-		if (cache == null)
+		System.out.println("Graphics Loaded: " + length);
+
+		if (cache == null) {
 			cache = new SpotAnim[length + 50000];
+		}
+
 		for (int j = 0; j < length; j++) {
-			if (cache[j] == null)
+			if (cache[j] == null) {
 				cache[j] = new SpotAnim();
+			}
 			cache[j].anInt404 = j;
 			cache[j].readValues(stream);
 		}
-
 	}
 
 	public void readValues(Stream stream) {
-		do {
-			int i = stream.readUnsignedByte();
-			if (i == 0)
-				return;
-			if (i == 1)
-				anInt405 = stream.readUnsignedWord();
-			else if (i == 2) {
-				anInt406 = stream.readUnsignedWord();
-				if (Animation.anims != null)
-					aAnimation_407 = Animation.anims[anInt406];
-			} else if (i == 4)
-				anInt410 = stream.readUnsignedWord();
-			else if (i == 5)
-				anInt411 = stream.readUnsignedWord();
-			else if (i == 6)
-				anInt412 = stream.readUnsignedWord();
-			else if (i == 7)
-				anInt413 = stream.readUnsignedWord();
-			else if (i == 8)
-				anInt414 = stream.readUnsignedWord();
-			else if (i == 40) {
-				int j = stream.readUnsignedByte();
-				for (int k = 0; k < j; k++) {
-					anIntArray408[k] = stream.readUnsignedWord();
-					anIntArray409[k] = stream.readUnsignedWord();
-				}
-			} else
-				System.out.println("Error unrecognised spotanim config code: "
-						+ i);
-		} while (true);
+		int opcode;
+		while ((opcode = stream.readUnsignedByte()) != 0) {
+			switch (opcode) {
+				case 1:
+					anInt405 = stream.readUnsignedWord();
+					break;
+				case 2:
+					anInt406 = stream.readUnsignedWord();
+					if (Animation.anims != null) {
+						aAnimation_407 = Animation.anims[anInt406];
+					}
+					break;
+				case 4:
+					anInt410 = stream.readUnsignedWord();
+					break;
+				case 5:
+					anInt411 = stream.readUnsignedWord();
+					break;
+				case 6:
+					anInt412 = stream.readUnsignedWord();
+					break;
+				case 7:
+					anInt413 = stream.readUnsignedWord();
+					break;
+				case 8:
+					anInt414 = stream.readUnsignedWord();
+					break;
+				case 40:
+					int colorCount = stream.readUnsignedByte();
+					for (int i = 0; i < colorCount; i++) {
+						originalColors[i] = stream.readUnsignedWord();
+						replacementColors[i] = stream.readUnsignedWord();
+					}
+					break;
+				default:
+					System.out.println("Error unrecognised spotanim config code: " + opcode);
+					break;
+			}
+		}
 	}
 
 	public Model getModel() {
-		Model model = (Model) aMRUNodes_415.insertFromCache(anInt404);
-		if (model != null)
-			return model;
-		model = Model.loadModelFromCache(anInt405);
-		if (model == null)
+		Model model = Model.loadModelFromCache(anInt405);
+		if (model == null) {
 			return null;
-		for (int i = 0; i < 6; i++)
-			if (anIntArray408[0] != 0)
-				model.replaceColor(anIntArray408[i], anIntArray409[i]);
+		}
 
-		aMRUNodes_415.removeFromCache(model, anInt404);
+		// Apply color replacements
+		for (int i = 0; i < 6; i++) {
+			if (originalColors[i] != 0) {
+				model.replaceColor(originalColors[i], replacementColors[i]);
+			}
+		}
+
 		return model;
 	}
-
-
 }

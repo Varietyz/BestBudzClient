@@ -3,10 +3,11 @@ package com.bestbudz.engine.core;
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.data.AccountManager;
 import com.bestbudz.data.ItemDef;
+import static com.bestbudz.engine.ClientLauncher.initializeGPUAfterGraphicsLoad;
 import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.engine.core.login.LoginRenderer;
 import com.bestbudz.entity.EntityDef;
-import com.bestbudz.entity.IdentityKit;
+import com.bestbudz.cache.IdentityKit;
 import com.bestbudz.graphics.Background;
 import com.bestbudz.graphics.buffer.ImageProducer;
 import com.bestbudz.graphics.sprite.Sprite;
@@ -231,6 +232,7 @@ public class GameLoader extends Client {
 
 			// Final steps - exactly as original
 			aRSImageProducer_1109.initDrawingArea();
+			//initializeGPUAfterGraphicsLoad();
 			aRSImageProducer_1109.drawGraphics(0, g, 0);
 			setBounds();
 			Animable_Sub5.clientInstance = client;

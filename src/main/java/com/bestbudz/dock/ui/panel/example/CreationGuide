@@ -1,0 +1,303 @@
+# Panel Creation Guide
+
+This guide explains how to create a new panel using the organized folder structure and template system.
+
+## Quick Start
+
+1. **Copy the template files** and rename them to your panel name
+2. **Create the folder structure** for your panel
+3. **Configure your panel** using the template files
+4. **Register your panel** in the dock system
+
+## Folder Structure
+
+For a panel called "**Example**", create this structure:
+
+```
+com/bestbudz/dock/ui/panel/example/
+├── ExamplePanel.java          # Main panel class (copy from TemplatePanel)
+├── ExampleUtils.java          # Business logic and utility methods
+├── ExampleConfig.java         # Configuration constants and settings
+└── ExampleStyle.java          # Panel-specific styling and themes
+```
+
+## Step-by-Step Creation Process
+
+### Step 1: Create the Folder
+```
+com/bestbudz/dock/ui/panel/[your-panel-name]/
+```
+
+### Step 2: Copy and Rename Template Files
+
+**Main Panel File:**
+- Copy `TemplatePanel.java` → `YourPanelPanel.java`
+- Copy `ExampleUtils.java` → `YourPanelUtils.java`
+- Copy `ExampleConfig.java` → `YourPanelConfig.java`
+- Copy `ExampleStyle.java` → `YourPanelStyle.java`
+
+### Step 3: Update Package Declarations
+
+In all four files, update the package line:
+```java
+package com.bestbudz.dock.ui.panel.yourpanel;
+```
+
+### Step 4: Update Class Names
+
+**YourPanelPanel.java:**
+```java
+public class YourPanelPanel extends JPanel implements UIPanel, DockTextUpdatable {
+    @Override
+    public String getPanelID() {
+        return "YourPanel";  // Update this
+    }
+}
+```
+
+**YourPanelUtils.java:**
+```java
+public class YourPanelUtils {
+    // Update all method names and references
+}
+```
+
+**YourPanelConfig.java:**
+```java
+public class YourPanelConfig {
+    // Update interface IDs to unique values
+    public static final int PANEL_ACTIVATION_ID = 30000; // Use unique range
+}
+```
+
+**YourPanelStyle.java:**
+```java
+public class YourPanelStyle {
+    // Customize colors and styling for your panel
+}
+```
+
+## Panel Examples
+
+### Inventory Panel
+```
+com/bestbudz/dock/ui/panel/inventory/
+├── InventoryPanel.java        # Grid of items, drag/drop, filtering
+├── InventoryUtils.java        # Item sorting, stack management, search
+├── InventoryConfig.java       # Item IDs, slot counts, interface IDs
+└── InventoryStyle.java        # Item slot styling, grid layouts, tooltips
+```
+
+### Skills Panel
+```
+com/bestbudz/dock/ui/panel/skills/
+├── SkillsPanel.java           # Skill list, progress bars, level display
+├── SkillsUtils.java           # XP calculations, level formulas, comparisons
+├── SkillsConfig.java          # Skill IDs, XP tables, level caps
+└── SkillsStyle.java           # Progress bars, skill icons, level colors
+```
+
+### Combat Panel
+```
+com/bestbudz/dock/ui/panel/combat/
+├── CombatPanel.java           # Combat stats, target info, combat log
+├── CombatUtils.java           # Damage calculations, DPS tracking
+├── CombatConfig.java          # Combat interface IDs, stat multipliers
+└── CombatStyle.java           # Health bars, combat colors, animations
+```
+
+## Configuration Guidelines
+
+### Interface ID Ranges
+Assign unique interface ID ranges to each panel to avoid conflicts:
+
+- **Template Panel**: 29000-29099
+- **Inventory Panel**: 30000-30099
+- **Skills Panel**: 31000-31099
+- **Combat Panel**: 32000-32199
+- **Quest Panel**: 33000-33099
+- **Settings Panel**: 34000-34099
+
+### Config File Structure
+```java
+public class YourPanelConfig {
+    // Interface IDs (use unique range)
+    public static final int PANEL_ACTIVATION_ID = 30000;
+    public static final int PRIMARY_ACTION_ID = 30001;
+
+    // Display settings
+    public static final int MAX_ITEMS = 50;
+    public static final int GRID_COLUMNS = 4;
+
+    // Feature flags
+    public static final boolean ENABLE_ANIMATIONS = true;
+    public static final boolean ENABLE_TOOLTIPS = true;
+
+    // Resource paths
+    public static final String SPRITE_PATH = "sprites/yourpanel/";
+}
+```
+
+## Button Creation Examples
+
+### Using InteractiveButtonUtil (Recommended)
+```java
+// Standard buttons with automatic rainbow hover
+JButton refreshBtn = InteractiveButtonUtil.addInteractiveButton("Refresh", YourPanelConfig.REFRESH_ID);
+JButton actionBtn = InteractiveButtonUtil.addInteractiveButton("Action", YourPanelConfig.ACTION_ID);
+
+// Sprite buttons
+JButton skillBtn = InteractiveButtonUtil.addSpriteButton("sprites/skills/magic.png", YourPanelConfig.SKILL_ID);
+
+// Combined text + sprite
+JButton comboBtn = InteractiveButtonUtil.addInteractiveButton("Cast Spell", "sprites/spells/fireball.png", YourPanelConfig.SPELL_ID);
+```
+
+### Using Custom Styling
+```java
+// Custom styled buttons using YourPanelStyle
+JButton primaryBtn = YourPanelStyle.createPrimaryButton("Primary Action", YourPanelConfig.PRIMARY_ID);
+JButton dangerBtn = YourPanelStyle.createDangerButton("Delete", YourPanelConfig.DELETE_ID);
+JButton successBtn = YourPanelStyle.createSuccessButton("Confirm", YourPanelConfig.CONFIRM_ID);
+```
+
+## Panel Registration
+
+### 1. Register in UIDockFrame
+```java
+// In UIDockFrame.java initialization
+registerPanel(new YourPanelPanel());
+```
+
+### 2. Add to DockPanelMapping (if using RSInterfaces)
+```java
+// In DockPanelMapping.java
+YOUR_PANEL(30000, 30001, "Your Panel Name", YourPanelPanel.class),
+```
+
+## Best Practices
+
+### File Organization
+- Keep each file focused on its specific purpose
+- Use meaningful method names that describe the action
+- Group related constants together in config files
+- Create reusable style methods for common components
+
+### Interface ID Management
+- Use sequential IDs within your assigned range
+- Document what each ID does in comments
+- Group related IDs together (e.g., 30000-30009 for main actions, 30010-30019 for settings)
+
+### Color and Styling
+- Extend the base ColorConfig colors rather than hardcoding
+- Create theme-aware styling methods
+- Use consistent spacing and sizing across your panel
+- Make use of the rainbow hover system
+
+### Error Handling
+- Always check `Client.loggedIn` before server operations
+- Provide user-friendly error messages
+- Log errors appropriately for debugging
+- Handle edge cases gracefully
+
+## Complete Example: Creating a "Bank" Panel
+
+### 1. Create Folder Structure
+```
+com/bestbudz/dock/ui/panel/bank/
+├── BankPanel.java
+├── BankUtils.java
+├── BankConfig.java
+└── BankStyle.java
+```
+
+### 2. BankConfig.java
+```java
+package com.bestbudz.dock.ui.panel.bank;
+
+public class BankConfig {
+    // Interface IDs (35000-35099 range)
+    public static final int PANEL_ACTIVATION_ID = 35000;
+    public static final int DEPOSIT_ALL_ID = 35001;
+    public static final int WITHDRAW_ALL_ID = 35002;
+    public static final int SEARCH_ID = 35003;
+
+    // Display settings
+    public static final int BANK_SLOTS = 468;
+    public static final int ITEMS_PER_ROW = 8;
+    public static final int MAX_SEARCH_RESULTS = 50;
+
+    // Resource paths
+    public static final String SPRITE_PATH = "sprites/bank/";
+    public static final String BANK_ICON = SPRITE_PATH + "bank_icon.png";
+}
+```
+
+### 3. BankUtils.java
+```java
+package com.bestbudz.dock.ui.panel.bank;
+
+public class BankUtils {
+    public static void depositAll() {
+        ButtonHandler.sendClick(BankConfig.DEPOSIT_ALL_ID);
+    }
+
+    public static void withdrawAll() {
+        ButtonHandler.sendClick(BankConfig.WITHDRAW_ALL_ID);
+    }
+
+    public static List<String> searchItems(String query) {
+        // Search logic here
+        return filteredItems;
+    }
+}
+```
+
+### 4. BankStyle.java
+```java
+package com.bestbudz.dock.ui.panel.bank;
+
+public class BankStyle {
+    public static final Color BANK_SLOT_COLOR = new Color(60, 50, 40);
+    public static final Color BANK_ITEM_COLOR = new Color(80, 70, 60);
+
+    public static JButton createDepositButton() {
+        return InteractiveButtonUtil.addInteractiveButton("Deposit All", BankConfig.DEPOSIT_ALL_ID);
+    }
+}
+```
+
+### 5. BankPanel.java
+```java
+package com.bestbudz.dock.ui.panel.bank;
+
+import com.bestbudz.dock.ui.panel.TemplatePanel; // Extend from template
+
+public class BankPanel extends TemplatePanel {
+    @Override
+    public String getPanelID() {
+        return "Bank";
+    }
+
+    @Override
+    protected void addSampleContent() {
+        // Replace with bank-specific content
+        JButton depositBtn = BankStyle.createDepositButton();
+        addContentItem(depositBtn);
+    }
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+1. **Interface ID conflicts** - Ensure your panel uses a unique ID range
+2. **Missing imports** - Check package declarations and imports
+3. **Rainbow hover not working** - Verify RainbowHoverUtil is properly imported
+4. **Panel not appearing** - Ensure it's registered in UIDockFrame
+
+### Debug Tips
+- Use `ExampleConfig.DEBUG_MODE` to enable debug logging
+- Check console output for error messages
+- Verify interface IDs are correctly configured
+- Test button clicks with simple actions first

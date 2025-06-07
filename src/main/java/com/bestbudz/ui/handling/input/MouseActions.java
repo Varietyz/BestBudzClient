@@ -17,42 +17,7 @@ public class MouseActions extends Client
 	public static boolean getMousePositions()
 	{
 
-		if (showChatComponents)
-		{
-			if (changeChatArea)
-			{
-				if (MouseState.x > 0 && MouseState.x < 494 && MouseState.y > frameHeight - 175 - extendChatArea
-					&& MouseState.y < frameHeight)
-				{
-					return true;
-				}
-				else
-				{
-					if (MouseState.x > 494 && MouseState.x < 515 && MouseState.y > frameHeight - 175 - extendChatArea
-						&& MouseState.y < frameHeight)
-					{
-						return false;
-					}
-				}
-			}
-			else if (!changeChatArea)
-			{
-				if (MouseState.x > 0 && MouseState.x < 519 && MouseState.y > frameHeight - 175
-					&& MouseState.y < frameHeight)
-				{
-					return false;
-				}
-			}
-		}
 
-		if (!changeTabArea)
-		{
-			if (MouseState.x > 0 && MouseState.y > 0 && MouseState.y < frameWidth && MouseState.y < frameHeight)
-			{
-				return MouseState.x < frameWidth - 242 || MouseState.y < frameHeight - 335;
-			}
-			return false;
-		}
 		if (showTabComponents)
 		{
 			if (frameWidth > 1000)
@@ -188,13 +153,7 @@ public class MouseActions extends Client
 	public static boolean isClickInsideOrbBounds() {
 		if (!SettingsConfig.enableStatusOrbs) return false;
 
-		int orbX = frameWidth - 217 + 155;
-
 		boolean insideOrbRegion =
-			inBounds(MouseState.x, MouseState.y, orbX, 45, 56, 32) || // HP
-				inBounds(MouseState.x, MouseState.y, orbX, 85, 56, 32) || // Prayer
-				inBounds(MouseState.x, MouseState.y, orbX, 125, 56, 32) || // Run
-				inBounds(MouseState.x, MouseState.y, frameWidth - 96, 2, 26, 26) || // XP orb
 				(SettingsConfig.enablePouch && inBounds(MouseState.x, MouseState.y, frameWidth - 65, 165, 62, 31)); // Pouch
 
 		// ⛔ Do NOT block logout button (top-right)

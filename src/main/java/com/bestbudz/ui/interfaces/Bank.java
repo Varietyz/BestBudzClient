@@ -9,7 +9,7 @@ public class Bank extends RSInterface {
   public static void bank(TextDrawingArea[] wid) {
     RSInterface bank = addInterface(5292);
 
-    setChildren(57, bank);
+    setChildren(55, bank);
 
     int id = 50_000;
 
@@ -21,7 +21,7 @@ public class Bank extends RSInterface {
 	  RSInterface background = addInterface(id);
 	  background.type = 3; // filled rectangle
 	  background.aBoolean227 = true; // draw filled
-	  background.width = 670;  // adjust to match original sprite size
+	  background.width = 670;
 	  background.height = 340;
 	  background.textColor = 0x000000; // black
 	  background.opacity = (byte) 50;
@@ -32,7 +32,7 @@ public class Bank extends RSInterface {
     addContainer(
         5382,
         109,
-        8,
+        14,
         44,
         "Withdraw-1",
         "Withdraw-5",
@@ -50,8 +50,8 @@ public class Bank extends RSInterface {
         method207(0, aClass44, "miscgraphics3"),
         method207(0, aClass44, "miscgraphics3"),
         "Show menu",
-        25,
-        25);
+        -1,
+        -1);
     addSprite(id + 8, 118);
     addSprite(id + 9, 116);
     addSprite(id + 10, 117);
@@ -112,7 +112,7 @@ public class Bank extends RSInterface {
       bank.child(child++, id + 15 + tab, 57 + 40 * (tab / 4), 37);
     }
 
-    interfaceCache[5385].width += 20;
+    interfaceCache[5385].width = 606; // SCROLLBAR
     interfaceCache[5385].height -= 18;
     interfaceCache[5382].contentType = 206;
 
@@ -145,37 +145,13 @@ public class Bank extends RSInterface {
     bank.child(child++, id + 4, 376, 291);
     bank.child(child++, id + 5, 417, 291);
     bank.child(child++, id + 6, 458, 291);
-    bank.child(child++, id + 7, 463, 44);
     bank.child(child++, id + 8, 379, 298);
     bank.child(child++, id + 9, 420, 298);
     bank.child(child++, id + 10, 461, 298);
-    bank.child(child++, id + 11, 463, 44);
   }
 
   public static void bankSettings(TextDrawingArea[] bestbudz) {
     RSInterface tab = addInterface(32500);
-    addSprite(32501, 368);
-    addText(32502, "BestBudz Bank Settings", 0xff9933, true, true, -1, bestbudz, 2);
-    addHoverButton(32503, 17, 21, 21, "Close", 250, 32504, 3);
-    addHoveredButton(32504, 18, 21, 21, 32505);
-    addConfigButton(32506, 32500, 289, 290, 14, 15, "Select", 0, 5, 1011);
-    addConfigButton(32507, 32500, 289, 290, 14, 15, "Select", 1, 5, 1011);
-    addConfigButton(32508, 32500, 289, 290, 14, 15, "Select", 2, 5, 1011);
-    addText(32509, "First item in tab", 0xff9933, true, true, -1, bestbudz, 1);
-    addText(32510, "Digit (1, 2, 3)", 0xff9933, true, true, -1, bestbudz, 1);
-    addText(32511, "Roman numeral (I, II, III)", 0xff9933, true, true, -1, bestbudz, 1);
-    addHoverText(32512, "Back to bank", "View", bestbudz, 1, 0xcc8000, true, true, 100, 0xFFFFFF);
-    tab.totalChildren(11);
-    tab.child(0, 32501, 115, 35);
-    tab.child(1, 32502, 263, 44);
-    tab.child(2, 32503, 373, 42);
-    tab.child(3, 32504, 373, 42);
-    tab.child(4, 32506, 150, 65 + 30);
-    tab.child(5, 32507, 150, 65 + 60);
-    tab.child(6, 32508, 150, 65 + 90);
-    tab.child(7, 32509, 218, 65 + 30);
-    tab.child(8, 32510, 210, 65 + 60);
-    tab.child(9, 32511, 239, 65 + 90);
-    tab.child(10, 32512, 275, 265);
+    tab.totalChildren(0);
   }
 }

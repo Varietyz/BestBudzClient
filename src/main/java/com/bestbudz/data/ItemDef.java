@@ -1,5 +1,6 @@
 package com.bestbudz.data;
 
+import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.graphics.sprite.Sprite;
@@ -2516,7 +2517,6 @@ public final class ItemDef {
 		cache = new ItemDef[10];
 		for (int k = 0; k < 10; k++)
 			cache[k] = new ItemDef();
-
 	}
 
 	public static Sprite getSprite(int id, int size, int color, int zoom) {
@@ -2620,7 +2620,10 @@ public final class ItemDef {
 			if (sprite == null)
 				return null;
 		}
-		Sprite enabledSprite = new Sprite(32, 32);
+
+		int spriteSize = 32;
+		Sprite enabledSprite = new Sprite(spriteSize, spriteSize);
+
 		int k1 = Rasterizer.centerX;
 		int l1 = Rasterizer.centerY;
 		int[] ai = Rasterizer.anIntArray1472;
@@ -2633,8 +2636,8 @@ public final class ItemDef {
 		int i3 = DrawingArea.topY;
 		int j3 = DrawingArea.bottomY;
 		Rasterizer.aBoolean1464 = false;
-		DrawingArea.initDrawingArea(32, 32, enabledSprite.myPixels, new float[32 * 32]);
-		DrawingArea.method336(32, 0, 0, 0, 32);
+		DrawingArea.initDrawingArea(spriteSize, spriteSize, enabledSprite.myPixels, new float[32 * 32]);
+		DrawingArea.method336(spriteSize, 0, 0, 0, spriteSize);
 		Rasterizer.method364();
 		int k3 = itemDef.modelZoom;
 		if (k == -1)
@@ -3050,4 +3053,6 @@ public final class ItemDef {
 		}
 	}
 
+
 }
+

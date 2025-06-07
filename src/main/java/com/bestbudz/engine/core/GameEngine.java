@@ -39,7 +39,14 @@ public class GameEngine implements Runnable {
 				BufferStrategy bs = canvas.getBufferStrategy();
 				if (bs != null) bs.dispose();
 
-				client.refreshFrameSize(canvas, lockedW, lockedH);
+				try
+				{
+					client.refreshFrameSize(canvas, lockedW, lockedH);
+				}
+				catch (InterruptedException e)
+				{
+					throw new RuntimeException(e);
+				}
 				Client.setBounds();
 				calcCameraPos();
 

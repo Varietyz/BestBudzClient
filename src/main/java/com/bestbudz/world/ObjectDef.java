@@ -11,16 +11,17 @@ import com.bestbudz.util.MRUNodes;
 import java.util.Objects;
 
 public final class ObjectDef {
-Client client;
+	Client client;
 	public static final Model[] aModelArray741s = new Model[4];
 	public static boolean lowMem;
 	public static Stream stream;
 	public static int[] streamIndices;
 	public static Client clientInstance;
 	public static int cacheIndex;
-	public static MRUNodes mruNodes2 = new MRUNodes(30);
+	public static MRUNodes mruNodes2 = new MRUNodes(64); // Increased from 30
 	public static ObjectDef[] cache;
-	public static MRUNodes mruNodes1 = new MRUNodes(500);
+	public static MRUNodes mruNodes1 = new MRUNodes(1024); // Increased from 500
+
 	public boolean aBoolean736;
 	public byte aByte737;
 	public int anInt738;
@@ -58,12 +59,12 @@ Client client;
 	public int anInt783;
 	public int[] modifiedModelColors;
 	public String[] actions;
+
 	public ObjectDef() {
 		type = -1;
 	}
 
-	public static ObjectDef forID(int i)
-	{
+	public static ObjectDef forID(int i) {
 		if (i > streamIndices.length)
 			i = streamIndices.length - 1;
 		for (int j = 0; j < 20; j++)
@@ -76,8 +77,7 @@ Client client;
 		class46.setDefaults();
 		class46.readValues(stream);
 
-		if (i == 11407 || i == 11408)
-		{
+		if (i == 11407 || i == 11408) {
 			class46 = forID(11404);
 			class46.type = i;
 			class46.modifiedModelColors = new int[]{7105, 8137, 7130, 5043, 7082};
@@ -88,8 +88,7 @@ Client client;
 			return class46;
 		}
 
-		switch (i)
-		{
+		switch (i) {
 			case 26621:
 			case 26620:
 			case 26619:
@@ -229,6 +228,11 @@ Client client;
 				class46.hasActions = true;
 				break;
 
+			case 10376:
+				class46.name = "Cocaïne Stall";
+				class46.description = "You look and wonder.. Where are the topless women?".getBytes();
+				break;
+
 			case 2072:
 				class46.name = "Game Crate";
 				class46.actions = new String[5];
@@ -346,15 +350,7 @@ Client client;
 				class46.actions = new String[5];
 				class46.actions[0] = "Craft";
 				break;
-
 		}
-		//if (EngineConfig.DEBUG_MODE)
-		//{
-		//	if (class46.name == null || class46.name.equalsIgnoreCase("null"))
-		//	{
-		//		class46.hasActions = true;
-		//	}
-		//}
 
 		return class46;
 	}
@@ -433,15 +429,15 @@ Client client;
 				return true;
 			if (i != 10)
 				return true;
-			boolean flag1 = true;
-			for (int j : anIntArray773) flag1 &= Model.method463(j & 0xffff);
-
-			return flag1;
+			for (int j : anIntArray773) {
+				if (!Model.method463(j & 0xffff))
+					return false;
+			}
+			return true;
 		}
 		for (int j = 0; j < anIntArray776.length; j++)
 			if (anIntArray776[j] == i)
 				return Model.method463(anIntArray773[j] & 0xffff);
-
 		return true;
 	}
 
@@ -461,7 +457,6 @@ Client client;
 				int j3 = l2 + ((i3 - l2) * (k2 + 64)) / 128;
 				model.anIntArray1628[i2] += j3 - l1;
 			}
-
 			model.method467();
 		}
 		return model;
@@ -470,9 +465,11 @@ Client client;
 	public boolean method579() {
 		if (anIntArray773 == null)
 			return true;
-		boolean flag1 = true;
-		for (int j : anIntArray773) flag1 &= Model.method463(j & 0xffff);
-		return flag1;
+		for (int j : anIntArray773) {
+			if (!Model.method463(j & 0xffff))
+				return false;
+		}
+		return true;
 	}
 
 	public ObjectDef method580() {
@@ -484,7 +481,6 @@ Client client;
 			int l = varBit.anInt650;
 			int i1 = Client.anIntArray1232[l - k];
 			i = client.variousSettings[j] >> k & i1;
-
 		} else if (anInt749 != -1)
 			i = client.variousSettings[anInt749];
 		if (i < 0 || i >= childrenIDs.length || childrenIDs[i] == -1)
@@ -555,28 +551,31 @@ Client client;
 				mruNodes1.removeFromCache(model, j2);
 			}
 		}
-		boolean flag;
-		flag = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
-		boolean flag2;
-		flag2 = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
+
+		// Optimize flag calculations - do them once
+		boolean needsScale = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
+		boolean needsTranslate = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
+
 		Model model_3 = new Model(modifiedModelColors == null, SequenceFrame.method532(k),
-				l == 0 && k == -1 && !flag && !flag2, Objects.requireNonNull(model));
+			l == 0 && k == -1 && !needsScale && !needsTranslate, Objects.requireNonNull(model));
 		if (k != -1) {
 			model_3.calculateNormals();
 			model_3.method470(k);
 			model_3.anIntArrayArray1658 = null;
 			model_3.anIntArrayArray1657 = null;
 		}
-		while (l-- > 0)
+
+		// Optimize rotation loop
+		for (int rot = 0; rot < l; rot++)
 			model_3.method473();
+
 		if (modifiedModelColors != null) {
 			for (int k2 = 0; k2 < modifiedModelColors.length; k2++)
 				model_3.replaceColor(modifiedModelColors[k2], originalModelColors[k2]);
-
 		}
-		if (flag)
+		if (needsScale)
 			model_3.modelScale(anInt748, anInt740, anInt772);
-		if (flag2)
+		if (needsTranslate)
 			model_3.translateCoords(anInt738, anInt745, anInt783);
 		model_3.applyLighting(74, 1000, -90, -580, -90, !aBoolean769);
 		if (anInt760 == 1)
@@ -586,7 +585,6 @@ Client client;
 	}
 
 	public void readValues(Stream stream) {
-		int flag = -1;
 		do {
 			int type = stream.readUnsignedByte();
 			if (type == 0)
@@ -661,7 +659,6 @@ Client client;
 					modifiedModelColors[i2] = stream.readUnsignedWord();
 					originalModelColors[i2] = stream.readUnsignedWord();
 				}
-
 			} else if (type == 60)
 				anInt746 = stream.readUnsignedWord();
 			else if (type == 62)
@@ -718,5 +715,4 @@ Client client;
 		if (anInt760 == -1)
 			anInt760 = aBoolean767 ? 1 : 0;
 	}
-
 }

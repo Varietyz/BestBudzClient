@@ -1,7 +1,10 @@
 package com.bestbudz.engine.core.login.logout;
 
 import com.bestbudz.data.AccountManager;
+import static com.bestbudz.engine.ClientLauncher.gpuContextManager;
+import static com.bestbudz.engine.ClientLauncher.gpuInitialized;
 import com.bestbudz.engine.core.Client;
+import com.bestbudz.engine.gpu.GPURenderingEngine;
 import com.bestbudz.ui.handling.SettingHandler;
 import static com.bestbudz.ui.handling.input.Keyboard.console;
 
@@ -45,5 +48,17 @@ public class Logout extends Client
 		prevSong = 0;
 		SettingHandler.save();
 		console.openConsole = false;
+		if (gpuInitialized) {
+			System.out.println("[ClientLauncher] Cleaning up GPU resources...");
+			try {
+				GPURenderingEngine.cleanup();
+				if (gpuContextManager != null) {
+					gpuContextManager.shutdown();
+				}
+				System.out.println("[ClientLauncher] ✅ GPU resources cleaned up successfully");
+			} catch (Exception e) {
+				System.err.println("[ClientLauncher] ⚠️ Error during GPU cleanup: " + e.getMessage());
+			}
+		}
 	}
 }

@@ -20,6 +20,13 @@ dependencies {
     implementation 'org.jcodec:jcodec:0.2.5'
     implementation 'org.jcodec:jcodec-javase:0.2.5'
     implementation 'com.formdev:flatlaf:3.2'
+    implementation "org.lwjgl:lwjgl:3.3.3"
+    implementation "org.lwjgl:lwjgl-opengl:3.3.3"
+    implementation "org.lwjgl:lwjgl-glfw:3.3.3"
+
+    runtimeOnly "org.lwjgl:lwjgl:3.3.3:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-opengl:3.3.3:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:3.3.3:natives-windows"
 }
 
 java {
@@ -30,6 +37,7 @@ java {
 
 application {
     mainClass = 'com.bestbudz.engine.ClientLauncher'
+    applicationDefaultJvmArgs = ['-Xms512m', '-Xmx4096m', '-XX:+UseG1GC']
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -44,12 +52,22 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+shadowJar {
+    archiveBaseName.set('BestBudzRSPSClient')
+    archiveClassifier.set('')
+    archiveVersion.set('1.0')
+    mergeServiceFiles()
+    manifest {
+        attributes 'Main-Class': 'com.bestbudz.engine.ClientLauncher'
+    }
+}
+
 launch4j {
     mainClassName = 'com.bestbudz.engine.ClientLauncher'
-    jar = "${project.layout.buildDirectory.get().asFile}/libs/${project.name}-${project.version}-all.jar"
-   outfile = "BestBudzRSPSClient.exe" // NOT A PATH — just name
+    jar = "${project.layout.buildDirectory.get().asFile}/libs/BestBudzRSPSClient-1.0.jar"
+    outfile = "BestBudzRSPSClient.exe"
 
-    icon = "C:/RSPS/Extras/BestBudzPotLeaf.ico" // Windows needs forward slashes or escaped backslashes
+    icon = "C:/RSPS/Extras/BestBudzPotLeaf.ico"
     headerType = 'gui'
     dontWrapJar = false
     errTitle = 'Launch Error'
@@ -58,4 +76,15 @@ launch4j {
     downloadUrl = 'https://adoptium.net'
     jreMinVersion = '11.0.0'
     jdkPreference = 'preferJre'
+    jvmOptions = [
+            '-Xms512m',
+            '-Xmx4096m',
+            '-XX:+UseG1GC'
+    ]
 }
+
+// Ensure launch4j waits for fat JAR
+tasks.named("createExe").configure {
+    dependsOn tasks.named("shadowJar")
+}
+

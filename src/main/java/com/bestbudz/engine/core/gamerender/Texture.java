@@ -207,25 +207,6 @@ public final class Texture {
 		}
 	}
 
-	public static void removeTexture(int index) {
-		if (isValidIndex(index)) {
-			cacheLock.writeLock().lock();
-			try {
-				textureCache.remove(index);
-			} finally {
-				cacheLock.writeLock().unlock();
-			}
-		}
-	}
-
-	public static int getCacheSize() {
-		cacheLock.readLock().lock();
-		try {
-			return textureCache.size();
-		} finally {
-			cacheLock.readLock().unlock();
-		}
-	}
 
 	// Validation helpers
 	private static boolean isValidIndex(int index) {

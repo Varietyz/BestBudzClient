@@ -605,8 +605,7 @@ public class ActionHandler extends Client
 		{
 			if (tabInterfaceIDs[14] != -1)
 			{
-				if (changeTabArea)
-				{
+
 					if (tabID == 14)
 					{
 						showTabComponents = !showTabComponents;
@@ -615,7 +614,7 @@ public class ActionHandler extends Client
 					{
 						showTabComponents = true;
 					}
-				}
+
 				tabID = 14;
 				tabAreaAltered = true;
 			}

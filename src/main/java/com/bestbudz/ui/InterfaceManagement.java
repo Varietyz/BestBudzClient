@@ -20,7 +20,7 @@ import static com.bestbudz.ui.DrawInterface.drawInterface;
 import static com.bestbudz.ui.TabArea.commitTabState;
 import static com.bestbudz.ui.TabArea.drawTabArea;
 import static com.bestbudz.engine.core.login.WelcomeScreen.clearWelcomeState;
-import static com.bestbudz.engine.util.ClientDiagnostics.drawClientDiagnostics;
+import static com.bestbudz.engine.util.ClientDiagnostics.drawClientFPS;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
@@ -47,7 +47,7 @@ public class InterfaceManagement extends Client
 		drawOpenInterface();
 		drawContextMenu();
 		drawMiscOverlays();
-		if (EngineConfig.DIAGNOSTIC_MODE) drawClientDiagnostics();
+		if (EngineConfig.FPS_ON) drawClientFPS();
 	}
 
 	public static void drawGameScreen(Graphics2D g) {
@@ -199,7 +199,7 @@ public class InterfaceManagement extends Client
 		int y = (frameHeight / 2) - 167;
 		int x2 = x + w;
 		int y2 = y + h;
-		int count = changeTabArea ? 3 : 4;
+		int count = 3;
 
 		for (int i = 0; i < count; i++) {
 			if (x2 > frameWidth - 225) {
@@ -239,19 +239,8 @@ public class InterfaceManagement extends Client
 
 
 	public static void handleOverlayInterfaces(Set<Integer> handled) {
-		if (!changeTabArea) {
-			int xOffset = frameWidth - 765;
-			int yOffset = frameHeight - 503;
 
-			if (MouseState.x > 548 + xOffset && MouseState.x < 740 + xOffset &&
-				MouseState.y > 207 + yOffset && MouseState.y < 468 + yOffset) {
-
-				int id = (invOverlayInterfaceID != -1) ? invOverlayInterfaceID : tabInterfaceIDs[tabID];
-				if (id != -1 && handled.add(id))
-					buildInterfaceMenu(548 + xOffset, RSInterface.interfaceCache[id], 207 + yOffset, 0);
-			}
-		} else {
-			int yOffset = (frameWidth >= 1000) ? 37 : 74;
+			int yOffset = 37;
 
 			if (MouseState.x > frameWidth - 197 && MouseState.x < frameWidth - 7 &&
 				MouseState.y > frameHeight - yOffset - 267 && MouseState.y < frameHeight - yOffset - 7 &&
@@ -261,7 +250,7 @@ public class InterfaceManagement extends Client
 				if (id != -1 && handled.add(id))
 					buildInterfaceMenu(frameWidth - 197, RSInterface.interfaceCache[id], frameHeight - yOffset - 267, 0);
 			}
-		}
+
 
 		if (anInt886 != anInt1048) {
 			tabAreaAltered = true;
@@ -377,8 +366,12 @@ public class InterfaceManagement extends Client
 		}
 	}
 
+	private static final Set<Integer> BLOCKED_INTERFACE_IDS = Set.of(
+		-1, 61000, 61500, 62000, 63000, 64000, 65000
+	);
+
 	public static void drawOpenInterface() {
-		if (openInterfaceID == -1) return;
+		if (BLOCKED_INTERFACE_IDS.contains(openInterfaceID)) return;
 
 		// DEBUG: Log all interface opens
 		//System.out.println("🎭 INTERFACE: Drawing interface ID: " + openInterfaceID);
@@ -391,6 +384,7 @@ public class InterfaceManagement extends Client
 			return;
 		}
 
+
 		RSInterface rsi = RSInterface.interfaceCache[openInterfaceID];
 		if (rsi == null) {
 			System.err.println("[WARN] Tried to draw interface " + openInterfaceID + " but it's null");
@@ -400,7 +394,7 @@ public class InterfaceManagement extends Client
 		int w = 512, h = 334;
 		int x = (frameWidth / 2) - 256;
 		int y = (frameHeight / 2) - 167;
-		int count = changeTabArea ? 3 : 4;
+		int count = 3;
 
 		for (int i = 0; i < count; i++) {
 			if (x + w > (frameWidth - 225)) x = Math.max(0, x - 30);
@@ -433,6 +427,11 @@ public class InterfaceManagement extends Client
 
 	public static long extractInterfaceValues(RSInterface class9, int j)
 	{
+		// Add null check at the beginning
+		if (class9 == null) {
+			return -2; // Return early if interface is null
+		}
+
 		if (class9.valueIndexArray == null || j >= class9.valueIndexArray.length)
 			return -2;
 		try
@@ -457,14 +456,20 @@ public class InterfaceManagement extends Client
 				if (j1 == 4)
 				{
 					RSInterface class9_1 = RSInterface.interfaceCache[ai[l++]];
-					int k2 = ai[l++];
-					if (k2 >= 0 && k2 < ItemDef.totalItems && (!ItemDef.getItemDefinition(k2).membersObject || isMembers))
-					{
-						for (int j3 = 0; j3 < class9_1.inv.length; j3++)
+					// Add null check for interface lookup
+					if (class9_1 == null) {
+						l++; // Skip the next parameter
+						k1 = 0; // Set to 0 and continue
+					} else {
+						int k2 = ai[l++];
+						if (k2 >= 0 && k2 < ItemDef.totalItems && (!ItemDef.getItemDefinition(k2).membersObject || isMembers))
 						{
-							if (class9_1.inv[j3] == k2 + 1)
+							for (int j3 = 0; j3 < class9_1.inv.length; j3++)
 							{
-								k1 += class9_1.invStackSizes[j3];
+								if (class9_1.inv[j3] == k2 + 1)
+								{
+									k1 += class9_1.invStackSizes[j3];
+								}
 							}
 						}
 					}
@@ -487,17 +492,22 @@ public class InterfaceManagement extends Client
 				if (j1 == 10)
 				{
 					RSInterface class9_2 = RSInterface.interfaceCache[ai[l++]];
-					int l2 = ai[l++] + 1;
-					if (l2 >= 0 && l2 < ItemDef.totalItems && isMembers)
-					{
-						for (int k3 = 0; k3 < class9_2.inv.length; k3++)
+					// Add null check for interface lookup
+					if (class9_2 == null) {
+						l++; // Skip the next parameter
+						k1 = 0; // Set to 0 and continue
+					} else {
+						int l2 = ai[l++] + 1;
+						if (l2 >= 0 && l2 < ItemDef.totalItems && isMembers)
 						{
-							if (class9_2.inv[k3] != l2)
-								continue;
-							k1 = 0x3b9ac9ff;
-							break;
+							for (int k3 = 0; k3 < class9_2.inv.length; k3++)
+							{
+								if (class9_2.inv[k3] != l2)
+									continue;
+								k1 = 0x3b9ac9ff;
+								break;
+							}
 						}
-
 					}
 				}
 				if (j1 == 11)
@@ -537,15 +547,20 @@ public class InterfaceManagement extends Client
 				if (j1 == 22)
 				{
 					RSInterface class9_1 = RSInterface.interfaceCache[ai[l++]];
-					int initAmount = class9_1.inv.length;
-					for (int j3 = 0; j3 < class9_1.inv.length; j3++)
-					{
-						if (class9_1.inv[j3] <= 0)
+					// Add null check for interface lookup
+					if (class9_1 == null) {
+						k1 = 0; // Set to 0 and continue
+					} else {
+						int initAmount = class9_1.inv.length;
+						for (int j3 = 0; j3 < class9_1.inv.length; j3++)
 						{
-							initAmount--;
+							if (class9_1.inv[j3] <= 0)
+							{
+								initAmount--;
+							}
 						}
+						k1 += initAmount;
 					}
-					k1 += initAmount;
 				}
 				if (j1 == 23)
 				{
@@ -734,16 +749,35 @@ public class InterfaceManagement extends Client
 	public static boolean updateInterfaceAnimations(int i, int j)
 	{
 		boolean flag1 = false;
+
+		// Check if interface cache exists and index is valid
+		if (RSInterface.interfaceCache == null || j < 0 || j >= RSInterface.interfaceCache.length) {
+			return false;
+		}
+
 		RSInterface class9 = RSInterface.interfaceCache[j];
 		if (class9 == null || class9.children == null)
 		{
 			return false;
 		}
+
 		for (int k = 0; k < class9.children.length; k++)
 		{
 			if (class9.children[k] == -1)
 				break;
+
+			// Check if child index is valid
+			if (class9.children[k] < 0 || class9.children[k] >= RSInterface.interfaceCache.length) {
+				continue;
+			}
+
 			RSInterface class9_1 = RSInterface.interfaceCache[class9.children[k]];
+
+			// Check if child interface is null
+			if (class9_1 == null) {
+				continue;
+			}
+
 			if (class9_1.type == 1)
 				flag1 |= updateInterfaceAnimations(i, class9_1.id);
 			if (class9_1.type == 6 && (class9_1.anInt257 != -1 || class9_1.anInt258 != -1))
@@ -756,7 +790,18 @@ public class InterfaceManagement extends Client
 					l = class9_1.anInt257;
 				if (l != -1)
 				{
+					// Check if Animation.anims array exists and index is valid
+					if (Animation.anims == null || l < 0 || l >= Animation.anims.length) {
+						continue;
+					}
+
 					Animation animation = Animation.anims[l];
+
+					// Check if animation is null
+					if (animation == null) {
+						continue;
+					}
+
 					for (class9_1.anInt208 += i; class9_1.anInt208 > animation.method258(class9_1.anInt246); )
 					{
 						class9_1.anInt208 -= animation.method258(class9_1.anInt246) + 1;
@@ -769,7 +814,6 @@ public class InterfaceManagement extends Client
 						}
 						flag1 = true;
 					}
-
 				}
 			}
 		}

@@ -10,20 +10,12 @@ import static com.bestbudz.ui.interfaces.EquipmentTab.equipmentScreen;
 import static com.bestbudz.ui.interfaces.EquipmentTab.equipmentTab;
 import static com.bestbudz.ui.interfaces.OptionsTab.optionTab;
 import static com.bestbudz.ui.interfaces.Prestiging.advance;
-import static com.bestbudz.ui.interfaces.QuickPrayers.quickCurses;
-import static com.bestbudz.ui.interfaces.QuickPrayers.quickPrayers;
 import static com.bestbudz.ui.interfaces.Shop.loyaltyShop;
 import static com.bestbudz.ui.interfaces.Shop.shop;
 import static com.bestbudz.ui.interfaces.Starter.starter;
 import static com.bestbudz.ui.interfaces.minigames.PestControl.pestControlBoat;
 import static com.bestbudz.ui.interfaces.minigames.PestControl.pestControlGame;
 import static com.bestbudz.ui.interfaces.minigames.WarriorGuild.warriorGuild;
-import static com.bestbudz.ui.interfaces.teleports.BossTeleports.bossTeleport;
-import static com.bestbudz.ui.interfaces.teleports.MinigameTeleports.minigameTeleport;
-import static com.bestbudz.ui.interfaces.teleports.OtherTeleports.otherTeleport;
-import static com.bestbudz.ui.interfaces.teleports.PvpTeleports.pvpTeleport;
-import static com.bestbudz.ui.interfaces.teleports.SkillingTeleports.skillingTeleport;
-import static com.bestbudz.ui.interfaces.teleports.TrainingTeleports.trainingTeleport;
 
 import com.bestbudz.graphics.text.TextDrawingArea;
 import com.bestbudz.ui.RSInterface;
@@ -89,21 +81,10 @@ public class CustomInterfaces extends RSInterface
 		questTab(BestBudz);
 		equipmentTab();
 		equipmentScreen(BestBudz);
-		quickCurses(BestBudz);
-		quickPrayers();
 		optionTab(BestBudz);
 		bounty(BestBudz);
-		trainingTeleport(BestBudz);
-		skillingTeleport(BestBudz);
-		pvpTeleport(BestBudz);
-		bossTeleport(BestBudz);
-		minigameTeleport(BestBudz);
-		otherTeleport(BestBudz);
 		shop(BestBudz);
-		settings(BestBudz);
-		screenOptions(BestBudz);
 		achievementsTab(BestBudz);
-		shopExchange(BestBudz);
 		creditsTab(BestBudz);
 		itemsOnDeath(BestBudz);
 		bank(BestBudz);
@@ -127,8 +108,6 @@ public class CustomInterfaces extends RSInterface
 		loyaltyShop(BestBudz);
 		questInterface(BestBudz);
 		fireColor(BestBudz);
-		clanChatTab(BestBudz);
-		clanChatSetup(BestBudz);
 		inPvP(BestBudz);
 		inSafe();
 		inTimer(BestBudz);
@@ -144,71 +123,6 @@ public class CustomInterfaces extends RSInterface
 		staffTab(BestBudz);
 	}
 
-	public static void screenOptions(TextDrawingArea[] tda) {
-		// Create the parent container interface
-		RSInterface tab = RSInterface.addInterface(28200);
-
-		// === Background and Title ===
-
-		RSInterface.addSprite(28201, 472); // Background box (sprite index 472)
-		RSInterface.addText(28202, "Screen Options", tda, 2, 0xFF9933, true, true); // Tab Title
-
-		// === Close Button (with hover effect) ===
-
-		RSInterface.addHoverButton(28203, 17, 21, 21, "Close", 250, 28204, 3);  // Close X (normal)
-		RSInterface.addHoveredButton(28204, 18, 21, 21, 28205);                 // Close X (hover)
-
-		// === Config Toggles (checkboxes with linked config values) ===
-
-		RSInterface.addConfigButton(28206, 28200, 470, 471, 40, 40,
-			"Transparent side panel", 0, 1, 700); // Toggle transparent side panels
-
-		RSInterface.addConfigButton(28207, 28200, 468, 469, 40, 40,
-			"Transparent chatbox", 0, 1, 701); // Toggle transparent chatbox
-
-		RSInterface.addConfigButton(28208, 28200, 466, 467, 40, 40,
-			"Side-stones arrangement", 0, 1, 702); // Toggle side-stone layout
-
-		// === Labels and Descriptions ===
-
-		// Side panel toggle label
-		RSInterface.addText(28209, "Transparent side panel", tda, 1, 0xFF9933, false, true);
-		RSInterface.addText(28210, "Make each side panel transparent", tda, 0, 0xFF9933, false, true);
-
-		// Chatbox toggle label
-		RSInterface.addText(28211, "Transparent chatbox", tda, 1, 0xFF9933, false, true);
-		RSInterface.addText(28212, "Make chatbox transparent", tda, 0, 0xFF9933, false, true);
-
-		// Side-stones toggle label
-		RSInterface.addText(28213, "Side-stones arrangement", tda, 1, 0xFF9933, false, true);
-		RSInterface.addText(28214, "Change the side-stones arrangement", tda, 0, 0xFF9933, false, true);
-
-		// Fixed mode warning (centered)
-		RSInterface.addText(28215, "Settings are not applicable in fixed mode!", tda, 0, 0xFF9933, true, true);
-
-		// === Layout: Bind elements to parent tab ===
-		tab.totalChildren(14); // must match number of .child(...) calls
-
-		tab.child(0,  28201, 145,  70);  // background
-		tab.child(1,  28202, 270,  80);  // title text
-		tab.child(2,  28203, 365,  77);  // close button
-		tab.child(3,  28204, 365,  77);  // close button hover
-
-		tab.child(4,  28206, 155, 110);  // transparent side panel toggle
-		tab.child(5,  28207, 155, 165);  // transparent chatbox toggle
-		tab.child(6,  28208, 155, 220);  // side-stones arrangement toggle
-
-		tab.child(7,  28209, 200, 115);  // side panel label
-		tab.child(8,  28210, 200, 130);  // side panel desc
-
-		tab.child(9,  28211, 200, 170);  // chatbox label
-		tab.child(10, 28212, 200, 185);  // chatbox desc
-
-		tab.child(11, 28213, 200, 225);  // side-stones label
-		tab.child(12, 28214, 200, 240);  // side-stones desc
-
-		tab.child(13, 28215, 270, 261);  // fixed mode warning
-	}
 
 
 	public static void weaponStore(TextDrawingArea[] jaybane)
@@ -737,18 +651,6 @@ public class CustomInterfaces extends RSInterface
 		setChildren(0, Interface);
 	}
 
-
-	public static void settings(TextDrawingArea[] jaybane) {
-		RSInterface tab = addInterface(28400);
-
-		addHoverButton(28405, 446, 130, 24, "Confirm Selection", -1, 28406, 1);
-		addHoveredButton(28406, 447, 130, 24, 28407);
-
-		tab.totalChildren(2);
-		tab.child(0, 28405, -10, 233);
-		tab.child(1, 28406, -10, 233);
-	}
-
 	public static void staffTab(TextDrawingArea[] jaybane)
 	{
 		RSInterface tab = addInterface(49700);
@@ -1185,218 +1087,10 @@ public class CustomInterfaces extends RSInterface
 		}
 	}
 
-	public static void shopExchange(TextDrawingArea[] jaybane)
-	{
-		RSInterface tab = addInterface(53500);
-		addSprite(53501, 43);
-		addHoverButton(53502, 17, 21, 21, "Close", 250, 53503, 3);
-		addHoveredButton(53503, 18, 21, 21, 53504);
-		addText(53505, "Shops Exchange", 0xff9933, true, true, -1, jaybane, 2);
-		addHoverButton(53506, 44, 45, 45, "Search", 0, 53507, 1);
-		addHoveredButton(53507, 45, 45, 45, 53508);
-		addText(53509, "Shop Owner:", 0xff9933, true, true, -1, jaybane, 2);
-		addText(53510, "Shop Description:", 0xff9933, true, true, -1, jaybane, 2);
-		tab.totalChildren(9);
-		tab.child(0, 53501, 11, 2);
-		tab.child(1, 53502, 475, 8);
-		tab.child(2, 53503, 475, 8);
-		tab.child(3, 53505, 255, 12);
-		tab.child(4, 53506, 456, 36);
-		tab.child(5, 53507, 456, 36);
-		tab.child(6, 53509, 109, 65);
-		tab.child(7, 53510, 330, 65);
-		tab.child(8, 53515, 45, 84);
-		RSInterface scrollInterface = addTabInterface(53515);
-		scrollInterface.width = 412;
-		scrollInterface.height = 225;
-		scrollInterface.scrollMax = 3000;
-		setChildren(400, scrollInterface);
-		int y = 0;
-		for (int i = 0; i < 200; i++)
-		{
-			addHoverText(53516 + i, "Name: " + i, "View", jaybane, 0, 0xcc8000, false, true, 100, 0xFFFFFF);
-			setBounds(53516 + i, 0, y, i, scrollInterface);
-			y += 20;
-		}
-		y = 0;
-		for (int i = 0; i < 200; i++)
-		{
-			addHoverText(53516 + 200 + i, "Motto: " + i, "View", jaybane, 0, 0xcc8000, false, true, 100, 0xFFFFFF);
-			setBounds(53516 + 200 + i, 150, y, i + 200, scrollInterface);
-			y += 20;
-		}
-	}
-
 	private static void achievementsTab(TextDrawingArea[] jaybane) // JFRAMED
 	{
 		RSInterface tab = addTabInterface(31000);
 		setChildren(0, tab);
-	}
-
-	public static void clanChatTab(TextDrawingArea[] bestbudz)
-	{
-		RSInterface tab = addTabInterface(18128);
-		addHoverButton(18129, 40, 72, 32, "Join Cult", 550, 18130, 5);
-		addHoveredButton(18130, 41, 72, 32, 18131);
-		addHoverButton(18132, 40, 72, 32, "Cult Setup", -1, 18133, 5);
-		addHoveredButton(18133, 41, 72, 32, 18134);
-
-		addButtons(18250, 31, "Share with cult", 18253, 1);
-		drawTooltip(18253, "Share with cult");
-
-		addText(18135, "Join/Leave", bestbudz, 0, 0xff9b00, true, true);
-		addText(18136, "Cult Setup", bestbudz, 0, 0xff9b00, true, true);
-		addSprite(18137, 42);
-		addText(18138, "CULT", bestbudz, 2, 0xff9b00, true, true);
-		addText(18139, "Loyalty: Not in cult", bestbudz, 0, 0xff9b00, false, true);
-		addText(18140, "High Priest: None", bestbudz, 0, 0xff9b00, false, true);
-
-		addText(18252, "(0/100)", bestbudz, 0, 0xff9b00, false, true);
-		tab.totalChildren(14);
-		tab.child(0, 18137, 3, 57);
-		tab.child(1, 18143, 7, 62);
-		tab.child(2, 18129, 15, 227);
-		tab.child(3, 18130, 15, 227);
-		tab.child(4, 18132, 96, 227);
-		tab.child(5, 18133, 96, 227);
-		tab.child(6, 18135, 51, 236);
-		tab.child(7, 18136, 132, 236);
-		tab.child(8, 18138, 95, 3);
-		tab.child(9, 18139, 10, 23);
-		tab.child(10, 18140, 25, 38);
-		tab.child(11, 18250, 148, 24);
-		tab.child(12, 18253, 74, 60);
-		tab.child(13, 18252, 140, 5);
-		RSInterface list = addTabInterface(18143);
-		list.totalChildren(100);
-		for (int i = 18144; i <= 18244; i++)
-		{
-			addText(i, "", bestbudz, 0, 0xffffff, false, true);
-		}
-		for (int id = 18144, i = 0; id <= 18243 && i <= 99; id++, i++)
-		{
-			list.children[i] = id;
-			list.childX[i] = 5;
-			for (int id2 = 18144, i2 = 1; id2 <= 18243 && i2 <= 99; id2++, i2++)
-			{
-				list.childY[0] = 2;
-				list.childY[i2] = list.childY[i2 - 1] + 14;
-			}
-		}
-		for (int id = 18144, i = 0; id <= 18243 && i <= 99; id++, i++)
-		{
-			interfaceCache[id].actions = new String[]{"Edit Rank", "Kick", "Ban"};
-			list.children[i] = id;
-			list.childX[i] = 5;
-			for (int id2 = 18144, i2 = 1; id2 <= 18243 && i2 <= 99; id2++, i2++)
-			{
-				list.childY[0] = 2;
-				list.childY[i2] = list.childY[i2 - 1] + 14;
-			}
-		}
-		list.height = 152;
-		list.width = 164;
-		list.scrollMax = 1405;
-	}
-
-	public static void clanChatSetup(TextDrawingArea[] bestbudz)
-	{
-		RSInterface rsi = addInterface(43700);
-		rsi.totalChildren(12 + 15);
-		int count = 0;
-		addSprite(43701, 35);
-		rsi.child(count++, 43701, 14, 18);
-		addButton(43702, 21, "Close");
-		interfaceCache[43702].atActionType = 3;
-		rsi.child(count++, 43702, 475, 26);
-		addText(43703, "Cult Setup", bestbudz, 2, 0xFF981F, true, true);
-		rsi.child(count++, 43703, 256, 26);
-		String[] titles = {"Cult:", "Who can enter cult?", "Who can talk in the cult?", "Who can kick in cult?",
-			"Who can ban in cult?"};
-		String[] defaults = {"Chat Disabled", "Initiate", "Initiate", "Initiate", "Initiate"};
-		String[] whoCan = {"Initiate", "Disciple", "Mendicant", "Priest", "Lector", "Arch Lector", "High Priest",
-			"Only Me"};
-		for (int index = 0, id = 43704, y = 50; index < titles.length; index++, id += 3, y += 40)
-		{
-			addButton(id, 36, "");
-			interfaceCache[id].atActionType = 0;
-			if (index > 0)
-			{
-				interfaceCache[id].actions = whoCan;
-			}
-			else
-			{
-				interfaceCache[id].actions = new String[]{"Change title", "Delete cult"};
-			}
-			addText(id + 1, titles[index], bestbudz, 0, 0xFF981F, true, true);
-			addText(id + 2, defaults[index], bestbudz, 1, 0xFFFFFF, true, true);
-			rsi.child(count++, id, 25, y);
-			rsi.child(count++, id + 1, 100, y + 4);
-			rsi.child(count++, id + 2, 100, y + 17);
-		}
-		addSprite(43719, 39);
-		rsi.child(count++, 43719, 197, 70);
-		int id = 43720;
-		int y = 74;
-		addText(id, "Ranked Cultists", bestbudz, 2, 0xFF981F, false, true);
-		rsi.child(count++, id++, 202, y);
-		addText(id, "Banned Cultists", bestbudz, 2, 0xFF981F, false, true);
-		rsi.child(count++, id++, 339, y);
-		RSInterface list = addInterface(id++);
-		int lines = 100;
-		list.totalChildren(lines);
-		String[] ranks = {"Demote", "Initiate", "Disciple", "Mendicant", "Priest", "Lector", "Arch Lector",
-			"High Priest"};
-		list.childY[0] = 2;
-		for (int index = id; index < id + lines; index++)
-		{
-			addText(index, "", bestbudz, 1, 0xffffff, false, true);
-			interfaceCache[index].actions = ranks;
-			list.children[index - id] = index;
-			list.childX[index - id] = 2;
-			list.childY[index - id] = (index - id > 0 ? list.childY[index - id - 1] + 14 : 0);
-		}
-		id += lines;
-		list.width = 119;
-		list.height = 210;
-		list.scrollMax = (lines * 14) + 2;
-		rsi.child(count++, list.id, 199, 92);
-		list = addInterface(id++);
-		list.totalChildren(lines);
-		list.childY[0] = 2;
-		for (int index = id; index < id + lines; index++)
-		{
-			addText(index, "", bestbudz, 1, 0xffffff, false, true);
-			interfaceCache[index].actions = new String[]{"Unban"};
-			list.children[index - id] = index;
-			list.childX[index - id] = 0;
-			list.childY[index - id] = (index - id > 0 ? list.childY[index - id - 1] + 14 : 0);
-		}
-		id += lines;
-		list.width = 119;
-		list.height = 210;
-		list.scrollMax = (lines * 14) + 2;
-		rsi.child(count++, list.id, 339, 92);
-		y = 47;
-		addText(id, "Manage both ranked and banned Cultists here.", bestbudz, 0, 0xFF981F, true, true);
-		rsi.child(count++, id++, 337, y);
-		addText(id, "Right click on a Cultist to edit.", bestbudz, 0, 0xFF981F, true, true);
-		rsi.child(count++, id++, 337, y + 11);
-		y = 75;
-		addButton(id, 33, "Add ranked Cultist");
-		interfaceCache[id].atActionType = 5;
-		rsi.child(count++, id++, 319, y);
-		addButton(id, 33, "Add banned Cultist");
-		interfaceCache[id].atActionType = 5;
-		rsi.child(count++, id++, 459, y);
-		int[] clanSetup = {43702, 43704, 43707, 43710, 43713, 43716, 43826, 43827};
-		String[] names = {"close", "sprite", "sprite", "sprite", "sprite", "sprite", "plus", "plus"};
-		int[] ids = {1, 3, 3, 3, 3, 3, 1, 1};
-		for (int index = 0; index < clanSetup.length; index++)
-		{
-			rsi = interfaceCache[clanSetup[index]];
-			rsi.disabledHover = imageLoader(ids[index], "Interfaces/Clan Chat/" + names[index]);
-		}
 	}
 
 	public static void questTab(TextDrawingArea[] bestbudz) // JFRAMED
