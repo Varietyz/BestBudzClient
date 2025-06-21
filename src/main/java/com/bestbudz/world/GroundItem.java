@@ -1,7 +1,8 @@
 package com.bestbudz.world;
 
-import com.bestbudz.data.Item;
-import com.bestbudz.data.ItemDef;
+import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
+import com.bestbudz.data.items.Item;
+import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.rendering.Animable;
 import com.bestbudz.util.Node;
@@ -22,7 +23,7 @@ public class GroundItem extends Client
 		Object obj = null;
 		for (Item item = (Item) class19.reverseGetFirst(); item != null; item = (Item) class19.reverseGetNext())
 		{
-			ItemDef itemDef = ItemDef.getItemDefinition(item.ID);
+			ItemDef itemDef = getItemDefinition(item.ID);
 			int l = itemDef.value;
 			if (itemDef.stackable)
 			{

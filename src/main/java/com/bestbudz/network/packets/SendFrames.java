@@ -3,7 +3,7 @@ package com.bestbudz.network.packets;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.ui.handling.input.MouseState;
 import com.bestbudz.ui.RSInterface;
-import com.bestbudz.util.TextClass;
+import com.bestbudz.graphics.text.TextClass;
 
 public class SendFrames extends Client
 {

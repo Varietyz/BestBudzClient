@@ -2,16 +2,17 @@ package com.bestbudz.network.packets;
 
 import com.bestbudz.cache.Signlink;
 import static com.bestbudz.data.XP.addXP;
+import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
 import com.bestbudz.dock.frame.UIDockFrame;
 import com.bestbudz.dock.frame.UIDockHelper;
 import com.bestbudz.dock.ui.panel.bank.BankPanel;
-import com.bestbudz.dock.ui.panel.game.SkillsPanel;
+import com.bestbudz.dock.ui.panel.skills.SkillsPanel;
 import com.bestbudz.dock.util.UIPanel;
 import com.bestbudz.dock.ui.panel.DockPanelMapping;
 import com.bestbudz.dock.util.DockTextUpdatable;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.ui.handling.SettingHandler;
-import com.bestbudz.data.ItemDef;
+import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.data.Skills;
 import static com.bestbudz.engine.core.login.Login.updateConfigValues;
 import static com.bestbudz.network.packets.SendFrames.sendFrame126;
@@ -26,14 +27,14 @@ import com.bestbudz.entity.Npc;
 import com.bestbudz.entity.Stoner;
 import static com.bestbudz.ui.NotificationMessages.pushKill;
 import com.bestbudz.ui.RSInterface;
-import com.bestbudz.ui.TextInput;
+import com.bestbudz.graphics.text.TextInput;
 import static com.bestbudz.ui.interfaces.Chatbox.privateChatMode;
 import static com.bestbudz.ui.interfaces.Chatbox.publicChatMode;
 import static com.bestbudz.ui.interfaces.Chatbox.pushMessage;
 import static com.bestbudz.ui.interfaces.Chatbox.reportAbuseInput;
 import com.bestbudz.ui.interfaces.StatusOrbs;
 import com.bestbudz.util.SizeConstants;
-import com.bestbudz.util.TextClass;
+import com.bestbudz.graphics.text.TextClass;
 import com.bestbudz.world.Class30_Sub1;
 import static com.bestbudz.world.GroundItem.spawnGroundItem;
 import static com.bestbudz.world.TerrainHeight.getTerrainHeight;
@@ -914,9 +915,9 @@ public class PacketParser extends Client
 		aLong824 = System.currentTimeMillis();
 
 		if (pktType == 73) {
-			handleRegionType73(l2, i11);
+			handleRegionType73Optimized(l2, i11);
 		} else if (pktType == 241) {
-			handleRegionType241();
+			handleRegionType241Optimized();
 		}
 
 		// Update entity positions
@@ -993,6 +994,205 @@ public class PacketParser extends Client
 		anInt1036 = baseX;
 		anInt1037 = baseY;
 		aBoolean1160 = false;
+	}
+
+	/**
+	 * FIXED: Type 73 region handler with embedded cache integration
+	 */
+	private static void handleRegionType73Optimized(final int l2, final int i11) {
+		System.out.println("🗺️ [RegionChange] Type 73 - Position: " + l2 + "," + i11);
+
+		int k16 = 0;
+		for (int i21 = (l2 - 6) / 8; i21 <= (l2 + 6) / 8; i21++) {
+			for (int k23 = (i11 - 6) / 8; k23 <= (i11 + 6) / 8; k23++) {
+				k16++;
+			}
+		}
+
+		aByteArrayArray1183 = new byte[k16][];
+		aByteArrayArray1247 = new byte[k16][];
+		anIntArray1234 = new int[k16];
+		anIntArray1235 = new int[k16];
+		anIntArray1236 = new int[k16];
+
+		k16 = 0;
+		int embeddedLoaded = 0;
+		int onDemandQueued = 0;
+
+		for (int l23 = (l2 - 6) / 8; l23 <= (l2 + 6) / 8; l23++) {
+			for (int j26 = (i11 - 6) / 8; j26 <= (i11 + 6) / 8; j26++) {
+				anIntArray1234[k16] = (l23 << 8) + j26;
+
+				if (aBoolean1141 && (j26 == 49 || j26 == 149 || j26 == 147 || l23 == 50 || (l23 == 49 && j26 == 47))) {
+					// Special regions with no data
+					anIntArray1235[k16] = -1;
+					anIntArray1236[k16] = -1;
+					System.out.println("✅ [RegionChange] Region " + anIntArray1234[k16] + " - special region (no data)");
+				} else {
+					// TRY EMBEDDED CACHE FIRST
+					if (loadRegionFromEmbeddedCache(k16, l23, j26)) {
+						embeddedLoaded++;
+						System.out.println("✅ [RegionChange] Region " + anIntArray1234[k16] + " loaded from EMBEDDED CACHE");
+					} else {
+						// FALLBACK TO ONDEMAND FETCHER (causes lag)
+						final int k28 = anIntArray1235[k16] = onDemandFetcher.method562(0, j26, l23);
+						if (k28 != -1) {
+							onDemandFetcher.method558(3, k28);
+							onDemandQueued++;
+						}
+
+						final int j30 = anIntArray1236[k16] = onDemandFetcher.method562(1, j26, l23);
+						if (j30 != -1) {
+							onDemandFetcher.method558(3, j30);
+							onDemandQueued++;
+						}
+
+						System.err.println("⚠️ [RegionChange] Region " + anIntArray1234[k16] +
+							" using onDemandFetcher (files: " + k28 + "/" + j30 + ") - WILL CAUSE LAG");
+					}
+				}
+				k16++;
+			}
+		}
+
+		System.out.println("📊 [RegionChange] Summary: " + embeddedLoaded + " embedded, " +
+			onDemandQueued + " onDemand requests");
+
+		if (onDemandQueued == 0) {
+			System.out.println("🎉 [RegionChange] ALL REGIONS FROM EMBEDDED CACHE - NO LAG!");
+		} else {
+			System.err.println("❌ [RegionChange] " + onDemandQueued + " files still use onDemandFetcher - LAG EXPECTED");
+		}
+	}
+
+	/**
+	 * FIXED: Type 241 region handler with embedded cache integration
+	 */
+	private static void handleRegionType241Optimized() {
+		System.out.println("🗺️ [RegionChange] Type 241 - Dynamic region loading");
+
+		int l16 = 0;
+		final int[] ai = new int[676];
+
+		for (int i24 = 0; i24 < 4; i24++) {
+			for (int k26 = 0; k26 < 13; k26++) {
+				for (int l28 = 0; l28 < 13; l28++) {
+					final int k30 = anIntArrayArrayArray1129[i24][k26][l28];
+					if (k30 != -1) {
+						final int k31 = k30 >> 14 & 0x3ff;
+						final int i32 = k30 >> 3 & 0x7ff;
+						final int k32 = (k31 / 8 << 8) + i32 / 8;
+
+						boolean found = false;
+						for (int j33 = 0; j33 < l16; j33++) {
+							if (ai[j33] == k32) {
+								found = true;
+								break;
+							}
+						}
+						if (!found) {
+							ai[l16++] = k32;
+						}
+					}
+				}
+			}
+		}
+
+		aByteArrayArray1183 = new byte[l16][];
+		aByteArrayArray1247 = new byte[l16][];
+		anIntArray1234 = new int[l16];
+		anIntArray1235 = new int[l16];
+		anIntArray1236 = new int[l16];
+
+		int embeddedLoaded = 0;
+		int onDemandQueued = 0;
+
+		for (int l26 = 0; l26 < l16; l26++) {
+			final int i29 = anIntArray1234[l26] = ai[l26];
+			final int l30 = i29 >> 8 & 0xff;
+			final int l31 = i29 & 0xff;
+
+			// TRY EMBEDDED CACHE FIRST
+			if (loadRegionFromEmbeddedCache(l26, l30, l31)) {
+				embeddedLoaded++;
+				System.out.println("✅ [RegionChange] Region " + i29 + " loaded from EMBEDDED CACHE");
+			} else {
+				// FALLBACK TO ONDEMAND FETCHER (causes lag)
+				final int j32 = anIntArray1235[l26] = onDemandFetcher.method562(0, l31, l30);
+				if (j32 != -1) {
+					onDemandFetcher.method558(3, j32);
+					onDemandQueued++;
+				}
+
+				final int i33 = anIntArray1236[l26] = onDemandFetcher.method562(1, l31, l30);
+				if (i33 != -1) {
+					onDemandFetcher.method558(3, i33);
+					onDemandQueued++;
+				}
+
+				System.err.println("⚠️ [RegionChange] Region " + i29 +
+					" using onDemandFetcher (files: " + j32 + "/" + i33 + ") - WILL CAUSE LAG");
+			}
+		}
+
+		System.out.println("📊 [RegionChange] Summary: " + embeddedLoaded + " embedded, " +
+			onDemandQueued + " onDemand requests");
+
+		if (onDemandQueued == 0) {
+			System.out.println("🎉 [RegionChange] ALL REGIONS FROM EMBEDDED CACHE - NO LAG!");
+		} else {
+			System.err.println("❌ [RegionChange] " + onDemandQueued + " files still use onDemandFetcher - LAG EXPECTED");
+		}
+	}
+
+	/**
+	 * NEW: Try to load region from embedded cache
+	 * Returns true if successful, false if should use onDemandFetcher
+	 */
+	private static boolean loadRegionFromEmbeddedCache(int arrayIndex, int regionX, int regionY) {
+		try {
+			// Calculate region ID
+			int regionId = (regionX << 8) + regionY;
+
+			// Try to get file IDs from onDemandFetcher (but don't queue them)
+			int mapFileId = onDemandFetcher.method562(0, regionY, regionX);
+			int landscapeFileId = onDemandFetcher.method562(1, regionY, regionX);
+
+			// Set file IDs in arrays
+			anIntArray1235[arrayIndex] = mapFileId;
+			anIntArray1236[arrayIndex] = landscapeFileId;
+
+			// Handle -1 file IDs (no data regions)
+			if (mapFileId == -1 && landscapeFileId == -1) {
+				// No data needed - mark as loaded
+				aByteArrayArray1183[arrayIndex] = null;
+				aByteArrayArray1247[arrayIndex] = null;
+				return true;
+			}
+
+			if (mapFileId == -1 || landscapeFileId == -1) {
+				// Mixed -1 and valid IDs - let onDemandFetcher handle
+				return false;
+			}
+
+			// Try to get data from embedded cache
+			byte[] mapData = com.bestbudz.cache.EmbeddedMapCache.getEmbeddedFileData(mapFileId);
+			byte[] landscapeData = com.bestbudz.cache.EmbeddedMapCache.getEmbeddedFileData(landscapeFileId);
+
+			if (mapData != null && landscapeData != null) {
+				// SUCCESS - set data directly
+				aByteArrayArray1183[arrayIndex] = mapData;
+				aByteArrayArray1247[arrayIndex] = landscapeData;
+				return true;
+			}
+
+			// Embedded cache doesn't have this data
+			return false;
+
+		} catch (Exception e) {
+			System.err.println("⚠️ [RegionChange] Error loading from embedded cache: " + e.getMessage());
+			return false;
+		}
 	}
 
 	private static void handleRegionType73(final int l2, final int i11) {
@@ -1308,7 +1508,7 @@ public class PacketParser extends Client
 		if (itemId == 65535) {
 			rsInterface.anInt233 = 0;
 		} else {
-			final ItemDef itemDef = ItemDef.getItemDefinition(itemId);
+			final ItemDef itemDef = getItemDefinition(itemId);
 			rsInterface.anInt233 = 4;
 			rsInterface.mediaID = itemId;
 			rsInterface.modelRotation1 = itemDef.modelRotationY;
@@ -1320,12 +1520,24 @@ public class PacketParser extends Client
 	private static void handleInterfaceHoverOptimized() {
 		final boolean enabled = inStream.readUnsignedByte() == 1;
 		final int interfaceId = inStream.readUnsignedWord();
-		INTERFACE_CACHE[interfaceId].isMouseoverTriggered = enabled;
+
+		// Add bounds and null checking
+		if (interfaceId >= 0 && interfaceId < INTERFACE_CACHE.length && INTERFACE_CACHE[interfaceId] != null) {
+			INTERFACE_CACHE[interfaceId].isMouseoverTriggered = enabled;
+		} else {
+			System.err.println("Ignoring hover for missing interface: " + interfaceId);
+		}
 	}
 
 	private static void handleCloseInterfaceOptimized() {
 		final int interfaceId = inStream.method434();
-		clearInterfaceAnimations(interfaceId);
+
+		// Only clear animations if interface exists
+		if (interfaceId >= 0 && interfaceId < INTERFACE_CACHE.length && INTERFACE_CACHE[interfaceId] != null) {
+			clearInterfaceAnimations(interfaceId);
+		} else {
+			System.err.println("Ignoring close for missing interface: " + interfaceId);
+		}
 
 		if (backDialogID != -1) {
 			backDialogID = -1;
@@ -1420,23 +1632,48 @@ public class PacketParser extends Client
 	private static void handleInventoryUpdateOptimized() {
 		final int interfaceId = inStream.readUnsignedWord();
 		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
+
+		// Null check
+		if (rsInterface == null || rsInterface.inv == null) {
+			System.err.println("Invalid interface or inventory: " + interfaceId);
+			return;
+		}
+
 		final int itemCount = inStream.readUnsignedWord();
+
+		// Bounds check - prevent reading more items than the array can hold
+		final int safeItemCount = Math.min(itemCount, rsInterface.inv.length);
 
 		// Debug logging for bank updates
 		if (interfaceId == 5382) {
-			System.out.println("🏦 Bank inventory update - Interface: " + interfaceId + ", Items: " + itemCount);
+			System.out.println("🏦 Bank inventory update - Interface: " + interfaceId +
+				", Items: " + itemCount + ", Safe count: " + safeItemCount +
+				", Array length: " + rsInterface.inv.length);
 		}
 
-		for (int i = 0; i < itemCount; i++) {
+		for (int i = 0; i < safeItemCount; i++) {
 			int stackSize = inStream.readUnsignedByte();
 			if (stackSize == 255) stackSize = inStream.method440();
 			rsInterface.inv[i] = inStream.method436();
 			rsInterface.invStackSizes[i] = stackSize;
 		}
 
-		for (int j25 = itemCount; j25 < rsInterface.inv.length; j25++) {
+		// Clear remaining slots - FIX: Only clear slots that actually exist
+		for (int j25 = safeItemCount; j25 < rsInterface.inv.length; j25++) {
 			rsInterface.inv[j25] = 0;
 			rsInterface.invStackSizes[j25] = 0;
+		}
+
+		// If server sent more items than we can handle, skip the excess
+		if (itemCount > rsInterface.inv.length) {
+			System.err.println("Server sent " + itemCount + " items but interface " +
+				interfaceId + " only has " + rsInterface.inv.length + " slots - skipping excess");
+			// Skip the excess items from the stream to prevent desync
+			for (int i = rsInterface.inv.length; i < itemCount; i++) {
+				int stackSize = inStream.readUnsignedByte();
+				if (stackSize == 255) stackSize = inStream.method440();
+				inStream.method436(); // Skip item ID
+			}
 		}
 
 		if (rsInterface.contentType == 206) {
@@ -1452,7 +1689,7 @@ public class PacketParser extends Client
 
 				for (int slot = 0, bankSlot = 0; slot < bank.inv.length; slot++) {
 					if (bank.inv[slot] - 1 > 0) {
-						if (ItemDef.getItemDefinition(bank.inv[slot] - 1).name.toLowerCase()
+						if (getItemDefinition(bank.inv[slot] - 1).name.toLowerCase()
 							.contains(promptInput.toLowerCase())) {
 							bankInvTemp[bankSlot] = bank.inv[slot];
 							bankStackTemp[bankSlot++] = bank.invStackSizes[slot];

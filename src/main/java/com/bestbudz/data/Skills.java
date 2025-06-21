@@ -9,7 +9,7 @@ public final class Skills {
 	public static final int VIGOUR = 2;
 	public static final int LIFE = 3;
 	public static final int SAGITTARIUS = 4;
-	public static final int NECROMANCE = 5;
+	public static final int RESONANCE = 5;
 	public static final int MAGE = 6;
 	public static final int FOODIE = 7;
 	public static final int LUMBERING = 8;
@@ -21,16 +21,16 @@ public final class Skills {
 	public static final int QUARRYING = 14;
 	public static final int THCHEMPISTRY = 15;
 	public static final int WEEDSMOKING = 16;
-	public static final int ACCOMPLISHER = 17;
+	public static final int PET_MASTER = 17;
 	public static final int MERCENARY = 18;
 	public static final int BANKSTANDING = 19;
 	public static final int CONSUMER = 20;
 
 	public static final String[] SKILL_NAMES = {
-		"assault", "aegis", "vigour", "life", "sagittarius", "necromance",
+		"assault", "aegis", "vigour", "life", "sagittarius", "resonance",
 		"mage", "foodie", "lumbering", "woodcarving", "fisher", "pyromaniac",
 		"handiness", "forging", "quarrying", "thc-hempistry", "weedsmoking",
-		"accomplisher", "mercenary", "bankstanding", "consumer", "grades total"
+		"pet master", "mercenary", "bankstanding", "consumer", "grades total"
 	};
 
 	public static final boolean[] SKILL_ENABLED = new boolean[SKILLS_COUNT];
@@ -96,7 +96,7 @@ public final class Skills {
 		SKILL_ENABLED[VIGOUR] = true;
 		SKILL_ENABLED[LIFE] = true;
 		SKILL_ENABLED[SAGITTARIUS] = true;
-		SKILL_ENABLED[NECROMANCE] = true;
+		SKILL_ENABLED[RESONANCE] = true;
 		SKILL_ENABLED[MAGE] = true;
 		SKILL_ENABLED[FOODIE] = true;
 		SKILL_ENABLED[LUMBERING] = true;
@@ -108,7 +108,7 @@ public final class Skills {
 		SKILL_ENABLED[QUARRYING] = true;
 		SKILL_ENABLED[THCHEMPISTRY] = true;
 		SKILL_ENABLED[WEEDSMOKING] = true;
-		SKILL_ENABLED[ACCOMPLISHER] = true;
+		SKILL_ENABLED[PET_MASTER] = true;
 		SKILL_ENABLED[MERCENARY] = true;
 		SKILL_ENABLED[BANKSTANDING] = true;
 		SKILL_ENABLED[CONSUMER] = true;

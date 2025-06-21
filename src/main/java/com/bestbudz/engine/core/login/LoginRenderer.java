@@ -15,7 +15,7 @@ import static com.bestbudz.engine.core.login.Login.login;
 import com.bestbudz.ui.handling.input.Keyboard;
 import com.bestbudz.ui.handling.input.MouseState;
 import com.bestbudz.graphics.buffer.ImageProducer;
-import com.bestbudz.util.TextClass;
+import com.bestbudz.graphics.text.TextClass;
 import java.awt.*;
 
 public class LoginRenderer {

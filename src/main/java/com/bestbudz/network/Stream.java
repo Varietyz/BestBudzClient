@@ -138,10 +138,18 @@ public final class Stream extends NodeSub
 	}
 
 	public int readUnsignedByte() {
+		if (currentOffset >= buffer.length) {
+			System.err.println("Warning: readUnsignedByte overflow at offset=" + currentOffset + ", buffer length=" + buffer.length);
+			return 0;
+		}
 		return buffer[currentOffset++] & 0xff;
 	}
 
 	public byte readSignedByte() {
+		if (currentOffset >= buffer.length) {
+			System.err.println("Warning: readSignedByte overflow at offset=" + currentOffset + ", buffer length=" + buffer.length);
+			return 0;
+		}
 		return buffer[currentOffset++];
 	}
 
@@ -168,13 +176,29 @@ public final class Stream extends NodeSub
 	}
 
 	public int read3Bytes() {
+		// Check if we have enough bytes to read
+		if (currentOffset + 2 >= buffer.length) {
+			System.err.println("Warning: read3Bytes overflow at offset=" + currentOffset + ", buffer length=" + buffer.length);
+			return 0; // Safe default for missing data
+		}
+
 		currentOffset += 3;
-		return ((buffer[currentOffset - 3] & 0xff) << 16) + ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] & 0xff);
+		return ((buffer[currentOffset - 3] & 0xff) << 16) +
+			((buffer[currentOffset - 2] & 0xff) << 8) +
+			(buffer[currentOffset - 1] & 0xff);
 	}
 
 	public int readDWord() {
+		if (currentOffset + 3 >= buffer.length) {
+			System.err.println("Warning: readDWord overflow at offset=" + currentOffset + ", buffer length=" + buffer.length);
+			return 0;
+		}
+
 		currentOffset += 4;
-		return ((buffer[currentOffset - 4] & 0xff) << 24) + ((buffer[currentOffset - 3] & 0xff) << 16) + ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] & 0xff);
+		return ((buffer[currentOffset - 4] & 0xff) << 24) +
+			((buffer[currentOffset - 3] & 0xff) << 16) +
+			((buffer[currentOffset - 2] & 0xff) << 8) +
+			(buffer[currentOffset - 1] & 0xff);
 	}
 
 	public long readQWord() {

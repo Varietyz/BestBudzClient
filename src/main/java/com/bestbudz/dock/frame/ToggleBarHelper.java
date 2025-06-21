@@ -25,12 +25,8 @@ public class ToggleBarHelper {
 			frame.panelSwitcher(id);
 		});
 
-
-
 		frame.getToggleButtons().put(id, toggle);
 	}
-
-
 
 	private static JPopupMenu createTogglePopup(UIDockFrame frame, String id) {
 		JPopupMenu popup = new JPopupMenu();
@@ -67,9 +63,5 @@ public class ToggleBarHelper {
 			toggle.setSelected(isVisible);
 			toggle.setFont(toggle.getFont().deriveFont(isVisible ? Font.BOLD : Font.PLAIN));
 		}
-
-		SettingHandler.save();
 	}
-
-
 }

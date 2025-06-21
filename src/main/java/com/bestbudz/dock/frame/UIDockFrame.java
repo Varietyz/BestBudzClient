@@ -2,21 +2,10 @@ package com.bestbudz.dock.frame;
 
 import com.bestbudz.dock.ui.manager.UIPanelManager;
 import com.bestbudz.dock.ui.manager.UIModalManager;
-import com.bestbudz.dock.ui.panel.bank.BankPanel;
-import com.bestbudz.dock.ui.panel.character.AppearancePanel;
 import com.bestbudz.dock.ui.panel.client.BubbleBudzPanel;
-import com.bestbudz.dock.ui.panel.client.SettingsPanel;
-import com.bestbudz.dock.ui.panel.debug.DiagnosticPanel;
-import com.bestbudz.dock.ui.panel.emote.EmotePanel;
-import com.bestbudz.dock.ui.panel.game.AchievementsPanel;
-import com.bestbudz.dock.ui.panel.game.InfoTabPanel;
-import com.bestbudz.dock.ui.panel.game.SkillsPanel;
-import com.bestbudz.dock.ui.panel.shops.ShopPanel;
-import com.bestbudz.dock.ui.panel.social.StonersPanel;
-import com.bestbudz.dock.ui.panel.teleports.TeleportPanel;
+import com.bestbudz.dock.config.RegisteredPanels;
 import com.bestbudz.dock.util.UIPanel;
 
-import com.bestbudz.dock.ui.panel.social.ChatPanel;
 import com.bestbudz.engine.core.Client;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
@@ -30,7 +19,6 @@ import java.util.Map;
 public class UIDockFrame extends JDialog {
 
 	private Client client;
-	private String lastActivePanelID;
 	private String topVisiblePanelID;
 	private String bottomVisiblePanelID;
 
@@ -38,7 +26,10 @@ public class UIDockFrame extends JDialog {
 	private JSplitPane splitPane;
 
 	private final UIPanelManager panelManager;
-	private final UIModalManager modalManager; // New modal manager
+	private final UIModalManager modalManager;
+
+	public static TogglePreview.ScrollPaneWithTabs scrollTopWithTabs;
+	public static TogglePreview.ScrollPaneWithTabs scrollBottomWithTabs;
 
 	public static final JPanel toggleBarTop = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
 	public static final JPanel toggleBarBottom = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
@@ -57,8 +48,8 @@ public class UIDockFrame extends JDialog {
 
 	// Login overlay components
 	private BubbleBudzPanel loginOverlay;
-	private JLayeredPane mainLayeredPane; // This will contain everything including toggle bars
-	private JPanel contentPanel; // Container for toggle bars and split pane
+	private JLayeredPane mainLayeredPane;
+	private JPanel contentPanel;
 
 	private static UIDockFrame instance;
 
@@ -77,15 +68,15 @@ public class UIDockFrame extends JDialog {
 
 		// Initialize managers first
 		panelManager = new UIPanelManager();
-
-		// Initialize modal manager with this frame as parent and the client
 		modalManager = new UIModalManager(this, Client.instance);
 
 		setupMainLayeredPane();
 		setupPanels();
 		setupKeyboardShortcuts();
 
+
 		setVisible(true);
+
 		UIDockHelper.updateToggleInteractivity();
 
 		// Start login state monitoring
@@ -102,32 +93,33 @@ public class UIDockFrame extends JDialog {
 		configureModalManager();
 	}
 
+	/**
+	 * Setup panels using centralized configuration
+	 */
 	private void setupPanels() {
-		registerPanel(new SettingsPanel());
-		registerPanel(new InfoTabPanel());
-		registerPanel(new AchievementsPanel());
-		registerPanel(new ChatPanel());
-		registerPanel(new StonersPanel());
-		registerPanel(new SkillsPanel());
-		registerPanel(new TeleportPanel());
-		registerPanel(new ShopPanel());
-    	registerPanel(new AppearancePanel());
-    	registerPanel(new DiagnosticPanel());
-		registerPanel(new EmotePanel());
-		registerPanel(new BankPanel());
+		// Register all panels from the centralized configuration
+		UIPanel[] panels = RegisteredPanels.createAllPanels();
 
+		System.out.println("Registering " + panels.length + " panels from configuration...");
+
+		for (UIPanel panel : panels) {
+			registerPanel(panel);
+			System.out.println("Registered panel: " + panel.getPanelID());
+		}
+
+		// Load default layout using the centralized configuration
 		loadDockPanelLayout();
+
+		System.out.println("Panel registration and layout setup complete.");
 	}
 
 	/**
 	 * Configure the modal manager with default settings
 	 */
 	private void configureModalManager() {
-		// Enable debug mode if in development
 		boolean debugMode = Boolean.getBoolean("dock.debug") || System.getProperty("env", "prod").equals("dev");
 		modalManager.setDebugMode(debugMode);
 
-		// Modal dialogues enabled by default, but can be configured
 		boolean useModals = !Boolean.getBoolean("dock.disableModals");
 		modalManager.setUseModalDialogues(useModals);
 
@@ -140,7 +132,6 @@ public class UIDockFrame extends JDialog {
 	 * Setup keyboard shortcuts for the dock frame including modal shortcuts
 	 */
 	private void setupKeyboardShortcuts() {
-		// Get the root pane's input map for global shortcuts
 		InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 		ActionMap actionMap = getRootPane().getActionMap();
 
@@ -192,13 +183,10 @@ public class UIDockFrame extends JDialog {
 	}
 
 	/**
-	 * Show a temporary message in the UI (could be implemented as a toast or status update)
+	 * Show a temporary message in the UI
 	 */
 	private void showTemporaryMessage(String message) {
-		// For now, just print to console, but this could be a toast notification
 		System.out.println("UI Message: " + message);
-
-		// Optionally show a temporary modal
 		modalManager.showConfirmation("Information", message, null, null);
 	}
 
@@ -208,7 +196,6 @@ public class UIDockFrame extends JDialog {
 	private void showTestDialogue() {
 		if (!modalManager.isDebugMode()) return;
 
-		// Show a test confirmation
 		modalManager.showConfirmation(
 			"Test Dialogue",
 			"This is a test dialogue. Modal system is working correctly!",
@@ -221,28 +208,20 @@ public class UIDockFrame extends JDialog {
 	 * Sets up the main layered pane that contains everything including toggle bars and login overlay
 	 */
 	private void setupMainLayeredPane() {
-		// Create the main layered pane that will hold everything
 		mainLayeredPane = new JLayeredPane();
 		mainLayeredPane.setPreferredSize(new Dimension(300, 750));
 
-		// Create content panel that holds toggle bars and split pane
 		contentPanel = new JPanel(new BorderLayout());
 		contentPanel.setOpaque(true);
 
-		// Setup toggle bars in the content panel
 		setupToggleBars();
-
-		// Setup main content (split pane) in the content panel
 		setupMainContent();
 
-		// Add content panel to the default layer
 		mainLayeredPane.add(contentPanel, JLayeredPane.DEFAULT_LAYER);
 
-		// Create and add login overlay to top layer (spans entire frame)
 		loginOverlay = new BubbleBudzPanel(client);
 		mainLayeredPane.add(loginOverlay, JLayeredPane.PALETTE_LAYER);
 
-		// Handle resizing for all components
 		mainLayeredPane.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
@@ -250,7 +229,6 @@ public class UIDockFrame extends JDialog {
 			}
 		});
 
-		// Add frame resize listener
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
@@ -258,10 +236,7 @@ public class UIDockFrame extends JDialog {
 			}
 		});
 
-		// Add the main layered pane to the frame
 		add(mainLayeredPane, BorderLayout.CENTER);
-
-		// Initial bounds setup
 		SwingUtilities.invokeLater(() -> updateMainLayeredPaneBounds());
 	}
 
@@ -269,41 +244,39 @@ public class UIDockFrame extends JDialog {
 		toggleBarTop.setBorder(BorderFactory.createEmptyBorder());
 		toggleBarBottom.setBorder(BorderFactory.createEmptyBorder());
 
-		scrollTop.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollTop.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollTop.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		scrollTop.setBorder(BorderFactory.createEmptyBorder());
 		scrollTop.setViewportBorder(null);
 
-		scrollBottom.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollBottom.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollBottom.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		scrollBottom.setBorder(BorderFactory.createEmptyBorder());
 		scrollBottom.setViewportBorder(null);
 
-		toggleWrapper = new JPanel(new GridLayout(2, 1, 0, 0));
-		toggleWrapper.setBorder(BorderFactory.createEmptyBorder());
-		toggleWrapper.add(scrollTop);
-		toggleWrapper.add(scrollBottom);
+		// Create enhanced scroll panes with side tabs and store references
+		scrollTopWithTabs = new TogglePreview.ScrollPaneWithTabs(scrollTop, toggleBarTop);
+		scrollBottomWithTabs = new TogglePreview.ScrollPaneWithTabs(scrollBottom, toggleBarBottom);
 
-		// Add toggle wrapper to content panel (not directly to frame)
+		// Create the basic wrapper first
+		JPanel basicToggleWrapper = new JPanel(new GridLayout(2, 1, 0, 2));
+		basicToggleWrapper.setBorder(BorderFactory.createEmptyBorder());
+		basicToggleWrapper.add(scrollTopWithTabs);
+		basicToggleWrapper.add(scrollBottomWithTabs);
+
+		// NOW add the single hover tab wrapper
+		java.util.List<JScrollPane> scrollPanes = java.util.Arrays.asList(scrollTop, scrollBottom);
+		java.util.List<JPanel> toggleBars = java.util.Arrays.asList(toggleBarTop, toggleBarBottom);
+		toggleWrapper = new TogglePreview.ToggleBarWithSinglePreview(basicToggleWrapper, scrollPanes, toggleBars);
+
 		contentPanel.add(toggleWrapper, BorderLayout.NORTH);
 
-		// Sync scroll bars
-		scrollTop.getHorizontalScrollBar().addAdjustmentListener(e -> {
-			JScrollBar bottomScroll = scrollBottom.getHorizontalScrollBar();
-			int max = bottomScroll.getMaximum() - bottomScroll.getVisibleAmount();
-			int mirrored = max - e.getValue();
-			bottomScroll.setValue(Math.max(0, mirrored));
-		});
-
-		scrollTop.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollBottom.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		// DON'T ADD ANY SCROLL LISTENERS HERE - LET UIDockHelper.setupLoopingScrollBars() HANDLE IT!
 	}
 
 	private void setupMainContent() {
 		splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topStack, bottomStack);
 		splitPane.setResizeWeight(0.4);
-
-		// Add split pane to content panel (not directly to frame)
 		contentPanel.add(splitPane, BorderLayout.CENTER);
 	}
 
@@ -314,13 +287,8 @@ public class UIDockFrame extends JDialog {
 		if (mainLayeredPane != null && contentPanel != null && loginOverlay != null) {
 			Dimension size = mainLayeredPane.getSize();
 			if (size.width > 0 && size.height > 0) {
-				// Content panel fills the entire layered pane
 				contentPanel.setBounds(0, 0, size.width, size.height);
-
-				// Login overlay spans the entire layered pane (including toggle bars)
 				loginOverlay.setBounds(0, 0, size.width, size.height);
-
-				// Ensure proper validation
 				contentPanel.revalidate();
 				splitPane.revalidate();
 			}
@@ -329,103 +297,24 @@ public class UIDockFrame extends JDialog {
 
 	// MODAL INTEGRATION METHODS
 
-	/**
-	 * Show dialogue modal for game interface - Main integration point
-	 */
 	public void showDialogue(int interfaceId, Object rsInterface) {
 		if (modalManager != null) {
 			modalManager.showDialogue(interfaceId, rsInterface);
 		}
 	}
 
-	/**
-	 * Show input prompt modal
-	 */
-	public void showInputPrompt(String inputType, String prompt) {
-		if (modalManager != null) {
-			modalManager.showInputPrompt(inputType, prompt);
-		}
-	}
-
-	/**
-	 * Handle server closing dialogue (called when opcode 219 is received)
-	 */
 	public void onServerCloseDialogue() {
 		if (modalManager != null) {
 			modalManager.onServerCloseDialogue();
 		}
 	}
 
-	/**
-	 * Show confirmation dialog
-	 */
-	public void showConfirmation(String title, String message, Runnable onConfirm, Runnable onCancel) {
-		if (modalManager != null) {
-			modalManager.showConfirmation(title, message, onConfirm, onCancel);
-		}
-	}
-
-	/**
-	 * Show progress dialog
-	 */
-	public void showProgress(String title, String message, boolean indeterminate) {
-		if (modalManager != null) {
-			modalManager.showProgress(title, message, indeterminate);
-		}
-	}
-
-	/**
-	 * Check if dialogue modal is currently active
-	 */
-	public boolean isDialogueActive() {
-		return modalManager != null && modalManager.isDialogueActive();
-	}
-
-	/**
-	 * Get current dialogue interface ID
-	 */
-	public int getCurrentDialogueInterfaceId() {
-		return modalManager != null ? modalManager.getCurrentDialogueInterfaceId() : -1;
-	}
-
-	/**
-	 * Check if any modals are visible
-	 */
-	public boolean hasVisibleModals() {
-		return modalManager != null && modalManager.hasVisibleModals();
-	}
-
-	/**
-	 * Close all modals
-	 */
-	public void closeAllModals() {
-		if (modalManager != null) {
-			modalManager.closeAllModals();
-		}
-	}
-
-	/**
-	 * Get the modal manager instance for advanced usage
-	 */
 	public UIModalManager getModalManager() {
 		return modalManager;
 	}
 
-	/**
-	 * Configure modal settings
-	 */
-	public void configureModals(boolean useModalDialogues, boolean debugMode) {
-		if (modalManager != null) {
-			modalManager.setUseModalDialogues(useModalDialogues);
-			modalManager.setDebugMode(debugMode);
-		}
-	}
+	// CLIENT PACKET HANDLING INTEGRATION
 
-	// INTEGRATION WITH CLIENT PACKET HANDLING
-
-	/**
-	 * This method should be called from your client's packet handler when a dialogue interface is opened (opcode 164)
-	 */
 	public static void handleDialogueInterface(int interfaceId, Object rsInterface) {
 		UIDockFrame instance = getInstance();
 		if (instance != null) {
@@ -433,9 +322,6 @@ public class UIDockFrame extends JDialog {
 		}
 	}
 
-	/**
-	 * This method should be called from your client's packet handler when interfaces are closed (opcode 219)
-	 */
 	public static void handleCloseInterface() {
 		UIDockFrame instance = getInstance();
 		if (instance != null) {
@@ -443,17 +329,9 @@ public class UIDockFrame extends JDialog {
 		}
 	}
 
-	/**
-	 * This method should be called when an input prompt is needed (e.g., "Enter amount")
-	 */
-	public static void handleInputPrompt(String inputType, String prompt) {
-		UIDockFrame instance = getInstance();
-		if (instance != null) {
-			instance.showInputPrompt(inputType, prompt);
-		}
-	}
 
-	// DELEGATE EVERYTHING ELSE (Original methods preserved)
+	// DELEGATE PANEL METHODS (no more automatic saving)
+
 	public void registerPanel(UIPanel uiPanel) {
 		UIDockHelper.registerPanel(this, uiPanel);
 	}
@@ -468,18 +346,6 @@ public class UIDockFrame extends JDialog {
 
 	public void showPanelBottom(String id) {
 		UIDockHelper.showPanelBottom(this, id);
-	}
-
-	public void saveLayoutState() {
-		UIDockHelper.saveLayoutState(this);
-	}
-
-	public void updateDockPanelConfig() {
-		UIDockHelper.updateDockPanelConfig(this);
-	}
-
-	public void switchPanel(JPanel stack, CardLayout layout, String id) {
-		UIDockHelper.switchPanel(this, stack, layout, id);
 	}
 
 	public void updateToggles() {
@@ -498,11 +364,8 @@ public class UIDockFrame extends JDialog {
 		return panelPositions.getOrDefault(id, "top");
 	}
 
-	public void dockPanelToMatch(String sourcePanelID, String targetPanelID) {
-		UIDockHelper.dockPanelToMatch(this, sourcePanelID, targetPanelID);
-	}
+	// ACCESSORS
 
-	// ACCESSORS (internal use only)
 	public JPanel getToggleBar() { return toggleBarTop; }
 	public JPanel getToggleBarBottom() { return toggleBarBottom; }
 	public JSplitPane getSplitPane() { return splitPane; }
@@ -515,10 +378,8 @@ public class UIDockFrame extends JDialog {
 	public Map<String, JToggleButton> getToggleButtons() { return toggleButtons; }
 	public UIPanelManager getPanelManager() { return panelManager; }
 
-	public void setLastActivePanelID(String id) { lastActivePanelID = id; }
 	public void setTopVisiblePanelID(String id) { topVisiblePanelID = id; }
 	public void setBottomVisiblePanelID(String id) { bottomVisiblePanelID = id; }
-	public String getLastActivePanelID() { return lastActivePanelID; }
 	public String getTopVisiblePanelID() { return topVisiblePanelID; }
 	public String getBottomVisiblePanelID() { return bottomVisiblePanelID; }
 
@@ -534,6 +395,7 @@ public class UIDockFrame extends JDialog {
 	 */
 	@Override
 	public void dispose() {
+
 		// Dispose modal manager first
 		if (modalManager != null) {
 			modalManager.dispose();

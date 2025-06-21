@@ -1,8 +1,8 @@
 package com.bestbudz.ui;
 
 import static com.bestbudz.cache.SpriteDumper.dumpItemSprites;
-import com.bestbudz.data.ItemDef;
-import com.bestbudz.data.Skills;
+import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
+import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.dock.util.DockBlocker;
 import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.engine.core.Client;
@@ -16,7 +16,7 @@ import static com.bestbudz.ui.InterfaceManagement.interfaceIsSelected;
 import static com.bestbudz.engine.core.login.WelcomeScreen.drawStonersListOrWelcomeScreen;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.graphics.sprite.Sprite;
-import com.bestbudz.graphics.text.RSFont;
+import com.bestbudz.graphics.text.TextController;
 import com.bestbudz.graphics.text.TextDrawingArea;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.rendering.animation.Animation;
@@ -24,9 +24,7 @@ import com.bestbudz.rendering.model.Model;
 import static com.bestbudz.util.FormatHelpers.formatKMValue;
 import static com.bestbudz.util.FormatHelpers.intToKOrMil;
 import static com.bestbudz.util.FormatHelpers.intToKOrMilLongName;
-import com.bestbudz.util.TextClass;
-import java.text.NumberFormat;
-import java.util.Locale;
+import com.bestbudz.graphics.text.TextClass;
 
 public class DrawInterface extends Client
 {
@@ -387,37 +385,37 @@ public class DrawInterface extends Client
 
 												if (amount == 0)
 												{
-													smallText.method385(0, "EMPTY", h + 45 + y, w + 3 + x);
-													smallText.method385(ColorConfig.WHITE_COLOR, "EMPTY", h + 44 + y, w + 2 + x);
+													smallText.drawStackText(0, "EMPTY", h + 45 + y, w + 3 + x);
+													smallText.drawStackText(ColorConfig.WHITE_COLOR, "EMPTY", h + 44 + y, w + 2 + x);
 												}
 												else if (amount >= 1000000000)
 												{
-													smallText.method385(0, intToKOrMil(amount), h + 10 + y, w + x + 1);
-													smallText.method385(0x00FF80, intToKOrMil(amount), h + 9 + y,
+													smallText.drawStackText(0, intToKOrMil(amount), h + 10 + y, w + x + 1);
+													smallText.drawStackText(0x00FF80, intToKOrMil(amount), h + 9 + y,
 														w + x);
 												}
 												else if (amount >= 10000000)
 												{
-													smallText.method385(0, intToKOrMil(amount), h + 10 + y, w + x + 1);
-													smallText.method385(0x00FF80, intToKOrMil(amount), h + 9 + y,
+													smallText.drawStackText(0, intToKOrMil(amount), h + 10 + y, w + x + 1);
+													smallText.drawStackText(0x00FF80, intToKOrMil(amount), h + 9 + y,
 														w + x);
 												}
 												else if (amount >= 100000)
 												{
-													smallText.method385(0, intToKOrMil(amount), h + 10 + y, w + x + 1);
-													smallText.method385(ColorConfig.WHITE_COLOR, intToKOrMil(amount), h + 9 + y,
+													smallText.drawStackText(0, intToKOrMil(amount), h + 10 + y, w + x + 1);
+													smallText.drawStackText(ColorConfig.WHITE_COLOR, intToKOrMil(amount), h + 9 + y,
 														w + x);
 												}
 												else if (amount >= 1)
 												{
-													smallText.method385(0, intToKOrMil(amount), h + 10 + y, w + x + 1);
-													smallText.method385(0xFFFF00, intToKOrMil(amount), h + 9 + y,
+													smallText.drawStackText(0, intToKOrMil(amount), h + 10 + y, w + x + 1);
+													smallText.drawStackText(0xFFFF00, intToKOrMil(amount), h + 9 + y,
 														w + x);
 												}
 												else
 												{
-													smallText.method385(0, intToKOrMil(amount), h + 10 + y, w + 1 + x);
-													smallText.method385(0xFFFF00, intToKOrMil(amount), h + 9 + y,
+													smallText.drawStackText(0, intToKOrMil(amount), h + 10 + y, w + 1 + x);
+													smallText.drawStackText(0xFFFF00, intToKOrMil(amount), h + 9 + y,
 														w + x);
 												}
 											}
@@ -580,8 +578,8 @@ public class DrawInterface extends Client
 								break;
 						}
 					}
-					for (int l6 = l2 + textDrawingArea.anInt1497; message
-						.length() > 0; l6 += textDrawingArea.anInt1497)
+					int fontHeight = textDrawingArea.getFontHeight();
+					for (int l6 = l2 + fontHeight; message.length() > 0; l6 += fontHeight)
 					{
 						if (message.indexOf("%") != -1)
 						{
@@ -648,7 +646,7 @@ public class DrawInterface extends Client
 							s1 = message;
 							message = "";
 						}
-						RSFont font;
+						TextController font;
 						if (textDrawingArea == smallText)
 						{
 							font = newSmallFont;
@@ -749,7 +747,7 @@ public class DrawInterface extends Client
 						{
 							if (child.inv[k4] > 0)
 							{
-								ItemDef itemDef = ItemDef.getItemDefinition(child.inv[k4] - 1);
+								ItemDef itemDef = getItemDefinition(child.inv[k4] - 1);
 								String s2 = itemDef.name;
 								if (itemDef.stackable || child.invStackSizes[k4] != 1)
 									s2 = s2 + " x" + intToKOrMilLongName(child.invStackSizes[k4]);
@@ -757,9 +755,10 @@ public class DrawInterface extends Client
 								int k9 = l2 + j5 * (12 + child.invSpritePadY);
 								if (child.centerText)
 									textDrawingArea_1.method382(child.textColor, i9 + child.width / 2, s2, k9,
-										child.textShadow);
+										1);
+
 								else
-									textDrawingArea_1.method389(child.textShadow, i9, child.textColor, s2, k9);
+									textDrawingArea_1.method389(1, i9, child.textColor, s2, k9);
 							}
 							k4++;
 						}
@@ -842,7 +841,7 @@ public class DrawInterface extends Client
 
 					if (child.displayAsterisks)
 					{
-						boldText.method389(true, (x + 8), ColorConfig.WHITE_COLOR,
+						boldText.method389(1, (x + 8), ColorConfig.WHITE_COLOR,
 							builder.append(TextClass.passwordAsterisks(message))
 								.append(((RSInterface.currentInputField == child ? 1 : 0)
 									& (loopCycle % 40 < 20 ? 1 : 0)) != 0 ? "|" : "")
@@ -851,7 +850,7 @@ public class DrawInterface extends Client
 					}
 					else
 					{
-						boldText.method389(true, (x + 8), ColorConfig.WHITE_COLOR, builder.append(message).append(
+						boldText.method389(1, (x + 8), ColorConfig.WHITE_COLOR, builder.append(message).append(
 								((RSInterface.currentInputField == child ? 1 : 0) & (loopCycle % 40 < 20 ? 1 : 0)) != 0
 									? "|"
 									: "")

@@ -1,6 +1,7 @@
 package com.bestbudz.ui;
 
-import com.bestbudz.data.ItemDef;
+import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
+import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.data.Skills;
 import com.bestbudz.dock.frame.UIDockFrame;
 import com.bestbudz.engine.config.EngineConfig;
@@ -146,18 +147,18 @@ public class InterfaceManagement extends Client
 
 			for (int i = 0, slot = 0; i < ItemDef.totalItems && slot < 100; i++)
 			{
-				if (ItemDef.getItemDefinition(i).name == null || ItemDef.getItemDefinition(i).certTemplateID == i - 1
-					|| ItemDef.getItemDefinition(i).certID == i - 1)
+				if (getItemDefinition(i).name == null || getItemDefinition(i).certTemplateID == i - 1
+					|| getItemDefinition(i).certID == i - 1)
 				{
 					continue;
 				}
 
-				if (ItemDef.getItemDefinition(i).name.toLowerCase().contains(
+				if (getItemDefinition(i).name.toLowerCase().contains(
 					RSInterface.interfaceCache[RSInterface.currentInputField.id].disabledMessage.toLowerCase()))
 				{
 					RSInterface.interfaceCache[61266 + slot].enabledSprite = ItemDef.getSprite(i, 1, 0);
 					RSInterface.interfaceCache[61266 + slot].disabledSprite = ItemDef.getSprite(i, 1, 0);
-					RSInterface.interfaceCache[61101 + slot++].disabledMessage = ItemDef.getItemDefinition(i).name;
+					RSInterface.interfaceCache[61101 + slot++].disabledMessage = getItemDefinition(i).name;
 					found++;
 				}
 			}
@@ -462,7 +463,7 @@ public class InterfaceManagement extends Client
 						k1 = 0; // Set to 0 and continue
 					} else {
 						int k2 = ai[l++];
-						if (k2 >= 0 && k2 < ItemDef.totalItems && (!ItemDef.getItemDefinition(k2).membersObject || isMembers))
+						if (k2 >= 0 && k2 < ItemDef.totalItems && (!getItemDefinition(k2).membersObject || isMembers))
 						{
 							for (int j3 = 0; j3 < class9_1.inv.length; j3++)
 							{

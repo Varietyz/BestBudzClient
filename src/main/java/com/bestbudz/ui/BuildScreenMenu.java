@@ -1,7 +1,8 @@
 package com.bestbudz.ui;
 
-import com.bestbudz.data.Item;
-import com.bestbudz.data.ItemDef;
+import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
+import com.bestbudz.data.items.Item;
+import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.ui.handling.input.MouseState;
@@ -171,7 +172,7 @@ public class BuildScreenMenu extends Client
 				{
 					for (Item item = (Item) class19.getFirst(); item != null; item = (Item) class19.getNext())
 					{
-						ItemDef itemDef = ItemDef.getItemDefinition(item.ID);
+						ItemDef itemDef = getItemDefinition(item.ID);
 						if (itemSelected == 1)
 						{
 							menuActionName[menuActionRow] = "Select " + selectedItemName + ",combine with @lre@"

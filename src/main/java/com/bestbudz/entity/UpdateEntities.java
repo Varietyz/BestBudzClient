@@ -4,7 +4,7 @@ import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.config.ColorConfig;
 import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
-import static com.bestbudz.graphics.Hitmark.hitmarkDraw;
+import static com.bestbudz.graphics.Hitmark.enhancedHitmarkDraw;
 import com.bestbudz.graphics.sprite.Sprite;
 import static com.bestbudz.ui.interfaces.Chatbox.publicChatMode;
 
@@ -85,7 +85,7 @@ public class UpdateEntities extends Client
 					if (spriteDrawX > -1 && anInt974 < anInt975)
 					{
 						anIntArray979[anInt974] = boldText.method384(((Entity) (obj)).textSpoken) / 2;
-						anIntArray978[anInt974] = boldText.anInt1497;
+						anIntArray978[anInt974] = boldText.getFontHeight();
 						anIntArray976[anInt974] = spriteDrawX;
 						anIntArray977[anInt974] = spriteDrawY;
 						anIntArray980[anInt974] = ((Entity) (obj)).anInt1513;
@@ -145,49 +145,86 @@ public class UpdateEntities extends Client
 					{
 					}
 				}
-				if (SettingsConfig.enableNewHitmarks)
+				if (!SettingsConfig.enableNewHitmarks)
 				{
-					for (int j1 = 0; j1 < 4; j1++)
-					{
-						if (((Entity) (obj)).hitsLoopCycle[j1] > loopCycle)
-						{
+					int maxHitmarks = Math.min(7, ((Entity) (obj)).hitsLoopCycle.length); // Prevent array out of bounds
+					for (int j1 = 0; j1 < maxHitmarks; j1++) {
+						if (j1 < ((Entity) (obj)).hitsLoopCycle.length && ((Entity) (obj)).hitsLoopCycle[j1] > loopCycle) {
 							npcScreenPos(((Entity) (obj)), ((Entity) (obj)).height / 2);
-							if (spriteDrawX > -1)
-							{
-								switch (j1)
-								{
-									case 1:
-										spriteDrawY += 20;
+							if (spriteDrawX > -1) {
+								Entity e = ((Entity) (obj));
+
+								// Calculate position offsets for 7-point spread
+								int offsetX = 0, offsetY = 0;
+								switch (j1) {
+									case 0: // Center
+										offsetX = 0; offsetY = 0;
 										break;
-									case 2:
-										spriteDrawY += 40;
+									case 1: // Top
+										offsetX = 0; offsetY = -25;
 										break;
-									case 3:
-										spriteDrawY += 60;
+									case 2: // Left
+										offsetX = -25; offsetY = 0;
 										break;
-									case 4:
-										spriteDrawY += 80;
+									case 3: // Right
+										offsetX = 25; offsetY = 0;
 										break;
-									case 5:
-										spriteDrawY += 100;
+									case 4: // Top-Left diagonal
+										offsetX = -18; offsetY = -18;
 										break;
-									case 6:
-										spriteDrawY += 120;
+									case 5: // Top-Right diagonal
+										offsetX = 18; offsetY = -18;
+										break;
+									case 6: // Bottom (or could be bottom-left/right)
+										offsetX = 0; offsetY = 20;
 										break;
 								}
-								Entity e = ((Entity) (obj));
-								if (e.hitmarkMove[j1] > -30)
-									e.hitmarkMove[j1]--;
-								if (e.hitmarkMove[j1] < -26)
-									e.hitmarkTrans[j1] -= 5;
-								hitmarkDraw(String.valueOf(e.hitArray[j1]).length(), e.hitMarkTypes[j1], e.hitIcon[j1],
-									e.hitArray[j1], e.hitmarkMove[j1], e.hitmarkTrans[j1]);
+
+								// Apply animation movement with fade
+								if (j1 < e.hitmarkMove.length && e.hitmarkMove[j1] > -30) {
+									e.hitmarkMove[j1]--; // Animation frame counter
+								}
+								if (j1 < e.hitmarkTrans.length && e.hitmarkMove[j1] < -26) {
+									e.hitmarkTrans[j1] -= 5; // Fade out
+								}
+
+								// Calculate movement based on damage type
+								int animationFrame = Math.abs(e.hitmarkMove[j1]);
+								int movementX = 0, movementY = 0;
+
+								// Check if this is damage (positive value) or defensive (0 or negative)
+								boolean isDamage = e.hitArray[j1] > 0;
+
+								if (isDamage) {
+									// Damage hitmarks move diagonally up-right (reduced distance)
+									movementX = (int)(animationFrame * 0.5); // Move right slower
+									movementY = (int)(animationFrame * -0.8); // Move up slower
+								} else {
+									// Defensive hitmarks (blocks, misses) move straight up (reduced distance)
+									movementX = 0; // No horizontal movement
+									movementY = (int)(animationFrame * -0.7); // Move straight up slower
+								}
+
+								// Calculate final position with spread offset and movement animation
+								int finalX = spriteDrawX + offsetX + movementX;
+								int finalY = spriteDrawY + offsetY + movementY;
+
+								// Position defensive hitmarks lower on the entity
+								if (!isDamage) {
+									finalY += 25; // Move defensive hitmarks down by 25 pixels
+								}
+								int currentOpacity = j1 < e.hitmarkTrans.length ? e.hitmarkTrans[j1] : 255;
+
+								// Draw the enhanced hitmark with appropriate movement
+								enhancedHitmarkDraw(String.valueOf(e.hitArray[j1]).length(),
+									e.hitMarkTypes[j1], e.hitIcon[j1], e.hitArray[j1],
+									finalX, finalY, currentOpacity);
 							}
 						}
 					}
 				}
 				else
-				{
+				{// MAIN HITMARK LOGIC
 					for (int j1 = 0; j1 < 4; j1++)
 					{
 						if (((Entity) (obj)).hitsLoopCycle[j1] > loopCycle)
@@ -211,10 +248,10 @@ public class UpdateEntities extends Client
 								}
 								hitMarks[((Entity) (obj)).hitMarkTypes[j1]].drawSprite(spriteDrawX - 12,
 									spriteDrawY - 12);
-								smallText.drawText(0, String.valueOf(((Entity) (obj)).hitArray[j1]), spriteDrawY + 4,
-									spriteDrawX);
-								smallText.drawText(ColorConfig.WHITE_COLOR, String.valueOf(((Entity) (obj)).hitArray[j1]),
-									spriteDrawY + 3, spriteDrawX - 1);
+								regularText.drawText(0, String.valueOf(((Entity) (obj)).hitArray[j1]), spriteDrawY + 5,
+									spriteDrawX - 2);
+								regularText.drawText(ColorConfig.WHITE_COLOR, String.valueOf(((Entity) (obj)).hitArray[j1]),
+									spriteDrawY + 4, spriteDrawX - 3);
 							}
 						}
 					}
@@ -336,7 +373,7 @@ public class UpdateEntities extends Client
 							l4 = j4 - 25;
 						else if (j4 > 125)
 							l4 = j4 - 125;
-						DrawingArea.setDrawingArea(spriteDrawY + 5, 0, 512, spriteDrawY - boldText.anInt1497 - 1);
+						DrawingArea.setDrawingArea(spriteDrawY + 5, 0, 512, spriteDrawY - boldText.getFontHeight() - 1);
 						boldText.drawText(0, s, spriteDrawY + 1 + l4, spriteDrawX);
 						boldText.drawText(i3, s, spriteDrawY + l4, spriteDrawX);
 						DrawingArea.defaultDrawingAreaSize();

@@ -1,8 +1,7 @@
 package com.bestbudz.ui.interfaces;
 
-import com.bestbudz.data.ItemDef;
+import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.engine.config.SettingsConfig;
 import static com.bestbudz.network.packets.PacketParser.sendPacket;
 import com.bestbudz.ui.handling.input.Keyboard;
@@ -16,8 +15,8 @@ import com.bestbudz.graphics.text.TextDrawingArea;
 import com.bestbudz.network.StreamLoader;
 import static com.bestbudz.ui.InterfaceManagement.doTextField;
 import com.bestbudz.ui.RSInterface;
-import com.bestbudz.ui.TextInput;
-import com.bestbudz.util.TextClass;
+import com.bestbudz.graphics.text.TextInput;
+import com.bestbudz.graphics.text.TextClass;
 import com.bestbudz.world.ObjectDef;
 import java.awt.Graphics2D;
 import java.text.NumberFormat;
@@ -26,7 +25,7 @@ import java.util.Locale;
 
 public class Chatbox extends Client{
 	public static final String[] chatNames= new String[500];
-	public static final String[] chatMessages = new String[500];
+	public static final String[] chatMessages = new String[5000];
 	public static int cButtonHPos;
 	public static int cButtonCPos;
 	public static final String[] chatTitles = new String[500];
@@ -138,8 +137,7 @@ public class Chatbox extends Client{
 					update = true;
 				}
 
-				if ((RSInterface.currentInputField.onlyNumbers ? (j >= 48 && j <= 57) : (j >= 32 && j <= 122))
-					&& message.length() < RSInterface.currentInputField.characterLimit)
+				if ((RSInterface.currentInputField.onlyNumbers ? (j >= 48 && j <= 57) : (j >= 32 && j <= 122)))
 				{
 					message += (char) j;
 					if (RSInterface.currentInputField.onlyNumbers && !RSInterface.currentInputField.displayAsterisks)
@@ -209,7 +207,7 @@ public class Chatbox extends Client{
 				{
 					console.consoleInput = console.consoleInput.substring(0, console.consoleInput.length() - 1);
 				}
-				if (j >= 32 && j <= 122 && console.consoleInput.length() < 80)
+				if (j >= 32 && j <= 122)
 				{
 					console.consoleInput += (char) j;
 				}
@@ -231,7 +229,7 @@ public class Chatbox extends Client{
 			}
 			else if (messagePromptRaised)
 			{
-				if (j >= 32 && j <= 122 && promptInput.length() < 80)
+				if (j >= 32 && j <= 122)
 				{
 					promptInput += (char) j;
 					inputTaken = true;
@@ -401,7 +399,7 @@ public class Chatbox extends Client{
 						{
 							if (bank.inv[slot] - 1 > 0)
 							{
-								if (ItemDef.getItemDefinition(bank.inv[slot] - 1).name.toLowerCase()
+								if (getItemDefinition(bank.inv[slot] - 1).name.toLowerCase()
 									.contains(amountOrNameInput.toLowerCase()))
 								{
 									bankInvTemp[bankSlot] = bank.inv[slot];
@@ -424,7 +422,7 @@ public class Chatbox extends Client{
 						{
 							if (bank.inv[slot] - 1 > 0)
 							{
-								if (ItemDef.getItemDefinition(bank.inv[slot] - 1).name.toLowerCase()
+								if (getItemDefinition(bank.inv[slot] - 1).name.toLowerCase()
 									.contains(amountOrNameInput.toLowerCase()))
 								{
 									bankInvTemp[bankSlot] = bank.inv[slot];
@@ -451,7 +449,7 @@ public class Chatbox extends Client{
 						{
 							if (bank.inv[slot] - 1 > 0)
 							{
-								if (ItemDef.getItemDefinition(bank.inv[slot] - 1).name.toLowerCase()
+								if (getItemDefinition(bank.inv[slot] - 1).name.toLowerCase()
 									.contains(amountOrNameInput.toLowerCase()))
 								{
 									bankInvTemp[bankSlot] = bank.inv[slot];
@@ -470,7 +468,7 @@ public class Chatbox extends Client{
 			}
 			else if (backDialogID == -1)
 			{
-				if (j >= 32 && j <= 122 && inputString.length() < 80)
+				if (j >= 32 && j <= 122)
 				{
 					inputString += (char) j;
 					inputTaken = true;

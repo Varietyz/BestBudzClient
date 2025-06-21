@@ -1,6 +1,7 @@
 package com.bestbudz.cache;
 
 import com.bestbudz.engine.core.Client;
+import static com.bestbudz.engine.core.LoadingErrorScreen.addConsoleMessage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -228,7 +229,7 @@ public final class Signlink implements Runnable {
 							}
 						}
 
-						System.out.println("[CACHE] + " + rel);
+						addConsoleMessage("[CACHE] + " + rel);
 					}
 
 					processedCount++;
@@ -277,7 +278,7 @@ public final class Signlink implements Runnable {
 					cacheMisses++;
 				}
 
-				System.out.println("[COPIED-CACHE] Was missing " + dest.getFileName());
+				addConsoleMessage("[COPIED-CACHE] Was missing " + dest.getFileName());
 				totalFilesProcessed++;
 
 			} catch (IOException ex) {
@@ -374,7 +375,7 @@ public final class Signlink implements Runnable {
 	}
 
 	private static void performEmergencyCacheCleanup() {
-		System.out.println("Signlink: Emergency cache cleanup at " + getCurrentMemoryUsage() + "KB");
+		addConsoleMessage("Signlink: Emergency cache cleanup at " + getCurrentMemoryUsage() + "KB");
 
 		// Clear file cache
 		fileCache.clear();
@@ -383,7 +384,7 @@ public final class Signlink implements Runnable {
 		// Force garbage collection
 		System.gc();
 
-		System.out.println("Signlink: Memory after cleanup: " + getCurrentMemoryUsage() + "KB");
+		addConsoleMessage("Signlink: Memory after cleanup: " + getCurrentMemoryUsage() + "KB");
 	}
 
 	private static long getCurrentMemoryUsage() {
@@ -435,7 +436,7 @@ public final class Signlink implements Runnable {
 	 */
 	public void run() {
 		active = true;
-		System.out.println("[CACHE] (signlink) active – opening cache files");
+		addConsoleMessage("[CACHE] (signlink) active – opening cache files");
 		uid = getuid(findCacheDir());
 
 		try {
@@ -577,7 +578,7 @@ public final class Signlink implements Runnable {
 	}
 
 	public static void reporterror(String s) {
-		System.out.println("Error: " + s);
+		addConsoleMessage("Error: " + s);
 	}
 
 	// NEW: Public API for cache statistics and management
@@ -594,12 +595,12 @@ public final class Signlink implements Runnable {
 
 	public static void forceCleanup() {
 		performEmergencyCacheCleanup();
-		System.out.println("Signlink: Forced cleanup completed");
+		addConsoleMessage("Signlink: Forced cleanup completed");
 	}
 
 	public static void clearCacheDir() {
 		cachedCacheDir = null;
-		System.out.println("Signlink: Cache directory cleared, will be recalculated on next access");
+		addConsoleMessage("Signlink: Cache directory cleared, will be recalculated on next access");
 	}
 
 	/**

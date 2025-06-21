@@ -1,6 +1,7 @@
 package com.bestbudz.ui;
 
-import com.bestbudz.data.ItemDef;
+import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
+import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.dock.util.DockBlocker;
 import com.bestbudz.engine.core.Client;
 import static com.bestbudz.ui.handling.RightClickMenu.buildStonersListMenu;
@@ -194,7 +195,7 @@ public class BuildInterface extends Client
 									itemId = bankInvTemp[k2] - 1;
 								}
 								if (itemId >= 0) {
-									ItemDef itemDef = ItemDef.getItemDefinition(itemId);
+									ItemDef itemDef = getItemDefinition(itemId);
 									if (itemDef != null) {
 										if (itemSelected == 1 && child.isBoxInterface) {
 											if (child.id != anInt1284 || k2 != anInt1283) {

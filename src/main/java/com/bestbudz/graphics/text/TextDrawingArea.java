@@ -1,363 +1,464 @@
 package com.bestbudz.graphics.text;
 
 import com.bestbudz.engine.config.ColorConfig;
+import static com.bestbudz.engine.core.Client.newBoldFont;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
-import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
-import java.util.Random;
+import java.awt.*;
 
 public final class TextDrawingArea extends DrawingArea {
 
-  public byte[][] aByteArrayArray1491;
-  public int[] anIntArray1492;
-  public int[] anIntArray1493;
-  public int[] anIntArray1494;
-  public int[] anIntArray1495;
-  public int[] anIntArray1496;
-  public int anInt1497;
-  public Random aRandom1498;
-  public boolean aBoolean1499;
+	private Font modernFont;
 
-  public TextDrawingArea(boolean flag, String s, StreamLoader streamLoader) {
-    try {
-      int length = (s.equals("hit_full") || s.equals("critical_full")) ? 58 : 256;
-      aByteArrayArray1491 = new byte[length][];
-      anIntArray1492 = new int[length];
-      anIntArray1493 = new int[length];
-      anIntArray1494 = new int[length];
-      anIntArray1495 = new int[length];
-      anIntArray1496 = new int[length];
-      aRandom1498 = new Random();
-      aBoolean1499 = false;
-      Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
-      Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
-      stream_1.currentOffset = stream.readUnsignedWord() + 4;
-      int k = stream_1.readUnsignedByte();
-      if (k > 0) stream_1.currentOffset += 3 * (k - 1);
-      for (int l = 0; l < length; l++) {
-        anIntArray1494[l] = stream_1.readUnsignedByte();
-        anIntArray1495[l] = stream_1.readUnsignedByte();
-        int i1 = anIntArray1492[l] = stream_1.readUnsignedWord();
-        int j1 = anIntArray1493[l] = stream_1.readUnsignedWord();
-        int k1 = stream_1.readUnsignedByte();
-        int l1 = i1 * j1;
-        aByteArrayArray1491[l] = new byte[l1];
-        if (k1 == 0) {
-          for (int i2 = 0; i2 < l1; i2++) aByteArrayArray1491[l][i2] = stream.readSignedByte();
-
-        } else if (k1 == 1) {
-          for (int j2 = 0; j2 < i1; j2++) {
-            for (int l2 = 0; l2 < j1; l2++)
-              aByteArrayArray1491[l][j2 + l2 * i1] = stream.readSignedByte();
-          }
-        }
-        if (j1 > anInt1497 && l < 128) anInt1497 = j1;
-        anIntArray1494[l] = 1;
-        anIntArray1496[l] = i1 + 2;
-        int k2 = 0;
-        for (int i3 = j1 / 7; i3 < j1; i3++) k2 += aByteArrayArray1491[l][i3 * i1];
-        if (k2 <= j1 / 7) {
-          anIntArray1496[l]--;
-          anIntArray1494[l] = 0;
-        }
-        k2 = 0;
-        for (int j3 = j1 / 7; j3 < j1; j3++) k2 += aByteArrayArray1491[l][(i1 - 1) + j3 * i1];
-        if (k2 <= j1 / 7) anIntArray1496[l]--;
-      }
-      if (flag) {
-        anIntArray1496[32] = anIntArray1496[73];
-      } else {
-        anIntArray1496[32] = anIntArray1496[105];
-      }
-    } catch (Exception _ex)
-	{
-		throw new RuntimeException(_ex);
+	public TextDrawingArea() {
+		// Modern constructor
 	}
-  }
 
-  public void drawText(int i, String s, int k, int l) {
-    method385(i, s, k, l - method384(s) / 2);
-  }
+	public void initializeModernFont(String fontName, int style, int size) {
+		this.modernFont = new Font(fontName, style, size);
 
-  public void method382(int i, int j, String s, int l, boolean flag) {
-    method389(flag, j - getTextWidth(s) / 2, i, s, l);
-  }
+		// Initialize text rendering in DrawingArea if needed
+		DrawingArea.initTextRendering();
 
-  public int getTextWidth(String s) {
-    if (s == null) return 0;
-    int j = 0;
-    for (int k = 0; k < s.length(); k++)
-      if (s.charAt(k) == '@' && k + 4 < s.length() && s.charAt(k + 4) == '@') k += 4;
-      else j += anIntArray1496[s.charAt(k)];
-    return j;
-  }
+		System.out.println("✅ TextDrawingArea initialized: " + fontName + " " + size);
+	}
 
-  public int method384(String s) {
-    if (s == null) return 0;
-    int j = 0;
-    for (int k = 0; k < s.length(); k++) j += anIntArray1496[s.charAt(k)];
-    return j;
-  }
+	// Legacy constructor - shows error for old usage
+	public TextDrawingArea(boolean flag, String s, StreamLoader streamLoader) {
+		System.err.println("❌ ERROR: Legacy TextDrawingArea constructor called for: " + s);
+		throw new RuntimeException("Legacy font loading not supported - use FontSystem.createModernTextDrawingArea()");
+	}
 
-  public void method385(int i, String s, int j, int l) {
-    if (s == null) return;
-    j -= anInt1497;
-    for (int i1 = 0; i1 < s.length(); i1++) {
-      char c = s.charAt(i1);
-      if (c != ' ')
-        method392(
-            aByteArrayArray1491[c],
-            l + anIntArray1494[c],
-            j + anIntArray1495[c],
-            anIntArray1492[c],
-            anIntArray1493[c],
-            i);
-      l += anIntArray1496[c];
-    }
-  }
+	/**
+	 * Get text width using modern FontMetrics
+	 */
+	public int getTextWidth(String text) {
+		if (text == null || text.isEmpty()) return 0;
 
-  public void method386(int i, String s, int j, int k, int l) {
-    if (s == null) return;
-    j -= method384(s) / 2;
-    l -= anInt1497;
-    for (int i1 = 0; i1 < s.length(); i1++) {
-      char c = s.charAt(i1);
-      if (c != ' ')
-        method392(
-            aByteArrayArray1491[c],
-            j + anIntArray1494[c],
-            l + anIntArray1495[c] + (int) (Math.sin((double) i1 / 2D + (double) k / 5D) * 5D),
-            anIntArray1492[c],
-            anIntArray1493[c],
-            i);
-      j += anIntArray1496[c];
-    }
-  }
-
-  public void method387(int i, String s, int j, int k, int l) {
-    if (s == null) return;
-    i -= method384(s) / 2;
-    k -= anInt1497;
-    for (int i1 = 0; i1 < s.length(); i1++) {
-      char c = s.charAt(i1);
-      if (c != ' ')
-        method392(
-            aByteArrayArray1491[c],
-            i + anIntArray1494[c] + (int) (Math.sin((double) i1 / 5D + (double) j / 5D) * 5D),
-            k + anIntArray1495[c] + (int) (Math.sin((double) i1 / 3D + (double) j / 5D) * 5D),
-            anIntArray1492[c],
-            anIntArray1493[c],
-            l);
-      i += anIntArray1496[c];
-    }
-  }
-
-  public void method388(int i, String s, int j, int k, int l, int i1) {
-    if (s == null) return;
-    double d = 7D - (double) i / 8D;
-    if (d < 0.0D) d = 0.0D;
-    l -= method384(s) / 2;
-    k -= anInt1497;
-    for (int k1 = 0; k1 < s.length(); k1++) {
-      char c = s.charAt(k1);
-      if (c != ' ')
-        method392(
-            aByteArrayArray1491[c],
-            l + anIntArray1494[c],
-            k + anIntArray1495[c] + (int) (Math.sin((double) k1 / 1.5D + (double) j) * d),
-            anIntArray1492[c],
-            anIntArray1493[c],
-            i1);
-      l += anIntArray1496[c];
-    }
-  }
-
-  public void method389(boolean flag1, int i, int j, String s, int k) {
-    aBoolean1499 = false;
-    int l = i;
-    if (s == null) return;
-    k -= anInt1497;
-    for (int i1 = 0; i1 < s.length(); i1++)
-      if (s.charAt(i1) == '@' && i1 + 4 < s.length() && s.charAt(i1 + 4) == '@') {
-        int j1 = getColorByName(s.substring(i1 + 1, i1 + 4));
-        if (j1 != -1) j = j1;
-        i1 += 4;
-      } else {
-        char c = s.charAt(i1);
-        if (c != ' ') {
-          if (flag1)
-            method392(
-                aByteArrayArray1491[c],
-                i + anIntArray1494[c] + 1,
-                k + anIntArray1495[c] + 1,
-                anIntArray1492[c],
-                anIntArray1493[c],
-                0);
-          method392(
-              aByteArrayArray1491[c],
-              i + anIntArray1494[c],
-              k + anIntArray1495[c],
-              anIntArray1492[c],
-              anIntArray1493[c],
-              j);
-        }
-        i += anIntArray1496[c];
-      }
-    if (aBoolean1499)
-      DrawingArea.method339(
-          k + (int) ((double) anInt1497 * 0.69999999999999996D), 0x800000, i - l, l);
-  }
-
-	private int getColorByName(String s) {
-		switch (s) {
-			case "mbl":
-				return ColorConfig.COLOR_LAVENDER_PINK;
-			case "mye":
-				return ColorConfig.CHAT_MINT_AQUA;
-			case "mre":
-				return ColorConfig.CHAT_LIGHT_MAGENTA;
-			case "369":
-				return ColorConfig.COLOR_LILAC;
-			case "mon":
-				return ColorConfig.COLOR_PEACH_ORANGE;
-			case "gry":
-				return ColorConfig.COLOR_LIME_YELLOW;
-			case "red":
-				return ColorConfig.CHAT_SOFT_PINK;
-			case "gre":
-				return ColorConfig.CHAT_BABY_BLUE;
-			case "blu":
-				return ColorConfig.COLOR_LIME_GREEN;
-			case "yel":
-				return ColorConfig.COLOR_PASTEL_VIOLET;
-			case "cya":
-				return ColorConfig.COLOR_SPRING_GREEN;
-			case "mag":
-				return ColorConfig.COLOR_BRIGHT_YELLOW;
-			case "whi":
-				return ColorConfig.COLOR_FROST_TEAL;
-			case "bla":
-				return ColorConfig.COLOR_LIGHT_AMBER;
-			case "lre":
-				return ColorConfig.COLOR_DUSTY_PERIWINKLE;
-			case "dre":
-				return ColorConfig.COLOR_SUNFLOWER_YELLOW;
-			case "dbl":
-				return ColorConfig.COLOR_MINTY_GREEN;
-			case "or1":
-				return ColorConfig.COLOR_CYAN_TURQUOISE;
-			case "or2":
-				return ColorConfig.COLOR_LAVENDER;
-			case "or3":
-				return ColorConfig.COLOR_ROSE_PINK;
-			case "gr1":
-				return ColorConfig.COLOR_SOFT_PEACH;
-			case "gr2":
-				return ColorConfig.COLOR_CORAL_ORANGE;
-			case "gr3":
-				return ColorConfig.COLOR_CREAM_ROSE;
-			case "str":
-				aBoolean1499 = true;
-				break;
+		if (modernFont == null) {
+			System.err.println("❌ ERROR: modernFont is null - font not properly initialized");
+			return text.length() * 8; // Emergency fallback
 		}
-		if (s.equals("end")) aBoolean1499 = false;
-		return -1;
+
+		// Remove color codes for accurate measurement
+		String cleanText = removeColorCodes(text);
+		return DrawingArea.getTextWidth(cleanText, modernFont);
+	}
+
+	public int method384(String text) {
+		return getTextWidth(text);
+	}
+
+	/**
+	 * Main text drawing method - matches original TextController.drawText(color, text, y, x) parameter order
+	 */
+	public void drawText(int color, String text, int y, int x) {
+		if (text == null || text.isEmpty()) return;
+
+		if (modernFont == null) {
+			System.err.println("❌ ERROR: modernFont is null in drawText()");
+			return;
+		}
+
+		// CRITICAL: The original parameter order is (color, text, y, x) not (color, text, x, y)
+		// Also need to center the text horizontally using the stored half-width
+		String cleanText = removeColorCodes(text);
+		int textWidth = DrawingArea.getTextWidth(cleanText, modernFont);
+		int centeredX = x - (textWidth / 2); // Center horizontally
+
+		drawColorCodedText(text, centeredX, y, color, true);
+	}
+
+	/**
+	 * Draw text with color code processing
+	 */
+	private void drawColorCodedText(String text, int x, int y, int defaultColor, boolean shadow) {
+		int currentColor = defaultColor;
+		int currentX = x;
+
+		for (int i = 0; i < text.length(); i++) {
+			// Handle @color@ codes
+			if (text.charAt(i) == '@' && i + 4 < text.length() && text.charAt(i + 4) == '@') {
+				String colorCode = text.substring(i + 1, i + 4);
+				int newColor = getColorByName(colorCode);
+				if (newColor != -1) {
+					currentColor = newColor;
+				}
+				i += 4; // Skip past @color@
+				continue;
+			}
+
+			// Handle <col=...> codes
+			if (text.charAt(i) == '<' && text.substring(i).startsWith("<col=")) {
+				int endTag = text.indexOf('>', i);
+				if (endTag > i) {
+					try {
+						String colorStr = text.substring(i + 5, endTag); // Extract color value
+						currentColor = colorStr.length() < 6 ?
+							Color.decode("#" + colorStr).getRGB() :
+							Integer.parseInt(colorStr, 16);
+					} catch (Exception ignored) {}
+					i = endTag; // Skip to end of tag
+					continue;
+				}
+			}
+
+			// Handle </col> codes
+			if (text.charAt(i) == '<' && text.substring(i).startsWith("</col>")) {
+				currentColor = defaultColor;
+				i += 5; // Skip past </col>
+				continue;
+			}
+
+			// Draw the character
+			char ch = text.charAt(i);
+			if (ch != ' ') {
+				if (shadow) {
+					DrawingArea.drawText(String.valueOf(ch), currentX + 1, y + 1, 0, modernFont);
+				}
+				DrawingArea.drawText(String.valueOf(ch), currentX, y, currentColor, modernFont);
+			}
+
+			// Advance position
+			currentX += DrawingArea.getTextWidth(String.valueOf(ch), modernFont);
+		}
+	}
+
+	/**
+	 * Get color by name for @color@ codes
+	 */
+
+	/**
+	 * Draw text with font height adjustment
+	 */
+	public void method385(int color, String text, int x, int y) {
+		if (text == null || text.isEmpty()) return;
+
+		if (modernFont == null) {
+			System.err.println("❌ ERROR: modernFont is null in method385()");
+			return;
+		}
+
+		int fontHeight = DrawingArea.getTextHeight(modernFont);
+		int adjustedY = y - fontHeight;
+
+		// Draw with shadow
+		DrawingArea.drawText(text, x + 1, adjustedY + 1, 0, modernFont);
+		DrawingArea.drawText(text, x, adjustedY, color, modernFont);
+	}
+
+	/**
+	 * Wave effect text
+	 */
+	public void method386(int color, String text, int x, int y, int wave) {
+		if (text == null || text.isEmpty()) return;
+
+		if (modernFont == null) {
+			System.err.println("❌ ERROR: modernFont is null in method386()");
+			return;
+		}
+
+		int startX = x - getTextWidth(text) / 2;
+		int fontHeight = DrawingArea.getTextHeight(modernFont);
+		int baseY = y - fontHeight;
+
+		for (int i = 0; i < text.length(); i++) {
+			char ch = text.charAt(i);
+			if (ch != ' ') {
+				int charX = startX;
+				int charY = baseY + (int) (Math.sin((double) i / 2D + (double) wave / 5D) * 5D);
+
+				// Draw char with shadow
+				DrawingArea.drawText(String.valueOf(ch), charX + 1, charY + 1, 0, modernFont);
+				DrawingArea.drawText(String.valueOf(ch), charX, charY, color, modernFont);
+			}
+
+			// Advance by character width
+			startX += DrawingArea.getTextWidth(String.valueOf(ch), modernFont);
+		}
+	}
+
+	/**
+	 * Shake effect text
+	 */
+	public void method387(int x, String text, int waveOffset, int y, int color) {
+		if (text == null || text.isEmpty()) return;
+
+		if (modernFont == null) {
+			System.err.println("❌ ERROR: modernFont is null in method387()");
+			return;
+		}
+
+		int startX = x - getTextWidth(text) / 2;
+		int fontHeight = DrawingArea.getTextHeight(modernFont);
+		int baseY = y - fontHeight;
+
+		for (int i = 0; i < text.length(); i++) {
+			char ch = text.charAt(i);
+			if (ch != ' ') {
+				int charX = startX + (int) (Math.sin((double) i / 5D + (double) waveOffset / 5D) * 5D);
+				int charY = baseY + (int) (Math.sin((double) i / 3D + (double) waveOffset / 5D) * 5D);
+
+				// Draw char with shadow
+				DrawingArea.drawText(String.valueOf(ch), charX + 1, charY + 1, 0, modernFont);
+				DrawingArea.drawText(String.valueOf(ch), charX, charY, color, modernFont);
+			}
+
+			// Advance by character width
+			startX += DrawingArea.getTextWidth(String.valueOf(ch), modernFont);
+		}
+	}
+
+	/**
+	 * Fade effect text
+	 */
+	public void method388(int waveAmount, String text, int waveOffset, int y, int x, int color) {
+		if (text == null || text.isEmpty()) return;
+
+		if (modernFont == null) {
+			System.err.println("❌ ERROR: modernFont is null in method388()");
+			return;
+		}
+
+		int startX = x - getTextWidth(text) / 2;
+		int fontHeight = DrawingArea.getTextHeight(modernFont);
+		int baseY = y - fontHeight;
+
+		double decay = 7D - (double) waveAmount / 8D;
+		if (decay < 0.0D) decay = 0.0D;
+
+		for (int i = 0; i < text.length(); i++) {
+			char ch = text.charAt(i);
+			if (ch != ' ') {
+				int charX = startX;
+				int charY = baseY + (int) (Math.sin((double) i / 1.5D + (double) waveOffset) * decay);
+
+				// Draw char with shadow
+				DrawingArea.drawText(String.valueOf(ch), charX + 1, charY + 1, 0, modernFont);
+				DrawingArea.drawText(String.valueOf(ch), charX, charY, color, modernFont);
+			}
+
+			// Advance by character width
+			startX += DrawingArea.getTextWidth(String.valueOf(ch), modernFont);
+		}
+	}
+
+	/**
+	 * Remove color codes from text for width calculation
+	 */
+	private String removeColorCodes(String text) {
+		if (text == null) return null;
+
+		StringBuilder result = new StringBuilder();
+		for (int i = 0; i < text.length(); i++) {
+			if (text.charAt(i) == '@' && i + 4 < text.length() && text.charAt(i + 4) == '@') {
+				i += 4; // Skip @color@ codes
+			} else if (text.charAt(i) == '<' && text.indexOf('>', i) > i) {
+				// Skip <col=...> and other markup
+				int endTag = text.indexOf('>', i);
+				if (endTag > i) {
+					i = endTag; // Skip to end of tag
+				}
+			} else {
+				result.append(text.charAt(i));
+			}
+		}
+		return result.toString();
+	}
+
+	public void drawStackText(int color, String text, int y, int x) {
+		if (text == null || text.isEmpty()) return;
+
+		if (modernFont == null) {
+			System.err.println("❌ ERROR: modernFont is null in drawStackText()");
+			return;
+		}
+
+		// ========== EASY ADJUSTMENT PARAMETERS ==========
+		// Modify these values to fine-tune positioning:
+
+		// Text positioning adjustments
+		int textOffsetX = 8;    // Move text left(-) or right(+)
+		int textOffsetY = 0;    // Move text up(-) or down(+)
+
+		// Box positioning adjustments (relative to text)
+		int boxOffsetX = 1;    // Box position relative to text X
+		int boxOffsetY = 7;    // Box position relative to text Y (positive = box below text)
+
+		// Box size adjustments
+		int boxPaddingX = 2;    // Extra width (1px each side = 2 total)
+		int boxPaddingY = -3;    // Extra height (1px each side = 2 total)
+
+		// Background settings
+		int backgroundColor = 0x000000;  // Black (try 0x333333 for gray)
+		int backgroundAlpha = 150;       // Transparency (0-255, 160 = ~63%)
+
+		// ================================================
+
+		// Get text dimensions
+		int textWidth = getTextWidth(text);
+		int textHeight = DrawingArea.getTextHeight(modernFont);
+
+		// Calculate text position with adjustments
+		int alignedX = x - textWidth + textOffsetX;
+		int adjustedY = y + textOffsetY;
+
+		// Ensure text doesn't go off-screen
+		if (alignedX < 0) {
+			alignedX = 0;
+		}
+
+		// Calculate background box position and size
+		int boxX = alignedX + boxOffsetX;
+		int boxY = adjustedY - textHeight + boxOffsetY;
+		int boxWidth = textWidth + boxPaddingX;
+		int boxHeight = textHeight + boxPaddingY;
+
+		// Ensure box doesn't go off-screen
+		if (boxX < 0) {
+			boxWidth += boxX;
+			boxX = 0;
+		}
+
+		// Draw semi-transparent background
+		DrawingArea.fillRectangle(boxX + 20, boxY - 6, boxWidth, boxHeight, backgroundColor, backgroundAlpha);
+
+		// Draw the text
+		DrawingArea.drawText(text, alignedX + 20, adjustedY - 6, color, modernFont);
 	}
 
 
-  private void method392(byte[] abyte0, int i, int j, int k, int l, int i1) {
-    int j1 = i + j * width;
-    int k1 = width - k;
-    int l1 = 0;
-    int i2 = 0;
-    if (j < topY) {
-      int j2 = topY - j;
-      l -= j2;
-      j = topY;
-      i2 += j2 * k;
-      j1 += j2 * width;
-    }
-    if (j + l >= bottomY) l -= ((j + l) - bottomY);
-    if (i < topX) {
-      int k2 = topX - i;
-      k -= k2;
-      i = topX;
-      i2 += k2;
-      j1 += k2;
-      l1 += k2;
-      k1 += k2;
-    }
-    if (i + k >= bottomX) {
-      int l2 = ((i + k) - bottomX);
-      k -= l2;
-      l1 += l2;
-      k1 += l2;
-    }
-    if (!(k <= 0 || l <= 0)) {
-      method393(pixels, abyte0, i1, i2, j1, k, l, k1, l1);
-    }
-  }
+	/**
+	 * Apply wave effect to text
+	 */
+	private void drawWaveText(String text, int x, int y, int color, int cycle) {
+		int currentColor = color;
+		int currentX = x;
 
-  private void method393(
-      int[] ai, byte[] abyte0, int i, int j, int k, int l, int i1, int j1, int k1) {
-    int l1 = -(l >> 2);
-    l = -(l & 3);
-    for (int i2 = -i1; i2 < 0; i2++) {
-      for (int j2 = l1; j2 < 0; j2++) {
-        if (abyte0[j++] != 0) ai[k++] = i;
-        else k++;
-        if (abyte0[j++] != 0) ai[k++] = i;
-        else k++;
-        if (abyte0[j++] != 0) ai[k++] = i;
-        else k++;
-        if (abyte0[j++] != 0) ai[k++] = i;
-        else k++;
-      }
-      for (int k2 = l; k2 < 0; k2++)
-        if (abyte0[j++] != 0) ai[k++] = i;
-        else k++;
+		for (int i = 0; i < text.length(); i++) {
+			// Handle color codes (same as before)
+			if (text.charAt(i) == '@' && i + 4 < text.length() && text.charAt(i + 4) == '@') {
+				String colorCode = text.substring(i + 1, i + 4);
+				int newColor = getColorByName(colorCode);
+				if (newColor != -1) {
+					currentColor = newColor;
+				}
+				i += 4;
+				continue;
+			}
 
-      k += j1;
-      j += k1;
-    }
-  }
+			char ch = text.charAt(i);
+			if (ch != ' ') {
+				// Wave effect: offset Y based on character position and cycle
+				int waveY = y + (int)(Math.sin((cycle + i * 20) * 0.1) * 3);
 
-  private void method395(
-      byte[] abyte0, int i, int j, int[] ai, int l, int i1, int j1, int k1, int l1, int i2) {
-    l1 = ((l1 & 0xff00ff) * i2 & 0xff00ff00) + ((l1 & 0xff00) * i2 & 0xff0000) >> 8;
-    i2 = 256 - i2;
-    for (int j2 = -i; j2 < 0; j2++) {
-      for (int k2 = -i1; k2 < 0; k2++)
-        if (abyte0[l++] != 0) {
-          int l2 = ai[j];
-          ai[j++] =
-              (((l2 & 0xff00ff) * i2 & 0xff00ff00) + ((l2 & 0xff00) * i2 & 0xff0000) >> 8) + l1;
-        } else {
-          j++;
-        }
-      j += k1;
-      l += j1;
-    }
-  }
+				// Draw with shadow
+				DrawingArea.drawText(String.valueOf(ch), currentX + 1, waveY + 1, 0, modernFont);
+				DrawingArea.drawText(String.valueOf(ch), currentX, waveY, currentColor, modernFont);
+			}
 
-  public void drawRightAlignedString(String s, int x, int y, int color) {
-    drawString(s, x - method384(s), y, color);
-  }
+			currentX += DrawingArea.getTextWidth(String.valueOf(ch), modernFont);
+		}
+	}
 
-  public void drawString(String s, int x, int y, int color) {
-    if (s == null) return;
-    y -= height;
-    for (int i1 = 0; i1 < s.length(); i1++) {
-      char c = s.charAt(i1);
-      if (c != ' ')
-        method392(
-            aByteArrayArray1491[c],
-            x + anIntArray1494[c],
-            y + anIntArray1495[c],
-            anIntArray1492[c],
-            anIntArray1493[c],
-            color);
-      x += anIntArray1496[c];
-    }
-  }
+	/**
+	 * Apply alpha to a color
+	 */
+	private int applyAlpha(int color, int alpha) {
+		if (alpha >= 255) return color;
+		if (alpha <= 0) return 0;
+
+		int r = (color >> 16) & 0xFF;
+		int g = (color >> 8) & 0xFF;
+		int b = color & 0xFF;
+
+		// Simple alpha blend with black background
+		r = (r * alpha) / 255;
+		g = (g * alpha) / 255;
+		b = (b * alpha) / 255;
+
+		return (r << 16) | (g << 8) | b;
+	}
+	private int getColorByName(String colorName) {
+		switch (colorName) {
+			case "mbl": return ColorConfig.COLOR_LAVENDER_PINK;
+			case "mye": return ColorConfig.CHAT_MINT_AQUA;
+			case "mre": return ColorConfig.CHAT_LIGHT_MAGENTA;
+			case "369": return ColorConfig.COLOR_LILAC;
+			case "mon": return ColorConfig.COLOR_PEACH_ORANGE;
+			case "gry": return ColorConfig.COLOR_LIME_YELLOW;
+			case "red": return ColorConfig.CHAT_SOFT_PINK;
+			case "gre": return ColorConfig.CHAT_BABY_BLUE;
+			case "blu": return ColorConfig.COLOR_LIME_GREEN;
+			case "yel": return ColorConfig.COLOR_PASTEL_VIOLET;
+			case "cya": return ColorConfig.COLOR_SPRING_GREEN;
+			case "mag": return ColorConfig.COLOR_BRIGHT_YELLOW;
+			case "whi": return ColorConfig.COLOR_FROST_TEAL;
+			case "bla": return ColorConfig.COLOR_LIGHT_AMBER;
+			case "lre": return ColorConfig.COLOR_DUSTY_PERIWINKLE;
+			case "dre": return ColorConfig.COLOR_SUNFLOWER_YELLOW;
+			case "dbl": return ColorConfig.COLOR_MINTY_GREEN;
+			case "or1": return ColorConfig.COLOR_CYAN_TURQUOISE;
+			case "or2": return ColorConfig.COLOR_LAVENDER;
+			case "or3": return ColorConfig.COLOR_ROSE_PINK;
+			case "gr1": return ColorConfig.COLOR_SOFT_PEACH;
+			case "gr2": return ColorConfig.COLOR_CORAL_ORANGE;
+			case "gr3": return ColorConfig.COLOR_CREAM_ROSE;
+			default: return -1;
+		}
+	}
+
+	public void drawRightAlignedString(String s, int x, int y, int color) {
+		drawString(s, x - getTextWidth(s), y, color);
+	}
+
+	/**
+	 * Standard string drawing
+	 */
+	public void drawString(String s, int x, int y, int color) {
+		if (s == null || s.isEmpty()) return;
+
+		if (modernFont == null) {
+			System.err.println("❌ ERROR: modernFont is null in drawString()");
+			return;
+		}
+
+		int fontHeight = DrawingArea.getTextHeight(modernFont);
+		int adjustedY = y - fontHeight;
+
+		// Draw with shadow
+		DrawingArea.drawText(s, x + 1, adjustedY + 1, 0, modernFont);
+		DrawingArea.drawText(s, x, adjustedY, color, modernFont);
+	}
+
+	public void method389(int textShadow, int x, int textColor, String text, int y) {
+		newBoldFont.drawBasicString(text, x, y, textColor, textShadow);
+	}
+
+	public void method382(int textColor, int x, String text, int y, int textShadow) {
+		newBoldFont.drawBasicString(text, x - text.length(), y, textColor, textShadow);
+	}
+
+	// Getter for font access
+	public Font getFont() {
+		return modernFont;
+	}
+
+	/**
+	 * Get font height - replaces anInt1497
+	 */
+	public int getFontHeight() {
+		if (modernFont == null) {
+			System.err.println("❌ ERROR: modernFont is null in getFontHeight()");
+			return 15; // Emergency fallback
+		}
+		return DrawingArea.getTextHeight(modernFont);
+	}
+
+	/**
+	 * Legacy compatibility - returns font height
+	 */
+	public int getAnInt1497() {
+		return getFontHeight();
+	}
 }

@@ -2,7 +2,7 @@ package com.bestbudz.engine.core.login;
 
 import static com.bestbudz.cache.ResetIDKits.resetIdentityKits;
 import com.bestbudz.cache.Signlink;
-import com.bestbudz.data.ItemDef;
+import com.bestbudz.data.items.ItemDef;
 import static com.bestbudz.engine.config.EngineConfig.worldSelected;
 import com.bestbudz.engine.config.NetworkConfig;
 import static com.bestbudz.engine.core.GameState.resetGameState;
@@ -23,7 +23,7 @@ import static com.bestbudz.ui.DialogHandling.sendFrame36;
 import static com.bestbudz.ui.interfaces.Chatbox.splitPrivateChat;
 import com.bestbudz.util.ISAACRandomGen;
 import com.bestbudz.util.NodeList;
-import com.bestbudz.util.TextClass;
+import com.bestbudz.graphics.text.TextClass;
 import com.bestbudz.engine.core.gamerender.ObjectManager;
 import com.bestbudz.world.Varp;
 import java.awt.Graphics2D;

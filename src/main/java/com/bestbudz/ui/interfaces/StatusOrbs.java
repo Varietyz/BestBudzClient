@@ -45,7 +45,7 @@ public class StatusOrbs {
 		if (SettingsConfig.enablePouch) {
 			int setPouchPosX = 62; // Modify
 			int pouchPosX = frameWidth - setPouchPosX;
-			int pouchTextPosX = frameWidth - (setPouchPosX - 43);
+			int pouchTextPosX = frameWidth - (setPouchPosX - 30);
 			int pouchFillPosX = frameWidth - (setPouchPosX - 16);
 			int pouchIconPosX = frameWidth - (setPouchPosX - 8);
 
@@ -69,7 +69,7 @@ public class StatusOrbs {
 			DrawingArea.fillRectangle(fillX, fillY - 2,45 , 16, 0x020202, 185 );
 
 			long coins = Long.parseLong(RSInterface.interfaceCache[8135].disabledMessage);
-			smallText.method382(getMoneyOrbColor(coins), coinTextX, formatBestBucks(coins), coinTextY, true);
+			smallText.method382(getMoneyOrbColor(coins), coinTextX, formatBestBucks(coins), coinTextY, 1);
 
 			cacheSprite[428].drawSprite(coinIconX, coinIconY);
 		}

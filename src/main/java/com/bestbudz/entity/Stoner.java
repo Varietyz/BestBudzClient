@@ -1,15 +1,16 @@
 package com.bestbudz.entity;
 
 import com.bestbudz.cache.IdentityKit;
+import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.data.ItemDef;
+import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.SpotAnim;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
-import com.bestbudz.util.TextClass;
+import com.bestbudz.graphics.text.TextClass;
 
 public final class Stoner extends Entity
 {
@@ -141,7 +142,7 @@ public final class Stoner extends Entity
 			}
 			if (equipment[j] >= 512 && equipment[j] - 512 < ItemDef.totalItems)
 			{
-				int l1 = ItemDef.getItemDefinition(equipment[j] - 512).team;
+				int l1 = getItemDefinition(equipment[j] - 512).team;
 				if (l1 != 0)
 					team = l1;
 			}
@@ -279,7 +280,7 @@ public final class Stoner extends Entity
 					k2 = j1;
 				if (k2 >= 256 && k2 < 512 && IdentityKit.cache[k2 - 256].method537())
 					flag = true;
-				if (k2 >= 512 && !ItemDef.getItemDefinition(k2 - 512).method195(gender))
+				if (k2 >= 512 && !getItemDefinition(k2 - 512).method195(gender))
 					flag = true;
 			}
 
@@ -306,7 +307,7 @@ public final class Stoner extends Entity
 						modelParts[j2++] = model_3;
 				}
 				if (i3 >= 512) {
-					final Model model_4 = ItemDef.getItemDefinition(i3 - 512).getInventoryModel(gender);
+					final Model model_4 = getItemDefinition(i3 - 512).getInventoryModel(gender);
 					if (model_4 != null)
 						modelParts[j2++] = model_4;
 				}
@@ -358,7 +359,7 @@ public final class Stoner extends Entity
 			int j = equipment[i];
 			if (j >= 256 && j < 512 && !IdentityKit.cache[j - 256].method539())
 				flag = true;
-			if (j >= 512 && !ItemDef.getItemDefinition(j - 512).method192(gender))
+			if (j >= 512 && !getItemDefinition(j - 512).method192(gender))
 				flag = true;
 		}
 
@@ -373,7 +374,7 @@ public final class Stoner extends Entity
 				aclass30_sub2_sub4_sub6s[k++] = model_1;
 			}
 			if (i1 >= 512) {
-				Model model_2 = ItemDef.getItemDefinition(i1 - 512).getWornModel(gender);
+				Model model_2 = getItemDefinition(i1 - 512).getWornModel(gender);
 				if (model_2 != null)
 					aclass30_sub2_sub4_sub6s[k++] = model_2;
 			}

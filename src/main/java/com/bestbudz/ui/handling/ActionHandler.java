@@ -1,6 +1,7 @@
 package com.bestbudz.ui.handling;
 
-import com.bestbudz.data.ItemDef;
+import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
+import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.engine.core.Client;
 import static com.bestbudz.ui.handling.input.MouseActions.componentIsClicked;
 import com.bestbudz.ui.handling.input.MouseState;
@@ -21,7 +22,7 @@ import static com.bestbudz.ui.interfaces.Chatbox.publicChatMode;
 import static com.bestbudz.ui.interfaces.Chatbox.pushMessage;
 import com.bestbudz.ui.interfaces.StatusOrbs;
 import static com.bestbudz.ui.interfaces.StatusOrbs.counterOn;
-import com.bestbudz.util.TextClass;
+import com.bestbudz.graphics.text.TextClass;
 import com.bestbudz.world.ObjectDef;
 import static com.bestbudz.world.WalkTo.doWalkTo;
 import java.text.DecimalFormat;
@@ -255,7 +256,7 @@ public class ActionHandler extends Client
 							int selected = k - 61101;
 							for (int ii = 0, slot = -1; ii < ItemDef.totalItems && slot < 100; ii++)
 							{
-								ItemDef def = ItemDef.getItemDefinition(ii);
+								ItemDef def = getItemDefinition(ii);
 
 								if (def.name == null || def.certTemplateID == ii - 1 || def.certID == ii - 1
 									|| RSInterface.interfaceCache[61254].disabledMessage.length() == 0)
@@ -1188,7 +1189,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 1125)
 		{
-			ItemDef itemDef = ItemDef.getItemDefinition(i1);
+			ItemDef itemDef = getItemDefinition(i1);
 			RSInterface class9_4 = RSInterface.interfaceCache[k];
 			String s5;
 			if (class9_4 == null)
@@ -1226,7 +1227,7 @@ public class ActionHandler extends Client
 			anInt1283 = j;
 			anInt1284 = k;
 			anInt1285 = i1;
-			selectedItemName = ItemDef.getItemDefinition(i1).name;
+			selectedItemName = getItemDefinition(i1).name;
 			spellSelected = 0;
 			return;
 		}
@@ -1257,7 +1258,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 1448)
 		{
-			ItemDef itemDef_1 = ItemDef.getItemDefinition(i1);
+			ItemDef itemDef_1 = getItemDefinition(i1);
 			String s6;
 			if (itemDef_1.description != null)
 			{

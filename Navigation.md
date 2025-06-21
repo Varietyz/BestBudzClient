@@ -1,86 +1,191 @@
 ```
-├─ 📄 BestBudz.xml
-├─ 📄 BestBudzRSPS.exe
-├─ 📄 build.gradle
-├─ 📄 gradlew
-├─ 📄 gradlew.bat
-├─ 📝 Navigation.md
-├─ 🐍 save_structure.py
-├─ 📄 settings.gradle
+Client Folder Architecture
 └─ 📂 src
     ├─ 📂 libs
-    │   └─ 📄 substance-5.3.jar
     └─ 📂 main
         ├─ 📂 java
         │   └─ 📂 com
         │       └─ 📂 bestbudz
         │           ├─ 📂 cache
-        │           │   └─ 📄 Signlink.java
-        │           ├─ 📂 client
-        │           │   ├─ 📂 frame
-        │           │   │   └─ 📄 UIDockFrame.java
-        │           │   ├─ 📂 ui
-        │           │   │   ├─ 📂 manager
-        │           │   │   │   └─ 📄 UIPanelManager.java
-        │           │   │   └─ 📂 panel
-        │           │   │       ├─ 📄 AchievementsPanel.java
-        │           │   │       ├─ 📄 InventoryPanel.java
-        │           │   │       ├─ 📄 QuestTabPanel.java
-        │           │   │       ├─ 📄 SettingsPanel.java
-        │           │   │       └─ 📄 UIPanel.java
-        │           │   └─ 📂 util
-        │           │       └─ 📄 DockSync.java
-        │           ├─ 📂 config
-        │           │   ├─ 📄 ClientConstants.java
-        │           │   ├─ 📄 ColorConstants.java
-        │           │   ├─ 📄 Configuration.java
-        │           │   └─ 📄 SettingHandler.java
+        │           │   ├─ 📄 IdentityKit.java
+        │           │   ├─ 📄 IdentityResolver.java
+        │           │   ├─ 📄 ResetIDKits.java
+        │           │   ├─ 📄 Signlink.java
+        │           │   └─ 📄 SpriteDumper.java
         │           ├─ 📂 data
         │           │   ├─ 📄 AccountData.java
         │           │   ├─ 📄 AccountManager.java
         │           │   ├─ 📄 Item.java
         │           │   ├─ 📄 ItemDef.java
-        │           │   └─ 📄 Skills.java
+        │           │   ├─ 📄 Skills.java
+        │           │   └─ 📄 XP.java
+        │           ├─ 📂 dock
+        │           │   ├─ 📂 config
+        │           │   │   └─ 📄 RegisteredPanels.java
+        │           │   ├─ 📂 frame
+        │           │   │   ├─ 📄 ToggleBarHelper.java
+        │           │   │   ├─ 📄 TogglePreview.java
+        │           │   │   ├─ 📄 UIDockFrame.java
+        │           │   │   └─ 📄 UIDockHelper.java
+        │           │   ├─ 📂 net
+        │           │   │   └─ 📄 DockNetworkUtil.java
+        │           │   ├─ 📂 ui
+        │           │   │   ├─ 📂 manager
+        │           │   │   │   ├─ 📄 UIDockLayoutState.java
+        │           │   │   │   ├─ 📄 UIModalManager.java
+        │           │   │   │   └─ 📄 UIPanelManager.java
+        │           │   │   ├─ 📂 modal
+        │           │   │   │   ├─ 📂 dialogue
+        │           │   │   │   │   ├─ 📄 DialogueCore.java
+        │           │   │   │   │   ├─ 📄 DialogueExtractor.java
+        │           │   │   │   │   └─ 📄 DialogueModal.java
+        │           │   │   │   └─ 📂 style
+        │           │   │   │       └─ 📄 ModalStyle.java
+        │           │   │   └─ 📂 panel
+        │           │   │       ├─ 📂 bank
+        │           │   │       │   ├─ 📄 BankItemGrid.java
+        │           │   │       │   ├─ 📄 BankItemPanel.java
+        │           │   │       │   ├─ 📄 BankPanel.java
+        │           │   │       │   └─ 📄 ItemDefCache.java
+        │           │   │       ├─ 📂 character
+        │           │   │       │   ├─ 📄 AppearanceConfig.java
+        │           │   │       │   ├─ 📄 AppearancePanel.java
+        │           │   │       │   ├─ 📄 AppearanceStorage.java
+        │           │   │       │   ├─ 📄 AppearanceStyle.java
+        │           │   │       │   └─ 📄 AppearanceUtils.java
+        │           │   │       ├─ 📂 client
+        │           │   │       │   ├─ 📄 BubbleBudzPanel.java
+        │           │   │       │   ├─ 📄 SettingsPanel.java
+        │           │   │       │   └─ 📄 SettingsPanelConfig.java
+        │           │   │       ├─ 📂 debug
+        │           │   │       │   ├─ 📂 components
+        │           │   │       │   │   ├─ 📄 DataRow.java
+        │           │   │       │   │   └─ 📄 DiagnosticSection.java
+        │           │   │       │   ├─ 📄 DiagnosticPanel.java
+        │           │   │       │   ├─ 📂 diagnostics
+        │           │   │       │   │   ├─ 📄 BaseDiagnostic.java
+        │           │   │       │   │   ├─ 📄 CacheDiagnostic.java
+        │           │   │       │   │   ├─ 📄 CameraDiagnostic.java
+        │           │   │       │   │   ├─ 📄 DiagnosticManager.java
+        │           │   │       │   │   ├─ 📄 EntityDiagnostic.java
+        │           │   │       │   │   ├─ 📄 GPUDiagnostic.java
+        │           │   │       │   │   ├─ 📄 PerformanceDiagnostic.java
+        │           │   │       │   │   ├─ 📄 SystemDiagnostic.java
+        │           │   │       │   │   └─ 📄 WorldDiagnostic.java
+        │           │   │       │   └─ 📂 style
+        │           │   │       │       ├─ 📄 DiagnosticStyle.java
+        │           │   │       │       └─ 📄 ResponsiveLayout.java
+        │           │   │       ├─ 📄 DockPanelMapping.java
+        │           │   │       ├─ 📂 emote
+        │           │   │       │   └─ 📄 EmotePanel.java
+        │           │   │       ├─ 📂 example
+        │           │   │       │   ├─ 📄 CreationGuide
+        │           │   │       │   ├─ 📄 ExampleConfig.java
+        │           │   │       │   ├─ 📄 ExamplePanel.java
+        │           │   │       │   ├─ 📄 ExampleStyle.java
+        │           │   │       │   └─ 📄 ExampleUtils.java
+        │           │   │       ├─ 📂 game
+        │           │   │       │   ├─ 📄 AchievementsPanel.java
+        │           │   │       │   ├─ 📄 InfoTabPanel.java
+        │           │   │       │   └─ 📄 SkillsPanel.java
+        │           │   │       ├─ 📂 shops
+        │           │   │       │   └─ 📄 ShopPanel.java
+        │           │   │       ├─ 📂 social
+        │           │   │       │   ├─ 📂 chat
+        │           │   │       │   │   ├─ 📄 ChatCore.java
+        │           │   │       │   │   ├─ 📄 ChatInteractionHandler.java
+        │           │   │       │   │   └─ 📄 ChatRenderer.java
+        │           │   │       │   ├─ 📄 ChatPanel.java
+        │           │   │       │   └─ 📄 StonersPanel.java
+        │           │   │       ├─ 📂 staff
+        │           │   │       │   ├─ 📄 StaffCommands.java
+        │           │   │       │   ├─ 📄 StaffConfig.java
+        │           │   │       │   ├─ 📄 StaffPanel.java
+        │           │   │       │   ├─ 📄 StaffStyle.java
+        │           │   │       │   └─ 📄 StaffUtils.java
+        │           │   │       └─ 📂 teleports
+        │           │   │           └─ 📄 TeleportPanel.java
+        │           │   └─ 📂 util
+        │           │       ├─ 📄 ButtonHandler.java
+        │           │       ├─ 📄 DockBlocker.java
+        │           │       ├─ 📄 DockSync.java
+        │           │       ├─ 📄 DockTextUpdatable.java
+        │           │       ├─ 📄 InteractiveButtonUtil.java
+        │           │       ├─ 📄 RainbowHoverUtil.java
+        │           │       ├─ 📄 SpriteUtil.java
+        │           │       └─ 📄 UIPanel.java
         │           ├─ 📂 engine
-        │           │   ├─ 📄 Client.java
-        │           │   ├─ 📄 ClientEngine.java
         │           │   ├─ 📄 ClientLauncher.java
-        │           │   ├─ 📄 GameCanvas.java
-        │           │   ├─ 📄 GameEngine.java
-        │           │   ├─ 📄 GraphicsConfig.java
-        │           │   ├─ 📂 input
-        │           │   │   ├─ 📄 Keyboard.java
-        │           │   │   ├─ 📄 MouseManager.java
-        │           │   │   ├─ 📄 MouseScrollHandler.java
-        │           │   │   └─ 📄 MouseState.java
-        │           │   └─ 📄 LoginRenderer.java
+        │           │   ├─ 📂 config
+        │           │   │   ├─ 📄 ColorConfig.java
+        │           │   │   ├─ 📄 EngineConfig.java
+        │           │   │   ├─ 📄 NetworkConfig.java
+        │           │   │   └─ 📄 SettingsConfig.java
+        │           │   ├─ 📂 core
+        │           │   │   ├─ 📄 Client.java
+        │           │   │   ├─ 📄 ClientEngine.java
+        │           │   │   ├─ 📄 GameCanvas.java
+        │           │   │   ├─ 📄 GameEngine.java
+        │           │   │   ├─ 📄 GameLoader.java
+        │           │   │   ├─ 📂 gamerender
+        │           │   │   │   ├─ 📄 Camera.java
+        │           │   │   │   ├─ 📄 DrawingArea.java
+        │           │   │   │   ├─ 📄 DrawingAreaCPU.bak
+        │           │   │   │   ├─ 📄 ObjectManager.java
+        │           │   │   │   ├─ 📄 Occluder.java
+        │           │   │   │   ├─ 📄 Rasterizer.java
+        │           │   │   │   ├─ 📄 Texture.java
+        │           │   │   │   └─ 📄 WorldController.java
+        │           │   │   ├─ 📄 GameState.java
+        │           │   │   └─ 📂 login
+        │           │   │       ├─ 📄 Login.java
+        │           │   │       ├─ 📄 LoginRenderer.java
+        │           │   │       ├─ 📂 logout
+        │           │   │       │   └─ 📄 Logout.java
+        │           │   │       └─ 📄 WelcomeScreen.java
+        │           │   ├─ 📂 gpu
+        │           │   │   ├─ 📄 GPUContextManager.java
+        │           │   │   ├─ 📄 GPUMonitor.java
+        │           │   │   ├─ 📄 GPURenderingEngine.java
+        │           │   │   ├─ 📄 GPUShaders.java
+        │           │   │   └─ 📄 OpenGLRasterizer.java
+        │           │   └─ 📂 util
+        │           │       └─ 📄 ClientDiagnostics.java
         │           ├─ 📂 entity
         │           │   ├─ 📄 Entity.java
         │           │   ├─ 📄 EntityDef.java
-        │           │   ├─ 📄 IdentityKit.java
-        │           │   ├─ 📄 IdentityResolver.java
+        │           │   ├─ 📄 EntityMovement.java
         │           │   ├─ 📄 Npc.java
-        │           │   └─ 📄 Stoner.java
+        │           │   ├─ 📄 ParseAndUpdateEntities.java
+        │           │   ├─ 📄 Stoner.java
+        │           │   ├─ 📄 UpdateEntities.java
+        │           │   └─ 📄 UpdateStoners.java
         │           ├─ 📂 graphics
         │           │   ├─ 📄 Background.java
         │           │   ├─ 📂 buffer
-        │           │   │   └─ 📄 ImageProducer.java
+        │           │   │   ├─ 📄 ImageProducer.java
+        │           │   │   └─ 📄 ImageProducerCPU.bak
         │           │   ├─ 📄 BufferedImage.java
-        │           │   ├─ 📄 DrawingArea.java
+        │           │   ├─ 📄 ClearExpiredProjectiles.java
         │           │   ├─ 📄 FogHandler.java
         │           │   ├─ 📄 FogUtil.java
+        │           │   ├─ 📄 HeadIcon.java
+        │           │   ├─ 📄 Hitmark.java
+        │           │   ├─ 📄 MovingTextures.java
         │           │   ├─ 📄 rsDrawingArea.java
         │           │   ├─ 📂 sprite
         │           │   │   ├─ 📄 Sprite.java
         │           │   │   └─ 📄 SpriteLoader.java
-        │           │   ├─ 📂 text
-        │           │   │   ├─ 📄 RSFont.java
-        │           │   │   └─ 📄 TextDrawingArea.java
-        │           │   └─ 📄 Texture.java
+        │           │   └─ 📂 text
+        │           │       ├─ 📄 RSFont.java
+        │           │       └─ 📄 TextDrawingArea.java
         │           ├─ 📂 network
         │           │   ├─ 📄 OnDemandData.java
         │           │   ├─ 📄 OnDemandFetcher.java
         │           │   ├─ 📄 OnDemandFetcherParent.java
+        │           │   ├─ 📂 packets
+        │           │   │   ├─ 📄 PacketParser.java
+        │           │   │   └─ 📄 SendFrames.java
         │           │   ├─ 📄 RSSocket.java
         │           │   ├─ 📄 Stream.java
         │           │   └─ 📄 StreamLoader.java
@@ -94,22 +199,34 @@
         │           │   │   ├─ 📄 Class18.java
         │           │   │   ├─ 📄 Class29.java
         │           │   │   └─ 📄 Class40.java
+        │           │   ├─ 📄 GameObject.java
         │           │   ├─ 📂 model
         │           │   │   ├─ 📄 Class33.java
         │           │   │   ├─ 📄 Class43.java
-        │           │   │   ├─ 📄 Class47.java
         │           │   │   └─ 📄 Model.java
         │           │   ├─ 📄 OverlayFloor.java
-        │           │   ├─ 📄 Rasterizer.java
+        │           │   ├─ 📄 Roofing.java
         │           │   ├─ 📄 SequenceFrame.java
-        │           │   └─ 📄 SpotAnim.java
-        │           ├─ 📂 sound
-        │           │   ├─ 📄 Sounds.java
-        │           │   └─ 📂 synthesis
-        │           │       ├─ 📄 Class39.java
-        │           │       └─ 📄 Class6.java
+        │           │   ├─ 📄 SpotAnim.java
+        │           │   └─ 📄 SpotAnim2.java
         │           ├─ 📂 ui
+        │           │   ├─ 📄 BuildInterface.java
+        │           │   ├─ 📄 BuildScreenMenu.java
         │           │   ├─ 📄 Console.java
+        │           │   ├─ 📄 DialogHandling.java
+        │           │   ├─ 📄 DrawInterface.java
+        │           │   ├─ 📂 handling
+        │           │   │   ├─ 📄 ActionHandler.java
+        │           │   │   ├─ 📄 Errors.java
+        │           │   │   ├─ 📂 input
+        │           │   │   │   ├─ 📄 Keyboard.java
+        │           │   │   │   ├─ 📄 MouseActions.java
+        │           │   │   │   ├─ 📄 MouseManager.java
+        │           │   │   │   ├─ 📄 MouseScrollHandler.java
+        │           │   │   │   └─ 📄 MouseState.java
+        │           │   │   ├─ 📄 RightClickMenu.java
+        │           │   │   └─ 📄 SettingHandler.java
+        │           │   ├─ 📄 InterfaceManagement.java
         │           │   ├─ 📂 interfaces
         │           │   │   ├─ 📄 Bank.java
         │           │   │   ├─ 📄 BongBase.java
@@ -121,21 +238,15 @@
         │           │   │   │   └─ 📄 WarriorGuild.java
         │           │   │   ├─ 📄 OptionsTab.java
         │           │   │   ├─ 📄 Prestiging.java
-        │           │   │   ├─ 📄 QuickPrayers.java
         │           │   │   ├─ 📄 Shop.java
         │           │   │   ├─ 📄 Starter.java
         │           │   │   ├─ 📄 StatusOrbs.java
         │           │   │   └─ 📂 teleports
-        │           │   │       ├─ 📄 BossTeleports.java
-        │           │   │       ├─ 📄 MinigameTeleports.java
-        │           │   │       ├─ 📄 OtherTeleports.java
-        │           │   │       ├─ 📄 PvpTeleports.java
-        │           │   │       ├─ 📄 SkillingTeleports.java
-        │           │   │       └─ 📄 TrainingTeleports.java
-        │           │   ├─ 📄 MouseDetection.bak
+        │           │   ├─ 📄 NotificationMessages.java
         │           │   ├─ 📄 PopupMenu.java
         │           │   ├─ 📄 RSInterface.java
         │           │   ├─ 📄 SystemTray.java
+        │           │   ├─ 📄 TabArea.java
         │           │   ├─ 📄 TextInput.java
         │           │   └─ 📄 TrayIcon.java
         │           ├─ 📂 util
@@ -145,6 +256,9 @@
         │           │   │   ├─ 📄 Class21.java
         │           │   │   └─ 📄 Class32.java
         │           │   ├─ 📄 CreateUID.java
+        │           │   ├─ 📂 crypto
+        │           │   │   ├─ 📄 AESUtil.java
+        │           │   │   └─ 📄 LRUCache.java
         │           │   ├─ 📄 Decompressor.java
         │           │   ├─ 📄 FileUtility.java
         │           │   ├─ 📄 FormatHelpers.java
@@ -164,16 +278,18 @@
         │               ├─ 📄 Class4.java
         │               ├─ 📄 Floor.java
         │               ├─ 📄 Ground.java
+        │               ├─ 📄 GroundItem.java
+        │               ├─ 📄 InLocation.java
         │               ├─ 📄 Object1.java
         │               ├─ 📄 Object2.java
         │               ├─ 📄 Object3.java
         │               ├─ 📄 Object4.java
         │               ├─ 📄 Object5.java
         │               ├─ 📄 ObjectDef.java
-        │               ├─ 📄 ObjectManager.java
+        │               ├─ 📄 TerrainHeight.java
         │               ├─ 📄 VarBit.java
         │               ├─ 📄 Varp.java
-        │               └─ 📄 WorldController.java
+        │               └─ 📄 WalkTo.java
         └─ 📂 resources
             ├─ 📂 caches
             │   ├─ 📂 bestbudz
@@ -187,29 +303,19 @@
             │   │   ├─ 📄 settings.dat
             │   │   ├─ 📄 sprites.dat
             │   │   └─ 📄 sprites.idx
-            │   ├─ 📂 fixed
-            │   │   ├─ 📄 .scape-settings.dat
-            │   │   ├─ 📄 accounts.dat
-            │   │   ├─ 📄 cacheVersion.dat
-            │   │   ├─ 📄 settings.dat
-            │   │   ├─ 📄 uid.dat
-            │   │   └─ 📄 venran.dat
-            │   └─ 📂 runelite
-            │       ├─ 📄 main_file_cache.dat
-            │       ├─ 📄 main_file_cache.idx0
-            │       ├─ 📄 main_file_cache.idx1
-            │       ├─ 📄 main_file_cache.idx2
-            │       ├─ 📄 main_file_cache.idx3
-            │       ├─ 📄 main_file_cache.idx4
-            │       ├─ 📄 main_file_cache.idx5
+            │   └─ 📂 fixed
+            │       ├─ 📄 .scape-settings.dat
+            │       ├─ 📄 accounts.dat
+            │       ├─ 📄 appearance.dock
+            │       ├─ 📄 bubblebudz.dat
+            │       ├─ 📄 cacheVersion.dat
             │       ├─ 📄 settings.dat
-            │       ├─ 📄 sprites.dat
-            │       └─ 📄 sprites.idx
+            │       ├─ 📄 uid.dat
+            │       └─ 📄 venran.dat
             ├─ 📂 frame
-            │   └─ 🖼️ logo.png
             ├─ 📂 loading
-            │   ├─ 🖼️ background.png
-            │   ├─ 🖼️ bar.png
-            │   └─ 🖼️ login_background.png
             └─ 📂 sprites
+                ├─ 📂 items
+                └─ 📂 skills
+
 ```

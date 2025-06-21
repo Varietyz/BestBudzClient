@@ -1,6 +1,6 @@
 package com.bestbudz.ui;
 
-import com.bestbudz.data.ItemDef;
+import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.config.ColorConfig;
 import com.bestbudz.engine.core.gamerender.DrawingArea;

@@ -1,6 +1,7 @@
 package com.bestbudz.entity;
 
 import com.bestbudz.engine.core.Client;
+import com.bestbudz.entity.pets.PetVariantManager;
 import com.bestbudz.network.Stream;
 import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.SequenceFrame;
@@ -13,17 +14,46 @@ public final class EntityDef {
 	Client client;
 
   public static EntityDef forID(int i, boolean cached) {
-    if (cached) {
-      for (int j = 0; j < 20; j++) if (cache[j].interfaceType == (long) i) return cache[j];
-    }
-    anInt56 = (anInt56 + 1) % 20;
-    EntityDef entityDef = new EntityDef();
-    if (cached) {
-      cache[anInt56] = entityDef;
-    }
-    stream.currentOffset = streamIndices[i];
-    entityDef.interfaceType = i;
-    entityDef.readValues(stream);
+	  // *** CHECK FOR VARIANTS FIRST - BEFORE ANYTHING ELSE ***
+	  if (PetVariantManager.isVariant(i)) {
+		  if (cached) {
+			  // Check cache for variants too
+			  for (int j = 0; j < 20; j++) {
+				  if (cache[j].interfaceType == (long) i) {
+					  return cache[j];
+				  }
+			  }
+		  }
+
+		  // Create and cache variant
+		  anInt56 = (anInt56 + 1) % 20;
+		  EntityDef entityDef = cached ? cache[anInt56] : new EntityDef();
+		  entityDef.interfaceType = i;
+
+		  PetVariantManager.applyVariant(i, entityDef);
+
+		  return entityDef;
+	  }
+
+	  // Original forID logic for non-variant NPCs
+	  if (cached) {
+		  for (int j = 0; j < 20; j++) {
+			  if (cache[j].interfaceType == (long) i) {
+				  return cache[j];
+			  }
+		  }
+	  }
+
+	  anInt56 = (anInt56 + 1) % 20;
+	  EntityDef entityDef = new EntityDef();
+	  if (cached) {
+		  cache[anInt56] = entityDef;
+	  }
+
+	  // Only read from stream if it's NOT a variant
+	  stream.currentOffset = streamIndices[i];
+	  entityDef.interfaceType = i;
+	  entityDef.readValues(stream);
     switch (i) {
       case 6144:
         entityDef.name = "Portal";
@@ -267,8 +297,8 @@ public final class EntityDef {
         entityDef.anIntArray94 = new int[] {17414, 17415, 17429, 17422};
         entityDef.walkAnim = 4635;
         entityDef.standAnim = 90;
-        entityDef.modelWidth = 60;
-        entityDef.modelHeight = 60;
+        entityDef.modelWidth = 30;
+        entityDef.modelHeight = 30;
         break;
 
       case 4001:
@@ -278,8 +308,8 @@ public final class EntityDef {
         entityDef.anIntArray94 = new int[] {27660, 27665};
         entityDef.walkAnim = 7016;
         entityDef.standAnim = 7017;
-        entityDef.modelWidth = 60;
-        entityDef.modelHeight = 60;
+        entityDef.modelWidth = 30;
+        entityDef.modelHeight = 30;
         break;
 
       case 4002:
@@ -289,8 +319,8 @@ public final class EntityDef {
         entityDef.anIntArray94 = new int[] {11056};
         entityDef.walkAnim = 1684;
         entityDef.standAnim = 1678;
-        entityDef.modelWidth = 80;
-        entityDef.modelHeight = 80;
+        entityDef.modelWidth = 65;
+        entityDef.modelHeight = 65;
         break;
 
       case 4003:
@@ -300,8 +330,8 @@ public final class EntityDef {
         entityDef.anIntArray94 = new int[] {28019, 28021, 28020};
         entityDef.walkAnim = 6977;
         entityDef.standAnim = 6976;
-        entityDef.modelWidth = 60;
-        entityDef.modelHeight = 60;
+        entityDef.modelWidth = 20;
+        entityDef.modelHeight = 20;
         break;
 
       case 4004:
@@ -312,8 +342,8 @@ public final class EntityDef {
         entityDef.combatGrade = 0;
         entityDef.walkAnim = 4070;
         entityDef.standAnim = 6935;
-        entityDef.modelWidth = 60;
-        entityDef.modelHeight = 60;
+        entityDef.modelWidth = 30;
+        entityDef.modelHeight = 30;
         break;
 
       case 4009:
@@ -324,8 +354,8 @@ public final class EntityDef {
         entityDef.combatGrade = 0;
         entityDef.walkAnim = 6965;
         entityDef.standAnim = 6966;
-        entityDef.modelWidth = 60;
-        entityDef.modelHeight = 60;
+        entityDef.modelWidth = 50;
+        entityDef.modelHeight = 50;
         break;
 
       case 4006:
@@ -362,14 +392,14 @@ public final class EntityDef {
         break;
 
       case 4010:
-        entityDef.name = "Tzrek-jad";
+        entityDef.name = "Pet Jad";
         entityDef.actions = new String[5];
         entityDef.actions[0] = "Pick-up";
         entityDef.anIntArray94 = new int[] {9319};
         entityDef.walkAnim = 2651;
         entityDef.standAnim = 2650;
-        entityDef.modelWidth = 60;
-        entityDef.modelHeight = 60;
+        entityDef.modelWidth = 30;
+        entityDef.modelHeight = 30;
         break;
 
       case 963:
@@ -391,8 +421,8 @@ public final class EntityDef {
       case 5547:
         entityDef.actions = new String[5];
         entityDef.actions[0] = "Pick-up";
-		  entityDef.modelWidth = 60;
-		  entityDef.modelHeight = 60;
+		  entityDef.modelWidth = 30;
+		  entityDef.modelHeight = 30;
         break;
 
       case 5559:
@@ -402,18 +432,18 @@ public final class EntityDef {
         entityDef.actions = new String[5];
         entityDef.actions[0] = "Pick-up";
         entityDef.actions[1] = "Metamorphosis";
-		  entityDef.modelWidth = 60;
-		  entityDef.modelHeight = 60;
+		  entityDef.modelWidth = 30;
+		  entityDef.modelHeight = 30;
         break;
 
-      case 2130:
+      case 2130: //Snakelings (Zulrah)
       case 2131:
       case 2132:
         entityDef.actions = new String[5];
         entityDef.actions[0] = "Pick-up";
         entityDef.actions[1] = "Metamorphosis";
-		  entityDef.modelWidth = 60;
-		  entityDef.modelHeight = 60;
+		  entityDef.modelWidth = 90;
+		  entityDef.modelHeight = 90;
         break;
 
       case 518:

@@ -1,6 +1,7 @@
 package com.bestbudz.engine;
 
 import com.bestbudz.cache.Signlink;
+import com.bestbudz.dock.definitions.ItemBonusManager;
 import com.bestbudz.dock.frame.UIDockFrame;
 import com.bestbudz.dock.ui.manager.UIModalManager;
 import com.bestbudz.engine.core.Client;
@@ -72,6 +73,12 @@ public final class ClientLauncher {
 		// Initialize signlink
 		Signlink.storeid = 32;
 		Signlink.startpriv(InetAddress.getLocalHost());
+
+		ItemBonusManager.initialize();
+
+		if (!ItemBonusManager.initialize()) {
+			System.err.println("[ClientLauncher] ⚠️ Failed to load item bonuses, tooltips may be incomplete");
+		}
 
 		// Set engine configuration
 		EngineConfig.MIN_WIDTH = Client.frameWidth;
@@ -411,9 +418,6 @@ public final class ClientLauncher {
 			if (Client.instance != null) {
 				System.out.println("[ClientLauncher] Cleaning up game data...");
 				try {
-					if (UIDockFrame.getInstance() != null) {
-						UIDockFrame.getInstance().saveLayoutState();
-					}
 					SettingHandler.save();
 					Client.instance.cleanUpForQuit();
 					System.out.println("[ClientLauncher] ✅ Game data cleaned up successfully");

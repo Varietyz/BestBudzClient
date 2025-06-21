@@ -44,7 +44,7 @@ public class Prestiging extends RSInterface {
     addHoveredButton(51039, 304, 104, 30, 51040);
     addHoverButton(51041, "", 0, 104, 30, "Advance Sagittarius", 0, 51042, 1);
     addHoveredButton(51042, 305, 104, 30, 51043);
-    addHoverButton(51044, "", 0, 104, 30, "Advance Necromance", 0, 51045, 1);
+    addHoverButton(51044, "", 0, 104, 30, "Advance Resonance", 0, 51045, 1);
     addHoveredButton(51045, 306, 104, 30, 51046);
     addHoverButton(51047, "", 0, 104, 30, "Advance Mage", 0, 51048, 1);
     addHoveredButton(51048, 307, 104, 30, 51049);
@@ -56,7 +56,7 @@ public class Prestiging extends RSInterface {
     addHoveredButton(51057, 310, 104, 30, 51058);
     addHoverButton(51059, "", 0, 104, 30, "Advance THC-hempistry", 0, 51060, 1);
     addHoveredButton(51060, 311, 104, 30, 51061);
-    addHoverButton(51062, "", 0, 104, 30, "Advance Accomplisher", 0, 51063, 1);
+    addHoverButton(51062, "", 0, 104, 30, "Advance Pet Master", 0, 51063, 1);
     addHoveredButton(51063, 312, 104, 30, 51064);
     addHoverButton(51065, "", 0, 104, 30, "Advance Handiness", 0, 51066, 1);
     addHoveredButton(51066, 313, 104, 30, 51067);

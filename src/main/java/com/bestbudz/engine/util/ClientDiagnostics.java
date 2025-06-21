@@ -36,7 +36,7 @@ public class ClientDiagnostics extends Client {
 		// Format the display text for FPS
 		String fpsText = "FPS: " + fps;
 
-		smallText.method389(false, LEFT_MARGIN, fpsColor, fpsText, TOP_MARGIN);
+		newSmallFont.drawBasicString(fpsText, 5, 15, fpsColor, 1);
 	}
 
 	/* --------------------------------------------------------- Utility Methods */

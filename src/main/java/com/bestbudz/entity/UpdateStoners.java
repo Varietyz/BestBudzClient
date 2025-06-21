@@ -4,9 +4,9 @@ import com.bestbudz.cache.Signlink;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.animation.Animation;
-import com.bestbudz.ui.TextInput;
+import com.bestbudz.graphics.text.TextInput;
 import static com.bestbudz.ui.interfaces.Chatbox.pushMessage;
-import com.bestbudz.util.TextClass;
+import com.bestbudz.graphics.text.TextClass;
 
 public class UpdateStoners extends Client
 {

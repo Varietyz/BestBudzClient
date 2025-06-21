@@ -141,46 +141,175 @@ public final class Sprite extends DrawingArea
 	}
 
 	public Sprite(StreamLoader streamLoader, String s, int i) {
-		Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
-		Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
-		stream_1.currentOffset = stream.readUnsignedWord();
-		cropWidth = stream_1.readUnsignedWord();
-		anInt1445 = stream_1.readUnsignedWord();
-		int j = stream_1.readUnsignedByte();
-		int[] ai = new int[j];
-		for (int k = 0; k < j - 1; k++) {
-			ai[k + 1] = stream_1.read3Bytes();
-			if (ai[k + 1] == 0)
-				ai[k + 1] = 1;
-		}
-
-		for (int l = 0; l < i; l++) {
-			stream_1.currentOffset += 2;
-			stream.currentOffset += stream_1.readUnsignedWord() * stream_1.readUnsignedWord();
-			stream_1.currentOffset++;
-		}
-
-		drawOffsetX = stream_1.readUnsignedByte();
-		drawOffsetY = stream_1.readUnsignedByte();
-		myWidth = stream_1.readUnsignedWord();
-		myHeight = stream_1.readUnsignedWord();
-		int i1 = stream_1.readUnsignedByte();
-		int j1 = myWidth * myHeight;
-		myPixels = new int[j1];
-		if (i1 == 0) {
-			for (int k1 = 0; k1 < j1; k1++)
-				myPixels[k1] = ai[stream.readUnsignedByte()];
-			setTransparency(255, 0, 255);
+		// Validate inputs
+		if (streamLoader == null || s == null || s.isEmpty()) {
+			System.err.println("Invalid sprite parameters: " + s);
+			createEmptySprite();
 			return;
 		}
-		if (i1 == 1) {
-			for (int l1 = 0; l1 < myWidth; l1++) {
-				for (int i2 = 0; i2 < myHeight; i2++)
-					myPixels[l1 + i2 * myWidth] = ai[stream.readUnsignedByte()];
+
+		Stream stream = null;
+		Stream stream_1 = null;
+
+		try {
+			stream = new Stream(streamLoader.getDataForName(s + ".dat"));
+			stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
+
+			if (stream == null || stream_1 == null || stream.buffer == null || stream_1.buffer == null) {
+				System.err.println("Failed to load sprite data for: " + s);
+				createEmptySprite();
+				return;
 			}
 
+		} catch (Exception e) {
+			System.err.println("Error loading sprite streams for " + s + ": " + e.getMessage());
+			createEmptySprite();
+			return;
 		}
-		setTransparency(255, 0, 255);
+
+		try {
+			stream_1.currentOffset = stream.readUnsignedWord();
+			cropWidth = stream_1.readUnsignedWord();
+			anInt1445 = stream_1.readUnsignedWord();
+			int j = stream_1.readUnsignedByte();
+
+			// Validate palette size
+			if (j <= 0 || j > 256) {
+				System.err.println("Invalid palette size for sprite " + s + ": " + j);
+				createEmptySprite();
+				return;
+			}
+
+			int[] ai = new int[j];
+			for (int k = 0; k < j - 1; k++) {
+				ai[k + 1] = stream_1.read3Bytes();
+				if (ai[k + 1] == 0)
+					ai[k + 1] = 1;
+			}
+
+			// Skip to the correct sprite index
+			for (int l = 0; l < i; l++) {
+				if (stream_1.currentOffset + 5 >= stream_1.buffer.length) {
+					System.err.println("Stream overflow while seeking sprite index " + i + " in " + s);
+					createEmptySprite();
+					return;
+				}
+				stream_1.currentOffset += 2;
+				int skipWidth = stream_1.readUnsignedWord();
+				int skipHeight = stream_1.readUnsignedWord();
+
+				// Validate skip dimensions
+				if (skipWidth < 0 || skipHeight < 0 || skipWidth > 2048 || skipHeight > 2048) {
+					System.err.println("Invalid skip dimensions for sprite " + s + " index " + l +
+						": " + skipWidth + "x" + skipHeight);
+					createEmptySprite();
+					return;
+				}
+
+				int skipBytes = skipWidth * skipHeight;
+				if (stream.currentOffset + skipBytes > stream.buffer.length) {
+					System.err.println("Not enough data to skip sprite " + l + " in " + s);
+					createEmptySprite();
+					return;
+				}
+
+				stream.currentOffset += skipBytes;
+				stream_1.currentOffset++;
+			}
+
+			// Validate we have enough data left
+			if (stream_1.currentOffset + 6 >= stream_1.buffer.length) {
+				System.err.println("Not enough index data for sprite " + s + " index " + i);
+				createEmptySprite();
+				return;
+			}
+
+			drawOffsetX = stream_1.readUnsignedByte();
+			drawOffsetY = stream_1.readUnsignedByte();
+			myWidth = stream_1.readUnsignedWord();
+			myHeight = stream_1.readUnsignedWord();
+			int i1 = stream_1.readUnsignedByte();
+
+			// CRITICAL: Validate sprite dimensions before allocating memory
+			if (myWidth <= 0 || myHeight <= 0 || myWidth > 2048 || myHeight > 2048) {
+				System.err.println("Invalid sprite dimensions for " + s + " index " + i +
+					": " + myWidth + "x" + myHeight);
+				createEmptySprite();
+				return;
+			}
+
+			// Check for potential overflow
+			long pixelCount = (long) myWidth * (long) myHeight;
+			if (pixelCount > 4194304) { // 2048x2048 max
+				System.err.println("Sprite too large for " + s + " index " + i +
+					": " + myWidth + "x" + myHeight + " = " + pixelCount + " pixels");
+				createEmptySprite();
+				return;
+			}
+
+			int j1 = (int) pixelCount;
+
+			// Validate we have enough stream data
+			if (stream.currentOffset + j1 > stream.buffer.length) {
+				System.err.println("Not enough pixel data for sprite " + s + " index " + i +
+					" (need " + j1 + " bytes, have " + (stream.buffer.length - stream.currentOffset) + ")");
+				createEmptySprite();
+				return;
+			}
+
+			myPixels = new int[j1];
+
+			if (i1 == 0) {
+				for (int k1 = 0; k1 < j1; k1++) {
+					int paletteIndex = stream.readUnsignedByte();
+					if (paletteIndex >= ai.length) {
+						System.err.println("Palette index out of bounds: " + paletteIndex + " >= " + ai.length);
+						myPixels[k1] = 0; // Use transparent/black
+					} else {
+						myPixels[k1] = ai[paletteIndex];
+					}
+				}
+			} else if (i1 == 1) {
+				for (int l1 = 0; l1 < myWidth; l1++) {
+					for (int i2 = 0; i2 < myHeight; i2++) {
+						int paletteIndex = stream.readUnsignedByte();
+						if (paletteIndex >= ai.length) {
+							System.err.println("Palette index out of bounds: " + paletteIndex + " >= " + ai.length);
+							myPixels[l1 + i2 * myWidth] = 0;
+						} else {
+							myPixels[l1 + i2 * myWidth] = ai[paletteIndex];
+						}
+					}
+				}
+			} else {
+				System.err.println("Unknown sprite format " + i1 + " for " + s + " index " + i);
+				createEmptySprite();
+				return;
+			}
+
+			setTransparency(255, 0, 255);
+
+		} catch (Exception e) {
+			System.err.println("Error processing sprite " + s + " index " + i + ": " + e.getMessage());
+			createEmptySprite();
+		}
+	}
+
+	// Static method for creating empty sprites when loading fails
+	public static Sprite createEmptySprite() {
+		return new Sprite();
+	}
+
+	public Sprite() {
+		// Default empty constructor
+		myWidth = 1;
+		myHeight = 1;
+		myPixels = new int[1];
+		myPixels[0] = 0;
+		drawOffsetX = 0;
+		drawOffsetY = 0;
+		cropWidth = 1;
+		anInt1445 = 1;
 	}
 
 	public Sprite(byte[] spriteData) {
@@ -383,6 +512,11 @@ public final class Sprite extends DrawingArea
 	}
 
 	public void method344(int i, int j, int k) {
+		// Add null check for myPixels
+		if (myPixels == null) {
+			return; // Nothing to adjust
+		}
+
 		for (int i1 = 0; i1 < myPixels.length; i1++) {
 			int j1 = myPixels[i1];
 			if (j1 != 0) {
@@ -407,7 +541,6 @@ public final class Sprite extends DrawingArea
 				myPixels[i1] = (k1 << 16) + (l1 << 8) + i2;
 			}
 		}
-
 	}
 
 	public void method345() {
@@ -523,6 +656,13 @@ public final class Sprite extends DrawingArea
 			i2 += i3;
 		}
 		if (!(l1 <= 0 || k1 <= 0)) {
+			// Add null checks before calling method349
+			if (DrawingArea.pixels == null) {
+				return;
+			}
+			if (myPixels == null) {
+				return;
+			}
 			method351(j1, l1, DrawingArea.pixels, myPixels, j2, k1, i2, k, i1);
 		}
 	}
@@ -561,6 +701,14 @@ public final class Sprite extends DrawingArea
 			l1 += l2;
 		}
 		if (!(k1 <= 0 || j1 <= 0)) {
+			// Add null checks before calling method349
+			if (DrawingArea.pixels == null) {
+				return;
+			}
+			if (myPixels == null) {
+				return;
+			}
+
 			method349(DrawingArea.pixels, myPixels, i1, l, k1, j1, l1, i2);
 		}
 	}
@@ -633,6 +781,13 @@ public final class Sprite extends DrawingArea
 			l1 += l2;
 		}
 		if (!(k1 <= 0 || j1 <= 0)) {
+			// Add null checks before calling method349
+			if (DrawingArea.pixels == null) {
+				return;
+			}
+			if (myPixels == null) {
+				return;
+			}
 			method349(DrawingArea.pixels, tempArray, i1, l, k1, j1, l1, i2);
 		}
 	}
@@ -672,6 +827,15 @@ public final class Sprite extends DrawingArea
 			i2 += i3;
 		}
 		if (!(l1 <= 0 || k1 <= 0)) {
+			// Add null checks before calling method349
+			if (DrawingArea.pixels == null) {
+				System.err.println("DrawingArea.pixels is null!");
+				return;
+			}
+			if (myPixels == null) {
+				System.err.println("myPixels is null!");
+				return;
+			}
 			method351(j1, l1, DrawingArea.pixels, myPixels, j2, k1, i2, k, i1);
 		}
 	}

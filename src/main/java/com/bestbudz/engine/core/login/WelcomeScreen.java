@@ -9,7 +9,7 @@ import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.ui.RSInterface;
 import static com.bestbudz.ui.interfaces.Chatbox.reportAbuseInput;
-import com.bestbudz.util.TextClass;
+import com.bestbudz.graphics.text.TextClass;
 
 public class WelcomeScreen extends Client
 {

@@ -6,7 +6,7 @@ import com.bestbudz.dock.util.DockTextUpdatable;
 import com.bestbudz.engine.core.Client;
 import static com.bestbudz.engine.config.ColorConfig.*;
 import com.bestbudz.ui.interfaces.Chatbox;
-import com.bestbudz.ui.TextInput;
+import com.bestbudz.graphics.text.TextInput;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -137,7 +137,7 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 		// Simple check - just see if chat content changed
 		StringBuilder currentContent = new StringBuilder();
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 1000; i++) {
 			if (Chatbox.chatMessages[i] != null) {
 				currentContent.append(Chatbox.chatMessages[i]);
 			}
@@ -392,7 +392,7 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	 * Wrap long text to prevent overflow
 	 */
 	private String wrapLongText(String text) {
-		if (text == null || text.length() <= 60) return text;
+		if (text == null) return text;
 
 		StringBuilder wrapped = new StringBuilder();
 		String[] words = text.split(" ");

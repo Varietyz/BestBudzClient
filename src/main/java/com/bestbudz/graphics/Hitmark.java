@@ -6,58 +6,38 @@ import com.bestbudz.graphics.sprite.Sprite;
 
 public class Hitmark extends Client
 {
-	public static void hitmarkDraw(int hitLength, int type, int icon, int damage, int move, int opacity)
-	{
-		if (damage > 0)
-		{
-			Sprite end1 = null, middle = null, end2 = null;
-			int x = 0;
-			switch (hitLength)
-			{
-				case 1:
-					x = 8;
-					break;
-				case 2:
-					x = 4;
-					break;
-				case 3:
-					x = 1;
-					break;
+
+	// Enhanced hitmark drawing function using old system sprites
+	public static void enhancedHitmarkDraw(int hitLength, int type, int icon, int damage, int drawX, int drawY, int opacity) {
+		if (damage > 0) {
+			// Draw damage type icon with animation (kept from enhanced version)
+			if (icon <= 6 && opacity > 50) { // Only show icon when visible enough
+				hitIcon[icon].drawTransparentSprite(drawX - 34, drawY - 15, opacity);
 			}
-			switch (type)
-			{
-				case 1:
-					end1 = hitMark[0];
-					middle = hitMark[1];
-					end2 = hitMark[2];
-					break;
-				case 3:
-					end1 = hitMark[3];
-					middle = hitMark[4];
-					end2 = hitMark[5];
-					break;
-				case 2:
-					end1 = hitMark[6];
-					middle = hitMark[7];
-					end2 = hitMark[8];
-					break;
+
+			// Use the old hitmark sprites instead of the enhanced ones
+			if (opacity > 0) {
+				// Draw the hitmark sprite background (same as old system)
+				hitMarks[type].drawTransparentSprite(drawX - 12, drawY - 12, opacity);
 			}
-			if (icon <= 6)
-				hitIcon[icon].drawTransparentSprite(spriteDrawX - 34 + x, spriteDrawY - 14 + move, opacity);
-			end1.drawTransparentSprite(spriteDrawX - 12 + x, spriteDrawY - 12 + move, opacity);
-			x += 4;
-			for (int i = 0; i < hitLength * 2; i++)
-			{
-				middle.drawTransparentSprite(spriteDrawX - 12 + x, spriteDrawY - 12 + move, opacity);
-				x += 4;
+
+			// Draw damage text with opacity-based visibility (same style as old system)
+			if (opacity > 100) {
+				// Full opacity - draw shadow and main text
+				regularText.drawText(0, String.valueOf(damage), drawY + 5, drawX - 2);
+				regularText.drawText(ColorConfig.WHITE_COLOR, String.valueOf(damage), drawY + 4, drawX - 3);
+			} else if (opacity > 50) {
+				// Faded text for lower opacity - single text, no shadow
+				regularText.drawText(0x909090, String.valueOf(damage), drawY + 4, drawX - 3);
 			}
-			end2.drawTransparentSprite(spriteDrawX - 12 + x, spriteDrawY - 12 + move, opacity);
-			if (opacity > 100)
-				smallText.drawText(ColorConfig.WHITE_COLOR, String.valueOf(damage), spriteDrawY + 3 + move, spriteDrawX + 4);
-		}
-		else
-		{
-			cacheSprite[474].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 14 + move, opacity);
+
+		} else {
+			// Miss/block indicator - could use hitMarks[0] or a specific miss sprite
+			if (opacity > 0) {
+				// You might want to use a specific hitmark type for misses/blocks
+				hitMarks[0].drawTransparentSprite(drawX - 12, drawY - 12, opacity);
+			}
 		}
 	}
+
 }

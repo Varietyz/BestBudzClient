@@ -245,7 +245,7 @@ public class RightClickMenu extends Client
 		yPos += 14;
 		for (int i = 0; i < results.length; i++)
 		{
-			regularText.method389(false, xPos + 3, 0, results[i], yPos);
+			regularText.method389(0, xPos + 3, 0, results[i], yPos);
 			yPos += 16;
 		}
 	}

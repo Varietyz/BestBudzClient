@@ -360,7 +360,7 @@ public class GPUMonitor {
 		System.err.println("Context Failure Rate: " + String.format("%.2f%%", getContextFailureRate() * 100));
 		System.err.println("Average Context Time: " + String.format("%.2fms", getAverageContextTime()));
 		System.err.println("Max Context Time: " + maxContextTime.get() + "ms");
-		System.err.println("Recent Errors: " + recentErrors.size());
+		System.err.println("Recent LoadingErrorScreen: " + recentErrors.size());
 		System.err.println("Last Error: " + lastError.get());
 
 		if (GPURenderingEngine.isEnabled()) {
@@ -425,8 +425,8 @@ public class GPUMonitor {
 		report.append("Average Context Time: ").append(String.format("%.2fms", getAverageContextTime())).append("\n");
 		report.append("Max Context Time: ").append(maxContextTime.get()).append("ms\n");
 		report.append("\n--- ERROR TRACKING ---\n");
-		report.append("Total Errors: ").append(totalErrors.get()).append("\n");
-		report.append("Recent Errors: ").append(recentErrors.size()).append("\n");
+		report.append("Total LoadingErrorScreen: ").append(totalErrors.get()).append("\n");
+		report.append("Recent LoadingErrorScreen: ").append(recentErrors.size()).append("\n");
 		report.append("Last Error: ").append(lastError.get()).append("\n");
 		report.append("Last Error Time: ").append(lastErrorTime.get() > 0 ?
 			String.format("%tT", lastErrorTime.get()) : "None").append("\n");

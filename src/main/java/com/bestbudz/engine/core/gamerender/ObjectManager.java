@@ -39,6 +39,8 @@ public final class ObjectManager {
 	private final int anInt147;
 	private final byte[][][] aByteArrayArrayArray148;
 	private final byte[][][] aByteArrayArrayArray149;
+	private static final int SAFE_BOUNDS_BUFFER = 1;
+	private static final boolean ENABLE_BOUNDS_LOGGING = true;
 
 	public ObjectManager(byte[][][] abyte0, int[][][] ai) {
 		anInt145 = 99;
@@ -143,8 +145,138 @@ public final class ObjectManager {
 		return (i & 0xff80) + j;
 	}
 
-	public static void method188(WorldController worldController, int i, int j, int k, int l, Class11 class11, int[][][] ai, int i1, int j1, int k1) {
-		// Pre-calculate height values once
+	private static boolean isWithinBounds(int[][][] array, int plane, int x, int y, String methodName) {
+		if (array == null) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": array is null");
+			}
+			return false;
+		}
+
+		if (plane < 0 || plane >= array.length) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": plane " + plane + " out of bounds [0," + (array.length-1) + "]");
+			}
+			return false;
+		}
+
+		if (array[plane] == null) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": array[" + plane + "] is null");
+			}
+			return false;
+		}
+
+		if (x < 0 || x >= array[plane].length) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": x " + x + " out of bounds [0," + (array[plane].length-1) + "]");
+			}
+			return false;
+		}
+
+		if (array[plane][x] == null) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": array[" + plane + "][" + x + "] is null");
+			}
+			return false;
+		}
+
+		if (y < 0 || y >= array[plane][x].length) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": y " + y + " out of bounds [0," + (array[plane][x].length-1) + "]");
+			}
+			return false;
+		}
+
+		return true;
+	}
+
+	// Enhanced bounds checking for byte arrays
+	private static boolean isWithinBounds(byte[][][] array, int plane, int x, int y, String methodName) {
+		if (array == null) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": byte array is null");
+			}
+			return false;
+		}
+
+		if (plane < 0 || plane >= array.length) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": plane " + plane + " out of bounds [0," + (array.length-1) + "]");
+			}
+			return false;
+		}
+
+		if (array[plane] == null) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": byte array[" + plane + "] is null");
+			}
+			return false;
+		}
+
+		if (x < 0 || x >= array[plane].length) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": x " + x + " out of bounds [0," + (array[plane].length-1) + "]");
+			}
+			return false;
+		}
+
+		if (array[plane][x] == null) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": byte array[" + plane + "][" + x + "] is null");
+			}
+			return false;
+		}
+
+		if (y < 0 || y >= array[plane][x].length) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": y " + y + " out of bounds [0," + (array[plane][x].length-1) + "]");
+			}
+			return false;
+		}
+
+		return true;
+	}
+
+	public static void method188(WorldController worldController, int i, int j, int k, int l, Class11 class11,
+								 int[][][] ai, int i1, int j1, int k1) {
+
+		// CRITICAL FIX: Add comprehensive bounds checking before any array access
+		final String methodName = "method188";
+
+		// Validate input parameters first
+		if (ai == null) {
+			System.err.println("[ERROR] " + methodName + ": height array (ai) is null");
+			return;
+		}
+
+		// Check if the coordinates are within reasonable bounds
+		if (i1 < 0 || j < 0 || l < 0 || l >= ai.length) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": Invalid coordinates - i1:" + i1 + ", j:" + j + ", l:" + l + ", ai.length:" + ai.length);
+			}
+			return;
+		}
+
+		// Ensure we don't access ai[l][i1+1] or ai[l][i1][j+1] out of bounds
+		if (!isWithinBounds(ai, l, i1, j, methodName) ||
+			!isWithinBounds(ai, l, i1 + 1, j, methodName) ||
+			!isWithinBounds(ai, l, i1 + 1, j + 1, methodName) ||
+			!isWithinBounds(ai, l, i1, j + 1, methodName)) {
+
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[BOUNDS] " + methodName + ": Height array access would be out of bounds");
+				System.err.println("  Coordinates: i1=" + i1 + ", j=" + j + ", l=" + l);
+				System.err.println("  Required access: [" + l + "][" + i1 + "-" + (i1+1) + "][" + j + "-" + (j+1) + "]");
+				if (ai[l] != null) {
+					System.err.println("  Array dimensions: [" + ai.length + "][" + ai[l].length + "][" +
+						(ai[l].length > 0 && ai[l][0] != null ? ai[l][0].length : "null") + "]");
+				}
+			}
+			return;
+		}
+
+		// Pre-calculate height values once - NOW SAFE
 		final int l1 = ai[l][i1][j];
 		final int i2 = ai[l][i1 + 1][j];
 		final int j2 = ai[l][i1 + 1][j + 1];
@@ -153,52 +285,65 @@ public final class ObjectManager {
 
 		// Cache ObjectDef lookup
 		final ObjectDef class46 = ObjectDef.forID(j1);
+		if (class46 == null) {
+			if (ENABLE_BOUNDS_LOGGING) {
+				System.err.println("[ERROR] " + methodName + ": ObjectDef.forID(" + j1 + ") returned null");
+			}
+			return;
+		}
 
 		// Pre-calculate common values
 		final int i3 = calculateI3(i1, j, j1, class46.hasActions);
 		final byte byte1 = (byte)((i << 6) + k);
 
 		// Use switch statement for better branch prediction and JIT optimization
-		switch (k) {
-			case 0:
-			case 1:
-			case 3:
-				handleWallObjects(worldController, class11, i, j, k, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
-				break;
+		try {
+			switch (k) {
+				case 0:
+				case 1:
+				case 3:
+					handleWallObjects(worldController, class11, i, j, k, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+					break;
 
-			case 2:
-				handleCornerWall(worldController, class11, i, j, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
-				break;
+				case 2:
+					handleCornerWall(worldController, class11, i, j, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+					break;
 
-			case 4:
-			case 6:
-			case 7:
-			case 8:
-				handleDiagonalWalls(worldController, i, j, k, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
-				break;
+				case 4:
+				case 6:
+				case 7:
+				case 8:
+					handleDiagonalWalls(worldController, i, j, k, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+					break;
 
-			case 5:
-				handleSlopedWall(worldController, i, j, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
-				break;
+				case 5:
+					handleSlopedWall(worldController, i, j, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+					break;
 
-			case 9:
-				handleDecorativeWall(worldController, class11, i, j, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
-				break;
+				case 9:
+					handleDecorativeWall(worldController, class11, i, j, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+					break;
 
-			case 10:
-			case 11:
-				handleFloorDecorations(worldController, class11, i, j, k, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
-				break;
+				case 10:
+				case 11:
+					handleFloorDecorations(worldController, class11, i, j, k, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+					break;
 
-			case 22:
-				handleGroundObject(worldController, class11, i, j, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
-				break;
+				case 22:
+					handleGroundObject(worldController, class11, i, j, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+					break;
 
-			default:
-				if (k >= 12) {
-					handleLargeObjects(worldController, class11, i, j, k, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
-				}
-				break;
+				default:
+					if (k >= 12) {
+						handleLargeObjects(worldController, class11, i, j, k, l2, class46, i3, byte1, i1, j1, l1, i2, j2, k2, k1);
+					}
+					break;
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.err.println("[CRITICAL] " + methodName + ": Bounds error in handler for k=" + k);
+			System.err.println("  Parameters: i=" + i + ", j=" + j + ", k=" + k + ", l=" + l + ", i1=" + i1 + ", j1=" + j1 + ", k1=" + k1);
+			System.err.println("  Heights: l1=" + l1 + ", i2=" + i2 + ", j2=" + j2 + ", k2=" + k2 + ", l2=" + l2);
+			throw e; // Re-throw for debugging
 		}
 	}
 
@@ -440,441 +585,789 @@ public final class ObjectManager {
 		return bool;
 	}
 
-	public void method171(Class11[] aclass11,
-						  WorldController worldController) {
+	public void method171(Class11[] aclass11, WorldController worldController) {
+		// PHASE 1: Initial visibility pass with bounds checking
 		for (int j = 0; j < 4; j++) {
+			// Check if the plane exists
+			if (aByteArrayArrayArray149 == null || j >= aByteArrayArrayArray149.length ||
+				aByteArrayArrayArray149[j] == null) {
+				continue;
+			}
+
 			for (int k = 0; k < 104; k++) {
-				for (int i1 = 0; i1 < 104; i1++)
-					if ((aByteArrayArrayArray149[j][k][i1] & 1) == 1) {
-						int k1 = j;
-						if ((aByteArrayArrayArray149[1][k][i1] & 2) == 2)
-							k1--;
-						if (k1 >= 0)
-							aclass11[k1].method213(i1, k);
-					}
-
-
-			}
-
-
-		}
-
-		 for (int l = 0; l < 4; l++) {
-             byte[][] shadowIntensity = aByteArrayArrayArray134[l];
-             byte directional_light_initial_intensity = 96;
-             char specular_distribution_factor = '̀';
-             byte directional_light_x = -50;
-             byte directional_light_z = -10;
-             byte directional_light_y = -50;
-             int directional_light_length = (int) Math.sqrt(directional_light_x * directional_light_x + directional_light_z * directional_light_z + directional_light_y * directional_light_y);
-             int specular_distribution = specular_distribution_factor * directional_light_length >> 8;
-             for (int y = 1; y < anInt147 - 1; y++) {
-                 for (int x = 1; x < anInt146 - 1; x++) {
-                     int x_height_difference =  anIntArrayArrayArray129[l][x + 1][y] - anIntArrayArrayArray129[l][x - 1][y];
-                     int y_height_difference =  anIntArrayArrayArray129[l][x][y + 1] - anIntArrayArrayArray129[l][x][y - 1];
-                     int normal_length = (int) Math.sqrt(x_height_difference * x_height_difference + 0x10000 + y_height_difference * y_height_difference);
-                     int normalized_normal_x = (x_height_difference << 8) / normal_length;
-                     int normalized_normal_z = 0x10000 / normal_length;
-                     int normalized_normal_y = (y_height_difference << 8) / normal_length;
-                     int directional_light_intensity = directional_light_initial_intensity + (directional_light_x * normalized_normal_x + directional_light_z * normalized_normal_z + directional_light_y * normalized_normal_y) / specular_distribution;
-                     int weighted_shadow_intensity = (shadowIntensity[x - 1][y] >> 2) + (shadowIntensity[x + 1][y] >> 3) + (shadowIntensity[x][y - 1] >> 2) + (shadowIntensity[x][y + 1] >> 3) + (shadowIntensity[x][y] >> 1);
-                     anIntArrayArray139[x][y] = directional_light_intensity - weighted_shadow_intensity;
-                 }
-             }
-
-
-		for (int k5 = 0; k5 < anInt147; k5++) {
-			anIntArray124[k5] = 0;
-			anIntArray125[k5] = 0;
-			anIntArray126[k5] = 0;
-			anIntArray127[k5] = 0;
-			anIntArray128[k5] = 0;
-		}
-
-
-		for (int l6 = -5; l6 < anInt146 + 5; l6++) {
-			for (int i8 = 0; i8 < anInt147; i8++) {
-				int k9 = l6 + 5;
-				if (k9 >= 0 && k9 < anInt146) {
-					int l12 = aByteArrayArrayArray142[l][k9][i8] & 0xff;
-					if (l12 > 0) {
-						Floor flo = Floor.cache[l12 - 1];
-						anIntArray124[i8] += flo.anInt397;
-						anIntArray125[i8] += flo.anInt395;
-						anIntArray126[i8] += flo.anInt396;
-						anIntArray127[i8] += flo.anInt398;
-						anIntArray128[i8]++;
-					}
+				// Check if the row exists
+				if (k >= aByteArrayArrayArray149[j].length || aByteArrayArrayArray149[j][k] == null) {
+					continue;
 				}
-				int i13 = l6 - 5;
-				if (i13 >= 0 && i13 < anInt146) {
-					int i14 = aByteArrayArrayArray142[l][i13][i8] & 0xff;
-					if (i14 > 0) {
-						Floor flo_1 = Floor.cache[i14 - 1];
-						anIntArray124[i8] -= flo_1.anInt397;
-						anIntArray125[i8] -= flo_1.anInt395;
-						anIntArray126[i8] -= flo_1.anInt396;
-						anIntArray127[i8] -= flo_1.anInt398;
-						anIntArray128[i8]--;
+
+				for (int i1 = 0; i1 < 104; i1++) {
+					// Check if the element exists
+					if (i1 >= aByteArrayArrayArray149[j][k].length) {
+						continue;
+					}
+
+					try {
+						if ((aByteArrayArrayArray149[j][k][i1] & 1) == 1) {
+							int k1 = j;
+
+							// Safe check for plane 1 array access
+							if (j >= 1 && aByteArrayArrayArray149.length > 1 &&
+								aByteArrayArrayArray149[1] != null &&
+								k < aByteArrayArrayArray149[1].length &&
+								aByteArrayArrayArray149[1][k] != null &&
+								i1 < aByteArrayArrayArray149[1][k].length &&
+								(aByteArrayArrayArray149[1][k][i1] & 2) == 2) {
+								k1--;
+							}
+
+							if (k1 >= 0 && k1 < aclass11.length && aclass11[k1] != null) {
+								aclass11[k1].method213(i1, k);
+							}
+						}
+					} catch (ArrayIndexOutOfBoundsException e) {
+						System.err.println("[ERROR] method171 Phase1: Bounds error at j=" + j + ", k=" + k + ", i1=" + i1);
+						continue; // Skip this element and continue
 					}
 				}
 			}
+		}
 
+		// PHASE 2: Lighting calculation for each plane
+		for (int l = 0; l < 4; l++) {
+			// Validate arrays exist for this plane
+			if (aByteArrayArrayArray134 == null || l >= aByteArrayArrayArray134.length ||
+				aByteArrayArrayArray134[l] == null) {
+				System.err.println("[ERROR] method171: aByteArrayArrayArray134[" + l + "] is null");
+				continue;
+			}
 
-			if (l6 >= 1 && l6 < anInt146 - 1) {
-				int l9 = 0;
-				int j13 = 0;
-				int j14 = 0;
-				int k15 = 0;
-				int k16 = 0;
-				for (int k17 = -5; k17 < anInt147 + 5; k17++) {
-					int j18 = k17 + 5;
-					if (j18 >= 0 && j18 < anInt147) {
-						l9 += anIntArray124[j18];
-						j13 += anIntArray125[j18];
-						j14 += anIntArray126[j18];
-						k15 += anIntArray127[j18];
-						k16 += anIntArray128[j18];
-					}
-					int k18 = k17 - 5;
-					if (k18 >= 0 && k18 < anInt147) {
-						l9 -= anIntArray124[k18];
-						j13 -= anIntArray125[k18];
-						j14 -= anIntArray126[k18];
-						k15 -= anIntArray127[k18];
-						k16 -= anIntArray128[k18];
-					}
-					if (k17 >= 1
-							&& k17 < anInt147 - 1
-							&& (!lowMem
-									|| (aByteArrayArrayArray149[0][l6][k17] & 2) != 0 || (aByteArrayArrayArray149[l][l6][k17] & 0x10) == 0
-									&& method182(k17, l, l6) == anInt131)) {
-						if (l < anInt145)
-							anInt145 = l;
-						int l18 = aByteArrayArrayArray142[l][l6][k17] & 0xff;
-						int i19 = aByteArrayArrayArray130[l][l6][k17] & 0xff;
-						if (l18 > 0 || i19 > 0) {
-							int j19 = anIntArrayArrayArray129[l][l6][k17];
-							int k19 = anIntArrayArrayArray129[l][l6 + 1][k17];
-							int l19 = anIntArrayArrayArray129[l][l6 + 1][k17 + 1];
-							int i20 = anIntArrayArrayArray129[l][l6][k17 + 1];
-							int j20 = anIntArrayArray139[l6][k17];
-							int k20 = anIntArrayArray139[l6 + 1][k17];
-							int l20 = anIntArrayArray139[l6 + 1][k17 + 1];
-							int i21 = anIntArrayArray139[l6][k17 + 1];
-							int j21 = -1;
-							int k21 = -1;
-							if (l18 > 0) {
-								int l21 = (l9 * 256) / k15;
-								int j22 = j13 / k16;
-								int l22 = j14 / k16;
-								j21 = method177(l21, j22, l22);
+			if (anIntArrayArrayArray129 == null || l >= anIntArrayArrayArray129.length ||
+				anIntArrayArrayArray129[l] == null) {
+				System.err.println("[ERROR] method171: anIntArrayArrayArray129[" + l + "] is null");
+				continue;
+			}
 
-								if (l22 < 0)
-									l22 = 0;
-								else if (l22 > 255)
-									l22 = 255;
-								k21 = method177(l21, j22, l22);
+			byte[][] shadowIntensity = aByteArrayArrayArray134[l];
+			byte directional_light_initial_intensity = 96;
+			char specular_distribution_factor = '̀';
+			byte directional_light_x = -50;
+			byte directional_light_z = -10;
+			byte directional_light_y = -50;
+			int directional_light_length = (int) Math.sqrt(directional_light_x * directional_light_x +
+				directional_light_z * directional_light_z +
+				directional_light_y * directional_light_y);
+			int specular_distribution = specular_distribution_factor * directional_light_length >> 8;
+
+			// Safe bounds for lighting calculation
+			int maxY = Math.min(anInt147 - 1, anIntArrayArrayArray129[l].length - 1);
+			int maxX = Math.min(anInt146 - 1,
+				anIntArrayArrayArray129[l].length > 0 && anIntArrayArrayArray129[l][0] != null ?
+					anIntArrayArrayArray129[l][0].length - 1 : 0);
+
+			for (int y = 1; y < maxY; y++) {
+				if (anIntArrayArrayArray129[l][y] == null) continue;
+
+				for (int x = 1; x < maxX; x++) {
+					try {
+						// Safe height difference calculations with bounds checking
+						int x_height_difference = 0;
+						int y_height_difference = 0;
+
+						// Check bounds before accessing height arrays
+						if (x + 1 < anIntArrayArrayArray129[l].length &&
+							anIntArrayArrayArray129[l][x + 1] != null &&
+							y < anIntArrayArrayArray129[l][x + 1].length &&
+							x - 1 >= 0 && anIntArrayArrayArray129[l][x - 1] != null &&
+							y < anIntArrayArrayArray129[l][x - 1].length) {
+							x_height_difference = anIntArrayArrayArray129[l][x + 1][y] - anIntArrayArrayArray129[l][x - 1][y];
+						}
+
+						if (anIntArrayArrayArray129[l][x] != null &&
+							y + 1 < anIntArrayArrayArray129[l][x].length &&
+							y - 1 >= 0) {
+							y_height_difference = anIntArrayArrayArray129[l][x][y + 1] - anIntArrayArrayArray129[l][x][y - 1];
+						}
+
+						int normal_length = (int) Math.sqrt(x_height_difference * x_height_difference +
+							0x10000 + y_height_difference * y_height_difference);
+
+						if (normal_length == 0) normal_length = 1; // Prevent division by zero
+
+						int normalized_normal_x = (x_height_difference << 8) / normal_length;
+						int normalized_normal_z = 0x10000 / normal_length;
+						int normalized_normal_y = (y_height_difference << 8) / normal_length;
+
+						int directional_light_intensity = directional_light_initial_intensity +
+							(directional_light_x * normalized_normal_x + directional_light_z * normalized_normal_z +
+								directional_light_y * normalized_normal_y) /
+								(specular_distribution == 0 ? 1 : specular_distribution);
+
+						// Safe shadow intensity calculation with bounds checking
+						int weighted_shadow_intensity = 0;
+						if (shadowIntensity != null) {
+							if (x - 1 >= 0 && x - 1 < shadowIntensity.length &&
+								shadowIntensity[x - 1] != null && y < shadowIntensity[x - 1].length) {
+								weighted_shadow_intensity += (shadowIntensity[x - 1][y] >> 2);
 							}
-							if (l > 0) {
-								boolean flag = l18 != 0
-									|| aByteArrayArrayArray136[l][l6][k17] == 0;
-								if (i19 > 0
-										&& !OverlayFloor.overlayFloor[i19 - 1].aBoolean393)
-									flag = false;
-								if (flag && j19 == k19 && j19 == l19
-										&& j19 == i20)
-									anIntArrayArrayArray135[l][l6][k17] |= 0x924;
+							if (x + 1 < shadowIntensity.length &&
+								shadowIntensity[x + 1] != null && y < shadowIntensity[x + 1].length) {
+								weighted_shadow_intensity += (shadowIntensity[x + 1][y] >> 3);
 							}
-							int i22 = 0;
-							if (j21 != -1)
-								i22 = Rasterizer.anIntArray1482[method187(k21,
-										96)];
-							if (i19 == 0) {
-								worldController.method279(l, l6, k17, 0, 0,
-										-1, j19, k19, l19, i20,
-										method187(j21, j20),
-										method187(j21, k20),
-										method187(j21, l20),
-										method187(j21, i21), 0, 0, 0, 0,
-										i22, 0, false);
-							} else
-							{
-								int k22 = aByteArrayArrayArray136[l][l6][k17] + 1;
-								byte byte4 = aByteArrayArrayArray148[l][l6][k17];
-								OverlayFloor overlay_flo = OverlayFloor.overlayFloor[i19 - 1];
-								int textureId = overlay_flo.textureId;
-								int j23;
-								int k23;
-								if (textureId > 50)
-								{
-									textureId = -1;
+							if (x < shadowIntensity.length && shadowIntensity[x] != null) {
+								if (y - 1 >= 0 && y - 1 < shadowIntensity[x].length) {
+									weighted_shadow_intensity += (shadowIntensity[x][y - 1] >> 2);
 								}
-								if (textureId >= 0)
-								{
-									k23 = Rasterizer.method369(textureId);
-									j23 = -1;
+								if (y + 1 < shadowIntensity[x].length) {
+									weighted_shadow_intensity += (shadowIntensity[x][y + 1] >> 3);
 								}
-								else if (overlay_flo.rgb == 0xff00ff)
-								{
-									k23 = 0;
-									j23 = -2;
-									textureId = -1;
+								if (y < shadowIntensity[x].length) {
+									weighted_shadow_intensity += (shadowIntensity[x][y] >> 1);
 								}
-								else if (overlay_flo.rgb == 0x333333)
-								{
-									k23 = Rasterizer.anIntArray1482[method185(overlay_flo.anInt399, 96)];
-									j23 = -2;
-									textureId = -1;
+							}
+						}
+
+						// Safe assignment to lighting array
+						if (anIntArrayArray139 != null && x < anIntArrayArray139.length &&
+							anIntArrayArray139[x] != null && y < anIntArrayArray139[x].length) {
+							anIntArrayArray139[x][y] = directional_light_intensity - weighted_shadow_intensity;
+						}
+
+					} catch (ArrayIndexOutOfBoundsException e) {
+						System.err.println("[ERROR] method171 Lighting: Bounds error at l=" + l + ", x=" + x + ", y=" + y);
+						continue;
+					}
+				}
+			}
+
+			// PHASE 3: Initialize color accumulation arrays
+			if (anIntArray124 != null && anIntArray125 != null && anIntArray126 != null &&
+				anIntArray127 != null && anIntArray128 != null) {
+				int arrayLength = Math.min(anInt147, Math.min(anIntArray124.length,
+					Math.min(anIntArray125.length, Math.min(anIntArray126.length,
+						Math.min(anIntArray127.length, anIntArray128.length)))));
+
+				for (int k5 = 0; k5 < arrayLength; k5++) {
+					anIntArray124[k5] = 0;
+					anIntArray125[k5] = 0;
+					anIntArray126[k5] = 0;
+					anIntArray127[k5] = 0;
+					anIntArray128[k5] = 0;
+				}
+			}
+
+			// PHASE 4: Color accumulation pass
+			for (int l6 = -5; l6 < anInt146 + 5; l6++) {
+				for (int i8 = 0; i8 < anInt147; i8++) {
+					// Safe bounds checking for array access
+					if (anIntArray124 == null || i8 >= anIntArray124.length ||
+						anIntArray125 == null || i8 >= anIntArray125.length ||
+						anIntArray126 == null || i8 >= anIntArray126.length ||
+						anIntArray127 == null || i8 >= anIntArray127.length ||
+						anIntArray128 == null || i8 >= anIntArray128.length) {
+						continue;
+					}
+
+					int k9 = l6 + 5;
+					if (k9 >= 0 && k9 < anInt146) {
+						try {
+							if (aByteArrayArrayArray142 != null && l < aByteArrayArrayArray142.length &&
+								aByteArrayArrayArray142[l] != null && k9 < aByteArrayArrayArray142[l].length &&
+								aByteArrayArrayArray142[l][k9] != null && i8 < aByteArrayArrayArray142[l][k9].length) {
+
+								int l12 = aByteArrayArrayArray142[l][k9][i8] & 0xff;
+								if (l12 > 0 && Floor.cache != null && l12 - 1 < Floor.cache.length) {
+									Floor flo = Floor.cache[l12 - 1];
+									if (flo != null) {
+										anIntArray124[i8] += flo.anInt397;
+										anIntArray125[i8] += flo.anInt395;
+										anIntArray126[i8] += flo.anInt396;
+										anIntArray127[i8] += flo.anInt398;
+										anIntArray128[i8]++;
+									}
 								}
-								else if ((i19 - 1) == 63)
-								{
-									k23 = overlay_flo.rgb = 0x767676;
-									j23 = -2;
-									textureId = -1;
+							}
+						} catch (ArrayIndexOutOfBoundsException e) {
+							System.err.println("[ERROR] method171 Color+: Bounds error at l6=" + l6 + ", i8=" + i8 + ", k9=" + k9);
+						}
+					}
+
+					int i13 = l6 - 5;
+					if (i13 >= 0 && i13 < anInt146) {
+						try {
+							if (aByteArrayArrayArray142 != null && l < aByteArrayArrayArray142.length &&
+								aByteArrayArrayArray142[l] != null && i13 < aByteArrayArrayArray142[l].length &&
+								aByteArrayArrayArray142[l][i13] != null && i8 < aByteArrayArrayArray142[l][i13].length) {
+
+								int i14 = aByteArrayArrayArray142[l][i13][i8] & 0xff;
+								if (i14 > 0 && Floor.cache != null && i14 - 1 < Floor.cache.length) {
+									Floor flo_1 = Floor.cache[i14 - 1];
+									if (flo_1 != null) {
+										anIntArray124[i8] -= flo_1.anInt397;
+										anIntArray125[i8] -= flo_1.anInt395;
+										anIntArray126[i8] -= flo_1.anInt396;
+										anIntArray127[i8] -= flo_1.anInt398;
+										anIntArray128[i8]--;
+									}
 								}
-								else
-								{
-									j23 = method177(overlay_flo.anInt394, overlay_flo.anInt395, overlay_flo.anInt396);
-									k23 = Rasterizer.anIntArray1482[method185(overlay_flo.anInt399, 96)];
-								}
-								if ((i19 - 1) == 111)
-								{
-									k23 = Rasterizer.method369(1);
-									j23 = -1;
-									textureId = 1;
-								}
-								else if (j23 == 6363)
-								{
-									k23 = 0x483B21;
-									j23 = method177(25, 146, 24);
-								}
-								else if ((i19 - 1) == 64)
-								{
-									k23 = overlay_flo.rgb;
-									j23 = -2;
-									textureId = -1;
-								}
-								else if ((i19 - 1) == 63)
-								{
-									k23 = overlay_flo.rgb = 0x767676;
-									j23 = -2;
-									textureId = -1;
-								}
-								else if ((i19 - 1) == 54 || (i19 - 1) == 15)
-								{
-									k23 = overlay_flo.rgb;
-									j23 = -2;
-									textureId = -1;
-								}
-								else if ((i19 - 1) == 151)
-								{
-									k23 = 0xfad83d;
-								}
-								if (overlay_flo.rgb == 0x000000 || (i19 - 1) == 28 || (i19 - 1) == 113 || (i19 - 1) == 6)
-								{
-									textureId = 25;
-									k23 = Rasterizer.method369(25);
-									j23 = -1;
-								}
-								if (colors.size() < 256 && !colors.contains(k23)) {
-									colors.add(k23); // Only add unique colors up to 256 limit
-								} // Prevent infinite growth
-								worldController.method279(l, l6, k17, k22,
-									byte4, textureId, j19, k19,
-									l19, i20, method187(j21, j20),
-									method187(j21, k20),
-									method187(j21, l20),
-									method187(j21, i21),
-									method185(j23, j20),
-									method185(j23, k20),
-									method185(j23, l20),
-									method185(j23, i21), i22,
-									k23, textureId >= 0
-										&& textureId <= 50);
+							}
+						} catch (ArrayIndexOutOfBoundsException e) {
+							System.err.println("[ERROR] method171 Color-: Bounds error at l6=" + l6 + ", i8=" + i8 + ", i13=" + i13);
+						}
+					}
+				}
+
+				// PHASE 5: Main rendering pass
+				if (l6 >= 1 && l6 < anInt146 - 1) {
+					int l9 = 0;
+					int j13 = 0;
+					int j14 = 0;
+					int k15 = 0;
+					int k16 = 0;
+
+					for (int k17 = -5; k17 < anInt147 + 5; k17++) {
+						int j18 = k17 + 5;
+						if (j18 >= 0 && j18 < anInt147) {
+							if (anIntArray124 != null && j18 < anIntArray124.length &&
+								anIntArray125 != null && j18 < anIntArray125.length &&
+								anIntArray126 != null && j18 < anIntArray126.length &&
+								anIntArray127 != null && j18 < anIntArray127.length &&
+								anIntArray128 != null && j18 < anIntArray128.length) {
+								l9 += anIntArray124[j18];
+								j13 += anIntArray125[j18];
+								j14 += anIntArray126[j18];
+								k15 += anIntArray127[j18];
+								k16 += anIntArray128[j18];
+							}
+						}
+
+						int k18 = k17 - 5;
+						if (k18 >= 0 && k18 < anInt147) {
+							if (anIntArray124 != null && k18 < anIntArray124.length &&
+								anIntArray125 != null && k18 < anIntArray125.length &&
+								anIntArray126 != null && k18 < anIntArray126.length &&
+								anIntArray127 != null && k18 < anIntArray127.length &&
+								anIntArray128 != null && k18 < anIntArray128.length) {
+								l9 -= anIntArray124[k18];
+								j13 -= anIntArray125[k18];
+								j14 -= anIntArray126[k18];
+								k15 -= anIntArray127[k18];
+								k16 -= anIntArray128[k18];
+							}
+						}
+
+						if (k17 >= 1 && k17 < anInt147 - 1 &&
+							(!lowMem || checkLowMemConditions(l, l6, k17))) {
+
+							if (l < anInt145) {
+								anInt145 = l;
+							}
+
+							try {
+								renderTileIfValid(worldController, l, l6, k17, l9, j13, j14, k15, k16);
+							} catch (ArrayIndexOutOfBoundsException e) {
+								System.err.println("[ERROR] method171 Render: Bounds error at l=" + l + ", l6=" + l6 + ", k17=" + k17);
+								continue;
 							}
 						}
 					}
 				}
 			}
+
+			// PHASE 6: Final scene setup
+			for (int j8 = 1; j8 < anInt147 - 1; j8++) {
+				for (int i10 = 1; i10 < anInt146 - 1; i10++) {
+					try {
+						worldController.method278(l, i10, j8, method182(j8, l, i10));
+					} catch (Exception e) {
+						System.err.println("[ERROR] method171 Setup: Error at j8=" + j8 + ", i10=" + i10);
+					}
+				}
+			}
 		}
 
+		// PHASE 7: World controller setup
+		if (worldController != null) {
+			worldController.method305(-10, -50, -50);
 
-		for (int j8 = 1; j8 < anInt147 - 1; j8++) {
-			for (int i10 = 1; i10 < anInt146 - 1; i10++)
-				worldController
-				.method278(l, i10, j8, method182(j8, l, i10));
-
-
+			// Safe bridge setup
+			for (int j1 = 0; j1 < anInt146; j1++) {
+				for (int l1 = 0; l1 < anInt147; l1++) {
+					try {
+						if (aByteArrayArrayArray149 != null && aByteArrayArrayArray149.length > 1 &&
+							aByteArrayArrayArray149[1] != null && j1 < aByteArrayArrayArray149[1].length &&
+							aByteArrayArrayArray149[1][j1] != null && l1 < aByteArrayArrayArray149[1][j1].length &&
+							(aByteArrayArrayArray149[1][j1][l1] & 2) == 2) {
+							worldController.method276(l1, j1);
+						}
+					} catch (ArrayIndexOutOfBoundsException e) {
+						System.err.println("[ERROR] method171 Bridge: Bounds error at j1=" + j1 + ", l1=" + l1);
+					}
+				}
+			}
 		}
 
-
-		}
-
-
-		worldController.method305(-10, -50, -50);
-		for (int j1 = 0; j1 < anInt146; j1++) {
-			for (int l1 = 0; l1 < anInt147; l1++)
-				if ((aByteArrayArrayArray149[1][j1][l1] & 2) == 2)
-					worldController.method276(l1, j1);
-
-
-		}
-
-
+		// PHASE 8: Occlusion culling with bounds checking
 		int i2 = 1;
 		int j2 = 2;
 		int k2 = 4;
+
 		for (int l2 = 0; l2 < 4; l2++) {
 			if (l2 > 0) {
 				i2 <<= 3;
 				j2 <<= 3;
 				k2 <<= 3;
 			}
+
 			for (int i3 = 0; i3 <= l2; i3++) {
 				for (int k3 = 0; k3 <= anInt147; k3++) {
 					for (int i4 = 0; i4 <= anInt146; i4++) {
-						if ((anIntArrayArrayArray135[i3][i4][k3] & i2) != 0) {
-							int k4 = k3;
-							int l5 = k3;
-							int i7 = i3;
-							int k8 = i3;
-							for (; k4 > 0
-							&& (anIntArrayArrayArray135[i3][i4][k4 - 1] & i2) != 0; k4--)
-								;
-							for (; l5 < anInt147
-							&& (anIntArrayArrayArray135[i3][i4][l5 + 1] & i2) != 0; l5++)
-								;
-							label0: for (; i7 > 0; i7--) {
-								for (int j10 = k4; j10 <= l5; j10++)
-									if ((anIntArrayArrayArray135[i7 - 1][i4][j10] & i2) == 0)
-										break label0;
-
-
-							}
-
-
-							label1: for (; k8 < l2; k8++) {
-								for (int k10 = k4; k10 <= l5; k10++)
-									if ((anIntArrayArrayArray135[k8 + 1][i4][k10] & i2) == 0)
-										break label1;
-
-
-							}
-
-
-							int l10 = ((k8 + 1) - i7) * ((l5 - k4) + 1);
-							if (l10 >= 8) {
-								char c1 = '\360';
-								int k14 = anIntArrayArrayArray129[k8][i4][k4]
-								                                          - c1;
-								int l15 = anIntArrayArrayArray129[i7][i4][k4];
-								WorldController.method277(l2, i4 * 128, l15,
-										i4 * 128, l5 * 128 + 128, k14,
-										k4 * 128, 1);
-								for (int l16 = i7; l16 <= k8; l16++) {
-									for (int l17 = k4; l17 <= l5; l17++)
-										anIntArrayArrayArray135[l16][i4][l17] &= ~i2;
-
-
-								}
-
-
-							}
-						}
-						if ((anIntArrayArrayArray135[i3][i4][k3] & j2) != 0) {
-							int l4 = i4;
-							int i6 = i4;
-							int j7 = i3;
-							int l8 = i3;
-							for (; l4 > 0
-							&& (anIntArrayArrayArray135[i3][l4 - 1][k3] & j2) != 0; l4--)
-								;
-							for (; i6 < anInt146
-							&& (anIntArrayArrayArray135[i3][i6 + 1][k3] & j2) != 0; i6++)
-								;
-							label2: for (; j7 > 0; j7--) {
-								for (int i11 = l4; i11 <= i6; i11++)
-									if ((anIntArrayArrayArray135[j7 - 1][i11][k3] & j2) == 0)
-										break label2;
-
-
-							}
-
-
-							label3: for (; l8 < l2; l8++) {
-								for (int j11 = l4; j11 <= i6; j11++)
-									if ((anIntArrayArrayArray135[l8 + 1][j11][k3] & j2) == 0)
-										break label3;
-
-
-							}
-
-
-							int k11 = ((l8 + 1) - j7) * ((i6 - l4) + 1);
-							if (k11 >= 8) {
-								char c2 = '\360';
-								int l14 = anIntArrayArrayArray129[l8][l4][k3]
-								                                          - c2;
-								int i16 = anIntArrayArrayArray129[j7][l4][k3];
-								WorldController.method277(l2, l4 * 128, i16,
-										i6 * 128 + 128, k3 * 128, l14,
-										k3 * 128, 2);
-								for (int i17 = j7; i17 <= l8; i17++) {
-									for (int i18 = l4; i18 <= i6; i18++)
-										anIntArrayArrayArray135[i17][i18][k3] &= ~j2;
-
-
-								}
-
-
-							}
-						}
-						if ((anIntArrayArrayArray135[i3][i4][k3] & k2) != 0) {
-							int i5 = i4;
-							int j6 = i4;
-							int k7 = k3;
-							int i9 = k3;
-							for (; k7 > 0
-							&& (anIntArrayArrayArray135[i3][i4][k7 - 1] & k2) != 0; k7--)
-								;
-							for (; i9 < anInt147
-							&& (anIntArrayArrayArray135[i3][i4][i9 + 1] & k2) != 0; i9++)
-								;
-							label4: for (; i5 > 0; i5--) {
-								for (int l11 = k7; l11 <= i9; l11++)
-									if ((anIntArrayArrayArray135[i3][i5 - 1][l11] & k2) == 0)
-										break label4;
-
-
-							}
-
-
-							label5: for (; j6 < anInt146; j6++) {
-								for (int i12 = k7; i12 <= i9; i12++)
-									if ((anIntArrayArrayArray135[i3][j6 + 1][i12] & k2) == 0)
-										break label5;
-
-
-							}
-
-
-							if (((j6 - i5) + 1) * ((i9 - k7) + 1) >= 4) {
-								int j12 = anIntArrayArrayArray129[i3][i5][k7];
-								WorldController.method277(l2, i5 * 128, j12,
-										j6 * 128 + 128, i9 * 128 + 128, j12,
-										k7 * 128, 4);
-								for (int k13 = i5; k13 <= j6; k13++) {
-									for (int i15 = k7; i15 <= i9; i15++)
-										anIntArrayArrayArray135[i3][k13][i15] &= ~k2;
-
-
-								}
-							}
+						try {
+							processOcclusionCulling(i2, j2, k2, l2, i3, k3, i4);
+						} catch (ArrayIndexOutOfBoundsException e) {
+							System.err.println("[ERROR] method171 Occlusion: Bounds error at i3=" + i3 + ", k3=" + k3 + ", i4=" + i4);
+							continue;
 						}
 					}
 				}
 			}
+		}
+	}
+
+	// Helper method for low memory conditions check
+	private boolean checkLowMemConditions(int l, int l6, int k17) {
+		try {
+			if (aByteArrayArrayArray149 == null || aByteArrayArrayArray149.length == 0) return true;
+
+			// Check plane 0 condition
+			if (aByteArrayArrayArray149[0] != null && l6 < aByteArrayArrayArray149[0].length &&
+				aByteArrayArrayArray149[0][l6] != null && k17 < aByteArrayArrayArray149[0][l6].length &&
+				(aByteArrayArrayArray149[0][l6][k17] & 2) != 0) {
+				return true;
+			}
+
+			// Check current plane condition
+			if (l < aByteArrayArrayArray149.length && aByteArrayArrayArray149[l] != null &&
+				l6 < aByteArrayArrayArray149[l].length && aByteArrayArrayArray149[l][l6] != null &&
+				k17 < aByteArrayArrayArray149[l][l6].length &&
+				(aByteArrayArrayArray149[l][l6][k17] & 0x10) == 0 &&
+				method182(k17, l, l6) == anInt131) {
+				return true;
+			}
+
+			return false;
+		} catch (Exception e) {
+			return true; // Default to allowing rendering if check fails
+		}
+	}
+
+	// Helper method for tile rendering
+	private void renderTileIfValid(WorldController worldController, int l, int l6, int k17,
+								   int l9, int j13, int j14, int k15, int k16) {
+
+		if (aByteArrayArrayArray142 == null || l >= aByteArrayArrayArray142.length ||
+			aByteArrayArrayArray142[l] == null || l6 >= aByteArrayArrayArray142[l].length ||
+			aByteArrayArrayArray142[l][l6] == null || k17 >= aByteArrayArrayArray142[l][l6].length) {
+			return;
+		}
+
+		if (aByteArrayArrayArray130 == null || l >= aByteArrayArrayArray130.length ||
+			aByteArrayArrayArray130[l] == null || l6 >= aByteArrayArrayArray130[l].length ||
+			aByteArrayArrayArray130[l][l6] == null || k17 >= aByteArrayArrayArray130[l][l6].length) {
+			return;
+		}
+
+		int l18 = aByteArrayArrayArray142[l][l6][k17] & 0xff;
+		int i19 = aByteArrayArrayArray130[l][l6][k17] & 0xff;
+
+		if (l18 > 0 || i19 > 0) {
+			// Safe height and lighting access
+			int j19 = safeGetHeight(anIntArrayArrayArray129, l, l6, k17, 0);
+			int k19 = safeGetHeight(anIntArrayArrayArray129, l, l6 + 1, k17, 0);
+			int l19 = safeGetHeight(anIntArrayArrayArray129, l, l6 + 1, k17 + 1, 0);
+			int i20 = safeGetHeight(anIntArrayArrayArray129, l, l6, k17 + 1, 0);
+
+			int j20 = safeGetLighting(anIntArrayArray139, l6, k17, 0);
+			int k20 = safeGetLighting(anIntArrayArray139, l6 + 1, k17, 0);
+			int l20 = safeGetLighting(anIntArrayArray139, l6 + 1, k17 + 1, 0);
+			int i21 = safeGetLighting(anIntArrayArray139, l6, k17 + 1, 0);
+
+			int j21 = -1;
+			int k21 = -1;
+
+			if (l18 > 0) {
+				int l21 = k15 != 0 ? (l9 * 256) / k15 : 0;
+				int j22 = k16 != 0 ? j13 / k16 : 0;
+				int l22 = k16 != 0 ? j14 / k16 : 0;
+				j21 = method177(l21, j22, l22);
+
+				if (l22 < 0) l22 = 0;
+				else if (l22 > 255) l22 = 255;
+				k21 = method177(l21, j22, l22);
+			}
+
+			if (l > 0) {
+				boolean flag = l18 != 0 || safeGetByte(aByteArrayArrayArray136, l, l6, k17, (byte)0) == 0;
+				if (i19 > 0 && OverlayFloor.overlayFloor != null && i19 - 1 < OverlayFloor.overlayFloor.length &&
+					!OverlayFloor.overlayFloor[i19 - 1].aBoolean393) {
+					flag = false;
+				}
+				if (flag && j19 == k19 && j19 == l19 && j19 == i20) {
+					if (anIntArrayArrayArray135 != null && l < anIntArrayArrayArray135.length &&
+						anIntArrayArrayArray135[l] != null && l6 < anIntArrayArrayArray135[l].length &&
+						anIntArrayArrayArray135[l][l6] != null && k17 < anIntArrayArrayArray135[l][l6].length) {
+						anIntArrayArrayArray135[l][l6][k17] |= 0x924;
+					}
+				}
+			}
+
+			int i22 = 0;
+			if (j21 != -1) {
+				i22 = Rasterizer.anIntArray1482[method187(k21, 96)];
+			}
+
+			if (i19 == 0) {
+				worldController.method279(l, l6, k17, 0, 0, -1, j19, k19, l19, i20,
+					method187(j21, j20), method187(j21, k20), method187(j21, l20),
+					method187(j21, i21), 0, 0, 0, 0, i22, 0, false);
+			} else {
+				renderOverlayFloor(worldController, l, l6, k17, i19, j19, k19, l19, i20,
+					j20, k20, l20, i21, j21, i22);
+			}
+		}
+	}
+
+	// Helper method for overlay floor rendering
+	private void renderOverlayFloor(WorldController worldController, int l, int l6, int k17, int i19,
+									int j19, int k19, int l19, int i20, int j20, int k20, int l20, int i21,
+									int j21, int i22) {
+		try {
+			int k22 = safeGetByte(aByteArrayArrayArray136, l, l6, k17, (byte)0) + 1;
+			byte byte4 = safeGetByte(aByteArrayArrayArray148, l, l6, k17, (byte)0);
+
+			if (i19 - 1 >= OverlayFloor.overlayFloor.length) {
+				i19 = OverlayFloor.overlayFloor.length;
+			}
+
+			if (OverlayFloor.overlayFloor == null || i19 - 1 < 0 || i19 - 1 >= OverlayFloor.overlayFloor.length) {
+				return;
+			}
+
+			OverlayFloor overlay_flo = OverlayFloor.overlayFloor[i19 - 1];
+			if (overlay_flo == null) return;
+
+			int textureId = overlay_flo.textureId;
+			int j23;
+			int k23;
+
+			if (textureId > 50) {
+				textureId = -1;
+			}
+
+			if (textureId >= 0) {
+				k23 = Rasterizer.method369(textureId);
+				j23 = -1;
+			} else if (overlay_flo.rgb == 0xff00ff) {
+				k23 = 0;
+				j23 = -2;
+				textureId = -1;
+			} else if (overlay_flo.rgb == 0x333333) {
+				k23 = Rasterizer.anIntArray1482[method185(overlay_flo.anInt399, 96)];
+				j23 = -2;
+				textureId = -1;
+			} else if ((i19 - 1) == 63) {
+				k23 = overlay_flo.rgb = 0x767676;
+				j23 = -2;
+				textureId = -1;
+			} else {
+				j23 = method177(overlay_flo.anInt394, overlay_flo.anInt395, overlay_flo.anInt396);
+				k23 = Rasterizer.anIntArray1482[method185(overlay_flo.anInt399, 96)];
+			}
+
+			// Special overlay handling
+			if ((i19 - 1) == 111) {
+				k23 = Rasterizer.method369(1);
+				j23 = -1;
+				textureId = 1;
+			} else if (j23 == 6363) {
+				k23 = 0x483B21;
+				j23 = method177(25, 146, 24);
+			} else if ((i19 - 1) == 64) {
+				k23 = overlay_flo.rgb;
+				j23 = -2;
+				textureId = -1;
+			} else if ((i19 - 1) == 63) {
+				k23 = overlay_flo.rgb = 0x767676;
+				j23 = -2;
+				textureId = -1;
+			} else if ((i19 - 1) == 54 || (i19 - 1) == 15) {
+				k23 = overlay_flo.rgb;
+				j23 = -2;
+				textureId = -1;
+			} else if ((i19 - 1) == 151) {
+				k23 = 0xfad83d;
+			}
+
+			if (overlay_flo.rgb == 0x000000 || (i19 - 1) == 28 || (i19 - 1) == 113 || (i19 - 1) == 6) {
+				textureId = 25;
+				k23 = Rasterizer.method369(25);
+				j23 = -1;
+			}
+
+			// Safe color collection
+			if (colors != null && colors.size() < 256 && !colors.contains(k23)) {
+				colors.add(k23);
+			}
+
+			worldController.method279(l, l6, k17, k22, byte4, textureId, j19, k19, l19, i20,
+				method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21),
+				method185(j23, j20), method185(j23, k20), method185(j23, l20), method185(j23, i21),
+				i22, k23, textureId >= 0 && textureId <= 50);
+
+		} catch (Exception e) {
+			System.err.println("[ERROR] renderOverlayFloor: Error rendering overlay at l=" + l + ", l6=" + l6 + ", k17=" + k17);
+		}
+	}
+
+	// Helper method for occlusion culling processing
+	private void processOcclusionCulling(int i2, int j2, int k2, int l2, int i3, int k3, int i4) {
+		if (anIntArrayArrayArray135 == null || i3 >= anIntArrayArrayArray135.length ||
+			anIntArrayArrayArray135[i3] == null || i4 >= anIntArrayArrayArray135[i3].length ||
+			anIntArrayArrayArray135[i3][i4] == null || k3 >= anIntArrayArrayArray135[i3][i4].length) {
+			return;
+		}
+
+		// Process X-axis occlusion
+		if ((anIntArrayArrayArray135[i3][i4][k3] & i2) != 0) {
+			processXAxisOcclusion(i2, l2, i3, k3, i4);
+		}
+
+		// Process Y-axis occlusion
+		if ((anIntArrayArrayArray135[i3][i4][k3] & j2) != 0) {
+			processYAxisOcclusion(j2, l2, i3, k3, i4);
+		}
+
+		// Process Z-axis occlusion
+		if ((anIntArrayArrayArray135[i3][i4][k3] & k2) != 0) {
+			processZAxisOcclusion(k2, l2, i3, k3, i4);
+		}
+	}
+
+	// Helper method for X-axis occlusion processing
+	private void processXAxisOcclusion(int i2, int l2, int i3, int k3, int i4) {
+		try {
+			int k4 = k3;
+			int l5 = k3;
+			int i7 = i3;
+			int k8 = i3;
+
+			// Find bounds
+			for (; k4 > 0 && safeCheckOcclusionFlag(anIntArrayArrayArray135, i3, i4, k4 - 1, i2); k4--);
+			for (; l5 < anInt147 && safeCheckOcclusionFlag(anIntArrayArrayArray135, i3, i4, l5 + 1, i2); l5++);
+
+			label0: for (; i7 > 0; i7--) {
+				for (int j10 = k4; j10 <= l5; j10++) {
+					if (!safeCheckOcclusionFlag(anIntArrayArrayArray135, i7 - 1, i4, j10, i2)) {
+						break label0;
+					}
+				}
+			}
+
+			label1: for (; k8 < l2; k8++) {
+				for (int k10 = k4; k10 <= l5; k10++) {
+					if (!safeCheckOcclusionFlag(anIntArrayArrayArray135, k8 + 1, i4, k10, i2)) {
+						break label1;
+					}
+				}
+			}
+
+			int l10 = ((k8 + 1) - i7) * ((l5 - k4) + 1);
+			if (l10 >= 8) {
+				char c1 = '\360';
+				int k14 = safeGetHeight(anIntArrayArrayArray129, k8, i4, k4, 0) - c1;
+				int l15 = safeGetHeight(anIntArrayArrayArray129, i7, i4, k4, 0);
+
+				WorldController.method277(l2, i4 * 128, l15, i4 * 128, l5 * 128 + 128, k14, k4 * 128, 1);
+
+				// Clear processed flags
+				for (int l16 = i7; l16 <= k8; l16++) {
+					for (int l17 = k4; l17 <= l5; l17++) {
+						safeClearOcclusionFlag(anIntArrayArrayArray135, l16, i4, l17, i2);
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("[ERROR] processXAxisOcclusion: Error at i3=" + i3 + ", k3=" + k3 + ", i4=" + i4);
+		}
+	}
+
+	// Helper method for Y-axis occlusion processing
+	private void processYAxisOcclusion(int j2, int l2, int i3, int k3, int i4) {
+		try {
+			int l4 = i4;
+			int i6 = i4;
+			int j7 = i3;
+			int l8 = i3;
+
+			// Find bounds
+			for (; l4 > 0 && safeCheckOcclusionFlag(anIntArrayArrayArray135, i3, l4 - 1, k3, j2); l4--);
+			for (; i6 < anInt146 && safeCheckOcclusionFlag(anIntArrayArrayArray135, i3, i6 + 1, k3, j2); i6++);
+
+			label2: for (; j7 > 0; j7--) {
+				for (int i11 = l4; i11 <= i6; i11++) {
+					if (!safeCheckOcclusionFlag(anIntArrayArrayArray135, j7 - 1, i11, k3, j2)) {
+						break label2;
+					}
+				}
+			}
+
+			label3: for (; l8 < l2; l8++) {
+				for (int j11 = l4; j11 <= i6; j11++) {
+					if (!safeCheckOcclusionFlag(anIntArrayArrayArray135, l8 + 1, j11, k3, j2)) {
+						break label3;
+					}
+				}
+			}
+
+			int k11 = ((l8 + 1) - j7) * ((i6 - l4) + 1);
+			if (k11 >= 8) {
+				char c2 = '\360';
+				int l14 = safeGetHeight(anIntArrayArrayArray129, l8, l4, k3, 0) - c2;
+				int i16 = safeGetHeight(anIntArrayArrayArray129, j7, l4, k3, 0);
+
+				WorldController.method277(l2, l4 * 128, i16, i6 * 128 + 128, k3 * 128, l14, k3 * 128, 2);
+
+				// Clear processed flags
+				for (int i17 = j7; i17 <= l8; i17++) {
+					for (int i18 = l4; i18 <= i6; i18++) {
+						safeClearOcclusionFlag(anIntArrayArrayArray135, i17, i18, k3, j2);
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("[ERROR] processYAxisOcclusion: Error at i3=" + i3 + ", k3=" + k3 + ", i4=" + i4);
+		}
+	}
+
+	// Helper method for Z-axis occlusion processing
+	private void processZAxisOcclusion(int k2, int l2, int i3, int k3, int i4) {
+		try {
+			int i5 = i4;
+			int j6 = i4;
+			int k7 = k3;
+			int i9 = k3;
+
+			// Find bounds
+			for (; k7 > 0 && safeCheckOcclusionFlag(anIntArrayArrayArray135, i3, i4, k7 - 1, k2); k7--);
+			for (; i9 < anInt147 && safeCheckOcclusionFlag(anIntArrayArrayArray135, i3, i4, i9 + 1, k2); i9++);
+
+			label4: for (; i5 > 0; i5--) {
+				for (int l11 = k7; l11 <= i9; l11++) {
+					if (!safeCheckOcclusionFlag(anIntArrayArrayArray135, i3, i5 - 1, l11, k2)) {
+						break label4;
+					}
+				}
+			}
+
+			label5: for (; j6 < anInt146; j6++) {
+				for (int i12 = k7; i12 <= i9; i12++) {
+					if (!safeCheckOcclusionFlag(anIntArrayArrayArray135, i3, j6 + 1, i12, k2)) {
+						break label5;
+					}
+				}
+			}
+
+			if (((j6 - i5) + 1) * ((i9 - k7) + 1) >= 4) {
+				int j12 = safeGetHeight(anIntArrayArrayArray129, i3, i5, k7, 0);
+
+				WorldController.method277(l2, i5 * 128, j12, j6 * 128 + 128, i9 * 128 + 128, j12, k7 * 128, 4);
+
+				// Clear processed flags
+				for (int k13 = i5; k13 <= j6; k13++) {
+					for (int i15 = k7; i15 <= i9; i15++) {
+						safeClearOcclusionFlag(anIntArrayArrayArray135, i3, k13, i15, k2);
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("[ERROR] processZAxisOcclusion: Error at i3=" + i3 + ", k3=" + k3 + ", i4=" + i4);
+		}
+	}
+
+	// Safe helper methods for array access
+	private static int safeGetHeight(int[][][] heightArray, int plane, int x, int y, int defaultValue) {
+		try {
+			if (heightArray != null &&
+				plane >= 0 && plane < heightArray.length &&
+				heightArray[plane] != null &&
+				x >= 0 && x < heightArray[plane].length &&
+				heightArray[plane][x] != null &&
+				y >= 0 && y < heightArray[plane][x].length) {
+				return heightArray[plane][x][y];
+			}
+		} catch (Exception e) {
+			// Silently return default value
+		}
+		return defaultValue;
+	}
+
+	private static byte safeGetByte(byte[][][] byteArray, int plane, int x, int y, byte defaultValue) {
+		try {
+			if (byteArray != null &&
+				plane >= 0 && plane < byteArray.length &&
+				byteArray[plane] != null &&
+				x >= 0 && x < byteArray[plane].length &&
+				byteArray[plane][x] != null &&
+				y >= 0 && y < byteArray[plane][x].length) {
+				return byteArray[plane][x][y];
+			}
+		} catch (Exception e) {
+			// Silently return default value
+		}
+		return defaultValue;
+	}
+
+	private static int safeGetLighting(int[][] lightArray, int x, int y, int defaultValue) {
+		try {
+			if (lightArray != null &&
+				x >= 0 && x < lightArray.length &&
+				lightArray[x] != null &&
+				y >= 0 && y < lightArray[x].length) {
+				return lightArray[x][y];
+			}
+		} catch (Exception e) {
+			// Silently return default value
+		}
+		return defaultValue;
+	}
+
+	private static boolean safeCheckOcclusionFlag(int[][][] occlusionArray, int plane, int x, int y, int flag) {
+		try {
+			if (occlusionArray != null &&
+				plane >= 0 && plane < occlusionArray.length &&
+				occlusionArray[plane] != null &&
+				x >= 0 && x < occlusionArray[plane].length &&
+				occlusionArray[plane][x] != null &&
+				y >= 0 && y < occlusionArray[plane][x].length) {
+				return (occlusionArray[plane][x][y] & flag) != 0;
+			}
+		} catch (Exception e) {
+			// Silently return false
+		}
+		return false;
+	}
+
+	private static void safeClearOcclusionFlag(int[][][] occlusionArray, int plane, int x, int y, int flag) {
+		try {
+			if (occlusionArray != null &&
+				plane >= 0 && plane < occlusionArray.length &&
+				occlusionArray[plane] != null &&
+				x >= 0 && x < occlusionArray[plane].length &&
+				occlusionArray[plane][x] != null &&
+				y >= 0 && y < occlusionArray[plane][x].length) {
+				occlusionArray[plane][x][y] &= ~flag;
+			}
+		} catch (Exception e) {
+			// Silently ignore errors
 		}
 	}
 

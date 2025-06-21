@@ -1,5 +1,6 @@
 package com.bestbudz.dock.ui.panel.bank;
 
+import com.bestbudz.dock.definitions.ItemBonusManager;
 import com.bestbudz.dock.util.SpriteUtil;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.ui.RSInterface;
@@ -133,6 +134,7 @@ public class BankItemPanel extends JPanel {
 		updateAmountText();
 	}
 
+	// Then update the updateTooltip() method in BankItemPanel:
 	private void updateTooltip() {
 		String newTooltip;
 
@@ -147,6 +149,9 @@ public class BankItemPanel extends JPanel {
 			}
 
 			tooltip.append("Item ID: ").append(itemId).append("<br/>");
+
+			// Add equipment bonuses section using ItemBonusManager
+			addEquipmentBonuses(tooltip);
 
 			if (itemDef.value > 1) {
 				if (itemId == 995) {
@@ -181,6 +186,94 @@ public class BankItemPanel extends JPanel {
 		if (!newTooltip.equals(cachedTooltip)) {
 			cachedTooltip = newTooltip;
 			setToolTipText(cachedTooltip);
+		}
+	}
+
+// Add these new methods to BankItemPanel:
+	/**
+	 * Adds equipment bonuses to the tooltip using ItemBonusManager
+	 */
+	private void addEquipmentBonuses(StringBuilder tooltip) {
+		try {
+			// Get item bonuses from the ItemBonusManager
+			short[] bonuses = ItemBonusManager.getBonuses(itemId);
+
+			if (bonuses == null || bonuses.length == 0) {
+				return; // No bonuses to display
+			}
+
+			// Check if item has any non-zero bonuses
+			boolean hasAnyBonuses = ItemBonusManager.hasEquipmentBonuses(itemId);
+			if (!hasAnyBonuses) {
+				return; // All bonuses are zero
+			}
+
+			tooltip.append("<br/><b>Bonuses:</b><br/>");
+
+			// Get bonus names for proper labeling
+			String[] bonusNames = ItemBonusManager.getBonusNames();
+
+			// Add assault bonuses (indices 0-4)
+			boolean hasAssaultBonuses = addBonusSection(tooltip, bonuses, bonusNames, 0, 5, "Assault:");
+
+			// Add aegis bonuses (indices 5-9)
+			boolean hasAegisBonuses = addBonusSection(tooltip, bonuses, bonusNames, 5, 10, "Aegis:");
+
+			// Add other bonuses (indices 10+)
+			boolean hasOtherBonuses = addBonusSection(tooltip, bonuses, bonusNames, 10, bonuses.length, "Extra:");
+
+			// Add a line break if we added any bonus sections
+			if (hasAssaultBonuses || hasAegisBonuses || hasOtherBonuses) {
+				tooltip.append("<br/>");
+			}
+
+		} catch (Exception e) {
+			System.err.println("Error adding equipment bonuses to bank tooltip: " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Adds a section of bonuses to the tooltip
+	 * @return true if any bonuses were added to this section
+	 */
+	private boolean addBonusSection(StringBuilder tooltip, short[] bonuses, String[] bonusNames,
+									int startIndex, int endIndex, String sectionName) {
+		boolean addedAny = false;
+		StringBuilder sectionText = new StringBuilder();
+
+		for (int i = startIndex; i < endIndex && i < bonuses.length; i++) {
+			if (bonuses[i] != 0) {
+				if (!addedAny) {
+					sectionText.append("<i>").append(sectionName).append("</i><br/>");
+					addedAny = true;
+				}
+
+				String bonusName = (bonusNames != null && i < bonusNames.length)
+					? bonusNames[i]
+					: "Bonus " + i;
+
+				String bonusText = formatBonus(bonuses[i]);
+				sectionText.append("&nbsp;&nbsp;").append(bonusName).append(": ").append(bonusText).append("<br/>");
+			}
+		}
+
+		if (addedAny) {
+			tooltip.append(sectionText);
+		}
+
+		return addedAny;
+	}
+
+	/**
+	 * Formats a bonus value with proper color and sign
+	 */
+	private String formatBonus(short bonus) {
+		if (bonus > 0) {
+			return "<font color='#00ff00'>+" + bonus + "</font>";
+		} else if (bonus < 0) {
+			return "<font color='#ff6666'>" + bonus + "</font>";
+		} else {
+			return "0";
 		}
 	}
 

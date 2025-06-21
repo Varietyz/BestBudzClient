@@ -3,7 +3,7 @@ package com.bestbudz.dock.ui.panel;
 import com.bestbudz.dock.ui.panel.bank.BankPanel;
 import com.bestbudz.dock.ui.panel.game.AchievementsPanel;
 import com.bestbudz.dock.ui.panel.game.InfoTabPanel;
-import com.bestbudz.dock.ui.panel.social.StonersPanel;
+import com.bestbudz.dock.ui.panel.social.stoners.StonersPanel;
 import com.bestbudz.dock.util.UIPanel;
 
 public enum DockPanelMapping {

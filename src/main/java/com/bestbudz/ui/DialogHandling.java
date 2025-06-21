@@ -2,26 +2,21 @@ package com.bestbudz.ui;
 
 import static com.bestbudz.cache.ResetIDKits.resetIdentityKits;
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.ui.handling.input.MouseState;
 import static com.bestbudz.engine.core.login.Login.updateConfigValues;
-import static com.bestbudz.ui.InterfaceManagement.clearTopInterfaces;
-import static com.bestbudz.ui.InterfaceManagement.drawInterfaceRecursive;
 import com.bestbudz.cache.IdentityKit;
 import static com.bestbudz.ui.InterfaceManagement.updateInterfaceAnimations;
-import static com.bestbudz.ui.interfaces.Chatbox.reportAbuseInput;
 import com.bestbudz.ui.interfaces.CustomInterfaces;
-import com.bestbudz.util.TextClass;
 
 public class DialogHandling extends Client
 {
 	public static void handleBackDialogOrChatbox() {
 		if (backDialogID == -1) {
 			aClass9_1059.scrollPosition = anInt1211 - anInt1089 - 110;
-			if (MouseState.x >= 496 && MouseState.x <= 511 && MouseState.y > frameHeight - 158) {
+			/*if (MouseState.x >= 496 && MouseState.x <= 511 && MouseState.y > frameHeight - 158) {
 				drawInterfaceRecursive(494, 110, MouseState.x,
 					MouseState.y - (frameHeight - 158), aClass9_1059, 0,
 					false, anInt1211);
-			}
+			}*/
 			int idealScroll = anInt1211 - 110 - aClass9_1059.scrollPosition;
 			idealScroll = Math.max(0, Math.min(idealScroll, anInt1211 - 110));
 			if (anInt1089 != idealScroll) {
@@ -63,27 +58,9 @@ public class DialogHandling extends Client
 
 			if (j == 51504)
 			{
-				System.out.println("[Dialog Handling] MATCHED: contentType 51504 - Profile view");
-				inputTaken = true;
-				inputDialogState = 0;
-				messagePromptRaised = true;
-				promptInput = "";
-				stonersListAction = 51504;
-				aString1121 = "Enter the stoner's profile you want to view.";
-				System.out.println("[Dialog Handling] Set stonersListAction to: " + stonersListAction);
-				System.out.println("[Dialog Handling] Set prompt message: " + aString1121);
 			}
 			if (j == 201)
 			{
-				System.out.println("[Dialog Handling] MATCHED: contentType 201 - Add stoner");
-				inputTaken = true;
-				inputDialogState = 0;
-				messagePromptRaised = true;
-				promptInput = "";
-				stonersListAction = 1;
-				aString1121 = "Enter name of stoner to add to list";
-				System.out.println("[Dialog Handling] Set stonersListAction to: " + stonersListAction);
-				System.out.println("[Dialog Handling] Set prompt message: " + aString1121);
 			}
 			if (j == 59800)
 			{
@@ -99,15 +76,6 @@ public class DialogHandling extends Client
 			}
 			if (j == 202)
 			{
-				System.out.println("[Dialog Handling] MATCHED: contentType 202 - Delete stoner");
-				inputTaken = true;
-				inputDialogState = 0;
-				messagePromptRaised = true;
-				promptInput = "";
-				stonersListAction = 2;
-				aString1121 = "Enter name of stoner to delete from list";
-				System.out.println("[Dialog Handling] Set stonersListAction to: " + stonersListAction);
-				System.out.println("[Dialog Handling] Set prompt message: " + aString1121);
 			}
 
 			// Log if none of the contentType conditions were met
@@ -146,38 +114,17 @@ public class DialogHandling extends Client
 
 		if (j == 501)
 		{
-			System.out.println("[Dialog Handling] MATCHED: contentType 501 - Add stoner (variant)");
-			inputTaken = true;
-			inputDialogState = 0;
-			messagePromptRaised = true;
-			promptInput = "";
-			stonersListAction = 4;
-			aString1121 = "Enter name of stoner to add to list";
-			System.out.println("[Dialog Handling] Set stonersListAction to: " + stonersListAction);
+
 		}
 
 		if (j == 502)
 		{
-			System.out.println("[Dialog Handling] MATCHED: contentType 502 - Delete stoner (variant)");
-			inputTaken = true;
-			inputDialogState = 0;
-			messagePromptRaised = true;
-			promptInput = "";
-			stonersListAction = 5;
-			aString1121 = "Enter name of stoner to delete from list";
-			System.out.println("[Dialog Handling] Set stonersListAction to: " + stonersListAction);
+
 		}
 
 		if (j == 550)
 		{
-			System.out.println("[Dialog Handling] MATCHED: contentType 550 - Join chat");
-			inputTaken = true;
-			inputDialogState = 0;
-			messagePromptRaised = true;
-			promptInput = "";
-			stonersListAction = 6;
-			aString1121 = "Enter the name of the chat you wish to join";
-			System.out.println("[Dialog Handling] Set stonersListAction to: " + stonersListAction);
+
 		}
 
 		// Identity kit handling (300-313)
@@ -266,19 +213,6 @@ public class DialogHandling extends Client
 
 		if (j >= 601 && j <= 612)
 		{
-			System.out.println("[Dialog Handling] MATCHED: Report abuse range (601-612), contentType: " + j);
-			clearTopInterfaces();
-			if (reportAbuseInput.length() > 0)
-			{
-				System.out.println("[Dialog Handling] Sending report abuse, input: " + reportAbuseInput);
-				stream.createFrame(218);
-				stream.writeQWord(TextClass.longForName(reportAbuseInput));
-				stream.writeWordBigEndian(j - 601);
-				stream.writeWordBigEndian(canMute ? 1 : 0);
-				System.out.println("[Dialog Handling] Report type: " + (j - 601) + ", canMute: " + canMute);
-			} else {
-				System.out.println("[Dialog Handling] Report abuse input is empty, not sending");
-			}
 		}
 
 		// Final state logging

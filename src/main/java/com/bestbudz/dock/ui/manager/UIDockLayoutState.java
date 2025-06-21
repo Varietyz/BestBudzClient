@@ -3,6 +3,7 @@ package com.bestbudz.dock.ui.manager;
 import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.dock.frame.UIDockFrame;
 import com.bestbudz.dock.frame.UIDockHelper;
+import com.bestbudz.dock.config.RegisteredPanels;
 
 import com.bestbudz.ui.handling.SettingHandler;
 import javax.swing.*;
@@ -11,57 +12,14 @@ import java.util.Map;
 
 public class UIDockLayoutState {
 
+	/**
+	 * Load default panel layout using centralized configuration
+	 */
 	public static void load(UIDockFrame frame) {
-		String layout = SettingsConfig.uiDockPanels;
+		// Set up default panel layout every time using config
+		setupDefaultLayout(frame);
 
-		boolean firstBoot = (layout == null || layout.trim().isEmpty());
-
-		// ✅ On first boot, inject and save default layout
-		if (firstBoot) {
-			layout = "Settings=top,Info Tab=bottom";
-			SettingsConfig.uiDockPanels = layout;
-			SettingHandler.save(); // only save once
-		}
-
-		if (!layout.isEmpty()) {
-			String[] entries = layout.split(",");
-			for (String entry : entries) {
-				String[] parts = entry.split("=");
-				if (parts.length != 2) continue;
-
-				String panelID = parts[0].trim();
-				String position = parts[1].trim();
-
-				frame.getPanelPositions().put(panelID, position);
-				Component panel = frame.getPanelMap().get(panelID);
-				if (panel == null) continue;
-
-				if ("top".equalsIgnoreCase(position)) {
-					if (!frame.getTopStack().isAncestorOf(panel)) {
-						frame.getBottomStack().remove(panel);
-						frame.getTopStack().add(panel, panelID);
-					}
-					if (frame.getTopVisiblePanelID() == null)
-						frame.setTopVisiblePanelID(panelID);
-				} else if ("bottom".equalsIgnoreCase(position)) {
-					if (!frame.getBottomStack().isAncestorOf(panel)) {
-						frame.getTopStack().remove(panel);
-						frame.getBottomStack().add(panel, panelID);
-					}
-					if (frame.getBottomVisiblePanelID() == null)
-						frame.setBottomVisiblePanelID(panelID);
-				}
-			}
-		}
-
-		if (frame.getTopVisiblePanelID() != null)
-			UIDockHelper.switchPanel(frame, frame.getTopStack(), frame.getTopLayout(), frame.getTopVisiblePanelID());
-
-		if (frame.getBottomVisiblePanelID() != null &&
-			!frame.getBottomVisiblePanelID().equals(frame.getTopVisiblePanelID()))
-			UIDockHelper.switchPanel(frame, frame.getBottomStack(), frame.getBottomLayout(), frame.getBottomVisiblePanelID());
-
-		// Restore divider position
+		// Only restore divider position if it was previously set
 		SwingUtilities.invokeLater(() -> {
 			if (SettingsConfig.uiDockDividerRatio > 0f) {
 				int total = frame.getSplitPane().getHeight();
@@ -69,6 +27,9 @@ public class UIDockLayoutState {
 					int loc = Math.round(SettingsConfig.uiDockDividerRatio * total);
 					frame.getSplitPane().setDividerLocation(loc);
 				}
+			} else {
+				// Default divider position (40% top, 60% bottom)
+				frame.getSplitPane().setResizeWeight(0.4);
 			}
 		});
 
@@ -76,25 +37,103 @@ public class UIDockLayoutState {
 		UIDockHelper.reflowToggleButtons();
 	}
 
+	/**
+	 * Configure the default panel layout using centralized configuration
+	 */
+	private static void setupDefaultLayout(UIDockFrame frame) {
+		// Clear any existing panel positions
+		frame.getPanelPositions().clear();
 
-	public static void save(UIDockFrame frame) {
-		// Save panel positions
-		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<String, String> entry : frame.getPanelPositions().entrySet()) {
-			sb.append(entry.getKey()).append('=').append(entry.getValue()).append(',');
+		// Get layout configuration from RegisteredPanels
+		String[] topPanels = RegisteredPanels.DefaultLayout.TOP_PANELS;
+		String[] bottomPanels = RegisteredPanels.DefaultLayout.BOTTOM_PANELS;
+
+		// Validate layout completeness if enabled
+		RegisteredPanels.validateLayoutCompleteness();
+
+		// Set up top panels
+		for (String panelID : topPanels) {
+			setupPanelInPosition(frame, panelID, "top");
 		}
-		if (sb.length() > 0) sb.setLength(sb.length() - 1);
-		SettingsConfig.uiDockPanels = sb.toString();
 
-		// Save divider location
-		if (frame.getSplitPane().getHeight() > 100) {
-			int fullHeight = frame.getSplitPane().getHeight();
-			int location = frame.getSplitPane().getDividerLocation();
-			SettingsConfig.uiDockDividerRatio = Math.max(0f, Math.min(1f, location / (float) fullHeight));
+		// Set up bottom panels
+		for (String panelID : bottomPanels) {
+			setupPanelInPosition(frame, panelID, "bottom");
 		}
 
-		// Save last active panel
-		SettingsConfig.uiDockLastActive = frame.getLastActivePanelID() != null ? frame.getLastActivePanelID() : "";
-		UIDockHelper.reflowToggleButtons();
+		// Handle any panels that weren't explicitly configured
+		handleUnconfiguredPanels(frame, topPanels, bottomPanels);
+
+		// Show the default visible panels
+		if (frame.getTopVisiblePanelID() != null) {
+			UIDockHelper.switchPanel(frame, frame.getTopStack(), frame.getTopLayout(), frame.getTopVisiblePanelID());
+		}
+
+		if (frame.getBottomVisiblePanelID() != null &&
+			!frame.getBottomVisiblePanelID().equals(frame.getTopVisiblePanelID())) {
+			UIDockHelper.switchPanel(frame, frame.getBottomStack(), frame.getBottomLayout(), frame.getBottomVisiblePanelID());
+		}
 	}
+
+	/**
+	 * Setup a panel in the specified position
+	 */
+	private static void setupPanelInPosition(UIDockFrame frame, String panelID, String position) {
+		frame.getPanelPositions().put(panelID, position);
+		Component panel = frame.getPanelMap().get(panelID);
+
+		if (panel != null) {
+			if ("top".equals(position)) {
+				// Remove from bottom if it's there
+				frame.getBottomStack().remove(panel);
+				// Add to top
+				frame.getTopStack().add(panel, panelID);
+
+				// Set first panel as visible
+				if (frame.getTopVisiblePanelID() == null) {
+					frame.setTopVisiblePanelID(panelID);
+				}
+			} else if ("bottom".equals(position)) {
+				// Remove from top if it's there
+				frame.getTopStack().remove(panel);
+				// Add to bottom
+				frame.getBottomStack().add(panel, panelID);
+
+				// Set first panel as visible
+				if (frame.getBottomVisiblePanelID() == null) {
+					frame.setBottomVisiblePanelID(panelID);
+				}
+			}
+		} else if (RegisteredPanels.PanelConfig.WARN_UNLISTED_PANELS) {
+			System.out.println("Warning: Panel '" + panelID + "' is configured in layout but not found in panel map.");
+		}
+	}
+
+	/**
+	 * Handle panels that exist but weren't explicitly configured in the layout
+	 */
+	private static void handleUnconfiguredPanels(UIDockFrame frame, String[] topPanels, String[] bottomPanels) {
+		// Get all panel IDs from the frame
+		for (String panelID : frame.getPanelMap().keySet()) {
+			// Skip if already configured
+			if (frame.getPanelPositions().containsKey(panelID)) {
+				continue;
+			}
+
+			// Check if it's in our configured arrays
+			boolean inTopConfig = java.util.Arrays.asList(topPanels).contains(panelID);
+			boolean inBottomConfig = java.util.Arrays.asList(bottomPanels).contains(panelID);
+
+			if (!inTopConfig && !inBottomConfig) {
+				// Panel exists but not configured - use default position
+				String defaultPosition = RegisteredPanels.PanelConfig.DEFAULT_PANEL_POSITION;
+				setupPanelInPosition(frame, panelID, defaultPosition);
+
+				if (RegisteredPanels.PanelConfig.WARN_UNLISTED_PANELS) {
+					System.out.println("Info: Panel '" + panelID + "' not in layout config, placed in " + defaultPosition + " dock.");
+				}
+			}
+		}
+	}
+
 }

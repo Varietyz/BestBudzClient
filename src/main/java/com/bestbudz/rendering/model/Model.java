@@ -42,8 +42,8 @@ public class Model extends Animable {
 		int[] anIntArray1668 = new int[8000];
 		int[] anIntArray1669 = new int[8000];
 		int[] anIntArray1670 = new int[8000];
-		int[] anIntArray1671 = new int[1500];
-		int[][] anIntArrayArray1672 = new int[1500][512];
+		int[] anIntArray1671 = new int[2000];
+		int[][] anIntArrayArray1672 = new int[2000][512];
 		int[] anIntArray1673 = new int[12];
 		int[][] anIntArrayArray1674 = new int[12][2000];
 		int[] anIntArray1675 = new int[2000];
@@ -2321,7 +2321,7 @@ public class Model extends Animable {
 		WorkSpace ws = workspace.get();
 		ws.clear();
 
-		for (int j = 0; j < anInt1652; j++)
+		for (int j = 0; j < anInt1652 && j < ws.anIntArray1671.length; j++)
 			ws.anIntArray1671[j] = 0;
 
 		for (int k = 0; k < anInt1630; k++)

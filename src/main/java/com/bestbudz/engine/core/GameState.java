@@ -1,5 +1,6 @@
 package com.bestbudz.engine.core;
 
+import com.bestbudz.cache.EmbeddedMapCache;
 import com.bestbudz.cache.Signlink;
 import static com.bestbudz.engine.ClientLauncher.initializeGPUAfterGraphicsLoad;
 import com.bestbudz.engine.gpu.GPUContextManager;
@@ -318,6 +319,9 @@ public class GameState extends Client {
 	/**
 	 * Enhanced resetGameState with GPU persistence
 	 */
+	/**
+	 * Enhanced resetGameState with embedded map loading integration
+	 */
 	public static void resetGameState() {
 		if (isResetting) {
 			logDebug("Reset already in progress, skipping");
@@ -328,7 +332,7 @@ public class GameState extends Client {
 		long startTime = System.currentTimeMillis();
 		long memoryBefore = getCurrentMemoryUsage();
 
-		logInfo("Starting GameState reset #" + (resetCount + 1) + " with GPU persistence");
+		logInfo("Starting GameState reset #" + (resetCount + 1) + " with embedded map cache");
 
 		try {
 			// PHASE 0: GPU STATE PRESERVATION
@@ -346,20 +350,23 @@ public class GameState extends Client {
 			// PHASE 4: Object management
 			ObjectManager objectManager = createObjectManagerSafe();
 
-			// PHASE 5: Main processing
-			performMainProcessingSafe(objectManager);
+			// PHASE 5: EMBEDDED MAP LOADING (NEW!)
+			int embeddedRegionsLoaded = loadEmbeddedMapsIfAvailable();
 
-			// PHASE 6: Model cleanup
+			// PHASE 6: Main processing (updated to handle embedded maps)
+			performMainProcessingSafeWithEmbedded(objectManager, embeddedRegionsLoaded);
+
+			// PHASE 7: Model cleanup
 			performModelCleanupSafe();
 
-			// PHASE 7: Final operations
+			// PHASE 8: Final operations
 			performFinalOperationsSafe();
 
-			// PHASE 8: GPU STATE RESTORATION
+			// PHASE 9: GPU STATE RESTORATION
 			restoreGPUState();
 
 			consecutiveErrors = 0;
-			logInfo("GameState reset completed successfully with GPU persistence");
+			logInfo("GameState reset completed successfully with " + embeddedRegionsLoaded + " embedded regions loaded");
 
 		} catch (Exception exception) {
 			handleResetError(exception);
@@ -730,8 +737,43 @@ public class GameState extends Client {
 		}
 	}
 
-	private static void performMainProcessingSafe(ObjectManager objectManager) {
-		logDebug("Phase 4: Main processing");
+	/**
+	 * NEW: Load embedded maps if available
+	 */
+	private static int loadEmbeddedMapsIfAvailable() {
+		logDebug("Phase 5: Loading embedded maps");
+
+		if (!EmbeddedMapCache.isReady()) {
+			logDebug("Embedded map cache not ready, using onDemandFetcher only");
+			return 0;
+		}
+
+		try {
+			long embeddedStartTime = System.currentTimeMillis();
+
+			// Load all possible regions from embedded cache
+			int embeddedCount = EmbeddedMapCache.loadAllEmbeddedRegions();
+
+			long embeddedLoadTime = System.currentTimeMillis() - embeddedStartTime;
+
+			if (embeddedCount > 0) {
+				logInfo("🚀 Loaded " + embeddedCount + " regions instantly from embedded cache in " +
+					embeddedLoadTime + "ms (avg: " + (embeddedLoadTime / embeddedCount) + "ms/region)");
+			}
+
+			return embeddedCount;
+
+		} catch (Exception e) {
+			logError("Error loading embedded maps: " + e.getMessage());
+			return 0;
+		}
+	}
+
+	/**
+	 * UPDATED: Main processing with embedded map awareness
+	 */
+	private static void performMainProcessingSafeWithEmbedded(ObjectManager objectManager, int embeddedRegionsLoaded) {
+		logDebug("Phase 6: Main processing (with " + embeddedRegionsLoaded + " embedded regions)");
 
 		try {
 			if (aByteArrayArray1183 == null) {
@@ -740,12 +782,12 @@ public class GameState extends Client {
 			}
 
 			int k2 = aByteArrayArray1183.length;
-			logDebug("Processing " + k2 + " byte arrays");
+			logDebug("Processing " + k2 + " regions (" + embeddedRegionsLoaded + " from embedded cache)");
 
 			stream.createFrame(0);
 
 			if (!aBoolean1159) {
-				processNormalModeSafe(objectManager, k2);
+				processNormalModeWithEmbedded(objectManager, k2, embeddedRegionsLoaded);
 			} else {
 				processSpecialModeSafe(objectManager);
 			}
@@ -754,7 +796,108 @@ public class GameState extends Client {
 			logDebug("Main processing completed");
 
 		} catch (Exception e) {
-			logError("Error in performMainProcessingSafe: " + e.getMessage());
+			logError("Error in performMainProcessingSafeWithEmbedded: " + e.getMessage());
+			throw e;
+		}
+	}
+
+	/**
+	 * UPDATED: Process normal mode with embedded map optimization
+	 */
+	private static void processNormalModeWithEmbedded(ObjectManager objectManager, int k2, int embeddedRegionsLoaded) {
+		logDebug("Processing normal mode with " + k2 + " regions (" + embeddedRegionsLoaded + " embedded)");
+
+		try {
+			// PASS 1: Process map data (many regions already loaded from embedded cache)
+			for (int i3 = 0; i3 < k2; i3++) {
+				if (i3 >= aByteArrayArray1183.length || i3 >= anIntArray1234.length) {
+					logError("Index " + i3 + " exceeds array bounds in normal mode pass 1");
+					break;
+				}
+
+				if (aByteArrayArray1183[i3] != null) {
+					int i4 = (anIntArray1234[i3] >> 8) * 64 - baseX;
+					int k5 = (anIntArray1234[i3] & 0xff) * 64 - baseY;
+
+					if (isValidMapCoordinate(i4, k5, i3)) {
+						try {
+							objectManager.method180(aByteArrayArray1183[i3], k5, i4,
+								(anInt1069 - 6) * 8, (anInt1070 - 6) * 8, aClass11Array1230);
+						} catch (ArrayIndexOutOfBoundsException e) {
+							logError("ObjectManager.method180 bounds error at (" + i4 + "," + k5 + ") for index " + i3 + ": " + e.getMessage());
+						}
+					} else {
+						logError("Invalid coordinates for method180: i4=" + i4 + ", k5=" + k5 + " (index=" + i3 + ")");
+					}
+				}
+			}
+
+			// PASS 2: Handle null regions (not loaded yet) - these will use onDemandFetcher
+			if (anInt1070 < 800) {
+				int nullRegionsProcessed = 0;
+				for (int j4 = 0; j4 < k2; j4++) {
+					if (j4 >= aByteArrayArray1183.length || j4 >= anIntArray1234.length) {
+						logError("Index " + j4 + " exceeds array bounds in normal mode pass 2");
+						break;
+					}
+
+					if (aByteArrayArray1183[j4] == null) {
+						nullRegionsProcessed++;
+						int l5 = (anIntArray1234[j4] >> 8) * 64 - baseX;
+						int k7 = (anIntArray1234[j4] & 0xff) * 64 - baseY;
+
+						if (isValidMapCoordinate(l5, k7, j4)) {
+							try {
+								objectManager.method174(k7, 64, 64, l5);
+							} catch (ArrayIndexOutOfBoundsException e) {
+								logError("ObjectManager.method174 bounds error at (" + l5 + "," + k7 + ") for index " + j4 + ": " + e.getMessage());
+							}
+						}
+					}
+				}
+
+				if (nullRegionsProcessed > 0) {
+					logDebug("Processed " + nullRegionsProcessed + " null regions (pending onDemandFetcher)");
+				}
+			}
+
+			// Update network statistics
+			anInt1097++;
+			if (anInt1097 > 160) {
+				anInt1097 = 0;
+				stream.createFrame(238);
+				stream.writeWordBigEndian(96);
+			}
+
+			stream.createFrame(0);
+
+			// PASS 3: Process landscape data (also benefits from embedded cache)
+			if (aByteArrayArray1247 != null) {
+				for (int i6 = 0; i6 < k2; i6++) {
+					if (i6 >= aByteArrayArray1247.length || i6 >= anIntArray1234.length) {
+						logError("Index " + i6 + " exceeds array bounds in normal mode pass 3");
+						break;
+					}
+
+					if (aByteArrayArray1247[i6] != null) {
+						int l8 = (anIntArray1234[i6] >> 8) * 64 - baseX;
+						int k9 = (anIntArray1234[i6] & 0xff) * 64 - baseY;
+
+						if (isValidMapCoordinate(l8, k9, i6)) {
+							try {
+								objectManager.method190(l8, aClass11Array1230, k9, worldController, aByteArrayArray1247[i6]);
+							} catch (ArrayIndexOutOfBoundsException e) {
+								logError("ObjectManager.method190 bounds error at (" + l8 + "," + k9 + ") for index " + i6 + ": " + e.getMessage());
+							}
+						}
+					}
+				}
+			} else {
+				logError("aByteArrayArray1247 is null, skipping method190 calls");
+			}
+
+		} catch (Exception e) {
+			logError("Error in processNormalModeWithEmbedded: " + e.getMessage());
 			throw e;
 		}
 	}
@@ -1269,7 +1412,7 @@ public class GameState extends Client {
 				" - Memory: " + memoryBefore + "KB -> " + memoryAfter + "KB" +
 				" - Delta: " + (memoryDelta > 0 ? "+" : "") + memoryDelta + "KB" +
 				" - Peak: " + peakMemoryUsage + "KB" +
-				" - Errors: " + consecutiveErrors +
+				" - LoadingErrorScreen: " + consecutiveErrors +
 				" - GPU Valid: " + gpuStateValid);
 		}
 
@@ -1312,7 +1455,7 @@ public class GameState extends Client {
 	// ===== PUBLIC API =====
 
 	public static String getRenderingStatistics() {
-		return String.format("Rendering Stats - Total calls: %d, Errors: %d, Prevented: %d, " +
+		return String.format("Rendering Stats - Total calls: %d, LoadingErrorScreen: %d, Prevented: %d, " +
 				"Effectiveness: %.1f%%, Memory: %dKB, Map: %dx%d, GPU Valid: %s",
 			totalRenderCalls,
 			renderingErrors,
@@ -1326,7 +1469,7 @@ public class GameState extends Client {
 
 	public static String getResetStatistics() {
 		return String.format("GameState Stats - Resets: %d, Last: %dms ago, Peak Memory: %dKB, " +
-				"Current: %dKB, Errors: %d, Map: %dx%d, GPU: %s",
+				"Current: %dKB, LoadingErrorScreen: %d, Map: %dx%d, GPU: %s",
 			resetCount,
 			lastResetTime > 0 ? System.currentTimeMillis() - lastResetTime : -1,
 			peakMemoryUsage,

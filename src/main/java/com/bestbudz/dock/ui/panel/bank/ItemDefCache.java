@@ -1,6 +1,7 @@
 package com.bestbudz.dock.ui.panel.bank;
 
-import com.bestbudz.data.ItemDef;
+import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
+import com.bestbudz.data.items.ItemDef;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -32,7 +33,7 @@ public class ItemDefCache {
 
 	private static CachedItemDef load(int itemId) {
 		try {
-			ItemDef def = ItemDef.getItemDefinition(itemId);
+			ItemDef def = getItemDefinition(itemId);
 			if (def != null) {
 				return new CachedItemDef(
 					def.name != null ? def.name : "Unknown Item",

@@ -1,7 +1,9 @@
 package com.bestbudz.cache;
 
-import com.bestbudz.data.ItemDef;
-import static com.bestbudz.data.ItemDef.getSprite;
+import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
+import com.bestbudz.data.items.ItemDef;
+import static com.bestbudz.data.items.ItemDef.getSprite;
+import static com.bestbudz.entity.pets.PetItemCreator.totalItemsAvailable;
 import com.bestbudz.graphics.sprite.Sprite;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -16,9 +18,10 @@ public class SpriteDumper
 		int errorCount = 0;
 		int alreadyExistsCount = 0;
 
-		for (int id = 0; id < ItemDef.totalItems; id++) {
+		int maxItemId = Math.max(ItemDef.totalItems, totalItemsAvailable); // Extend to include pet items
+		for (int id = 0; id < maxItemId; id++) {
 			try {
-				ItemDef item = ItemDef.getItemDefinition(id);
+				ItemDef item = getItemDefinition(id);
 				if (item == null) {
 					System.out.println("Skipping item ID " + id + ": ItemDef is null");
 					skipCount++;
@@ -63,7 +66,7 @@ public class SpriteDumper
 		System.out.println("Successfully saved: " + successCount + " sprites");
 		System.out.println("Skipped: " + skipCount + " items");
 		System.out.println("Already existed: " + alreadyExistsCount + " items");
-		System.out.println("Errors: " + errorCount + " items");
+		System.out.println("LoadingErrorScreen: " + errorCount + " items");
 	}
 
 	public static boolean saveSpriteAsImage(Sprite sprite, String path) {

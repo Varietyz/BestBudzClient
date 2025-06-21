@@ -7,12 +7,13 @@ import static com.bestbudz.engine.ClientLauncher.gpuInitialized;
 import static com.bestbudz.engine.ClientLauncher.initializeGPUAfterGraphicsLoad;
 import static com.bestbudz.engine.core.GameState.runSceneRendering;
 import static com.bestbudz.engine.core.GameState.validateGPUStateIfNeeded;
+import static com.bestbudz.engine.core.LoadingErrorScreen.showErrorScreen;
+import static com.bestbudz.engine.core.LoadingScreen.showBootScreen;
 import com.bestbudz.engine.gpu.GPUContextManager;
 import com.bestbudz.engine.gpu.GPURenderingEngine;
 import static com.bestbudz.engine.gpu.GPURenderingEngine.initialized;
 import com.bestbudz.engine.gpu.GPUShaders;
-import static com.bestbudz.engine.gpu.OpenGLRasterizer.renderDebugTriangle;
-import static com.bestbudz.ui.handling.Errors.showErrorScreen;
+import com.bestbudz.graphics.text.TextController;
 import static com.bestbudz.engine.core.gamerender.Camera.setCameraPos;
 import static com.bestbudz.ui.handling.input.Keyboard.console;
 import static com.bestbudz.ui.handling.input.Keyboard.keyArray;
@@ -50,8 +51,8 @@ import static com.bestbudz.world.WalkTo.handleWalkToObject;
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.data.AccountData;
 import com.bestbudz.data.AccountManager;
-import com.bestbudz.data.Item;
-import com.bestbudz.data.ItemDef;
+import com.bestbudz.data.items.Item;
+import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.data.Skills;
 import com.bestbudz.dock.util.DockSync;
 import com.bestbudz.engine.config.ColorConfig;
@@ -72,7 +73,6 @@ import com.bestbudz.graphics.FogHandler;
 import com.bestbudz.engine.core.gamerender.Texture;
 import com.bestbudz.graphics.buffer.ImageProducer;
 import com.bestbudz.graphics.sprite.Sprite;
-import com.bestbudz.graphics.text.RSFont;
 import com.bestbudz.graphics.text.TextDrawingArea;
 import com.bestbudz.network.OnDemandData;
 import com.bestbudz.network.OnDemandFetcher;
@@ -134,9 +134,9 @@ public class Client extends ClientEngine
 	public static final RSInterface aClass9_1059 = new RSInterface();
 	public static final int currencies = 11;
 	public static final Sprite[] currencyImage = new Sprite[currencies];
-	public static final int[] tabAmounts = new int[]{350, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	public static final int[] bankInvTemp = new int[352];
-	public static final int[] bankStackTemp = new int[352];
+	public static final int[] tabAmounts = new int[]{420, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	public static final int[] bankInvTemp = new int[420];
+	public static final int[] bankStackTemp = new int[420];
 	public static final int[] sideIconsX = {17, 49, 83, 114, 146, 180, 214, 16, 49, 82, 116, 148, 184, 216};
 	public static final int[] sideIconsY = {9, 7, 6, 5, 2, 3, 7, 306, 306, 306, 302, 305, 303, 303, 303};
 	public static final int[] sideIconsId = {0, 1, 2, 3, 4, 5, 6, 15, 8, 9, 7, 11, 12, -1};
@@ -193,7 +193,6 @@ public class Client extends ClientEngine
 	public static final boolean genericLoadingError = false;
 	public static final int[] anIntArray1203 = new int[5];
 	public static final int[] anIntArray1207 = new int[50];
-	public static final Sprite[] modIcons = new Sprite[EngineConfig.ICON_AMOUNT];
 	public static final int[] anIntArray1229 = new int[152];
 public static final int[] anIntArray1240 = new int[100];
 	public static final int[] anIntArray1241 = new int[50];
@@ -241,9 +240,9 @@ public static final int[] anIntArray1240 = new int[100];
 	public static TextDrawingArea smallText;
 	public static TextDrawingArea regularText;
 	public static TextDrawingArea boldText;
-	public static RSFont newRegularFont;
-	public static RSFont newBoldFont;
-	public static RSFont newFancyFont;
+	public static TextController newRegularFont;
+	public static TextController newBoldFont;
+	public static TextController newFancyFont;
 	public static int backDialogID;
 	public static String server = "";
 	public static boolean rememberMe = false;
@@ -310,7 +309,7 @@ public static final int[] anIntArray1240 = new int[100];
 	public static int anInt1315;
 	public static int anInt1500;
 	public static int anInt1501;
-	public static RSFont newSmallFont;
+	public static TextController newSmallFont;
 	public static String[] feedKiller = new String[5];
 	public static String[] feedVictim = new String[5];
 	public static int[] feedWeapon = new int[5];
@@ -2359,7 +2358,7 @@ public static final int[] anIntArray1240 = new int[100];
 
 		// Rest of method unchanged...
 		if (rsAlreadyLoaded || loadingError || genericLoadingError) {
-			showErrorScreen(g);
+			LoadingErrorScreen.showErrorScreen(g, canvas); // Keep original error screen
 			return;
 		}
 		if (!loggedIn)
