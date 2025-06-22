@@ -1,6 +1,5 @@
 package com.bestbudz.engine.gpu;
 
-import org.lwjgl.opengl.*;
 import org.lwjgl.system.MemoryUtil;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -338,7 +337,7 @@ public final class OpenGLRasterizer {
 		// Upload each texture
 		int validTextures = 0;
 		for (int i = 0; i < Math.min(MAX_TEXTURES, com.bestbudz.engine.core.gamerender.Rasterizer.textureAmount); i++) {
-			if (com.bestbudz.engine.core.gamerender.Rasterizer.aBackgroundArray1474s[i] != null) {
+			if (com.bestbudz.engine.core.gamerender.Rasterizer.backgroundTextures[i] != null) {
 				try {
 					uploadTextureToLayer(i);
 					validTextures++;
@@ -367,7 +366,7 @@ public final class OpenGLRasterizer {
 	}
 
 	private static void uploadTextureToLayer(int textureIndex) {
-		int[][] mipmaps = com.bestbudz.engine.core.gamerender.Rasterizer.method371(textureIndex);
+		int[][] mipmaps = com.bestbudz.engine.core.gamerender.Rasterizer.getMipmapTexels(textureIndex);
 
 		if (mipmaps == null || mipmaps.length == 0) {
 			return;

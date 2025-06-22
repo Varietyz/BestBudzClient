@@ -241,8 +241,8 @@ public class GPUShaders {
 
 		try {
 			// Search a subset of the palette for performance
-			for (int i = 0; i < Math.min(1000, com.bestbudz.engine.core.gamerender.Rasterizer.anIntArray1482.length); i++) {
-				int paletteRGB = com.bestbudz.engine.core.gamerender.Rasterizer.anIntArray1482[i];
+			for (int i = 0; i < Math.min(1000, com.bestbudz.engine.core.gamerender.Rasterizer.colorPalette.length); i++) {
+				int paletteRGB = com.bestbudz.engine.core.gamerender.Rasterizer.colorPalette[i];
 				int pr = (paletteRGB >> 16) & 0xFF;
 				int pg = (paletteRGB >> 8) & 0xFF;
 				int pb = paletteRGB & 0xFF;

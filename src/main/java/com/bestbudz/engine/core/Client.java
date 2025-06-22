@@ -728,20 +728,20 @@ public static final int[] anIntArray1240 = new int[100];
 
 	public static void setBounds()
 	{
-		Rasterizer.method365(frameWidth, frameHeight);
-		fullScreenTextureArray = Rasterizer.anIntArray1472;
-		Rasterizer.method365(frameWidth, frameHeight);
-		anIntArray1180 = Rasterizer.anIntArray1472;
-		Rasterizer.method365(frameWidth, frameHeight);
-		anIntArray1181 = Rasterizer.anIntArray1472;
-		Rasterizer.method365(frameWidth, frameHeight);
-		anIntArray1182 = Rasterizer.anIntArray1472;
+		Rasterizer.setViewportSize(frameWidth, frameHeight);
+		fullScreenTextureArray = Rasterizer.scanlineOffsets;
+		Rasterizer.setViewportSize(frameWidth, frameHeight);
+		anIntArray1180 = Rasterizer.scanlineOffsets;
+		Rasterizer.setViewportSize(frameWidth, frameHeight);
+		anIntArray1181 = Rasterizer.scanlineOffsets;
+		Rasterizer.setViewportSize(frameWidth, frameHeight);
+		anIntArray1182 = Rasterizer.scanlineOffsets;
 		int[] ai = new int[9];
 		for (int i8 = 0; i8 < 9; i8++)
 		{
 			int k8 = 128 + i8 * 32 + 15;
 			int l8 = 600 + k8 * 3;
-			int i9 = Rasterizer.anIntArray1470[k8];
+			int i9 = Rasterizer.sinTable[k8];
 			ai[i8] = l8 * i9 >> 16;
 		}
 
@@ -789,7 +789,7 @@ public static final int[] anIntArray1240 = new int[100];
 	public static void setHighMem()
 	{
 		WorldController.lowMem = false;
-		Rasterizer.lowMem = false;
+		Rasterizer.lowMemoryMode = false;
 		lowMem = false;
 		ObjectManager.lowMem = false;
 		ObjectDef.lowMem = false;
@@ -1210,8 +1210,8 @@ public static final int[] anIntArray1240 = new int[100];
 		i1 = j2;
 		if (l >= 50)
 		{
-			spriteDrawX = Rasterizer.centerX + (i << WorldController.viewDistance) / l;
-			spriteDrawY = Rasterizer.centerY + (i1 << WorldController.viewDistance) / l;
+			spriteDrawX = Rasterizer.viewportCenterX + (i << WorldController.viewDistance) / l;
+			spriteDrawY = Rasterizer.viewportCenterY + (i1 << WorldController.viewDistance) / l;
 		}
 		else
 		{
@@ -1690,7 +1690,7 @@ public static final int[] anIntArray1240 = new int[100];
 		int j1 = yCameraPos;
 		int k1 = yCameraCurve;
 		int l1 = xCameraCurve;
-		int k2 = Rasterizer.anInt1481;
+		int k2 = Rasterizer.textureAccessCounter;
 		for (int i2 = 0; i2 < 5; i2++)
 			if (aBooleanArray876[i2])
 			{

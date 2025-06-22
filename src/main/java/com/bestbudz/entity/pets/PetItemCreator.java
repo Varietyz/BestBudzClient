@@ -2,11 +2,12 @@ package com.bestbudz.entity.pets;
 
 import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.entity.EntityDef;
-import static com.bestbudz.entity.pets.variants.CorpVariant.corpPet;
-import static com.bestbudz.entity.pets.variants.GraardorVariant.graardorPet;
-import static com.bestbudz.entity.pets.variants.JadVariant.jadPet;
-import static com.bestbudz.entity.pets.variants.KBDVariant.kbdPet;
-import static com.bestbudz.entity.pets.variants.ZilyanaVariant.zilyanaPet;
+import static com.bestbudz.entity.pets.petvariants.CorpVariant.corpPet;
+import static com.bestbudz.entity.pets.npcvariants.DarkBeastNPCVariant.darkbeastPet;
+import static com.bestbudz.entity.pets.petvariants.GraardorVariant.graardorPet;
+import static com.bestbudz.entity.pets.petvariants.JadVariant.jadPet;
+import static com.bestbudz.entity.pets.petvariants.KBDVariant.kbdPet;
+import static com.bestbudz.entity.pets.petvariants.ZilyanaVariant.zilyanaPet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -113,8 +114,11 @@ public class PetItemCreator
 		npcToItemMap.put(corpPetStages++, itemId++); // 13271
 		npcToItemMap.put(corpPetStages++, itemId++); // 13272
 		npcToItemMap.put(corpPetStages++, itemId++); // 13273
+
+		// Dark Beast NPC
+		npcToItemMap.put(darkbeastPet, itemId++); // 13274
 	}
-	public static int totalItemsAvailable = 13273; // UPDATE FOR ITEM DUMP INCLUSION
+	public static int totalItemsAvailable = 13283; // UPDATE FOR ITEM DUMP INCLUSION
 
 	private static void initializeRotationMappings() {
 		// Define custom rotations for each item
@@ -180,6 +184,8 @@ public class PetItemCreator
 		itemRotationMap.put(newItems++, new ModelRotationData(360, 0, 0, 4500));
 		itemRotationMap.put(newItems++, new ModelRotationData(360, 0, 0, 4000));
 
+		// Dark Beast
+		itemRotationMap.put(newItems++, new ModelRotationData(360, 0, 0, 3500));
 	}
 
 	public static int getItemForNPC(int npcId) {
@@ -316,7 +322,7 @@ public class PetItemCreator
 	}
 
 	private static boolean isScaleVariant(int npcId) {
-		// Mini/Giant variants (size-based)
+		// Mini/Giant petvariants (size-based)
 		return npcId == 10001 || npcId == 10002; // Mini Jad, Giant Jad
 	}
 
@@ -335,7 +341,7 @@ public class PetItemCreator
 	}
 
 	private static boolean hasSpecialActions(int npcId) {
-		// Variants with unique actions (most variants have special actions)
+		// Variants with unique actions (most petvariants have special actions)
 		return npcId >= 10000 && npcId != 10001; // All except mini jad which only has "Examine"
 	}
 

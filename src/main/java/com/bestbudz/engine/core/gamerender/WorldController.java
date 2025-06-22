@@ -1626,20 +1626,20 @@ public void method312(int i, int j) {
 		if (j3 < 50) return;
 
 		// Project to screen coordinates
-		int i5 = Rasterizer.centerX + (i2 << viewDistance) / k2;
-		int j5 = Rasterizer.centerY + (l3 << viewDistance) / k2;
-		int k5 = Rasterizer.centerX + (i3 << viewDistance) / j2;
-		int l5 = Rasterizer.centerY + (i4 << viewDistance) / j2;
-		int i6 = Rasterizer.centerX + (l2 << viewDistance) / k3;
-		int j6 = Rasterizer.centerY + (j4 << viewDistance) / k3;
-		int k6 = Rasterizer.centerX + (l1 << viewDistance) / j3;
-		int l6 = Rasterizer.centerY + (k4 << viewDistance) / j3;
+		int i5 = Rasterizer.viewportCenterX + (i2 << viewDistance) / k2;
+		int j5 = Rasterizer.viewportCenterY + (l3 << viewDistance) / k2;
+		int k5 = Rasterizer.viewportCenterX + (i3 << viewDistance) / j2;
+		int l5 = Rasterizer.viewportCenterY + (i4 << viewDistance) / j2;
+		int i6 = Rasterizer.viewportCenterX + (l2 << viewDistance) / k3;
+		int j6 = Rasterizer.viewportCenterY + (j4 << viewDistance) / k3;
+		int k6 = Rasterizer.viewportCenterX + (l1 << viewDistance) / j3;
+		int l6 = Rasterizer.viewportCenterY + (k4 << viewDistance) / j3;
 
-		Rasterizer.anInt1465 = 0;
+		Rasterizer.alphaBlendValue = 0;
 
 		// First triangle
 		if ((i6 - k6) * (l5 - l6) - (j6 - l6) * (k5 - k6) > 0) {
-			Rasterizer.aBoolean1462 = i6 < 0 || k6 < 0 || k5 < 0 || i6 > DrawingArea.centerX || k6 > DrawingArea.centerX || k5 > DrawingArea.centerX;
+			Rasterizer.enableClipping = i6 < 0 || k6 < 0 || k5 < 0 || i6 > DrawingArea.centerX || k6 > DrawingArea.centerX || k5 > DrawingArea.centerX;
 
 			if (aBoolean467 && method318(anInt468, anInt469, j6, l6, l5, i6, k6, k5)) {
 				anInt470 = j1;
@@ -1648,26 +1648,26 @@ public void method312(int i, int j) {
 
 			if (class43.anInt720 == -1 || class43.anInt720 > 50) {
 				if (class43.anInt718 != 0xbc614e) {
-					Rasterizer.method374(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717, k3, j3, j2);
+					Rasterizer.renderTriangle(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717, k3, j3, j2);
 				}
 			} else if (!lowMem) {
 				if (class43.aBoolean721) {
-					Rasterizer.method378(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717,
+					Rasterizer.renderTexturedTriangle(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717,
 						i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720, k3, j3, j2);
 				} else {
-					Rasterizer.method378(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717,
+					Rasterizer.renderTexturedTriangle(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717,
 						l2, l1, i3, j4, k4, i4, k3, j3, j2, class43.anInt720, k3, j3, j2);
 				}
 			} else {
 				int i7 = anIntArray485[class43.anInt720];
-				Rasterizer.method374(j6, l6, l5, i6, k6, k5, method317(i7, class43.anInt718),
+				Rasterizer.renderTriangle(j6, l6, l5, i6, k6, k5, method317(i7, class43.anInt718),
 					method317(i7, class43.anInt719), method317(i7, class43.anInt717), k3, j3, j2);
 			}
 		}
 
 		// Second triangle
 		if ((i5 - k5) * (l6 - l5) - (j5 - l5) * (k6 - k5) > 0) {
-			Rasterizer.aBoolean1462 = i5 < 0 || k5 < 0 || k6 < 0 || i5 > DrawingArea.centerX || k5 > DrawingArea.centerX || k6 > DrawingArea.centerX;
+			Rasterizer.enableClipping = i5 < 0 || k5 < 0 || k6 < 0 || i5 > DrawingArea.centerX || k5 > DrawingArea.centerX || k6 > DrawingArea.centerX;
 
 			if (aBoolean467 && method318(anInt468, anInt469, j5, l5, l6, i5, k5, k6)) {
 				anInt470 = j1;
@@ -1676,16 +1676,16 @@ public void method312(int i, int j) {
 
 			if (class43.anInt720 == -1 || class43.anInt720 > 50) {
 				if (class43.anInt716 != 0xbc614e) {
-					Rasterizer.method374(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719, k2, j2, j3);
+					Rasterizer.renderTriangle(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719, k2, j2, j3);
 				}
 			} else {
 				if (!lowMem) {
-					Rasterizer.method378(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719,
+					Rasterizer.renderTexturedTriangle(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719,
 						i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720, k2, j2, j3);
 					return;
 				}
 				int j7 = anIntArray485[class43.anInt720];
-				Rasterizer.method374(j5, l5, l6, i5, k5, k6, method317(j7, class43.anInt716),
+				Rasterizer.renderTriangle(j5, l5, l6, i5, k5, k6, method317(j7, class43.anInt716),
 					method317(j7, class43.anInt717), method317(j7, class43.anInt719), k2, j2, j3);
 			}
 		}
@@ -1708,12 +1708,12 @@ public void method312(int i, int j) {
 			if (i3 < 50) {
 				return;
 			}
-			Class40.anIntArray688[l1] = Rasterizer.centerX + (i2 << viewDistance) / i3;
-			Class40.anIntArray689[l1] = Rasterizer.centerY + (k2 << viewDistance) / i3;
+			Class40.anIntArray688[l1] = Rasterizer.viewportCenterX + (i2 << viewDistance) / i3;
+			Class40.anIntArray689[l1] = Rasterizer.viewportCenterY + (k2 << viewDistance) / i3;
 			Class40.depthPoint[l1] = i3;
 		}
 
-		Rasterizer.anInt1465 = 0;
+		Rasterizer.alphaBlendValue = 0;
 		k1 = class40.anIntArray679.length;
 
 		// Render triangles
@@ -1730,7 +1730,7 @@ public void method312(int i, int j) {
 
 			// Backface culling
 			if ((i4 - j4) * (j5 - i5) - (l4 - i5) * (k4 - j4) > 0) {
-				Rasterizer.aBoolean1462 = i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX
+				Rasterizer.enableClipping = i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX
 					|| j4 > DrawingArea.centerX || k4 > DrawingArea.centerX;
 
 				if (aBoolean467 && method318(anInt468, anInt469, l4, i5, j5, i4, j4, k4)) {
@@ -1741,20 +1741,20 @@ public void method312(int i, int j) {
 				// Texture/color rendering decision
 				if (class40.anIntArray682 == null || class40.anIntArray682[j2] == -1 || class40.anIntArray682[j2] > 50) {
 					if (class40.anIntArray676[j2] != 0xbc614e) {
-						Rasterizer.method374(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
+						Rasterizer.renderTriangle(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
 							class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.depthPoint[l2],
 							Class40.depthPoint[j3], Class40.depthPoint[l3]);
 					}
 				} else if (!lowMem) {
 					if (class40.aBoolean683) {
-						Rasterizer.method378(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
+						Rasterizer.renderTexturedTriangle(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
 							class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[0],
 							Class40.anIntArray690[1], Class40.anIntArray690[3], Class40.anIntArray691[0],
 							Class40.anIntArray691[1], Class40.anIntArray691[3], Class40.anIntArray692[0],
 							Class40.anIntArray692[1], Class40.anIntArray692[3], class40.anIntArray682[j2],
 							Class40.depthPoint[l2], Class40.depthPoint[j3], Class40.depthPoint[l3]);
 					} else {
-						Rasterizer.method378(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
+						Rasterizer.renderTexturedTriangle(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2],
 							class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[l2],
 							Class40.anIntArray690[j3], Class40.anIntArray690[l3], Class40.anIntArray691[l2],
 							Class40.anIntArray691[j3], Class40.anIntArray691[l3], Class40.anIntArray692[l2],
@@ -1763,7 +1763,7 @@ public void method312(int i, int j) {
 					}
 				} else {
 					int k5 = anIntArray485[class40.anIntArray682[j2]];
-					Rasterizer.method374(l4, i5, j5, i4, j4, k4, method317(k5, class40.anIntArray676[j2]),
+					Rasterizer.renderTriangle(l4, i5, j5, i4, j4, k4, method317(k5, class40.anIntArray676[j2]),
 						method317(k5, class40.anIntArray677[j2]), method317(k5, class40.anIntArray678[j2]),
 						Class40.depthPoint[l2], Class40.depthPoint[j3], Class40.depthPoint[l3]);
 				}

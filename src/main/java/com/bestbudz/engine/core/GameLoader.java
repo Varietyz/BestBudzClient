@@ -4,8 +4,8 @@ import com.bestbudz.cache.EmbeddedMapCache;
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.data.AccountManager;
 import com.bestbudz.data.items.ItemDef;
-import com.bestbudz.engine.config.EngineConfig;
 import static com.bestbudz.engine.core.LoadingErrorScreen.addConsoleMessage;
+import com.bestbudz.engine.core.gamerender.ColorPalette;
 import com.bestbudz.engine.core.login.LoginRenderer;
 import com.bestbudz.entity.EntityDef;
 import com.bestbudz.cache.IdentityKit;
@@ -250,9 +250,9 @@ public class GameLoader extends Client {
 			applyColorAdjustmentsOptimized();
 
 			// Rendering systems - exactly as original
-			Rasterizer.method368(streamLoader_3);
-			Rasterizer.generateColorPalette(0.80000000000000004D);
-			Rasterizer.method367();
+			Rasterizer.loadTextures(streamLoader_3);
+			ColorPalette.generateColorPalette(0.80000000000000004D);
+			Rasterizer.initializeTexturePool();
 
 			// Configuration loading - exactly as original order
 			Animation.unpackConfig(streamLoader);

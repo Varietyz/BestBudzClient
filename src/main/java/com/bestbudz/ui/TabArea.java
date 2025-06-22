@@ -47,7 +47,7 @@ public class TabArea extends Client
 		int tabPanelWidth = 190;
 		int tabPanelHeight = 257;
 
-		Rasterizer.anIntArray1472 = anIntArray1181;
+		Rasterizer.scanlineOffsets = anIntArray1181;
 
 			if (showTabComponents)
 			{
@@ -84,7 +84,7 @@ public class TabArea extends Client
 		{
 			rightClickMenu(0, 0);
 		}
-		Rasterizer.anIntArray1472 = anIntArray1182;
+		Rasterizer.scanlineOffsets = anIntArray1182;
 	}
 
 	public static void processTabClick(boolean leftClick, boolean rightClick)

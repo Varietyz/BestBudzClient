@@ -709,12 +709,12 @@ public class DrawInterface extends Client
 				}
 				else if (child.type == 6)
 				{
-					int k3 = Rasterizer.centerX;
-					int j4 = Rasterizer.centerY;
-					Rasterizer.centerX = k2 + child.width / 2;
-					Rasterizer.centerY = l2 + child.height / 2;
-					int i5 = Rasterizer.anIntArray1470[child.modelRotation1] * child.modelZoom >> 16;
-					int l5 = Rasterizer.anIntArray1471[child.modelRotation1] * child.modelZoom >> 16;
+					int k3 = Rasterizer.viewportCenterX;
+					int j4 = Rasterizer.viewportCenterY;
+					Rasterizer.viewportCenterX = k2 + child.width / 2;
+					Rasterizer.viewportCenterY = l2 + child.height / 2;
+					int i5 = Rasterizer.sinTable[child.modelRotation1] * child.modelZoom >> 16;
+					int l5 = Rasterizer.cosTable[child.modelRotation1] * child.modelZoom >> 16;
 					boolean flag2 = interfaceIsSelected(child);
 					int i7;
 					if (flag2)
@@ -734,8 +734,8 @@ public class DrawInterface extends Client
 					}
 					if (model != null)
 						model.method482(child.modelRotation2, 0, child.modelRotation1, 0, i5, l5);
-					Rasterizer.centerX = k3;
-					Rasterizer.centerY = j4;
+					Rasterizer.viewportCenterX = k3;
+					Rasterizer.viewportCenterY = j4;
 				}
 				else if (child.type == 7)
 				{

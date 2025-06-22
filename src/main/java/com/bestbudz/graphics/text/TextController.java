@@ -77,7 +77,7 @@ public class TextController extends DrawingArea {
 		text = text.replaceAll("@gr2@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CORAL_ORANGE) + ">");
 		text = text.replaceAll("@gr3@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CREAM_ROSE) + ">");
 
-		// Uppercase variants
+		// Uppercase petvariants
 		text = text.replaceAll("@RED@", "<col=" + Integer.toHexString(ColorConfig.CHAT_SOFT_PINK) + ">");
 		text = text.replaceAll("@GRE@", "<col=" + Integer.toHexString(ColorConfig.CHAT_BABY_BLUE) + ">");
 		text = text.replaceAll("@BLU@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LIME_GREEN) + ">");

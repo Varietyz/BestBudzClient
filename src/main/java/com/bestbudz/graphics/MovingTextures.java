@@ -10,9 +10,9 @@ public class MovingTextures extends Client
 	{
 		if (SettingsConfig.enableMovingTextures)
 		{
-			if (Rasterizer.anIntArray1480[17] >= j)
+			if (Rasterizer.textureLastUsed[17] >= j)
 			{
-				Background background = Rasterizer.aBackgroundArray1474s[17];
+				Background background = Rasterizer.backgroundTextures[17];
 				int k = background.anInt1452 * background.anInt1453 - 1;
 				int j1 = background.anInt1452 * anInt945 * 2;
 				byte[] abyte0 = background.aByteArray1450;
@@ -44,9 +44,9 @@ public class MovingTextures extends Client
 					stream.writeBytes(stream.currentOffset - l2);
 				}
 			}
-			if (Rasterizer.anIntArray1480[24] >= j)
+			if (Rasterizer.textureLastUsed[24] >= j)
 			{
-				Background background_1 = Rasterizer.aBackgroundArray1474s[24];
+				Background background_1 = Rasterizer.backgroundTextures[24];
 				int l = background_1.anInt1452 * background_1.anInt1453 - 1;
 				int k1 = background_1.anInt1452 * anInt945 * 2;
 				byte[] abyte1 = background_1.aByteArray1450;
@@ -58,9 +58,9 @@ public class MovingTextures extends Client
 				aByteArray912 = abyte1;
 				Rasterizer.applyTexture(24);
 			}
-			if (Rasterizer.anIntArray1480[34] >= j)
+			if (Rasterizer.textureLastUsed[34] >= j)
 			{
-				Background background_2 = Rasterizer.aBackgroundArray1474s[34];
+				Background background_2 = Rasterizer.backgroundTextures[34];
 				int i1 = background_2.anInt1452 * background_2.anInt1453 - 1;
 				int l1 = background_2.anInt1452 * anInt945 * 2;
 				byte[] abyte2 = background_2.aByteArray1450;
@@ -72,9 +72,9 @@ public class MovingTextures extends Client
 				aByteArray912 = abyte2;
 				Rasterizer.applyTexture(34);
 			}
-			if (Rasterizer.anIntArray1480[40] >= j)
+			if (Rasterizer.textureLastUsed[40] >= j)
 			{
-				Background background_2 = Rasterizer.aBackgroundArray1474s[40];
+				Background background_2 = Rasterizer.backgroundTextures[40];
 				int i1 = background_2.anInt1452 * background_2.anInt1453 - 1;
 				int l1 = background_2.anInt1452 * anInt945 * 2;
 				byte[] abyte2 = background_2.aByteArray1450;

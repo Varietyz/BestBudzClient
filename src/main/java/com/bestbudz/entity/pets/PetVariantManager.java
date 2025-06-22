@@ -1,8 +1,9 @@
-// Simplified PetVariantManager.java - Size and Action variants only
+// Simplified PetVariantManager.java - Size and Action petvariants only
 package com.bestbudz.entity.pets;
 
 import com.bestbudz.entity.EntityDef;
-import com.bestbudz.entity.pets.variants.*;
+import com.bestbudz.entity.pets.npcvariants.DarkBeastNPCVariant;
+import com.bestbudz.entity.pets.petvariants.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,11 +12,11 @@ public class PetVariantManager
 	// Map to store variant configurations - PROTECTED so subclasses can access
 	protected static final Map<Integer, VariantConfig> variants = new HashMap<>();
 	private static final Map<Integer, EntityDef> variantCache = new HashMap<>();
-	// Starting ID for variants (use unused NPC ID range)
+	// Starting ID for petvariants (use unused NPC ID range)
 	private static final int VARIANT_START_ID = 10000;
 
 	static {
-		// Initialize all variants here
+		// Initialize all petvariants here
 		initializeVariants();
 		prebuildVariantCache();
 	}
@@ -27,6 +28,7 @@ public class PetVariantManager
 		GraardorVariant.createGraardorVariants();
 		ZilyanaVariant.createZilyanaVariants();
 		CorpVariant.createCorpVariants();
+		DarkBeastNPCVariant.createDarkBeastVariants();
 	}
 
 	private static void prebuildVariantCache() {
@@ -119,7 +121,7 @@ public class PetVariantManager
 	}
 
 	/**
-	 * Configuration class for NPC variants - PROTECTED so subclasses can use it
+	 * Configuration class for NPC petvariants - PROTECTED so subclasses can use it
 	 */
 	protected static class VariantConfig {
 		int baseId;

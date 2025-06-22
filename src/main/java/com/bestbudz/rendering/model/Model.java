@@ -85,10 +85,10 @@ public class Model extends Animable {
 	static int anInt1683;
 
 	static {
-		modelIntArray1 = Rasterizer.anIntArray1470;
-		modelIntArray2 = Rasterizer.anIntArray1471;
-		modelIntArray3 = Rasterizer.anIntArray1482;
-		modelIntArray4 = Rasterizer.anIntArray1469;
+		modelIntArray1 = Rasterizer.sinTable;
+		modelIntArray2 = Rasterizer.cosTable;
+		modelIntArray3 = Rasterizer.colorPalette;
+		modelIntArray4 = Rasterizer.reciprocalTable;
 	}
 
 	// Instance variables - exact same names for compatibility
@@ -2161,8 +2161,8 @@ public class Model extends Animable {
 
 	public final void method482(int j, int k, int l, int i1, int j1, int k1) {
 		int i = 0;
-		int l1 = Rasterizer.centerX;
-		int i2 = Rasterizer.centerY;
+		int l1 = Rasterizer.viewportCenterX;
+		int i2 = Rasterizer.viewportCenterY;
 		int j2 = modelIntArray1[i];
 		int k2 = modelIntArray2[i];
 		int l2 = modelIntArray1[j];
@@ -2257,16 +2257,16 @@ public class Model extends Animable {
 				k4 /= i3;
 				i5 /= k5;
 			}
-			int i6 = anInt1685 - Rasterizer.centerX;
-			int k6 = anInt1686 - Rasterizer.centerY;
+			int i6 = anInt1685 - Rasterizer.viewportCenterX;
+			int k6 = anInt1686 - Rasterizer.viewportCenterY;
 			if (i6 > k3 && i6 < l3 && k6 > i5 && k6 < k4)
 				if (aBoolean1659)
 					anIntArray1688[anInt1687++] = i2;
 				else
 					flag1 = true;
 		}
-		int l5 = Rasterizer.centerX;
-		int j6 = Rasterizer.centerY;
+		int l5 = Rasterizer.viewportCenterX;
+		int j6 = Rasterizer.viewportCenterY;
 		int l6 = 0;
 		int i7 = 0;
 		if (i != 0) {
@@ -2479,22 +2479,22 @@ public class Model extends Animable {
 		int j = anIntArray1631[i];
 		int k = anIntArray1632[i];
 		int l = anIntArray1633[i];
-		Rasterizer.aBoolean1462 = ws.aBooleanArray1663[i];
+		Rasterizer.enableClipping = ws.aBooleanArray1663[i];
 		if (anIntArray1639 == null)
-			Rasterizer.anInt1465 = 0;
+			Rasterizer.alphaBlendValue = 0;
 		else
-			Rasterizer.anInt1465 = anIntArray1639[i];
+			Rasterizer.alphaBlendValue = anIntArray1639[i];
 		int i1;
 		if (anIntArray1637 == null)
 			i1 = 0;
 		else
 			i1 = anIntArray1637[i] & 3;
 		if (i1 == 0) {
-			Rasterizer.method374Flat(ws.anIntArray1666[j], ws.anIntArray1666[k], ws.anIntArray1666[l], ws.anIntArray1665[j], ws.anIntArray1665[k], ws.anIntArray1665[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i], ws.anIntArray1670[j], ws.anIntArray1670[k], ws.anIntArray1670[l]);
+			Rasterizer.renderFlatTriangle(ws.anIntArray1666[j], ws.anIntArray1666[k], ws.anIntArray1666[l], ws.anIntArray1665[j], ws.anIntArray1665[k], ws.anIntArray1665[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i], ws.anIntArray1670[j], ws.anIntArray1670[k], ws.anIntArray1670[l]);
 			return;
 		}
 		if (i1 == 1) {
-			Rasterizer.method376(ws.anIntArray1666[j], ws.anIntArray1666[k], ws.anIntArray1666[l], ws.anIntArray1665[j], ws.anIntArray1665[k], ws.anIntArray1665[l], modelIntArray3[anIntArray1634[i]], ws.anIntArray1670[j], ws.anIntArray1670[k], ws.anIntArray1670[l]);
+			Rasterizer.renderSolidTriangle(ws.anIntArray1666[j], ws.anIntArray1666[k], ws.anIntArray1666[l], ws.anIntArray1665[j], ws.anIntArray1665[k], ws.anIntArray1665[l], modelIntArray3[anIntArray1634[i]], ws.anIntArray1670[j], ws.anIntArray1670[k], ws.anIntArray1670[l]);
 			return;
 		}
 		if (i1 == 2) {
@@ -2502,22 +2502,22 @@ public class Model extends Animable {
 			int l1 = anIntArray1643[j1];
 			int j2 = anIntArray1644[j1];
 			int l2 = anIntArray1645[j1];
-			Rasterizer.method378(ws.anIntArray1666[j], ws.anIntArray1666[k], ws.anIntArray1666[l], ws.anIntArray1665[j], ws.anIntArray1665[k], ws.anIntArray1665[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i], ws.anIntArray1668[l1], ws.anIntArray1668[j2], ws.anIntArray1668[l2], ws.anIntArray1669[l1], ws.anIntArray1669[j2], ws.anIntArray1669[l2], ws.anIntArray1670[l1], ws.anIntArray1670[j2], ws.anIntArray1670[l2], anIntArray1640[i], ws.anIntArray1670[j], ws.anIntArray1670[k], ws.anIntArray1670[l]);
+			Rasterizer.renderTexturedTriangle(ws.anIntArray1666[j], ws.anIntArray1666[k], ws.anIntArray1666[l], ws.anIntArray1665[j], ws.anIntArray1665[k], ws.anIntArray1665[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i], ws.anIntArray1668[l1], ws.anIntArray1668[j2], ws.anIntArray1668[l2], ws.anIntArray1669[l1], ws.anIntArray1669[j2], ws.anIntArray1669[l2], ws.anIntArray1670[l1], ws.anIntArray1670[j2], ws.anIntArray1670[l2], anIntArray1640[i], ws.anIntArray1670[j], ws.anIntArray1670[k], ws.anIntArray1670[l]);
 			return;
 		}
 		int k1 = anIntArray1637[i] >> 2;
 		int i2 = anIntArray1643[k1];
 		int k2 = anIntArray1644[k1];
 		int i3 = anIntArray1645[k1];
-		Rasterizer.method378(ws.anIntArray1666[j], ws.anIntArray1666[k], ws.anIntArray1666[l], ws.anIntArray1665[j], ws.anIntArray1665[k], ws.anIntArray1665[l], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], ws.anIntArray1668[i2], ws.anIntArray1668[k2], ws.anIntArray1668[i3], ws.anIntArray1669[i2], ws.anIntArray1669[k2], ws.anIntArray1669[i3], ws.anIntArray1670[i2], ws.anIntArray1670[k2], ws.anIntArray1670[i3], anIntArray1640[i], ws.anIntArray1670[j], ws.anIntArray1670[k], ws.anIntArray1670[l]);
+		Rasterizer.renderTexturedTriangle(ws.anIntArray1666[j], ws.anIntArray1666[k], ws.anIntArray1666[l], ws.anIntArray1665[j], ws.anIntArray1665[k], ws.anIntArray1665[l], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], ws.anIntArray1668[i2], ws.anIntArray1668[k2], ws.anIntArray1668[i3], ws.anIntArray1669[i2], ws.anIntArray1669[k2], ws.anIntArray1669[i3], ws.anIntArray1670[i2], ws.anIntArray1670[k2], ws.anIntArray1670[i3], anIntArray1640[i], ws.anIntArray1670[j], ws.anIntArray1670[k], ws.anIntArray1670[l]);
 	}
 
 	private void method485(int i) {
 		if (anIntArray1640 != null)
 			if (anIntArray1640[i] == 65535)
 				return;
-		int j = Rasterizer.centerX;
-		int k = Rasterizer.centerY;
+		int j = Rasterizer.viewportCenterX;
+		int k = Rasterizer.viewportCenterY;
 		int l = 0;
 		int i1 = anIntArray1631[i];
 		int j1 = anIntArray1632[i];
@@ -2598,50 +2598,50 @@ public class Model extends Animable {
 		int j7 = ws.anIntArray1679[1];
 		int k7 = ws.anIntArray1679[2];
 		if ((j3 - j4) * (k7 - j7) - (i7 - j7) * (j5 - j4) > 0) {
-			Rasterizer.aBoolean1462 = false;
+			Rasterizer.enableClipping = false;
 			if (l == 3) {
 				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > DrawingArea.centerX || j4 > DrawingArea.centerX || j5 > DrawingArea.centerX)
-					Rasterizer.aBoolean1462 = true;
+					Rasterizer.enableClipping = true;
 				int l7;
 				if (anIntArray1637 == null)
 					l7 = 0;
 				else
 					l7 = anIntArray1637[i] & 3;
 				if (l7 == 0)
-					Rasterizer.method374Flat(i7, j7, k7, j3, j4, j5, ws.anIntArray1680[0], ws.anIntArray1680[1], ws.anIntArray1680[2], -1F, -1F, -1F);
+					Rasterizer.renderFlatTriangle(i7, j7, k7, j3, j4, j5, ws.anIntArray1680[0], ws.anIntArray1680[1], ws.anIntArray1680[2], -1F, -1F, -1F);
 				else if (l7 == 1)
-					Rasterizer.method376(i7, j7, k7, j3, j4, j5, modelIntArray3[anIntArray1634[i]], -1F, -1F, -1F);
+					Rasterizer.renderSolidTriangle(i7, j7, k7, j3, j4, j5, modelIntArray3[anIntArray1634[i]], -1F, -1F, -1F);
 				else if (l7 == 2) {
 					int j8 = anIntArray1637[i] >> 2;
 					int k9 = anIntArray1643[j8];
 					int k10 = anIntArray1644[j8];
 					int k11 = anIntArray1645[j8];
-					Rasterizer.method378(i7, j7, k7, j3, j4, j5, ws.anIntArray1680[0], ws.anIntArray1680[1], ws.anIntArray1680[2], ws.anIntArray1668[k9], ws.anIntArray1668[k10], ws.anIntArray1668[k11], ws.anIntArray1669[k9], ws.anIntArray1669[k10], ws.anIntArray1669[k11], ws.anIntArray1670[k9], ws.anIntArray1670[k10], ws.anIntArray1670[k11], Objects.requireNonNull(anIntArray1640)[i], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
+					Rasterizer.renderTexturedTriangle(i7, j7, k7, j3, j4, j5, ws.anIntArray1680[0], ws.anIntArray1680[1], ws.anIntArray1680[2], ws.anIntArray1668[k9], ws.anIntArray1668[k10], ws.anIntArray1668[k11], ws.anIntArray1669[k9], ws.anIntArray1669[k10], ws.anIntArray1669[k11], ws.anIntArray1670[k9], ws.anIntArray1670[k10], ws.anIntArray1670[k11], Objects.requireNonNull(anIntArray1640)[i], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
 				} else {
 					int k8 = anIntArray1637[i] >> 2;
 					int l9 = anIntArray1643[k8];
 					int l10 = anIntArray1644[k8];
 					int l11 = anIntArray1645[k8];
-					Rasterizer.method378(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], ws.anIntArray1668[l9], ws.anIntArray1668[l10], ws.anIntArray1668[l11], ws.anIntArray1669[l9], ws.anIntArray1669[l10], ws.anIntArray1669[l11], ws.anIntArray1670[l9], ws.anIntArray1670[l10], ws.anIntArray1670[l11], Objects.requireNonNull(anIntArray1640)[i], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
+					Rasterizer.renderTexturedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], ws.anIntArray1668[l9], ws.anIntArray1668[l10], ws.anIntArray1668[l11], ws.anIntArray1669[l9], ws.anIntArray1669[l10], ws.anIntArray1669[l11], ws.anIntArray1670[l9], ws.anIntArray1670[l10], ws.anIntArray1670[l11], Objects.requireNonNull(anIntArray1640)[i], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
 				}
 			}
 			if (l == 4) {
 				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > DrawingArea.centerX || j4 > DrawingArea.centerX || j5 > DrawingArea.centerX || ws.anIntArray1678[3] < 0 || ws.anIntArray1678[3] > DrawingArea.centerX)
-					Rasterizer.aBoolean1462 = true;
+					Rasterizer.enableClipping = true;
 				int i8;
 				if (anIntArray1637 == null)
 					i8 = 0;
 				else
 					i8 = anIntArray1637[i] & 3;
 				if (i8 == 0) {
-					Rasterizer.method374Flat(i7, j7, k7, j3, j4, j5, ws.anIntArray1680[0], ws.anIntArray1680[1], ws.anIntArray1680[2], -1F, -1F, -1F);
-					Rasterizer.method374Flat(i7, k7, ws.anIntArray1679[3], j3, j5, ws.anIntArray1678[3], ws.anIntArray1680[0], ws.anIntArray1680[2], ws.anIntArray1680[3], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
+					Rasterizer.renderFlatTriangle(i7, j7, k7, j3, j4, j5, ws.anIntArray1680[0], ws.anIntArray1680[1], ws.anIntArray1680[2], -1F, -1F, -1F);
+					Rasterizer.renderFlatTriangle(i7, k7, ws.anIntArray1679[3], j3, j5, ws.anIntArray1678[3], ws.anIntArray1680[0], ws.anIntArray1680[2], ws.anIntArray1680[3], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
 					return;
 				}
 				if (i8 == 1) {
 					int l8 = modelIntArray3[anIntArray1634[i]];
-					Rasterizer.method376(i7, j7, k7, j3, j4, j5, l8, -1F, -1F, -1F);
-					Rasterizer.method376(i7, k7, ws.anIntArray1679[3], j3, j5, ws.anIntArray1678[3], l8, ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
+					Rasterizer.renderSolidTriangle(i7, j7, k7, j3, j4, j5, l8, -1F, -1F, -1F);
+					Rasterizer.renderSolidTriangle(i7, k7, ws.anIntArray1679[3], j3, j5, ws.anIntArray1678[3], l8, ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
 					return;
 				}
 				if (i8 == 2) {
@@ -2649,16 +2649,16 @@ public class Model extends Animable {
 					int i10 = anIntArray1643[i9];
 					int i11 = anIntArray1644[i9];
 					int i12 = anIntArray1645[i9];
-					Rasterizer.method378(i7, j7, k7, j3, j4, j5, ws.anIntArray1680[0], ws.anIntArray1680[1], ws.anIntArray1680[2], ws.anIntArray1668[i10], ws.anIntArray1668[i11], ws.anIntArray1668[i12], ws.anIntArray1669[i10], ws.anIntArray1669[i11], ws.anIntArray1669[i12], ws.anIntArray1670[i10], ws.anIntArray1670[i11], ws.anIntArray1670[i12], Objects.requireNonNull(anIntArray1640)[i], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
-					Rasterizer.method378(i7, k7, ws.anIntArray1679[3], j3, j5, ws.anIntArray1678[3], ws.anIntArray1680[0], ws.anIntArray1680[2], ws.anIntArray1680[3], ws.anIntArray1668[i10], ws.anIntArray1668[i11], ws.anIntArray1668[i12], ws.anIntArray1669[i10], ws.anIntArray1669[i11], ws.anIntArray1669[i12], ws.anIntArray1670[i10], ws.anIntArray1670[i11], ws.anIntArray1670[i12], anIntArray1640[i], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
+					Rasterizer.renderTexturedTriangle(i7, j7, k7, j3, j4, j5, ws.anIntArray1680[0], ws.anIntArray1680[1], ws.anIntArray1680[2], ws.anIntArray1668[i10], ws.anIntArray1668[i11], ws.anIntArray1668[i12], ws.anIntArray1669[i10], ws.anIntArray1669[i11], ws.anIntArray1669[i12], ws.anIntArray1670[i10], ws.anIntArray1670[i11], ws.anIntArray1670[i12], Objects.requireNonNull(anIntArray1640)[i], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
+					Rasterizer.renderTexturedTriangle(i7, k7, ws.anIntArray1679[3], j3, j5, ws.anIntArray1678[3], ws.anIntArray1680[0], ws.anIntArray1680[2], ws.anIntArray1680[3], ws.anIntArray1668[i10], ws.anIntArray1668[i11], ws.anIntArray1668[i12], ws.anIntArray1669[i10], ws.anIntArray1669[i11], ws.anIntArray1669[i12], ws.anIntArray1670[i10], ws.anIntArray1670[i11], ws.anIntArray1670[i12], anIntArray1640[i], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
 					return;
 				}
 				int j9 = anIntArray1637[i] >> 2;
 				int j10 = anIntArray1643[j9];
 				int j11 = anIntArray1644[j9];
 				int j12 = anIntArray1645[j9];
-				Rasterizer.method378(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], ws.anIntArray1668[j10], ws.anIntArray1668[j11], ws.anIntArray1668[j12], ws.anIntArray1669[j10], ws.anIntArray1669[j11], ws.anIntArray1669[j12], ws.anIntArray1670[j10], ws.anIntArray1670[j11], ws.anIntArray1670[j12], anIntArray1640[i], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
-				Rasterizer.method378(i7, k7, ws.anIntArray1679[3], j3, j5, ws.anIntArray1678[3], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], ws.anIntArray1668[j10], ws.anIntArray1668[j11], ws.anIntArray1668[j12], ws.anIntArray1669[j10], ws.anIntArray1669[j11], ws.anIntArray1669[j12], ws.anIntArray1670[j10], ws.anIntArray1670[j11], ws.anIntArray1670[j12], anIntArray1640[i], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
+				Rasterizer.renderTexturedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], ws.anIntArray1668[j10], ws.anIntArray1668[j11], ws.anIntArray1668[j12], ws.anIntArray1669[j10], ws.anIntArray1669[j11], ws.anIntArray1669[j12], ws.anIntArray1670[j10], ws.anIntArray1670[j11], ws.anIntArray1670[j12], anIntArray1640[i], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
+				Rasterizer.renderTexturedTriangle(i7, k7, ws.anIntArray1679[3], j3, j5, ws.anIntArray1678[3], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], ws.anIntArray1668[j10], ws.anIntArray1668[j11], ws.anIntArray1668[j12], ws.anIntArray1669[j10], ws.anIntArray1669[j11], ws.anIntArray1669[j12], ws.anIntArray1670[j10], ws.anIntArray1670[j11], ws.anIntArray1670[j12], anIntArray1640[i], ws.anIntArray1670[i1], ws.anIntArray1670[j1], ws.anIntArray1670[k1]);
 			}
 		}
 	}

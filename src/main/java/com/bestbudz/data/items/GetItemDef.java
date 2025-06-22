@@ -3,16 +3,25 @@ package com.bestbudz.data.items;
 import com.bestbudz.entity.pets.PetItemCreator;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Refactored GetItemDef class that uses the ItemDefinitions enum for O(1) lookup performance
  * and much easier maintenance. All item definitions are now centralized in the enum.
+ * Enhanced with variant item caching to prevent recreation on every hover.
  */
 public class GetItemDef
 {
 
 	// Set of IDs that should have "Unpack" action - for better performance than multiple comparisons
 	private static final Set<Integer> UNPACK_ITEMS = new HashSet<>();
+
+	// Cache for variant items to prevent recreation
+	private static final Map<Integer, ItemDef> variantItemCache = new HashMap<>();
+
+	// Flag to track if variant items have been pre-loaded
+	private static boolean variantItemsPreloaded = false;
 
 	static {
 		// Initialize unpack items set
@@ -27,21 +36,46 @@ public class GetItemDef
 		for (int id : unpackIds) {
 			UNPACK_ITEMS.add(id);
 		}
+
+		// Pre-load variant items to prevent recreation
+		preloadVariantItems();
+	}
+
+	/**
+	 * Pre-load all variant items during initialization to prevent recreation.
+	 * This eliminates the repetitive creation you're seeing in the logs.
+	 */
+	private static void preloadVariantItems() {
+		if (variantItemsPreloaded) return;
+
+		System.out.println("Pre-loading variant pet items...");
+
+		// Load all variant items from PetItemCreator range
+		for (int itemId = 13224; itemId <= PetItemCreator.totalItemsAvailable; itemId++) {
+			if (PetItemCreator.isVariantPetItem(itemId)) {
+				ItemDef variantItem = PetItemCreator.createVariantPetItem(itemId);
+				if (variantItem != null) {
+					variantItemCache.put(itemId, variantItem);
+					System.out.println("Pre-loaded variant item " + itemId + " (" + variantItem.name + ")");
+				}
+			}
+		}
+
+		variantItemsPreloaded = true;
+		System.out.println("Pre-loaded " + variantItemCache.size() + " variant items - no more recreation needed!");
 	}
 
 	/**
 	 * Main method to get item definitions. Now uses enum lookup for O(1) performance
-	 * instead of the massive switch statement.
+	 * instead of the massive switch statement. Enhanced with variant item caching.
 	 *
 	 * @param id The item ID to get definition for
 	 * @return ItemDef instance with all properties applied
 	 */
 	public static ItemDef getItemDefinition(int id) {
+		// Handle variant items with caching - this prevents the recreation issue
 		if (PetItemCreator.isVariantPetItem(id)) {
-			ItemDef variantItem = PetItemCreator.createVariantPetItem(id);
-			if (variantItem != null) {
-				return variantItem;
-			}
+			return getVariantItemDefinition(id);
 		}
 
 		// Check cache first - same as original implementation
@@ -81,6 +115,33 @@ public class GetItemDef
 		}
 
 		return itemDef;
+	}
+
+	/**
+	 * Get variant item definition from cache. This prevents recreation every time.
+	 *
+	 * @param id The variant item ID
+	 * @return Cached ItemDef or null if not found
+	 */
+	private static ItemDef getVariantItemDefinition(int id) {
+		// Ensure items are pre-loaded
+		if (!variantItemsPreloaded) {
+			preloadVariantItems();
+		}
+
+		// Return cached item - NO MORE RECREATION!
+		ItemDef cached = variantItemCache.get(id);
+		if (cached != null) {
+			return cached;
+		}
+
+		// Fallback: Create on demand if somehow not in cache
+		System.out.println("Warning: Variant item " + id + " not found in cache, creating on demand");
+		ItemDef variantItem = PetItemCreator.createVariantPetItem(id);
+		if (variantItem != null) {
+			variantItemCache.put(id, variantItem);
+		}
+		return variantItem;
 	}
 
 	/**
@@ -218,5 +279,20 @@ public class GetItemDef
 		}
 	}
 
+	/**
+	 * Clear variant item cache (useful for debugging/reloading)
+	 */
+	public static void clearVariantCache() {
+		variantItemCache.clear();
+		variantItemsPreloaded = false;
+		System.out.println("Cleared variant item cache");
+	}
 
+	/**
+	 * Get cache statistics for debugging
+	 */
+	public static void printCacheStats() {
+		System.out.println("Variant item cache: " + variantItemCache.size() + " items cached");
+		System.out.println("Preloaded: " + variantItemsPreloaded);
+	}
 }

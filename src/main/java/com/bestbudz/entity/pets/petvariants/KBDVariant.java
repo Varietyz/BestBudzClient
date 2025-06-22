@@ -1,4 +1,4 @@
-package com.bestbudz.entity.pets.variants;
+package com.bestbudz.entity.pets.petvariants;
 
 import com.bestbudz.entity.pets.PetVariantManager;
 

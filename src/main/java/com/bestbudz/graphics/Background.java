@@ -7,7 +7,7 @@ import com.bestbudz.network.StreamLoader;
 public final class Background extends DrawingArea
 {
 
-  public int[] anIntArray1451;
+  public int[] pixelData;
   public byte[] aByteArray1450;
   public int anInt1452;
   public int anInt1453;
@@ -58,7 +58,7 @@ public final class Background extends DrawingArea
 		anInt1457 = stream_1.readUnsignedWord();
 
 		int j = stream_1.readUnsignedByte();
-		anIntArray1451 = new int[j];
+		pixelData = new int[j];
 		for (int k = 0; k < j - 1; k++) {
 			if (stream_1.currentOffset + 3 > stream_1.buffer.length) {
 				//System.err.println("Background index data incomplete reading runes.");
@@ -67,7 +67,7 @@ public final class Background extends DrawingArea
 				anInt1453 = 0;
 				return;
 			}
-			anIntArray1451[k + 1] = stream_1.read3Bytes();
+			pixelData[k + 1] = stream_1.read3Bytes();
 		}
 
 		// Adjust offsets for i layers (skip data)
@@ -169,29 +169,29 @@ public final class Background extends DrawingArea
   }
 
   public void method360(int i, int j, int k) {
-    for (int i1 = 0; i1 < anIntArray1451.length; i1++) {
-      int j1 = anIntArray1451[i1] >> 16 & 0xff;
+    for (int i1 = 0; i1 < pixelData.length; i1++) {
+      int j1 = pixelData[i1] >> 16 & 0xff;
       j1 += i;
       if (j1 < 0) {
         j1 = 0;
       } else if (j1 > 255) {
         j1 = 255;
       }
-      int k1 = anIntArray1451[i1] >> 8 & 0xff;
+      int k1 = pixelData[i1] >> 8 & 0xff;
       k1 += j;
       if (k1 < 0) {
         k1 = 0;
       } else if (k1 > 255) {
         k1 = 255;
       }
-      int l1 = anIntArray1451[i1] & 0xff;
+      int l1 = pixelData[i1] & 0xff;
       l1 += k;
       if (l1 < 0) {
         l1 = 0;
       } else if (l1 > 255) {
         l1 = 255;
       }
-      anIntArray1451[i1] = (j1 << 16) + (k1 << 8) + l1;
+      pixelData[i1] = (j1 << 16) + (k1 << 8) + l1;
     }
   }
 
@@ -230,7 +230,7 @@ public final class Background extends DrawingArea
       l1 += l2;
     }
     if (!(k1 <= 0 || j1 <= 0)) {
-      method362(j1, DrawingArea.pixels, aByteArray1450, l1, l, k1, i1, anIntArray1451, i2);
+      method362(j1, DrawingArea.pixels, aByteArray1450, l1, l, k1, i1, pixelData, i2);
     }
   }
 

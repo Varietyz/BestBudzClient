@@ -116,9 +116,9 @@ public final class ItemDef {
 		if (model == null)
 			return null;
 		Sprite image = new Sprite(32, 32);
-		int k1 = Rasterizer.centerX;
-		int l1 = Rasterizer.centerY;
-		int[] ai = Rasterizer.anIntArray1472;
+		int k1 = Rasterizer.viewportCenterX;
+		int l1 = Rasterizer.viewportCenterY;
+		int[] ai = Rasterizer.scanlineOffsets;
 		int[] ai1 = DrawingArea.pixels;
 		float[] depthBuffer = DrawingArea.depthBuffer;
 		int i2 = DrawingArea.width;
@@ -127,13 +127,13 @@ public final class ItemDef {
 		int l2 = DrawingArea.bottomX;
 		int i3 = DrawingArea.topY;
 		int j3 = DrawingArea.bottomY;
-		Rasterizer.aBoolean1464 = false;
+		Rasterizer.enableDepthBuffer = false;
 		DrawingArea.initDrawingArea(32, 32, image.myPixels, new float[32 * 32]);
 		DrawingArea.drawPixels(32, 0, 0, 0, 32);
-		Rasterizer.method364();
+		Rasterizer.initializeViewport();
 		int itemZoom = item.modelZoom * zoom - 500;
-		int l3 = Rasterizer.anIntArray1470[item.modelRotationY] * itemZoom >> 16;
-		int i4 = Rasterizer.anIntArray1471[item.modelRotationY] * itemZoom >> 16;
+		int l3 = Rasterizer.sinTable[item.modelRotationY] * itemZoom >> 16;
+		int i4 = Rasterizer.cosTable[item.modelRotationY] * itemZoom >> 16;
 		model.method482(item.modelRotationX, item.anInt204, item.modelRotationY, item.modelOffset1,
 				l3 + model.modelHeight / 2 + item.modelOffset2, i4 + item.modelOffset2);
 		if (color == 0) {
@@ -146,10 +146,10 @@ public final class ItemDef {
 		}
 		DrawingArea.initDrawingArea(j2, i2, ai1, depthBuffer);
 		DrawingArea.setDrawingArea(j3, k2, l2, i3);
-		Rasterizer.centerX = k1;
-		Rasterizer.centerY = l1;
-		Rasterizer.anIntArray1472 = ai;
-		Rasterizer.aBoolean1464 = true;
+		Rasterizer.viewportCenterX = k1;
+		Rasterizer.viewportCenterY = l1;
+		Rasterizer.scanlineOffsets = ai;
+		Rasterizer.enableDepthBuffer = true;
 		if (item.stackable) {
 			image.cropWidth = 33;
 		} else {
@@ -200,9 +200,9 @@ public final class ItemDef {
 		int spriteSize = 32;
 		Sprite enabledSprite = new Sprite(spriteSize, spriteSize);
 
-		int k1 = Rasterizer.centerX;
-		int l1 = Rasterizer.centerY;
-		int[] ai = Rasterizer.anIntArray1472;
+		int k1 = Rasterizer.viewportCenterX;
+		int l1 = Rasterizer.viewportCenterY;
+		int[] ai = Rasterizer.scanlineOffsets;
 		int[] ai1 = DrawingArea.pixels;
 		float[] depthBuffer = DrawingArea.depthBuffer;
 		int i2 = DrawingArea.width;
@@ -211,17 +211,17 @@ public final class ItemDef {
 		int l2 = DrawingArea.bottomX;
 		int i3 = DrawingArea.topY;
 		int j3 = DrawingArea.bottomY;
-		Rasterizer.aBoolean1464 = false;
+		Rasterizer.enableDepthBuffer = false;
 		DrawingArea.initDrawingArea(spriteSize, spriteSize, enabledSprite.myPixels, new float[32 * 32]);
 		DrawingArea.method336(spriteSize, 0, 0, 0, spriteSize);
-		Rasterizer.method364();
+		Rasterizer.initializeViewport();
 		int k3 = itemDef.modelZoom;
 		if (k == -1)
 			k3 = (int) ((double) k3 * 1.5D);
 		if (k > 0)
 			k3 = (int) ((double) k3 * 1.04D);
-		int l3 = Rasterizer.anIntArray1470[itemDef.modelRotationY] * k3 >> 16;
-		int i4 = Rasterizer.anIntArray1471[itemDef.modelRotationY] * k3 >> 16;
+		int l3 = Rasterizer.sinTable[itemDef.modelRotationY] * k3 >> 16;
+		int i4 = Rasterizer.cosTable[itemDef.modelRotationY] * k3 >> 16;
 		Rasterizer.isRenderingItem = true;
 		model.method482(itemDef.modelRotationX, itemDef.anInt204,
 				itemDef.modelRotationY, itemDef.modelOffset1, l3
@@ -291,10 +291,10 @@ public final class ItemDef {
 			mruNodes1.removeFromCache(enabledSprite, i);
 		DrawingArea.initDrawingArea(j2, i2, ai1, depthBuffer);
 		DrawingArea.setDrawingArea(j3, k2, l2, i3);
-		Rasterizer.centerX = k1;
-		Rasterizer.centerY = l1;
-		Rasterizer.anIntArray1472 = ai;
-		Rasterizer.aBoolean1464 = true;
+		Rasterizer.viewportCenterX = k1;
+		Rasterizer.viewportCenterY = l1;
+		Rasterizer.scanlineOffsets = ai;
+		Rasterizer.enableDepthBuffer = true;
 		if (itemDef.stackable)
 			enabledSprite.cropWidth = 33;
 		else

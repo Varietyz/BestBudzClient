@@ -123,7 +123,7 @@ public final class ObjectManager {
 	}
 
 	private static int method184(int i, int j, int k, int l) {
-		int i1 = 0x10000 - Rasterizer.anIntArray1471[(k * 1024) / l] >> 1;
+		int i1 = 0x10000 - Rasterizer.cosTable[(k * 1024) / l] >> 1;
 		return (i * (0x10000 - i1) >> 16) + (j * i1 >> 16);
 	}
 
@@ -1022,7 +1022,7 @@ public final class ObjectManager {
 
 			int i22 = 0;
 			if (j21 != -1) {
-				i22 = Rasterizer.anIntArray1482[method187(k21, 96)];
+				i22 = Rasterizer.colorPalette[method187(k21, 96)];
 			}
 
 			if (i19 == 0) {
@@ -1064,14 +1064,14 @@ public final class ObjectManager {
 			}
 
 			if (textureId >= 0) {
-				k23 = Rasterizer.method369(textureId);
+				k23 = Rasterizer.getTextureAverageColor(textureId);
 				j23 = -1;
 			} else if (overlay_flo.rgb == 0xff00ff) {
 				k23 = 0;
 				j23 = -2;
 				textureId = -1;
 			} else if (overlay_flo.rgb == 0x333333) {
-				k23 = Rasterizer.anIntArray1482[method185(overlay_flo.anInt399, 96)];
+				k23 = Rasterizer.colorPalette[method185(overlay_flo.anInt399, 96)];
 				j23 = -2;
 				textureId = -1;
 			} else if ((i19 - 1) == 63) {
@@ -1080,12 +1080,12 @@ public final class ObjectManager {
 				textureId = -1;
 			} else {
 				j23 = method177(overlay_flo.anInt394, overlay_flo.anInt395, overlay_flo.anInt396);
-				k23 = Rasterizer.anIntArray1482[method185(overlay_flo.anInt399, 96)];
+				k23 = Rasterizer.colorPalette[method185(overlay_flo.anInt399, 96)];
 			}
 
 			// Special overlay handling
 			if ((i19 - 1) == 111) {
-				k23 = Rasterizer.method369(1);
+				k23 = Rasterizer.getTextureAverageColor(1);
 				j23 = -1;
 				textureId = 1;
 			} else if (j23 == 6363) {
@@ -1109,7 +1109,7 @@ public final class ObjectManager {
 
 			if (overlay_flo.rgb == 0x000000 || (i19 - 1) == 28 || (i19 - 1) == 113 || (i19 - 1) == 6) {
 				textureId = 25;
-				k23 = Rasterizer.method369(25);
+				k23 = Rasterizer.getTextureAverageColor(25);
 				j23 = -1;
 			}
 

@@ -2,15 +2,12 @@ package com.bestbudz.engine.core;
 
 import com.bestbudz.cache.EmbeddedMapCache;
 import com.bestbudz.cache.Signlink;
-import static com.bestbudz.engine.ClientLauncher.initializeGPUAfterGraphicsLoad;
 import com.bestbudz.engine.gpu.GPUContextManager;
 import com.bestbudz.engine.gpu.GPUMonitor;
 import com.bestbudz.engine.gpu.GPURenderingEngine;
 import static com.bestbudz.engine.core.gamerender.Camera.calcCameraPos;
 import static com.bestbudz.engine.core.gamerender.Camera.updateCameraPosition;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
-import static com.bestbudz.engine.gpu.GPURenderingEngine.initialized;
-import static com.bestbudz.engine.gpu.OpenGLRasterizer.renderDebugTriangle;
 import static com.bestbudz.rendering.SpotAnim2.updatePendingSpotAnimations;
 import com.bestbudz.rendering.model.Model;
 import static com.bestbudz.ui.interfaces.Chatbox.handleTextFieldInput;
@@ -569,7 +566,7 @@ public class GameState extends Client {
 				logError("aClass19_1013 is null during cleanup");
 			}
 
-			Rasterizer.method366();
+			Rasterizer.clearMipmapCache();
 			unlinkMRUNodes();
 
 			if (worldController != null) {
@@ -1241,7 +1238,7 @@ public class GameState extends Client {
 				System.gc();
 			}
 
-			Rasterizer.method367();
+			Rasterizer.initializeTexturePool();
 
 			if (onDemandFetcher != null) {
 				onDemandFetcher.method566();
@@ -1353,9 +1350,9 @@ public class GameState extends Client {
 			}
 
 			try {
-				Rasterizer.method366();
+				Rasterizer.clearMipmapCache();
 			} catch (Exception e) {
-				logError("Error in Rasterizer.method366: " + e.getMessage());
+				logError("Error in Rasterizer.clearMipmapCache: " + e.getMessage());
 			}
 
 			try {

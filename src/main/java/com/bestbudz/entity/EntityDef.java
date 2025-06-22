@@ -17,7 +17,7 @@ public final class EntityDef {
 	  // *** CHECK FOR VARIANTS FIRST - BEFORE ANYTHING ELSE ***
 	  if (PetVariantManager.isVariant(i)) {
 		  if (cached) {
-			  // Check cache for variants too
+			  // Check cache for petvariants too
 			  for (int j = 0; j < 20; j++) {
 				  if (cache[j].interfaceType == (long) i) {
 					  return cache[j];

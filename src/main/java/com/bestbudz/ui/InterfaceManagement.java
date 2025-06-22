@@ -280,7 +280,7 @@ public class InterfaceManagement extends Client
 			anInt945 = 0;
 			resetAllImageProducers();
 
-			Rasterizer.anIntArray1472 = fullScreenTextureArray;
+			Rasterizer.scanlineOffsets = fullScreenTextureArray;
 			DrawingArea.setAllPixelsToZero();
 			welcomeScreenRaised = true;
 

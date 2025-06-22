@@ -6,6 +6,7 @@ import com.bestbudz.data.items.ItemDef;
 import static com.bestbudz.engine.config.EngineConfig.worldSelected;
 import com.bestbudz.engine.config.NetworkConfig;
 import static com.bestbudz.engine.core.GameState.resetGameState;
+import com.bestbudz.engine.core.gamerender.ColorPalette;
 import com.bestbudz.ui.handling.SettingHandler;
 import com.bestbudz.data.AccountData;
 import com.bestbudz.data.AccountManager;
@@ -431,13 +432,13 @@ public class Login extends Client
 			if (j == 1)
 			{
 				if (k == 1)
-					Rasterizer.generateColorPalette(0.90000000000000002D);
+					ColorPalette.generateColorPalette(0.90000000000000002D);
 				if (k == 2)
-					Rasterizer.generateColorPalette(0.80000000000000004D);
+					ColorPalette.generateColorPalette(0.80000000000000004D);
 				if (k == 3)
-					Rasterizer.generateColorPalette(0.69999999999999996D);
+					ColorPalette.generateColorPalette(0.69999999999999996D);
 				if (k == 4)
-					Rasterizer.generateColorPalette(0.59999999999999998D);
+					ColorPalette.generateColorPalette(0.59999999999999998D);
 				ItemDef.mruNodes1.unlinkAll();
 				welcomeScreenRaised = true;
 			}

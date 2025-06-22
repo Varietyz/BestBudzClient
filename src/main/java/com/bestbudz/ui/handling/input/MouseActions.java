@@ -261,8 +261,8 @@ public class MouseActions extends Client
 				i -= 73;
 				j -= 75;
 				int k = minimapInt1 + minimapInt2 & 0x7ff;
-				int i1 = Rasterizer.anIntArray1470[k];
-				int j1 = Rasterizer.anIntArray1471[k];
+				int i1 = Rasterizer.sinTable[k];
+				int j1 = Rasterizer.cosTable[k];
 				int k1 = j * i1 + i * j1 >> 11;
 				int l1 = j * j1 - i * i1 >> 11;
 				int i2 = myStoner.x + k1 >> 7;
