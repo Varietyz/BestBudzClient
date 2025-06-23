@@ -147,17 +147,19 @@ public class Camera extends Client
 			int y = myStoner.y + anInt1131;
 			double rotSpeed = 2;
 			screenGliding = 0;
-			if (anInt1014 - x < -500 || anInt1014 - x > 500 || anInt1015 - y < -500 || anInt1015 - y > 500)
-			{
+
+			// ✅ GOOD: Camera position updates for view matrix only
+			// This should NOT affect world loading or LOD decisions
+			if (anInt1014 - x < -500 || anInt1014 - x > 500 || anInt1015 - y < -500 || anInt1015 - y > 500) {
 				anInt1014 = x;
 				anInt1015 = y;
 			}
-			if (anInt1014 != x)
-			{
+
+			// ✅ Camera smoothing for view only
+			if (anInt1014 != x) {
 				anInt1014 += (x - anInt1014) / 16;
 			}
-			if (anInt1015 != y)
-			{
+			if (anInt1015 != y) {
 				anInt1015 += (y - anInt1015) / 16;
 			}
 			if (keyArray[1] == 1)

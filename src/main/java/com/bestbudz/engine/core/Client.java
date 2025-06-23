@@ -5,6 +5,7 @@ import com.bestbudz.dock.ui.manager.UIModalManager;
 import static com.bestbudz.engine.ClientLauncher.gpuContextManager;
 import static com.bestbudz.engine.ClientLauncher.gpuInitialized;
 import static com.bestbudz.engine.ClientLauncher.initializeGPUAfterGraphicsLoad;
+import com.bestbudz.engine.config.RenderSettings;
 import static com.bestbudz.engine.core.GameState.runSceneRendering;
 import static com.bestbudz.engine.core.GameState.validateGPUStateIfNeeded;
 import static com.bestbudz.engine.core.LoadingErrorScreen.showErrorScreen;
@@ -745,13 +746,16 @@ public static final int[] anIntArray1240 = new int[100];
 			ai[i8] = l8 * i9 >> 16;
 		}
 
-			WorldController.viewDistance = 10;
-			cameraZoom = EngineConfig.CAMERA_ZOOM;
+		WorldController.viewDistance = RenderSettings.WORLD_VIEW_DISTANCE;
 
-		if (extendChatArea > frameHeight - 170)
-		{
+// ✅ GOOD: Camera zoom only affects FOV, not render distance
+		cameraZoom = EngineConfig.CAMERA_ZOOM;
+
+		if (extendChatArea > frameHeight - 170) {
 			extendChatArea = frameHeight - 170;
 		}
+
+// ✅ GOOD: WorldController uses render settings, not camera settings
 		WorldController.method310(500, 800, frameWidth, frameHeight, ai);
 		if (loggedIn)
 		{
@@ -1668,16 +1672,16 @@ public static final int[] anIntArray1240 = new int[100];
 				i = anIntArray1203[4] + 128;
 			}
 			int calc = minimapInt1 + anInt896 & 0x7ff;
-// Calculate pure camera distance (not view area)
-			int cameraDistance = cameraZoom + i;
 
-// Apply screen size compensation without affecting view area
+			int cameraViewDistance = cameraZoom + i;  // Just for camera view calculation
+
+// Apply screen size compensation without affecting world render area
 			if (frameWidth >= 1024) {
-				cameraDistance += (cameraZoom - frameHeight / 200);
+				cameraViewDistance += (cameraZoom - frameHeight / 200);
 			}
 
 			setCameraPos(
-				cameraDistance,  // Just camera distance - no view multiplier
+				cameraViewDistance,  // ✅ Just camera view distance - no world render multiplier
 				i, anInt1014, getTerrainHeight(plane, myStoner.y, myStoner.x) - 50, calc, anInt1015);
 		}
 		int j;

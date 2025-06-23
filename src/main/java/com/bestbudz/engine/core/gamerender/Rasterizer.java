@@ -160,6 +160,11 @@ public final class Rasterizer extends DrawingArea
 			textureAccessCounter = 1;
 		}
 
+		// Don't load textures for invalid IDs
+		if (textureId < 0 || textureId >= textureAmount) {
+			return null;
+		}
+
 		textureLastUsed[textureId] = textureAccessCounter++;
 
 		if (activeMipmaps[textureId] != null)
@@ -350,6 +355,30 @@ public final class Rasterizer extends DrawingArea
 		}
 		if (vertexZ1 > 10000.0F && vertexZ2 > 10000.0F && vertexZ3 > 10000.0F) {
 			return;
+		}
+
+		// Backface culling - skip triangles facing away
+		if (enableDepthBuffer) {
+			int crossProduct = (vertexX2 - vertexX1) * (vertexY3 - vertexY1) - (vertexX3 - vertexX1) * (vertexY2 - vertexY1);
+			if (crossProduct >= 0) {
+				return; // Triangle is facing away from camera
+			}
+
+			// Skip tiny triangles (sub-pixel)
+			int triangleArea = Math.abs(crossProduct);
+			if (triangleArea < 2) {
+				return; // Triangle too small to see
+			}
+		}
+
+		// Skip triangles completely outside viewport
+		int minX = Math.min(Math.min(vertexX1, vertexX2), vertexX3);
+		int maxX = Math.max(Math.max(vertexX1, vertexX2), vertexX3);
+		int minY = Math.min(Math.min(vertexY1, vertexY2), vertexY3);
+		int maxY = Math.max(Math.max(vertexY1, vertexY2), vertexY3);
+
+		if (maxX < 0 || minX >= DrawingArea.width || maxY < 0 || minY >= DrawingArea.height) {
+			return; // Triangle completely outside screen
 		}
 
 		int rgb1 = colorPalette[color1];
@@ -981,7 +1010,9 @@ public final class Rasterizer extends DrawingArea
 		if (vertexX1 < vertexX2) {
 			offset += vertexX1;
 			depth += depthSlopeX * (float) vertexX1;
-			if (alphaBlendValue == 0) {
+			/* // CAREFUL OPTIMIZING THIS BLOCK SCOPE, CHANGES HERE COULD BREAK ITEM RENDERING. HOWEVER IT DOES SOLVE OBJECTS AND ROOF DISTANCE DEPTH. BUT BREAKS ITEM DEPTH!
+			See an optimised version here:
+			* 			if (alphaBlendValue == 0) {
 				while (--n >= 0) {
 					if (enableDepthBuffer && depth >= DrawingArea.depthBuffer[offset]) {
 						depth += depthSlopeX;
@@ -991,6 +1022,14 @@ public final class Rasterizer extends DrawingArea
 						offset++;
 						continue;
 					}
+					pixelBuffer[offset] = (r1 & 0xff0000) | (g1 >> 8 & 0xff00) | (b1 >> 16 & 0xff);
+					DrawingArea.depthBuffer[offset] = depth;
+					depth += depthSlopeX;
+
+					This could be a replacement for the code below, but remember, it fixes roof culling, it breaks item culling.
+			*/
+			if (alphaBlendValue == 0) {
+				while (--n >= 0) {
 					pixelBuffer[offset] = (r1 & 0xff0000) | (g1 >> 8 & 0xff00) | (b1 >> 16 & 0xff);
 					DrawingArea.depthBuffer[offset] = depth;
 					depth += depthSlopeX;
@@ -1441,8 +1480,13 @@ public final class Rasterizer extends DrawingArea
 			}
 		}
 		for (rgb = end_x - start_x & 3; --rgb >= 0;) {
+			if (enableDepthBuffer && depth >= DrawingArea.depthBuffer[offset]) {
+				offset++;
+				depth += depthSlopeX;
+				continue;
+			}
 			pixelBuffer[offset] = color + ((pixelBuffer[offset] & 0xff00ff) * dest_alpha >> 8 & 0xff00ff)
-					+ ((pixelBuffer[offset] & 0xff00) * dest_alpha >> 8 & 0xff00);
+				+ ((pixelBuffer[offset] & 0xff00) * dest_alpha >> 8 & 0xff00);
 			DrawingArea.depthBuffer[offset] = depth;
 			offset++;
 			depth += depthSlopeX;
@@ -1477,6 +1521,17 @@ public final class Rasterizer extends DrawingArea
 			if (vertexZ1 > 10000.0F && vertexZ2 > 10000.0F && vertexZ3 > 10000.0F) {
 				return;
 			}
+
+// Skip triangles completely outside viewport
+			int minX = Math.min(Math.min(x_a, x_b), x_c);
+			int maxX = Math.max(Math.max(x_a, x_b), x_c);
+			int minY = Math.min(Math.min(y_a, y_b), y_c);
+			int maxY = Math.max(Math.max(y_a, y_b), y_c);
+
+			if (maxX < 0 || minX >= DrawingArea.width || maxY < 0 || minY >= DrawingArea.height) {
+				return; // Triangle completely outside screen
+			}
+
 			shade2 = 0x7f - shade2 << 1;
 			l2 = 0x7f - l2 << 1;
 			l3 = 0x7f - l3 << 1;
@@ -2113,6 +2168,14 @@ public final class Rasterizer extends DrawingArea
 		int textureVStep = nextTextureV - x >> 3;
 		if (isOpaque) {
 			while (n-- > 0) {
+				if (enableDepthBuffer && depth >= DrawingArea.depthBuffer[pixelBufferOffset]) {
+					depth += depthSlopeX;
+					pixelBufferOffset++;
+					index += textureUStep;
+					x += textureVStep;
+					shadeValue += dl;
+					continue;
+				}
 				int rgb;
 				int l;
 				rgb = texture[texelPos((x & 0x3f80) + (index >> 7))];

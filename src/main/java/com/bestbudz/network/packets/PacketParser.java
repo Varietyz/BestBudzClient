@@ -900,9 +900,30 @@ public class PacketParser extends Client
 			aBoolean1159 = true;
 		}
 
-		if (anInt1069 == l2 && anInt1070 == i11 && loadingStage == 2) {
+		int playerRegionX = l2;
+		int playerRegionY = i11;
+
+// Only reload if player has actually moved to a different region
+		if (anInt1069 == playerRegionX && anInt1070 == playerRegionY && loadingStage == 2) {
+			// Player is still in same region - no need to reload
 			return;
 		}
+
+// ✅ GOOD: Region loading triggered by player movement only
+		anInt1069 = playerRegionX;
+		anInt1070 = playerRegionY;
+		baseX = (playerRegionX - 6) * 8;
+		baseY = (playerRegionY - 6) * 8;
+
+// Calculate region boundaries for special areas
+		aBoolean1141 = (playerRegionX / 8 == 48 || playerRegionX / 8 == 49) && playerRegionY / 8 == 48;
+		if (playerRegionX / 8 == 48 && playerRegionY / 8 == 148) aBoolean1141 = true;
+
+		loadingStage = 1;
+		aLong824 = System.currentTimeMillis();
+
+		System.out.println("🗺️ [RegionChange] Player moved to region: " + playerRegionX + "," + playerRegionY +
+			" (camera position does NOT affect this)");
 
 		anInt1069 = l2;
 		anInt1070 = i11;

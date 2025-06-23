@@ -5,6 +5,9 @@ import com.bestbudz.engine.config.ColorConfig;
 import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
 import static com.bestbudz.graphics.Hitmark.enhancedHitmarkDraw;
+import com.bestbudz.graphics.hpbar.HPbar;
+import static com.bestbudz.graphics.hpbar.HPbarConfig.animatedHPBars;
+import static com.bestbudz.graphics.hpbar.HPbarConfig.showHPNumbers;
 import com.bestbudz.graphics.sprite.Sprite;
 import static com.bestbudz.ui.interfaces.Chatbox.publicChatMode;
 
@@ -103,46 +106,54 @@ public class UpdateEntities extends Client
 							anIntArray978[anInt974] += 5;
 					}
 				}
-				if (((Entity) (obj)).loopCycleStatus > loopCycle)
-				{
-					try
-					{
+				if (((Entity) (obj)).loopCycleStatus > loopCycle) {
+					try {
 						npcScreenPos(((Entity) (obj)), ((Entity) (obj)).height + 15);
-						if (spriteDrawX > -1)
-						{
-							int i1 = (((Entity) (obj)).currentHealth * 30) / ((Entity) (obj)).maxHealth;
-							if (i1 > 30)
-							{
-								i1 = 30;
-							}
-							int barWidth = hpBars[0].cropWidth;
-							int percent = (((Entity) (obj)).currentHealth * barWidth) / ((Entity) (obj)).maxHealth;
-							if (percent > barWidth)
-							{
-								percent = barWidth;
-							}
-							if (!SettingsConfig.enableNewHpBars)
-							{
-								DrawingArea.drawPixels(5, spriteDrawY - 3, spriteDrawX - 15, 65280, i1);
-								DrawingArea.drawPixels(5, spriteDrawY - 3, (spriteDrawX - 15) + i1, 0xff0000, 30 - i1);
-							}
-							else
-							{
-								hpBars[1].drawSprite(spriteDrawX - (barWidth / 2), spriteDrawY - 3);
-								if (percent > 0)
-								{
-									Sprite fullBar = new Sprite(hpBars[0], 0, 0, percent, 7);
-									fullBar.drawSprite(spriteDrawX - (barWidth / 2), spriteDrawY - 3);
-								}
-							}
-							if (SettingsConfig.drawEntityFeed)
-							{
+						if (spriteDrawX > -1) {
 
+							Entity entity = (Entity) obj;
+
+							// === DEBUG TRACING ===
+							System.out.println("=== HP BAR DEBUG ===");
+							System.out.println("Entity class: " + obj.getClass().getSimpleName());
+							System.out.println("Is Stoner: " + (obj instanceof Stoner));
+							System.out.println("currentHealth: " + entity.currentHealth);
+							System.out.println("maxHealth: " + entity.maxHealth);
+
+							// Check if it's a Stoner specifically
+							if (obj instanceof Stoner) {
+								Stoner stoner = (Stoner) obj;
+								System.out.println("Stoner currentHealth: " + stoner.currentHealth);
+								System.out.println("Stoner maxHealth: " + stoner.maxHealth);
+
+								// Check if Stoner has any HP-related fields we're missing
+								// You might need to add these checks based on your Stoner class:
+								// System.out.println("Stoner skillLevel[3] (HP): " + stoner.skillLevel[3]);
+								// System.out.println("Stoner skillMaxLevel[3] (HP): " + stoner.skillMaxLevel[3]);
 							}
+
+							int currentHealth = entity.currentHealth;
+							int maxHealth = entity.maxHealth;
+
+							// Only draw if we have valid HP values
+							if (maxHealth > 0) {
+								// Position HP bar above entity
+								int barX = spriteDrawX - 15; // Center the 30px wide bar
+								int barY = spriteDrawY - 3;  // Just above entity
+
+								// Draw the HP bar
+								HPbar.drawHPBar(barX, barY, currentHealth, maxHealth);
+
+								System.out.println("Drew HP bar: " + currentHealth + "/" + maxHealth);
+							} else {
+								System.out.println("Skipped HP bar - invalid maxHealth: " + maxHealth);
+							}
+
+							System.out.println("==================");
 						}
-					}
-					catch (Exception e)
-					{
+					} catch (Exception e) {
+						System.err.println("Error drawing HP bar: " + e.getMessage());
+						e.printStackTrace();
 					}
 				}
 				if (!SettingsConfig.enableNewHitmarks)

@@ -2195,6 +2195,7 @@ public class Model extends Animable {
 
 			WorkSpace ws = workspace.get();
 			ws.anIntArray1667[k4] = j5 - j4;
+
 			ws.anIntArray1665[k4] = l1 + (l4 << 9) / j5;
 			ws.anIntArray1666[k4] = i2 + (i5 << 9) / j5;
 			if (anInt1642 > 0) {
