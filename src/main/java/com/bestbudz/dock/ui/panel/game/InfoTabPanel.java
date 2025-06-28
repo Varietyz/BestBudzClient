@@ -124,7 +124,7 @@ public class InfoTabPanel implements UIPanel, DockTextUpdatable
 
 					// Send interaction
 					try {
-						Client.stream.createFrame(185);
+						Client.stream.writeEncryptedOpcode(185);
 						Client.stream.writeWord(childId);
 					} catch (Exception ex) {
 						ex.printStackTrace();

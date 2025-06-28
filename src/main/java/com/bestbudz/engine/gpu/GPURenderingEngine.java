@@ -45,14 +45,13 @@ public class GPURenderingEngine {
 				throw new RuntimeException("Failed to initialize GPU context manager");
 			}
 
-			// Initialize GPU systems with context safety
+			// Initialize GPU system with context safety
 			try (GPUContextManager.ContextToken context = contextManager.acquireContext("GPU Initialization")) {
 				if (context == null) {
 					throw new RuntimeException("Failed to acquire GPU context for initialization");
 				}
 
 				setupInitialOpenGLState();
-				initializeGPUShaders();
 				createInitialFramebuffer();
 			}
 
@@ -91,12 +90,6 @@ public class GPURenderingEngine {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	/**
-	 * Initialize GPU shaders with context safety
-	 */
-	private static void initializeGPUShaders() {
-		GPUShaders.initialize();
-	}
 
 	/**
 	 * Create initial framebuffer
@@ -293,19 +286,35 @@ public class GPURenderingEngine {
 	}
 
 	/**
-	 * Update viewport when window is resized (thread-safe)
+	 * IMPROVED: Update viewport when window is resized (thread-safe)
+	 * Now properly handles framebuffer recreation without context loss
 	 */
 	public static void resize(int width, int height) {
 		if (!gpuEnabled) {
 			return;
 		}
 
+		System.out.println("[GPU] Resizing GPU framebuffer from " + currentWidth + "x" + currentHeight +
+			" to " + width + "x" + height);
+
 		if (width != currentWidth || height != currentHeight) {
-			try (GPUContextManager.ContextToken context = acquireContext("Resize")) {
-				if (context != null) {
-					createFramebufferInternal(width, height);
-				}
+			// NOTE: This method assumes the caller already has a context
+			// (which should be the case when called from refreshFrameSize)
+
+			if (!contextManager.isContextCurrent()) {
+				System.err.println("[GPU] ⚠️ resize() called without current context");
+				return;
 			}
+
+			try {
+				createFramebufferInternal(width, height);
+				System.out.println("[GPU] ✅ Framebuffer resized successfully to " + width + "x" + height);
+			} catch (Exception e) {
+				System.err.println("[GPU] ❌ Error resizing framebuffer: " + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("[GPU] No resize needed - dimensions unchanged");
 		}
 	}
 
@@ -339,7 +348,6 @@ public class GPURenderingEngine {
 					}
 
 					// Re-initialize shaders if needed
-					GPUShaders.validateAndReinitialize();
 				}
 			}
 

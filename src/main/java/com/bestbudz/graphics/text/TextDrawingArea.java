@@ -3,7 +3,7 @@ package com.bestbudz.graphics.text;
 import com.bestbudz.engine.config.ColorConfig;
 import static com.bestbudz.engine.core.Client.newBoldFont;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
-import com.bestbudz.network.StreamLoader;
+import com.bestbudz.network.ArchiveLoader;
 import java.awt.*;
 
 public final class TextDrawingArea extends DrawingArea {
@@ -24,7 +24,7 @@ public final class TextDrawingArea extends DrawingArea {
 	}
 
 	// Legacy constructor - shows error for old usage
-	public TextDrawingArea(boolean flag, String s, StreamLoader streamLoader) {
+	public TextDrawingArea(boolean flag, String s, ArchiveLoader archiveLoader) {
 		System.err.println("❌ ERROR: Legacy TextDrawingArea constructor called for: " + s);
 		throw new RuntimeException("Legacy font loading not supported - use FontSystem.createModernTextDrawingArea()");
 	}

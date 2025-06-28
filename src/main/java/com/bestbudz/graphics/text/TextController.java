@@ -142,14 +142,14 @@ public class TextController extends DrawingArea {
 					try {
 						int imageId = Integer.parseInt(effectString.substring(4));
 						if (chatImages != null && imageId >= 0 && imageId < chatImages.length && chatImages[imageId] != null) {
-							totalWidth += chatImages[imageId].cropWidth;
+							totalWidth += chatImages[imageId].originalWidth;
 						}
 					} catch (Exception ignored) {}
 				} else if (effectString.startsWith(startClanImage)) {
 					try {
 						int imageId = Integer.parseInt(effectString.substring(5));
 						if (clanImages != null && imageId >= 0 && imageId < clanImages.length && clanImages[imageId] != null) {
-							totalWidth += clanImages[imageId].cropWidth;
+							totalWidth += clanImages[imageId].originalWidth;
 						}
 					} catch (Exception ignored) {}
 				}
@@ -221,7 +221,7 @@ public class TextController extends DrawingArea {
 						int imageId = Integer.parseInt(markup.substring(4));
 						if (chatImages != null && imageId >= 0 && imageId < chatImages.length && chatImages[imageId] != null) {
 							chatImages[imageId].drawSprite(currentX, y + baseCharacterHeight);
-							currentX += chatImages[imageId].cropWidth;
+							currentX += chatImages[imageId].originalWidth;
 						}
 					} catch (Exception ignored) {}
 				} else if (markup.startsWith(startClanImage)) {

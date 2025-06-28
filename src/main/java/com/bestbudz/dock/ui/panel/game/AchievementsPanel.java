@@ -104,7 +104,7 @@ panel.setPreferredSize(null);
 				clickFadeTimer.start();
 
 				int frameId = 31006 + index;
-				Client.stream.createFrame(185);
+				Client.stream.writeEncryptedOpcode(185);
 				Client.stream.writeWord(frameId);
 			}
 		});
@@ -176,7 +176,7 @@ panel.setPreferredSize(null);
 	private void requestAchievements() {
 		if (!Client.loggedIn || Client.stream == null) return;
 		try {
-			Client.stream.createFrame(185);
+			Client.stream.writeEncryptedOpcode(185);
 			Client.stream.writeWord(29404);
 		} catch (Exception ex) {
 			ex.printStackTrace();

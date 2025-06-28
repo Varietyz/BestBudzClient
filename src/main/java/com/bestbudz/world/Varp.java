@@ -1,34 +1,34 @@
 package com.bestbudz.world;
 
+import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.network.Stream;
-import com.bestbudz.network.StreamLoader;
 
 public final class  Varp {
 
     public static Varp[] cache;
-    private static int anInt702;
-    private static int[] anIntArray703;
-    public int anInt709;
+    private static int clientScriptCount;
+    private static int[] clientScriptIds;
+    public int configType;
     private Varp()
     {
 	}
 
-    public static void unpackConfig(StreamLoader streamLoader)
+    public static void unpackConfig(ArchiveLoader archiveLoader)
     {
-        Stream stream = new Stream(streamLoader.getDataForName("varp.dat"));
-        anInt702 = 0;
+        Stream stream = new Stream(archiveLoader.extractFile("varp.dat"));
+        clientScriptCount = 0;
         int cacheSize = stream.readUnsignedWord();
         if(cache == null)
             cache = new Varp[cacheSize];
-        if(anIntArray703 == null)
-            anIntArray703 = new int[cacheSize];
+        if(clientScriptIds == null)
+            clientScriptIds = new int[cacheSize];
         for(int j = 0; j < cacheSize; j++)
         {
             if(cache[j] == null)
                 cache[j] = new Varp();
             cache[j].readValues(stream, j);
         }
-        if(stream.currentOffset != stream.buffer.length)
+        if(stream.position != stream.buffer.length)
             System.out.println("varptype load mismatch");
     }
 
@@ -46,12 +46,12 @@ public final class  Varp {
                 stream.readUnsignedByte();
             else
             if(j == 3)
-                anIntArray703[anInt702++] = i;
+                clientScriptIds[clientScriptCount++] = i;
             else
             if(j == 4) {
 			} else
             if(j == 5)
-                anInt709 = stream.readUnsignedWord();
+                configType = stream.readUnsignedWord();
             else
             if(j == 6) {
 			} else

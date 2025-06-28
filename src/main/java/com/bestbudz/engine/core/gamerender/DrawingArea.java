@@ -2,7 +2,6 @@ package com.bestbudz.engine.core.gamerender;
 
 import com.bestbudz.engine.gpu.GPUContextManager;
 import com.bestbudz.engine.gpu.GPURenderingEngine;
-import com.bestbudz.engine.gpu.GPUShaders;
 import com.bestbudz.graphics.buffer.ImageProducer;
 import com.bestbudz.util.NodeSub;
 import java.awt.AlphaComposite;
@@ -36,7 +35,7 @@ public class DrawingArea extends NodeSub {
 	public static int bottomX;
 	public static int centerX;
 	public static int centerY;
-	public static int anInt1387;
+	public static int centerYHalf;
 
 	// GPU backend state tracking
 	private static boolean needsCPUSync = false;
@@ -179,13 +178,6 @@ public class DrawingArea extends NodeSub {
 	}
 
 	public static void fillCircle(int x, int y, int radius, int color) {
-		executeGPUOperation("Fill Circle",
-			() -> GPUShaders.drawCircle(x, y, radius, color),
-			() -> fillCircleCPU(x, y, radius, color)
-		);
-	}
-
-	private static void fillCircleCPU(int x, int y, int radius, int color) {
 		int y1 = y - radius;
 		if (y1 < 0) y1 = 0;
 		int y2 = y + radius;
@@ -245,10 +237,7 @@ public class DrawingArea extends NodeSub {
 		int finalY = y;
 		int finalX = x;
 		int finalHeight = height;
-		executeGPUOperation("Grayscale Filter",
-			() -> GPUShaders.filterGrayscale(finalX, finalY, finalWidth, finalHeight, (float)amount),
-			() -> filterGrayscaleCPU(finalX, finalY, finalWidth, finalHeight, amount)
-		);
+		filterGrayscaleCPU(finalX, finalY, finalWidth, finalHeight, amount);
 	}
 
 	private static void filterGrayscaleCPU(int x, int y, int width, int height, double amount) {
@@ -302,10 +291,8 @@ public class DrawingArea extends NodeSub {
 
 			int finalDrawX = drawX;
 			int finalLineWidth = lineWidth;
-			executeGPUOperation("Horizontal Line",
-				() -> GPUShaders.drawRectangle(finalDrawX, drawY, finalLineWidth, 1, color),
-				() -> drawHorizontalLineCPU(finalDrawX, drawY, finalLineWidth, color)
-			);
+			drawHorizontalLineCPU(finalDrawX, drawY, finalLineWidth, color)
+			;
 		}
 	}
 
@@ -339,7 +326,7 @@ public class DrawingArea extends NodeSub {
 		bottomY = i;
 		centerX = bottomX;
 		centerY = bottomX / 2;
-		anInt1387 = bottomY / 2;
+		centerYHalf = bottomY / 2;
 	}
 
 	public static void setAllPixelsToZero() {
@@ -358,7 +345,7 @@ public class DrawingArea extends NodeSub {
 		java.util.Arrays.fill(depthBuffer, 0, pixelCount, Float.MAX_VALUE);
 	}
 
-	public static void method336(int i, int j, int k, int l, int i1) {
+	public static void drawSolidRectangle(int i, int j, int k, int l, int i1) {
 		if (k < topX) {
 			i1 -= topX - k;
 			k = topX;
@@ -374,13 +361,11 @@ public class DrawingArea extends NodeSub {
 		int finalJ = j;
 		int finalI = i1;
 		int finalI1 = i;
-		executeGPUOperation("Draw Rectangle",
-			() -> GPUShaders.drawRectangle(finalK, finalJ, finalI, finalI1, l),
-			() -> method336CPU(finalI1, finalJ, finalK, l, finalI)
-		);
+		drawSolidRectangleCPU(finalI1, finalJ, finalK, l, finalI)
+		;
 	}
 
-	private static void method336CPU(int i, int j, int k, int l, int i1) {
+	private static void drawSolidRectangleCPU(int i, int j, int k, int l, int i1) {
 		final int widthCache = width;
 		final int rowSkip = widthCache - i1;
 		int pos = k + j * widthCache;
@@ -402,7 +387,7 @@ public class DrawingArea extends NodeSub {
 		}
 	}
 
-	public static void method335(int i, int j, int k, int l, int i1, int k1) {
+	public static void drawAlphaRectangle(int i, int j, int k, int l, int i1, int k1) {
 		final int alpha = Math.min(255, Math.max(0, i1));
 		final int invAlpha = INV_ALPHA_LOOKUP[alpha];
 		final int i2 = (i >> 16 & 0xff) * alpha;
@@ -488,10 +473,8 @@ public class DrawingArea extends NodeSub {
 		int finalY = y;
 		int finalX = x;
 		int finalK = k1;
-		executeGPUOperation("Draw Gradient",
-			() -> GPUShaders.drawGradient(finalX, finalY, finalGradientWidth, finalGradientHeight, startColor, endColor, alpha),
-			() -> drawAlphaGradientCPU(finalX, finalY, finalGradientWidth, finalGradientHeight, startColor, endColor, alpha, finalK, l1)
-		);
+		drawAlphaGradientCPU(finalX, finalY, finalGradientWidth, finalGradientHeight, startColor, endColor, alpha, finalK, l1)
+		;
 	}
 
 	private static void drawAlphaGradientCPU(int x, int y, int gradientWidth, int gradientHeight,
@@ -521,22 +504,22 @@ public class DrawingArea extends NodeSub {
 
 	// Continue with other methods using the same pattern...
 	public static void fillPixels(int i, int j, int k, int l, int i1) {
-		method339(i1, l, j, i);
-		method339((i1 + k) - 1, l, j, i);
-		method341(i1, l, k, i);
-		method341(i1, l, k, (i + j) - 1);
+		drawAHorizontalLine(i1, l, j, i);
+		drawAHorizontalLine((i1 + k) - 1, l, j, i);
+		drawAVerticalLine(i1, l, k, i);
+		drawAVerticalLine(i1, l, k, (i + j) - 1);
 	}
 
-	public static void method338(int i, int j, int k, int l, int i1, int j1) {
-		method340(l, i1, i, k, j1);
-		method340(l, i1, (i + j) - 1, k, j1);
+	public static void drawBorderedRectangle(int i, int j, int k, int l, int i1, int j1) {
+		drawAlphaHorizontalLine(l, i1, i, k, j1);
+		drawAlphaHorizontalLine(l, i1, (i + j) - 1, k, j1);
 		if (j >= 3) {
-			method342(l, j1, k, i + 1, j - 2);
-			method342(l, (j1 + i1) - 1, k, i + 1, j - 2);
+			drawAlphaVerticalLine(l, j1, k, i + 1, j - 2);
+			drawAlphaVerticalLine(l, (j1 + i1) - 1, k, i + 1, j - 2);
 		}
 	}
 
-	public static void method339(int i, int j, int k, int l) {
+	public static void drawAHorizontalLine(int i, int j, int k, int l) {
 		if (i < topY || i >= bottomY) return;
 		if (l < topX) {
 			k -= topX - l;
@@ -546,13 +529,11 @@ public class DrawingArea extends NodeSub {
 
 		int finalL = l;
 		int finalK = k;
-		executeGPUOperation("Horizontal Line Method339",
-			() -> GPUShaders.drawRectangle(finalL, i, finalK, 1, j),
-			() -> method339CPU(i, j, finalK, finalL)
-		);
+		drawAHorizontalLineCPU(i, j, finalK, finalL)
+		;
 	}
 
-	private static void method339CPU(int i, int j, int k, int l) {
+	private static void drawAHorizontalLineCPU(int i, int j, int k, int l) {
 		int pos = l + i * width;
 		int remaining = k;
 
@@ -570,7 +551,7 @@ public class DrawingArea extends NodeSub {
 		}
 	}
 
-	public static void method340(int i, int j, int k, int l, int i1) {
+	public static void drawAlphaHorizontalLine(int i, int j, int k, int l, int i1) {
 		if (k < topY || k >= bottomY) return;
 		if (i1 < topX) {
 			j -= topX - i1;
@@ -580,13 +561,11 @@ public class DrawingArea extends NodeSub {
 
 		int finalI = i1;
 		int finalJ = j;
-		executeGPUOperation("Alpha Horizontal Line",
-			() -> GPUShaders.drawRectangleAlpha(finalI, k, finalJ, 1, i, l),
-			() -> method340CPU(i, finalJ, k, l, finalI)
-		);
+		drawAlphaHorizontalLineCPU(i, finalJ, k, l, finalI)
+		;
 	}
 
-	private static void method340CPU(int i, int j, int k, int l, int i1) {
+	private static void drawAlphaHorizontalLineCPU(int i, int j, int k, int l, int i1) {
 		final int invAlpha = INV_ALPHA_LOOKUP[l];
 		final int k1 = (i >> 16 & 0xff) * l;
 		final int l1 = (i >> 8 & 0xff) * l;
@@ -602,7 +581,7 @@ public class DrawingArea extends NodeSub {
 		}
 	}
 
-	public static void method341(int i, int j, int k, int l) {
+	public static void drawAVerticalLine(int i, int j, int k, int l) {
 		if (l < topX || l >= bottomX) return;
 		if (i < topY) {
 			k -= topY - i;
@@ -612,13 +591,11 @@ public class DrawingArea extends NodeSub {
 
 		int finalI = i;
 		int finalK = k;
-		executeGPUOperation("Vertical Line",
-			() -> GPUShaders.drawRectangle(l, finalI, 1, finalK, j),
-			() -> method341CPU(finalI, j, finalK, l)
-		);
+		drawAVerticalLineCPU(finalI, j, finalK, l)
+		;
 	}
 
-	private static void method341CPU(int i, int j, int k, int l) {
+	private static void drawAVerticalLineCPU(int i, int j, int k, int l) {
 		int pos = l + i * width;
 		for (int k1 = 0; k1 < k; k1++) {
 			pixels[pos] = j;
@@ -626,7 +603,7 @@ public class DrawingArea extends NodeSub {
 		}
 	}
 
-	private static void method342(int i, int j, int k, int l, int i1) {
+	private static void drawAlphaVerticalLine(int i, int j, int k, int l, int i1) {
 		if (j < topX || j >= bottomX) return;
 		if (l < topY) {
 			i1 -= topY - l;
@@ -636,13 +613,11 @@ public class DrawingArea extends NodeSub {
 
 		int finalL = l;
 		int finalI = i1;
-		executeGPUOperation("Alpha Vertical Line",
-			() -> GPUShaders.drawRectangleAlpha(j, finalL, 1, finalI, i, k),
-			() -> method342CPU(i, j, k, finalL, finalI)
-		);
+		drawAlphaVerticalLineCPU(i, j, k, finalL, finalI)
+		;
 	}
 
-	private static void method342CPU(int i, int j, int k, int l, int i1) {
+	private static void drawAlphaVerticalLineCPU(int i, int j, int k, int l, int i1) {
 		final int invAlpha = INV_ALPHA_LOOKUP[k];
 		final int k1 = (i >> 16 & 0xff) * k;
 		final int l1 = (i >> 8 & 0xff) * k;
@@ -679,10 +654,8 @@ public class DrawingArea extends NodeSub {
 		int finalY = y;
 		int finalWidth = width;
 		int finalHeight = height;
-		executeGPUOperation("Fill Rectangle",
-			() -> GPUShaders.drawRectangleAlpha(finalX, finalY, finalWidth, finalHeight, color, alpha),
-			() -> fillRectangleCPU(finalX, finalY, finalWidth, finalHeight, color, alpha)
-		);
+		fillRectangleCPU(finalX, finalY, finalWidth, finalHeight, color, alpha)
+		;
 	}
 
 	private static void fillRectangleCPU(int x, int y, int width, int height, int color, int alpha) {

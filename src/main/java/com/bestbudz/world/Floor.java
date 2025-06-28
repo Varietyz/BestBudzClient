@@ -1,8 +1,8 @@
 package com.bestbudz.world;
 
 import com.bestbudz.engine.config.SettingsConfig;
+import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.network.Stream;
-import com.bestbudz.network.StreamLoader;
 
 public final class Floor {
 
@@ -22,8 +22,8 @@ public final class Floor {
 		aBoolean393 = true;
 	}
 
-	public static void unpackConfig(StreamLoader streamLoader) {
-		Stream stream = new Stream(streamLoader.getDataForName("flo.dat"));
+	public static void unpackConfig(ArchiveLoader archiveLoader) {
+		Stream stream = new Stream(archiveLoader.extractFile("flo.dat"));
 		int cacheSize = stream.readUnsignedWord();
 		System.out.println("Underlays Loaded: " + cacheSize);
 		if (cache == null) {

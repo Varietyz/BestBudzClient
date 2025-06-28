@@ -27,9 +27,9 @@ public class BuildScreenMenu extends Client
 			menuActionRow++;
 		}
 		int j = -1;
-		for (int k = 0; k < Model.anInt1687; k++)
+		for (int k = 0; k < Model.modelCount; k++)
 		{
-			int l = Model.anIntArray1688[k];
+			int l = Model.modelHashes[k];
 			int i1 = l & 0x7f;
 			int j1 = l >> 7 & 0x7f;
 			int k1 = l >> 29 & 3;
@@ -40,19 +40,19 @@ public class BuildScreenMenu extends Client
 			if (k1 == 2)
 			{
 			}
-			if (k1 == 2 && worldController.method304(plane, i1, j1, l) >= 0)
+			if (k1 == 2 && worldController.getObjectConfig(plane, i1, j1, l) >= 0)
 			{
-				ObjectDef class46 = ObjectDef.forID(l1);
-				if (class46.childrenIDs != null)
-					class46 = class46.method580();
-				if (class46 == null)
+				ObjectDef objectDef = ObjectDef.forID(l1);
+				if (objectDef.childIds != null)
+					objectDef = objectDef.getChildObject();
+				if (objectDef == null)
 				{
 					continue;
 				}
 				if (itemSelected == 1)
 				{
 					menuActionName[menuActionRow] = "Select " + selectedItemName + ", combine with @cya@"
-						+ class46.name;
+						+ objectDef.name;
 					menuActionID[menuActionRow] = 62;
 					menuActionCmd1[menuActionRow] = l;
 					menuActionCmd2[menuActionRow] = i1;
@@ -63,7 +63,7 @@ public class BuildScreenMenu extends Client
 				{
 					if ((spellUsableOn & 4) == 4)
 					{
-						menuActionName[menuActionRow] = spellTooltip + " @cya@" + class46.name;
+						menuActionName[menuActionRow] = spellTooltip + " @cya@" + objectDef.name;
 						menuActionID[menuActionRow] = 956;
 						menuActionCmd1[menuActionRow] = l;
 						menuActionCmd2[menuActionRow] = i1;
@@ -73,12 +73,12 @@ public class BuildScreenMenu extends Client
 				}
 				else
 				{
-					if (class46.actions != null)
+					if (objectDef.actions != null)
 					{
 						for (int i2 = 4; i2 >= 0; i2--)
-							if (class46.actions[i2] != null)
+							if (objectDef.actions[i2] != null)
 							{
-								menuActionName[menuActionRow] = class46.actions[i2] + " @cya@" + class46.name;
+								menuActionName[menuActionRow] = objectDef.actions[i2] + " @cya@" + objectDef.name;
 								if (i2 == 0)
 									menuActionID[menuActionRow] = 502;
 								if (i2 == 1)
@@ -98,15 +98,15 @@ public class BuildScreenMenu extends Client
 					}
 					if (EngineConfig.DEBUG_MODE)
 					{
-						menuActionName[menuActionRow] = "Inspect @cya@" + class46.name + " @gre@(@whi@" + l1
+						menuActionName[menuActionRow] = "@cya@" + objectDef.name + " @gre@(@whi@" + l1
 							+ "@gre@) (@whi@" + (i1 + baseX) + "," + (j1 + baseY) + "@gre@)";
 					}
 					else
 					{
-						menuActionName[menuActionRow] = "Inspect @cya@" + class46.name;
+						menuActionName[menuActionRow] = "@cya@" + objectDef.name;
 					}
 					menuActionID[menuActionRow] = 1226;
-					menuActionCmd1[menuActionRow] = class46.type << 14;
+					menuActionCmd1[menuActionRow] = objectDef.type << 14;
 					menuActionCmd2[menuActionRow] = i1;
 					menuActionCmd3[menuActionRow] = j1;
 					menuActionRow++;
@@ -117,12 +117,12 @@ public class BuildScreenMenu extends Client
 				Npc npc = npcArray[l1];
 				try
 				{
-					if (npc.desc.aByte68 == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64)
+					if (npc.desc.size == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64)
 					{
 						for (int j2 = 0; j2 < npcCount; j2++)
 						{
 							Npc npc2 = npcArray[npcIndices[j2]];
-							if (npc2 != null && npc2 != npc && npc2.desc.aByte68 == 1 && npc2.x == npc.x
+							if (npc2 != null && npc2 != npc && npc2.desc.size == 1 && npc2.x == npc.x
 								&& npc2.y == npc.y)
 								buildAtNPCMenu(npc2.desc, npcIndices[j2], j1, i1);
 						}
@@ -146,20 +146,20 @@ public class BuildScreenMenu extends Client
 				{
 					for (int k2 = 0; k2 < npcCount; k2++)
 					{
-						Npc class30_sub2_sub4_sub1_sub1_2 = npcArray[npcIndices[k2]];
-						if (class30_sub2_sub4_sub1_sub1_2 != null && class30_sub2_sub4_sub1_sub1_2.desc.aByte68 == 1
-							&& class30_sub2_sub4_sub1_sub1_2.x == stoner.x
-							&& class30_sub2_sub4_sub1_sub1_2.y == stoner.y)
-							buildAtNPCMenu(class30_sub2_sub4_sub1_sub1_2.desc, npcIndices[k2], j1, i1);
+						Npc npc = npcArray[npcIndices[k2]];
+						if (npc != null && npc.desc.size == 1
+							&& npc.x == stoner.x
+							&& npc.y == stoner.y)
+							buildAtNPCMenu(npc.desc, npcIndices[k2], j1, i1);
 					}
 
 					for (int i3 = 0; i3 < stonerCount; i3++)
 					{
-						Stoner class30_sub2_sub4_sub1_sub2_2 = stonerArray[stonerIndices[i3]];
-						if (class30_sub2_sub4_sub1_sub2_2 != null && class30_sub2_sub4_sub1_sub2_2 != stoner
-							&& class30_sub2_sub4_sub1_sub2_2.x == stoner.x
-							&& class30_sub2_sub4_sub1_sub2_2.y == stoner.y)
-							buildAtStonerMenu(i1, stonerIndices[i3], class30_sub2_sub4_sub1_sub2_2, j1);
+						Stoner otherStoner = stonerArray[stonerIndices[i3]];
+						if (otherStoner != null && otherStoner != stoner
+							&& otherStoner.x == stoner.x
+							&& otherStoner.y == stoner.y)
+							buildAtStonerMenu(i1, stonerIndices[i3], otherStoner, j1);
 					}
 
 				}
@@ -167,10 +167,10 @@ public class BuildScreenMenu extends Client
 			}
 			if (k1 == 3)
 			{
-				NodeList class19 = groundArray[plane][i1][j1];
-				if (class19 != null)
+				NodeList groundItemList = groundArray[plane][i1][j1];
+				if (groundItemList != null)
 				{
-					for (Item item = (Item) class19.getFirst(); item != null; item = (Item) class19.getNext())
+					for (Item item = (Item) groundItemList.getFirst(); item != null; item = (Item) groundItemList.getNext())
 					{
 						ItemDef itemDef = getItemDefinition(item.ID);
 						if (itemSelected == 1)
@@ -225,7 +225,7 @@ public class BuildScreenMenu extends Client
 									menuActionCmd3[menuActionRow] = j1;
 									menuActionRow++;
 								}
-							menuActionName[menuActionRow] = "Inspect @lre@" + itemDef.name;
+							menuActionName[menuActionRow] = "@lre@" + itemDef.name;
 							menuActionID[menuActionRow] = 1448;
 							menuActionCmd1[menuActionRow] = item.ID;
 							menuActionCmd2[menuActionRow] = i1;

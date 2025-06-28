@@ -89,14 +89,14 @@ public class PetVariantManager
 
 	private static void copyBaseProperties(EntityDef source, EntityDef target) {
 		// Copy essential properties from base NPC
-		if (source.anIntArray94 != null) {
-			target.anIntArray94 = source.anIntArray94.clone();
+		if (source.models != null) {
+			target.models = source.models.clone();
 		}
-		if (source.anIntArray70 != null) {
-			target.anIntArray70 = source.anIntArray70.clone();
+		if (source.newColors != null) {
+			target.newColors = source.newColors.clone();
 		}
-		if (source.anIntArray76 != null) {
-			target.anIntArray76 = source.anIntArray76.clone();
+		if (source.originalColors != null) {
+			target.originalColors = source.originalColors.clone();
 		}
 
 		target.walkAnim = source.walkAnim;
@@ -104,7 +104,7 @@ public class PetVariantManager
 		target.combatGrade = source.combatGrade;
 		target.modelWidth = source.modelWidth;
 		target.modelHeight = source.modelHeight;
-		target.aByte68 = source.aByte68;
+		target.size = source.size;
 
 		// Copy actions if not overridden
 		if (source.actions != null) {

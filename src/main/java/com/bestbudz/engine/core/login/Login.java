@@ -7,6 +7,7 @@ import static com.bestbudz.engine.config.EngineConfig.worldSelected;
 import com.bestbudz.engine.config.NetworkConfig;
 import static com.bestbudz.engine.core.GameState.resetGameState;
 import com.bestbudz.engine.core.gamerender.ColorPalette;
+import static com.bestbudz.engine.core.login.logout.Reset.resetImageProducers2;
 import com.bestbudz.ui.handling.SettingHandler;
 import com.bestbudz.data.AccountData;
 import com.bestbudz.data.AccountManager;
@@ -18,8 +19,7 @@ import com.bestbudz.ui.handling.input.MouseState;
 import com.bestbudz.cache.IdentityResolver;
 import com.bestbudz.entity.Npc;
 import com.bestbudz.entity.Stoner;
-import com.bestbudz.network.RSSocket;
-import com.bestbudz.engine.core.gamerender.Rasterizer;
+import com.bestbudz.network.Socket;
 import static com.bestbudz.ui.DialogHandling.sendFrame36;
 import static com.bestbudz.ui.interfaces.Chatbox.splitPrivateChat;
 import com.bestbudz.util.ISAACRandomGen;
@@ -34,26 +34,26 @@ public class Login extends Client
 {
 	public static void loginToGameworld(Graphics2D g)
 	{
-		if (lowMem && loadingStage == 2 && ObjectManager.anInt131 != plane)
+		if (lowMem && loadingStage == 2 && ObjectManager.baseLevel != plane)
 		{
 			mainGameRendering.drawGraphics(0, g, 0);
 			loadingStage = 1;
-			aLong824 = System.currentTimeMillis();
+			lastConnectionTime = System.currentTimeMillis();
 		}
 		if (loadingStage == 1)
 		{
 			int j = validateMapData();
-			if (j != 0 && System.currentTimeMillis() - aLong824 > 0x57e40L)
+			if (j != 0 && System.currentTimeMillis() - lastConnectionTime > 0x57e40L)
 			{
 				Signlink.reporterror(
-					myUsername + " glcfb " + aLong1215 + "," + j + "," + lowMem + "," + decompressors[0] + ","
-						+ onDemandFetcher.getNodeCount() + "," + plane + "," + anInt1069 + "," + anInt1070);
-				aLong824 = System.currentTimeMillis();
+					myUsername + " glcfb " + lastInventoryTime + "," + j + "," + lowMem + "," + decompressors[0] + ","
+						+ cacheManager.getNodeCount() + "," + plane + "," + inventoryOffsetX + "," + inventoryOffsetY);
+				lastConnectionTime = System.currentTimeMillis();
 			}
 		}
-		if (loadingStage == 2 && plane != anInt985)
+		if (loadingStage == 2 && plane != draggedInterfaceId)
 		{
-			anInt985 = plane;
+			draggedInterfaceId = plane;
 			//renderMinimap(plane);
 		}
 	}
@@ -78,13 +78,13 @@ public class Login extends Client
 			}
 
 			server = NetworkConfig.SERVER_IPS[worldSelected - 1];
-			socketStream = new RSSocket(client, openSocket(NetworkConfig.SERVER_PORT + portOff));
+			socketStream = new Socket(client, openSocket(NetworkConfig.SERVER_PORT + portOff));
 
 			long l = TextClass.longForName(username);
 			int i = (int) (l >> 16 & 31L);
-			stream.currentOffset = 0;
-			stream.writeWordBigEndian(14);
-			stream.writeWordBigEndian(i);
+			stream.position = 0;
+			stream.writeByte(14);
+			stream.writeByte(i);
 			socketStream.queueBytes(2, stream.buffer);
 
 			for (int j = 0; j < 8; j++) socketStream.read();
@@ -93,17 +93,17 @@ public class Login extends Client
 
 			if (k == 0) {
 				socketStream.flushInputStream(inStream.buffer, 8);
-				inStream.currentOffset = 0;
-				aLong1215 = inStream.readQWord();
+				inStream.position = 0;
+				lastInventoryTime = inStream.readQWord();
 
 				int[] ai = new int[4];
 				ai[0] = (int) (Math.random() * 99999999D);
 				ai[1] = (int) (Math.random() * 99999999D);
-				ai[2] = (int) (aLong1215 >> 32);
-				ai[3] = (int) aLong1215;
+				ai[2] = (int) (lastInventoryTime >> 32);
+				ai[3] = (int) lastInventoryTime;
 
-				stream.currentOffset = 0;
-				stream.writeWordBigEndian(100);
+				stream.position = 0;
+				stream.writeByte(100);
 				stream.writeDWord(ai[0]);
 				stream.writeDWord(ai[1]);
 				stream.writeDWord(ai[2]);
@@ -111,29 +111,29 @@ public class Login extends Client
 				stream.writeString(String.valueOf(IdentityResolver.resolve()));
 				stream.writeString(username);
 				stream.writeString(password);
-				stream.doKeys();
+				stream.applyRSAEncryption();
 
-				aStream_847.currentOffset = 0;
-				aStream_847.writeWordBigEndian(flag ? 18 : 16);
-				aStream_847.writeWordBigEndian(stream.currentOffset + 36 + 1 + 1 + 2);
-				aStream_847.writeWordBigEndian(255);
+				networkBuffer.position = 0;
+				networkBuffer.writeByte(flag ? 18 : 16);
+				networkBuffer.writeByte(stream.position + 36 + 1 + 1 + 2);
+				networkBuffer.writeByte(255);
 				if (worldSelected == 3){
-					aStream_847.writeWord(EngineConfig.DEV_ENGINE_VERSION);
+					networkBuffer.writeWord(EngineConfig.DEV_ENGINE_VERSION);
 				}else{
-					aStream_847.writeWord(EngineConfig.ENGINE_VERSION);
+					networkBuffer.writeWord(EngineConfig.ENGINE_VERSION);
 				}
-				aStream_847.writeWordBigEndian(lowMem ? 1 : 0);
+				networkBuffer.writeByte(lowMem ? 1 : 0);
 
 				for (int l1 = 0; l1 < 9; l1++)
-					aStream_847.writeDWord(expectedCRCs[l1]);
+					networkBuffer.writeDWord(expectedCRCs[l1]);
 
-				aStream_847.writeBytes(stream.buffer, stream.currentOffset, 0);
+				networkBuffer.writePacketLength(stream.buffer, stream.position, 0);
 				stream.encryption = new ISAACRandomGen(ai);
 
 				for (int j2 = 0; j2 < 4; j2++) ai[j2] += 50;
 				encryption = new ISAACRandomGen(ai);
 
-				socketStream.queueBytes(aStream_847.currentOffset, aStream_847.buffer);
+				socketStream.queueBytes(networkBuffer.position, networkBuffer.buffer);
 				k = socketStream.read();
 			}
 
@@ -159,10 +159,10 @@ public class Login extends Client
 				if (currentAccount == null) currentAccount = account;
 
 				flagged = socketStream.read() == 1;
-				aLong1220 = 0L;
-				anInt1022 = 0;
+				lastChatTime = 0L;
+				mouseDragTime = 0;
 				awtFocus = true;
-				aBoolean954 = true;
+				windowFocused = true;
 				loggedIn = true;
 				loginComplete = true;
 				loginInProgress = false;
@@ -175,17 +175,17 @@ public class Login extends Client
 				MouseState.clickEvent = false;
 
 				// Game init
-				stream.currentOffset = 0;
-				inStream.currentOffset = 0;
+				stream.position = 0;
+				inStream.position = 0;
 				pktType = -1;
-				anInt841 = -1;
-				anInt842 = -1;
-				anInt843 = -1;
+				regionUpdateCount = -1;
+				regionX = -1;
+				regionY = -1;
 				pktSize = 0;
-				anInt1009 = 0;
-				anInt1104 = 0;
-				anInt1011 = 0;
-				anInt855 = 0;
+				idleTimeout = 0;
+				systemMessageTimer = 0;
+				connectionTimeout = 0;
+				crosshairType = 0;
 				menuActionRow = 0;
 				menuOpen = false;
 				idleTime = 0;
@@ -194,10 +194,10 @@ public class Login extends Client
 				itemSelected = 0;
 				spellSelected = 0;
 				loadingStage = 0;
-				anInt1062 = 0;
+				soundEffectCount = 0;
 				setNorth();
-				anInt1021 = 0;
-				anInt985 = -1;
+				lastActionTime = 0;
+				draggedInterfaceId = -1;
 				destX = 0;
 				destY = 0;
 				stonerCount = 0;
@@ -205,54 +205,54 @@ public class Login extends Client
 
 				for (int i2 = 0; i2 < maxStoners; i2++) {
 					stonerArray[i2] = null;
-					aStreamArray895s[i2] = null;
+					playerUpdateBuffers[i2] = null;
 				}
 				for (i = 0; i < 17; i++) console.inputConsoleMessages[i] = "";
 				for (int k2 = 0; k2 < 16384; k2++) npcArray[k2] = null;
 
 				myStoner = stonerArray[myStonerIndex] = new Stoner();
-				aClass19_1013.removeAll();
-				aClass19_1056.removeAll();
+				nodeList.removeAll();
+				queueSpotAnimation.removeAll();
 
 				for (int l2 = 0; l2 < 4; l2++)
 					for (int i3 = 0; i3 < 104; i3++)
 						for (int k3 = 0; k3 < 104; k3++)
 							groundArray[l2][i3][k3] = null;
 
-				aClass19_1179 = new NodeList();
+				spotAnimationQueue = new NodeList();
 				fullscreenInterfaceID = -1;
-				anInt900 = 0;
+				friendsListAction = 0;
 				stonersCount = 0;
 				dialogID = -1;
 				backDialogID = -1;
 				openInterfaceID = -1;
 				invOverlayInterfaceID = -1;
-				anInt1018 = -1;
-				aBoolean1149 = false;
+				mouseClickState = -1;
+				isPlayerBusy = false;
 				tabID = 3;
 				inputDialogState = 0;
 				menuOpen = false;
 				messagePromptRaised = false;
-				aString844 = null;
-				anInt1055 = 0;
-				anInt1054 = -1;
-				aBoolean1047 = true;
+				inputPromptText = null;
+				tabHoverTime = 0;
+				selectedTabIndex = -1;
+				welcomeScreenVisible = true;
 				resetIdentityKits();
 
-				for (int j3 = 0; j3 < 5; j3++) anIntArray990[j3] = 0;
+				for (int j3 = 0; j3 < 5; j3++) cameraShakeOffsets[j3] = 0;
 				for (int l3 = 0; l3 < 5; l3++) {
 					atStonerActions[l3] = null;
 					atStonerArray[l3] = false;
 				}
 
-				anInt1175 = 0;
-				anInt1134 = 0;
-				anInt986 = 0;
-				anInt1288 = 0;
-				anInt924 = 0;
-				anInt1188 = 0;
-				anInt1155 = 0;
-				anInt1226 = 0;
+				renderDistance = 0;
+				interfaceDrawY = 0;
+				systemUpdateTimer = 0;
+				lastMouseY = 0;
+				gameSubState = 0;
+				viewportIndex = 0;
+				interfaceDrawZ = 0;
+				lastMouseX = 0;
 
 				sendFrame36(429, 1);
 				resetImageProducers2();
@@ -329,7 +329,7 @@ public class Login extends Client
 					loggedIn = true;
 					loginComplete = true;
 					loginInProgress = false;
-					aLong824 = System.currentTimeMillis();
+					lastConnectionTime = System.currentTimeMillis();
 					break;
 
 				case 16:
@@ -399,10 +399,10 @@ public class Login extends Client
 
 	public static void setNorth()
 	{
-		anInt1278 = 0;
-		anInt1131 = 0;
-		anInt896 = 0;
-		minimapInt1 = 0;
+		selectedSpellIndex = 0;
+		rightClickMenuOption = 0;
+		cameraRotation = 0;
+		minimapRotation = 0;
 		minimapInt2 = 0;
 		minimapInt3 = 0;
 	}
@@ -426,7 +426,7 @@ public class Login extends Client
 						break;
 				}
 			}
-			int j = Varp.cache[i].anInt709;
+			int j = Varp.cache[i].configType;
 			if (j == 0)
 				return;
 			if (j == 1)
@@ -453,7 +453,7 @@ public class Login extends Client
 			if (j == 5)
 				legacyClickInt = k;
 			if (j == 6)
-				anInt1249 = k;
+				chatDisplayMode = k;
 			if (j == 8)
 			{
 				splitPrivateChat = k;
@@ -499,41 +499,41 @@ public class Login extends Client
 
 	public static int validateMapData()
 	{
-		for (int i = 0; i < aByteArrayArray1183.length; i++)
+		for (int i = 0; i < terrainData.length; i++)
 		{
-			if (aByteArrayArray1183[i] == null && anIntArray1235[i] != -1)
+			if (terrainData[i] == null && terrainIndices[i] != -1)
 				return -1;
-			if (aByteArrayArray1247[i] == null && anIntArray1236[i] != -1)
+			if (objectData[i] == null && objectIndices[i] != -1)
 				return -2;
 		}
 		boolean flag = true;
-		for (int j = 0; j < aByteArrayArray1183.length; j++)
+		for (int j = 0; j < terrainData.length; j++)
 		{
-			byte[] abyte0 = aByteArrayArray1247[j];
+			byte[] abyte0 = objectData[j];
 			if (abyte0 != null)
 			{
-				int k = (anIntArray1234[j] >> 8) * 64 - baseX;
-				int l = (anIntArray1234[j] & 0xff) * 64 - baseY;
-				if (aBoolean1159)
+				int k = (mapRegionIds[j] >> 8) * 64 - baseX;
+				int l = (mapRegionIds[j] & 0xff) * 64 - baseY;
+				if (musicPlaying)
 				{
 					k = 10;
 					l = 10;
 				}
-				flag &= ObjectManager.method189(k, abyte0, l);
+				flag &= ObjectManager.validateObjectRequirements(k, abyte0, l);
 			}
 		}
 		if (!flag)
 			return -3;
-		if (aBoolean1080)
+		if (friendsListVisible)
 		{
 			return -4;
 		}
 		else
 		{
 			loadingStage = 2;
-			ObjectManager.anInt131 = plane;
+			ObjectManager.baseLevel = plane;
 			resetGameState();
-			stream.createFrame(121);
+			stream.writeEncryptedOpcode(121);
 			return 0;
 		}
 	}

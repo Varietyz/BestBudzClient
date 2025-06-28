@@ -2,13 +2,14 @@ package com.bestbudz.engine.core;
 
 import com.bestbudz.cache.EmbeddedMapCache;
 import com.bestbudz.cache.Signlink;
+import static com.bestbudz.engine.core.login.logout.Reset.unlinkMRUNodes;
 import com.bestbudz.engine.gpu.GPUContextManager;
 import com.bestbudz.engine.gpu.GPUMonitor;
 import com.bestbudz.engine.gpu.GPURenderingEngine;
 import static com.bestbudz.engine.core.gamerender.Camera.calcCameraPos;
 import static com.bestbudz.engine.core.gamerender.Camera.updateCameraPosition;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
-import static com.bestbudz.rendering.SpotAnim2.updatePendingSpotAnimations;
+import static com.bestbudz.rendering.AnimationManager.processPendingAnimations;
 import com.bestbudz.rendering.model.Model;
 import static com.bestbudz.ui.interfaces.Chatbox.handleTextFieldInput;
 import com.bestbudz.util.ColorUtility;
@@ -81,15 +82,15 @@ public class GameState extends Client {
 
 
 				updateCameraPosition();
-				if (aBoolean1160) {
+				if (cutsceneActive) {
 					calcCameraPos();
 				}
 			}
 
 			// Safe array access with bounds checking
-			if (anIntArray1030 != null && anIntArray1030.length >= 5) {
+			if (cameraShakeCounters != null && cameraShakeCounters.length >= 5) {
 				for (int i = 0; i < 5; i++) {
-					anIntArray1030[i]++;
+					cameraShakeCounters[i]++;
 				}
 			} else {
 				logError("anIntArray1030 is null or too small in runSceneRendering");
@@ -223,7 +224,7 @@ public class GameState extends Client {
 			// Try cached position as last resort
 			if (hasValidPosition && worldController != null) {
 				try {
-					worldController.method313(lastValidXCameraPos, lastValidYCameraPos, lastValidXCameraCurve,
+					worldController.render(lastValidXCameraPos, lastValidYCameraPos, lastValidXCameraCurve,
 						lastValidZCameraPos, lastValidJ, lastValidYCameraCurve);
 				} catch (Exception e2) {
 					logError("Even cached position failed: " + e2.getMessage());
@@ -239,7 +240,7 @@ public class GameState extends Client {
 										   int zCameraPos, int j, int yCameraCurve) throws Exception {
 		if (worldController != null) {
 			// GPU-accelerated world rendering
-			worldController.method313(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
+			worldController.render(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 		} else {
 			throw new IllegalStateException("worldController is null");
 		}
@@ -252,10 +253,10 @@ public class GameState extends Client {
 											int zCameraPos, int j, int yCameraCurve) {
 		try {
 			if (worldController != null) {
-				worldController.method313(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
+				worldController.render(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 				cacheValidCameraPosition(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 			} else if (hasValidPosition) {
-				worldController.method313(lastValidXCameraPos, lastValidYCameraPos, lastValidXCameraCurve,
+				worldController.render(lastValidXCameraPos, lastValidYCameraPos, lastValidXCameraCurve,
 					lastValidZCameraPos, lastValidJ, lastValidYCameraCurve);
 			}
 		} catch (Exception e) {
@@ -517,32 +518,32 @@ public class GameState extends Client {
 	// ===== REST OF THE ORIGINAL METHODS (unchanged but with GPU monitoring) =====
 
 	private static void validateCriticalArrays() {
-		if (aClass11Array1230 != null) {
-			logDebug("aClass11Array1230 length: " + aClass11Array1230.length);
+		if (collisionMaps != null) {
+			logDebug("aClass11Array1230 length: " + collisionMaps.length);
 		} else {
 			logError("aClass11Array1230 is null");
 		}
 
-		if (aByteArrayArray1183 != null) {
-			logDebug("aByteArrayArray1183 length: " + aByteArrayArray1183.length);
+		if (terrainData != null) {
+			logDebug("aByteArrayArray1183 length: " + terrainData.length);
 		} else {
 			logError("aByteArrayArray1183 is null");
 		}
 
-		if (anIntArray1234 != null) {
-			logDebug("anIntArray1234 length: " + anIntArray1234.length);
+		if (mapRegionIds != null) {
+			logDebug("anIntArray1234 length: " + mapRegionIds.length);
 		} else {
 			logError("anIntArray1234 is null");
 		}
 
-		if (anIntArrayArrayArray1129 != null) {
+		if (dynamicRegionData != null) {
 			logDebug("anIntArrayArrayArray1129 dimensions: " +
-				anIntArrayArrayArray1129.length + "x" +
-				(anIntArrayArrayArray1129.length > 0 && anIntArrayArrayArray1129[0] != null ?
-					anIntArrayArrayArray1129[0].length : "null") + "x" +
-				(anIntArrayArrayArray1129.length > 0 && anIntArrayArrayArray1129[0] != null &&
-					anIntArrayArrayArray1129[0].length > 0 && anIntArrayArrayArray1129[0][0] != null ?
-					anIntArrayArrayArray1129[0][0].length : "null"));
+				dynamicRegionData.length + "x" +
+				(dynamicRegionData.length > 0 && dynamicRegionData[0] != null ?
+					dynamicRegionData[0].length : "null") + "x" +
+				(dynamicRegionData.length > 0 && dynamicRegionData[0] != null &&
+					dynamicRegionData[0].length > 0 && dynamicRegionData[0][0] != null ?
+					dynamicRegionData[0][0].length : "null"));
 		} else {
 			logError("anIntArrayArrayArray1129 is null");
 		}
@@ -552,16 +553,16 @@ public class GameState extends Client {
 		logDebug("Phase 1: Quick cleanup");
 
 		try {
-			anInt985 = -1;
+			draggedInterfaceId = -1;
 
-			if (aClass19_1056 != null) {
-				aClass19_1056.removeAll();
+			if (queueSpotAnimation != null) {
+				queueSpotAnimation.removeAll();
 			} else {
 				logError("aClass19_1056 is null during cleanup");
 			}
 
-			if (aClass19_1013 != null) {
-				aClass19_1013.removeAll();
+			if (nodeList != null) {
+				nodeList.removeAll();
 			} else {
 				logError("aClass19_1013 is null during cleanup");
 			}
@@ -586,17 +587,17 @@ public class GameState extends Client {
 		logDebug("Phase 2: Array operations");
 
 		try {
-			if (aClass11Array1230 != null) {
-				int arrayLength = Math.min(4, aClass11Array1230.length);
+			if (collisionMaps != null) {
+				int arrayLength = Math.min(4, collisionMaps.length);
 				for (int i = 0; i < arrayLength; i++) {
-					if (aClass11Array1230[i] != null) {
-						aClass11Array1230[i].method210();
+					if (collisionMaps[i] != null) {
+						collisionMaps[i].reset();
 					} else {
 						logError("aClass11Array1230[" + i + "] is null");
 					}
 				}
 			} else {
-				logError("aClass11Array1230 is null, skipping Class11 cleanup");
+				logError("aClass11Array1230 is null, skipping CollisionMap cleanup");
 			}
 
 			clearGroundArraysComprehensive();
@@ -720,7 +721,7 @@ public class GameState extends Client {
 
 		try {
 			if (byteGroundArray == null || intGroundArray == null) {
-				logError("Ground arrays are null, cannot create ObjectManager");
+				logError("Ground arrays are null, cannot getPooledStream ObjectManager");
 				throw new IllegalStateException("Ground arrays not initialized");
 			}
 
@@ -741,7 +742,7 @@ public class GameState extends Client {
 		logDebug("Phase 5: Loading embedded maps");
 
 		if (!EmbeddedMapCache.isReady()) {
-			logDebug("Embedded map cache not ready, using onDemandFetcher only");
+			logDebug("Embedded map cache not ready, using cacheManager only");
 			return 0;
 		}
 
@@ -773,17 +774,17 @@ public class GameState extends Client {
 		logDebug("Phase 6: Main processing (with " + embeddedRegionsLoaded + " embedded regions)");
 
 		try {
-			if (aByteArrayArray1183 == null) {
+			if (terrainData == null) {
 				logError("aByteArrayArray1183 is null, skipping main processing");
 				return;
 			}
 
-			int k2 = aByteArrayArray1183.length;
+			int k2 = terrainData.length;
 			logDebug("Processing " + k2 + " regions (" + embeddedRegionsLoaded + " from embedded cache)");
 
-			stream.createFrame(0);
+			stream.writeEncryptedOpcode(0);
 
-			if (!aBoolean1159) {
+			if (!musicPlaying) {
 				processNormalModeWithEmbedded(objectManager, k2, embeddedRegionsLoaded);
 			} else {
 				processSpecialModeSafe(objectManager);
@@ -807,54 +808,54 @@ public class GameState extends Client {
 		try {
 			// PASS 1: Process map data (many regions already loaded from embedded cache)
 			for (int i3 = 0; i3 < k2; i3++) {
-				if (i3 >= aByteArrayArray1183.length || i3 >= anIntArray1234.length) {
+				if (i3 >= terrainData.length || i3 >= mapRegionIds.length) {
 					logError("Index " + i3 + " exceeds array bounds in normal mode pass 1");
 					break;
 				}
 
-				if (aByteArrayArray1183[i3] != null) {
-					int i4 = (anIntArray1234[i3] >> 8) * 64 - baseX;
-					int k5 = (anIntArray1234[i3] & 0xff) * 64 - baseY;
+				if (terrainData[i3] != null) {
+					int i4 = (mapRegionIds[i3] >> 8) * 64 - baseX;
+					int k5 = (mapRegionIds[i3] & 0xff) * 64 - baseY;
 
 					if (isValidMapCoordinate(i4, k5, i3)) {
 						try {
-							objectManager.method180(aByteArrayArray1183[i3], k5, i4,
-								(anInt1069 - 6) * 8, (anInt1070 - 6) * 8, aClass11Array1230);
+							objectManager.loadMapRegion(terrainData[i3], k5, i4,
+								(inventoryOffsetX - 6) * 8, (inventoryOffsetY - 6) * 8, collisionMaps);
 						} catch (ArrayIndexOutOfBoundsException e) {
-							logError("ObjectManager.method180 bounds error at (" + i4 + "," + k5 + ") for index " + i3 + ": " + e.getMessage());
+							logError("ObjectManager.loadMapRegion bounds error at (" + i4 + "," + k5 + ") for index " + i3 + ": " + e.getMessage());
 						}
 					} else {
-						logError("Invalid coordinates for method180: i4=" + i4 + ", k5=" + k5 + " (index=" + i3 + ")");
+						logError("Invalid coordinates for loadMapRegion: i4=" + i4 + ", k5=" + k5 + " (index=" + i3 + ")");
 					}
 				}
 			}
 
-			// PASS 2: Handle null regions (not loaded yet) - these will use onDemandFetcher
-			if (anInt1070 < 800) {
+			// PASS 2: Handle null regions (not loaded yet) - these will use cacheManager
+			if (inventoryOffsetY < 800) {
 				int nullRegionsProcessed = 0;
 				for (int j4 = 0; j4 < k2; j4++) {
-					if (j4 >= aByteArrayArray1183.length || j4 >= anIntArray1234.length) {
+					if (j4 >= terrainData.length || j4 >= mapRegionIds.length) {
 						logError("Index " + j4 + " exceeds array bounds in normal mode pass 2");
 						break;
 					}
 
-					if (aByteArrayArray1183[j4] == null) {
+					if (terrainData[j4] == null) {
 						nullRegionsProcessed++;
-						int l5 = (anIntArray1234[j4] >> 8) * 64 - baseX;
-						int k7 = (anIntArray1234[j4] & 0xff) * 64 - baseY;
+						int l5 = (mapRegionIds[j4] >> 8) * 64 - baseX;
+						int k7 = (mapRegionIds[j4] & 0xff) * 64 - baseY;
 
 						if (isValidMapCoordinate(l5, k7, j4)) {
 							try {
-								objectManager.method174(k7, 64, 64, l5);
+								objectManager.markWaterArea(k7, 64, 64, l5);
 							} catch (ArrayIndexOutOfBoundsException e) {
-								logError("ObjectManager.method174 bounds error at (" + l5 + "," + k7 + ") for index " + j4 + ": " + e.getMessage());
+								logError("ObjectManager.markWaterArea bounds error at (" + l5 + "," + k7 + ") for index " + j4 + ": " + e.getMessage());
 							}
 						}
 					}
 				}
 
 				if (nullRegionsProcessed > 0) {
-					logDebug("Processed " + nullRegionsProcessed + " null regions (pending onDemandFetcher)");
+					logDebug("Processed " + nullRegionsProcessed + " null regions (pending cacheManager)");
 				}
 			}
 
@@ -862,35 +863,35 @@ public class GameState extends Client {
 			anInt1097++;
 			if (anInt1097 > 160) {
 				anInt1097 = 0;
-				stream.createFrame(238);
-				stream.writeWordBigEndian(96);
+				stream.writeEncryptedOpcode(238);
+				stream.writeByte(96);
 			}
 
-			stream.createFrame(0);
+			stream.writeEncryptedOpcode(0);
 
 			// PASS 3: Process landscape data (also benefits from embedded cache)
-			if (aByteArrayArray1247 != null) {
+			if (objectData != null) {
 				for (int i6 = 0; i6 < k2; i6++) {
-					if (i6 >= aByteArrayArray1247.length || i6 >= anIntArray1234.length) {
+					if (i6 >= objectData.length || i6 >= mapRegionIds.length) {
 						logError("Index " + i6 + " exceeds array bounds in normal mode pass 3");
 						break;
 					}
 
-					if (aByteArrayArray1247[i6] != null) {
-						int l8 = (anIntArray1234[i6] >> 8) * 64 - baseX;
-						int k9 = (anIntArray1234[i6] & 0xff) * 64 - baseY;
+					if (objectData[i6] != null) {
+						int l8 = (mapRegionIds[i6] >> 8) * 64 - baseX;
+						int k9 = (mapRegionIds[i6] & 0xff) * 64 - baseY;
 
 						if (isValidMapCoordinate(l8, k9, i6)) {
 							try {
-								objectManager.method190(l8, aClass11Array1230, k9, worldController, aByteArrayArray1247[i6]);
+								objectManager.loadObjectRegion(l8, collisionMaps, k9, worldController, objectData[i6]);
 							} catch (ArrayIndexOutOfBoundsException e) {
-								logError("ObjectManager.method190 bounds error at (" + l8 + "," + k9 + ") for index " + i6 + ": " + e.getMessage());
+								logError("ObjectManager.loadObjectRegion bounds error at (" + l8 + "," + k9 + ") for index " + i6 + ": " + e.getMessage());
 							}
 						}
 					}
 				}
 			} else {
-				logError("aByteArrayArray1247 is null, skipping method190 calls");
+				logError("aByteArrayArray1247 is null, skipping loadObjectRegion calls");
 			}
 
 		} catch (Exception e) {
@@ -901,12 +902,12 @@ public class GameState extends Client {
 
 	private static void finalizeObjectManager(ObjectManager objectManager) {
 		try {
-			stream.createFrame(0);
+			stream.writeEncryptedOpcode(0);
 
-			if (aClass11Array1230 != null && worldController != null) {
-				objectManager.method171(aClass11Array1230, worldController);
+			if (collisionMaps != null && worldController != null) {
+				objectManager.renderScene(collisionMaps, worldController);
 			} else {
-				logError("Cannot call method171: aClass11Array1230 or worldController is null");
+				logError("Cannot call renderScene: aClass11Array1230 or worldController is null");
 			}
 
 			if (objectManager.colors != null && !objectManager.colors.isEmpty()) {
@@ -915,20 +916,20 @@ public class GameState extends Client {
 				logDebug("objectManager.colors is null or empty");
 			}
 
-			stream.createFrame(0);
+			stream.writeEncryptedOpcode(0);
 
-			int targetPlane = Math.max(Math.min(ObjectManager.anInt145, plane), plane - 1);
+			int targetPlane = Math.max(Math.min(ObjectManager.minPlane, plane), plane - 1);
 
 			if (lowMem) {
-				worldController.method275(ObjectManager.anInt145);
+				worldController.initializeLevel(ObjectManager.minPlane);
 			} else {
-				worldController.method275(0);
+				worldController.initializeLevel(0);
 			}
 
 			initializeGroundDecorations();
 
 			anInt1051 = (anInt1051 + 1) % 99;
-			updatePendingSpotAnimations();
+			processPendingAnimations();
 
 		} catch (Exception e) {
 			logError("Error in finalizeObjectManager: " + e.getMessage());
@@ -940,21 +941,21 @@ public class GameState extends Client {
 		logDebug("Initializing ground decorations");
 
 		try {
-			if (worldController != null && worldController.groundArray != null) {
+			if (worldController != null && worldController.tiles != null) {
 				logDebug("Initializing WorldController ground arrays");
 
-				for (int plane = 0; plane < Math.min(4, worldController.groundArray.length); plane++) {
-					if (worldController.groundArray[plane] == null) continue;
+				for (int plane = 0; plane < Math.min(4, worldController.tiles.length); plane++) {
+					if (worldController.tiles[plane] == null) continue;
 
-					for (int x = 0; x < Math.min(cachedMapWidth, worldController.groundArray[plane].length); x++) {
-						if (worldController.groundArray[plane][x] == null) continue;
+					for (int x = 0; x < Math.min(cachedMapWidth, worldController.tiles[plane].length); x++) {
+						if (worldController.tiles[plane][x] == null) continue;
 
-						for (int y = 0; y < Math.min(cachedMapHeight, worldController.groundArray[plane][x].length); y++) {
-							if (worldController.groundArray[plane][x][y] == null) continue;
+						for (int y = 0; y < Math.min(cachedMapHeight, worldController.tiles[plane][x].length); y++) {
+							if (worldController.tiles[plane][x][y] == null) continue;
 
-							worldController.groundArray[plane][x][y].aBoolean1323 = true;
+							worldController.tiles[plane][x][y].aBoolean1323 = true;
 
-							if (worldController.groundArray[plane][x][y].aClass30_Sub3_1329 != null) {
+							if (worldController.tiles[plane][x][y].bridgeTile != null) {
 								logDebug("Found ground decoration data at plane=" + plane + ", x=" + x + ", y=" + y);
 							}
 						}
@@ -967,7 +968,7 @@ public class GameState extends Client {
 			}
 
 			if (worldController != null) {
-				worldController.method275(0);
+				worldController.initializeLevel(0);
 			}
 
 			logDebug("Ground decoration initialization completed");
@@ -982,50 +983,50 @@ public class GameState extends Client {
 
 		try {
 			for (int i3 = 0; i3 < k2; i3++) {
-				if (i3 >= aByteArrayArray1183.length || i3 >= anIntArray1234.length) {
+				if (i3 >= terrainData.length || i3 >= mapRegionIds.length) {
 					logError("Index " + i3 + " exceeds array bounds in normal mode pass 1");
 					break;
 				}
 
-				if (aByteArrayArray1183[i3] != null) {
-					int i4 = (anIntArray1234[i3] >> 8) * 64 - baseX;
-					int k5 = (anIntArray1234[i3] & 0xff) * 64 - baseY;
+				if (terrainData[i3] != null) {
+					int i4 = (mapRegionIds[i3] >> 8) * 64 - baseX;
+					int k5 = (mapRegionIds[i3] & 0xff) * 64 - baseY;
 
 					if (isValidMapCoordinate(i4, k5, i3)) {
 						try {
-							objectManager.method180(aByteArrayArray1183[i3], k5, i4,
-								(anInt1069 - 6) * 8, (anInt1070 - 6) * 8, aClass11Array1230);
+							objectManager.loadMapRegion(terrainData[i3], k5, i4,
+								(inventoryOffsetX - 6) * 8, (inventoryOffsetY - 6) * 8, collisionMaps);
 						} catch (ArrayIndexOutOfBoundsException e) {
-							logError("ObjectManager.method180 bounds error at (" + i4 + "," + k5 + ") for index " + i3 +
+							logError("ObjectManager.loadMapRegion bounds error at (" + i4 + "," + k5 + ") for index " + i3 +
 								": " + e.getMessage());
 						}
 					} else {
-						logError("Invalid coordinates for method180: i4=" + i4 + ", k5=" + k5 +
+						logError("Invalid coordinates for loadMapRegion: i4=" + i4 + ", k5=" + k5 +
 							" (index=" + i3 + ", baseX=" + baseX + ", baseY=" + baseY + ")");
 					}
 				}
 			}
 
-			if (anInt1070 < 800) {
+			if (inventoryOffsetY < 800) {
 				for (int j4 = 0; j4 < k2; j4++) {
-					if (j4 >= aByteArrayArray1183.length || j4 >= anIntArray1234.length) {
+					if (j4 >= terrainData.length || j4 >= mapRegionIds.length) {
 						logError("Index " + j4 + " exceeds array bounds in normal mode pass 2");
 						break;
 					}
 
-					if (aByteArrayArray1183[j4] == null) {
-						int l5 = (anIntArray1234[j4] >> 8) * 64 - baseX;
-						int k7 = (anIntArray1234[j4] & 0xff) * 64 - baseY;
+					if (terrainData[j4] == null) {
+						int l5 = (mapRegionIds[j4] >> 8) * 64 - baseX;
+						int k7 = (mapRegionIds[j4] & 0xff) * 64 - baseY;
 
 						if (isValidMapCoordinate(l5, k7, j4)) {
 							try {
-								objectManager.method174(k7, 64, 64, l5);
+								objectManager.markWaterArea(k7, 64, 64, l5);
 							} catch (ArrayIndexOutOfBoundsException e) {
-								logError("ObjectManager.method174 bounds error at (" + l5 + "," + k7 + ") for index " + j4 +
+								logError("ObjectManager.markWaterArea bounds error at (" + l5 + "," + k7 + ") for index " + j4 +
 									": " + e.getMessage());
 							}
 						} else {
-							logError("Invalid coordinates for method174: l5=" + l5 + ", k7=" + k7 +
+							logError("Invalid coordinates for markWaterArea: l5=" + l5 + ", k7=" + k7 +
 								" (index=" + j4 + ", baseX=" + baseX + ", baseY=" + baseY + ")");
 						}
 					}
@@ -1035,39 +1036,39 @@ public class GameState extends Client {
 			anInt1097++;
 			if (anInt1097 > 160) {
 				anInt1097 = 0;
-				stream.createFrame(238);
-				stream.writeWordBigEndian(96);
+				stream.writeEncryptedOpcode(238);
+				stream.writeByte(96);
 			}
 
-			stream.createFrame(0);
-			if (aByteArrayArray1247 != null) {
+			stream.writeEncryptedOpcode(0);
+			if (objectData != null) {
 				for (int i6 = 0; i6 < k2; i6++) {
-					if (i6 >= aByteArrayArray1247.length || i6 >= anIntArray1234.length) {
+					if (i6 >= objectData.length || i6 >= mapRegionIds.length) {
 						logError("Index " + i6 + " exceeds array bounds in normal mode pass 3");
 						break;
 					}
 
-					if (aByteArrayArray1247[i6] != null) {
-						int l8 = (anIntArray1234[i6] >> 8) * 64 - baseX;
-						int k9 = (anIntArray1234[i6] & 0xff) * 64 - baseY;
+					if (objectData[i6] != null) {
+						int l8 = (mapRegionIds[i6] >> 8) * 64 - baseX;
+						int k9 = (mapRegionIds[i6] & 0xff) * 64 - baseY;
 
 						if (isValidMapCoordinate(l8, k9, i6)) {
 							try {
-								objectManager.method190(l8, aClass11Array1230, k9, worldController, aByteArrayArray1247[i6]);
+								objectManager.loadObjectRegion(l8, collisionMaps, k9, worldController, objectData[i6]);
 							} catch (ArrayIndexOutOfBoundsException e) {
-								logError("ObjectManager.method190 bounds error at (" + l8 + "," + k9 + ") for index " + i6 +
+								logError("ObjectManager.loadObjectRegion bounds error at (" + l8 + "," + k9 + ") for index " + i6 +
 									": " + e.getMessage());
-								logError("Raw coordinates: anIntArray1234[" + i6 + "] = " + anIntArray1234[i6] +
+								logError("Raw coordinates: anIntArray1234[" + i6 + "] = " + mapRegionIds[i6] +
 									", baseX=" + baseX + ", baseY=" + baseY);
 							}
 						} else {
-							logError("Invalid coordinates for method190: l8=" + l8 + ", k9=" + k9 +
+							logError("Invalid coordinates for loadObjectRegion: l8=" + l8 + ", k9=" + k9 +
 								" (index=" + i6 + ", baseX=" + baseX + ", baseY=" + baseY + ")");
 						}
 					}
 				}
 			} else {
-				logError("aByteArrayArray1247 is null, skipping method190 calls");
+				logError("aByteArrayArray1247 is null, skipping loadObjectRegion calls");
 			}
 
 		} catch (Exception e) {
@@ -1080,19 +1081,19 @@ public class GameState extends Client {
 		logDebug("Processing special mode");
 
 		try {
-			if (anIntArrayArrayArray1129 == null) {
+			if (dynamicRegionData == null) {
 				logError("anIntArrayArrayArray1129 is null, cannot process special mode");
 				return;
 			}
 
-			for (int j3 = 0; j3 < Math.min(4, anIntArrayArrayArray1129.length); j3++) {
-				if (anIntArrayArrayArray1129[j3] == null) continue;
+			for (int j3 = 0; j3 < Math.min(4, dynamicRegionData.length); j3++) {
+				if (dynamicRegionData[j3] == null) continue;
 
-				for (int k4 = 0; k4 < Math.min(13, anIntArrayArrayArray1129[j3].length); k4++) {
-					if (anIntArrayArrayArray1129[j3][k4] == null) continue;
+				for (int k4 = 0; k4 < Math.min(13, dynamicRegionData[j3].length); k4++) {
+					if (dynamicRegionData[j3][k4] == null) continue;
 
-					for (int j6 = 0; j6 < Math.min(13, anIntArrayArrayArray1129[j3][k4].length); j6++) {
-						int l7 = anIntArrayArrayArray1129[j3][k4][j6];
+					for (int j6 = 0; j6 < Math.min(13, dynamicRegionData[j3][k4].length); j6++) {
+						int l7 = dynamicRegionData[j3][k4][j6];
 						if (l7 != -1) {
 							processSpecialModeCellSafe(objectManager, l7, j3, k4, j6);
 						}
@@ -1100,27 +1101,27 @@ public class GameState extends Client {
 				}
 			}
 
-			if (anIntArrayArrayArray1129.length > 0 && anIntArrayArrayArray1129[0] != null) {
-				for (int l4 = 0; l4 < Math.min(13, anIntArrayArrayArray1129[0].length); l4++) {
-					if (anIntArrayArrayArray1129[0][l4] == null) continue;
+			if (dynamicRegionData.length > 0 && dynamicRegionData[0] != null) {
+				for (int l4 = 0; l4 < Math.min(13, dynamicRegionData[0].length); l4++) {
+					if (dynamicRegionData[0][l4] == null) continue;
 
-					for (int k6 = 0; k6 < Math.min(13, anIntArrayArrayArray1129[0][l4].length); k6++) {
-						if (anIntArrayArrayArray1129[0][l4][k6] == -1) {
-							objectManager.method174(k6 * 8, 8, 8, l4 * 8);
+					for (int k6 = 0; k6 < Math.min(13, dynamicRegionData[0][l4].length); k6++) {
+						if (dynamicRegionData[0][l4][k6] == -1) {
+							objectManager.markWaterArea(k6 * 8, 8, 8, l4 * 8);
 						}
 					}
 				}
 			}
 
-			stream.createFrame(0);
-			for (int l6 = 0; l6 < Math.min(4, anIntArrayArrayArray1129.length); l6++) {
-				if (anIntArrayArrayArray1129[l6] == null) continue;
+			stream.writeEncryptedOpcode(0);
+			for (int l6 = 0; l6 < Math.min(4, dynamicRegionData.length); l6++) {
+				if (dynamicRegionData[l6] == null) continue;
 
-				for (int j8 = 0; j8 < Math.min(13, anIntArrayArrayArray1129[l6].length); j8++) {
-					if (anIntArrayArrayArray1129[l6][j8] == null) continue;
+				for (int j8 = 0; j8 < Math.min(13, dynamicRegionData[l6].length); j8++) {
+					if (dynamicRegionData[l6][j8] == null) continue;
 
-					for (int j9 = 0; j9 < Math.min(13, anIntArrayArrayArray1129[l6][j8].length); j9++) {
-						int i10 = anIntArrayArrayArray1129[l6][j8][j9];
+					for (int j9 = 0; j9 < Math.min(13, dynamicRegionData[l6][j8].length); j9++) {
+						int i10 = dynamicRegionData[l6][j8][j9];
 						if (i10 != -1) {
 							processSpecialModeCell2Safe(objectManager, i10, l6, j8, j9);
 						}
@@ -1142,11 +1143,11 @@ public class GameState extends Client {
 			int l10 = cellValue >> 3 & 0x7ff;
 			int j11 = (j10 / 8 << 8) + l10 / 8;
 
-			if (anIntArray1234 != null && aByteArrayArray1183 != null) {
-				for (int l11 = 0; l11 < Math.min(anIntArray1234.length, aByteArrayArray1183.length); l11++) {
-					if (anIntArray1234[l11] == j11 && aByteArrayArray1183[l11] != null) {
-						objectManager.method179(i9, l9, aClass11Array1230, k4 * 8, (j10 & 7) * 8,
-							aByteArrayArray1183[l11], (l10 & 7) * 8, j3, j6 * 8);
+			if (mapRegionIds != null && terrainData != null) {
+				for (int l11 = 0; l11 < Math.min(mapRegionIds.length, terrainData.length); l11++) {
+					if (mapRegionIds[l11] == j11 && terrainData[l11] != null) {
+						objectManager.loadMapChunk(i9, l9, collisionMaps, k4 * 8, (j10 & 7) * 8,
+							terrainData[l11], (l10 & 7) * 8, j3, j6 * 8);
 						break;
 					}
 				}
@@ -1164,11 +1165,11 @@ public class GameState extends Client {
 			int i12 = cellValue >> 3 & 0x7ff;
 			int j12 = (k11 / 8 << 8) + i12 / 8;
 
-			if (anIntArray1234 != null && aByteArrayArray1247 != null) {
-				for (int k12 = 0; k12 < Math.min(anIntArray1234.length, aByteArrayArray1247.length); k12++) {
-					if (anIntArray1234[k12] == j12 && aByteArrayArray1247[k12] != null) {
-						objectManager.method183(aClass11Array1230, worldController, k10, j8 * 8,
-							(i12 & 7) * 8, l6, aByteArrayArray1247[k12],
+			if (mapRegionIds != null && objectData != null) {
+				for (int k12 = 0; k12 < Math.min(mapRegionIds.length, objectData.length); k12++) {
+					if (mapRegionIds[k12] == j12 && objectData[k12] != null) {
+						objectManager.loadObjectChunk(collisionMaps, worldController, k10, j8 * 8,
+							(i12 & 7) * 8, l6, objectData[k12],
 							(k11 & 7) * 8, i11, j9 * 8);
 						break;
 					}
@@ -1189,8 +1190,8 @@ public class GameState extends Client {
 				logError("ObjectDef.mruNodes1 is null");
 			}
 
-			if (lowMem && Signlink.cache_dat != null && onDemandFetcher != null) {
-				int versionCount = onDemandFetcher.getVersionCount(0);
+			if (lowMem && Signlink.cache_dat != null && cacheManager != null) {
+				int versionCount = cacheManager.getVersionCount(0);
 				int batchSize = Math.min(50, versionCount);
 
 				logDebug("Cleaning " + versionCount + " models in batches of " + batchSize);
@@ -1200,9 +1201,9 @@ public class GameState extends Client {
 
 					for (int i1 = startIdx; i1 < endIdx; i1++) {
 						try {
-							int l1 = onDemandFetcher.getModelIndex(i1);
+							int l1 = cacheManager.getModelIndex(i1);
 							if ((l1 & 0x79) == 0) {
-								Model.method461(i1);
+								Model.removeFromCache(i1);
 							}
 						} catch (Exception e) {
 							logError("Error cleaning model " + i1 + ": " + e.getMessage());
@@ -1240,10 +1241,10 @@ public class GameState extends Client {
 
 			Rasterizer.initializeTexturePool();
 
-			if (onDemandFetcher != null) {
-				onDemandFetcher.method566();
+			if (cacheManager != null) {
+				cacheManager.clearPriority();
 			} else {
-				logError("onDemandFetcher is null");
+				logError("cacheManager is null");
 			}
 
 			calculateAndProcessBoundaries();
@@ -1259,16 +1260,16 @@ public class GameState extends Client {
 		try {
 			int k, j1, i2, l2;
 
-			if (aBoolean1141) {
+			if (selectedSpell) {
 				k = 49;
 				j1 = 50;
 				i2 = 49;
 				l2 = 50;
 			} else {
-				k = Math.max(0, (anInt1069 - 6) / 8 - 1);
-				j1 = Math.min(cachedMapWidth - 1, (anInt1069 + 6) / 8 + 1);
-				i2 = Math.max(0, (anInt1070 - 6) / 8 - 1);
-				l2 = Math.min(cachedMapHeight - 1, (anInt1070 + 6) / 8 + 1);
+				k = Math.max(0, (inventoryOffsetX - 6) / 8 - 1);
+				j1 = Math.min(cachedMapWidth - 1, (inventoryOffsetX + 6) / 8 + 1);
+				i2 = Math.max(0, (inventoryOffsetY - 6) / 8 - 1);
+				l2 = Math.min(cachedMapHeight - 1, (inventoryOffsetY + 6) / 8 + 1);
 			}
 
 			logDebug("Processing boundaries: " + k + "-" + j1 + " x " + i2 + "-" + l2);
@@ -1294,19 +1295,19 @@ public class GameState extends Client {
 
 	private static void processBoundaryCellSafe(int x, int y) {
 		try {
-			if (onDemandFetcher == null) {
-				logError("onDemandFetcher is null in processBoundaryCellSafe");
+			if (cacheManager == null) {
+				logError("cacheManager is null in processBoundaryCellSafe");
 				return;
 			}
 
-			int id1 = onDemandFetcher.method562(0, y, x);
+			int id1 = cacheManager.getMapIndex(0, y, x);
 			if (id1 != -1) {
-				onDemandFetcher.method560(id1, 3);
+				cacheManager.requestFile(id1, 3);
 			}
 
-			int id2 = onDemandFetcher.method562(1, y, x);
+			int id2 = cacheManager.getMapIndex(1, y, x);
 			if (id2 != -1) {
-				onDemandFetcher.method560(id2, 3);
+				cacheManager.requestFile(id2, 3);
 			}
 
 		} catch (Exception e) {
@@ -1341,12 +1342,12 @@ public class GameState extends Client {
 		logDebug("Performing emergency cleanup");
 
 		try {
-			if (aClass19_1056 != null) {
-				aClass19_1056.removeAll();
+			if (queueSpotAnimation != null) {
+				queueSpotAnimation.removeAll();
 			}
 
-			if (aClass19_1013 != null) {
-				aClass19_1013.removeAll();
+			if (nodeList != null) {
+				nodeList.removeAll();
 			}
 
 			try {
@@ -1380,7 +1381,7 @@ public class GameState extends Client {
 		logDebug("Performing minimal cleanup");
 
 		try {
-			anInt985 = -1;
+			draggedInterfaceId = -1;
 			System.gc();
 			logDebug("Minimal cleanup completed");
 

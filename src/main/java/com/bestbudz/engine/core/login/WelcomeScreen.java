@@ -18,26 +18,26 @@ public class WelcomeScreen extends Client
 		int j = class9.contentType;
 		if (j >= 1 && j <= 100 || j >= 701 && j <= 800)
 		{
-			if (j == 1 && anInt900 == 0)
+			if (j == 1 && friendsListAction == 0)
 			{
 				class9.disabledMessage = "Loading stoner list";
 				class9.atActionType = 0;
 				return;
 			}
-			if (j == 1 && anInt900 == 1)
+			if (j == 1 && friendsListAction == 1)
 			{
 				class9.disabledMessage = "Connecting to stonerserver";
 				class9.atActionType = 0;
 				return;
 			}
-			if (j == 2 && anInt900 != 2)
+			if (j == 2 && friendsListAction != 2)
 			{
 				class9.disabledMessage = "Getting high...";
 				class9.atActionType = 0;
 				return;
 			}
 			int k = stonersCount;
-			if (anInt900 != 2)
+			if (friendsListAction != 2)
 				k = 0;
 			if (j > 700)
 				j -= 601;
@@ -59,7 +59,7 @@ public class WelcomeScreen extends Client
 		if (j >= 101 && j <= 200 || j >= 801 && j <= 900)
 		{
 			int l = stonersCount;
-			if (anInt900 != 2)
+			if (friendsListAction != 2)
 				l = 0;
 			if (j > 800)
 				j -= 701;
@@ -83,7 +83,7 @@ public class WelcomeScreen extends Client
 		if (j == 203)
 		{
 			int i1 = stonersCount;
-			if (anInt900 != 2)
+			if (friendsListAction != 2)
 				i1 = 0;
 			class9.scrollMax = i1 * 15 + 20;
 			if (class9.scrollMax <= class9.height)
@@ -92,20 +92,20 @@ public class WelcomeScreen extends Client
 		}
 		if (j >= 401 && j <= 500)
 		{
-			if ((j -= 401) == 0 && anInt900 == 0)
+			if ((j -= 401) == 0 && friendsListAction == 0)
 			{
 				class9.disabledMessage = "Loading shithead list";
 				class9.atActionType = 0;
 				return;
 			}
-			if (j == 1 && anInt900 == 0)
+			if (j == 1 && friendsListAction == 0)
 			{
 				class9.disabledMessage = "Getting high...";
 				class9.atActionType = 0;
 				return;
 			}
 			int j1 = ignoreCount;
-			if (anInt900 == 0)
+			if (friendsListAction == 0)
 				j1 = 0;
 			if (j >= j1)
 			{
@@ -141,38 +141,38 @@ public class WelcomeScreen extends Client
 		{
 			class9.modelRotation1 = 150;
 			class9.modelRotation2 = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
-			if (aBoolean1031)
+			if (dragModeActive)
 			{
 				for (int k1 = 0; k1 < 7; k1++)
 				{
-					int l1 = anIntArray1065[k1];
+					int l1 = musicTrackIds[k1];
 					if (l1 >= 0 && !IdentityKit.cache[l1].method537())
 						return;
 				}
 
-				aBoolean1031 = false;
+				dragModeActive = false;
 				Model[] aclass30_sub2_sub4_sub6s = new Model[7];
 				int i2 = 0;
 				for (int j2 = 0; j2 < 7; j2++)
 				{
-					int k2 = anIntArray1065[j2];
+					int k2 = musicTrackIds[j2];
 					if (k2 >= 0)
 						aclass30_sub2_sub4_sub6s[i2++] = IdentityKit.cache[k2].method538();
 				}
 
 				Model model = new Model(i2, aclass30_sub2_sub4_sub6s);
 				for (int l2 = 0; l2 < 5; l2++)
-					if (anIntArray990[l2] != 0)
+					if (cameraShakeOffsets[l2] != 0)
 					{
-						model.replaceColor(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][anIntArray990[l2]]);
+						model.replaceColor(validInterfaceRegions[l2][0], validInterfaceRegions[l2][cameraShakeOffsets[l2]]);
 						if (l2 == 1)
-							model.replaceColor(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
+							model.replaceColor(chatSystemColors[0], chatSystemColors[cameraShakeOffsets[l2]]);
 					}
 
 				model.calculateNormals();
-				model.method470(Animation.anims[myStoner.anInt1511].anIntArray353[0]);
+				model.applyTransformation(Animation.anims[myStoner.standAnimation].frameIds[0]);
 				model.applyLighting(64, 850, -30, -50, -30, true);
-				class9.anInt233 = 5;
+				class9.modelType = 5;
 				class9.mediaID = 0;
 				RSInterface.method208(aBoolean994, model);
 			}
@@ -185,21 +185,21 @@ public class WelcomeScreen extends Client
 			int animationSpeed = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
 			rsInterface.modelRotation1 = verticleTilt;
 			rsInterface.modelRotation2 = animationSpeed;
-			if (aBoolean1031)
+			if (dragModeActive)
 			{
 				Model characterDisplay = myStoner.buildPlayerModel();
 				for (int l2 = 0; l2 < 5; l2++)
-					if (anIntArray990[l2] != 0)
+					if (cameraShakeOffsets[l2] != 0)
 					{
-						characterDisplay.replaceColor(anIntArrayArray1003[l2][0],
-							anIntArrayArray1003[l2][anIntArray990[l2]]);
+						characterDisplay.replaceColor(validInterfaceRegions[l2][0],
+							validInterfaceRegions[l2][cameraShakeOffsets[l2]]);
 						if (l2 == 1)
-							characterDisplay.replaceColor(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
+							characterDisplay.replaceColor(chatSystemColors[0], chatSystemColors[cameraShakeOffsets[l2]]);
 					}
-				int staticFrame = myStoner.anInt1511;
+				int staticFrame = myStoner.standAnimation;
 				characterDisplay.calculateNormals();
-				characterDisplay.interpolateFrames(Animation.anims[staticFrame].anIntArray353[0], -1, -1, -1);
-				rsInterface.anInt233 = 5;
+				characterDisplay.interpolateFrames(Animation.anims[staticFrame].frameIds[0], -1, -1, -1);
+				rsInterface.modelType = 5;
 				rsInterface.mediaID = 0;
 				RSInterface.method208(aBoolean994, characterDisplay);
 			}
@@ -226,21 +226,21 @@ public class WelcomeScreen extends Client
 			rsInterface.modelRotation1 = verticleTilt;
 			rsInterface.modelRotation2 = animationSpeed;
 
-			if (aBoolean1031)
+			if (dragModeActive)
 			{
 				Model characterDisplay = stoner.buildPlayerModel();
 				for (int l2 = 0; l2 < 5; l2++)
-					if (anIntArray990[l2] != 0)
+					if (cameraShakeOffsets[l2] != 0)
 					{
-						characterDisplay.replaceColor(anIntArrayArray1003[l2][0],
-							anIntArrayArray1003[l2][anIntArray990[l2]]);
+						characterDisplay.replaceColor(validInterfaceRegions[l2][0],
+							validInterfaceRegions[l2][cameraShakeOffsets[l2]]);
 						if (l2 == 1)
-							characterDisplay.replaceColor(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
+							characterDisplay.replaceColor(chatSystemColors[0], chatSystemColors[cameraShakeOffsets[l2]]);
 					}
-				int staticFrame = stoner.anInt1511;
+				int staticFrame = stoner.standAnimation;
 				characterDisplay.calculateNormals();
-				characterDisplay.interpolateFrames(Animation.anims[staticFrame].anIntArray353[0], -1, -1, -1);
-				rsInterface.anInt233 = 5;
+				characterDisplay.interpolateFrames(Animation.anims[staticFrame].frameIds[0], -1, -1, -1);
+				rsInterface.modelType = 5;
 				rsInterface.mediaID = 0;
 				RSInterface.method208(aBoolean994, characterDisplay);
 			}
@@ -257,9 +257,9 @@ public class WelcomeScreen extends Client
 			int animationSpeed = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
 			rsInterface.modelRotation1 = verticleTilt;
 			rsInterface.modelRotation2 = animationSpeed;
-			if (aBoolean1031)
+			if (dragModeActive)
 			{
-				Model characterDisplay = npcDisplay.getFinalRenderedModel();
+				Model characterDisplay = npcDisplay.getModel();
 
 				if (characterDisplay == null)
 				{
@@ -267,18 +267,18 @@ public class WelcomeScreen extends Client
 				}
 
 				for (int l2 = 0; l2 < 5; l2++)
-					if (anIntArray990[l2] != 0)
+					if (cameraShakeOffsets[l2] != 0)
 					{
-						characterDisplay.replaceColor(anIntArrayArray1003[l2][0],
-							anIntArrayArray1003[l2][anIntArray990[l2]]);
+						characterDisplay.replaceColor(validInterfaceRegions[l2][0],
+							validInterfaceRegions[l2][cameraShakeOffsets[l2]]);
 						if (l2 == 1)
-							characterDisplay.replaceColor(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
+							characterDisplay.replaceColor(chatSystemColors[0], chatSystemColors[cameraShakeOffsets[l2]]);
 					}
-				int staticFrame = npcDisplay.anInt1511;
+				int staticFrame = npcDisplay.standAnimation;
 				characterDisplay.calculateNormals();
-				characterDisplay.method470(Animation.anims[staticFrame].anIntArray353[0]);
+				characterDisplay.applyTransformation(Animation.anims[staticFrame].frameIds[0]);
 				characterDisplay.applyLighting(64, 850, -30, -50, -30, true);
-				rsInterface.anInt233 = 5;
+				rsInterface.modelType = 5;
 				rsInterface.mediaID = 0;
 				RSInterface.method208(aBoolean994, characterDisplay);
 			}
@@ -291,7 +291,7 @@ public class WelcomeScreen extends Client
 				aClass30_Sub2_Sub1_Sub1_931 = class9.disabledSprite;
 				aClass30_Sub2_Sub1_Sub1_932 = class9.enabledSprite;
 			}
-			if (aBoolean1047)
+			if (welcomeScreenVisible)
 			{
 				class9.disabledSprite = aClass30_Sub2_Sub1_Sub1_932;
 				return;
@@ -309,7 +309,7 @@ public class WelcomeScreen extends Client
 				aClass30_Sub2_Sub1_Sub1_931 = class9.disabledSprite;
 				aClass30_Sub2_Sub1_Sub1_932 = class9.enabledSprite;
 			}
-			if (aBoolean1047)
+			if (welcomeScreenVisible)
 			{
 				class9.disabledSprite = aClass30_Sub2_Sub1_Sub1_931;
 				return;
@@ -353,7 +353,7 @@ public class WelcomeScreen extends Client
 				class9.disabledMessage = "";
 			}
 		if (j == 650 || j == 655)
-			if (anInt1193 != 0)
+			if (minimapRegionX != 0)
 			{
 				String s;
 				if (daysSinceLastLogin == 0)

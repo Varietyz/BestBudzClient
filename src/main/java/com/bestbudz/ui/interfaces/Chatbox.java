@@ -3,16 +3,16 @@ package com.bestbudz.ui.interfaces;
 import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.config.SettingsConfig;
+import com.bestbudz.network.ArchiveLoader;
 import static com.bestbudz.network.packets.PacketParser.sendPacket;
 import com.bestbudz.ui.handling.input.Keyboard;
 import static com.bestbudz.ui.handling.input.Keyboard.console;
 import static com.bestbudz.engine.core.login.Login.updateConfigValues;
-import static com.bestbudz.network.packets.SendFrames.sendFrame126;
-import static com.bestbudz.network.packets.SendFrames.sendString;
-import static com.bestbudz.network.packets.SendFrames.sendStringAsLong;
+import static com.bestbudz.network.packets.PacketSender.setInterfaceText;
+import static com.bestbudz.network.packets.PacketSender.sendStringToServer;
+import static com.bestbudz.network.packets.PacketSender.sendStonerNameAsLong;
 import com.bestbudz.graphics.sprite.SpriteLoader;
 import com.bestbudz.graphics.text.TextDrawingArea;
-import com.bestbudz.network.StreamLoader;
 import static com.bestbudz.ui.InterfaceManagement.doTextField;
 import com.bestbudz.ui.RSInterface;
 import com.bestbudz.graphics.text.TextInput;
@@ -49,7 +49,7 @@ public class Chatbox extends Client{
 
 		if (i == 0 && dialogID != -1)
 		{
-			aString844 = s;
+			inputPromptText = s;
 		}
 		if (backDialogID == -1)
 			Client.inputTaken = true;
@@ -72,7 +72,7 @@ public class Chatbox extends Client{
 
 	public static void pushMessage(String s, int i, String s1) {
 		if (i == 0 && dialogID != -1) {
-			aString844 = s;
+			inputPromptText = s;
 		}
 		if (backDialogID == -1) {
 			Client.inputTaken = true;
@@ -181,14 +181,14 @@ public class Chatbox extends Client{
 
 						if (amount > 0)
 						{
-							stream.createFrame(208);
+							stream.writeEncryptedOpcode(208);
 							stream.writeDWord((int) amount);
 						}
 					}
 					else
 					{
-						stream.createFrame(150);
-						stream.writeWordBigEndian(RSInterface.currentInputField.disabledMessage.length() + 3);
+						stream.writeEncryptedOpcode(150);
+						stream.writeByte(RSInterface.currentInputField.disabledMessage.length() + 3);
 						stream.writeWord(RSInterface.currentInputField.id);
 						stream.writeString(RSInterface.currentInputField.disabledMessage);
 					}
@@ -270,21 +270,21 @@ public class Chatbox extends Client{
 					}
 					if (stonersListAction == 3 && promptInput.length() > 0)
 					{
-						stream.createFrame(126);
-						stream.writeWordBigEndian(0);
-						int k = stream.currentOffset;
-						stream.writeQWord(aLong953);
+						stream.writeEncryptedOpcode(126);
+						stream.writeByte(0);
+						int k = stream.position;
+						stream.writeQWord(menuOpenTime);
 						TextInput.method526(promptInput, stream);
-						stream.writeBytes(stream.currentOffset - k);
+						stream.writePacketLength(stream.position - k);
 						promptInput = TextInput.processText(promptInput);
-						pushMessage(promptInput, 6, TextClass.fixName(TextClass.nameForLong(aLong953)));
+						pushMessage(promptInput, 6, TextClass.fixName(TextClass.nameForLong(menuOpenTime)));
 						if (privateChatMode == 2)
 						{
 							privateChatMode = 1;
-							stream.createFrame(95);
-							stream.writeWordBigEndian(publicChatMode);
-							stream.writeWordBigEndian(privateChatMode);
-							stream.writeWordBigEndian(tradeMode);
+							stream.writeEncryptedOpcode(95);
+							stream.writeByte(publicChatMode);
+							stream.writeByte(privateChatMode);
+							stream.writeByte(tradeMode);
 						}
 					}
 					if (stonersListAction == 4 && ignoreCount < 100)
@@ -297,19 +297,19 @@ public class Chatbox extends Client{
 					}
 					if (stonersListAction == 6)
 					{
-						sendStringAsLong(promptInput);
+						sendStonerNameAsLong(promptInput);
 					}
 					else if (stonersListAction == 8)
 					{
-						sendString(1, promptInput);
+						sendStringToServer(1, promptInput);
 					}
 					else if (stonersListAction == 9)
 					{
-						sendString(2, promptInput);
+						sendStringToServer(2, promptInput);
 					}
 					else if (stonersListAction == 10)
 					{
-						sendString(3, promptInput);
+						sendStringToServer(3, promptInput);
 					}
 				}
 			}
@@ -371,7 +371,7 @@ public class Chatbox extends Client{
 
 						if (amount > 0)
 						{
-							stream.createFrame(208);
+							stream.writeEncryptedOpcode(208);
 							stream.writeDWord((int) amount);
 							if (openInterfaceID == 5292)
 							{
@@ -436,7 +436,7 @@ public class Chatbox extends Client{
 				{
 					if (amountOrNameInput.length() > 0)
 					{
-						stream.createFrame(60);
+						stream.writeEncryptedOpcode(60);
 						stream.writeQWord(TextClass.longForName(amountOrNameInput));
 					}
 					if (openInterfaceID == 5292 && variousSettings[1012] == 1)
@@ -485,7 +485,7 @@ public class Chatbox extends Client{
 						if (inputString.startsWith("//setspecto"))
 						{
 							int amt = Integer.parseInt(inputString.substring(12));
-							anIntArray1045[300] = amt;
+							experienceDrops[300] = amt;
 							if (variousSettings[300] != amt)
 							{
 								variousSettings[300] = amt;
@@ -500,15 +500,15 @@ public class Chatbox extends Client{
 						{
 							SpriteLoader.loadSprites();
 							TextDrawingArea aTextDrawingArea_1273 = new TextDrawingArea(true, "q8_full",
-								titleStreamLoader);
+								titleArchiveLoader);
 							TextDrawingArea[] aclass30_sub2_sub1_sub4s = {smallText, regularText, boldText,
 								aTextDrawingArea_1273};
-							StreamLoader streamLoader_1 = streamLoaderForName(3, "interface", "interface",
+							ArchiveLoader archiveLoader_1 = loadArchive(3, "interface", "interface",
 								expectedCRCs[3], 35,g);
-							StreamLoader streamLoader_2 = streamLoaderForName(4, "2d graphics", "media",
+							ArchiveLoader archiveLoader_2 = loadArchive(4, "2d graphics", "media",
 								expectedCRCs[4], 40,g);
-							RSInterface.unpack(streamLoader_1, aclass30_sub2_sub1_sub4s, streamLoader_2);
-							sendFrame126("0", 8135);
+							RSInterface.unpack(archiveLoader_1, aclass30_sub2_sub1_sub4s, archiveLoader_2);
+							setInterfaceText("0", 8135);
 
 						}
 						if (inputString.equals("::objs"))
@@ -522,7 +522,7 @@ public class Chatbox extends Client{
 									continue;
 								}
 
-								System.out.println("[Chatbox] "+i + " " + def.anInt781);
+								System.out.println("[Chatbox] "+i + " " + def.animationId);
 							}
 						}
 						if (inputString.equals("::textids"))
@@ -556,8 +556,8 @@ public class Chatbox extends Client{
 						inputString = "::" + inputString;
 					if (inputString.startsWith("::"))
 					{
-						stream.createFrame(103);
-						stream.writeWordBigEndian(inputString.length() - 1);
+						stream.writeEncryptedOpcode(103);
+						stream.writeByte(inputString.length() - 1);
 						stream.writeString(inputString.substring(2));
 					}
 					else
@@ -651,19 +651,19 @@ public class Chatbox extends Client{
 							i3 = 5;
 							inputString = inputString.substring(6);
 						}
-						stream.createFrame(4);
-						stream.writeWordBigEndian(0);
-						int j3 = stream.currentOffset;
-						stream.method425(i3);
-						stream.method425(j2);
-						aStream_834.currentOffset = 0;
-						TextInput.method526(inputString, aStream_834);
-						stream.method441(0, aStream_834.buffer, aStream_834.currentOffset);
-						stream.writeBytes(stream.currentOffset - j3);
+						stream.writeEncryptedOpcode(4);
+						stream.writeByte(0);
+						int j3 = stream.position;
+						stream.writeByte128Minus(i3);
+						stream.writeByte128Minus(j2);
+						incomingPacketBuffer.position = 0;
+						TextInput.method526(inputString, incomingPacketBuffer);
+						stream.writeBytesReversed128(0, incomingPacketBuffer.buffer, incomingPacketBuffer.position);
+						stream.writePacketLength(stream.position - j3);
 						inputString = TextInput.processText(inputString);
 						myStoner.textSpoken = inputString;
-						myStoner.anInt1513 = j2;
-						myStoner.anInt1531 = i3;
+						myStoner.chatType = j2;
+						myStoner.chatEffect = i3;
 						myStoner.textCycle = 150;
 						if (myPrivilege >= 1)
 							pushMessage(myStoner.textSpoken, 2, "@cr" + myPrivilege + "@" + myStoner.name,
@@ -673,10 +673,10 @@ public class Chatbox extends Client{
 						if (publicChatMode == 2)
 						{
 							publicChatMode = 3;
-							stream.createFrame(95);
-							stream.writeWordBigEndian(publicChatMode);
-							stream.writeWordBigEndian(privateChatMode);
-							stream.writeWordBigEndian(tradeMode);
+							stream.writeEncryptedOpcode(95);
+							stream.writeByte(publicChatMode);
+							stream.writeByte(privateChatMode);
+							stream.writeByte(tradeMode);
 						}
 					}
 					inputString = "";

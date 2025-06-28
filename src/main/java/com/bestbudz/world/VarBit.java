@@ -1,23 +1,23 @@
 package com.bestbudz.world;
 
 import com.bestbudz.network.Stream;
-import com.bestbudz.network.StreamLoader;
+import com.bestbudz.network.ArchiveLoader;
 
 public final class VarBit
 {
 
 	public static VarBit[] cache;
-	public int anInt648;
-	public int anInt649;
-	public int anInt650;
+	public int baseVar;
+	public int startBit;
+	public int endBit;
 	private VarBit()
 	{
 		boolean aBoolean651 = false;
 	}
 
-	public static void unpackConfig(StreamLoader streamLoader)
+	public static void unpackConfig(ArchiveLoader archiveLoader)
 	{
-		Stream stream = new Stream(streamLoader.getDataForName("varbit.dat"));
+		Stream stream = new Stream(archiveLoader.extractFile("varbit.dat"));
 		int cacheSize = stream.readUnsignedWord();
 		if (cache == null)
 			cache = new VarBit[cacheSize];
@@ -28,15 +28,15 @@ public final class VarBit
 			cache[j].readValues(stream);
 		}
 
-		if (stream.currentOffset != stream.buffer.length)
+		if (stream.position != stream.buffer.length)
 			System.out.println("varbit load mismatch");
 	}
 
 	private void readValues(Stream stream)
 	{
-		anInt648 = stream.readUnsignedWord();
-		anInt649 = stream.readUnsignedByte();
-		anInt650 = stream.readUnsignedByte();
+		baseVar = stream.readUnsignedWord();
+		startBit = stream.readUnsignedByte();
+		endBit = stream.readUnsignedByte();
 
 	}
 }

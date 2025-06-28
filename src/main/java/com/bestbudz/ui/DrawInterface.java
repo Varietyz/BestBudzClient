@@ -1,10 +1,8 @@
 package com.bestbudz.ui;
 
-import static com.bestbudz.cache.SpriteDumper.dumpItemSprites;
 import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
 import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.dock.util.DockBlocker;
-import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.engine.core.Client;
 import static com.bestbudz.ui.handling.RightClickMenu.drawTooltip;
 import com.bestbudz.engine.config.ColorConfig;
@@ -39,6 +37,7 @@ public class DrawInterface extends Client
 			return;
 		}
 
+
 		if (class9.parentID == 197)
 		{
 			k = frameWidth - 120;
@@ -48,13 +47,29 @@ public class DrawInterface extends Client
 		{
 			return;
 		}
-		if (class9.isMouseoverTriggered && anInt1026 != class9.id && anInt1048 != class9.id && anInt1039 != class9.id)
+		if (class9.isMouseoverTriggered && interfaceHoverTime != class9.id && inputLength != class9.id && gameRenderState != class9.id)
 			return;
+
 		int i1 = DrawingArea.topX;
 		int j1 = DrawingArea.topY;
 		int k1 = DrawingArea.bottomX;
 		int l1 = DrawingArea.bottomY;
-		DrawingArea.setDrawingArea(l + class9.height, k, k + class9.width, l);
+		if (class9.id == 5292) { // Your bank interface ID
+			// Force bank dimensions
+			class9.width = 670;
+			class9.height = 340;
+
+			// Override drawing area bounds
+			DrawingArea.setDrawingArea(
+				Math.min(l + 340, frameHeight),     // Bottom boundary
+				Math.max(k, 0),                     // Left boundary
+				Math.min(k + 670, frameWidth),      // Right boundary
+				Math.max(l, 0)                      // Top boundary
+			);
+		} else {
+			// Original logic for other interfaces
+			DrawingArea.setDrawingArea(l + class9.height, k, k + class9.width, l);
+		}
 		int i2 = class9.children.length;
 		for (int j2 = 0; j2 < i2; j2++)
 		{
@@ -76,7 +91,7 @@ public class DrawInterface extends Client
 
 			// Rest of the original code remains unchanged...
 			k2 += child.anInt263;
-			l2 += child.anInt265;
+			l2 += child.positionScroll;
 			if (child.contentType > 0)
 				drawStonersListOrWelcomeScreen(child);
 			int[] IDs = {1196, 1199, 1206, 1215, 1224, 1231, 1240, 1249, 1258, 1267, 1274, 1283, 1573, 1290, 1299,
@@ -155,83 +170,14 @@ public class DrawInterface extends Client
 								if (tabSlot + 1 < tabAmounts.length && tabAmounts[tabSlot + 1] > 0
 									&& variousSettings[1000] == 0 && variousSettings[1012] == 0)
 								{
-									DrawingArea.method339((l2 + tabHeight * (32 + child.invSpritePadY) + hh) - 1,
+									DrawingArea.drawAHorizontalLine((l2 + tabHeight * (32 + child.invSpritePadY) + hh) - 1,
 										0x191919, ((32 + child.invSpritePadX) << 3) - 10, k2);
-									DrawingArea.method339((l2 + tabHeight * (32 + child.invSpritePadY) + hh), 0x191919,
+									DrawingArea.drawAHorizontalLine((l2 + tabHeight * (32 + child.invSpritePadY) + hh), 0x191919,
 										((32 + child.invSpritePadX) << 3) - 10, k2);
 								}
 								hh += 8;
 							}
 
-							if (i > 0)
-							{
-								int itemSlot = tabAm - tabAmounts[i];
-								int xOffset = (frameWidth - 237 - RSInterface.interfaceCache[5292].width) / 2;
-								int yOffset = 36 + ((frameHeight - 503) / 2);
-								int x = xOffset + 77;
-								int y = yOffset + 25;
-								try
-								{
-									int item = RSInterface.interfaceCache[5382].inv[itemSlot];
-
-									if (EngineConfig.ITEM_DUMPING) dumpItemSprites(); // OPENING BANK TRIGGERS DUMP
-
-									if (tabAmounts[i] > 0 && item > 0)
-									{
-										Sprite icon = null;
-										if (variousSettings[1011] == 0)
-										{
-											icon = ItemDef.getSprite(item - 1, child.invStackSizes[itemSlot], 0);
-										}
-										if (variousSettings[1011] == 1)
-										{
-											icon = cacheSprite[118 + i];
-										}
-										if (variousSettings[1011] == 2)
-										{
-											icon = cacheSprite[127 + i];
-										}
-										if (icon != null)
-										{
-											icon.drawSprite1((x + 4) + 40 * i,
-												(y + 2), 255, true);
-										}
-										RSInterface.interfaceCache[50013 + i * 4].anInt265 = 0;
-										RSInterface.interfaceCache[50014 + i * 4].anInt265 = 0;
-										RSInterface.interfaceCache[50014 + i * 4].tooltip = "Check section @or2@" + i;
-										RSInterface.interfaceCache[50014 + i * 4].disabledSprite = cacheSprite[109];
-									}
-									else if (tabAmounts[i - 1] <= 0)
-									{
-										RSInterface.interfaceCache[50013 + i * 4].anInt265 = -500;
-										if (i > 1)
-										{
-											RSInterface.interfaceCache[50014 + i * 4].anInt265 = -500;
-										}
-										else
-										{
-											cacheSprite[114].drawSprite1(
-												(x) + 40 * i,
-												(y), 255, true);
-										}
-										RSInterface.interfaceCache[50014 + i * 4].tooltip = "New section";
-									}
-									else
-									{
-										RSInterface.interfaceCache[50013 + i * 4].anInt265 = -500;
-										RSInterface.interfaceCache[50014 + i * 4].anInt265 = 0;
-										RSInterface.interfaceCache[50014 + i * 4].tooltip = "New section";
-										RSInterface.interfaceCache[50014 + i * 4].disabledSprite = cacheSprite[112];
-										cacheSprite[114].drawSprite1((x) + 40 * i,
-											(y), 255, true);
-									}
-								}
-								catch (Exception e)
-								{
-									System.out.println("Bank section icon error: tab [" + i + "], amount [" + tabAm
-										+ "], tabAmount [" + tabAmounts[i] + "], itemSlot [" + itemSlot + "]");
-								}
-							}
 						}
 						DrawingArea.bottomY += 3;
 					}
@@ -317,7 +263,7 @@ public class DrawInterface extends Client
 									|| activeInterfaceType != 0 && dragFromSlot == slot)
 								{
 									int color = 0;
-									if (itemSelected == 1 && anInt1283 == slot && anInt1284 == child.id)
+									if (itemSelected == 1 && selectedItemSlot == slot && selectedItemInterfaceId == child.id)
 									{
 										color = ColorConfig.WHITE_COLOR;
 									}
@@ -347,9 +293,9 @@ public class DrawInterface extends Client
 											dragY = h + y;
 											if (h + y < DrawingArea.topY && class9.scrollPosition > 0)
 											{
-												int i10 = (anInt945 * (DrawingArea.topY - h - y)) / 3;
-												if (i10 > anInt945 * 10)
-													i10 = anInt945 * 10;
+												int i10 = (gameTickCounter * (DrawingArea.topY - h - y)) / 3;
+												if (i10 > gameTickCounter * 10)
+													i10 = gameTickCounter * 10;
 												if (i10 > class9.scrollPosition)
 													i10 = class9.scrollPosition;
 												class9.scrollPosition -= i10;
@@ -359,9 +305,9 @@ public class DrawInterface extends Client
 											if (h + y + 32 > DrawingArea.bottomY
 												&& class9.scrollPosition < class9.scrollMax - class9.height)
 											{
-												int j10 = (anInt945 * ((h + y + 32) - DrawingArea.bottomY)) / 3;
-												if (j10 > anInt945 * 10)
-													j10 = anInt945 * 10;
+												int j10 = (gameTickCounter * ((h + y + 32) - DrawingArea.bottomY)) / 3;
+												if (j10 > gameTickCounter * 10)
+													j10 = gameTickCounter * 10;
 												if (j10 > class9.scrollMax - class9.height - class9.scrollPosition)
 													j10 = class9.scrollMax - class9.height - class9.scrollPosition;
 												class9.scrollPosition += j10;
@@ -379,7 +325,7 @@ public class DrawInterface extends Client
 										}
 										if (child.parentID != 42752)
 										{
-											if (itemSprite.cropWidth == 33 || child.invStackSizes[slot] != 1)
+											if (itemSprite.originalWidth == 33 || child.invStackSizes[slot] != 1)
 											{
 												int amount = child.invStackSizes[slot];
 
@@ -440,7 +386,7 @@ public class DrawInterface extends Client
 				}
 				else if (child.type == 3)
 				{
-					boolean flag = anInt1039 == child.id || anInt1048 == child.id || anInt1026 == child.id;
+					boolean flag = gameRenderState == child.id || inputLength == child.id || interfaceHoverTime == child.id;
 					int color;
 					if (interfaceIsSelected(child))
 					{
@@ -462,15 +408,15 @@ public class DrawInterface extends Client
 							DrawingArea.fillPixels(k2, child.width, child.height, color, l2);
 					}
 					else if (child.aBoolean227)
-						DrawingArea.method335(color, l2, child.width, child.height, 256 - (child.opacity & 0xff), k2);
+						DrawingArea.drawAlphaRectangle(color, l2, child.width, child.height, 256 - (child.opacity & 0xff), k2);
 					else
-						DrawingArea.method338(l2, child.height, 256 - (child.opacity & 0xff), color, child.width, k2);
+						DrawingArea.drawBorderedRectangle(l2, child.height, 256 - (child.opacity & 0xff), color, child.width, k2);
 				}
 				else if (child.type == 4)
 				{
 					TextDrawingArea textDrawingArea = child.textDrawingAreas;
 					String message = child.disabledMessage;
-					boolean hovered = anInt1039 == child.id || anInt1048 == child.id || anInt1026 == child.id;
+					boolean hovered = gameRenderState == child.id || inputLength == child.id || interfaceHoverTime == child.id;
 					int color;
 					if (interfaceIsSelected(child))
 					{
@@ -486,7 +432,7 @@ public class DrawInterface extends Client
 						if (hovered && child.textHoverColor != 0)
 							color = child.textHoverColor;
 					}
-					if (child.atActionType == 6 && aBoolean1149)
+					if (child.atActionType == 6 && isPlayerBusy)
 					{
 						message = "Getting high...";
 						color = child.textColor;
@@ -720,7 +666,7 @@ public class DrawInterface extends Client
 					if (flag2)
 						i7 = child.anInt258;
 					else
-						i7 = child.anInt257;
+						i7 = child.verticalOffset;
 					Model model;
 					if (i7 == -1)
 					{
@@ -730,10 +676,10 @@ public class DrawInterface extends Client
 					{
 						Animation animation = Animation.anims[i7];
 						model = child.method209(animation.anIntArray354[child.anInt246],
-							animation.anIntArray353[child.anInt246], flag2);
+							animation.frameIds[child.anInt246], flag2);
 					}
 					if (model != null)
-						model.method482(child.modelRotation2, 0, child.modelRotation1, 0, i5, l5);
+						model.renderAtFixedPosition(child.modelRotation2, 0, child.modelRotation1, 0, i5, l5);
 					Rasterizer.viewportCenterX = k3;
 					Rasterizer.viewportCenterY = j4;
 				}
@@ -871,7 +817,7 @@ public class DrawInterface extends Client
 		DrawingArea.drawPixels(71, yPos - 1, xPos + 175, 0x2E2B23, 1);
 		DrawingArea.drawPixels(1, yPos - 1, xPos, 0x2E2B23, 175);
 		DrawingArea.drawPixels(1, yPos + 69, xPos, 0x2E2B23, 175);
-		DrawingArea.method335(0, yPos, 174, 68, 220, xPos);
+		DrawingArea.drawAlphaRectangle(0, yPos, 174, 68, 220, xPos);
 	}
 
 

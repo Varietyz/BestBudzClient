@@ -2,10 +2,6 @@ package com.bestbudz.engine.core;
 
 import static com.bestbudz.engine.config.ColorConfig.*;
 import com.bestbudz.cache.Signlink;
-import com.bestbudz.engine.config.EngineConfig;
-import com.bestbudz.engine.core.Client;
-import static com.bestbudz.engine.core.Client.LOGIN_BACKGROUND;
-import com.bestbudz.engine.core.GameLoader;
 import com.bestbudz.graphics.buffer.ImageProducer;
 import static com.bestbudz.ui.handling.input.MouseActions.clickInRegion;
 import static com.bestbudz.ui.handling.input.MouseActions.mouseInRegion;
@@ -14,7 +10,6 @@ import com.bestbudz.ui.handling.input.MouseState;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -143,7 +138,7 @@ public class LoadingErrorScreen extends Client {
 		// Initialize buffer for smooth rendering
 		initializeErrorBuffer(g, screenW, screenH);
 
-		if (Client.aRSImageProducer_1109 == null) {
+		if (Client.gameScreenBuffer == null) {
 			// Fallback: render directly to graphics if buffer unavailable
 			renderErrorScreenDirect(g, screenW, screenH);
 			return;
@@ -151,7 +146,7 @@ public class LoadingErrorScreen extends Client {
 
 		Graphics2D bufferGraphics = null;
 		try {
-			bufferGraphics = Client.aRSImageProducer_1109.getImageGraphics();
+			bufferGraphics = Client.gameScreenBuffer.getImageGraphics();
 			if (bufferGraphics != null) {
 				setupErrorRendering(bufferGraphics);
 				renderErrorScreen(bufferGraphics, g, screenW, screenH);
@@ -160,7 +155,7 @@ public class LoadingErrorScreen extends Client {
 				processErrorInput(screenW, screenH);
 
 				// Draw to screen
-				Client.aRSImageProducer_1109.drawGraphics(0, g, 0);
+				Client.gameScreenBuffer.drawGraphics(0, g, 0);
 			} else {
 				// Fallback to direct rendering
 				renderErrorScreenDirect(g, screenW, screenH);
@@ -184,11 +179,11 @@ public class LoadingErrorScreen extends Client {
 	 */
 	private static void initializeErrorBuffer(Graphics2D g, int screenW, int screenH) {
 		try {
-			if (Client.aRSImageProducer_1109 == null ||
-				Client.aRSImageProducer_1109.canvasWidth != screenW ||
-				Client.aRSImageProducer_1109.canvasHeight != screenH) {
-				Client.aRSImageProducer_1109 = new ImageProducer(screenW, screenH);
-				Client.aRSImageProducer_1109.initDrawingArea();
+			if (Client.gameScreenBuffer == null ||
+				Client.gameScreenBuffer.canvasWidth != screenW ||
+				Client.gameScreenBuffer.canvasHeight != screenH) {
+				Client.gameScreenBuffer = new ImageProducer(screenW, screenH);
+				Client.gameScreenBuffer.initDrawingArea();
 			}
 		} catch (Exception e) {
 			addConsoleMessage("Failed to initialize error buffer: " + e.getMessage());
@@ -303,7 +298,7 @@ public class LoadingErrorScreen extends Client {
 			currentErrorType = ErrorType.LOADING_ERROR;
 		} else if (genericLoadingError) {
 			currentErrorType = ErrorType.GENERIC_ERROR;
-		} else if (rsAlreadyLoaded) {
+		} else if (gameAlreadyLoaded) {
 			currentErrorType = ErrorType.ALREADY_LOADED;
 		} else {
 			currentErrorType = ErrorType.UNKNOWN;

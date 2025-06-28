@@ -1,7 +1,7 @@
 package com.bestbudz.ui.interfaces;
 
 import static com.bestbudz.ui.interfaces.Bank.bank;
-import static com.bestbudz.ui.interfaces.Bank.bankSettings;
+//import static com.bestbudz.ui.interfaces.Bank.bankSettings;
 import static com.bestbudz.ui.interfaces.OptionsTab.optionTab;
 import static com.bestbudz.ui.interfaces.Prestiging.advance;
 import static com.bestbudz.ui.interfaces.Shop.loyaltyShop;
@@ -73,7 +73,7 @@ public class CustomInterfaces extends RSInterface
 		optionTab(BestBudz);
 		shop(BestBudz);
 		bank(BestBudz);
-		bankSettings(BestBudz);
+		//bankSettings(BestBudz);
 		priceChecker(BestBudz);
 		genie(BestBudz);
 		dropTable(BestBudz);

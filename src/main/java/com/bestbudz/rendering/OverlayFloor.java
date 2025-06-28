@@ -1,6 +1,6 @@
 package com.bestbudz.rendering;
 
-import com.bestbudz.network.StreamLoader;
+import com.bestbudz.network.ArchiveLoader;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
@@ -29,9 +29,9 @@ public class OverlayFloor
 	public int anInt398;
 	public int anInt399;
 
-	public static void unpackConfig(StreamLoader streamLoader)
+	public static void unpackConfig(ArchiveLoader archiveLoader)
 	{
-		ByteBuffer bb = ByteBuffer.wrap(Objects.requireNonNull(streamLoader.getDataForName("flo2.dat")));
+		ByteBuffer bb = ByteBuffer.wrap(Objects.requireNonNull(archiveLoader.extractFile("flo2.dat")));
 		int count = bb.getShort();
 		overlayFloor = new OverlayFloor[count];
 		for (int i = 0; i < count; i++)

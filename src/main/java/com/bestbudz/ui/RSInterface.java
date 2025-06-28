@@ -6,8 +6,8 @@ import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.entity.EntityDef;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.graphics.text.TextDrawingArea;
+import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.network.Stream;
-import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.ui.interfaces.CustomInterfaces;
@@ -17,7 +17,7 @@ import com.bestbudz.graphics.text.TextClass;
 public class RSInterface {
 
 	private static final MRUNodes aMRUNodes_264 = new MRUNodes(30);
-	public static StreamLoader aClass44;
+	public static ArchiveLoader aClass44;
 	public static RSInterface[] interfaceCache;
 	public static RSInterface currentInputField = null;
 	public static MRUNodes aMRUNodes_238;
@@ -45,7 +45,7 @@ public class RSInterface {
 	public int hoverType;
 	public int invSpritePadX;
 	public int textColor;
-	public int anInt233;
+	public int modelType;
 	public int mediaID;
 	public boolean aBoolean235;
 	public int parentID;
@@ -67,14 +67,14 @@ public class RSInterface {
 	public int[] invStackSizes;
 	public int[] inv;
 	public byte opacity;
-	public int anInt257;
+	public int verticalOffset;
 	public int anInt258;
 	public boolean aBoolean259;
 	public Sprite enabledSprite;
 	public int scrollMax;
 	public int type;
 	public int anInt263;
-	public int anInt265;
+	public int positionScroll;
 	public boolean isMouseoverTriggered;
 	public int height;
 	public boolean textShadow;
@@ -92,18 +92,18 @@ public class RSInterface {
 
 	}
 
-	public static void unpack(StreamLoader streamLoader, TextDrawingArea[] textDrawingAreas,
-							  StreamLoader streamLoader_1) {
+	public static void unpack(ArchiveLoader archiveLoader, TextDrawingArea[] textDrawingAreas,
+							  ArchiveLoader archiveLoader_1) {
 		aMRUNodes_238 = new MRUNodes(50000);
 
-		if (streamLoader == null) {
-			System.err.println("StreamLoader is null - cannot load interfaces");
+		if (archiveLoader == null) {
+			System.err.println("ArchiveLoader is null - cannot load interfaces");
 			return;
 		}
 
 		Stream stream = null;
 		try {
-			stream = new Stream(streamLoader.getDataForName("data"));
+			stream = new Stream(archiveLoader.extractFile("data"));
 			if (stream == null || stream.buffer == null) {
 				System.err.println("Interface data stream is null");
 				return;
@@ -117,7 +117,7 @@ public class RSInterface {
 		stream.readUnsignedWord();
 		interfaceCache = new RSInterface[70_000];
 
-		while (stream.currentOffset < stream.buffer.length) {
+		while (stream.position < stream.buffer.length) {
 			try {
 				int k = stream.readUnsignedWord();
 				if (k == 65535) {
@@ -211,12 +211,12 @@ public class RSInterface {
 							rsInterface.spritesX[j2] = stream.readSignedWord();
 							rsInterface.spritesY[j2] = stream.readSignedWord();
 							String s1 = stream.readString();
-							if (streamLoader_1 != null && !s1.isEmpty()) {
+							if (archiveLoader_1 != null && !s1.isEmpty()) {
 								try {
 									int i5 = s1.lastIndexOf(",");
 									if (i5 > 0 && i5 < s1.length() - 1) {
 										rsInterface.sprites[j2] = method207(Integer.parseInt(s1.substring(i5 + 1)),
-											streamLoader_1, s1.substring(0, i5));
+											archiveLoader_1, s1.substring(0, i5));
 									}
 								} catch (Exception e) {
 									System.err.println("Error loading sprite: " + s1);
@@ -269,24 +269,24 @@ public class RSInterface {
 				if (rsInterface.type == 5) {
 					rsInterface.drawsTransparent = false;
 					String s = stream.readString();
-					if (streamLoader_1 != null && !s.isEmpty()) {
+					if (archiveLoader_1 != null && !s.isEmpty()) {
 						try {
 							int i4 = s.lastIndexOf(",");
 							if (i4 > 0) {
 								rsInterface.disabledSprite = method207(Integer.parseInt(s.substring(i4 + 1)),
-									streamLoader_1, s.substring(0, i4));
+									archiveLoader_1, s.substring(0, i4));
 							}
 						} catch (Exception e) {
 							System.err.println("Error loading disabled sprite: " + s);
 						}
 					}
 					s = stream.readString();
-					if (streamLoader_1 != null && !s.isEmpty()) {
+					if (archiveLoader_1 != null && !s.isEmpty()) {
 						try {
 							int j4 = s.lastIndexOf(",");
 							if (j4 > 0) {
 								rsInterface.enabledSprite = method207(Integer.parseInt(s.substring(j4 + 1)),
-									streamLoader_1, s.substring(0, j4));
+									archiveLoader_1, s.substring(0, j4));
 							}
 						} catch (Exception e) {
 							System.err.println("Error loading enabled sprite: " + s);
@@ -296,7 +296,7 @@ public class RSInterface {
 				if (rsInterface.type == 6) {
 					int l = stream.readUnsignedByte();
 					if (l != 0) {
-						rsInterface.anInt233 = 1;
+						rsInterface.modelType = 1;
 						rsInterface.mediaID = (l - 1 << 8) + stream.readUnsignedByte();
 					}
 					l = stream.readUnsignedByte();
@@ -306,9 +306,9 @@ public class RSInterface {
 					}
 					l = stream.readUnsignedByte();
 					if (l != 0)
-						rsInterface.anInt257 = (l - 1 << 8) + stream.readUnsignedByte();
+						rsInterface.verticalOffset = (l - 1 << 8) + stream.readUnsignedByte();
 					else
-						rsInterface.anInt257 = -1;
+						rsInterface.verticalOffset = -1;
 					l = stream.readUnsignedByte();
 					if (l != 0)
 						rsInterface.anInt258 = (l - 1 << 8) + stream.readUnsignedByte();
@@ -366,12 +366,12 @@ public class RSInterface {
 				}
 
 			} catch (Exception e) {
-				System.err.println("Error loading interface at position " + stream.currentOffset + ": " + e.getMessage());
+				System.err.println("Error loading interface at position " + stream.position + ": " + e.getMessage());
 				// Continue to next interface
 			}
 		}
 
-		aClass44 = streamLoader;
+		aClass44 = archiveLoader;
 
 		// Safe calls for post-processing
 		try { constructLunar(); } catch (Exception e) { System.err.println("Error in constructLunar: " + e.getMessage()); }
@@ -693,13 +693,13 @@ public class RSInterface {
 		tab.drawsTransparent = true;
 	}
 
-	protected static Sprite method207(int i, StreamLoader streamLoader, String s) {
+	protected static Sprite method207(int i, ArchiveLoader archiveLoader, String s) {
 		long l = (TextClass.method585(s) << 8) + (long) i;
 		Sprite sprite = (Sprite) aMRUNodes_238.insertFromCache(l);
 		if (sprite != null)
 			return sprite;
 		try {
-			sprite = new Sprite(streamLoader, s, i);
+			sprite = new Sprite(archiveLoader, s, i);
 			aMRUNodes_238.removeFromCache(sprite, l);
 		} catch (Exception _ex) {
 			System.err.println("Failed to load sprite " + s + " index " + i + ": " + _ex.getMessage());
@@ -1602,7 +1602,7 @@ public class RSInterface {
 		t.modelZoom = zoom;
 		t.modelRotation1 = 150;
 		t.modelRotation2 = 0;
-		t.anInt257 = -1;
+		t.verticalOffset = -1;
 		t.anInt258 = -1;
 	}
 
@@ -1620,7 +1620,7 @@ public class RSInterface {
 		t.modelZoom = zoom;
 		t.modelRotation1 = 150;
 		t.modelRotation2 = 0;
-		t.anInt257 = -1;
+		t.verticalOffset = -1;
 		t.anInt258 = -1;
 	}
 
@@ -2102,7 +2102,7 @@ public class RSInterface {
 		if (i == 1)
 			model = Model.loadModelFromCache(j);
 		if (i == 2)
-			model = EntityDef.forID(j).method160();
+			model = EntityDef.forID(j).getModelForInterface();
 		if (i == 3)
 			model = Client.myStoner.getUnanimatedModel();
 		if (i == 4)
@@ -2120,18 +2120,18 @@ public class RSInterface {
 		if (flag)
 			model = method206(anInt255, anInt256);
 		else
-			model = method206(anInt233, mediaID);
+			model = method206(modelType, mediaID);
 		if (model == null)
 			return null;
-		if (k == -1 && j == -1 && model.anIntArray1640 == null)
+		if (k == -1 && j == -1 && model.triangleColors == null)
 			return model;
-		Model model_1 = new Model(true, SequenceFrame.method532(k) & SequenceFrame.method532(j), false, model);
+		Model model_1 = new Model(true, SequenceFrame.isInvalidFrame(k) & SequenceFrame.isInvalidFrame(j), false, model);
 		if (k != -1 || j != -1)
 			model_1.calculateNormals();
 		if (k != -1)
-			model_1.method470(k);
+			model_1.applyTransformation(k);
 		if (j != -1)
-			model_1.method470(j);
+			model_1.applyTransformation(j);
 		model_1.applyLighting(84, 1000, -90, -580, -90, true);
 		return model_1;
 	}

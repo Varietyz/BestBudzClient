@@ -17,103 +17,141 @@ public class Camera extends Client
 	private static boolean boundsLearned = false;
 
 	// ===== REPLACE THE calcCameraPos() METHOD =====
+// REPLACE the calcCameraPos() method in Camera class with this version
 	public static void calcCameraPos()
 	{
-		int i = anInt1098 * 128 + 64;
-		int j = anInt1099 * 128 + 64;
-		int k = getTerrainHeight(plane, j, i) - anInt1100;
-
-		// Store the original camera positions before modification
-		int originalXCameraPos = xCameraPos;
-		int originalYCameraPos = yCameraPos;
+		int i = cameraOffsetX * 128 + 64;
+		int j = cameraOffsetY * 128 + 64;
+		int k = getTerrainHeight(plane, j, i) - cameraOffsetZ;
 
 		if (xCameraPos < i)
 		{
-			xCameraPos += anInt1101 + ((i - xCameraPos) * anInt1102) / 1000;
+			xCameraPos += cameraRotationX + ((i - xCameraPos) * cameraRotationY) / 1000;
 			if (xCameraPos > i)
 				xCameraPos = i;
 		}
 		if (xCameraPos > i)
 		{
-			xCameraPos -= anInt1101 + ((xCameraPos - i) * anInt1102) / 1000;
+			xCameraPos -= cameraRotationX + ((xCameraPos - i) * cameraRotationY) / 1000;
 			if (xCameraPos < i)
 				xCameraPos = i;
 		}
 		if (zCameraPos < k)
 		{
-			zCameraPos += anInt1101 + ((k - zCameraPos) * anInt1102) / 1000;
+			zCameraPos += cameraRotationX + ((k - zCameraPos) * cameraRotationY) / 1000;
 			if (zCameraPos > k)
 				zCameraPos = k;
 		}
 		if (zCameraPos > k)
 		{
-			zCameraPos -= anInt1101 + ((zCameraPos - k) * anInt1102) / 1000;
+			zCameraPos -= cameraRotationX + ((zCameraPos - k) * cameraRotationY) / 1000;
 			if (zCameraPos < k)
 				zCameraPos = k;
 		}
 		if (yCameraPos < j)
 		{
-			yCameraPos += anInt1101 + ((j - yCameraPos) * anInt1102) / 1000;
+			yCameraPos += cameraRotationX + ((j - yCameraPos) * cameraRotationY) / 1000;
 			if (yCameraPos > j)
 				yCameraPos = j;
 		}
 		if (yCameraPos > j)
 		{
-			yCameraPos -= anInt1101 + ((yCameraPos - j) * anInt1102) / 1000;
+			yCameraPos -= cameraRotationX + ((yCameraPos - j) * cameraRotationY) / 1000;
 			if (yCameraPos < j)
 				yCameraPos = j;
 		}
 
-		// APPLY BOUNDS CLAMPING HERE - before the final camera calculations
-		clampCameraToBounds();
-
-		i = anInt995 * 128 + 64;
-		j = anInt996 * 128 + 64;
-		k = getTerrainHeight(plane, j, i) - anInt997;
+		i = interfaceScrollX * 128 + 64;
+		j = interfaceScrollY * 128 + 64;
+		k = getTerrainHeight(plane, j, i) - scrollableAreaHeight;
 		int l = i - xCameraPos;
 		int i1 = k - zCameraPos;
 		int j1 = j - yCameraPos;
 		int k1 = (int) Math.sqrt(l * l + j1 * j1);
 		int l1 = (int) (Math.atan2(i1, k1) * 325.94900000000001D) & 0x7ff;
 		int i2 = (int) (Math.atan2(l, j1) * -325.94900000000001D) & 0x7ff;
+
 		if (l1 < 128)
 			l1 = 128;
 		if (l1 > 383)
 			l1 = 383;
+
 		if (yCameraCurve < l1)
 		{
-			yCameraCurve += anInt998 + ((l1 - yCameraCurve) * anInt999) / 1000;
+			yCameraCurve += scrollableAreaWidth + ((l1 - yCameraCurve) * scrollPosition) / 1000;
 			if (yCameraCurve > l1)
 				yCameraCurve = l1;
 		}
 		if (yCameraCurve > l1)
 		{
-			yCameraCurve -= anInt998 + ((yCameraCurve - l1) * anInt999) / 1000;
+			yCameraCurve -= scrollableAreaWidth + ((yCameraCurve - l1) * scrollPosition) / 1000;
 			if (yCameraCurve < l1)
 				yCameraCurve = l1;
 		}
-		int j2 = i2 - xCameraCurve;
-		if (j2 > 1024)
-			j2 -= 2048;
-		if (j2 < -1024)
-			j2 += 2048;
-		if (j2 > 0)
-		{
-			xCameraCurve += anInt998 + (j2 * anInt999) / 1000;
-			xCameraCurve &= 0x7ff;
+
+		// FIXED: Improved angle wrapping that prevents coordinate system inversion
+		int targetAngle = i2;
+		int currentAngle = xCameraCurve;
+
+		// Normalize angles to 0-2047 range
+		targetAngle = targetAngle & 0x7ff;
+		currentAngle = currentAngle & 0x7ff;
+
+		// Calculate shortest angular distance
+		int angleDiff = targetAngle - currentAngle;
+		if (angleDiff > 1024) {
+			angleDiff -= 2048;
+		} else if (angleDiff < -1024) {
+			angleDiff += 2048;
 		}
-		if (j2 < 0)
-		{
-			xCameraCurve -= anInt998 + (-j2 * anInt999) / 1000;
-			xCameraCurve &= 0x7ff;
+
+		// CRITICAL FIX: Prevent angles that cause coordinate system flipping
+		// These angle ranges (90°-270°) cause the transformation matrix to invert
+		int proposedAngle;
+		if (angleDiff > 0) {
+			proposedAngle = (currentAngle + scrollableAreaWidth + (angleDiff * scrollPosition) / 1000) & 0x7ff;
+		} else {
+			proposedAngle = (currentAngle - scrollableAreaWidth + ((-angleDiff) * scrollPosition) / 1000) & 0x7ff;
 		}
-		int k2 = i2 - xCameraCurve;
-		if (k2 > 1024)
-			k2 -= 2048;
-		if (k2 < -1024)
-			k2 += 2048;
-		if (k2 < 0 && j2 > 0 || k2 > 0 && j2 < 0)
-			xCameraCurve = i2;
+
+		// Check if the proposed angle would cause coordinate system issues
+		// Angles around 90°-270° (512-1536 in our 0-2047 system) can cause problems
+		boolean wouldCauseFlip = (proposedAngle > 400 && proposedAngle < 1648);
+
+		if (wouldCauseFlip) {
+			// Constrain the angle to safe ranges that don't cause coordinate flips
+			if (proposedAngle > 1024) {
+				// If trying to go past 180°, clamp to just before problem zone
+				proposedAngle = 400;
+			} else {
+				// If trying to go past 90°, clamp to just after problem zone
+				proposedAngle = 1648;
+			}
+		}
+
+		xCameraCurve = proposedAngle;
+
+		// Alternative approach: Use modulo arithmetic to keep angles in safe ranges
+		// Uncomment this instead of the above if you prefer different behavior:
+	/*
+	if (angleDiff > 0) {
+		xCameraCurve += scrollableAreaWidth + (angleDiff * scrollPosition) / 1000;
+	} else {
+		xCameraCurve -= scrollableAreaWidth + ((-angleDiff) * scrollPosition) / 1000;
+	}
+
+	// Keep in 0-2047 range and avoid problem angles
+	xCameraCurve = xCameraCurve & 0x7ff;
+
+	// If we end up in the problem zone, skip to the safe side
+	if (xCameraCurve > 400 && xCameraCurve < 1648) {
+		if (xCameraCurve < 1024) {
+			xCameraCurve = 400;  // Stay in safe zone before 90°
+		} else {
+			xCameraCurve = 1648; // Jump to safe zone after 270°
+		}
+	}
+	*/
 	}
 
 // ===== REPLACE THE clampCameraToBounds() METHOD IN Camera CLASS =====
@@ -143,94 +181,94 @@ public class Camera extends Client
 	{
 		try
 		{
-			int x = myStoner.x + anInt1278;
-			int y = myStoner.y + anInt1131;
+			int x = myStoner.x + selectedSpellIndex;
+			int y = myStoner.y + rightClickMenuOption;
 			double rotSpeed = 2;
 			screenGliding = 0;
 
 			// ✅ GOOD: Camera position updates for view matrix only
 			// This should NOT affect world loading or LOD decisions
-			if (anInt1014 - x < -500 || anInt1014 - x > 500 || anInt1015 - y < -500 || anInt1015 - y > 500) {
-				anInt1014 = x;
-				anInt1015 = y;
+			if (cameraX - x < -500 || cameraX - x > 500 || cameraZ - y < -500 || cameraZ - y > 500) {
+				cameraX = x;
+				cameraZ = y;
 			}
 
 			// ✅ Camera smoothing for view only
-			if (anInt1014 != x) {
-				anInt1014 += (x - anInt1014) / 16;
+			if (cameraX != x) {
+				cameraX += (x - cameraX) / 16;
 			}
-			if (anInt1015 != y) {
-				anInt1015 += (y - anInt1015) / 16;
+			if (cameraZ != y) {
+				cameraZ += (y - cameraZ) / 16;
 			}
 			if (keyArray[1] == 1)
 			{
-				anInt1186 += (-24 - anInt1186) / rotSpeed;
+				cameraYawVelocity += (-24 - cameraYawVelocity) / rotSpeed;
 				screenGliding++;
 			}
 			else if (keyArray[2] == 1)
 			{
-				anInt1186 += (24 - anInt1186) / rotSpeed;
+				cameraYawVelocity += (24 - cameraYawVelocity) / rotSpeed;
 				screenGliding++;
 			}
 			else
 			{
 				if (screenGliding >= 10)
 				{
-					if (anInt1186 > 0)
+					if (cameraYawVelocity > 0)
 					{
-						anInt1186--;
+						cameraYawVelocity--;
 					}
-					else if (anInt1186 < 0)
+					else if (cameraYawVelocity < 0)
 					{
-						anInt1186++;
+						cameraYawVelocity++;
 					}
 				}
 				else
 				{
-					anInt1186 /= rotSpeed;
+					cameraYawVelocity /= rotSpeed;
 				}
 			}
 			if (keyArray[3] == 1)
 			{
-				anInt1187 += (12 - anInt1187) / rotSpeed;
+				cameraPitchVelocity += (12 - cameraPitchVelocity) / rotSpeed;
 				screenGliding++;
 			}
 			else if (keyArray[4] == 1)
 			{
-				anInt1187 += (-12 - anInt1187) / rotSpeed;
+				cameraPitchVelocity += (-12 - cameraPitchVelocity) / rotSpeed;
 				screenGliding++;
 			}
 			else
 			{
 				if (screenGliding >= 10)
 				{
-					if (anInt1187 > 0)
+					if (cameraPitchVelocity > 0)
 					{
-						anInt1187--;
+						cameraPitchVelocity--;
 					}
-					else if (anInt1187 < 0)
+					else if (cameraPitchVelocity < 0)
 					{
-						anInt1187++;
+						cameraPitchVelocity++;
 					}
 				}
 				else
 				{
-					anInt1187 /= rotSpeed;
+					cameraPitchVelocity /= rotSpeed;
 				}
 			}
-			minimapInt1 = minimapInt1 + anInt1186 / (int) rotSpeed & 0x7ff;
-			anInt1184 += anInt1187 / rotSpeed;
-			if (anInt1184 < 128)
+			minimapRotation = minimapRotation + cameraYawVelocity / (int) rotSpeed & 0x7ff;
+			minCameraHeight += cameraPitchVelocity / rotSpeed;
+			if (minCameraHeight < 128)
 			{
-				anInt1184 = 128;
+				minCameraHeight = 128;
 			}
-			if (anInt1184 > 383)
+			if (minCameraHeight > 383)
 			{
-				anInt1184 = 383;
+				minCameraHeight = 383;
 			}
-			int l = anInt1014 >> 7;
-			int i1 = anInt1015 >> 7;
-			int j1 = getTerrainHeight(plane, anInt1015, anInt1014);
+			int l = cameraX >> 7;
+			int i1 = cameraZ >> 7;
+			int j1 = getTerrainHeight(plane, cameraZ, cameraX);
 			int k1 = 0;
 			if (l > 3 && i1 > 3 && l < 100 && i1 < 100)
 			{
@@ -249,45 +287,45 @@ public class Camera extends Client
 				}
 
 			}
-			anInt1005++;
-			if (anInt1005 > 1512)
+			packetTimer++;
+			if (packetTimer > 1512)
 			{
-				anInt1005 = 0;
-				stream.createFrame(77);
-				stream.writeWordBigEndian(0);
-				int i2 = stream.currentOffset;
-				stream.writeWordBigEndian((int) (Math.random() * 256D));
-				stream.writeWordBigEndian(101);
-				stream.writeWordBigEndian(233);
+				packetTimer = 0;
+				stream.writeEncryptedOpcode(77);
+				stream.writeByte(0);
+				int i2 = stream.position;
+				stream.writeByte((int) (Math.random() * 256D));
+				stream.writeByte(101);
+				stream.writeByte(233);
 				stream.writeWord(45092);
 				if ((int) (Math.random() * 2D) == 0)
 					stream.writeWord(35784);
-				stream.writeWordBigEndian((int) (Math.random() * 256D));
-				stream.writeWordBigEndian(64);
-				stream.writeWordBigEndian(38);
+				stream.writeByte((int) (Math.random() * 256D));
+				stream.writeByte(64);
+				stream.writeByte(38);
 				stream.writeWord((int) (Math.random() * 65536D));
 				stream.writeWord((int) (Math.random() * 65536D));
-				stream.writeBytes(stream.currentOffset - i2);
+				stream.writePacketLength(stream.position - i2);
 			}
 			int j2 = k1 * 192;
 			if (j2 > 0x17f00)
 				j2 = 0x17f00;
 			if (j2 < 32768)
 				j2 = 32768;
-			if (j2 > anInt984)
+			if (j2 > stonerHeight)
 			{
-				anInt984 += (j2 - anInt984) / 24;
+				stonerHeight += (j2 - stonerHeight) / 24;
 				return;
 			}
-			if (j2 < anInt984)
+			if (j2 < stonerHeight)
 			{
-				anInt984 += (j2 - anInt984) / 80;
+				stonerHeight += (j2 - stonerHeight) / 80;
 			}
 		}
 		catch (Exception _ex)
 		{
-			Signlink.reporterror("glfc_ex " + myStoner.x + "," + myStoner.y + "," + anInt1014 + "," + anInt1015 + ","
-				+ anInt1069 + "," + anInt1070 + "," + baseX + "," + baseY);
+			Signlink.reporterror("glfc_ex " + myStoner.x + "," + myStoner.y + "," + cameraX + "," + cameraZ + ","
+				+ inventoryOffsetX + "," + inventoryOffsetY + "," + baseX + "," + baseY);
 			throw new RuntimeException("eek");
 		}
 	}

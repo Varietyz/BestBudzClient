@@ -18,14 +18,14 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
 		int rotation = event.getWheelRotation();
 		MouseScrollHandler.handle(event);
 		if (MouseState.x > 0 && MouseState.x < 512 && MouseState.y > Client.frameHeight - 165 - Client.extendChatArea && MouseState.y < Client.frameHeight - 25) {
-			int scrollPos = Client.anInt1089;
+			int scrollPos = Client.loadingProgress;
 			scrollPos -= rotation * 30;
 			if (scrollPos < 0)
 				scrollPos = 0;
 			if (scrollPos > Client.anInt1211 - 110)
 				scrollPos = Client.anInt1211 - 110;
-			if (Client.anInt1089 != scrollPos) {
-				Client.anInt1089 = scrollPos;
+			if (Client.loadingProgress != scrollPos) {
+				Client.loadingProgress = scrollPos;
 				Client.inputTaken = true;
 			}
 		}

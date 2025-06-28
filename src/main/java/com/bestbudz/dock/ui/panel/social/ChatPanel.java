@@ -543,23 +543,23 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 		try {
 			if (Client.stream != null) {
-				Client.stream.createFrame(4);
-				Client.stream.writeWordBigEndian(0);
-				int blockStart = Client.stream.currentOffset;
+				Client.stream.writeEncryptedOpcode(4);
+				Client.stream.writeByte(0);
+				int blockStart = Client.stream.position;
 
-				Client.stream.method425(0);
-				Client.stream.method425(0);
+				Client.stream.writeByte128Minus(0);
+				Client.stream.writeByte128Minus(0);
 
-				Client.aStream_834.currentOffset = 0;
-				TextInput.method526(message, Client.aStream_834);
-				Client.stream.method441(0, Client.aStream_834.buffer, Client.aStream_834.currentOffset);
+				Client.incomingPacketBuffer.position = 0;
+				TextInput.method526(message, Client.incomingPacketBuffer);
+				Client.stream.writeBytesReversed128(0, Client.incomingPacketBuffer.buffer, Client.incomingPacketBuffer.position);
 
-				Client.stream.writeBytes(Client.stream.currentOffset - blockStart);
+				Client.stream.writePacketLength(Client.stream.position - blockStart);
 
 				String processedText = TextInput.processText(message);
 				Client.myStoner.textSpoken = processedText;
-				Client.myStoner.anInt1513 = 0;
-				Client.myStoner.anInt1531 = 0;
+				Client.myStoner.chatType = 0;
+				Client.myStoner.chatEffect = 0;
 				Client.myStoner.textCycle = 150;
 
 				Chatbox.pushMessage(processedText, 2, Client.myStoner.name, Client.myStoner.title, Client.myStoner.titleColor);

@@ -119,7 +119,7 @@ public class SpriteDumper
 			if (parentDir != null && !parentDir.exists()) {
 				boolean dirsCreated = parentDir.mkdirs();
 				if (!dirsCreated && !parentDir.exists()) {
-					System.err.println("Failed to create directories for: " + path);
+					System.err.println("Failed to getPooledStream directories for: " + path);
 					return false;
 				}
 			}

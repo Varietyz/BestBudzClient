@@ -2,7 +2,7 @@ package com.bestbudz.dock.frame;
 
 import com.bestbudz.dock.ui.manager.UIPanelManager;
 import com.bestbudz.dock.ui.manager.UIModalManager;
-import com.bestbudz.dock.ui.panel.client.BubbleBudzPanel;
+import com.bestbudz.dock.ui.panel.client.bubblebudz.ui.BubbleBudzPanel;
 import com.bestbudz.dock.config.RegisteredPanels;
 import com.bestbudz.dock.util.UIPanel;
 

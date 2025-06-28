@@ -475,22 +475,22 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		System.out.println("Sending packet with jaw value: " + jawToSend + " (original: " + currentJaw + ")");
 
 		// Send packet 101 with complete appearance data
-		Client.stream.createFrame(101);
-		Client.stream.writeWordBigEndian(currentGender);
-		Client.stream.writeWordBigEndian(currentHead);
-		Client.stream.writeWordBigEndian(jawToSend);
-		Client.stream.writeWordBigEndian(currentTorso);
-		Client.stream.writeWordBigEndian(currentArms);
-		Client.stream.writeWordBigEndian(currentHands);
-		Client.stream.writeWordBigEndian(currentLegs);
-		Client.stream.writeWordBigEndian(currentFeet);
+		Client.stream.writeEncryptedOpcode(101);
+		Client.stream.writeByte(currentGender);
+		Client.stream.writeByte(currentHead);
+		Client.stream.writeByte(jawToSend);
+		Client.stream.writeByte(currentTorso);
+		Client.stream.writeByte(currentArms);
+		Client.stream.writeByte(currentHands);
+		Client.stream.writeByte(currentLegs);
+		Client.stream.writeByte(currentFeet);
 
 		// Write colors in server-expected order
-		Client.stream.writeWordBigEndian(currentHairColor);
-		Client.stream.writeWordBigEndian(currentTorsoColor);
-		Client.stream.writeWordBigEndian(currentLegsColor);
-		Client.stream.writeWordBigEndian(currentFeetColor);
-		Client.stream.writeWordBigEndian(currentSkinColor);
+		Client.stream.writeByte(currentHairColor);
+		Client.stream.writeByte(currentTorsoColor);
+		Client.stream.writeByte(currentLegsColor);
+		Client.stream.writeByte(currentFeetColor);
+		Client.stream.writeByte(currentSkinColor);
 
 		printCurrentAppearance();
 	}

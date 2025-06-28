@@ -3,7 +3,6 @@ package com.bestbudz.dock.ui.panel.debug.diagnostics;
 import com.bestbudz.dock.ui.panel.debug.style.DiagnosticStyle;
 import com.bestbudz.engine.gpu.GPURenderingEngine;
 import com.bestbudz.engine.gpu.GPUContextManager;
-import com.bestbudz.engine.gpu.GPUShaders;
 import com.bestbudz.engine.gpu.GPUMonitor;
 import com.bestbudz.engine.core.GameState;
 import org.lwjgl.opengl.GL11;
@@ -45,9 +44,9 @@ public class GPUDiagnostic extends BaseDiagnostic {
 		}
 
 		// Shader Status
-		boolean shadersInit = GPUShaders.isInitialized();
-		addRow("Shaders", shadersInit ? "Loaded" : "Not Loaded",
-			shadersInit ? DiagnosticStyle.STATUS_GOOD : DiagnosticStyle.STATUS_CRITICAL);
+		//boolean shadersInit = GPUShaders.isInitialized();
+		//addRow("Shaders", shadersInit ? "Loaded" : "Not Loaded",
+		//	shadersInit ? DiagnosticStyle.STATUS_GOOD : DiagnosticStyle.STATUS_CRITICAL);
 
 		// OpenGL Information (cached - safe for UI thread)
 		if (gpuEnabled && gpuInitialized) {

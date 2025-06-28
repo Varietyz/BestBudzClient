@@ -30,7 +30,6 @@ public class SettingsPanel implements UIPanel {
 	private static final Color TOGGLE_OFF_COLOR = new Color(60, 60, 65);
 	private static final Color TOGGLE_ON_COLOR = new Color(76, 175, 80);
 	private static final Color TEXT_COLOR = new Color(220, 220, 220);
-	private static final Color BACKGROUND_COLOR = new Color(45, 45, 50);
 
 	// Dynamic color generation parameters - more visible with frequent shifts
 	private static float globalHue = 0.6f; // Start with a nice blue-ish hue
@@ -153,22 +152,6 @@ public class SettingsPanel implements UIPanel {
 	}
 
 	/**
-	 * Generate the next hover color by shifting through the HSB color space
-	 */
-	private static synchronized Color getNextHoverColor() {
-		// Create color from HSB values
-		Color color = Color.getHSBColor(globalHue, SATURATION, BRIGHTNESS);
-
-		// Shift hue for next time
-		globalHue += HUE_SHIFT_AMOUNT;
-		if (globalHue >= 1.0f) {
-			globalHue -= 1.0f; // Wrap around the color wheel
-		}
-
-		return color;
-	}
-
-	/**
 	 * Custom toggle button with separate toggle state and hover effects
 	 */
 	private static class ToggleButton extends JButton {
@@ -212,46 +195,6 @@ public class SettingsPanel implements UIPanel {
 					repaint();
 				}
 			});
-		}
-
-		private void animateHoverFadeOut() {
-			if (colorTimer != null && colorTimer.isRunning()) {
-				colorTimer.stop();
-			}
-
-			if (currentHoverOverlay == null) {
-				return; // Nothing to fade out
-			}
-
-			Color startColor = currentHoverOverlay;
-			long startTime = System.currentTimeMillis();
-
-			colorTimer = new Timer(1000 / COLOR_ANIMATION_FPS, null);
-			colorTimer.addActionListener(e -> {
-				long elapsed = System.currentTimeMillis() - startTime;
-				float progress = Math.min(1.0f, (float) elapsed / FADE_OUT_DURATION);
-
-				// Smooth easing function (ease-out cubic)
-				progress = (float) (1 - Math.pow(1 - progress, 3));
-
-				// Fade out the overlay by reducing alpha
-				int alpha = (int) ((1.0f - progress) * 255);
-				if (alpha <= 0) {
-					currentHoverOverlay = null;
-					colorTimer.stop();
-				} else {
-					// Create new color with faded alpha
-					currentHoverOverlay = new Color(
-						startColor.getRed(),
-						startColor.getGreen(),
-						startColor.getBlue(),
-						alpha
-					);
-				}
-				repaint();
-			});
-
-			colorTimer.start();
 		}
 
 		public boolean isSelected() {

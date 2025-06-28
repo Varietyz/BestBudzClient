@@ -250,7 +250,7 @@ public class ExampleConfig {
 	 */
 	public static String getConfigInfo() {
 		return String.format(
-			"ExampleConfig v%s - Max Display: %d, Refresh: %dms, Features: [Rainbow: %s, Animations: %s, Debug: %s]",
+			"ExampleConfig read3BytesBE%s - Max Display: %d, Refresh: %dms, Features: [Rainbow: %s, Animations: %s, Debug: %s]",
 			PANEL_VERSION, MAX_DISPLAY_ROWS, REFRESH_INTERVAL,
 			ENABLE_RAINBOW_HOVER, ENABLE_ANIMATIONS, DEBUG_MODE
 		);

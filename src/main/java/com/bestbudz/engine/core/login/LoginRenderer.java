@@ -30,7 +30,6 @@ public class LoginRenderer {
 
 	private int worldHover = -1;
 
-	// Three-region layout: Top login strip, Left world panel, Bottom accounts
 	private static class Layout {
 		final int w, h, cx, cy;
 		final Rect worldPanel, accountPanel;
@@ -79,37 +78,63 @@ public class LoginRenderer {
 				worldBtns[i] = new Rect(worldPanelX + 10, worldBtnY + i * worldBtnSpacing, worldPanelW - 20, worldBtnH); // Maintain internal padding
 			}
 
-			// BOTTOM REGION - Account panel spanning full width at bottom
+			// BOTTOM REGION - Dynamic Account panel sizing
 			int bottomMargin = 20;
-			int accPanelH = 100;
-			int accPanelW = w - 40; // Full width minus margins
-			int accPanelX = 20;
-			int accPanelY = h - accPanelH - bottomMargin;
-			accountPanel = new Rect(accPanelX, accPanelY, accPanelW, accPanelH);
-
-			// Account cards in horizontal layout
-			accountCards = new Rect[8];
 			int cardW = 120;
 			int cardH = 50;
 			int cardSpacing = 20;
-			int cardsStartX = accountPanel.x + 20;
-			int cardsStartY = accountPanel.y + 35;
+			int accPanelW = w - 40; // Full width minus margins
+			int accPanelX = 20;
 
-			for (int i = 0; i < 8; i++) {
-				int row = i / 4;
-				int col = i % 4;
-				accountCards[i] = new Rect(
-					cardsStartX + col * (cardW + cardSpacing),
-					cardsStartY + row * (cardH + 10),
-					cardW,
-					cardH
-				);
+			// Calculate how many columns can fit
+			int availableWidth = accPanelW - 40; // Account for panel padding
+			int columnsCount = Math.max(1, availableWidth / (cardW + cardSpacing));
+
+			// Calculate required rows based on actual account count
+			int accountCount = AccountManager.accounts != null ? AccountManager.getAccounts().size() : 0;
+			int rowsNeeded = accountCount > 0 ? (int) Math.ceil((double) accountCount / columnsCount) : 1;
+
+			// Dynamic panel height based on content
+			int headerHeight = 35;
+			int clearButtonHeight = 26;
+			int paddingBottom = 15;
+			int minPanelHeight = 60; // Minimum height when no accounts
+
+			int accPanelH;
+			if (accountCount == 0) {
+				accPanelH = minPanelHeight;
+			} else {
+				accPanelH = headerHeight + (rowsNeeded * (cardH + 10)) + clearButtonHeight + paddingBottom;
+			}
+
+			int accPanelY = h - accPanelH - bottomMargin;
+			accountPanel = new Rect(accPanelX, accPanelY, accPanelW, accPanelH);
+
+			// Dynamic account cards array
+			if (accountCount > 0) {
+				accountCards = new Rect[accountCount];
+				int cardsStartX = accountPanel.x + 20;
+				int cardsStartY = accountPanel.y + headerHeight;
+
+				for (int i = 0; i < accountCount; i++) {
+					int row = i / columnsCount;
+					int col = i % columnsCount;
+					accountCards[i] = new Rect(
+						cardsStartX + col * (cardW + cardSpacing),
+						cardsStartY + row * (cardH + 10),
+						cardW,
+						cardH
+					);
+				}
+			} else {
+				accountCards = new Rect[0]; // Empty array when no accounts
 			}
 
 			// Clear button in top-right of account panel
 			clearBtn = new Rect(accountPanel.x + accountPanel.w - 90, accountPanel.y + 8, 78, 26);
 		}
 	}
+
 
 	public LoginRenderer(Client client) {
 		this.client = client;
@@ -118,12 +143,13 @@ public class LoginRenderer {
 	public void displayLoginScreen(Graphics2D g, GameCanvas canvas) {
 		Layout l = new Layout(canvas.getWidth(), canvas.getHeight());
 		initBuffer();
-		Graphics2D og = Client.aRSImageProducer_1109.getImageGraphics();
+		Graphics2D og = Client.gameScreenBuffer.getImageGraphics();
 
 		try {
+
 			setupRendering(og);
 			render(og, l);
-			Client.aRSImageProducer_1109.drawGraphics(0, g, 0);
+			Client.gameScreenBuffer.drawGraphics(0, g, 0);
 		} finally {
 			og.dispose();
 		}
@@ -186,18 +212,39 @@ public class LoginRenderer {
 	}
 
 	private void drawBottomAccountPanel(Graphics2D g, Layout l) {
-		if (AccountManager.accounts == null || AccountManager.getAccounts().isEmpty()) return;
+		if (AccountManager.accounts == null || AccountManager.getAccounts().isEmpty()) {
+			// Draw the panel even when empty
+			drawPanel(g, l.accountPanel, "Demented Stoners", ACCENT_COLOR);
+
+			// Draw "No saved accounts" message
+			g.setColor(WHITE_DIM_COLOR);
+			g.setFont(new Font("Arial", Font.ITALIC, 12));
+			String noAccountsMsg = "No saved accounts";
+			FontMetrics fm = g.getFontMetrics();
+			g.drawString(noAccountsMsg,
+				l.accountPanel.x + (l.accountPanel.w - fm.stringWidth(noAccountsMsg)) / 2,
+				l.accountPanel.y + 35);
+			return;
+		}
 
 		// Draw full-width account panel at bottom
 		drawPanel(g, l.accountPanel, "Demented Stoners", ACCENT_COLOR);
 
-		int count = Math.min(8, AccountManager.getAccounts().size());
+		// Draw all account cards (now dynamically sized)
+		java.util.List<AccountData> accounts = AccountManager.getAccounts();
+		int count = Math.min(accounts.size(), l.accountCards.length);
+
 		for (int i = 0; i < count; i++) {
-			drawAccountCard(g, l.accountCards[i], AccountManager.getAccounts().get(i));
+			if (i < l.accountCards.length) { // Safety check
+				drawAccountCard(g, l.accountCards[i], accounts.get(i));
+			}
 		}
 
-		boolean clearHover = mouseIn(g, l.clearBtn);
-		drawButton(g, l.clearBtn, "Clean", new Color(220, 80, 80), clearHover);
+		// Only show clear button if there are accounts
+		if (count > 0) {
+			boolean clearHover = mouseIn(g, l.clearBtn);
+			drawButton(g, l.clearBtn, "Clean", new Color(220, 80, 80), clearHover);
+		}
 	}
 
 	private void drawPanel(Graphics2D g, Rect r, String title, Color accentColor) {
@@ -459,21 +506,33 @@ public class LoginRenderer {
 				}
 			}
 
-			// Account handling
-			if (AccountManager.accounts != null) {
+			// Account handling with safe deletion
+			if (AccountManager.accounts != null && !AccountManager.getAccounts().isEmpty()) {
 				if (clickIn(l.clearBtn)) {
 					AccountManager.clearAccountList();
+					// Force UI refresh after clearing
+					canvas.repaint();
 				} else {
-					int count = Math.min(8, AccountManager.getAccounts().size());
-					for (int i = 0; i < count; i++) {
-						Rect card = l.accountCards[i];
-						AccountData acc = AccountManager.getAccounts().get(i);
+					// Create a copy of the accounts list to avoid concurrent modification
+					java.util.List<AccountData> accountsCopy = new java.util.ArrayList<>(AccountManager.getAccounts());
+					int count = Math.min(accountsCopy.size(), l.accountCards.length);
 
-						// Delete button
-						int delSize = 16;
+					// Track if any deletion occurred to trigger refresh
+					boolean deletionOccurred = false;
+
+					for (int i = 0; i < count; i++) {
+						if (i >= l.accountCards.length) break; // Safety check
+
+						Rect card = l.accountCards[i];
+						AccountData acc = accountsCopy.get(i);
+
+						// Delete button - match the size used in drawAccountCard
+						int delSize = 12;
 						if (clickInRegion(card.x + card.w - delSize - 3, card.y + 3,
 							card.x + card.w - 3, card.y + 3 + delSize)) {
 							AccountManager.removeAccount(acc);
+							deletionOccurred = true;
+							break; // Exit loop after deletion to prevent issues
 						}
 						// Account login
 						else if (clickIn(card)) {
@@ -482,8 +541,14 @@ public class LoginRenderer {
 								Client.myUsername = acc.username;
 								Client.myPassword = acc.password;
 								login(acc.username, acc.password, false, g, canvas, client);
+								break; // Exit after login attempt
 							}
 						}
+					}
+
+					// Force UI refresh if deletion occurred
+					if (deletionOccurred) {
+						canvas.repaint();
 					}
 				}
 			}
@@ -528,11 +593,11 @@ public class LoginRenderer {
 	}
 
 	private void initBuffer() {
-		if (Client.aRSImageProducer_1109 == null ||
-			Client.aRSImageProducer_1109.canvasWidth != Client.frameWidth ||
-			Client.aRSImageProducer_1109.canvasHeight != Client.frameHeight) {
-			Client.aRSImageProducer_1109 = new ImageProducer(Client.frameWidth, Client.frameHeight);
-			Client.aRSImageProducer_1109.initDrawingArea();
+		if (Client.gameScreenBuffer == null ||
+			Client.gameScreenBuffer.canvasWidth != Client.frameWidth ||
+			Client.gameScreenBuffer.canvasHeight != Client.frameHeight) {
+			Client.gameScreenBuffer = new ImageProducer(Client.frameWidth, Client.frameHeight);
+			Client.gameScreenBuffer.initDrawingArea();
 		}
 
 	}

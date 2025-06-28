@@ -125,16 +125,16 @@ public class PetItemCreator
 		// Format: itemId -> ModelRotationData(rotationX, rotationY, rotationZ, zoom)
 		int newItems = 13224;
 		// Jad
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9800)); //pet
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 17000)); //toy
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 16000)); //infant
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 15000)); //hatchling
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 14000)); //cub
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 13000)); //youth
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 12000)); //teen
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 11000)); //young adult
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 10000)); //adult
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9900)); //prime
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //pet
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //toy
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //infant
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //hatchling
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //cub
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //youth
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //teen
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //young adult
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //adult
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //prime
 
 		// Graardor
 		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
@@ -257,8 +257,8 @@ public class PetItemCreator
 		variantItem.itemActions[4] = "Choose";
 
 		// Use the NPC's model for the item
-		if (npcDef.anIntArray94 != null && npcDef.anIntArray94.length > 0) {
-			variantItem.modelID = npcDef.anIntArray94[0];
+		if (npcDef.models != null && npcDef.models.length > 0) {
+			variantItem.modelID = npcDef.models[0];
 		} else {
 			variantItem.modelID = 2677; // Fallback model
 		}

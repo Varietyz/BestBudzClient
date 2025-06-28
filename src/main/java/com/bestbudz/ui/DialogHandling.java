@@ -11,22 +11,22 @@ public class DialogHandling extends Client
 {
 	public static void handleBackDialogOrChatbox() {
 		if (backDialogID == -1) {
-			aClass9_1059.scrollPosition = anInt1211 - anInt1089 - 110;
+			defaultInterface.scrollPosition = anInt1211 - loadingProgress - 110;
 			/*if (MouseState.x >= 496 && MouseState.x <= 511 && MouseState.y > frameHeight - 158) {
 				drawInterfaceRecursive(494, 110, MouseState.x,
 					MouseState.y - (frameHeight - 158), aClass9_1059, 0,
 					false, anInt1211);
 			}*/
-			int idealScroll = anInt1211 - 110 - aClass9_1059.scrollPosition;
+			int idealScroll = anInt1211 - 110 - defaultInterface.scrollPosition;
 			idealScroll = Math.max(0, Math.min(idealScroll, anInt1211 - 110));
-			if (anInt1089 != idealScroll) {
-				anInt1089 = idealScroll;
+			if (loadingProgress != idealScroll) {
+				loadingProgress = idealScroll;
 				inputTaken = true;
 			}
 		} else {
-			if (updateInterfaceAnimations(anInt945, backDialogID)) inputTaken = true;
+			if (updateInterfaceAnimations(gameTickCounter, backDialogID)) inputTaken = true;
 		}
-		if (atBoxInterfaceType == 3 || activeInterfaceType == 3 || aString844 != null || (menuOpen && menuScreenArea == 2))
+		if (atBoxInterfaceType == 3 || activeInterfaceType == 3 || inputPromptText != null || (menuOpen && menuScreenArea == 2))
 			inputTaken = true;
 	}
 
@@ -43,7 +43,7 @@ public class DialogHandling extends Client
 
 		// Enhanced logging - capture all relevant interaction data
 		System.out.println("=== DIALOG HANDLING DEBUG START ===");
-		System.out.println("[Dialog Handling] anInt900: " + anInt900);
+		System.out.println("[Dialog Handling] anInt900: " + friendsListAction);
 		System.out.println("[Dialog Handling] contentType (j): " + j);
 		System.out.println("[Dialog Handling] interface ID: " + class9.id);
 		System.out.println("[Dialog Handling] interface type: " + class9.type);
@@ -52,7 +52,7 @@ public class DialogHandling extends Client
 		System.out.println("[Dialog Handling] inputDialogState before: " + inputDialogState);
 		System.out.println("[Dialog Handling] stonersListAction before: " + stonersListAction);
 
-		if (anInt900 == 2)
+		if (friendsListAction == 2)
 		{
 			System.out.println("[Dialog Handling] Processing anInt900 == 2 branch");
 
@@ -107,8 +107,8 @@ public class DialogHandling extends Client
 		if (j == 205)
 		{
 			System.out.println("[Dialog Handling] MATCHED: contentType 205");
-			anInt1011 = 250;
-			System.out.println("[Dialog Handling] Set anInt1011 to: " + anInt1011);
+			connectionTimeout = 250;
+			System.out.println("[Dialog Handling] Set anInt1011 to: " + connectionTimeout);
 			return true;
 		}
 
@@ -133,7 +133,7 @@ public class DialogHandling extends Client
 			System.out.println("[Dialog Handling] MATCHED: Identity kit range (300-313), contentType: " + j);
 			int k = (j - 300) / 2;
 			int j1 = j & 1;
-			int i2 = anIntArray1065[k];
+			int i2 = musicTrackIds[k];
 			System.out.println("[Dialog Handling] Identity kit - k: " + k + ", j1: " + j1 + ", i2: " + i2);
 
 			if (i2 != -1)
@@ -145,9 +145,9 @@ public class DialogHandling extends Client
 					if (j1 == 1 && ++i2 >= IdentityKit.length)
 						i2 = 0;
 				} while (IdentityKit.cache[i2].aBoolean662
-					|| IdentityKit.cache[i2].anInt657 != k + (aBoolean1047 ? 0 : 7));
-				anIntArray1065[k] = i2;
-				aBoolean1031 = true;
+					|| IdentityKit.cache[i2].anInt657 != k + (welcomeScreenVisible ? 0 : 7));
+				musicTrackIds[k] = i2;
+				dragModeActive = true;
 				System.out.println("[Dialog Handling] Identity kit updated - new i2: " + i2);
 			}
 		}
@@ -158,49 +158,49 @@ public class DialogHandling extends Client
 			System.out.println("[Dialog Handling] MATCHED: Color range (314-323), contentType: " + j);
 			int l = (j - 314) / 2;
 			int k1 = j & 1;
-			int j2 = anIntArray990[l];
+			int j2 = cameraShakeOffsets[l];
 			System.out.println("[Dialog Handling] Color - l: " + l + ", k1: " + k1 + ", j2: " + j2);
 
 			if (k1 == 0 && --j2 < 0)
-				j2 = anIntArrayArray1003[l].length - 1;
-			if (k1 == 1 && ++j2 >= anIntArrayArray1003[l].length)
+				j2 = validInterfaceRegions[l].length - 1;
+			if (k1 == 1 && ++j2 >= validInterfaceRegions[l].length)
 				j2 = 0;
-			anIntArray990[l] = j2;
-			aBoolean1031 = true;
+			cameraShakeOffsets[l] = j2;
+			dragModeActive = true;
 			System.out.println("[Dialog Handling] Color updated - new j2: " + j2);
 		}
 
-		if (j == 324 && !aBoolean1047)
+		if (j == 324 && !welcomeScreenVisible)
 		{
 			System.out.println("[Dialog Handling] MATCHED: contentType 324 - Gender change to male");
-			aBoolean1047 = true;
+			welcomeScreenVisible = true;
 			resetIdentityKits();
-			System.out.println("[Dialog Handling] Reset identity kits, aBoolean1047 now: " + aBoolean1047);
+			System.out.println("[Dialog Handling] Reset identity kits, aBoolean1047 now: " + welcomeScreenVisible);
 		}
 
-		if (j == 325 && aBoolean1047)
+		if (j == 325 && welcomeScreenVisible)
 		{
 			System.out.println("[Dialog Handling] MATCHED: contentType 325 - Gender change to female");
-			aBoolean1047 = false;
+			welcomeScreenVisible = false;
 			resetIdentityKits();
-			System.out.println("[Dialog Handling] Reset identity kits, aBoolean1047 now: " + aBoolean1047);
+			System.out.println("[Dialog Handling] Reset identity kits, aBoolean1047 now: " + welcomeScreenVisible);
 		}
 
 		if (j == 326)
 		{
 			System.out.println("[Dialog Handling] MATCHED: contentType 326 - Confirm character creation");
-			stream.createFrame(101);
-			stream.writeWordBigEndian(aBoolean1047 ? 0 : 1);
-			System.out.println("[Dialog Handling] Writing gender: " + (aBoolean1047 ? 0 : 1));
+			stream.writeEncryptedOpcode(101);
+			stream.writeByte(welcomeScreenVisible ? 0 : 1);
+			System.out.println("[Dialog Handling] Writing gender: " + (welcomeScreenVisible ? 0 : 1));
 
 			for (int i1 = 0; i1 < 7; i1++) {
-				stream.writeWordBigEndian(anIntArray1065[i1]);
-				System.out.println("[Dialog Handling] Writing identity kit[" + i1 + "]: " + anIntArray1065[i1]);
+				stream.writeByte(musicTrackIds[i1]);
+				System.out.println("[Dialog Handling] Writing identity kit[" + i1 + "]: " + musicTrackIds[i1]);
 			}
 
 			for (int l1 = 0; l1 < 5; l1++) {
-				stream.writeWordBigEndian(anIntArray990[l1]);
-				System.out.println("[Dialog Handling] Writing color[" + l1 + "]: " + anIntArray990[l1]);
+				stream.writeByte(cameraShakeOffsets[l1]);
+				System.out.println("[Dialog Handling] Writing color[" + l1 + "]: " + cameraShakeOffsets[l1]);
 			}
 			return true;
 		}
@@ -226,7 +226,7 @@ public class DialogHandling extends Client
 	}
 	public static void sendFrame36(int id, int state)
 	{
-		anIntArray1045[id] = state;
+		experienceDrops[id] = state;
 		if (variousSettings[id] != state)
 		{
 			variousSettings[id] = state;
@@ -251,6 +251,6 @@ public class DialogHandling extends Client
 		openInterfaceID = interfaceID;
 		invOverlayInterfaceID = sideInterfaceID;
 		tabAreaAltered = true;
-		aBoolean1149 = false;
+		isPlayerBusy = false;
 	}
 }

@@ -1,7 +1,7 @@
 package com.bestbudz.rendering;
 
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.rendering.animation.Class18;
+import com.bestbudz.rendering.animation.SkinList;
 import com.bestbudz.network.Stream;
 
 import java.util.logging.Level;
@@ -21,39 +21,39 @@ public final class SequenceFrame {
 
 	// Frame data
 	public static SequenceFrame[][] animationlist;
-	public final int anInt636;
-	public final Class18 aClass18_637;
-	public final int anInt638;
-	public final int[] anIntArray639;
-	public final int[] anIntArray640;
-	public final int[] anIntArray641;
-	public final int[] anIntArray642;
+	public final int version;
+	public final SkinList skinList;
+	public final int transformCount;
+	public final int[] transformIndices;
+	public final int[] xTransforms;
+	public final int[] yTransforms;
+	public final int[] zTransforms;
 
 	/**
 	 * Main constructor for creating frame instances.
 	 */
-	public SequenceFrame(Class18 skinList, int frameCount, int[] indices,
+	public SequenceFrame(SkinList skinList, int frameCount, int[] indices,
 						 int[] xValues, int[] yValues, int[] zValues) {
-		this.anInt636 = 0;
-		this.aClass18_637 = skinList;
-		this.anInt638 = frameCount;
-		this.anIntArray639 = indices;
-		this.anIntArray640 = xValues;
-		this.anIntArray641 = yValues;
-		this.anIntArray642 = zValues;
+		this.version = 0;
+		this.skinList = skinList;
+		this.transformCount = frameCount;
+		this.transformIndices = indices;
+		this.xTransforms = xValues;
+		this.yTransforms = yValues;
+		this.zTransforms = zValues;
 	}
 
 	/**
 	 * Default constructor for compatibility.
 	 */
 	public SequenceFrame() {
-		this.anInt636 = 0;
-		this.aClass18_637 = null;
-		this.anInt638 = 0;
-		this.anIntArray639 = null;
-		this.anIntArray640 = null;
-		this.anIntArray641 = null;
-		this.anIntArray642 = null;
+		this.version = 0;
+		this.skinList = null;
+		this.transformCount = 0;
+		this.transformIndices = null;
+		this.xTransforms = null;
+		this.yTransforms = null;
+		this.zTransforms = null;
 	}
 
 	/**
@@ -67,10 +67,10 @@ public final class SequenceFrame {
 
 		try {
 			Stream stream = new Stream(data);
-			Class18 skinList = new Class18(stream);
+			SkinList skinList = new SkinList(stream);
 
 			// Check if we have enough data to read frame count
-			if (stream.currentOffset + 2 > data.length) {
+			if (stream.position + 2 > data.length) {
 				LOGGER.warning("Insufficient data to read frame count for file " + fileId);
 				return;
 			}
@@ -90,7 +90,7 @@ public final class SequenceFrame {
 			for (int frameIndex = 0; frameIndex < frameCount; frameIndex++) {
 				try {
 					// Check if we have enough remaining data before attempting to load
-					if (stream.currentOffset >= data.length) {
+					if (stream.position >= data.length) {
 						LOGGER.warning("Reached end of data at frame " + frameIndex + " of " + frameCount +
 							" for file " + fileId + ". Successfully loaded " + successfulFrames + " frames.");
 						break;
@@ -123,9 +123,9 @@ public final class SequenceFrame {
 	/**
 	 * Loads a single frame from the stream.
 	 */
-	private static void loadSingleFrame(Stream stream, Class18 skinList, SequenceFrame[] frameArray) {
+	private static void loadSingleFrame(Stream stream, SkinList skinList, SequenceFrame[] frameArray) {
 		// Check if we have enough data to read frame header
-		if (stream.currentOffset + 3 > stream.buffer.length) {
+		if (stream.position + 3 > stream.buffer.length) {
 			throw new ArrayIndexOutOfBoundsException("Not enough data to read frame header");
 		}
 
@@ -155,7 +155,7 @@ public final class SequenceFrame {
 
 		for (int i = 0; i < transformCount; i++) {
 			// Check if we have data to read the transform flags
-			if (stream.currentOffset >= stream.buffer.length) {
+			if (stream.position >= stream.buffer.length) {
 				LOGGER.warning("Reached end of buffer at transform " + i + " of " + transformCount);
 				break;
 			}
@@ -170,16 +170,16 @@ public final class SequenceFrame {
 
 			if (transformFlags > 0) {
 				// Validate skinList bounds
-				if (i >= skinList.anIntArray342.length) {
+				if (i >= skinList.transformTypes.length) {
 					LOGGER.warning("Transform index " + i + " exceeds skinList bounds, skipping");
 					continue;
 				}
 
 				// Fill gaps with default values if needed
-				if (skinList.anIntArray342[i] != 0) {
+				if (skinList.transformTypes[i] != 0) {
 					for (int gapIndex = i - 1; gapIndex > lastProcessedIndex; gapIndex--) {
-						if (gapIndex >= 0 && gapIndex < skinList.anIntArray342.length &&
-							skinList.anIntArray342[gapIndex] == 0) {
+						if (gapIndex >= 0 && gapIndex < skinList.transformTypes.length &&
+							skinList.transformTypes[gapIndex] == 0) {
 							if (actualCount < transformCount) {
 								indices[actualCount] = gapIndex;
 								xValues[actualCount] = POSITION_DEFAULT;
@@ -193,7 +193,7 @@ public final class SequenceFrame {
 				}
 
 				// Determine default value based on transformation type
-				int defaultValue = (skinList.anIntArray342[i] == 3) ? ROTATION_DEFAULT : POSITION_DEFAULT;
+				int defaultValue = (skinList.transformTypes[i] == 3) ? ROTATION_DEFAULT : POSITION_DEFAULT;
 
 				// Check if we have enough data to read the transformation values
 				int bytesNeeded = 0;
@@ -201,15 +201,15 @@ public final class SequenceFrame {
 				if ((transformFlags & 0x2) != 0) bytesNeeded += 2; // y value
 				if ((transformFlags & 0x4) != 0) bytesNeeded += 2; // z value
 
-				if (stream.currentOffset + bytesNeeded > stream.buffer.length) {
+				if (stream.position + bytesNeeded > stream.buffer.length) {
 					LOGGER.warning("Not enough data to read transformation values");
 					break;
 				}
 
 				// Read transformation values based on flags
-				int xValue = (transformFlags & 0x1) != 0 ? stream.readShort2() : defaultValue;
-				int yValue = (transformFlags & 0x2) != 0 ? stream.readShort2() : defaultValue;
-				int zValue = (transformFlags & 0x4) != 0 ? stream.readShort2() : defaultValue;
+				int xValue = (transformFlags & 0x1) != 0 ? stream.readSignedWordBE() : defaultValue;
+				int yValue = (transformFlags & 0x2) != 0 ? stream.readSignedWordBE() : defaultValue;
+				int zValue = (transformFlags & 0x4) != 0 ? stream.readSignedWordBE() : defaultValue;
 
 				// Validate and clean transformation values
 				xValue = cleanTransformValue(xValue, "X", frameId, i);
@@ -273,7 +273,7 @@ public final class SequenceFrame {
 	/**
 	 * Retrieves a sequence frame by its encoded identifier.
 	 */
-	public static SequenceFrame method531(int encodedId) {
+	public static SequenceFrame getFrame(int encodedId) {
 		try {
 			int fileIndex, frameIndex;
 
@@ -296,7 +296,7 @@ public final class SequenceFrame {
 			SequenceFrame[] frameArray = animationlist[fileIndex];
 			if (frameArray == null || frameArray.length == 0) {
 				// Request loading if not available
-				Client.instance.onDemandFetcher.method558(1, fileIndex);
+				Client.instance.cacheManager.enqueueRequest(1, fileIndex);
 				return null;
 			}
 
@@ -315,7 +315,7 @@ public final class SequenceFrame {
 	/**
 	 * Legacy method for checking if frame ID is invalid.
 	 */
-	public static boolean method532(int frameId) {
+	public static boolean isInvalidFrame(int frameId) {
 		return frameId == -1;
 	}
 

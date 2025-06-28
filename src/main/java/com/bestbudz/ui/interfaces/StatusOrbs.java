@@ -15,7 +15,7 @@ import static com.bestbudz.engine.core.Client.inBounds;
 import static com.bestbudz.engine.core.Client.menuActionID;
 import static com.bestbudz.engine.core.Client.menuActionName;
 import static com.bestbudz.engine.core.Client.menuOpen;
-import static com.bestbudz.engine.core.Client.minimapInt1;
+import static com.bestbudz.engine.core.Client.minimapRotation;
 import static com.bestbudz.engine.core.Client.smallText;
 import static com.bestbudz.engine.core.Client.stream;
 import static com.bestbudz.engine.core.Client.tabID;
@@ -101,7 +101,7 @@ public class StatusOrbs {
 			crosses[crossIndex / 100].drawSprite(crossX - 8, crossY - 8);
 			if (++anInt1142 > 67) {
 				anInt1142 = 0;
-				stream.createFrame(78);
+				stream.writeEncryptedOpcode(78);
 			}
 		} else if (crossType == 2) {
 			crosses[4 + crossIndex / 100].drawSprite(crossX - 8, crossY - 8);
@@ -131,7 +131,7 @@ public class StatusOrbs {
 			int compassX = frameWidth - setCompassPosX;
 			int compassY = setCompassPosY;
 
-			compass.drawRotatedSpriteAt(compassX, compassY, minimapInt1, 256);
+			compass.drawRotatedSpriteAt(compassX, compassY, minimapRotation, 256);
 
 		}
 
@@ -166,7 +166,7 @@ public class StatusOrbs {
 
 		if (leftClick && SettingsConfig.enableStatusOrbs) {
 			if (pouchHover && SettingsConfig.enablePouch) {
-				stream.createFrame(185);
+				stream.writeEncryptedOpcode(185);
 				stream.writeWord(713); // mimic "Withdraw from debit"
 			}
 

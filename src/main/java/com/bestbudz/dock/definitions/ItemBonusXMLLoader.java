@@ -150,7 +150,7 @@ public class ItemBonusXMLLoader {
 	 */
 	private NodeList getDefinitionNodes(Element root) {
 		if (DEFINITION_ELEMENT.equals(root.getNodeName())) {
-			// Single definition case - create a NodeList with just the root
+			// Single definition case - getPooledStream a NodeList with just the root
 			return new SingleNodeList(root);
 		} else {
 			// Multiple definitions case

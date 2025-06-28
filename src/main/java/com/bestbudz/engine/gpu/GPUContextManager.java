@@ -60,7 +60,7 @@ public class GPUContextManager {
 	}
 
 	/**
-	 * Initialize the GPU context system
+	 * Initialize the GPU context system - IMPROVED VERSION
 	 * This should be called once at application startup
 	 */
 	public boolean initialize() {
@@ -77,25 +77,48 @@ public class GPUContextManager {
 
 			System.out.println("[GPU Context] Initializing context manager...");
 
-			// Set up GLFW error callback
-			GLFWErrorCallback.createPrint(System.err).set();
+			// CRITICAL FIX: Better error handling for GLFW initialization
+			try {
+				// Set up GLFW error callback FIRST
+				GLFWErrorCallback.createPrint(System.err).set();
 
-			// Initialize GLFW
-			if (!GLFW.glfwInit()) {
-				System.err.println("[GPU Context] Failed to initialize GLFW");
+				// Initialize GLFW with better error checking
+				if (!GLFW.glfwInit()) {
+					System.err.println("[GPU Context] Failed to initialize GLFW");
+
+					// Try to get more specific error information
+					GLFWErrorCallback errorCallback = GLFW.glfwSetErrorCallback((error, description) -> {
+						System.err.println("[GPU Context] GLFW Error " + error + ": " + GLFWErrorCallback.getDescription(description));
+					});
+
+					return false;
+				}
+
+				System.out.println("[GPU Context] ✅ GLFW initialized successfully");
+
+			} catch (Exception e) {
+				System.err.println("[GPU Context] Exception during GLFW initialization: " + e.getMessage());
+				e.printStackTrace();
 				return false;
 			}
 
-			// Create primary context
+			// Create primary context with better error handling
 			if (!createPrimaryContext()) {
-				System.err.println("[GPU Context] Failed to create primary context");
+				System.err.println("[GPU Context] Failed to getPooledStream primary context");
 				cleanup();
 				return false;
 			}
 
-			// Initialize OpenGL
+			// Initialize OpenGL with better validation
 			if (!initializeOpenGL()) {
 				System.err.println("[GPU Context] Failed to initialize OpenGL");
+				cleanup();
+				return false;
+			}
+
+			// CRITICAL FIX: Validate that everything is working
+			if (!validateInitialization()) {
+				System.err.println("[GPU Context] Initialization validation failed");
 				cleanup();
 				return false;
 			}
@@ -114,8 +137,9 @@ public class GPUContextManager {
 		}
 	}
 
+
 	/**
-	 * Create the primary OpenGL context
+	 * FIXED: Create the primary OpenGL context with better error handling
 	 */
 	private boolean createPrimaryContext() {
 		try {
@@ -127,16 +151,38 @@ public class GPUContextManager {
 			GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
 			GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
 
+			// CRITICAL FIX: Add more OpenGL hints for better compatibility
+			GLFW.glfwWindowHint(GLFW.GLFW_DOUBLEBUFFER, GLFW.GLFW_TRUE);
+			GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, 24);
+			GLFW.glfwWindowHint(GLFW.GLFW_STENCIL_BITS, 8);
+
 			// Create hidden window for primary context
 			primaryContext = GLFW.glfwCreateWindow(1, 1, "BestBudz GPU Context", 0, 0);
 			if (primaryContext == MemoryUtil.NULL) {
-				System.err.println("[GPU Context] Failed to create primary context window");
+				System.err.println("[GPU Context] Failed to getPooledStream primary context window");
+
+				// Try to get more information about why it failed
+				GLFW.glfwSetErrorCallback((error, description) -> {
+					System.err.println("[GPU Context] GLFW Window Creation Error " + error + ": " +
+						GLFWErrorCallback.getDescription(description));
+				});
+
 				return false;
 			}
 
-			// Make context current and create capabilities
+			System.out.println("[GPU Context] ✅ Primary context window created successfully");
+
+			// Make context current and getPooledStream capabilities
 			GLFW.glfwMakeContextCurrent(primaryContext);
-			GL.createCapabilities();
+
+			// CRITICAL FIX: Better GL capabilities creation
+			try {
+				GL.createCapabilities();
+				System.out.println("[GPU Context] ✅ OpenGL capabilities created");
+			} catch (Exception e) {
+				System.err.println("[GPU Context] Failed to getPooledStream OpenGL capabilities: " + e.getMessage());
+				return false;
+			}
 
 			// Disable VSync for the hidden window
 			GLFW.glfwSwapInterval(0);
@@ -150,37 +196,150 @@ public class GPUContextManager {
 
 		} catch (Exception e) {
 			System.err.println("[GPU Context] Error creating primary context: " + e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
 	}
 
 	/**
-	 * Initialize OpenGL state
+	 * FIXED: Initialize OpenGL state with better validation
 	 */
 	private boolean initializeOpenGL() {
 		try {
-			// Check OpenGL version
-			String version = GL11.glGetString(GL11.GL_VERSION);
-			String vendor = GL11.glGetString(GL11.GL_VENDOR);
-			String renderer = GL11.glGetString(GL11.GL_RENDERER);
+			// CRITICAL FIX: Validate OpenGL context before proceeding
+			long currentContext = GLFW.glfwGetCurrentContext();
+			if (currentContext != primaryContext) {
+				System.err.println("[GPU Context] Context mismatch during OpenGL initialization");
+				return false;
+			}
+
+			// Check OpenGL version with better error handling
+			String version = null;
+			String vendor = null;
+			String renderer = null;
+
+			try {
+				version = GL11.glGetString(GL11.GL_VERSION);
+				vendor = GL11.glGetString(GL11.GL_VENDOR);
+				renderer = GL11.glGetString(GL11.GL_RENDERER);
+			} catch (Exception e) {
+				System.err.println("[GPU Context] Failed to get OpenGL info: " + e.getMessage());
+				return false;
+			}
+
+			if (version == null || vendor == null || renderer == null) {
+				System.err.println("[GPU Context] OpenGL info is null - context may be invalid");
+				return false;
+			}
 
 			System.out.println("[GPU Context] OpenGL Version: " + version);
 			System.out.println("[GPU Context] GPU Vendor: " + vendor);
 			System.out.println("[GPU Context] GPU Renderer: " + renderer);
 
-			// Set default OpenGL state
-			GL11.glDisable(GL11.GL_DEPTH_TEST);
-			GL11.glDisable(GL11.GL_CULL_FACE);
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			// CRITICAL FIX: Validate minimum OpenGL version
+			if (!validateOpenGLVersion(version)) {
+				System.err.println("[GPU Context] Insufficient OpenGL version");
+				return false;
+			}
+
+			// Set default OpenGL state with error checking
+			try {
+				GL11.glDisable(GL11.GL_DEPTH_TEST);
+				GL11.glDisable(GL11.GL_CULL_FACE);
+				GL11.glEnable(GL11.GL_BLEND);
+				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+				// Check for OpenGL errors
+				int error = GL11.glGetError();
+				if (error != GL11.GL_NO_ERROR) {
+					System.err.println("[GPU Context] OpenGL error during state setup: " + error);
+					return false;
+				}
+
+			} catch (Exception e) {
+				System.err.println("[GPU Context] Exception during OpenGL state setup: " + e.getMessage());
+				return false;
+			}
 
 			return true;
 
 		} catch (Exception e) {
 			System.err.println("[GPU Context] Error initializing OpenGL: " + e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
 	}
+
+	/**
+	 * NEW: Validate OpenGL version meets minimum requirements
+	 */
+	private boolean validateOpenGLVersion(String version) {
+		try {
+			if (version == null || version.isEmpty()) {
+				return false;
+			}
+
+			// Parse version string (e.g., "3.3.0" or "4.6.0 NVIDIA ...")
+			String[] parts = version.split("\\.");
+			if (parts.length < 2) {
+				return false;
+			}
+
+			int major = Integer.parseInt(parts[0]);
+			int minor = Integer.parseInt(parts[1].split(" ")[0]);
+
+			// Require OpenGL 3.3 or higher
+			return major > 3 || (major == 3 && minor >= 3);
+
+		} catch (Exception e) {
+			System.err.println("[GPU Context] Error parsing OpenGL version: " + e.getMessage());
+			return false;
+		}
+	}
+
+	/**
+	 * NEW: Validate that initialization completed successfully
+	 */
+	private boolean validateInitialization() {
+		try {
+			// Check that we have a valid context
+			if (primaryContext == 0) {
+				System.err.println("[GPU Context] Primary context is 0");
+				return false;
+			}
+
+			// Check that context is current
+			long currentContext = GLFW.glfwGetCurrentContext();
+			if (currentContext != primaryContext) {
+				System.err.println("[GPU Context] Context not current after initialization");
+				return false;
+			}
+
+			// Try a simple OpenGL operation
+			try {
+				GL11.glGetError(); // Clear any existing errors
+				int[] viewport = new int[4];
+				GL11.glGetIntegerv(GL11.GL_VIEWPORT, viewport);
+
+				int error = GL11.glGetError();
+				if (error != GL11.GL_NO_ERROR) {
+					System.err.println("[GPU Context] OpenGL error during validation: " + error);
+					return false;
+				}
+			} catch (Exception e) {
+				System.err.println("[GPU Context] Exception during OpenGL validation: " + e.getMessage());
+				return false;
+			}
+
+			System.out.println("[GPU Context] ✅ Initialization validation passed");
+			return true;
+
+		} catch (Exception e) {
+			System.err.println("[GPU Context] Error during validation: " + e.getMessage());
+			return false;
+		}
+	}
+
 
 	/**
 	 * Thread-safe context acquisition
@@ -194,6 +353,9 @@ public class GPUContextManager {
 		return acquireContext(operation, 5000);
 	}
 
+	/**
+	 * FIXED: Thread-safe context acquisition with better error handling
+	 */
 	public ContextToken acquireContext(String operation, long timeoutMs) {
 		if (!isInitialized.get() || isShuttingDown.get()) {
 			System.err.println("[GPU Context] Cannot acquire context: not initialized or shutting down");
@@ -208,6 +370,13 @@ public class GPUContextManager {
 			if (!contextLock.tryLock(timeoutMs, java.util.concurrent.TimeUnit.MILLISECONDS)) {
 				System.err.println("[GPU Context] ⚠️ Timeout acquiring context for " + operation +
 					" on thread " + threadName + " (waited " + timeoutMs + "ms)");
+				return null;
+			}
+
+			// CRITICAL FIX: Validate context state before proceeding
+			if (primaryContext == 0) {
+				System.err.println("[GPU Context] Primary context is null during acquisition");
+				contextLock.unlock();
 				return null;
 			}
 
@@ -308,7 +477,7 @@ public class GPUContextManager {
 				System.out.println("[GPU Context] Created shared context for thread: " + threadName);
 				return sharedWindow;
 			} else {
-				System.err.println("[GPU Context] Failed to create shared context for: " + threadName);
+				System.err.println("[GPU Context] Failed to getPooledStream shared context for: " + threadName);
 				return 0;
 			}
 
@@ -388,7 +557,7 @@ public class GPUContextManager {
 
 				// Clean up GPU shaders and resources
 				try {
-					GPUShaders.cleanup();
+
 				} catch (Exception e) {
 					System.err.println("[GPU Context] Error cleaning up shaders: " + e.getMessage());
 				}

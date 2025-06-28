@@ -47,11 +47,11 @@ public class TabArea extends Client
 		int tabPanelWidth = 190;
 		int tabPanelHeight = 257;
 
-		Rasterizer.scanlineOffsets = anIntArray1181;
+		Rasterizer.scanlineOffsets = viewportPixels2;
 
 			if (showTabComponents)
 			{
-				DrawingArea.method335(transparentTabArea ? 0x020202 : 0x191919, frameHeight - 300, tabPanelWidth, tabPanelHeight, transparentTabArea ? 180 : 256,
+				DrawingArea.drawAlphaRectangle(transparentTabArea ? 0x020202 : 0x191919, frameHeight - 300, tabPanelWidth, tabPanelHeight, transparentTabArea ? 180 : 256,
 					frameWidth - 197);
 			}
 			for (int x = frameWidth - 225, y = frameHeight - 37, index = 0; x <= frameWidth - 30
@@ -84,7 +84,7 @@ public class TabArea extends Client
 		{
 			rightClickMenu(0, 0);
 		}
-		Rasterizer.scanlineOffsets = anIntArray1182;
+		Rasterizer.scanlineOffsets = viewportPixels3;
 	}
 
 	public static void processTabClick(boolean leftClick, boolean rightClick)
@@ -218,13 +218,13 @@ public class TabArea extends Client
 	}
 
 	public static void commitTabState() {
-		if (anInt1054 != -1 && anInt1054 == tabID) {
-			anInt1054 = -1;
-			stream.createFrame(120);
-			stream.writeWordBigEndian(tabID);
+		if (selectedTabIndex != -1 && selectedTabIndex == tabID) {
+			selectedTabIndex = -1;
+			stream.writeEncryptedOpcode(120);
+			stream.writeByte(tabID);
 		}
 		tabAreaAltered = false;
-		aRSImageProducer_1125.initDrawingArea();
+		loginImageProducer.initDrawingArea();
 		mainGameRendering.initDrawingArea();
 	}
 }

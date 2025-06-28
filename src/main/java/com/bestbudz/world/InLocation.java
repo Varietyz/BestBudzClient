@@ -40,10 +40,10 @@ public class InLocation extends Client
 		return (x >= 2624 && x <= 2690 && y >= 2550 && y <= 2619);
 	}
 
-	public static boolean inWilderness(int x, int y)
-	{
-		return (x > 2941 && x < 3392 && y > 3521 && y < 3966) || (x > 2941 && x < 3392 && y > 9918 && y < 10366);
-	}
+//	public static boolean inWilderness(int x, int y)
+//	{
+//		return (x > 2941 && x < 3392 && y > 3521 && y < 3966) || (x > 2941 && x < 3392 && y > 9918 && y < 10366);
+//	}
 
 	public static boolean inMaze(int x)
 	{

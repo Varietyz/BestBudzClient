@@ -16,7 +16,7 @@ public class GroundItem extends Client
 		NodeList class19 = groundArray[plane][i][j];
 		if (class19 == null)
 		{
-			worldController.method295(plane, i, j);
+			worldController.removeRoofDecoration(plane, i, j);
 			return;
 		}
 		int k = 0xfa0a1f01;
@@ -27,7 +27,7 @@ public class GroundItem extends Client
 			int l = itemDef.value;
 			if (itemDef.stackable)
 			{
-				l *= item.anInt1559 + 1;
+				l *= item.stackSize + 1;
 			}
 			if (l > k)
 			{
@@ -53,7 +53,7 @@ public class GroundItem extends Client
 			}
 		}
 		int i1 = i + (j << 7) + 0x60000000;
-		worldController.method281(i, i1, ((Animable) (obj1)), getTerrainHeight(plane, j * 128 + 64, i * 128 + 64),
+		worldController.addRoofDecoration(i, i1, ((Animable) (obj1)), getTerrainHeight(plane, j * 128 + 64, i * 128 + 64),
 			((Animable) (obj2)), ((Animable) (obj)), plane, j);
 	}
 }

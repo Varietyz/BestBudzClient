@@ -8,11 +8,11 @@ import com.bestbudz.ui.handling.input.MouseState;
 public class WalkTo extends Client
 {
 	public static void handleWalkToObject() {
-		if (WorldController.anInt470 == -1) return;
+		if (WorldController.selectedTileX == -1) return;
 
-		int x = WorldController.anInt470;
-		int y = WorldController.anInt471;
-		WorldController.anInt470 = -1;
+		int x = WorldController.selectedTileX;
+		int y = WorldController.selectedTileY;
+		WorldController.selectedTileX = -1;
 
 		if (doWalkTo(0, 0, 0, 0, myStoner.smallY[0], 0, 0, y, myStoner.smallX[0], true, x)) {
 			crossX = MouseState.x;
@@ -54,7 +54,7 @@ public class WalkTo extends Client
 		bigY[l3++] = j1;
 		boolean flag1 = false;
 		int j4 = bigX.length;
-		int[][] ai = aClass11Array1230[plane].anIntArrayArray294;
+		int[][] ai = collisionMaps[plane].collisionFlags;
 		while (i4 != l3)
 		{
 			j3 = bigX[i4];
@@ -67,18 +67,18 @@ public class WalkTo extends Client
 			}
 			if (i1 != 0)
 			{
-				if ((i1 < 5 || i1 == 10) && aClass11Array1230[plane].method219(k2, j3, k3, j, i1 - 1, i2))
+				if ((i1 < 5 || i1 == 10) && collisionMaps[plane].canReachWall(k2, j3, k3, j, i1 - 1, i2))
 				{
 					flag1 = true;
 					break;
 				}
-				if (i1 < 10 && aClass11Array1230[plane].method220(k2, i2, k3, i1 - 1, j, j3))
+				if (i1 < 10 && collisionMaps[plane].canReachWallDecoration(k2, i2, k3, i1 - 1, j, j3))
 				{
 					flag1 = true;
 					break;
 				}
 			}
-			if (k1 != 0 && k != 0 && aClass11Array1230[plane].method221(i2, k2, j3, k, l1, k1, k3))
+			if (k1 != 0 && k != 0 && collisionMaps[plane].canReachObject(i2, k2, j3, k, l1, k1, k3))
 			{
 				flag1 = true;
 				break;
@@ -156,7 +156,7 @@ public class WalkTo extends Client
 				anIntArrayArray825[j3 + 1][k3 + 1] = l4;
 			}
 		}
-		anInt1264 = 0;
+		lastTickCount = 0;
 		if (!flag1)
 		{
 			if (flag)
@@ -173,7 +173,7 @@ public class WalkTo extends Client
 								i5 = anIntArrayArray825[i6][l6];
 								j3 = i6;
 								k3 = l6;
-								anInt1264 = 1;
+								lastTickCount = 1;
 								flag1 = true;
 							}
 						}
@@ -214,39 +214,39 @@ public class WalkTo extends Client
 			i4--;
 			int k6 = bigX[i4];
 			int i7 = bigY[i4];
-			anInt1288 += k4;
-			if (anInt1288 >= 92)
+			lastMouseY += k4;
+			if (lastMouseY >= 92)
 			{
-				stream.createFrame(36);
+				stream.writeEncryptedOpcode(36);
 				stream.writeDWord(0);
-				anInt1288 = 0;
+				lastMouseY = 0;
 			}
 			if (i == 0)
 			{
-				stream.createFrame(164);
-				stream.writeWordBigEndian(k4 + k4 + 3);
+				stream.writeEncryptedOpcode(164);
+				stream.writeByte(k4 + k4 + 3);
 			}
 			if (i == 1)
 			{
-				stream.createFrame(248);
-				stream.writeWordBigEndian(k4 + k4 + 3 + 14);
+				stream.writeEncryptedOpcode(248);
+				stream.writeByte(k4 + k4 + 3 + 14);
 			}
 			if (i == 2)
 			{
-				stream.createFrame(98);
-				stream.writeWordBigEndian(k4 + k4 + 3);
+				stream.writeEncryptedOpcode(98);
+				stream.writeByte(k4 + k4 + 3);
 			}
-			stream.method433(k6 + baseX);
+			stream.writeWordMixedLE(k6 + baseX);
 			destX = bigX[0];
 			destY = bigY[0];
 			for (int j7 = 1; j7 < k4; j7++)
 			{
 				i4--;
-				stream.writeWordBigEndian(bigX[i4] - k6);
-				stream.writeWordBigEndian(bigY[i4] - i7);
+				stream.writeByte(bigX[i4] - k6);
+				stream.writeByte(bigY[i4] - i7);
 			}
-			stream.method431(i7 + baseY);
-			stream.method424(keyArray[5] != 1 ? 0 : 1);
+			stream.writeWordLittleEndian(i7 + baseY);
+			stream.writeByteNegated(keyArray[5] != 1 ? 0 : 1);
 			return true;
 		}
 		return i != 1;

@@ -6,7 +6,7 @@ import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.entity.pets.PetItemCreator;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.network.Stream;
-import com.bestbudz.network.StreamLoader;
+import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
@@ -76,9 +76,9 @@ public final class ItemDef {
 		stream = null;
 	}
 
-	public static void unpackConfig(StreamLoader archive) {
-		stream = new Stream(archive.getDataForName("obj.dat"));
-		Stream stream = new Stream(archive.getDataForName("obj.idx"));
+	public static void unpackConfig(ArchiveLoader archive) {
+		stream = new Stream(archive.extractFile("obj.dat"));
+		Stream stream = new Stream(archive.extractFile("obj.idx"));
 		totalItems = stream.readUnsignedWord() + 21;
 		System.out.println("Items Loaded: " + totalItems);
 		streamIndices = new int[totalItems + 50000];
@@ -134,7 +134,7 @@ public final class ItemDef {
 		int itemZoom = item.modelZoom * zoom - 500;
 		int l3 = Rasterizer.sinTable[item.modelRotationY] * itemZoom >> 16;
 		int i4 = Rasterizer.cosTable[item.modelRotationY] * itemZoom >> 16;
-		model.method482(item.modelRotationX, item.anInt204, item.modelRotationY, item.modelOffset1,
+		model.renderAtFixedPosition(item.modelRotationX, item.anInt204, item.modelRotationY, item.modelOffset1,
 				l3 + model.modelHeight / 2 + item.modelOffset2, i4 + item.modelOffset2);
 		if (color == 0) {
 			for (int index = 31; index >= 0; index--) {
@@ -151,11 +151,11 @@ public final class ItemDef {
 		Rasterizer.scanlineOffsets = ai;
 		Rasterizer.enableDepthBuffer = true;
 		if (item.stackable) {
-			image.cropWidth = 33;
+			image.originalWidth = 33;
 		} else {
-			image.cropWidth = 32;
+			image.originalWidth = 32;
 		}
-		image.anInt1445 = size;
+		image.originalHeight = size;
 
 		return image;
 	}
@@ -165,7 +165,7 @@ public final class ItemDef {
 	public static Sprite getSprite(int i, int j, int k) {
 		if (k == 0) {
 			Sprite sprite = (Sprite) mruNodes1.insertFromCache(i);
-			if (sprite != null && sprite.anInt1445 != j && sprite.anInt1445 != -1) {
+			if (sprite != null && sprite.originalHeight != j && sprite.originalHeight != -1) {
 
 				sprite.unlink();
 				sprite = null;
@@ -213,7 +213,7 @@ public final class ItemDef {
 		int j3 = DrawingArea.bottomY;
 		Rasterizer.enableDepthBuffer = false;
 		DrawingArea.initDrawingArea(spriteSize, spriteSize, enabledSprite.myPixels, new float[32 * 32]);
-		DrawingArea.method336(spriteSize, 0, 0, 0, spriteSize);
+		DrawingArea.drawSolidRectangle(spriteSize, 0, 0, 0, spriteSize);
 		Rasterizer.initializeViewport();
 		int k3 = itemDef.modelZoom;
 		if (k == -1)
@@ -223,7 +223,7 @@ public final class ItemDef {
 		int l3 = Rasterizer.sinTable[itemDef.modelRotationY] * k3 >> 16;
 		int i4 = Rasterizer.cosTable[itemDef.modelRotationY] * k3 >> 16;
 		Rasterizer.isRenderingItem = true;
-		model.method482(itemDef.modelRotationX, itemDef.anInt204,
+		model.renderAtFixedPosition(itemDef.modelRotationX, itemDef.anInt204,
 				itemDef.modelRotationY, itemDef.modelOffset1, l3
 						+ model.modelHeight / 2 + itemDef.modelOffset2,
 				i4
@@ -279,13 +279,13 @@ public final class ItemDef {
 
 		}
 		if (itemDef.certTemplateID != -1) {
-			int l5 = Objects.requireNonNull(sprite).cropWidth;
-			int j6 = sprite.anInt1445;
-			sprite.cropWidth = 32;
-			sprite.anInt1445 = 32;
+			int l5 = Objects.requireNonNull(sprite).originalWidth;
+			int j6 = sprite.originalHeight;
+			sprite.originalWidth = 32;
+			sprite.originalHeight = 32;
 			sprite.drawSprite(0, 0);
-			sprite.cropWidth = l5;
-			sprite.anInt1445 = j6;
+			sprite.originalWidth = l5;
+			sprite.originalHeight = j6;
 		}
 		if (k == 0)
 			mruNodes1.removeFromCache(enabledSprite, i);
@@ -296,10 +296,10 @@ public final class ItemDef {
 		Rasterizer.scanlineOffsets = ai;
 		Rasterizer.enableDepthBuffer = true;
 		if (itemDef.stackable)
-			enabledSprite.cropWidth = 33;
+			enabledSprite.originalWidth = 33;
 		else
-			enabledSprite.cropWidth = 32;
-		enabledSprite.anInt1445 = j;
+			enabledSprite.originalWidth = 32;
+		enabledSprite.originalHeight = j;
 		return enabledSprite;
 	}
 
@@ -312,8 +312,8 @@ public final class ItemDef {
 		}
 		if (k == -1)
 			return true;
-		boolean flag = Model.method463(k);
-		if (l != -1 && !Model.method463(l))
+		boolean flag = Model.isModelCached(k);
+		if (l != -1 && !Model.isModelCached(l))
 			flag = false;
 		return flag;
 	}
@@ -353,10 +353,10 @@ public final class ItemDef {
 		}
 		if (k == -1)
 			return true;
-		boolean flag = Model.method463(k);
-		if (l != -1 && !Model.method463(l))
+		boolean flag = Model.isModelCached(k);
+		if (l != -1 && !Model.isModelCached(l))
 			flag = false;
-		if (i1 != -1 && !Model.method463(i1))
+		if (i1 != -1 && !Model.isModelCached(i1))
 			flag = false;
 		return flag;
 	}

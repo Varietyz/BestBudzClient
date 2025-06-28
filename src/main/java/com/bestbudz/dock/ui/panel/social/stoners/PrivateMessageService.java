@@ -45,12 +45,12 @@ public class PrivateMessageService implements MessageSender {
 			}
 
 			// Send the message using the game's protocol (frame 126)
-			Client.stream.createFrame(126);
-			Client.stream.writeWordBigEndian(0);
-			int frameStart = Client.stream.currentOffset;
+			Client.stream.writeEncryptedOpcode(126);
+			Client.stream.writeByte(0);
+			int frameStart = Client.stream.position;
 			Client.stream.writeQWord(recipientHash);
 			TextInput.method526(message, Client.stream);
-			Client.stream.writeBytes(Client.stream.currentOffset - frameStart);
+			Client.stream.writePacketLength(Client.stream.position - frameStart);
 
 			// Process and display the message locally using the correct method
 			String processedMessage = TextInput.processText(message);
@@ -59,8 +59,8 @@ public class PrivateMessageService implements MessageSender {
 			// Handle private chat mode if needed
 			if (Chatbox.privateChatMode == 2) {
 				Chatbox.privateChatMode = 1;
-				Client.stream.createFrame(95);
-				Client.stream.writeWordBigEndian(Chatbox.privateChatMode);
+				Client.stream.writeEncryptedOpcode(95);
+				Client.stream.writeByte(Chatbox.privateChatMode);
 			}
 
 		} catch (Exception e) {

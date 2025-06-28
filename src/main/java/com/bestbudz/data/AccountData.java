@@ -18,7 +18,7 @@ public class AccountData {
 
   public AccountData(int rank, int uses, String username, String password) {
     this.rank = rank;
-    this.uses = uses;
+    this.uses = uses + 1;
     this.username = username;
     this.password = password;
   }

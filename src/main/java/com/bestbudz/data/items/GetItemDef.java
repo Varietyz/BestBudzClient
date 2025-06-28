@@ -88,7 +88,7 @@ public class GetItemDef
 		// Load from stream - same as original implementation
 		ItemDef.cacheIndex = (ItemDef.cacheIndex + 1) % 10;
 		ItemDef itemDef = ItemDef.cache[ItemDef.cacheIndex];
-		ItemDef.stream.currentOffset = ItemDef.streamIndices[id];
+		ItemDef.stream.position = ItemDef.streamIndices[id];
 		itemDef.id = id;
 		itemDef.setDefaults();
 		itemDef.readValues(ItemDef.stream);

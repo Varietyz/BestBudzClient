@@ -1,10 +1,8 @@
 package com.bestbudz.cache;
 
 import com.bestbudz.network.Stream;
-import com.bestbudz.network.StreamLoader;
+import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.rendering.model.Model;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -34,9 +32,9 @@ public final class IdentityKit
 		aBoolean662 = false;
 	}
 
-	public static void unpackConfig(StreamLoader streamLoader)
+	public static void unpackConfig(ArchiveLoader archiveLoader)
 	{
-		Stream stream = new Stream(streamLoader.getDataForName("idk.dat"));
+		Stream stream = new Stream(archiveLoader.extractFile("idk.dat"));
 		length = stream.readUnsignedWord();
 		if (cache == null)
 			cache = new IdentityKit[length];
@@ -201,7 +199,7 @@ public final class IdentityKit
 			return false;
 		boolean flag = true;
 		for (int i : anIntArray658)
-			if (!Model.method463(i))
+			if (!Model.isModelCached(i))
 				flag = false;
 
 		return !flag;
@@ -234,7 +232,7 @@ public final class IdentityKit
 	{
 		boolean flag1 = true;
 		for (int i = 0; i < 5; i++)
-			if (anIntArray661[i] != -1 && !Model.method463(anIntArray661[i]))
+			if (anIntArray661[i] != -1 && !Model.isModelCached(anIntArray661[i]))
 				flag1 = false;
 
 		return flag1;

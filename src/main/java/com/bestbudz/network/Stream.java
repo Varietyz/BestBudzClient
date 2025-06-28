@@ -9,12 +9,12 @@ import java.math.BigInteger;
 public final class Stream extends NodeSub
 {
 
-	private static final int[] anIntArray1409 = { 0, 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535, 0x1ffff, 0x3ffff, 0x7ffff, 0xfffff, 0x1fffff, 0x3fffff, 0x7fffff, 0xffffff, 0x1ffffff, 0x3ffffff, 0x7ffffff, 0xfffffff, 0x1fffffff, 0x3fffffff, 0x7fffffff, -1 };
-	private static final NodeList nodeList = new NodeList();
-	private static int anInt1412;
+	private static final int[] BIT_MASKS = { 0, 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535, 0x1ffff, 0x3ffff, 0x7ffff, 0xfffff, 0x1fffff, 0x3fffff, 0x7fffff, 0xffffff, 0x1ffffff, 0x3ffffff, 0x7ffffff, 0xfffffff, 0x1fffffff, 0x3fffffff, 0x7fffffff, -1 };
+	private static final NodeList streamPool = new NodeList();
+	private static int poolSize;
 	public byte[] buffer;
-	public int currentOffset;
-	public int bitPosition;
+	public int position;
+	public int bitOffset;
 	public ISAACRandomGen encryption;
 
 	private Stream() {
@@ -22,99 +22,87 @@ public final class Stream extends NodeSub
 
 	public Stream(byte[] abyte0) {
 		buffer = abyte0;
-		currentOffset = 0;
+		position = 0;
 	}
 
-	public static Stream create() {
-		synchronized (nodeList) {
+	public static Stream getPooledStream() {
+		synchronized (streamPool) {
 			Stream stream = null;
-			if (anInt1412 > 0) {
-				anInt1412--;
-				stream = (Stream) nodeList.popHead();
+			if (poolSize > 0) {
+				poolSize--;
+				stream = (Stream) streamPool.popHead();
 			}
 			if (stream != null) {
-				stream.currentOffset = 0;
+				stream.position = 0;
 				return stream;
 			}
 		}
 		Stream stream_1 = new Stream();
-		stream_1.currentOffset = 0;
+		stream_1.position = 0;
 		stream_1.buffer = new byte[5000];
 		return stream_1;
 	}
 
-	public int readShort2() {
-		currentOffset += 2;
-		int i = ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] & 0xff);
+	public int readSignedWordBE() {
+		position += 2;
+		int i = ((buffer[position - 2] & 0xff) << 8) + (buffer[position - 1] & 0xff);
 		if (i > 60000)
 			i = -65535 + i;
 		return i;
 
 	}
 
-	public int v(int i) {
-		currentOffset += 3;
-		return (0xff & buffer[currentOffset - 3] << 16) + (0xff & buffer[currentOffset - 2] << 8) + (0xff & buffer[currentOffset - 1]);
+	public int read3BytesBE(int i) {
+		position += 3;
+		return (0xff & buffer[position - 3] << 16) + (0xff & buffer[position - 2] << 8) + (0xff & buffer[position - 1]);
 	}
 
-	public int readUSmart2() {
+	public int readLargeSmart() {
 		int baseVal = 0;
 		int lastVal;
-		while ((lastVal = method422()) == 32767) {
+		while ((lastVal = readSmartUnsigned()) == 32767) {
 			baseVal += 32767;
 		}
 		return baseVal + lastVal;
 	}
 
-	public void createFrame(int i) {
+	public void writeEncryptedOpcode(int i) {
 		 //System.out.println("Frame: " + i);
-		buffer[currentOffset++] = (byte) (i + encryption.getNextKey());
+		buffer[position++] = (byte) (i + encryption.getNextKey());
 	}
 
-	public void writeWordBigEndian(int i) {
-		buffer[currentOffset++] = (byte) i;
+	public void writeByte(int i) {
+		buffer[position++] = (byte) i;
 	}
 
 	public void writeWord(int i) {
-		buffer[currentOffset++] = (byte) (i >> 8);
-		buffer[currentOffset++] = (byte) i;
-	}
-
-	public void method400(int i) {
-		buffer[currentOffset++] = (byte) i;
-		buffer[currentOffset++] = (byte) (i >> 8);
+		buffer[position++] = (byte) (i >> 8);
+		buffer[position++] = (byte) i;
 	}
 
 	public void writeDWordBigEndian(int i) {
-		buffer[currentOffset++] = (byte) (i >> 16);
-		buffer[currentOffset++] = (byte) (i >> 8);
-		buffer[currentOffset++] = (byte) i;
+		buffer[position++] = (byte) (i >> 16);
+		buffer[position++] = (byte) (i >> 8);
+		buffer[position++] = (byte) i;
 	}
 
 	public void writeDWord(int i) {
-		buffer[currentOffset++] = (byte) (i >> 24);
-		buffer[currentOffset++] = (byte) (i >> 16);
-		buffer[currentOffset++] = (byte) (i >> 8);
-		buffer[currentOffset++] = (byte) i;
-	}
-
-	public void method403(int j) {
-		buffer[currentOffset++] = (byte) j;
-		buffer[currentOffset++] = (byte) (j >> 8);
-		buffer[currentOffset++] = (byte) (j >> 16);
-		buffer[currentOffset++] = (byte) (j >> 24);
+		buffer[position++] = (byte) (i >> 24);
+		buffer[position++] = (byte) (i >> 16);
+		buffer[position++] = (byte) (i >> 8);
+		buffer[position++] = (byte) i;
 	}
 
 	public void writeQWord(long l) {
 		try {
-			buffer[currentOffset++] = (byte) (int) (l >> 56);
-			buffer[currentOffset++] = (byte) (int) (l >> 48);
-			buffer[currentOffset++] = (byte) (int) (l >> 40);
-			buffer[currentOffset++] = (byte) (int) (l >> 32);
-			buffer[currentOffset++] = (byte) (int) (l >> 24);
-			buffer[currentOffset++] = (byte) (int) (l >> 16);
-			buffer[currentOffset++] = (byte) (int) (l >> 8);
-			buffer[currentOffset++] = (byte) (int) l;
+			buffer[position++] = (byte) (int) (l >> 56);
+			buffer[position++] = (byte) (int) (l >> 48);
+			buffer[position++] = (byte) (int) (l >> 40);
+			buffer[position++] = (byte) (int) (l >> 32);
+			buffer[position++] = (byte) (int) (l >> 24);
+			buffer[position++] = (byte) (int) (l >> 16);
+			buffer[position++] = (byte) (int) (l >> 8);
+			buffer[position++] = (byte) (int) l;
 		} catch (RuntimeException runtimeexception) {
 			Signlink.reporterror("14395, " + 5 + ", " + l + ", " + runtimeexception);
 			throw new RuntimeException();
@@ -123,53 +111,53 @@ public final class Stream extends NodeSub
 
 	public void writeString(String s) {
 		s.getBytes();
-		System.arraycopy(s.getBytes(), 0, buffer, currentOffset, s.length());
-		currentOffset += s.length();
-		buffer[currentOffset++] = 10;
+		System.arraycopy(s.getBytes(), 0, buffer, position, s.length());
+		position += s.length();
+		buffer[position++] = 10;
 	}
 
-	public void writeBytes(byte[] abyte0, int i, int j) {
+	public void writePacketLength(byte[] abyte0, int i, int j) {
 		for (int k = j; k < j + i; k++)
-			buffer[currentOffset++] = abyte0[k];
+			buffer[position++] = abyte0[k];
 	}
 
-	public void writeBytes(int i) {
-		buffer[currentOffset - i - 1] = (byte) i;
+	public void writePacketLength(int i) {
+		buffer[position - i - 1] = (byte) i;
 	}
 
 	public int readUnsignedByte() {
-		if (currentOffset >= buffer.length) {
-			System.err.println("Warning: readUnsignedByte overflow at offset=" + currentOffset + ", buffer length=" + buffer.length);
+		if (position >= buffer.length) {
+			System.err.println("Warning: readUnsignedByte overflow at offset=" + position + ", buffer length=" + buffer.length);
 			return 0;
 		}
-		return buffer[currentOffset++] & 0xff;
+		return buffer[position++] & 0xff;
 	}
 
 	public byte readSignedByte() {
-		if (currentOffset >= buffer.length) {
-			System.err.println("Warning: readSignedByte overflow at offset=" + currentOffset + ", buffer length=" + buffer.length);
+		if (position >= buffer.length) {
+			System.err.println("Warning: readSignedByte overflow at offset=" + position + ", buffer length=" + buffer.length);
 			return 0;
 		}
-		return buffer[currentOffset++];
+		return buffer[position++];
 	}
 
 	public int readUnsignedWord() {
-		if (currentOffset + 1 >= buffer.length) {
-			System.err.println("Warning: readUnsignedWord overflow at offset=" + currentOffset + ", buffer length=" + buffer.length);
+		if (position + 1 >= buffer.length) {
+			System.err.println("Warning: readUnsignedWord overflow at offset=" + position + ", buffer length=" + buffer.length);
 			return 0; // safe default — acts like a null/zero opcode or ID
 		}
-		int value = ((buffer[currentOffset] & 0xff) << 8) + (buffer[currentOffset + 1] & 0xff);
-		currentOffset += 2;
+		int value = ((buffer[position] & 0xff) << 8) + (buffer[position + 1] & 0xff);
+		position += 2;
 		return value;
 	}
 
 	public int readSignedWord() {
-		if (currentOffset + 1 >= buffer.length) {
-			System.err.println("Warning: readSignedWord overflow at offset=" + currentOffset + ", buffer length=" + buffer.length);
+		if (position + 1 >= buffer.length) {
+			System.err.println("Warning: readSignedWord overflow at offset=" + position + ", buffer length=" + buffer.length);
 			return -1; // common sentinel value for invalid index or value
 		}
-		int i = ((buffer[currentOffset] & 0xff) << 8) + (buffer[currentOffset + 1] & 0xff);
-		currentOffset += 2;
+		int i = ((buffer[position] & 0xff) << 8) + (buffer[position + 1] & 0xff);
+		position += 2;
 		if (i > 32767)
 			i -= 0x10000;
 		return i;
@@ -177,28 +165,28 @@ public final class Stream extends NodeSub
 
 	public int read3Bytes() {
 		// Check if we have enough bytes to read
-		if (currentOffset + 2 >= buffer.length) {
-			System.err.println("Warning: read3Bytes overflow at offset=" + currentOffset + ", buffer length=" + buffer.length);
+		if (position + 2 >= buffer.length) {
+			System.err.println("Warning: read3Bytes overflow at offset=" + position + ", buffer length=" + buffer.length);
 			return 0; // Safe default for missing data
 		}
 
-		currentOffset += 3;
-		return ((buffer[currentOffset - 3] & 0xff) << 16) +
-			((buffer[currentOffset - 2] & 0xff) << 8) +
-			(buffer[currentOffset - 1] & 0xff);
+		position += 3;
+		return ((buffer[position - 3] & 0xff) << 16) +
+			((buffer[position - 2] & 0xff) << 8) +
+			(buffer[position - 1] & 0xff);
 	}
 
 	public int readDWord() {
-		if (currentOffset + 3 >= buffer.length) {
-			System.err.println("Warning: readDWord overflow at offset=" + currentOffset + ", buffer length=" + buffer.length);
+		if (position + 3 >= buffer.length) {
+			System.err.println("Warning: readDWord overflow at offset=" + position + ", buffer length=" + buffer.length);
 			return 0;
 		}
 
-		currentOffset += 4;
-		return ((buffer[currentOffset - 4] & 0xff) << 24) +
-			((buffer[currentOffset - 3] & 0xff) << 16) +
-			((buffer[currentOffset - 2] & 0xff) << 8) +
-			(buffer[currentOffset - 1] & 0xff);
+		position += 4;
+		return ((buffer[position - 4] & 0xff) << 24) +
+			((buffer[position - 3] & 0xff) << 16) +
+			((buffer[position - 2] & 0xff) << 8) +
+			(buffer[position - 1] & 0xff);
 	}
 
 	public long readQWord() {
@@ -208,169 +196,169 @@ public final class Stream extends NodeSub
 	}
 
 	public String readString() {
-		int i = currentOffset;
-		while (buffer[currentOffset++] != 10)
+		int i = position;
+		while (buffer[position++] != 10)
 			;
-		return new String(buffer, i, currentOffset - i - 1);
+		return new String(buffer, i, position - i - 1);
 	}
 
 	public byte[] readBytes() {
-		int i = currentOffset;
-		while (buffer[currentOffset++] != 10);
-		byte[] abyte0 = new byte[currentOffset - i - 1];
-		System.arraycopy(buffer, i, abyte0, 0, currentOffset - 1 - i);
+		int i = position;
+		while (buffer[position++] != 10);
+		byte[] abyte0 = new byte[position - i - 1];
+		System.arraycopy(buffer, i, abyte0, 0, position - 1 - i);
 		return abyte0;
 	}
 
 	public void readBytes(int i, int j, byte[] abyte0) {
 		for (int l = j; l < j + i; l++)
-			abyte0[l] = buffer[currentOffset++];
+			abyte0[l] = buffer[position++];
 	}
 
 	public void initBitAccess() {
-		bitPosition = currentOffset * 8;
+		bitOffset = position * 8;
 	}
 
 	public int readBits(int i) {
-		int k = bitPosition >> 3;
-		int l = 8 - (bitPosition & 7);
+		int k = bitOffset >> 3;
+		int l = 8 - (bitOffset & 7);
 		int i1 = 0;
-		bitPosition += i;
+		bitOffset += i;
 		for (; i > l; l = 8) {
-			i1 += (buffer[k++] & anIntArray1409[l]) << i - l;
+			i1 += (buffer[k++] & BIT_MASKS[l]) << i - l;
 			i -= l;
 		}
 		if (i == l)
-			i1 += buffer[k] & anIntArray1409[l];
+			i1 += buffer[k] & BIT_MASKS[l];
 		else
-			i1 += buffer[k] >> l - i & anIntArray1409[i];
+			i1 += buffer[k] >> l - i & BIT_MASKS[i];
 		return i1;
 	}
 
 	public void finishBitAccess() {
-		currentOffset = (bitPosition + 7) / 8;
+		position = (bitOffset + 7) / 8;
 	}
 
-	public int method421() {
-		int i = buffer[currentOffset] & 0xff;
+	public int readSmartSigned() {
+		int i = buffer[position] & 0xff;
 		if (i < 128)
 			return readUnsignedByte() - 64;
 		else
 			return readUnsignedWord() - 49152;
 	}
 
-	public int method422() {
-		int i = buffer[currentOffset] & 0xff;
+	public int readSmartUnsigned() {
+		int i = buffer[position] & 0xff;
 		if (i < 128)
 			return readUnsignedByte();
 		else
 			return readUnsignedWord() - 32768;
 	}
 
-	public void doKeys() {
-		int i = currentOffset;
-		currentOffset = 0;
+	public void applyRSAEncryption() {
+		int i = position;
+		position = 0;
 		byte[] abyte0 = new byte[i];
 		readBytes(i, 0, abyte0);
 		byte[] abyte1 = new BigInteger(abyte0).toByteArray();
-		currentOffset = 0;
-		writeWordBigEndian(abyte1.length);
-		writeBytes(abyte1, abyte1.length, 0);
+		position = 0;
+		writeByte(abyte1.length);
+		writePacketLength(abyte1, abyte1.length, 0);
 	}
 
-	public void method424(int i) {
-		buffer[currentOffset++] = (byte) (-i);
+	public void writeByteNegated(int i) {
+		buffer[position++] = (byte) (-i);
 	}
 
-	public void method425(int j) {
-		buffer[currentOffset++] = (byte) (128 - j);
+	public void writeByte128Minus(int j) {
+		buffer[position++] = (byte) (128 - j);
 	}
 
-	public int method426() {
-		return buffer[currentOffset++] - 128 & 0xff;
+	public int readByteSubtract128() {
+		return buffer[position++] - 128 & 0xff;
 	}
 
-	public int method427() {
-		return -buffer[currentOffset++] & 0xff;
+	public int readByteNegated() {
+		return -buffer[position++] & 0xff;
 	}
 
-	public int method428() {
-		return 128 - buffer[currentOffset++] & 0xff;
+	public int readByte128Minus() {
+		return 128 - buffer[position++] & 0xff;
 	}
 
-	public byte method429() {
-		return (byte) (-buffer[currentOffset++]);
+	public byte readSignedByteNegated() {
+		return (byte) (-buffer[position++]);
 	}
 
-	public byte method430() {
-		return (byte) (128 - buffer[currentOffset++]);
+	public byte readSignedByte128Minus() {
+		return (byte) (128 - buffer[position++]);
 	}
 
-	public void method431(int i) {
-		buffer[currentOffset++] = (byte) i;
-		buffer[currentOffset++] = (byte) (i >> 8);
+	public void writeWordLittleEndian(int i) {
+		buffer[position++] = (byte) i;
+		buffer[position++] = (byte) (i >> 8);
 	}
 
-	public void method432(int j) {
-		buffer[currentOffset++] = (byte) (j >> 8);
-		buffer[currentOffset++] = (byte) (j + 128);
+	public void writeWordMixed(int j) {
+		buffer[position++] = (byte) (j >> 8);
+		buffer[position++] = (byte) (j + 128);
 	}
 
-	public void method433(int j) {
-		buffer[currentOffset++] = (byte) (j + 128);
-		buffer[currentOffset++] = (byte) (j >> 8);
+	public void writeWordMixedLE(int j) {
+		buffer[position++] = (byte) (j + 128);
+		buffer[position++] = (byte) (j >> 8);
 	}
 
-	public int method434() {
-		currentOffset += 2;
-		return ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] & 0xff);
+	public int readWordLittleEndian() {
+		position += 2;
+		return ((buffer[position - 1] & 0xff) << 8) + (buffer[position - 2] & 0xff);
 	}
 
-	public int method435() {
-		currentOffset += 2;
-		return ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] - 128 & 0xff);
+	public int readWordMixed() {
+		position += 2;
+		return ((buffer[position - 2] & 0xff) << 8) + (buffer[position - 1] - 128 & 0xff);
 	}
 
-	public int method436() {
-		currentOffset += 2;
-		return ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] - 128 & 0xff);
+	public int readWordMixedLE() {
+		position += 2;
+		return ((buffer[position - 1] & 0xff) << 8) + (buffer[position - 2] - 128 & 0xff);
 	}
 
-	public int method437() {
-		currentOffset += 2;
-		int j = ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] & 0xff);
+	public int readSignedWordLE() {
+		position += 2;
+		int j = ((buffer[position - 1] & 0xff) << 8) + (buffer[position - 2] & 0xff);
 		if (j > 32767)
 			j -= 0x10000;
 		return j;
 	}
 
-	public int method438() {
-		currentOffset += 2;
-		int j = ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] - 128 & 0xff);
+	public int readSignedWordMixed() {
+		position += 2;
+		int j = ((buffer[position - 1] & 0xff) << 8) + (buffer[position - 2] - 128 & 0xff);
 		if (j > 32767)
 			j -= 0x10000;
 		return j;
 	}
 
-	public int method439() {
-		currentOffset += 4;
-		return ((buffer[currentOffset - 2] & 0xff) << 24) + ((buffer[currentOffset - 1] & 0xff) << 16) + ((buffer[currentOffset - 4] & 0xff) << 8) + (buffer[currentOffset - 3] & 0xff);
+	public int readDWordMixed() {
+		position += 4;
+		return ((buffer[position - 2] & 0xff) << 24) + ((buffer[position - 1] & 0xff) << 16) + ((buffer[position - 4] & 0xff) << 8) + (buffer[position - 3] & 0xff);
 	}
 
-	public int method440() {
-		currentOffset += 4;
-		return ((buffer[currentOffset - 3] & 0xff) << 24) + ((buffer[currentOffset - 4] & 0xff) << 16) + ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] & 0xff);
+	public int readDWordMixed2() {
+		position += 4;
+		return ((buffer[position - 3] & 0xff) << 24) + ((buffer[position - 4] & 0xff) << 16) + ((buffer[position - 1] & 0xff) << 8) + (buffer[position - 2] & 0xff);
 	}
 
-	public void method441(int i, byte[] abyte0, int j) {
+	public void writeBytesReversed128(int i, byte[] abyte0, int j) {
 		for (int k = (i + j) - 1; k >= i; k--)
-			buffer[currentOffset++] = (byte) (abyte0[k] + 128);
+			buffer[position++] = (byte) (abyte0[k] + 128);
 
 	}
 
-	public void method442(int i, int j, byte[] abyte0) {
+	public void readBytesReversed(int i, int j, byte[] abyte0) {
 		for (int k = (j + i) - 1; k >= j; k--)
-			abyte0[k] = buffer[currentOffset++];
+			abyte0[k] = buffer[position++];
 
 	}
 }

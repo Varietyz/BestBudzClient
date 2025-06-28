@@ -77,10 +77,10 @@ public class EquipmentClickBatcher {
 	private void executeUnequip(int equipmentSlot, int itemId) {
 		try {
 			if (Client.stream != null) {
-				Client.stream.createFrame(145);
-				Client.stream.method432(EquipmentConstants.EQUIPMENT_INTERFACE_ID); // Interface 1688
-				Client.stream.method432(equipmentSlot);  // Equipment slot
-				Client.stream.method432(itemId);         // Item ID
+				Client.stream.writeEncryptedOpcode(145);
+				Client.stream.writeWordMixed(EquipmentConstants.EQUIPMENT_INTERFACE_ID); // Interface 1688
+				Client.stream.writeWordMixed(equipmentSlot);  // Equipment slot
+				Client.stream.writeWordMixed(itemId);         // Item ID
 			}
 		} catch (Exception e) {
 			System.err.println("Error executing unequip: " + e.getMessage());

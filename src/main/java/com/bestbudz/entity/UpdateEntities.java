@@ -4,11 +4,11 @@ import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.config.ColorConfig;
 import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
+import static com.bestbudz.entity.ParseAndUpdateEntities.npcScreenPos;
 import static com.bestbudz.graphics.Hitmark.enhancedHitmarkDraw;
 import com.bestbudz.graphics.hpbar.HPbar;
-import static com.bestbudz.graphics.hpbar.HPbarConfig.animatedHPBars;
-import static com.bestbudz.graphics.hpbar.HPbarConfig.showHPNumbers;
-import com.bestbudz.graphics.sprite.Sprite;
+import com.bestbudz.network.Stream;
 import static com.bestbudz.ui.interfaces.Chatbox.publicChatMode;
 
 public class UpdateEntities extends Client
@@ -17,7 +17,7 @@ public class UpdateEntities extends Client
 	{
 		try
 		{
-			int anInt974 = 0;
+			int chatMessageCount = 0;
 			for (int j = -1; j < stonerCount + npcCount; j++)
 			{
 				Object obj;
@@ -33,7 +33,7 @@ public class UpdateEntities extends Client
 				{
 					EntityDef entityDef = ((Npc) obj).desc;
 					if (entityDef.childrenIDs != null)
-						entityDef = entityDef.method161();
+						entityDef = entityDef.getTransformedEntity();
 					if (entityDef == null)
 						continue;
 				}
@@ -58,7 +58,7 @@ public class UpdateEntities extends Client
 							}
 						}
 					}
-					if (j >= 0 && anInt855 == 10 && anInt933 == stonerIndices[j])
+					if (j >= 0 && crosshairType == 10 && targetPlayerIndex == stonerIndices[j])
 					{
 						npcScreenPos(((Entity) (obj)), ((Entity) (obj)).height + 15);
 						if (spriteDrawX > -1)
@@ -68,13 +68,13 @@ public class UpdateEntities extends Client
 				else
 				{
 					EntityDef entityDef_1 = ((Npc) obj).desc;
-					if (entityDef_1.anInt75 >= 0 && entityDef_1.anInt75 < headIcons.length)
+					if (entityDef_1.mapIconId >= 0 && entityDef_1.mapIconId < headIcons.length)
 					{
 						npcScreenPos(((Entity) (obj)), ((Entity) (obj)).height + 15);
 						if (spriteDrawX > -1)
-							headIcons[entityDef_1.anInt75].drawSprite(spriteDrawX - 12, spriteDrawY - 30);
+							headIcons[entityDef_1.mapIconId].drawSprite(spriteDrawX - 12, spriteDrawY - 30);
 					}
-					if (anInt855 == 1 && anInt1222 == npcIndices[j - stonerCount] && loopCycle % 20 < 10)
+					if (crosshairType == 1 && targetNpcIndex == npcIndices[j - stonerCount] && loopCycle % 20 < 10)
 					{
 						npcScreenPos(((Entity) (obj)), ((Entity) (obj)).height + 15);
 						if (spriteDrawX > -1)
@@ -85,75 +85,53 @@ public class UpdateEntities extends Client
 					|| publicChatMode == 3 || publicChatMode == 1 && isStonerOrSelf(((Stoner) obj).name)))
 				{
 					npcScreenPos(((Entity) (obj)), ((Entity) (obj)).height);
-					if (spriteDrawX > -1 && anInt974 < anInt975)
+					if (spriteDrawX > -1 && chatMessageCount < maxChatMessages)
 					{
-						anIntArray979[anInt974] = boldText.method384(((Entity) (obj)).textSpoken) / 2;
-						anIntArray978[anInt974] = boldText.getFontHeight();
-						anIntArray976[anInt974] = spriteDrawX;
-						anIntArray977[anInt974] = spriteDrawY;
-						anIntArray980[anInt974] = ((Entity) (obj)).anInt1513;
-						anIntArray981[anInt974] = ((Entity) (obj)).anInt1531;
-						anIntArray982[anInt974] = ((Entity) (obj)).textCycle;
-						aStringArray983[anInt974++] = ((Entity) (obj)).textSpoken;
-						if (anInt1249 == 0 && ((Entity) (obj)).anInt1531 >= 1 && ((Entity) (obj)).anInt1531 <= 3)
+						chatMessageWidth[chatMessageCount] = boldText.method384(((Entity) (obj)).textSpoken) / 2;
+						chatMessageHeight[chatMessageCount] = boldText.getFontHeight();
+						chatMessageX[chatMessageCount] = spriteDrawX;
+						chatMessageY[chatMessageCount] = spriteDrawY;
+						chatMessageTypes[chatMessageCount] = ((Entity) (obj)).chatType;
+						chatMessageEffects[chatMessageCount] = ((Entity) (obj)).chatEffect;
+						chatMessageCycles[chatMessageCount] = ((Entity) (obj)).textCycle;
+						chatMessageTexts[chatMessageCount++] = ((Entity) (obj)).textSpoken;
+						if (chatDisplayMode == 0 && ((Entity) (obj)).chatEffect >= 1 && ((Entity) (obj)).chatEffect <= 3)
 						{
-							anIntArray978[anInt974] += 10;
-							anIntArray977[anInt974] += 5;
+							chatMessageHeight[chatMessageCount] += 10;
+							chatMessageY[chatMessageCount] += 5;
 						}
-						if (anInt1249 == 0 && ((Entity) (obj)).anInt1531 == 4)
-							anIntArray979[anInt974] = 60;
-						if (anInt1249 == 0 && ((Entity) (obj)).anInt1531 == 5)
-							anIntArray978[anInt974] += 5;
+						if (chatDisplayMode == 0 && ((Entity) (obj)).chatEffect == 4)
+							chatMessageWidth[chatMessageCount] = 60;
+						if (chatDisplayMode == 0 && ((Entity) (obj)).chatEffect == 5)
+							chatMessageHeight[chatMessageCount] += 5;
 					}
 				}
 				if (((Entity) (obj)).loopCycleStatus > loopCycle) {
 					try {
 						npcScreenPos(((Entity) (obj)), ((Entity) (obj)).height + 15);
-						if (spriteDrawX > -1) {
 
+						// SIMPLE: Is the entity actually visible on screen?
+						int screenWidth = Rasterizer.viewportCenterX * 2;
+						int screenHeight = Rasterizer.viewportCenterY * 2;
+
+						boolean entityOnScreen = (spriteDrawX >= 0 && spriteDrawX <= screenWidth-125 &&
+							spriteDrawY >= 0 && spriteDrawY <= screenHeight);
+
+						if (entityOnScreen) {
 							Entity entity = (Entity) obj;
+							long currentHealth = entity.currentHealth;
+							long maxHealth = entity.maxHealth;
 
-							// === DEBUG TRACING ===
-							System.out.println("=== HP BAR DEBUG ===");
-							System.out.println("Entity class: " + obj.getClass().getSimpleName());
-							System.out.println("Is Stoner: " + (obj instanceof Stoner));
-							System.out.println("currentHealth: " + entity.currentHealth);
-							System.out.println("maxHealth: " + entity.maxHealth);
-
-							// Check if it's a Stoner specifically
-							if (obj instanceof Stoner) {
-								Stoner stoner = (Stoner) obj;
-								System.out.println("Stoner currentHealth: " + stoner.currentHealth);
-								System.out.println("Stoner maxHealth: " + stoner.maxHealth);
-
-								// Check if Stoner has any HP-related fields we're missing
-								// You might need to add these checks based on your Stoner class:
-								// System.out.println("Stoner skillLevel[3] (HP): " + stoner.skillLevel[3]);
-								// System.out.println("Stoner skillMaxLevel[3] (HP): " + stoner.skillMaxLevel[3]);
-							}
-
-							int currentHealth = entity.currentHealth;
-							int maxHealth = entity.maxHealth;
-
-							// Only draw if we have valid HP values
 							if (maxHealth > 0) {
-								// Position HP bar above entity
-								int barX = spriteDrawX - 15; // Center the 30px wide bar
-								int barY = spriteDrawY - 3;  // Just above entity
-
-								// Draw the HP bar
+								int barX = spriteDrawX;
+								int barY = spriteDrawY - 3;
 								HPbar.drawHPBar(barX, barY, currentHealth, maxHealth);
-
-								System.out.println("Drew HP bar: " + currentHealth + "/" + maxHealth);
-							} else {
-								System.out.println("Skipped HP bar - invalid maxHealth: " + maxHealth);
 							}
-
-							System.out.println("==================");
 						}
+						// If not on screen = no HP bar. Period.
+
 					} catch (Exception e) {
 						System.err.println("Error drawing HP bar: " + e.getMessage());
-						e.printStackTrace();
 					}
 				}
 				if (!SettingsConfig.enableNewHitmarks)
@@ -268,55 +246,55 @@ public class UpdateEntities extends Client
 					}
 				}
 			}
-			for (int k = 0; k < anInt974; k++)
+			for (int k = 0; k < chatMessageCount; k++)
 			{
-				int k1 = anIntArray976[k];
-				int l1 = anIntArray977[k];
-				int j2 = anIntArray979[k];
-				int k2 = anIntArray978[k];
+				int k1 = chatMessageX[k];
+				int l1 = chatMessageY[k];
+				int j2 = chatMessageWidth[k];
+				int k2 = chatMessageHeight[k];
 				boolean flag = true;
 				while (flag)
 				{
 					flag = false;
 					for (int l2 = 0; l2 < k; l2++)
-						if (l1 + 2 > anIntArray977[l2] - anIntArray978[l2] && l1 - k2 < anIntArray977[l2] + 2
-							&& k1 - j2 < anIntArray976[l2] + anIntArray979[l2]
-							&& k1 + j2 > anIntArray976[l2] - anIntArray979[l2]
-							&& anIntArray977[l2] - anIntArray978[l2] < l1)
+						if (l1 + 2 > chatMessageY[l2] - chatMessageHeight[l2] && l1 - k2 < chatMessageY[l2] + 2
+							&& k1 - j2 < chatMessageX[l2] + chatMessageWidth[l2]
+							&& k1 + j2 > chatMessageX[l2] - chatMessageWidth[l2]
+							&& chatMessageY[l2] - chatMessageHeight[l2] < l1)
 						{
-							l1 = anIntArray977[l2] - anIntArray978[l2];
+							l1 = chatMessageY[l2] - chatMessageHeight[l2];
 							flag = true;
 						}
 
 				}
-				spriteDrawX = anIntArray976[k];
-				spriteDrawY = anIntArray977[k] = l1;
-				String s = aStringArray983[k];
-				if (anInt1249 == 0)
+				spriteDrawX = chatMessageX[k];
+				spriteDrawY = chatMessageY[k] = l1;
+				String s = chatMessageTexts[k];
+				if (chatDisplayMode == 0)
 				{
 					int i3 = ColorConfig.CHAT_COLOR; // default pastel yellow
 
-					if (anIntArray980[k] < 6)
-						i3 = anIntArray965[anIntArray980[k]]; // already modernized
+					if (chatMessageTypes[k] < 6)
+						i3 = configuredChatColors[chatMessageTypes[k]]; // already modernized
 
-					if (anIntArray980[k] == 6) {
+					if (chatMessageTypes[k] == 6) {
 						// Flashing between yellow and pink
-						i3 = anInt1265 % 20 >= 10 ? ColorConfig.CHAT_COLOR : ColorConfig.CHAT_SOFT_PINK; // pastel yellow ↔ soft pink
+						i3 = currentTick % 20 >= 10 ? ColorConfig.CHAT_COLOR : ColorConfig.CHAT_SOFT_PINK; // pastel yellow ↔ soft pink
 					}
 
-					if (anIntArray980[k] == 7) {
+					if (chatMessageTypes[k] == 7) {
 						// Flashing between mint and cyan
-						i3 = anInt1265 % 20 >= 10 ? 0xB2F2BB : ColorConfig.CHAT_MINT_AQUA; // mint green ↔ aqua mint
+						i3 = currentTick % 20 >= 10 ? 0xB2F2BB : ColorConfig.CHAT_MINT_AQUA; // mint green ↔ aqua mint
 					}
 
-					if (anIntArray980[k] == 8) {
+					if (chatMessageTypes[k] == 8) {
 						// Flashing between lime and peach
-						i3 = anInt1265 % 20 >= 10 ? 0xD0F4DE : 0xFFD180; // light green ↔ peach
+						i3 = currentTick % 20 >= 10 ? 0xD0F4DE : 0xFFD180; // light green ↔ peach
 					}
 
-					if (anIntArray980[k] == 9) {
+					if (chatMessageTypes[k] == 9) {
 						// Smooth rainbow scroll (remap red → magenta, yellow → violet, green → blue)
-						int j3 = 150 - anIntArray982[k];
+						int j3 = 150 - chatMessageCycles[k];
 						if (j3 < 50)
 							i3 = ColorConfig.CHAT_SOFT_PINK + 50 * j3; // soft pink → lighter
 						else if (j3 < 100)
@@ -325,9 +303,9 @@ public class UpdateEntities extends Client
 							i3 = ColorConfig.CHAT_BABY_BLUE + 20 * (j3 - 100); // baby blue → mint
 					}
 
-					if (anIntArray980[k] == 10) {
+					if (chatMessageTypes[k] == 10) {
 						// Oscillate between pink and yellow then fade to green
-						int k3 = 150 - anIntArray982[k];
+						int k3 = 150 - chatMessageCycles[k];
 						if (k3 < 50)
 							i3 = ColorConfig.CHAT_SOFT_PINK + 3 * k3; // pastel pink → orange-pink
 						else if (k3 < 100)
@@ -336,9 +314,9 @@ public class UpdateEntities extends Client
 							i3 = (0xB2FF59 + 0x20000 * (k3 - 100)) - 3 * (k3 - 100); // lime fade
 					}
 
-					if (anIntArray980[k] == 11) {
+					if (chatMessageTypes[k] == 11) {
 						// White fade to mint then fade to blue
-						int l3 = 150 - anIntArray982[k];
+						int l3 = 150 - chatMessageCycles[k];
 						if (l3 < 50)
 							i3 = ColorConfig.WHITE_COLOR - 0x10101 * l3; // white → light gray
 						else if (l3 < 100)
@@ -347,38 +325,38 @@ public class UpdateEntities extends Client
 							i3 = 0x90CAF9 - 0x10000 * (l3 - 100); // soft blue → light mint
 					}
 
-					if (anIntArray981[k] == 0)
+					if (chatMessageEffects[k] == 0)
 					{
 						boldText.drawText(0, s, spriteDrawY + 1, spriteDrawX);
 						boldText.drawText(i3, s, spriteDrawY, spriteDrawX);
 					}
-					if (anIntArray981[k] == 1)
+					if (chatMessageEffects[k] == 1)
 					{
-						boldText.method386(0, s, spriteDrawX, anInt1265, spriteDrawY + 1);
-						boldText.method386(i3, s, spriteDrawX, anInt1265, spriteDrawY);
+						boldText.method386(0, s, spriteDrawX, currentTick, spriteDrawY + 1);
+						boldText.method386(i3, s, spriteDrawX, currentTick, spriteDrawY);
 					}
-					if (anIntArray981[k] == 2)
+					if (chatMessageEffects[k] == 2)
 					{
-						boldText.method387(spriteDrawX, s, anInt1265, spriteDrawY + 1, 0);
-						boldText.method387(spriteDrawX, s, anInt1265, spriteDrawY, i3);
+						boldText.method387(spriteDrawX, s, currentTick, spriteDrawY + 1, 0);
+						boldText.method387(spriteDrawX, s, currentTick, spriteDrawY, i3);
 					}
-					if (anIntArray981[k] == 3)
+					if (chatMessageEffects[k] == 3)
 					{
-						boldText.method388(150 - anIntArray982[k], s, anInt1265, spriteDrawY + 1, spriteDrawX, 0);
-						boldText.method388(150 - anIntArray982[k], s, anInt1265, spriteDrawY, spriteDrawX, i3);
+						boldText.method388(150 - chatMessageCycles[k], s, currentTick, spriteDrawY + 1, spriteDrawX, 0);
+						boldText.method388(150 - chatMessageCycles[k], s, currentTick, spriteDrawY, spriteDrawX, i3);
 					}
-					if (anIntArray981[k] == 4)
+					if (chatMessageEffects[k] == 4)
 					{
 						int i4 = boldText.method384(s);
-						int k4 = ((150 - anIntArray982[k]) * (i4 + 100)) / 150;
+						int k4 = ((150 - chatMessageCycles[k]) * (i4 + 100)) / 150;
 						DrawingArea.setDrawingArea(334, spriteDrawX - 50, spriteDrawX + 50, 0);
 						boldText.method385(0, s, spriteDrawY + 1, (spriteDrawX + 50) - k4);
 						boldText.method385(i3, s, spriteDrawY, (spriteDrawX + 50) - k4);
 						DrawingArea.defaultDrawingAreaSize();
 					}
-					if (anIntArray981[k] == 5)
+					if (chatMessageEffects[k] == 5)
 					{
-						int j4 = 150 - anIntArray982[k];
+						int j4 = 150 - chatMessageCycles[k];
 						int l4 = 0;
 						if (j4 < 25)
 							l4 = j4 - 25;

@@ -608,9 +608,9 @@ public class DialogueCore {
 		try {
 			if (client != null && client.stream != null) {
 				// Send button click packet for continue
-				client.stream.createFrame(185); // ClickButton packet opcode
-				client.stream.writeWordBigEndian(currentInterfaceId);
-				client.stream.writeWordBigEndian(1); // Continue button action
+				client.stream.writeEncryptedOpcode(185); // ClickButton packet opcode
+				client.stream.writeByte(currentInterfaceId);
+				client.stream.writeByte(1); // Continue button action
 
 				System.out.println("🎭 PACKET: Sent continue packet for interface " + currentInterfaceId);
 			}
@@ -627,9 +627,9 @@ public class DialogueCore {
 				int buttonId = getOptionButtonId(option);
 
 				// Send button click packet
-				client.stream.createFrame(185); // ClickButton packet opcode
-				client.stream.writeWordBigEndian(buttonId);
-				client.stream.writeWordBigEndian(0); // No additional data
+				client.stream.writeEncryptedOpcode(185); // ClickButton packet opcode
+				client.stream.writeByte(buttonId);
+				client.stream.writeByte(0); // No additional data
 
 				System.out.println("🎭 PACKET: Sent option " + option + " packet (button ID: " + buttonId + ")");
 			}
@@ -693,7 +693,7 @@ public class DialogueCore {
 		try {
 			if (client != null && client.stream != null && input != null && !input.trim().isEmpty()) {
 				// Send string input packet
-				client.stream.createFrame(60); // SendString packet opcode
+				client.stream.writeEncryptedOpcode(60); // SendString packet opcode
 				client.stream.writeString(input.trim());
 
 				System.out.println("🎭 PACKET: Sent input packet: " + input);

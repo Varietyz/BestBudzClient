@@ -48,7 +48,7 @@ public final class TextInput {
 				k = l;
 				break;
 			}
-			stream.writeWordBigEndian(k);
+			stream.writeByte(k);
 		}
 	}
 
@@ -60,10 +60,10 @@ public final class TextInput {
 				s = s.substring(0, lastSpace);
 			}
 		}
-		stream.currentOffset = 0;
+		stream.position = 0;
 		method526(s, stream);
-		int j = stream.currentOffset;
-		stream.currentOffset = 0;
+		int j = stream.position;
+		stream.position = 0;
 		return method525(j, stream);
 	}
 

@@ -5,8 +5,8 @@ import static com.bestbudz.ui.handling.RightClickMenu.deterquarryMenuSize;
 import static com.bestbudz.ui.handling.RightClickMenu.processRightClick;
 import com.bestbudz.engine.config.SettingsConfig;
 import static com.bestbudz.ui.handling.ActionHandler.doAction;
-import static com.bestbudz.network.packets.SendFrames.processBankSwap;
-import static com.bestbudz.network.packets.SendFrames.swapInventoryItem;
+import static com.bestbudz.network.packets.PacketSender.handleBankSlotSwap;
+import static com.bestbudz.network.packets.PacketSender.handleInventorySwap;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.ui.RSInterface;
 import com.bestbudz.world.ObjectDef;
@@ -45,14 +45,14 @@ public class MouseActions extends Client
 
 		dragCycle++;
 		if (Math.abs(MouseState.x - pressX) > 5 || Math.abs(MouseState.y - pressY) > 5) {
-			aBoolean1242 = true;
+			messageWaiting = true;
 		}
 
 		if (!MouseState.leftDown) {
 			if (activeInterfaceType == 3) inputTaken = true;
 			activeInterfaceType = 0;
 
-			if (aBoolean1242 && dragCycle >= 15) {
+			if (messageWaiting && dragCycle >= 15) {
 				processDragItemMovement();
 			} else if ((MouseState.leftClicked || menuHasAddStoner(menuActionRow - 1)) && menuActionRow > 2) {
 				deterquarryMenuSize();
@@ -68,12 +68,12 @@ public class MouseActions extends Client
 		processRightClick();
 
 		if (focusedDragWidget == 5382) {
-			processBankSwap();
+			handleBankSlotSwap();
 			return;
 		}
 
 		if (lastActiveInvInterface == focusedDragWidget && mouseInvInterfaceIndex != dragFromSlot) {
-			swapInventoryItem();
+			handleInventorySwap();
 		}
 	}
 
@@ -86,17 +86,17 @@ public class MouseActions extends Client
 
 		int rightClickFlag = rightClick ? 1 : 0;
 
-		long delta = (System.currentTimeMillis() - aLong1220) / 50L;
+		long delta = (System.currentTimeMillis() - lastChatTime) / 50L;
 		delta = Math.min(delta, 4095L);
-		aLong1220 = System.currentTimeMillis();
+		lastChatTime = System.currentTimeMillis();
 
 		int payload = (int)((delta << 20) | (rightClickFlag << 19) | packed);
-		stream.createFrame(241);
+		stream.writeEncryptedOpcode(241);
 		stream.writeDWord(payload);
 
 		if (flagged) {
-			stream.createFrame(45);
-			stream.writeWordBigEndian(0);
+			stream.writeEncryptedOpcode(45);
+			stream.writeByte(0);
 			stream.writeWord(packed);
 		}
 	}
@@ -104,7 +104,7 @@ public class MouseActions extends Client
 	public static boolean componentIsClicked(int i, int j, int k)
 	{
 		int i1 = i >> 14 & 0x7fff;
-		int j1 = worldController.method304(plane, k, j, i);
+		int j1 = worldController.getObjectConfig(plane, k, j, i);
 		if (j1 == -1)
 			return false;
 		int k1 = j1 & 0x1f;
@@ -116,13 +116,13 @@ public class MouseActions extends Client
 			int j2;
 			if (l1 == 0 || l1 == 2)
 			{
-				i2 = class46.anInt744;
-				j2 = class46.anInt761;
+				i2 = class46.sizeX;
+				j2 = class46.sizeY;
 			}
 			else
 			{
-				i2 = class46.anInt761;
-				j2 = class46.anInt744;
+				i2 = class46.sizeY;
+				j2 = class46.sizeX;
 			}
 			int k2 = class46.anInt768;
 			if (l1 != 0)
@@ -217,7 +217,7 @@ public class MouseActions extends Client
 		RSInterface widget = RSInterface.interfaceCache[interfaceId];
 
 		if (widget.aBoolean259 || widget.aBoolean235) {
-			aBoolean1242 = false;
+			messageWaiting = false;
 			dragCycle = 0;
 			focusedDragWidget = interfaceId;
 			dragFromSlot = slot;
@@ -245,7 +245,7 @@ public class MouseActions extends Client
 	public static void processMainScreenClick(boolean leftClick, boolean rightClick)
 	{
 
-		if (anInt1021 != 0)
+		if (lastActionTime != 0)
 			return;
 		if (leftClick)
 		{
@@ -260,7 +260,7 @@ public class MouseActions extends Client
 			{
 				i -= 73;
 				j -= 75;
-				int k = minimapInt1 + minimapInt2 & 0x7ff;
+				int k = minimapRotation + minimapInt2 & 0x7ff;
 				int i1 = Rasterizer.sinTable[k];
 				int j1 = Rasterizer.cosTable[k];
 				int k1 = j * i1 + i * j1 >> 11;
@@ -285,40 +285,40 @@ public class MouseActions extends Client
 
 				if (flag1)
 				{
-					stream.writeWordBigEndian(i);
-					stream.writeWordBigEndian(j);
-					stream.writeWord(minimapInt1);
-					stream.writeWordBigEndian(57);
-					stream.writeWordBigEndian(minimapInt2);
-					stream.writeWordBigEndian(minimapInt3);
-					stream.writeWordBigEndian(89);
+					stream.writeByte(i);
+					stream.writeByte(j);
+					stream.writeWord(minimapRotation);
+					stream.writeByte(57);
+					stream.writeByte(minimapInt2);
+					stream.writeByte(minimapInt3);
+					stream.writeByte(89);
 					stream.writeWord(myStoner.x);
 					stream.writeWord(myStoner.y);
-					stream.writeWordBigEndian(anInt1264);
-					stream.writeWordBigEndian(63);
+					stream.writeByte(lastTickCount);
+					stream.writeByte(63);
 				}
 
-				anInt1117++;
-				if (anInt1117 > 1151)
+				interfaceDrawX++;
+				if (interfaceDrawX > 1151)
 				{
-					anInt1117 = 0;
-					stream.createFrame(246);
-					stream.writeWordBigEndian(0);
-					int l = stream.currentOffset;
+					interfaceDrawX = 0;
+					stream.writeEncryptedOpcode(246);
+					stream.writeByte(0);
+					int l = stream.position;
 					if ((int) (Math.random() * 2D) == 0)
-						stream.writeWordBigEndian(101);
-					stream.writeWordBigEndian(197);
+						stream.writeByte(101);
+					stream.writeByte(197);
 					stream.writeWord((int) (Math.random() * 65536D));
-					stream.writeWordBigEndian((int) (Math.random() * 256D));
-					stream.writeWordBigEndian(67);
+					stream.writeByte((int) (Math.random() * 256D));
+					stream.writeByte(67);
 					stream.writeWord(14214);
 					if ((int) (Math.random() * 2D) == 0)
 						stream.writeWord(29487);
 					stream.writeWord((int) (Math.random() * 65536D));
 					if ((int) (Math.random() * 2D) == 0)
-						stream.writeWordBigEndian(220);
-					stream.writeWordBigEndian(180);
-					stream.writeBytes(stream.currentOffset - l);
+						stream.writeByte(220);
+					stream.writeByte(180);
+					stream.writePacketLength(stream.position - l);
 				}
 			}
 		}

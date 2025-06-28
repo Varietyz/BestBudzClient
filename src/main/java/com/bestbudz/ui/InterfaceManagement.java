@@ -4,9 +4,8 @@ import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
 import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.data.Skills;
 import com.bestbudz.dock.frame.UIDockFrame;
-import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.engine.core.Client;
-import static com.bestbudz.ui.handling.RightClickMenu.drawContextMenu;
+import static com.bestbudz.engine.core.login.logout.Reset.resetAllImageProducers;
 import static com.bestbudz.ui.handling.RightClickMenu.drawTooltip;
 import static com.bestbudz.ui.handling.RightClickMenu.processRightClick;
 import static com.bestbudz.ui.handling.RightClickMenu.rightClickMenu;
@@ -16,16 +15,10 @@ import com.bestbudz.ui.handling.input.MouseState;
 import com.bestbudz.rendering.animation.Animation;
 import static com.bestbudz.ui.BuildInterface.buildInterfaceMenu;
 import static com.bestbudz.ui.BuildScreenMenu.build3dScreenMenu;
-import static com.bestbudz.ui.DialogHandling.handleBackDialogOrChatbox;
 import static com.bestbudz.ui.DrawInterface.drawInterface;
-import static com.bestbudz.ui.TabArea.commitTabState;
-import static com.bestbudz.ui.TabArea.drawTabArea;
-import static com.bestbudz.engine.core.login.WelcomeScreen.clearWelcomeState;
-import static com.bestbudz.engine.util.ClientDiagnostics.drawClientFPS;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
-import static com.bestbudz.ui.interfaces.StatusOrbs.drawGameOverlays;
 import static com.bestbudz.world.InLocation.inBarrows;
 import static com.bestbudz.world.InLocation.inCyclops;
 import static com.bestbudz.world.InLocation.inGWD;
@@ -35,58 +28,30 @@ import static com.bestbudz.world.InLocation.inPvP;
 import static com.bestbudz.world.InLocation.inSafe;
 import static com.bestbudz.world.InLocation.inWGGame;
 import static com.bestbudz.world.InLocation.inWGLobby;
-import static com.bestbudz.world.InLocation.inWilderness;
+//import static com.bestbudz.world.InLocation.inWilderness;
 import com.bestbudz.world.VarBit;
 import java.awt.Graphics2D;
 import java.util.Set;
 
 public class InterfaceManagement extends Client
 {
-	public static void draw3dScreen() {
-		drawGameOverlays();
-		drawContextualInterfaces();
-		drawOpenInterface();
-		drawContextMenu();
-		drawMiscOverlays();
-		if (EngineConfig.FPS_ON) drawClientFPS();
-	}
 
-	public static void drawGameScreen(Graphics2D g) {
-		if (fullscreenInterfaceID != -1 && (loadingStage == 2 || gameWorldScreen != null)) {
-			renderFullscreenInterface(g);
-			return;
-		}
-
-		if (drawCount != 0) resetImageProducers2();
-		if (welcomeScreenRaised) clearWelcomeState();
-		if (invOverlayInterfaceID != -1) updateInterfaceAnimations(anInt945, invOverlayInterfaceID);
-
-		drawTabArea();
-		handleBackDialogOrChatbox();
-		renderChatIfInvalidated();
-
-		if (loadingStage == 2) renderGameFrame(g);
-		if (anInt1054 != -1) tabAreaAltered = true;
-		if (tabAreaAltered) commitTabState();
-
-		anInt945 = 0;
-	}
 
 	public static void clearTopInterfaces() {
 		System.out.println("🎭 INTERFACE: clearTopInterfaces called");
 		UIDockFrame.handleCloseInterface();
 
 		// EXISTING: Your normal clear logic
-		stream.createFrame(130);
+		stream.writeEncryptedOpcode(130);
 		if (invOverlayInterfaceID != -1) {
 			invOverlayInterfaceID = -1;
-			aBoolean1149 = false;
+			isPlayerBusy = false;
 			tabAreaAltered = true;
 		}
 		if (backDialogID != -1) {
 			backDialogID = -1;
 			inputTaken = true;
-			aBoolean1149 = false;
+			isPlayerBusy = false;
 		}
 		openInterfaceID = -1;
 		fullscreenInterfaceID = -1;
@@ -96,26 +61,26 @@ public class InterfaceManagement extends Client
 	public static void drawInterfaceRecursive(int i, int j, int k, int l, RSInterface class9, int i1, boolean flag, int j1)
 	{
 		int anInt992;
-		if (aBoolean972)
+		if (menuVisible)
 			anInt992 = 32;
 		else
 			anInt992 = 0;
-		aBoolean972 = false;
+		menuVisible = false;
 		if (k >= i && k < i + 16 && l >= i1 && l < i1 + 16)
 		{
-			class9.scrollPosition -= anInt1213 * 4;
+			class9.scrollPosition -= inputClickCount * 4;
 			if (flag)
 			{
 			}
 		}
 		else if (k >= i && k < i + 16 && l >= (i1 + j) - 16 && l < i1 + j)
 		{
-			class9.scrollPosition += anInt1213 * 4;
+			class9.scrollPosition += inputClickCount * 4;
 			if (flag)
 			{
 			}
 		}
-		else if (k >= i - anInt992 && k < i + 16 + anInt992 && l >= i1 + 16 && l < (i1 + j) - 16 && anInt1213 > 0)
+		else if (k >= i - anInt992 && k < i + 16 + anInt992 && l >= i1 + 16 && l < (i1 + j) - 16 && inputClickCount > 0)
 		{
 			int l1 = ((j - 32) * j) / j1;
 			if (l1 < 8)
@@ -126,7 +91,7 @@ public class InterfaceManagement extends Client
 			if (flag)
 			{
 			}
-			aBoolean972 = true;
+			menuVisible = true;
 		}
 	}
 
@@ -178,12 +143,12 @@ public class InterfaceManagement extends Client
 			} catch (Exception ignored) {}
 
 			if (amount > 0) {
-				stream.createFrame(208);
+				stream.writeEncryptedOpcode(208);
 				stream.writeDWord((int) amount);
 			}
 		} else {
-			stream.createFrame(150);
-			stream.writeWordBigEndian(RSInterface.currentInputField.disabledMessage.length() + 3);
+			stream.writeEncryptedOpcode(150);
+			stream.writeByte(RSInterface.currentInputField.disabledMessage.length() + 3);
 			stream.writeWord(RSInterface.currentInputField.id);
 			stream.writeString(RSInterface.currentInputField.disabledMessage);
 		}
@@ -232,10 +197,10 @@ public class InterfaceManagement extends Client
 			build3dScreenMenu();
 		}
 
-		anInt1026 = anInt886;
-		anInt1129 = anInt1315;
-		anInt886 = 0;
-		anInt1315 = 0;
+		interfaceHoverTime = hoveredInterfaceId;
+		anInt1129 = specialHoverInterfaceId;
+		hoveredInterfaceId = 0;
+		specialHoverInterfaceId = 0;
 	}
 
 
@@ -253,16 +218,16 @@ public class InterfaceManagement extends Client
 			}
 
 
-		if (anInt886 != anInt1048) {
+		if (hoveredInterfaceId != inputLength) {
 			tabAreaAltered = true;
-			anInt1048 = anInt886;
+			inputLength = hoveredInterfaceId;
 		}
-		if (anInt1315 != anInt1044) {
+		if (specialHoverInterfaceId != anInt1044) {
 			tabAreaAltered = true;
-			anInt1044 = anInt1315;
+			anInt1044 = specialHoverInterfaceId;
 		}
-		anInt886 = 0;
-		anInt1315 = 0;
+		hoveredInterfaceId = 0;
+		specialHoverInterfaceId = 0;
 	}
 
 	public static String interfaceIntToString(long j)
@@ -275,9 +240,9 @@ public class InterfaceManagement extends Client
 
 	public static void renderFullscreenInterface(Graphics2D g) {
 		if (loadingStage == 2) {
-			updateInterfaceAnimations(anInt945, fullscreenInterfaceID);
-			if (openInterfaceID != -1) updateInterfaceAnimations(anInt945, openInterfaceID);
-			anInt945 = 0;
+			updateInterfaceAnimations(gameTickCounter, fullscreenInterfaceID);
+			if (openInterfaceID != -1) updateInterfaceAnimations(gameTickCounter, openInterfaceID);
+			gameTickCounter = 0;
 			resetAllImageProducers();
 
 			Rasterizer.scanlineOffsets = fullScreenTextureArray;
@@ -311,22 +276,22 @@ public class InterfaceManagement extends Client
 		drawInterface(0, 0, rsi, 8);
 	}
 
-	private static void drawContextualInterfaces() {
+	public static void drawContextualInterfaces() {
 		int absX = baseX + ((myStoner.x - 6) >> 7);
 		int absY = baseY + ((myStoner.y - 6) >> 7);
-		anInt1018 = getRegionInterface(absX, absY, plane);
+		mouseClickState = getRegionInterface(absX, absY, plane);
 
-		if (anInt1018 == -1) return;
+		if (mouseClickState == -1) return;
 
-		RSInterface rsi = RSInterface.interfaceCache[anInt1018];
-		updateInterfaceAnimations(anInt945, anInt1018);
+		RSInterface rsi = RSInterface.interfaceCache[mouseClickState];
+		updateInterfaceAnimations(gameTickCounter, mouseClickState);
 
-		switch (anInt1018) {
+		switch (mouseClickState) {
 			case 11146:
 				drawInterface(0, 0, rsi, -5);
 				break;
 			case 23300:
-				drawInterface(0, frameWidth - rsi.width - 253, rsi, 0);
+				//drawInterface(0, frameWidth - rsi.width - 253, rsi, 0);
 				break;
 			case 2804:
 			case 11479:
@@ -359,7 +324,7 @@ public class InterfaceManagement extends Client
 			case 15917:
 			case 15931:
 			case 15962:
-				drawInterface(0, (anInt1018 == 15892 ? -325 : -349), rsi, 25);
+				drawInterface(0, (mouseClickState == 15892 ? -325 : -349), rsi, 25);
 				break;
 			default:
 				drawInterface(0, (frameWidth / 2) + 80, rsi, (frameHeight / 2) - 550);
@@ -378,7 +343,7 @@ public class InterfaceManagement extends Client
 		//System.out.println("🎭 INTERFACE: Drawing interface ID: " + openInterfaceID);
 
 		// EXISTING: Your normal interface drawing code continues as fallback...
-		updateInterfaceAnimations(anInt945, openInterfaceID);
+		updateInterfaceAnimations(gameTickCounter, openInterfaceID);
 
 		if (openInterfaceID == 5292) {
 			drawInterface(0, (frameWidth / 2) - 356, RSInterface.interfaceCache[openInterfaceID], (frameHeight / 2) - 230);
@@ -406,7 +371,7 @@ public class InterfaceManagement extends Client
 	}
 
 	public static void drawMiscOverlays() {
-		if (anInt1055 == 1) multiOverlay.drawSprite(frameWidth - 165, 160);
+		if (tabHoverTime == 1) multiOverlay.drawSprite(frameWidth - 165, 160);
 	}
 
 
@@ -419,7 +384,7 @@ public class InterfaceManagement extends Client
 		if (inCyclops(x, y, plane)) return 51200;
 		if (inPcBoat(x, y)) return 21119;
 		if (inPcGame(x, y)) return 21100;
-		if (inWilderness(x, y) && SettingsConfig.economyWorld) return 23300;
+		//if (inWilderness(x, y) && SettingsConfig.economyWorld) return 23300;
 		if (inPvP(x, y) && !SettingsConfig.economyWorld) return 60250;
 		if (inSafe(x, y) && !SettingsConfig.economyWorld) return 60350;
 		if (SettingsConfig.snow) return 11877;
@@ -525,10 +490,10 @@ public class InterfaceManagement extends Client
 				{
 					int j2 = ai[l++];
 					VarBit varBit = VarBit.cache[j2];
-					int l3 = varBit.anInt648;
-					int i4 = varBit.anInt649;
-					int j4 = varBit.anInt650;
-					int k4 = anIntArray1232[j4 - i4];
+					int l3 = varBit.baseVar;
+					int i4 = varBit.startBit;
+					int j4 = varBit.endBit;
+					int k4 = bitMasks[j4 - i4];
 					k1 = variousSettings[l3] >> i4 & k4;
 				}
 				if (j1 == 15)
@@ -625,126 +590,7 @@ public class InterfaceManagement extends Client
 
 	public static void drawScrollbar(int height, int pos, int y, int x, int maxScroll, boolean transparent)
 	{
-
-		scrollBar1.drawSprite(x, y);
-		scrollBar2.drawSprite(x, (y + height) - 16);
-		DrawingArea.drawPixels(height - 32, y + 16, x, 0x000001, 16);
-		DrawingArea.drawPixels(height - 32, y + 16, x, 0x3d3426, 15);
-		DrawingArea.drawPixels(height - 32, y + 16, x, 0x342d21, 13);
-		DrawingArea.drawPixels(height - 32, y + 16, x, 0x2e281d, 11);
-		DrawingArea.drawPixels(height - 32, y + 16, x, 0x29241b, 10);
-		DrawingArea.drawPixels(height - 32, y + 16, x, 0x252019, 9);
-		DrawingArea.drawPixels(height - 32, y + 16, x, 0x000001, 1);
-		int k1 = ((height - 32) * height) / maxScroll;
-		if (k1 < 8)
-		{
-			k1 = 8;
-		}
-		int l1 = ((height - 32 - k1) * pos) / (maxScroll - height);
-		DrawingArea.drawPixels(k1, y + 16 + l1, x, barFillColor, 16);
-		DrawingArea.method341(y + 16 + l1, 0x000001, k1, x);
-		DrawingArea.method341(y + 16 + l1, 0x817051, k1, x + 1);
-		DrawingArea.method341(y + 16 + l1, 0x73654a, k1, x + 2);
-		DrawingArea.method341(y + 16 + l1, 0x6a5c43, k1, x + 3);
-		DrawingArea.method341(y + 16 + l1, 0x6a5c43, k1, x + 4);
-		DrawingArea.method341(y + 16 + l1, 0x655841, k1, x + 5);
-		DrawingArea.method341(y + 16 + l1, 0x655841, k1, x + 6);
-		DrawingArea.method341(y + 16 + l1, 0x61553e, k1, x + 7);
-		DrawingArea.method341(y + 16 + l1, 0x61553e, k1, x + 8);
-		DrawingArea.method341(y + 16 + l1, 0x5d513c, k1, x + 9);
-		DrawingArea.method341(y + 16 + l1, 0x5d513c, k1, x + 10);
-		DrawingArea.method341(y + 16 + l1, 0x594e3a, k1, x + 11);
-		DrawingArea.method341(y + 16 + l1, 0x594e3a, k1, x + 12);
-		DrawingArea.method341(y + 16 + l1, 0x514635, k1, x + 13);
-		DrawingArea.method341(y + 16 + l1, 0x4b4131, k1, x + 14);
-		DrawingArea.method339(y + 16 + l1, 0x000001, 15, x);
-		DrawingArea.method339(y + 17 + l1, 0x000001, 15, x);
-		DrawingArea.method339(y + 17 + l1, 0x655841, 14, x);
-		DrawingArea.method339(y + 17 + l1, 0x6a5c43, 13, x);
-		DrawingArea.method339(y + 17 + l1, 0x6d5f48, 11, x);
-		DrawingArea.method339(y + 17 + l1, 0x73654a, 10, x);
-		DrawingArea.method339(y + 17 + l1, 0x76684b, 7, x);
-		DrawingArea.method339(y + 17 + l1, 0x7b6a4d, 5, x);
-		DrawingArea.method339(y + 17 + l1, 0x7e6e50, 4, x);
-		DrawingArea.method339(y + 17 + l1, 0x817051, 3, x);
-		DrawingArea.method339(y + 17 + l1, 0x000001, 2, x);
-		DrawingArea.method339(y + 18 + l1, 0x000001, 16, x);
-		DrawingArea.method339(y + 18 + l1, 0x564b38, 15, x);
-		DrawingArea.method339(y + 18 + l1, 0x5d513c, 14, x);
-		DrawingArea.method339(y + 18 + l1, 0x625640, 11, x);
-		DrawingArea.method339(y + 18 + l1, 0x655841, 10, x);
-		DrawingArea.method339(y + 18 + l1, 0x6a5c43, 7, x);
-		DrawingArea.method339(y + 18 + l1, 0x6e6046, 5, x);
-		DrawingArea.method339(y + 18 + l1, 0x716247, 4, x);
-		DrawingArea.method339(y + 18 + l1, 0x7b6a4d, 3, x);
-		DrawingArea.method339(y + 18 + l1, 0x817051, 2, x);
-		DrawingArea.method339(y + 18 + l1, 0x000001, 1, x);
-		DrawingArea.method339(y + 19 + l1, 0x000001, 16, x);
-		DrawingArea.method339(y + 19 + l1, 0x514635, 15, x);
-		DrawingArea.method339(y + 19 + l1, 0x564b38, 14, x);
-		DrawingArea.method339(y + 19 + l1, 0x5d513c, 11, x);
-		DrawingArea.method339(y + 19 + l1, 0x61553e, 9, x);
-		DrawingArea.method339(y + 19 + l1, 0x655841, 7, x);
-		DrawingArea.method339(y + 19 + l1, 0x6a5c43, 5, x);
-		DrawingArea.method339(y + 19 + l1, 0x6e6046, 4, x);
-		DrawingArea.method339(y + 19 + l1, 0x73654a, 3, x);
-		DrawingArea.method339(y + 19 + l1, 0x817051, 2, x);
-		DrawingArea.method339(y + 19 + l1, 0x000001, 1, x);
-		DrawingArea.method339(y + 20 + l1, 0x000001, 16, x);
-		DrawingArea.method339(y + 20 + l1, 0x4b4131, 15, x);
-		DrawingArea.method339(y + 20 + l1, 0x544936, 14, x);
-		DrawingArea.method339(y + 20 + l1, 0x594e3a, 13, x);
-		DrawingArea.method339(y + 20 + l1, 0x5d513c, 10, x);
-		DrawingArea.method339(y + 20 + l1, 0x61553e, 8, x);
-		DrawingArea.method339(y + 20 + l1, 0x655841, 6, x);
-		DrawingArea.method339(y + 20 + l1, 0x6a5c43, 4, x);
-		DrawingArea.method339(y + 20 + l1, 0x73654a, 3, x);
-		DrawingArea.method339(y + 20 + l1, 0x817051, 2, x);
-		DrawingArea.method339(y + 20 + l1, 0x000001, 1, x);
-		DrawingArea.method341(y + 16 + l1, 0x000001, k1, x + 15);
-		DrawingArea.method339(y + 15 + l1 + k1, 0x000001, 16, x);
-		DrawingArea.method339(y + 14 + l1 + k1, 0x000001, 15, x);
-		DrawingArea.method339(y + 14 + l1 + k1, 0x3f372a, 14, x);
-		DrawingArea.method339(y + 14 + l1 + k1, 0x443c2d, 10, x);
-		DrawingArea.method339(y + 14 + l1 + k1, 0x483e2f, 9, x);
-		DrawingArea.method339(y + 14 + l1 + k1, 0x4a402f, 7, x);
-		DrawingArea.method339(y + 14 + l1 + k1, 0x4b4131, 4, x);
-		DrawingArea.method339(y + 14 + l1 + k1, 0x564b38, 3, x);
-		DrawingArea.method339(y + 14 + l1 + k1, 0x000001, 2, x);
-		DrawingArea.method339(y + 13 + l1 + k1, 0x000001, 16, x);
-		DrawingArea.method339(y + 13 + l1 + k1, 0x443c2d, 15, x);
-		DrawingArea.method339(y + 13 + l1 + k1, 0x4b4131, 11, x);
-		DrawingArea.method339(y + 13 + l1 + k1, 0x514635, 9, x);
-		DrawingArea.method339(y + 13 + l1 + k1, 0x544936, 7, x);
-		DrawingArea.method339(y + 13 + l1 + k1, 0x564b38, 6, x);
-		DrawingArea.method339(y + 13 + l1 + k1, 0x594e3a, 4, x);
-		DrawingArea.method339(y + 13 + l1 + k1, 0x625640, 3, x);
-		DrawingArea.method339(y + 13 + l1 + k1, 0x6a5c43, 2, x);
-		DrawingArea.method339(y + 13 + l1 + k1, 0x000001, 1, x);
-		DrawingArea.method339(y + 12 + l1 + k1, 0x000001, 16, x);
-		DrawingArea.method339(y + 12 + l1 + k1, 0x443c2d, 15, x);
-		DrawingArea.method339(y + 12 + l1 + k1, 0x4b4131, 14, x);
-		DrawingArea.method339(y + 12 + l1 + k1, 0x544936, 12, x);
-		DrawingArea.method339(y + 12 + l1 + k1, 0x564b38, 11, x);
-		DrawingArea.method339(y + 12 + l1 + k1, 0x594e3a, 10, x);
-		DrawingArea.method339(y + 12 + l1 + k1, 0x5d513c, 7, x);
-		DrawingArea.method339(y + 12 + l1 + k1, 0x61553e, 4, x);
-		DrawingArea.method339(y + 12 + l1 + k1, 0x6e6046, 3, x);
-		DrawingArea.method339(y + 12 + l1 + k1, 0x7b6a4d, 2, x);
-		DrawingArea.method339(y + 12 + l1 + k1, 0x000001, 1, x);
-		DrawingArea.method339(y + 11 + l1 + k1, 0x000001, 16, x);
-		DrawingArea.method339(y + 11 + l1 + k1, 0x4b4131, 15, x);
-		DrawingArea.method339(y + 11 + l1 + k1, 0x514635, 14, x);
-		DrawingArea.method339(y + 11 + l1 + k1, 0x564b38, 13, x);
-		DrawingArea.method339(y + 11 + l1 + k1, 0x594e3a, 11, x);
-		DrawingArea.method339(y + 11 + l1 + k1, 0x5d513c, 9, x);
-		DrawingArea.method339(y + 11 + l1 + k1, 0x61553e, 7, x);
-		DrawingArea.method339(y + 11 + l1 + k1, 0x655841, 5, x);
-		DrawingArea.method339(y + 11 + l1 + k1, 0x6a5c43, 4, x);
-		DrawingArea.method339(y + 11 + l1 + k1, 0x73654a, 3, x);
-		DrawingArea.method339(y + 11 + l1 + k1, 0x7b6a4d, 2, x);
-		DrawingArea.method339(y + 11 + l1 + k1, 0x000001, 1, x);
-
+		return;
 	}
 
 	public static boolean updateInterfaceAnimations(int i, int j)
@@ -781,14 +627,14 @@ public class InterfaceManagement extends Client
 
 			if (class9_1.type == 1)
 				flag1 |= updateInterfaceAnimations(i, class9_1.id);
-			if (class9_1.type == 6 && (class9_1.anInt257 != -1 || class9_1.anInt258 != -1))
+			if (class9_1.type == 6 && (class9_1.verticalOffset != -1 || class9_1.anInt258 != -1))
 			{
 				boolean flag2 = interfaceIsSelected(class9_1);
 				int l;
 				if (flag2)
 					l = class9_1.anInt258;
 				else
-					l = class9_1.anInt257;
+					l = class9_1.verticalOffset;
 				if (l != -1)
 				{
 					// Check if Animation.anims array exists and index is valid
@@ -803,14 +649,14 @@ public class InterfaceManagement extends Client
 						continue;
 					}
 
-					for (class9_1.anInt208 += i; class9_1.anInt208 > animation.method258(class9_1.anInt246); )
+					for (class9_1.anInt208 += i; class9_1.anInt208 > animation.getFrameDuration(class9_1.anInt246); )
 					{
-						class9_1.anInt208 -= animation.method258(class9_1.anInt246) + 1;
+						class9_1.anInt208 -= animation.getFrameDuration(class9_1.anInt246) + 1;
 						class9_1.anInt246++;
-						if (class9_1.anInt246 >= animation.anInt352)
+						if (class9_1.anInt246 >= animation.frameCount)
 						{
-							class9_1.anInt246 -= animation.anInt356;
-							if (class9_1.anInt246 < 0 || class9_1.anInt246 >= animation.anInt352)
+							class9_1.anInt246 -= animation.loopOffset;
+							if (class9_1.anInt246 < 0 || class9_1.anInt246 >= animation.frameCount)
 								class9_1.anInt246 = 0;
 						}
 						flag1 = true;

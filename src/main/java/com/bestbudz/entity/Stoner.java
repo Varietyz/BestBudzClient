@@ -15,13 +15,13 @@ import com.bestbudz.graphics.text.TextClass;
 public final class Stoner extends Entity
 {
 	public static MRUNodes mruNodes = new MRUNodes(260);
-	public final int[] anIntArray1700;
+	public final int[] bodyColors;
 	public final int[] equipment;
 	public int privelage;
 	public String title, titleColor;
 	public boolean titlePrefix;
 	public EntityDef desc;
-	public boolean aBoolean1699;
+	public boolean lowDetailMode;
 	public int team;
 	public String name;
 	public int combatLevel;
@@ -30,30 +30,30 @@ public final class Stoner extends Entity
 	public int hintIcon;
 	public int spotAnimStartCycle;
 	public int spotAnimEndCycle;
-	public int spotAnimY;
+	public int spotAnimHeight;
 	public boolean visible;
 	public int spotAnimX;
 	public int spotAnimZ;
 	public int spotAnimDestY;
-	public Model aModel_1714;
-	public int anInt1719;
-	public int anInt1720;
-	public int anInt1721;
-	public int anInt1722;
+	public Model spotAnimationModel;
+	public int spotAnimMinX;
+	public int spotAnimMinY;
+	public int spotAnimMaxX;
+	public int spotAnimMaxY;
 	public int skill;
 	int gender;
 	private long lastModelKey;
 	private long modelCacheKey;
 	public Stoner() {
 		lastModelKey = -1L;
-		aBoolean1699 = false;
-		anIntArray1700 = new int[5];
+		lowDetailMode = false;
+		bodyColors = new int[5];
 		visible = false;
 		equipment = new int[12];
 	}
 
 @Override
-	public Model getFinalRenderedModel() {
+	public Model getModel() {
 		if (!visible)
 			return null;
 		Model model = buildPlayerModel();
@@ -61,55 +61,55 @@ public final class Stoner extends Entity
 			return null;
 		super.height = model.modelHeight;
 		model.aBoolean1659 = true;
-		if (aBoolean1699)
+		if (lowDetailMode)
 			return model;
-		if (super.anInt1520 != -1 && super.anInt1521 != -1) {
-			SpotAnim spotAnim = SpotAnim.cache[super.anInt1520];
+		if (super.spotAnimId != -1 && super.spotAnimFrame != -1) {
+			SpotAnim spotAnim = SpotAnim.cache[super.spotAnimId];
 			Model model_2 = spotAnim.getModel();
 			if (model_2 != null) {
-				Model model_3 = new Model(true, SequenceFrame.method532(super.anInt1521), false, model_2);
+				Model model_3 = new Model(true, SequenceFrame.isInvalidFrame(super.spotAnimFrame), false, model_2);
 				model_3.translateCoords(0, -super.anInt1524, 0);
 				model_3.calculateNormals();
-				model_3.method470(spotAnim.aAnimation_407.anIntArray353[super.anInt1521]);
+				model_3.applyTransformation(spotAnim.animation.frameIds[super.spotAnimFrame]);
 				model_3.anIntArrayArray1658 = null;
 				model_3.anIntArrayArray1657 = null;
-				if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128)
-					model_3.modelScale(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
-				model_3.applyLighting(84 + spotAnim.anInt413, 1550 + spotAnim.anInt414, -50, -110, -50, true);
+				if (spotAnim.resizeX != 128 || spotAnim.resizeY != 128)
+					model_3.modelScale(spotAnim.resizeX, spotAnim.resizeX, spotAnim.resizeY);
+				model_3.applyLighting(84 + spotAnim.ambient, 1550 + spotAnim.contrast, -50, -110, -50, true);
 				Model[] aclass30_sub2_sub4_sub6_1s = { model, model_3 };
 				model = new Model(aclass30_sub2_sub4_sub6_1s);
 			} else {
 				return null;
 			}
 		}
-		if (aModel_1714 != null) {
+		if (spotAnimationModel != null) {
 			if (Client.loopCycle >= spotAnimEndCycle)
-				aModel_1714 = null;
+				spotAnimationModel = null;
 			if (Client.loopCycle >= spotAnimStartCycle && Client.loopCycle < spotAnimEndCycle) {
-				Model model_1 = aModel_1714;
-				model_1.translateCoords(spotAnimX - super.x, spotAnimZ - spotAnimY, spotAnimDestY - super.y);
+				Model model_1 = spotAnimationModel;
+				model_1.translateCoords(spotAnimX - super.x, spotAnimZ - spotAnimHeight, spotAnimDestY - super.y);
 				if (super.turnDirection == 512) {
-					model_1.method473();
-					model_1.method473();
-					model_1.method473();
+					model_1.rotateY180();
+					model_1.rotateY180();
+					model_1.rotateY180();
 				} else if (super.turnDirection == 1024) {
-					model_1.method473();
-					model_1.method473();
+					model_1.rotateY180();
+					model_1.rotateY180();
 				} else if (super.turnDirection == 1536)
-					model_1.method473();
+					model_1.rotateY180();
 				Model[] aclass30_sub2_sub4_sub6s = { model, model_1 };
 				model = new Model(aclass30_sub2_sub4_sub6s);
 				if (super.turnDirection == 512)
-					model_1.method473();
+					model_1.rotateY180();
 				else if (super.turnDirection == 1024) {
-					model_1.method473();
-					model_1.method473();
+					model_1.rotateY180();
+					model_1.rotateY180();
 				} else if (super.turnDirection == 1536) {
-					model_1.method473();
-					model_1.method473();
-					model_1.method473();
+					model_1.rotateY180();
+					model_1.rotateY180();
+					model_1.rotateY180();
 				}
-				model_1.translateCoords(super.x - spotAnimX, spotAnimY - spotAnimZ, super.y - spotAnimDestY);
+				model_1.translateCoords(super.x - spotAnimX, spotAnimHeight - spotAnimZ, super.y - spotAnimDestY);
 			}
 		}
 		model.aBoolean1659 = true;
@@ -118,7 +118,7 @@ public final class Stoner extends Entity
 
 	public void updateStoner(Stream stream)
 	{
-		stream.currentOffset = 0;
+		stream.position = 0;
 		gender = stream.readUnsignedByte();
 		headIcon = stream.readUnsignedByte();
 		skullIcon = stream.readUnsignedByte();
@@ -151,29 +151,29 @@ public final class Stoner extends Entity
 		for (int l = 0; l < 5; l++)
 		{
 			int j1 = stream.readUnsignedByte();
-			if (j1 < 0 || j1 >= Client.anIntArrayArray1003[l].length)
+			if (j1 < 0 || j1 >= Client.validInterfaceRegions[l].length)
 				j1 = 0;
-			anIntArray1700[l] = j1;
+			bodyColors[l] = j1;
 		}
 
-		super.anInt1511 = stream.readUnsignedWord();
-		if (super.anInt1511 == 65535)
-			super.anInt1511 = -1;
+		super.standAnimation = stream.readUnsignedWord();
+		if (super.standAnimation == 65535)
+			super.standAnimation = -1;
 		super.anInt1512 = stream.readUnsignedWord();
 		if (super.anInt1512 == 65535)
 			super.anInt1512 = -1;
-		super.anInt1554 = stream.readUnsignedWord();
-		if (super.anInt1554 == 65535)
-			super.anInt1554 = -1;
-		super.anInt1555 = stream.readUnsignedWord();
-		if (super.anInt1555 == 65535)
-			super.anInt1555 = -1;
-		super.anInt1556 = stream.readUnsignedWord();
-		if (super.anInt1556 == 65535)
-			super.anInt1556 = -1;
-		super.anInt1557 = stream.readUnsignedWord();
-		if (super.anInt1557 == 65535)
-			super.anInt1557 = -1;
+		super.walkAnimation = stream.readUnsignedWord();
+		if (super.walkAnimation == 65535)
+			super.walkAnimation = -1;
+		super.turnRightAnimation = stream.readUnsignedWord();
+		if (super.turnRightAnimation == 65535)
+			super.turnRightAnimation = -1;
+		super.turnAroundAnimation = stream.readUnsignedWord();
+		if (super.turnAroundAnimation == 65535)
+			super.turnAroundAnimation = -1;
+		super.turnLeftAnimation = stream.readUnsignedWord();
+		if (super.turnLeftAnimation == 65535)
+			super.turnLeftAnimation = -1;
 		super.anInt1505 = stream.readUnsignedWord();
 		if (super.anInt1505 == 65535)
 			super.anInt1505 = -1;
@@ -200,7 +200,7 @@ public final class Stoner extends Entity
 		for (int i2 = 0; i2 < 5; i2++)
 		{
 			modelCacheKey <<= 3;
-			modelCacheKey += anIntArray1700[i2];
+			modelCacheKey += bodyColors[i2];
 		}
 
 		modelCacheKey <<= 1;
@@ -218,38 +218,38 @@ public final class Stoner extends Entity
 		int k1 = -1;
 
 		if (desc != null) {
-			if (super.anim >= 0 && super.anInt1529 == 0) {
+			if (super.anim >= 0 && super.animDelay == 0) {
 				final Animation seq = Animation.anims[super.anim];
-				k = seq.anIntArray353[super.anInt1527];
-				if (super.nextAnimFrame != -1) {
-					nextAnim = seq.anIntArray353[super.nextAnimFrame];
-					currCycle = seq.anIntArray355[super.anInt1527];
-					nextCycle = super.anInt1528;
+				k = seq.frameIds[super.animFrameIndex];
+				if (super.nextAnimationFrame != -1) {
+					nextAnim = seq.frameIds[super.nextAnimationFrame];
+					currCycle = seq.anIntArray355[super.animFrameIndex];
+					nextCycle = super.animFrameTimer;
 				}
-			} else if (super.anInt1517 >= 0) {
-				final Animation seq = Animation.anims[super.anInt1517];
-				k = seq.anIntArray353[super.anInt1518];
-				if (super.nextIdleAnimFrame != -1) {
-					nextAnim = seq.anIntArray353[super.nextIdleAnimFrame];
-					currCycle = seq.anIntArray355[super.anInt1518];
-					nextCycle = super.anInt1519;
+			} else if (super.currentAnimation >= 0) {
+				final Animation seq = Animation.anims[super.currentAnimation];
+				k = seq.frameIds[super.frameIndex];
+				if (super.nextIdleFrame != -1) {
+					nextAnim = seq.frameIds[super.nextIdleFrame];
+					currCycle = seq.anIntArray355[super.frameIndex];
+					nextCycle = super.frameTimer;
 				}
 			}
-			return desc.method164(-1, k, nextAnim, currCycle, nextCycle, null);
+			return desc.getAnimatedModel(-1, k, nextAnim, currCycle, nextCycle, null);
 		}
 
 		// Cache animation reference to avoid repeated array access
 		Animation animation = null;
-		if (super.anim >= 0 && super.anInt1529 == 0) {
+		if (super.anim >= 0 && super.animDelay == 0) {
 			animation = Animation.anims[super.anim];
-			k = animation.anIntArray353[super.anInt1527];
-			if (super.nextAnimFrame != -1) {
-				nextAnim = animation.anIntArray353[super.nextAnimFrame];
-				currCycle = animation.anIntArray355[super.anInt1527];
-				nextCycle = super.anInt1528;
+			k = animation.frameIds[super.animFrameIndex];
+			if (super.nextAnimationFrame != -1) {
+				nextAnim = animation.frameIds[super.nextAnimationFrame];
+				currCycle = animation.anIntArray355[super.animFrameIndex];
+				nextCycle = super.animFrameTimer;
 			}
-			if (super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511) {
-				i1 = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+			if (super.currentAnimation >= 0 && super.currentAnimation != super.standAnimation) {
+				i1 = Animation.anims[super.currentAnimation].frameIds[super.frameIndex];
 			}
 			if (animation.anInt360 >= 0) {
 				j1 = animation.anInt360;
@@ -259,13 +259,13 @@ public final class Stoner extends Entity
 				k1 = animation.anInt361;
 				l += (long) k1 - equipment[3] << 48;
 			}
-		} else if (super.anInt1517 >= 0) {
-			final Animation seq = Animation.anims[super.anInt1517];
-			k = seq.anIntArray353[super.anInt1518];
-			if (super.nextIdleAnimFrame != -1) {
-				nextAnim = seq.anIntArray353[super.nextIdleAnimFrame];
-				currCycle = seq.anIntArray355[super.anInt1518];
-				nextCycle = super.anInt1519;
+		} else if (super.currentAnimation >= 0) {
+			final Animation seq = Animation.anims[super.currentAnimation];
+			k = seq.frameIds[super.frameIndex];
+			if (super.nextIdleFrame != -1) {
+				nextAnim = seq.frameIds[super.nextIdleFrame];
+				currCycle = seq.anIntArray355[super.frameIndex];
+				nextCycle = super.frameTimer;
 			}
 		}
 
@@ -315,11 +315,11 @@ public final class Stoner extends Entity
 
 			model_1 = new Model(j2, modelParts);
 			for (int j3 = 0; j3 < 5; j3++)
-				if (anIntArray1700[j3] != 0) {
-					model_1.replaceColor(Client.anIntArrayArray1003[j3][0],
-						Client.anIntArrayArray1003[j3][anIntArray1700[j3]]);
+				if (bodyColors[j3] != 0) {
+					model_1.replaceColor(Client.validInterfaceRegions[j3][0],
+						Client.validInterfaceRegions[j3][bodyColors[j3]]);
 					if (j3 == 1)
-						model_1.replaceColor(Client.anIntArray1204[0], Client.anIntArray1204[anIntArray1700[j3]]);
+						model_1.replaceColor(Client.chatSystemColors[0], Client.chatSystemColors[bodyColors[j3]]);
 				}
 
 			model_1.calculateNormals();
@@ -329,17 +329,17 @@ public final class Stoner extends Entity
 			lastModelKey = l;
 		}
 
-		if (aBoolean1699)
+		if (lowDetailMode)
 			return model_1;
 
 		final Model model_2 = Model.aModel_1621;
-		model_2.method464(model_1, SequenceFrame.method532(k) & SequenceFrame.method532(i1));
+		model_2.copyModel(model_1, SequenceFrame.isInvalidFrame(k) & SequenceFrame.isInvalidFrame(i1));
 		if (k != -1 && i1 != -1) {
-			model_2.method471(Animation.anims[super.anim].anIntArray357, i1, k);
+			model_2.applyMixedTransformation(Animation.anims[super.anim].anIntArray357, i1, k);
 		} else if (k != -1) {
 			model_2.interpolateFrames(k, nextAnim, nextCycle, currCycle);
 		}
-		model_2.method466();
+		model_2.calculateBounds();
 		model_2.anIntArrayArray1658 = null;
 		model_2.anIntArrayArray1657 = null;
 		return model_2;
@@ -353,7 +353,7 @@ public final class Stoner extends Entity
 		if (!visible)
 			return null;
 		if (desc != null)
-			return desc.method160();
+			return desc.getModelForInterface();
 		boolean flag = false;
 		for (int i = 0; i < 12; i++) {
 			int j = equipment[i];
@@ -382,10 +382,10 @@ public final class Stoner extends Entity
 
 		Model model = new Model(k, aclass30_sub2_sub4_sub6s);
 		for (int j1 = 0; j1 < 5; j1++)
-			if (anIntArray1700[j1] != 0) {
-				model.replaceColor(Client.anIntArrayArray1003[j1][0], Client.anIntArrayArray1003[j1][anIntArray1700[j1]]);
+			if (bodyColors[j1] != 0) {
+				model.replaceColor(Client.validInterfaceRegions[j1][0], Client.validInterfaceRegions[j1][bodyColors[j1]]);
 				if (j1 == 1)
-					model.replaceColor(Client.anIntArray1204[0], Client.anIntArray1204[anIntArray1700[j1]]);
+					model.replaceColor(Client.chatSystemColors[0], Client.chatSystemColors[bodyColors[j1]]);
 			}
 
 		return model;

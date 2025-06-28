@@ -2,7 +2,11 @@ package com.bestbudz.entity;
 
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.engine.core.Client;
+import com.bestbudz.engine.core.gamerender.Rasterizer;
+import com.bestbudz.engine.core.gamerender.WorldController;
 import com.bestbudz.network.Stream;
+import com.bestbudz.rendering.animation.Animation;
+import com.bestbudz.rendering.model.Model;
 import static com.bestbudz.world.TerrainHeight.getTerrainHeight;
 
 public class ParseAndUpdateEntities extends Client
@@ -13,46 +17,46 @@ public class ParseAndUpdateEntities extends Client
 		{
 			Npc npc = npcArray[npcIndices[j]];
 			int k = 0x20000000 + (npcIndices[j] << 14);
-			if (npc == null || !npc.isVisible() || npc.desc.aBoolean93 != flag)
+			if (npc == null || !npc.isVisible() || npc.desc.renderPriority != flag)
 				continue;
 			int l = npc.x >> 7;
 			int i1 = npc.y >> 7;
 			if (l < 0 || l >= 208 || i1 < 0 || i1 >= 208)
 				continue;
-			if (npc.anInt1540 == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64)
+			if (npc.size == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64)
 			{
-				if (anIntArrayArray929[l][i1] == anInt1265)
+				if (renderGrid[l][i1] == currentTick)
 					continue;
-				anIntArrayArray929[l][i1] = anInt1265;
+				renderGrid[l][i1] = currentTick;
 			}
-			if (!npc.desc.aBoolean84)
+			if (!npc.desc.clickable)
 				k += 0x80000000;
-			worldController.method285(plane, npc.anInt1552, getTerrainHeight(plane, npc.y, npc.x), k, npc.y,
-				(npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
+			worldController.addLargeObject(plane, npc.orientation, getTerrainHeight(plane, npc.y, npc.x), k, npc.y,
+				(npc.size - 1) * 64 + 60, npc.x, npc, npc.animChanged);
 		}
 	}
 
 	public static void updateNPCs(Stream stream, int i)
 	{
-		anInt839 = 0;
-		anInt893 = 0;
+		removedNpcCount = 0;
+		updatedNpcCount = 0;
 		parseServerUpdate(stream);
 		parseNewNPCs(i, stream);
 		parseNpcUpdateMasks(stream);
-		for (int k = 0; k < anInt839; k++)
+		for (int k = 0; k < removedNpcCount; k++)
 		{
-			int l = anIntArray840[k];
-			if (npcArray[l].anInt1537 != loopCycle)
+			int l = removedNpcIndices[k];
+			if (npcArray[l].lastUpdateCycle != loopCycle)
 			{
 				npcArray[l].desc = null;
 				npcArray[l] = null;
 			}
 		}
 
-		if (stream.currentOffset != i)
+		if (stream.position != i)
 		{
 			Signlink.reporterror(
-				myUsername + " size mismatch in getnpcpos - pos:" + stream.currentOffset + " psize:" + i);
+				myUsername + " size mismatch in getnpcpos - pos:" + stream.position + " psize:" + i);
 			throw new RuntimeException("eek");
 		}
 		for (int i1 = 0; i1 < npcCount; i1++)
@@ -66,7 +70,7 @@ public class ParseAndUpdateEntities extends Client
 
 	public static void parseNewNPCs(int i, Stream stream)
 	{
-		while (stream.bitPosition + 21 < i * 8)
+		while (stream.bitOffset + 21 < i * 8)
 		{
 			int k = stream.readBits(14);
 			if (k == 16383)
@@ -75,7 +79,7 @@ public class ParseAndUpdateEntities extends Client
 				npcArray[k] = new Npc();
 			Npc npc = npcArray[k];
 			npcIndices[npcCount++] = k;
-			npc.anInt1537 = loopCycle;
+			npc.lastUpdateCycle = loopCycle;
 			int l = stream.readBits(5);
 			if (l > 15)
 				l -= 32;
@@ -86,14 +90,14 @@ public class ParseAndUpdateEntities extends Client
 			npc.desc = EntityDef.forID(stream.readBits(npcBits));
 			int k1 = stream.readBits(1);
 			if (k1 == 1)
-				anIntArray894[anInt893++] = k;
-			npc.anInt1540 = npc.desc.aByte68;
-			npc.anInt1504 = npc.desc.anInt79;
-			npc.anInt1554 = npc.desc.walkAnim;
-			npc.anInt1555 = npc.desc.anInt58;
-			npc.anInt1556 = npc.desc.anInt83;
-			npc.anInt1557 = npc.desc.anInt55;
-			npc.anInt1511 = npc.desc.standAnim;
+				updatedNpcIndices[updatedNpcCount++] = k;
+			npc.size = npc.desc.size;
+			npc.mapIconScale = npc.desc.mapIconScale;
+			npc.walkAnimation = npc.desc.walkAnim;
+			npc.turnRightAnimation = npc.desc.turnRightAnim;
+			npc.turnAroundAnimation = npc.desc.turnAroundAnim;
+			npc.turnLeftAnimation = npc.desc.turnLeftAnim;
+			npc.standAnimation = npc.desc.standAnim;
 			npc.setPos(myStoner.smallX[0] + i1, myStoner.smallY[0] + l, j1 == 1);
 		}
 		stream.finishBitAccess();
@@ -128,33 +132,256 @@ public class ParseAndUpdateEntities extends Client
 			{
 				continue;
 			}
-			stoner.aBoolean1699 = (lowMem && stonerCount > 50 || stonerCount > 200) && !flag
-				&& stoner.anInt1517 == stoner.anInt1511;
+			stoner.lowDetailMode = (lowMem && stonerCount > 50 || stonerCount > 200) && !flag
+				&& stoner.currentAnimation == stoner.standAnimation;
 			int j1 = stoner.x >> 7;
 			int k1 = stoner.y >> 7;
 			if (j1 < 0 || j1 >= 204 || k1 < 0 || k1 >= 104)
 			{
 				continue;
 			}
-			if (stoner.aModel_1714 != null && loopCycle >= stoner.spotAnimStartCycle && loopCycle < stoner.spotAnimEndCycle)
+			if (stoner.spotAnimationModel != null && loopCycle >= stoner.spotAnimStartCycle && loopCycle < stoner.spotAnimEndCycle)
 			{
-				stoner.aBoolean1699 = false;
-				stoner.spotAnimY = getTerrainHeight(plane, stoner.y, stoner.x);
-				worldController.method286(plane, stoner.y, stoner, stoner.anInt1552, stoner.anInt1722, stoner.x,
-					stoner.spotAnimY, stoner.anInt1719, stoner.anInt1721, i1, stoner.anInt1720);
+				stoner.lowDetailMode = false;
+				stoner.spotAnimHeight = getTerrainHeight(plane, stoner.y, stoner.x);
+				worldController.addMultiTileObject(plane, stoner.y, stoner, stoner.orientation, stoner.spotAnimMaxY, stoner.x,
+					stoner.spotAnimHeight, stoner.spotAnimMinX, stoner.spotAnimMaxX, i1, stoner.spotAnimMinY);
 				continue;
 			}
 			if ((stoner.x & 0x7f) == 64 && (stoner.y & 0x7f) == 64)
 			{
-				if (anIntArrayArray929[j1][k1] == anInt1265)
+				if (renderGrid[j1][k1] == currentTick)
 				{
 					continue;
 				}
-				anIntArrayArray929[j1][k1] = anInt1265;
+				renderGrid[j1][k1] = currentTick;
 			}
-			stoner.spotAnimY = getTerrainHeight(plane, stoner.y, stoner.x);
-			worldController.method285(plane, stoner.anInt1552, stoner.spotAnimY, i1, stoner.y, 60, stoner.x, stoner,
-				stoner.aBoolean1541);
+			stoner.spotAnimHeight = getTerrainHeight(plane, stoner.y, stoner.x);
+			worldController.addLargeObject(plane, stoner.orientation, stoner.spotAnimHeight, i1, stoner.y, 60, stoner.x, stoner,
+				stoner.animChanged);
 		}
 	}
+
+	public static void parseNpcUpdateMasks(Stream stream)
+	{
+		for (int j = 0; j < updatedNpcCount; j++)
+		{
+			int k = updatedNpcIndices[j];
+			Npc npc = npcArray[k];
+			int l = stream.readUnsignedByte();
+			if ((l & 0x10) != 0)
+			{
+				int i1 = stream.readWordLittleEndian();
+				if (i1 == 65535)
+					i1 = -1;
+				int i2 = stream.readUnsignedByte();
+				if (i1 == npc.anim && i1 != -1)
+				{
+					int l2 = Animation.anims[i1].anInt365;
+					if (l2 == 1)
+					{
+						npc.animFrameIndex = 0;
+						npc.animFrameTimer = 0;
+						npc.animDelay = i2;
+						npc.animLoopCount = 0;
+					}
+					if (l2 == 2)
+						npc.animLoopCount = 0;
+				}
+				else if (i1 == -1 || npc.anim == -1
+					|| Animation.anims[i1].anInt359 >= Animation.anims[npc.anim].anInt359)
+				{
+					npc.anim = i1;
+					npc.animFrameIndex = 0;
+					npc.animFrameTimer = 0;
+					npc.animDelay = i2;
+					npc.animLoopCount = 0;
+					npc.movementDelay = npc.smallXYIndex;
+				}
+			}
+			if ((l & 8) != 0)
+			{
+				int j1 = stream.readByteSubtract128();
+				int j2 = stream.readByteNegated();
+				int icon = stream.readUnsignedByte();
+				npc.updateHitData(j2, j1, loopCycle, icon);
+				npc.loopCycleStatus = loopCycle + 300;
+				npc.currentHealth = stream.readQWord();
+				npc.maxHealth = stream.readQWord();
+			}
+			if ((l & 0x80) != 0)
+			{
+				npc.spotAnimId = stream.readUnsignedWord();
+				int k1 = stream.readDWord();
+				npc.anInt1524 = k1 >> 16;
+				npc.spotAnimStart = loopCycle + (k1 & 0xffff);
+				npc.spotAnimFrame = 0;
+				npc.spotAnimTimer = 0;
+				if (npc.spotAnimStart > loopCycle)
+					npc.spotAnimFrame = -1;
+				if (npc.spotAnimId == 65535)
+					npc.spotAnimId = -1;
+			}
+			if ((l & 0x20) != 0)
+			{
+				npc.interactingEntity = stream.readUnsignedWord();
+				if (npc.interactingEntity == 65535)
+					npc.interactingEntity = -1;
+			}
+			if ((l & 1) != 0)
+			{
+				npc.textSpoken = stream.readString();
+				npc.textCycle = 100;
+			}
+			if ((l & 0x40) != 0)
+			{
+				int l1 = stream.readByteNegated();
+				int k2 = stream.readByte128Minus();
+				int icon = stream.readUnsignedByte();
+				npc.updateHitData(k2, l1, loopCycle, icon);
+				npc.loopCycleStatus = loopCycle + 300;
+				npc.currentHealth = stream.readQWord();
+				npc.maxHealth = stream.readQWord();
+			}
+			if ((l & 2) != 0)
+			{
+				npc.desc = EntityDef.forID(stream.readWordMixedLE());
+				npc.size = npc.desc.size;
+				npc.mapIconScale = npc.desc.mapIconScale;
+				npc.walkAnimation = npc.desc.walkAnim;
+				npc.turnRightAnimation = npc.desc.turnRightAnim;
+				npc.turnAroundAnimation = npc.desc.turnAroundAnim;
+				npc.turnLeftAnimation = npc.desc.turnLeftAnim;
+				npc.standAnimation = npc.desc.standAnim;
+			}
+			if ((l & 4) != 0)
+			{
+				npc.anInt1538 = stream.readWordLittleEndian();
+				npc.anInt1539 = stream.readWordLittleEndian();
+			}
+		}
+	}
+
+	public static void npcScreenPos(Entity entity, int i)
+	{
+		calcEntityScreenPos(entity.x, i, entity.y);
+	}
+
+	public static void calcEntityScreenPos(int i, int j, int l)
+	{
+		if (i < 128 || l < 128 || i > 13056 || l > 13056)
+		{
+			spriteDrawX = -1;
+			spriteDrawY = -1;
+			return;
+		}
+
+		int i1 = getTerrainHeight(plane, l, i) - j;
+		i -= xCameraPos;
+		i1 -= zCameraPos;
+		l -= yCameraPos;
+
+		int j1 = Model.modelIntArray1[yCameraCurve];
+		int k1 = Model.modelIntArray2[yCameraCurve];
+		int l1 = Model.modelIntArray1[xCameraCurve];
+		int i2 = Model.modelIntArray2[xCameraCurve];
+		int j2 = l * l1 + i * i2 >> 16;
+		l = l * i2 - i * l1 >> 16;
+		i = j2;
+		j2 = i1 * k1 - l * j1 >> 16;
+		l = i1 * j1 + l * k1 >> 16;
+		i1 = j2;
+
+		// ONLY prevent mirroring, allow off-screen extension
+		if (l <= 50) // Behind camera
+		{
+			spriteDrawX = -1;
+			spriteDrawY = -1;
+			return;
+		}
+
+		// Calculate screen position
+		int screenX = Rasterizer.viewportCenterX + (i << WorldController.viewDistance) / l;
+		int screenY = Rasterizer.viewportCenterY + (i1 << WorldController.viewDistance) / l;
+
+		// Only check for extreme mirroring (not normal off-screen)
+		int screenWidth = Rasterizer.viewportCenterX * 2;
+		int screenHeight = Rasterizer.viewportCenterY * 2;
+
+		// Detect obvious mirroring (coordinates way beyond reasonable bounds)
+		if (Math.abs(screenX) > screenWidth * 5 || Math.abs(screenY) > screenHeight * 5)
+		{
+			spriteDrawX = -1;
+			spriteDrawY = -1;
+			return;
+		}
+
+		// Allow any reasonable coordinate, even if off-screen
+		spriteDrawX = screenX;
+		spriteDrawY = screenY;
+	}
+
+	public static void parseServerUpdate(Stream stream)
+	{
+		stream.initBitAccess();
+		int k = stream.readBits(8);
+		if (k < npcCount)
+		{
+			for (int l = k; l < npcCount; l++)
+				removedNpcIndices[removedNpcCount++] = npcIndices[l];
+
+		}
+		if (k > npcCount)
+		{
+			Signlink.reporterror(myUsername + " Too many npcs");
+			throw new RuntimeException("eek");
+		}
+		npcCount = 0;
+		for (int i1 = 0; i1 < k; i1++)
+		{
+			int j1 = npcIndices[i1];
+			Npc npc = npcArray[j1];
+			int k1 = stream.readBits(1);
+			if (k1 == 0)
+			{
+				npcIndices[npcCount++] = j1;
+				npc.lastUpdateCycle = loopCycle;
+			}
+			else
+			{
+				int l1 = stream.readBits(2);
+				if (l1 == 0)
+				{
+					npcIndices[npcCount++] = j1;
+					npc.lastUpdateCycle = loopCycle;
+					updatedNpcIndices[updatedNpcCount++] = j1;
+				}
+				else if (l1 == 1)
+				{
+					npcIndices[npcCount++] = j1;
+					npc.lastUpdateCycle = loopCycle;
+					int i2 = stream.readBits(3);
+					npc.moveInDir(false, i2);
+					int k2 = stream.readBits(1);
+					if (k2 == 1)
+						updatedNpcIndices[updatedNpcCount++] = j1;
+				}
+				else if (l1 == 2)
+				{
+					npcIndices[npcCount++] = j1;
+					npc.lastUpdateCycle = loopCycle;
+					int j2 = stream.readBits(3);
+					npc.moveInDir(true, j2);
+					int l2 = stream.readBits(3);
+					npc.moveInDir(true, l2);
+					int i3 = stream.readBits(1);
+					if (i3 == 1)
+						updatedNpcIndices[updatedNpcCount++] = j1;
+				}
+				else if (l1 == 3)
+					removedNpcIndices[removedNpcCount++] = j1;
+			}
+		}
+	}
+
 }

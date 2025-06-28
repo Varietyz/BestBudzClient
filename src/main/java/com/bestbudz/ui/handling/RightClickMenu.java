@@ -174,11 +174,11 @@ public class RightClickMenu extends Client
 	}
 
 	private static void resetRightClickMenu() {
-		menuActionName[0] = "Uuuuhhh, no..";
+		menuActionName[0] = null;
 		menuActionID[0] = 1107;
-		menuActionRow = 1;
-		anInt886 = 0;
-		anInt1315 = 0;
+		menuActionRow = 0;
+		hoveredInterfaceId = 0;
+		specialHoverInterfaceId = 0;
 	}
 
 	public static void sortMenuEntries() {
@@ -285,8 +285,6 @@ public class RightClickMenu extends Client
 			tooltipY = Math.min(Math.max(0, tooltipY), maxY);
 			DrawingArea.drawAlphaPixels(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 0, 100);
 			newBoldFont.drawBasicString(s, Integer.sum(tooltipX, 2), Integer.sum(tooltipY + 10, 2), ColorConfig.WHITE_COLOR, 1);
-		} else if (!s.contains("Shuffle over here")) {
-			newBoldFont.drawBasicString(s, (Client.screenAreaWidth / 2) - (tooltipWidth / 2), 15, ColorConfig.WHITE_COLOR, 1);
 		}
 	}
 
@@ -398,10 +396,10 @@ public class RightClickMenu extends Client
 		if (menuActionRow >= 400)
 			return;
 		if (entityDef.childrenIDs != null)
-			entityDef = entityDef.method161();
+			entityDef = entityDef.getTransformedEntity();
 		if (entityDef == null)
 			return;
-		if (!entityDef.aBoolean84)
+		if (!entityDef.clickable)
 			return;
 		String s = entityDef.name;
 
@@ -484,12 +482,13 @@ public class RightClickMenu extends Client
 			}
 			if (EngineConfig.DEBUG_MODE)
 			{
-				menuActionName[menuActionRow] = "Inspect @yel@" + s + "@whi@(ID: @yel@" + entityDef.interfaceType
+				menuActionName[menuActionRow] = "@yel@" + s + "@whi@(ID: @yel@" + entityDef.interfaceType
 					+ "@whi@)";
+
 			}
 			else
 			{
-				menuActionName[menuActionRow] = "Inspect @yel@" + s;
+				menuActionName[menuActionRow] = "@yel@" + s;
 			}
 			menuActionID[menuActionRow] = 1025;
 			menuActionCmd1[menuActionRow] = i;

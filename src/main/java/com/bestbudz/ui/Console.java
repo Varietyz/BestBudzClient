@@ -60,8 +60,8 @@ public class Console
 		switch (getCommands)
 		{
 			default:
-				Client.stream.createFrame(103);
-				Client.stream.writeWordBigEndian(consoleCommand.length() + 1);
+				Client.stream.writeEncryptedOpcode(103);
+				Client.stream.writeByte(consoleCommand.length() + 1);
 				Client.stream.writeString(consoleCommand);
 				break;
 		}

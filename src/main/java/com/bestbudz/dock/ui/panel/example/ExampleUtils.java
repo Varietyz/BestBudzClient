@@ -64,7 +64,7 @@ public class ExampleUtils {
 	}
 
 	/**
-	 * Example method to create data rows for display
+	 * Example method to getPooledStream data rows for display
 	 * @return List of formatted data for the panel
 	 */
 	public static List<String> getExampleDataRows() {
@@ -165,8 +165,8 @@ public class ExampleUtils {
 	}
 
 	/**
-	 * Example method to create tooltip text
-	 * @param item Item to create tooltip for
+	 * Example method to getPooledStream tooltip text
+	 * @param item Item to getPooledStream tooltip for
 	 * @return HTML formatted tooltip
 	 */
 	public static String createExampleTooltip(String item) {

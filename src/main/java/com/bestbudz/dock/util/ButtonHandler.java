@@ -1,7 +1,6 @@
 package com.bestbudz.dock.util;
 
 import com.bestbudz.engine.core.Client;
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -20,7 +19,7 @@ public class ButtonHandler {
 		try {
 			interfaceId = interfaceId - 85560;
 			if (Client.stream != null) {
-				Client.stream.createFrame(185);
+				Client.stream.writeEncryptedOpcode(185);
 				Client.stream.writeWord(interfaceId);
 				System.out.println("Sent click for interface ID: " + interfaceId);
 			} else {

@@ -1,27 +1,64 @@
 package com.bestbudz.rendering;
 
-import com.bestbudz.rendering.model.Class33;
+import static com.bestbudz.engine.core.Client.queueSpotAnimation;
+import static com.bestbudz.engine.core.Client.loopCycle;
+import static com.bestbudz.engine.core.Client.plane;
+import static com.bestbudz.engine.core.Client.gameTickCounter;
+import static com.bestbudz.engine.core.Client.worldController;
+import com.bestbudz.engine.gpu.RS317GPUInterface;
+import com.bestbudz.rendering.model.Point3D;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.NodeSub;
 
 public class Animable extends NodeSub {
 
 	public int modelHeight;
-	public Class33[] aClass33Array1425;
+	public Point3D[] vertices;
 
 	protected Animable() {
 		modelHeight = 1000;
 	}
 
-	public void method443(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2) {
-		Model model = getFinalRenderedModel();
+	public void render(int rotation, int sinVertical, int cosVertical, int sinHorizontal, int cosHorizontal, int worldX, int worldY, int worldZ, int id) {
+		Model model = getModel();
 		if (model != null) {
 			modelHeight = model.modelHeight;
-			model.method443(i, j, k, l, i1, j1, k1, l1, i2);
+
+			// FORCE GPU RENDERING - Remove conditional check
+			if (RS317GPUInterface.isActive()) {
+				// Add debug logging to see if this path is taken
+				System.out.println("[GPU DEBUG] Rendering model via GPU: " + worldX + "," + worldY + "," + worldZ);
+
+				// Convert parameters: worldX=worldX, worldY=worldY, worldZ=worldZ, rotation=rotation
+				RS317GPUInterface.renderModel(model, worldX, worldY, worldZ, rotation, 0, 0, 64);
+				return; // STOP HERE - don't call CPU render
+			}
+
+			// CPU fallback
+			model.render(rotation, sinVertical, cosVertical, sinHorizontal, cosHorizontal, worldX, worldY, worldZ, id);
 		}
 	}
 
-	public Model getFinalRenderedModel() {
+	public Model getModel() {
 		return null;
+	}
+
+	public static void processGraphicEffects()
+	{
+		GraphicEffect class30_sub2_sub4_sub3 = (GraphicEffect) queueSpotAnimation.reverseGetFirst();
+		for (; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (GraphicEffect) queueSpotAnimation.reverseGetNext())
+			if (class30_sub2_sub4_sub3.plane != plane || class30_sub2_sub4_sub3.finished)
+				class30_sub2_sub4_sub3.unlink();
+			else if (loopCycle >= class30_sub2_sub4_sub3.endCycle)
+			{
+				class30_sub2_sub4_sub3.update(gameTickCounter);
+				if (class30_sub2_sub4_sub3.finished)
+					class30_sub2_sub4_sub3.unlink();
+				else
+					worldController.addLargeObject(class30_sub2_sub4_sub3.plane, 0, class30_sub2_sub4_sub3.z, -1,
+						class30_sub2_sub4_sub3.y, 60, class30_sub2_sub4_sub3.x,
+						class30_sub2_sub4_sub3, false);
+			}
+
 	}
 }

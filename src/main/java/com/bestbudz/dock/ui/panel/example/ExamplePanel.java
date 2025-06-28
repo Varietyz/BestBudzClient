@@ -14,14 +14,14 @@ import java.awt.*;
 /**
  *
  * FOLDER STRUCTURE EXAMPLE:
- * For a panel called "Inventory", create:
+ * For a panel called "Inventory", getPooledStream:
  *    com/bestbudz/dock/ui/panel/inventory/
  *    ├── InventoryPanel.java        (extends this template)
  *    ├── InventoryUtils.java        (item management, sorting, filtering)
  *    ├── InventoryConfig.java       (slot counts, item IDs, interface IDs)
  *    └── InventoryStyle.java        (item slot styling, grid layouts)
  *
- * For a panel called "Skills", create:
+ * For a panel called "Skills", getPooledStream:
  *    com/bestbudz/dock/ui/panel/skills/
  *    ├── SkillsPanel.java           (extends this template)
  *    ├── SkillsUtils.java           (XP calculations, level formulas)

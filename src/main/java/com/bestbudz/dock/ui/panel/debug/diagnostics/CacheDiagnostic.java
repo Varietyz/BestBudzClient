@@ -5,7 +5,6 @@ import com.bestbudz.cache.Signlink;
 import com.bestbudz.engine.config.EngineConfig;
 import static com.bestbudz.engine.config.EngineConfig.worldSelected;
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.engine.core.GameLoader;
 import java.io.File;
 
 public class CacheDiagnostic extends BaseDiagnostic {
@@ -47,15 +46,15 @@ public class CacheDiagnostic extends BaseDiagnostic {
 		}
 
 		// OnDemand information
-		if (Client.onDemandFetcher != null) {
-			String status = Client.onDemandFetcher.statusString;
+		if (Client.cacheManager != null) {
+			String status = Client.cacheManager.statusString;
 			addRow("OD Status", (status != null && !status.isEmpty()) ?
 				DiagnosticStyle.truncateString(status, 15) : "Ready", DiagnosticStyle.TEXT_MUTED);
 
-			addRow("OD Cycles", String.valueOf(Client.onDemandFetcher.onDemandCycle), DiagnosticStyle.TEXT_MUTED);
+			addRow("OD Cycles", String.valueOf(Client.cacheManager.onDemandCycle), DiagnosticStyle.TEXT_MUTED);
 
 			try {
-				int nodeCount = Client.onDemandFetcher.getNodeCount();
+				int nodeCount = Client.cacheManager.getNodeCount();
 				addRow("Nodes", String.valueOf(nodeCount),
 					nodeCount > 0 ? DiagnosticStyle.STATUS_WARNING : DiagnosticStyle.STATUS_GOOD);
 			} catch (Exception e) { /* Skip if unavailable */ }

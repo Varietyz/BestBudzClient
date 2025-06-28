@@ -40,8 +40,8 @@ public final class Texture {
 		}
 
 		// Request texture loading if not in cache
-		if (Client.onDemandFetcher != null) {
-			Client.onDemandFetcher.method558(4, index);
+		if (Client.cacheManager != null) {
+			Client.cacheManager.enqueueRequest(4, index);
 		}
 		return null;
 	}

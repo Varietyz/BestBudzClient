@@ -1,11 +1,11 @@
 package com.bestbudz.cache;
 
-import static com.bestbudz.engine.core.Client.aByteArrayArray1183;
-import static com.bestbudz.engine.core.Client.aByteArrayArray1247;
-import static com.bestbudz.engine.core.Client.anIntArray1234;
-import static com.bestbudz.engine.core.Client.anIntArray1235;
-import static com.bestbudz.engine.core.Client.anIntArray1236;
-import static com.bestbudz.engine.core.Client.onDemandFetcher;
+import static com.bestbudz.engine.core.Client.terrainData;
+import static com.bestbudz.engine.core.Client.objectData;
+import static com.bestbudz.engine.core.Client.mapRegionIds;
+import static com.bestbudz.engine.core.Client.terrainIndices;
+import static com.bestbudz.engine.core.Client.objectIndices;
+import static com.bestbudz.engine.core.Client.cacheManager;
 
 import java.io.*;
 import java.util.concurrent.*;
@@ -385,11 +385,11 @@ public class EmbeddedMapCache {
 	 * BLAZING FAST region loading
 	 */
 	public static int loadAllEmbeddedRegions() {
-		if (!initialized || anIntArray1234 == null || aByteArrayArray1183 == null) {
+		if (!initialized || mapRegionIds == null || terrainData == null) {
 			return 0;
 		}
 
-		int totalRegions = anIntArray1234.length;
+		int totalRegions = mapRegionIds.length;
 		if (totalRegions == 0) return 0;
 
 		System.out.println("[EmbeddedMapCache] Blazing region loading: " + totalRegions + " regions");
@@ -401,7 +401,7 @@ public class EmbeddedMapCache {
 		IntStream.range(0, totalRegions)
 			.parallel()
 			.forEach(i -> {
-				int regionId = anIntArray1234[i];
+				int regionId = mapRegionIds[i];
 				if (tryLoadEmbeddedRegionFromCache(regionId, i) || tryLoadEmbeddedRegionDirect(regionId, i)) {
 					loadedCount.incrementAndGet();
 				} else {
@@ -430,12 +430,12 @@ public class EmbeddedMapCache {
 	 * Try to load region directly
 	 */
 	private static boolean tryLoadEmbeddedRegionDirect(int regionId, int arrayIndex) {
-		if (arrayIndex >= anIntArray1235.length || arrayIndex >= anIntArray1236.length) {
+		if (arrayIndex >= terrainIndices.length || arrayIndex >= objectIndices.length) {
 			return false;
 		}
 
-		int mapFileId = anIntArray1235[arrayIndex];
-		int landscapeFileId = anIntArray1236[arrayIndex];
+		int mapFileId = terrainIndices[arrayIndex];
+		int landscapeFileId = objectIndices[arrayIndex];
 
 		if (mapFileId == -1 || landscapeFileId == -1) {
 			return true; // No data needed
@@ -457,15 +457,15 @@ public class EmbeddedMapCache {
 	 */
 	private static synchronized boolean setRegionDataFast(int arrayIndex, RegionData regionData) {
 		try {
-			if (arrayIndex >= aByteArrayArray1183.length || arrayIndex >= aByteArrayArray1247.length ||
-				arrayIndex >= anIntArray1235.length || arrayIndex >= anIntArray1236.length) {
+			if (arrayIndex >= terrainData.length || arrayIndex >= objectData.length ||
+				arrayIndex >= terrainIndices.length || arrayIndex >= objectIndices.length) {
 				return false;
 			}
 
-			aByteArrayArray1183[arrayIndex] = regionData.mapData;
-			aByteArrayArray1247[arrayIndex] = regionData.landscapeData;
-			anIntArray1235[arrayIndex] = regionData.mapFileId;
-			anIntArray1236[arrayIndex] = regionData.landscapeFileId;
+			terrainData[arrayIndex] = regionData.mapData;
+			objectData[arrayIndex] = regionData.landscapeData;
+			terrainIndices[arrayIndex] = regionData.mapFileId;
+			objectIndices[arrayIndex] = regionData.landscapeFileId;
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -481,17 +481,17 @@ public class EmbeddedMapCache {
 	}
 
 	/**
-	 * Queue region for onDemandFetcher
+	 * Queue region for cacheManager
 	 */
 	private static void queueRegionForOnDemandFetcher(int arrayIndex) {
-		if (onDemandFetcher == null) return;
+		if (cacheManager == null) return;
 
 		try {
-			if (arrayIndex < anIntArray1235.length && anIntArray1235[arrayIndex] != -1) {
-				onDemandFetcher.method560(anIntArray1235[arrayIndex], 3);
+			if (arrayIndex < terrainIndices.length && terrainIndices[arrayIndex] != -1) {
+				cacheManager.requestFile(terrainIndices[arrayIndex], 3);
 			}
-			if (arrayIndex < anIntArray1236.length && anIntArray1236[arrayIndex] != -1) {
-				onDemandFetcher.method560(anIntArray1236[arrayIndex], 3);
+			if (arrayIndex < objectIndices.length && objectIndices[arrayIndex] != -1) {
+				cacheManager.requestFile(objectIndices[arrayIndex], 3);
 			}
 		} catch (Exception e) {
 			// Ignore

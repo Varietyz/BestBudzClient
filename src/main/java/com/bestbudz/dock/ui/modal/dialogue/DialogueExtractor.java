@@ -80,7 +80,7 @@ public class DialogueExtractor {
 		int interfaceId = dialogueInterface.id;
 		System.out.println("🎭 EXTRACTOR: Extracting text for interface " + interfaceId);
 
-		// For item interfaces, create descriptive text
+		// For item interfaces, getPooledStream descriptive text
 		if (interfaceId == 8880) {
 			StringBuilder text = new StringBuilder("What would you like to make? ");
 			String[] options = getOptionsFromChildren(new int[]{8889, 8893, 8897});

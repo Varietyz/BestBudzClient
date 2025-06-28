@@ -1,7 +1,7 @@
 package com.bestbudz.rendering;
 
+import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.network.Stream;
-import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 
@@ -10,26 +10,26 @@ public final class SpotAnim {
 	public static SpotAnim[] cache;
 	private final int[] originalColors;
 	private final int[] replacementColors;
-	public Animation aAnimation_407;
-	public int anInt410;
-	public int anInt411;
-	public int anInt412;
-	public int anInt413;
-	public int anInt414;
-	private int anInt404;
-	private int anInt405;
-	private int anInt406;
+	public Animation animation;
+	public int resizeX;
+	public int resizeY;
+	public int rotation;
+	public int ambient;
+	public int contrast;
+	private int id;
+	private int modelId;
+	private int animationId;
 
 	private SpotAnim() {
-		anInt406 = -1;
+		animationId = -1;
 		originalColors = new int[6];
 		replacementColors = new int[6];
-		anInt410 = 128;
-		anInt411 = 128;
+		resizeX = 128;
+		resizeY = 128;
 	}
 
-	public static void unpackConfig(StreamLoader streamLoader) {
-		Stream stream = new Stream(streamLoader.getDataForName("spotanim.dat"));
+	public static void loadConfigurations(ArchiveLoader archiveLoader) {
+		Stream stream = new Stream(archiveLoader.extractFile("spotanim.dat"));
 		int length = stream.readUnsignedWord();
 		System.out.println("Graphics Loaded: " + length);
 
@@ -41,38 +41,38 @@ public final class SpotAnim {
 			if (cache[j] == null) {
 				cache[j] = new SpotAnim();
 			}
-			cache[j].anInt404 = j;
-			cache[j].readValues(stream);
+			cache[j].id = j;
+			cache[j].decode(stream);
 		}
 	}
 
-	public void readValues(Stream stream) {
+	public void decode(Stream stream) {
 		int opcode;
 		while ((opcode = stream.readUnsignedByte()) != 0) {
 			switch (opcode) {
 				case 1:
-					anInt405 = stream.readUnsignedWord();
+					modelId = stream.readUnsignedWord();
 					break;
 				case 2:
-					anInt406 = stream.readUnsignedWord();
+					animationId = stream.readUnsignedWord();
 					if (Animation.anims != null) {
-						aAnimation_407 = Animation.anims[anInt406];
+						animation = Animation.anims[animationId];
 					}
 					break;
 				case 4:
-					anInt410 = stream.readUnsignedWord();
+					resizeX = stream.readUnsignedWord();
 					break;
 				case 5:
-					anInt411 = stream.readUnsignedWord();
+					resizeY = stream.readUnsignedWord();
 					break;
 				case 6:
-					anInt412 = stream.readUnsignedWord();
+					rotation = stream.readUnsignedWord();
 					break;
 				case 7:
-					anInt413 = stream.readUnsignedWord();
+					ambient = stream.readUnsignedWord();
 					break;
 				case 8:
-					anInt414 = stream.readUnsignedWord();
+					contrast = stream.readUnsignedWord();
 					break;
 				case 40:
 					int colorCount = stream.readUnsignedByte();
@@ -89,7 +89,7 @@ public final class SpotAnim {
 	}
 
 	public Model getModel() {
-		Model model = Model.loadModelFromCache(anInt405);
+		Model model = Model.loadModelFromCache(modelId);
 		if (model == null) {
 			return null;
 		}

@@ -9,11 +9,11 @@ public final class Item extends Animable {
   public int ID;
   public int x;
   public int y;
-  public int anInt1559;
+  public int stackSize;
   public Item() {}
 
-  public Model getFinalRenderedModel() {
+  public Model getModel() {
     ItemDef itemDef = getItemDefinition(ID);
-    return itemDef.getStackedModel(anInt1559);
+    return itemDef.getStackedModel(stackSize);
   }
 }

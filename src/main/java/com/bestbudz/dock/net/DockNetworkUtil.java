@@ -15,7 +15,7 @@ public class DockNetworkUtil {
 	 */
 	public static void send(String command) {
 		if (Client.stream == null || !Client.loggedIn) return;
-		Client.stream.createFrame(222); // Opcode must match registration
+		Client.stream.writeEncryptedOpcode(222); // Opcode must match registration
 		Client.stream.writeString(command);
 	}
 

@@ -1,10 +1,9 @@
 package com.bestbudz.world;
 
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.engine.config.EngineConfig;
-import com.bestbudz.network.OnDemandFetcher;
+import com.bestbudz.network.ArchiveLoader;
+import com.bestbudz.network.CacheManager;
 import com.bestbudz.network.Stream;
-import com.bestbudz.network.StreamLoader;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
@@ -12,7 +11,7 @@ import java.util.Objects;
 
 public final class ObjectDef {
 	Client client;
-	public static final Model[] aModelArray741s = new Model[4];
+	public static final Model[] tempModels = new Model[4];
 	public static boolean lowMem;
 	public static Stream stream;
 	public static int[] streamIndices;
@@ -28,34 +27,34 @@ public final class ObjectDef {
 	public String name;
 	public int anInt740;
 	public byte aByte742;
-	public int anInt744;
+	public int sizeX;
 	public int anInt745;
 	public int anInt746;
 	public int[] originalModelColors;
 	public int anInt748;
-	public int anInt749;
+	public int configId;
 	public boolean aBoolean751;
 	public int type;
-	public boolean aBoolean757;
+	public boolean blocksProjectiles;
 	public int anInt758;
-	public int[] childrenIDs;
+	public int[] childIds;
 	public int anInt760;
-	public int anInt761;
-	public boolean aBoolean762;
-	public boolean aBoolean764;
+	public int sizeY;
+	public boolean rotateHeights;
+	public boolean blocksMovement;
 	public boolean aBoolean766;
-	public boolean aBoolean767;
+	public boolean clipFlag;
 	public int anInt768;
 	public boolean aBoolean769;
 	public int anInt772;
 	public int[] anIntArray773;
-	public int anInt774;
-	public int anInt775;
+	public int varbitId;
+	public int wallThickness;
 	public int[] anIntArray776;
 	public byte[] description;
 	public boolean hasActions;
-	public boolean aBoolean779;
-	public int anInt781;
+	public boolean castsShadow;
+	public int animationId;
 	public int anInt783;
 	public int[] modifiedModelColors;
 	public String[] actions;
@@ -71,21 +70,21 @@ public final class ObjectDef {
 			if (cache[j].type == i)
 				return cache[j];
 		cacheIndex = (cacheIndex + 1) % 20;
-		ObjectDef class46 = cache[cacheIndex];
-		stream.currentOffset = streamIndices[i];
-		class46.type = i;
-		class46.setDefaults();
-		class46.readValues(stream);
+		ObjectDef objectDef = cache[cacheIndex];
+		stream.position = streamIndices[i];
+		objectDef.type = i;
+		objectDef.setDefaults();
+		objectDef.readValues(stream);
 
 		if (i == 11407 || i == 11408) {
-			class46 = forID(11404);
-			class46.type = i;
-			class46.modifiedModelColors = new int[]{7105, 8137, 7130, 5043, 7082};
+			objectDef = forID(11404);
+			objectDef.type = i;
+			objectDef.modifiedModelColors = new int[]{7105, 8137, 7130, 5043, 7082};
 			if (i == 11407)
-				class46.originalModelColors = new int[]{51126, 51149, 51149, 51113, 51113};
+				objectDef.originalModelColors = new int[]{51126, 51149, 51149, 51113, 51113};
 			else
-				class46.originalModelColors = new int[]{117, 127, 127, 96, 96};
-			return class46;
+				objectDef.originalModelColors = new int[]{117, 127, 127, 96, 96};
+			return objectDef;
 		}
 
 		switch (i) {
@@ -133,12 +132,12 @@ public final class ObjectDef {
 			case 26612:
 			case 26605:
 			case 26602:
-				class46.hasActions = true;
+				objectDef.hasActions = true;
 				break;
 			case 22472:
-				class46.name = "Tablet";
-				class46.actions = new String[5];
-				class46.actions[0] = "Create";
+				objectDef.name = "Tablet";
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Create";
 				break;
 
 			case 8720:
@@ -169,198 +168,214 @@ public final class ObjectDef {
 			case 26819:
 			case 26820:
 			case 26821:
-				class46.name = "Chill Booth";
-				class46.actions = new String[5];
-				class46.actions[1] = "Open shop";
-				class46.hasActions = true;
+				objectDef.name = "Chill Booth";
+				objectDef.actions = new String[5];
+				objectDef.actions[1] = "Open shop";
+				objectDef.hasActions = true;
 				break;
 
 			case 2097:
-				class46.name = "Anvil";
-				class46.description = "It's a solid iron block hammer thingy.".getBytes();
-				class46.actions = new String[5];
-				class46.actions[0] = "Hammer";
-				class46.hasActions = true;
+				objectDef.name = "Anvil";
+				objectDef.description = "It's a solid iron block hammer thingy.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Hammer";
+				objectDef.hasActions = true;
 				break;
 
 			case 2030:
-				class46.name = "Forge";
-				class46.description = "Wondering if i could get my blunt lit here..".getBytes();
-				class46.hasActions = true;
+				objectDef.name = "Forge";
+				objectDef.description = "Wondering if i could get my blunt lit here..".getBytes();
+				objectDef.hasActions = true;
 				break;
 
 			case 26181:
-				class46.name = "Stove";
-				class46.description = "Looks like someone attempted to cook meth on this stove.".getBytes();
-				class46.actions = new String[5];
-				class46.actions[0] = "Cook";
-				class46.hasActions = true;
+				objectDef.name = "Stove";
+				objectDef.description = "Looks like someone attempted to cook meth on this stove.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Cook";
+				objectDef.hasActions = true;
 				break;
 
 			case 10377:
-				class46.name = "Giant's Glory Hole";
-				class46.description = "HOLY FUCK! There is a lot a semen in there.".getBytes();
+				objectDef.name = "Giant's Glory Hole";
+				objectDef.description = "HOLY FUCK! There is a lot a semen in there.".getBytes();
 				break;
 
 			case 10379:
-				class46.name = "Weed Stash";
-				class46.description = "You sniff the boxes & It's Cheese Haze!".getBytes();
+				objectDef.name = "Weed Stash";
+				objectDef.description = "You sniff the boxes & It's Cheese Haze!".getBytes();
 				break;
 
 			case 10380:
-				class46.name = "Trim Waste";
-				class46.description = "Boxes filled with trimmed cannabis leaves and branches.".getBytes();
+				objectDef.name = "Trim Waste";
+				objectDef.description = "Boxes filled with trimmed cannabis leaves and branches.".getBytes();
 				break;
 
 			case 14854:
 			case 14855:
 			case 14856:
-				class46.name = "Fancy Rocks";
-				class46.description = "There are tons of gems in these rocks.".getBytes();
-				class46.hasActions = true;
+				objectDef.name = "Fancy Rocks";
+				objectDef.description = "There are tons of gems in these rocks.".getBytes();
+				objectDef.hasActions = true;
 				break;
 
 			case 14901:
-				class46.name = "Fire Essence";
-				class46.description = "It compels you to keep burning wood, but it also pays you!.".getBytes();
-				class46.actions = new String[5];
-				class46.actions[0] = "Offer to";
-				class46.hasActions = true;
+				objectDef.name = "Fire Essence";
+				objectDef.description = "It compels you to keep burning wood, but it also pays you!.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Offer to";
+				objectDef.hasActions = true;
 				break;
 
 			case 10376:
-				class46.name = "Cocaïne Stall";
-				class46.description = "You look and wonder.. Where are the topless women?".getBytes();
+				objectDef.name = "Cocaïne Stall";
+				objectDef.description = "You look and wonder.. Where are the topless women?".getBytes();
 				break;
 
 			case 26149:
-				class46.name = "Budz Core";
-				class46.description = "The BestBudz core, essence of all magic in the game.".getBytes();
-				class46.actions = new String[5];
-				class46.actions[0] = "Offer to";
-				class46.hasActions = true;
+				objectDef.name = "Budz Core";
+				objectDef.description = "The BestBudz core, essence of all magic in the game.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Blood Trial";
+				objectDef.hasActions = true;
+				break;
+
+			case 6114:
+				objectDef.name = "Blood Trial";
+				objectDef.description = "Attempt to flee from the Blood Trial.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Flee";
+				objectDef.hasActions = true;
 				break;
 
 			case 2072:
-				class46.name = "Game Crate";
-				class46.actions = new String[5];
-				class46.actions[0] = "Search";
+				objectDef.name = "Game Crate";
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Search";
 				break;
 
 			case 9472:
 			case 9371:
-				class46.name = "Stoner Market";
-				class46.actions = new String[5];
-				class46.actions[0] = "Info";
-				class46.actions[1] = "Edit Shop";
-				class46.actions[2] = "Explore Shops";
+				objectDef.name = "Stoner Market";
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Info";
+				objectDef.actions[1] = "Edit Shop";
+				objectDef.actions[2] = "Explore Shops";
 				break;
 
 			case 18772:
-				class46.name = "Misery Box";
-				class46.actions = new String[5];
-				class46.actions[0] = "Open";
+				objectDef.name = "Misery Box";
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Open";
 				break;
 
 			case 5249:
-				class46.name = "Fyah";
-				class46.description = "Bun dem!".getBytes();
+				objectDef.name = "Fyah";
+				objectDef.description = "Bun dem!".getBytes();
 				break;
 
 			case 13712:
-				class46.name = "Tin";
-				class46.description = "It's a Tin ore.".getBytes();
-				class46.actions = new String[5];
-				class46.actions[0] = "Collect";
+				objectDef.name = "Tin";
+				objectDef.description = "It's a Tin ore.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Collect";
 				break;
 
 			case 13709:
-				class46.name = "Copper";
-				class46.description = "It's a Copper ore.".getBytes();
-				class46.actions = new String[5];
-				class46.actions[0] = "Collect";
+				objectDef.name = "Copper";
+				objectDef.description = "It's a Copper ore.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Collect";
 				break;
 
 			case 13711:
-				class46.name = "Iron";
-				class46.description = "It's a Iron ore.".getBytes();
-				class46.actions = new String[5];
-				class46.actions[0] = "Collect";
+				objectDef.name = "Iron";
+				objectDef.description = "It's a Iron ore.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Collect";
 				break;
 
 			case 13714:
-				class46.name = "Coal";
-				class46.description = "It's a Coal ore.".getBytes();
-				class46.actions = new String[5];
-				class46.actions[0] = "Collect";
+				objectDef.name = "Coal";
+				objectDef.description = "It's a Coal ore.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Collect";
 				break;
 
 			case 13718:
-				class46.name = "Mithril";
-				class46.description = "It's a Mithril ore.".getBytes();
-				class46.actions = new String[5];
-				class46.actions[0] = "Collect";
+				objectDef.name = "Mithril";
+				objectDef.description = "It's a Mithril ore.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Collect";
 				break;
 
 			case 14168:
-				class46.name = "Adamantite";
-				class46.description = "It's a Adamantite ore.".getBytes();
-				class46.actions = new String[5];
-				class46.actions[0] = "Collect";
+				objectDef.name = "Adamantite";
+				objectDef.description = "It's a Adamantite ore.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Collect";
 				break;
 
 			case 13707:
-				class46.name = "Gold";
-				class46.description = "It's a Gold ore.".getBytes();
-				class46.actions = new String[5];
-				class46.actions[0] = "Collect";
+				objectDef.name = "Gold";
+				objectDef.description = "It's a Gold ore.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Collect";
 				break;
 
 			case 14175:
-				class46.name = "Runite";
-				class46.description = "It's a Runite ore.".getBytes();
-				class46.actions = new String[5];
-				class46.actions[0] = "Collect";
+				objectDef.name = "Runite";
+				objectDef.description = "It's a Runite ore.".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Collect";
 				break;
 
 			case 574:
-				class46.name = "Mage Spells";
-				class46.actions = new String[5];
-				class46.actions[0] = "Change";
+				objectDef.name = "Mage Spells";
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Change";
 				break;
 
 			case 575:
-				class46.name = "Altar";
-				class46.actions = new String[5];
-				class46.actions[0] = "Restore";
+				objectDef.name = "Altar";
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Restore";
 				break;
 
 			case 576:
-				class46.name = "Highscores";
-				class46.actions = new String[5];
-				class46.actions[0] = "View";
+				objectDef.name = "Highscores";
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "View";
 				break;
 
 			case 13618:
-				class46.name = "Wyverns";
-				class46.actions = new String[5];
-				class46.actions[0] = "Teleport-to";
+				objectDef.name = "Wyverns";
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Teleport-to";
 				break;
 
 			case 13619:
-				class46.name = "Fountain of Rune";
-				class46.actions = new String[5];
-				class46.actions[0] = "Teleport-to";
+				objectDef.name = "Fountain of Rune";
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Teleport-to";
 				break;
 
 			case 4090:
-				class46.name = "Blood altar";
-				class46.actions = new String[5];
-				class46.actions[0] = "Craft";
+				objectDef.name = "Blood altar";
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Craft";
+				break;
+
+			case 11744:
+				objectDef.name = "Stand";
+				objectDef.description = "Remember the days you had to run to the bank to withdraw/deposit?".getBytes();
+				objectDef.actions = new String[5];
+				objectDef.actions[0] = "Bank";
+				objectDef.hasActions = true;
 				break;
 		}
 
-		return class46;
+		return objectDef;
 	}
 
 	public static void nullLoader() {
@@ -371,9 +386,9 @@ public final class ObjectDef {
 		stream = null;
 	}
 
-	public static void unpackConfig(StreamLoader streamLoader) {
-		stream = new Stream(streamLoader.getDataForName("loc.dat"));
-		Stream stream = new Stream(streamLoader.getDataForName("loc.idx"));
+	public static void unpackConfig(ArchiveLoader archiveLoader) {
+		stream = new Stream(archiveLoader.extractFile("loc.dat"));
+		Stream stream = new Stream(archiveLoader.extractFile("loc.idx"));
 		int totalObjects = stream.readUnsignedWord();
 		streamIndices = new int[totalObjects];
 		int i = 2;
@@ -393,23 +408,23 @@ public final class ObjectDef {
 		description = null;
 		modifiedModelColors = null;
 		originalModelColors = null;
-		anInt744 = 1;
-		anInt761 = 1;
-		aBoolean767 = true;
-		aBoolean757 = true;
+		sizeX = 1;
+		sizeY = 1;
+		clipFlag = true;
+		blocksProjectiles = true;
 		hasActions = false;
-		aBoolean762 = false;
+		rotateHeights = false;
 		aBoolean769 = false;
-		aBoolean764 = false;
-		anInt781 = -1;
-		anInt775 = 16;
+		blocksMovement = false;
+		animationId = -1;
+		wallThickness = 16;
 		aByte737 = 0;
 		aByte742 = 0;
 		actions = null;
 		anInt746 = -1;
 		anInt758 = -1;
 		aBoolean751 = false;
-		aBoolean779 = true;
+		castsShadow = true;
 		anInt748 = 128;
 		anInt772 = 128;
 		anInt740 = 128;
@@ -420,84 +435,84 @@ public final class ObjectDef {
 		aBoolean736 = false;
 		aBoolean766 = false;
 		anInt760 = -1;
-		anInt774 = -1;
-		anInt749 = -1;
-		childrenIDs = null;
+		varbitId = -1;
+		configId = -1;
+		childIds = null;
 	}
 
-	public void method574(OnDemandFetcher class42_sub1) {
+	public void loadRequiredModels(CacheManager class42_sub1) {
 		if (anIntArray773 == null)
 			return;
-		for (int i : anIntArray773) class42_sub1.method560(i & 0xffff, 0);
+		for (int i : anIntArray773) class42_sub1.requestFile(i & 0xffff, 0);
 	}
 
-	public boolean method577(int i) {
+	public boolean hasType(int i) {
 		if (anIntArray776 == null) {
 			if (anIntArray773 == null)
 				return true;
 			if (i != 10)
 				return true;
 			for (int j : anIntArray773) {
-				if (!Model.method463(j & 0xffff))
+				if (!Model.isModelCached(j & 0xffff))
 					return false;
 			}
 			return true;
 		}
 		for (int j = 0; j < anIntArray776.length; j++)
 			if (anIntArray776[j] == i)
-				return Model.method463(anIntArray773[j] & 0xffff);
+				return Model.isModelCached(anIntArray773[j] & 0xffff);
 		return true;
 	}
 
-	public Model method578(int i, int j, int k, int l, int i1, int j1, int k1) {
-		Model model = method581(i, k1, j);
+	public Model getModel(int i, int j, int k, int l, int i1, int j1, int k1) {
+		Model model = getModel(i, k1, j);
 		if (model == null)
 			return null;
-		if (aBoolean762 || aBoolean769)
-			model = new Model(aBoolean762, aBoolean769, model);
-		if (aBoolean762) {
+		if (rotateHeights || aBoolean769)
+			model = new Model(rotateHeights, aBoolean769, model);
+		if (rotateHeights) {
 			int l1 = (k + l + i1 + j1) / 4;
-			for (int i2 = 0; i2 < model.anInt1626; i2++) {
-				int j2 = model.anIntArray1627[i2];
-				int k2 = model.anIntArray1629[i2];
+			for (int i2 = 0; i2 < model.vertexCount; i2++) {
+				int j2 = model.verticesX[i2];
+				int k2 = model.verticesZ[i2];
 				int l2 = k + ((l - k) * (j2 + 64)) / 128;
 				int i3 = j1 + ((i1 - j1) * (j2 + 64)) / 128;
 				int j3 = l2 + ((i3 - l2) * (k2 + 64)) / 128;
-				model.anIntArray1628[i2] += j3 - l1;
+				model.verticesY[i2] += j3 - l1;
 			}
-			model.method467();
+			model.calculateVerticalBounds();
 		}
 		return model;
 	}
 
-	public boolean method579() {
+	public boolean isModelLoaded() {
 		if (anIntArray773 == null)
 			return true;
 		for (int j : anIntArray773) {
-			if (!Model.method463(j & 0xffff))
+			if (!Model.isModelCached(j & 0xffff))
 				return false;
 		}
 		return true;
 	}
 
-	public ObjectDef method580() {
+	public ObjectDef getChildObject() {
 		int i = -1;
-		if (anInt774 != -1) {
-			VarBit varBit = VarBit.cache[anInt774];
-			int j = varBit.anInt648;
-			int k = varBit.anInt649;
-			int l = varBit.anInt650;
-			int i1 = Client.anIntArray1232[l - k];
+		if (varbitId != -1) {
+			VarBit varBit = VarBit.cache[varbitId];
+			int j = varBit.baseVar;
+			int k = varBit.startBit;
+			int l = varBit.endBit;
+			int i1 = Client.bitMasks[l - k];
 			i = client.variousSettings[j] >> k & i1;
-		} else if (anInt749 != -1)
-			i = client.variousSettings[anInt749];
-		if (i < 0 || i >= childrenIDs.length || childrenIDs[i] == -1)
+		} else if (configId != -1)
+			i = client.variousSettings[configId];
+		if (i < 0 || i >= childIds.length || childIds[i] == -1)
 			return null;
 		else
-			return forID(childrenIDs[i]);
+			return forID(childIds[i]);
 	}
 
-	public Model method581(int j, int k, int l) {
+	public Model getModel(int j, int k, int l) {
 		Model model = null;
 		long l1;
 		if (anIntArray776 == null) {
@@ -521,15 +536,15 @@ public final class ObjectDef {
 					if (model == null)
 						return null;
 					if (flag1)
-						model.method477();
+						model.mirrorZ();
 					mruNodes1.removeFromCache(model, l2);
 				}
 				if (k1 > 1)
-					aModelArray741s[i2] = model;
+					tempModels[i2] = model;
 			}
 
 			if (k1 > 1)
-				model = new Model(k1, aModelArray741s);
+				model = new Model(k1, tempModels);
 		} else {
 			int i1 = -1;
 			for (int j1 = 0; j1 < anIntArray776.length; j1++) {
@@ -555,7 +570,7 @@ public final class ObjectDef {
 				if (model == null)
 					return null;
 				if (flag3)
-					model.method477();
+					model.mirrorZ();
 				mruNodes1.removeFromCache(model, j2);
 			}
 		}
@@ -564,18 +579,18 @@ public final class ObjectDef {
 		boolean needsScale = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
 		boolean needsTranslate = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
 
-		Model model_3 = new Model(modifiedModelColors == null, SequenceFrame.method532(k),
+		Model model_3 = new Model(modifiedModelColors == null, SequenceFrame.isInvalidFrame(k),
 			l == 0 && k == -1 && !needsScale && !needsTranslate, Objects.requireNonNull(model));
 		if (k != -1) {
 			model_3.calculateNormals();
-			model_3.method470(k);
+			model_3.applyTransformation(k);
 			model_3.anIntArrayArray1658 = null;
 			model_3.anIntArrayArray1657 = null;
 		}
 
 		// Optimize rotation loop
 		for (int rot = 0; rot < l; rot++)
-			model_3.method473();
+			model_3.rotateY180();
 
 		if (modifiedModelColors != null) {
 			for (int k2 = 0; k2 < modifiedModelColors.length; k2++)
@@ -608,7 +623,7 @@ public final class ObjectDef {
 							anIntArray776[k1] = stream.readUnsignedByte();
 						}
 					} else {
-						stream.currentOffset += len * 3;
+						stream.position += len * 3;
 					}
 				}
 			} else if (type == 2)
@@ -624,31 +639,31 @@ public final class ObjectDef {
 						for (int l1 = 0; l1 < len; l1++)
 							anIntArray773[l1] = stream.readUnsignedWord();
 					} else {
-						stream.currentOffset += len * 2;
+						stream.position += len * 2;
 					}
 				}
 			} else if (type == 14)
-				anInt744 = stream.readUnsignedByte();
+				sizeX = stream.readUnsignedByte();
 			else if (type == 15)
-				anInt761 = stream.readUnsignedByte();
+				sizeY = stream.readUnsignedByte();
 			else if (type == 17)
-				aBoolean767 = false;
+				clipFlag = false;
 			else if (type == 18)
-				aBoolean757 = false;
+				blocksProjectiles = false;
 			else if (type == 19)
 				hasActions = (stream.readUnsignedByte() == 1);
 			else if (type == 21)
-				aBoolean762 = true;
+				rotateHeights = true;
 			else if (type == 22)
 				aBoolean769 = false;
 			else if (type == 23)
-				aBoolean764 = true;
+				blocksMovement = true;
 			else if (type == 24) {
-				anInt781 = stream.readUnsignedWord();
-				if (anInt781 == 65535)
-					anInt781 = -1;
+				animationId = stream.readUnsignedWord();
+				if (animationId == 65535)
+					animationId = -1;
 			} else if (type == 28)
-				anInt775 = stream.readUnsignedByte();
+				wallThickness = stream.readUnsignedByte();
 			else if (type == 29)
 				aByte737 = stream.readSignedByte();
 			else if (type == 39)
@@ -672,7 +687,7 @@ public final class ObjectDef {
 			else if (type == 62)
 				aBoolean751 = true;
 			else if (type == 64)
-				aBoolean779 = false;
+				castsShadow = false;
 			else if (type == 65)
 				anInt748 = stream.readUnsignedWord();
 			else if (type == 66)
@@ -696,18 +711,18 @@ public final class ObjectDef {
 			else if (type == 75)
 				anInt760 = stream.readUnsignedByte();
 			else if (type == 77) {
-				anInt774 = stream.readUnsignedWord();
-				if (anInt774 == 65535)
-					anInt774 = -1;
-				anInt749 = stream.readUnsignedWord();
-				if (anInt749 == 65535)
-					anInt749 = -1;
+				varbitId = stream.readUnsignedWord();
+				if (varbitId == 65535)
+					varbitId = -1;
+				configId = stream.readUnsignedWord();
+				if (configId == 65535)
+					configId = -1;
 				int j1 = stream.readUnsignedByte();
-				childrenIDs = new int[j1 + 1];
+				childIds = new int[j1 + 1];
 				for (int j2 = 0; j2 <= j1; j2++) {
-					childrenIDs[j2] = stream.readUnsignedWord();
-					if (childrenIDs[j2] == 65535)
-						childrenIDs[j2] = -1;
+					childIds[j2] = stream.readUnsignedWord();
+					if (childIds[j2] == 65535)
+						childIds[j2] = -1;
 				}
 			}
 		} while (true);
@@ -717,10 +732,10 @@ public final class ObjectDef {
 				hasActions = true;
 		}
 		if (aBoolean766) {
-			aBoolean767 = false;
-			aBoolean757 = false;
+			clipFlag = false;
+			blocksProjectiles = false;
 		}
 		if (anInt760 == -1)
-			anInt760 = aBoolean767 ? 1 : 0;
+			anInt760 = clipFlag ? 1 : 0;
 	}
 }

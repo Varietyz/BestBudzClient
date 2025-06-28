@@ -4,6 +4,7 @@ import com.bestbudz.data.AccountManager;
 import static com.bestbudz.engine.ClientLauncher.gpuContextManager;
 import static com.bestbudz.engine.ClientLauncher.gpuInitialized;
 import com.bestbudz.engine.core.Client;
+import static com.bestbudz.engine.core.login.logout.Reset.unlinkMRUNodes;
 import com.bestbudz.engine.gpu.GPURenderingEngine;
 import com.bestbudz.ui.handling.SettingHandler;
 import static com.bestbudz.ui.handling.input.Keyboard.console;
@@ -40,7 +41,7 @@ public class Logout extends Client
 		unlinkMRUNodes();
 		worldController.initToNull();
 		for (int i = 0; i < 4; i++)
-			aClass11Array1230[i].method210();
+			collisionMaps[i].reset();
 		System.gc();
 		stopMidi();
 		currentSong = -1;

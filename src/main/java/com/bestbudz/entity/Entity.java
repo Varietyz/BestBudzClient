@@ -16,70 +16,70 @@ public class Entity extends Animable {
   public final int[] hitIcon = new int[4];
   public int interactingEntity;
   public int anInt1503;
-  public int anInt1504;
+  public int mapIconScale;
   public int anInt1505;
   public String textSpoken;
   public int height;
   public int turnDirection;
-  public int anInt1511;
+  public int standAnimation;
   public int anInt1512;
-  public int anInt1513;
-  public int anInt1517;
-  public int anInt1518;
-  public int anInt1519;
-  public int anInt1520;
-  public int anInt1521;
-  public int anInt1522;
-  public int anInt1523;
+  public int chatType;
+  public int currentAnimation;
+  public int frameIndex;
+  public int frameTimer;
+  public int spotAnimId;
+  public int spotAnimFrame;
+  public int spotAnimTimer;
+  public int spotAnimStart;
   public int anInt1524;
   public int smallXYIndex;
   public int anim;
-  public int anInt1527;
-  public int anInt1528;
-  public int anInt1529;
-  public int anInt1530;
-  public int anInt1531;
+  public int animFrameIndex;
+  public int animFrameTimer;
+  public int animDelay;
+  public int animLoopCount;
+  public int chatEffect;
   public int loopCycleStatus;
-  public int currentHealth;
-  public int maxHealth;
+  public long currentHealth;
+  public long maxHealth;
   public int textCycle;
-  public int anInt1537;
+  public int lastUpdateCycle;
   public int anInt1538;
   public int anInt1539;
-  public int anInt1540;
-  public boolean aBoolean1541;
-  public int anInt1542;
+  public int size;
+  public boolean animChanged;
+  public int movementDelay;
   public int anInt1543;
   public int anInt1544;
   public int anInt1545;
   public int anInt1546;
-  public int anInt1547;
-  public int anInt1548;
+  public int animStart;
+  public int animEnd;
   public int anInt1549;
   Entity() {
     smallX = new int[10];
     smallY = new int[10];
     interactingEntity = -1;
-    anInt1504 = 32;
+    mapIconScale = 32;
     anInt1505 = -1;
     height = 200;
-    anInt1511 = -1;
+    standAnimation = -1;
     anInt1512 = -1;
     hitArray = new int[4];
     hitMarkTypes = new int[4];
     hitsLoopCycle = new int[4];
-    anInt1517 = -1;
-    anInt1520 = -1;
+    currentAnimation = -1;
+    spotAnimId = -1;
     anim = -1;
     loopCycleStatus = -1000;
     textCycle = 100;
-    anInt1540 = 1;
-    aBoolean1541 = false;
+    size = 1;
+    animChanged = false;
     aBooleanArray1553 = new boolean[10];
-    anInt1554 = -1;
-    anInt1555 = -1;
-    anInt1556 = -1;
-    anInt1557 = -1;
+    walkAnimation = -1;
+    turnRightAnimation = -1;
+    turnAroundAnimation = -1;
+    turnLeftAnimation = -1;
   }
 
   public final void setPos(int i, int j, boolean flag) {
@@ -102,17 +102,17 @@ public class Entity extends Animable {
       }
     }
     smallXYIndex = 0;
-    anInt1542 = 0;
+    movementDelay = 0;
     anInt1503 = 0;
     smallX[0] = i;
     smallY[0] = j;
-    x = smallX[0] * 128 + anInt1540 * 64;
-    y = smallY[0] * 128 + anInt1540 * 64;
+    x = smallX[0] * 128 + size * 64;
+    y = smallY[0] * 128 + size * 64;
   }
 
   public final void method446() {
     smallXYIndex = 0;
-    anInt1542 = 0;
+    movementDelay = 0;
   }
 
   public final void updateHitData(int markType, int damage, int l, int icon) {
@@ -171,14 +171,14 @@ public class Entity extends Animable {
   }
   public int x;
   public int y;
-  public int anInt1552;
+  public int orientation;
   public final boolean[] aBooleanArray1553;
-  public int anInt1554;
-  public int anInt1555;
-  public int anInt1556;
-  public int anInt1557;
+  public int walkAnimation;
+  public int turnRightAnimation;
+  public int turnAroundAnimation;
+  public int turnLeftAnimation;
 
-  public int nextAnimFrame;
-  public int nextIdleAnimFrame;
-  public int nextSpotAnimFrame;
+  public int nextAnimationFrame;
+  public int nextIdleFrame;
+  public int nextSpotFrame;
 }

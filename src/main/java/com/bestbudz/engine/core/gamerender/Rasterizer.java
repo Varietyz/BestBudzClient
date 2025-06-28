@@ -2,10 +2,8 @@ package com.bestbudz.engine.core.gamerender;
 
 import com.bestbudz.engine.config.SettingsConfig;
 import static com.bestbudz.engine.core.gamerender.ColorPalette.adjustColorBrightness;
-import com.bestbudz.engine.gpu.GPURenderingEngine;
-import com.bestbudz.engine.gpu.GPUShaders;
 import com.bestbudz.graphics.Background;
-import com.bestbudz.network.StreamLoader;
+import com.bestbudz.network.ArchiveLoader;
 
 public final class Rasterizer extends DrawingArea
 {
@@ -105,11 +103,11 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
-	public static void loadTextures(StreamLoader streamLoader) {
+	public static void loadTextures(ArchiveLoader archiveLoader) {
 		loadedTextureCount = 0;
 		for (int x = 0; x < textureAmount; x++)
 			try {
-				backgroundTextures[x] = new Background(streamLoader, String.valueOf(x), 0);
+				backgroundTextures[x] = new Background(archiveLoader, String.valueOf(x), 0);
 				if (lowMemoryMode && backgroundTextures[x].anInt1456 == 128)
 					backgroundTextures[x].method356();
 				else
@@ -150,17 +148,15 @@ public final class Rasterizer extends DrawingArea
 		activeMipmaps[textureId] = null;
 	}
 
+	// COMPLETE METHOD TO REPLACE: getMipmapTexels
 	public static int[][] getMipmapTexels(int textureId) {
-		// Prevent counter overflow
 		if (textureAccessCounter > 1000000) {
-			// Reset all counters to prevent overflow
 			for (int index = 0; index < textureAmount; index++) {
 				textureLastUsed[index] = 0;
 			}
 			textureAccessCounter = 1;
 		}
 
-		// Don't load textures for invalid IDs
 		if (textureId < 0 || textureId >= textureAmount) {
 			return null;
 		}
@@ -175,7 +171,6 @@ public final class Rasterizer extends DrawingArea
 			texels = texturePool[--poolIndex];
 			texturePool[poolIndex] = null;
 		} else {
-			// Improved LRU eviction with proper cleanup
 			int lastUsed = Integer.MAX_VALUE;
 			int target = -1;
 			for (int l = 0; l < loadedTextureCount; l++) {
@@ -188,17 +183,7 @@ public final class Rasterizer extends DrawingArea
 			if (target != -1) {
 				texels = activeMipmaps[target];
 				activeMipmaps[target] = null;
-
-				// Clear the texture data to prevent memory leaks
-				if (texels != null) {
-					for (int index = 0; index < texels.length; index++) {
-						if (texels[index] != null) {
-							// Don't null the array, just clear references in pool
-						}
-					}
-				}
 			} else {
-				// Fallback: create new texture array
 				texels = new int[][] {
 					new int[16384], new int[4096], new int[1024], new int[256],
 					new int[64], new int[16], new int[4], new int[1]
@@ -207,19 +192,17 @@ public final class Rasterizer extends DrawingArea
 		}
 
 		activeMipmaps[textureId] = texels;
-
-		// Rest of the texture generation code remains the same...
 		Background background = backgroundTextures[textureId];
 		int[] texturePalette = textureColorArrays[textureId];
 
-		if (background.anInt1452 == 64) {
+		if (background.backgroundWidth == 64) {
 			for (int j1 = 0; j1 < 128; j1++) {
 				for (int j2 = 0; j2 < 128; j2++)
-					texels[0][j2 + (j1 << 7)] = texturePalette[background.aByteArray1450[(j2 >> 1) + ((j1 >> 1) << 6)]];
+					texels[0][j2 + (j1 << 7)] = texturePalette[background.textureData[(j2 >> 1) + ((j1 >> 1) << 6)]];
 			}
 		} else {
 			for (int shade1 = 0; shade1 < 16384; shade1++)
-				texels[0][shade1] = texturePalette[background.aByteArray1450[shade1]];
+				texels[0][shade1] = texturePalette[background.textureData[shade1]];
 		}
 
 		textureHasTransparency[textureId] = false;
@@ -230,7 +213,6 @@ public final class Rasterizer extends DrawingArea
 				textureHasTransparency[textureId] = true;
 		}
 
-		// Mipmap generation code remains the same...
 		for (int level = 1, size = 64; level < 8; level++) {
 			int[] src = texels[level - 1];
 			int[] dst = texels[level];
@@ -318,6 +300,438 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
+	// NEW METHOD TO ADD: drawDepthTriangle
+	public static void drawDepthTriangle(int x_a, int x_b, int x_c, int y_a, int y_b, int y_c, float z_a, float z_b, float z_c) {
+		int a_to_b = 0;
+		if (y_b != y_a) {
+			a_to_b = (x_b - x_a << 16) / (y_b - y_a);
+		}
+		int b_to_c = 0;
+		if (y_c != y_b) {
+			b_to_c = (x_c - x_b << 16) / (y_c - y_b);
+		}
+		int c_to_a = 0;
+		if (y_c != y_a) {
+			c_to_a = (x_a - x_c << 16) / (y_a - y_c);
+		}
+
+		float b_aX = x_b - x_a;
+		float b_aY = y_b - y_a;
+		float c_aX = x_c - x_a;
+		float c_aY = y_c - y_a;
+		float b_aZ = z_b - z_a;
+		float c_aZ = z_c - z_a;
+
+		float div = b_aX * c_aY - c_aX * b_aY;
+		float depth_slope = (b_aZ * c_aY - c_aZ * b_aY) / div;
+		float depth_increment = (c_aZ * b_aX - b_aZ * c_aX) / div;
+		if (y_a <= y_b && y_a <= y_c) {
+			if (y_a < DrawingArea.bottomY) {
+				if (y_b > DrawingArea.bottomY)
+					y_b = DrawingArea.bottomY;
+				if (y_c > DrawingArea.bottomY)
+					y_c = DrawingArea.bottomY;
+				z_a = z_a - depth_slope * x_a + depth_slope;
+				if (y_b < y_c) {
+					x_c = x_a <<= 16;
+					if (y_a < 0) {
+						x_c -= c_to_a * y_a;
+						x_a -= a_to_b * y_a;
+						z_a -= depth_increment * y_a;
+						y_a = 0;
+					}
+					x_b <<= 16;
+					if (y_b < 0) {
+						x_b -= b_to_c * y_b;
+						y_b = 0;
+					}
+					if (y_a != y_b && c_to_a < a_to_b || y_a == y_b && c_to_a > b_to_c) {
+						y_c -= y_b;
+						y_b -= y_a;
+						y_a = scanlineOffsets[y_a];
+						while (--y_b >= 0) {
+							drawDepthTriangleScanline(y_a, x_c >> 16, x_a >> 16, z_a, depth_slope);
+							x_c += c_to_a;
+							x_a += a_to_b;
+							z_a += depth_increment;
+							y_a += DrawingArea.width;
+						}
+						while (--y_c >= 0) {
+							drawDepthTriangleScanline(y_a, x_c >> 16, x_b >> 16, z_a, depth_slope);
+							x_c += c_to_a;
+							x_b += b_to_c;
+							z_a += depth_increment;
+							y_a += DrawingArea.width;
+						}
+					} else {
+						y_c -= y_b;
+						y_b -= y_a;
+						y_a = scanlineOffsets[y_a];
+						while (--y_b >= 0) {
+							drawDepthTriangleScanline(y_a, x_a >> 16, x_c >> 16, z_a, depth_slope);
+							x_c += c_to_a;
+							x_a += a_to_b;
+							z_a += depth_increment;
+							y_a += DrawingArea.width;
+						}
+						while (--y_c >= 0) {
+							drawDepthTriangleScanline(y_a, x_b >> 16, x_c >> 16, z_a, depth_slope);
+							x_c += c_to_a;
+							x_b += b_to_c;
+							z_a += depth_increment;
+							y_a += DrawingArea.width;
+						}
+					}
+				} else {
+					x_b = x_a <<= 16;
+					if (y_a < 0) {
+						x_b -= c_to_a * y_a;
+						x_a -= a_to_b * y_a;
+						z_a -= depth_increment * y_a;
+						y_a = 0;
+					}
+					x_c <<= 16;
+					if (y_c < 0) {
+						x_c -= b_to_c * y_c;
+						y_c = 0;
+					}
+					if (y_a != y_c && c_to_a < a_to_b || y_a == y_c && b_to_c > a_to_b) {
+						y_b -= y_c;
+						y_c -= y_a;
+						y_a = scanlineOffsets[y_a];
+						while (--y_c >= 0) {
+							drawDepthTriangleScanline(y_a, x_b >> 16, x_a >> 16, z_a, depth_slope);
+							x_b += c_to_a;
+							x_a += a_to_b;
+							z_a += depth_increment;
+							y_a += DrawingArea.width;
+						}
+						while (--y_b >= 0) {
+							drawDepthTriangleScanline(y_a, x_c >> 16, x_a >> 16, z_a, depth_slope);
+							x_c += b_to_c;
+							x_a += a_to_b;
+							z_a += depth_increment;
+							y_a += DrawingArea.width;
+						}
+					} else {
+						y_b -= y_c;
+						y_c -= y_a;
+						y_a = scanlineOffsets[y_a];
+						while (--y_c >= 0) {
+							drawDepthTriangleScanline(y_a, x_a >> 16, x_b >> 16, z_a, depth_slope);
+							x_b += c_to_a;
+							x_a += a_to_b;
+							z_a += depth_increment;
+							y_a += DrawingArea.width;
+						}
+						while (--y_b >= 0) {
+							drawDepthTriangleScanline(y_a, x_a >> 16, x_c >> 16, z_a, depth_slope);
+							x_c += b_to_c;
+							x_a += a_to_b;
+							z_a += depth_increment;
+							y_a += DrawingArea.width;
+						}
+					}
+				}
+			}
+		} else if (y_b <= y_c) {
+			if (y_b < DrawingArea.bottomY) {
+				if (y_c > DrawingArea.bottomY)
+					y_c = DrawingArea.bottomY;
+				if (y_a > DrawingArea.bottomY)
+					y_a = DrawingArea.bottomY;
+				z_b = z_b - depth_slope * x_b + depth_slope;
+				if (y_c < y_a) {
+					x_a = x_b <<= 16;
+					if (y_b < 0) {
+						x_a -= a_to_b * y_b;
+						x_b -= b_to_c * y_b;
+						z_b -= depth_increment * y_b;
+						y_b = 0;
+					}
+					x_c <<= 16;
+					if (y_c < 0) {
+						x_c -= c_to_a * y_c;
+						y_c = 0;
+					}
+					if (y_b != y_c && a_to_b < b_to_c || y_b == y_c && a_to_b > c_to_a) {
+						y_a -= y_c;
+						y_c -= y_b;
+						y_b = scanlineOffsets[y_b];
+						while (--y_c >= 0) {
+							drawDepthTriangleScanline(y_b, x_a >> 16, x_b >> 16, z_b, depth_slope);
+							x_a += a_to_b;
+							x_b += b_to_c;
+							z_b += depth_increment;
+							y_b += DrawingArea.width;
+						}
+						while (--y_a >= 0) {
+							drawDepthTriangleScanline(y_b, x_a >> 16, x_c >> 16, z_b, depth_slope);
+							x_a += a_to_b;
+							x_c += c_to_a;
+							z_b += depth_increment;
+							y_b += DrawingArea.width;
+						}
+					} else {
+						y_a -= y_c;
+						y_c -= y_b;
+						y_b = scanlineOffsets[y_b];
+						while (--y_c >= 0) {
+							drawDepthTriangleScanline(y_b, x_b >> 16, x_a >> 16, z_b, depth_slope);
+							x_a += a_to_b;
+							x_b += b_to_c;
+							z_b += depth_increment;
+							y_b += DrawingArea.width;
+						}
+						while (--y_a >= 0) {
+							drawDepthTriangleScanline(y_b, x_c >> 16, x_a >> 16, z_b, depth_slope);
+							x_a += a_to_b;
+							x_c += c_to_a;
+							z_b += depth_increment;
+							y_b += DrawingArea.width;
+						}
+					}
+				} else {
+					x_c = x_b <<= 16;
+					if (y_b < 0) {
+						x_c -= a_to_b * y_b;
+						x_b -= b_to_c * y_b;
+						z_b -= depth_increment * y_b;
+						y_b = 0;
+					}
+					x_a <<= 16;
+					if (y_a < 0) {
+						x_a -= c_to_a * y_a;
+						y_a = 0;
+					}
+					if (a_to_b < b_to_c) {
+						y_c -= y_a;
+						y_a -= y_b;
+						y_b = scanlineOffsets[y_b];
+						while (--y_a >= 0) {
+							drawDepthTriangleScanline(y_b, x_c >> 16, x_b >> 16, z_b, depth_slope);
+							x_c += a_to_b;
+							x_b += b_to_c;
+							z_b += depth_increment;
+							y_b += DrawingArea.width;
+						}
+						while (--y_c >= 0) {
+							drawDepthTriangleScanline(y_b, x_a >> 16, x_b >> 16, z_b, depth_slope);
+							x_a += c_to_a;
+							x_b += b_to_c;
+							z_b += depth_increment;
+							y_b += DrawingArea.width;
+						}
+					} else {
+						y_c -= y_a;
+						y_a -= y_b;
+						y_b = scanlineOffsets[y_b];
+						while (--y_a >= 0) {
+							drawDepthTriangleScanline(y_b, x_b >> 16, x_c >> 16, z_b, depth_slope);
+							x_c += a_to_b;
+							x_b += b_to_c;
+							z_b += depth_increment;
+							y_b += DrawingArea.width;
+						}
+						while (--y_c >= 0) {
+							drawDepthTriangleScanline(y_b, x_b >> 16, x_a >> 16, z_b, depth_slope);
+							x_a += c_to_a;
+							x_b += b_to_c;
+							z_b += depth_increment;
+							y_b += DrawingArea.width;
+						}
+					}
+				}
+			}
+		} else if (y_c < DrawingArea.bottomY) {
+			if (y_a > DrawingArea.bottomY)
+				y_a = DrawingArea.bottomY;
+			if (y_b > DrawingArea.bottomY)
+				y_b = DrawingArea.bottomY;
+			z_c = z_c - depth_slope * x_c + depth_slope;
+			if (y_a < y_b) {
+				x_b = x_c <<= 16;
+				if (y_c < 0) {
+					x_b -= b_to_c * y_c;
+					x_c -= c_to_a * y_c;
+					z_c -= depth_increment * y_c;
+					y_c = 0;
+				}
+				x_a <<= 16;
+				if (y_a < 0) {
+					x_a -= a_to_b * y_a;
+					y_a = 0;
+				}
+				if (b_to_c < c_to_a) {
+					y_b -= y_a;
+					y_a -= y_c;
+					y_c = scanlineOffsets[y_c];
+					while (--y_a >= 0) {
+						drawDepthTriangleScanline(y_c, x_b >> 16, x_c >> 16, z_c, depth_slope);
+						x_b += b_to_c;
+						x_c += c_to_a;
+						z_c += depth_increment;
+						y_c += DrawingArea.width;
+					}
+					while (--y_b >= 0) {
+						drawDepthTriangleScanline(y_c, x_b >> 16, x_a >> 16, z_c, depth_slope);
+						x_b += b_to_c;
+						x_a += a_to_b;
+						z_c += depth_increment;
+						y_c += DrawingArea.width;
+					}
+				} else {
+					y_b -= y_a;
+					y_a -= y_c;
+					y_c = scanlineOffsets[y_c];
+					while (--y_a >= 0) {
+						drawDepthTriangleScanline(y_c, x_c >> 16, x_b >> 16, z_c, depth_slope);
+						x_b += b_to_c;
+						x_c += c_to_a;
+						z_c += depth_increment;
+						y_c += DrawingArea.width;
+					}
+					while (--y_b >= 0) {
+						drawDepthTriangleScanline(y_c, x_a >> 16, x_b >> 16, z_c, depth_slope);
+						x_b += b_to_c;
+						x_a += a_to_b;
+						z_c += depth_increment;
+						y_c += DrawingArea.width;
+					}
+				}
+			} else {
+				x_a = x_c <<= 16;
+				if (y_c < 0) {
+					x_a -= b_to_c * y_c;
+					x_c -= c_to_a * y_c;
+					z_c -= depth_increment * y_c;
+					y_c = 0;
+				}
+				x_b <<= 16;
+				if (y_b < 0) {
+					x_b -= a_to_b * y_b;
+					y_b = 0;
+				}
+				if (b_to_c < c_to_a) {
+					y_a -= y_b;
+					y_b -= y_c;
+					y_c = scanlineOffsets[y_c];
+					while (--y_b >= 0) {
+						drawDepthTriangleScanline(y_c, x_a >> 16, x_c >> 16, z_c, depth_slope);
+						x_a += b_to_c;
+						x_c += c_to_a;
+						z_c += depth_increment;
+						y_c += DrawingArea.width;
+					}
+					while (--y_a >= 0) {
+						drawDepthTriangleScanline(y_c, x_b >> 16, x_c >> 16, z_c, depth_slope);
+						x_b += a_to_b;
+						x_c += c_to_a;
+						z_c += depth_increment;
+						y_c += DrawingArea.width;
+					}
+				} else {
+					y_a -= y_b;
+					y_b -= y_c;
+					y_c = scanlineOffsets[y_c];
+					while (--y_b >= 0) {
+						drawDepthTriangleScanline(y_c, x_c >> 16, x_a >> 16, z_c, depth_slope);
+						x_a += b_to_c;
+						x_c += c_to_a;
+						z_c += depth_increment;
+						y_c += DrawingArea.width;
+					}
+					while (--y_a >= 0) {
+						drawDepthTriangleScanline(y_c, x_c >> 16, x_b >> 16, z_c, depth_slope);
+						x_b += a_to_b;
+						x_c += c_to_a;
+						z_c += depth_increment;
+						y_c += DrawingArea.width;
+					}
+				}
+			}
+		}
+	}
+
+	// NEW METHOD TO ADD: drawDepthTriangleScanline
+	private static void drawDepthTriangleScanline(int dest_off, int start_x, int end_x, float depth, float depth_slope) {
+		int dbl = DrawingArea.depthBuffer.length;
+		if (enableClipping) {
+			if (end_x > DrawingArea.width) {
+				end_x = DrawingArea.width;
+			}
+			if (start_x < 0) {
+				start_x = 0;
+			}
+		}
+		if (start_x >= end_x) {
+			return;
+		}
+		dest_off += start_x - 1;
+		int loops = end_x - start_x >> 2;
+		depth += depth_slope * (float) start_x;
+		if (alphaBlendValue == 0) {
+			while (--loops >= 0) {
+				dest_off++;
+				if (dest_off >= 0 && dest_off < dbl) {
+					DrawingArea.depthBuffer[dest_off] = depth;
+				}
+				depth += depth_slope;
+				dest_off++;
+				if (dest_off >= 0 && dest_off < dbl) {
+					DrawingArea.depthBuffer[dest_off] = depth;
+				}
+				depth += depth_slope;
+				dest_off++;
+				if (dest_off >= 0 && dest_off < dbl) {
+					DrawingArea.depthBuffer[dest_off] = depth;
+				}
+				depth += depth_slope;
+				dest_off++;
+				if (dest_off >= 0 && dest_off < dbl) {
+					DrawingArea.depthBuffer[dest_off] = depth;
+				}
+				depth += depth_slope;
+			}
+			for (loops = end_x - start_x & 3; --loops >= 0;) {
+				dest_off++;
+				if (dest_off >= 0 && dest_off < dbl) {
+					DrawingArea.depthBuffer[dest_off] = depth;
+				}
+				depth += depth_slope;
+			}
+			return;
+		}
+		while (--loops >= 0) {
+			dest_off++;
+			if (dest_off >= 0 && dest_off < dbl) {
+				DrawingArea.depthBuffer[dest_off] = depth;
+			}
+			depth += depth_slope;
+			dest_off++;
+			if (dest_off >= 0 && dest_off < dbl) {
+				DrawingArea.depthBuffer[dest_off] = depth;
+			}
+			depth += depth_slope;
+			dest_off++;
+			if (dest_off >= 0 && dest_off < dbl) {
+				DrawingArea.depthBuffer[dest_off] = depth;
+			}
+			depth += depth_slope;
+			dest_off++;
+			if (dest_off >= 0 && dest_off < dbl) {
+				DrawingArea.depthBuffer[dest_off] = depth;
+			}
+			depth += depth_slope;
+		}
+		for (loops = end_x - start_x & 3; --loops >= 0;) {
+			dest_off++;
+			if (dest_off >= 0 && dest_off < dbl) {
+				DrawingArea.depthBuffer[dest_off] = depth;
+			}
+			depth += depth_slope;
+		}
+	}
 
 	public static void renderFlatTriangle(int vertexY1, int vertexY2, int vertexY3, int vertexX1, int vertexX2, int vertexX3,
 										  int color1, int color2, int color3, float vertexZ1, float vertexZ2, float vertexZ3) {
@@ -330,23 +744,9 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
-	public static void renderTriangle(int vertexY1, int vertexY2, int vertexY3, int vertexX1, int vertexX2, int vertexX3,
-									  int color1, int color2, int color3, float vertexZ1, float vertexZ2, float vertexZ3) {
 
-		// Check if this is main game rendering (not UI)
-		boolean isMainGame = (DrawingArea.width >= 1200 && DrawingArea.height >= 700);
-
-		if (GPURenderingEngine.isEnabled()) {
-			// 🚀 GPU PATH: Send triangle to GPU
-			GPUShaders.renderTriangle(vertexX1, vertexY1, vertexX2, vertexY2, vertexX3, vertexY3, color1, color2, color3, vertexZ1, vertexZ2, vertexZ3);
-		} else {
-			// 💻 CPU FALLBACK: Use existing CPU code
-			renderTriangleCPU(vertexY1, vertexY2, vertexY3, vertexX1, vertexX2, vertexX3, color1, color2, color3, vertexZ1, vertexZ2, vertexZ3);
-		}
-	}
-
-	public static void renderTriangleCPU(int vertexY1, int vertexY2, int vertexY3, int vertexX1, int vertexX2, int vertexX3, int color1, int color2, int color3, float vertexZ1,
-										 float vertexZ2, float vertexZ3) {
+	public static void renderTriangle(int vertexY1, int vertexY2, int vertexY3, int vertexX1, int vertexX2, int vertexX3, int color1, int color2, int color3, float vertexZ1,
+									  float vertexZ2, float vertexZ3) {
 		if ((vertexY1 < 0 && vertexY2 < 0 && vertexY3 < 0) || (vertexY1 >= DrawingArea.bottomY && vertexY2 >= DrawingArea.bottomY && vertexY3 >= DrawingArea.bottomY))
 			return;
 
@@ -357,28 +757,20 @@ public final class Rasterizer extends DrawingArea
 			return;
 		}
 
-		// Backface culling - skip triangles facing away
 		if (enableDepthBuffer) {
 			int crossProduct = (vertexX2 - vertexX1) * (vertexY3 - vertexY1) - (vertexX3 - vertexX1) * (vertexY2 - vertexY1);
-			if (crossProduct >= 0) {
-				return; // Triangle is facing away from camera
-			}
-
-			// Skip tiny triangles (sub-pixel)
-			int triangleArea = Math.abs(crossProduct);
-			if (triangleArea < 2) {
-				return; // Triangle too small to see
+			if (crossProduct >= 1) {
+				return;
 			}
 		}
 
-		// Skip triangles completely outside viewport
 		int minX = Math.min(Math.min(vertexX1, vertexX2), vertexX3);
 		int maxX = Math.max(Math.max(vertexX1, vertexX2), vertexX3);
 		int minY = Math.min(Math.min(vertexY1, vertexY2), vertexY3);
 		int maxY = Math.max(Math.max(vertexY1, vertexY2), vertexY3);
 
 		if (maxX < 0 || minX >= DrawingArea.width || maxY < 0 || minY >= DrawingArea.height) {
-			return; // Triangle completely outside screen
+			return;
 		}
 
 		int rgb1 = colorPalette[color1];
@@ -984,13 +1376,14 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
+	// COMPLETE METHOD TO REPLACE: rasterizeScanline
 	public static void rasterizeScanline(int[] pixelBuffer, int offset, int vertexX1, int vertexX2, int r1, int g1, int b1, int r2, int g2, int b2,
 										 float depth, float depthSlopeX) {
-
 		int n = vertexX2 - vertexX1;
 		if (n <= 0) {
 			return;
 		}
+
 		r2 = (r2 - r1) / n;
 		g2 = (g2 - g1) / n;
 		b2 = (b2 - b1) / n;
@@ -1007,10 +1400,7 @@ public final class Rasterizer extends DrawingArea
 				vertexX1 = 0;
 			}
 		}
-		if (vertexX1 < vertexX2) {
-			offset += vertexX1;
-			depth += depthSlopeX * (float) vertexX1;
-			/* // CAREFUL OPTIMIZING THIS BLOCK SCOPE, CHANGES HERE COULD BREAK ITEM RENDERING. HOWEVER IT DOES SOLVE OBJECTS AND ROOF DISTANCE DEPTH. BUT BREAKS ITEM DEPTH!
+					/* // CAREFUL OPTIMIZING THIS BLOCK SCOPE, CHANGES HERE COULD BREAK ITEM RENDERING. HOWEVER IT DOES SOLVE OBJECTS AND ROOF DISTANCE DEPTH. BUT BREAKS ITEM DEPTH!
 			See an optimised version here:
 			* 			if (alphaBlendValue == 0) {
 				while (--n >= 0) {
@@ -1028,6 +1418,9 @@ public final class Rasterizer extends DrawingArea
 
 					This could be a replacement for the code below, but remember, it fixes roof culling, it breaks item culling.
 			*/
+		if (vertexX1 < vertexX2) {
+			offset += vertexX1;
+			depth += depthSlopeX * (float) vertexX1;
 			if (alphaBlendValue == 0) {
 				while (--n >= 0) {
 					pixelBuffer[offset] = (r1 & 0xff0000) | (g1 >> 8 & 0xff00) | (b1 >> 16 & 0xff);
@@ -1418,6 +1811,7 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
+	// COMPLETE METHOD TO REPLACE: rasterizeSolidScanline
 	private static void rasterizeSolidScanline(int[] pixelBuffer, int offset, int color, int start_x, int end_x, float depth,
 											   float depthSlopeX) {
 		int rgb;
@@ -1438,11 +1832,6 @@ public final class Rasterizer extends DrawingArea
 		if (alphaBlendValue == 0) {
 			while (--rgb >= 0) {
 				for (int index = 0; index < 4; index++) {
-					if (enableDepthBuffer && depth >= DrawingArea.depthBuffer[offset]) {
-						offset++;
-						depth += depthSlopeX;
-						continue;
-					}
 					pixelBuffer[offset] = color;
 					DrawingArea.depthBuffer[offset] = depth;
 					offset++;
@@ -1450,11 +1839,6 @@ public final class Rasterizer extends DrawingArea
 				}
 			}
 			for (rgb = end_x - start_x & 3; --rgb >= 0;) {
-				if (enableDepthBuffer && depth >= DrawingArea.depthBuffer[offset]) {
-					offset++;
-					depth += depthSlopeX;
-					continue;
-				}
 				pixelBuffer[offset] = color;
 				DrawingArea.depthBuffer[offset] = depth;
 				offset++;
@@ -1494,20 +1878,6 @@ public final class Rasterizer extends DrawingArea
 	}
 
 	public static void renderTexturedTriangle(int y_a, int y_b, int y_c, int x_a, int x_b, int x_c, int shade2, int l2, int l3, int textureU1,
-											  int textureU2, int textureU3, int textureV1, int textureV2, int textureV3, int textureW1, int textureW2, int textureW3, int textureId, float vertexZ1, float vertexZ2,
-											  float vertexZ3) {
-		boolean isMainGame = (DrawingArea.width >= 1200 && DrawingArea.height >= 700);
-
-		if (isMainGame && GPURenderingEngine.isEnabled()) {
-			// 🚀 GPU PATH: Send textured triangle to GPU
-			GPUShaders.renderTexturedTriangle(y_a, y_b, y_c, x_a, x_b, x_c, shade2, l2, l3, textureU1, textureU2, textureU3, textureV1, textureV2, textureV3, textureW1, textureW2, textureW3, textureId, vertexZ1, vertexZ2,vertexZ3);
-		} else {
-			// 💻 CPU FALLBACK
-			renderTexturedTriangleCPU(y_a, y_b, y_c, x_a, x_b, x_c, shade2, l2, l3, textureU1, textureU2, textureU3, textureV1, textureV2, textureV3, textureW1, textureW2, textureW3, textureId, vertexZ1, vertexZ2,vertexZ3);
-		}
-	}
-
-	public static void renderTexturedTriangleCPU(int y_a, int y_b, int y_c, int x_a, int x_b, int x_c, int shade2, int l2, int l3, int textureU1,
 												 int textureU2, int textureU3, int textureV1, int textureV2, int textureV3, int textureW1, int textureW2, int textureW3, int textureId, float vertexZ1, float vertexZ2,
 												 float vertexZ3) {
 		try {
@@ -2115,6 +2485,7 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
+	// COMPLETE METHOD TO REPLACE: rasterizeTexturedScanline
 	private static void rasterizeTexturedScanline(int[] pixelBuffer, int[] texture, int pixelBufferOffset, int start_x, int end_x, int shadeValue,
 												  int gradient, int a1, int i2, int j2, int k2, int a2, int i3, float depth, float depthSlopeX) {
 		int index = 0;
@@ -2168,88 +2539,19 @@ public final class Rasterizer extends DrawingArea
 		int textureVStep = nextTextureV - x >> 3;
 		if (isOpaque) {
 			while (n-- > 0) {
-				if (enableDepthBuffer && depth >= DrawingArea.depthBuffer[pixelBufferOffset]) {
-					depth += depthSlopeX;
+				for (int i = 0; i < 8; i++) {
+					int rgb = texture[texelPos((x & 0x3f80) + (index >> 7))];
+					int l = shadeValue >> 16;
+					pixelBuffer[pixelBufferOffset] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
+					DrawingArea.depthBuffer[pixelBufferOffset] = depth;
 					pixelBufferOffset++;
+					depth += depthSlopeX;
 					index += textureUStep;
 					x += textureVStep;
 					shadeValue += dl;
-					continue;
 				}
-				int rgb;
-				int l;
-				rgb = texture[texelPos((x & 0x3f80) + (index >> 7))];
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-				pixelBufferOffset++;
-				depth += depthSlopeX;
-				index += textureUStep;
-				x += textureVStep;
-				shadeValue += dl;
-				rgb = texture[texelPos((x & 0x3f80) + (index >> 7))];
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-				pixelBufferOffset++;
-				depth += depthSlopeX;
-				index += textureUStep;
-				x += textureVStep;
-				shadeValue += dl;
-				rgb = texture[texelPos((x & 0x3f80) + (index >> 7))];
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-				pixelBufferOffset++;
-				depth += depthSlopeX;
-				index += textureUStep;
-				x += textureVStep;
-				shadeValue += dl;
-				rgb = texture[texelPos((x & 0x3f80) + (index >> 7))];
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-				pixelBufferOffset++;
-				depth += depthSlopeX;
-				index += textureUStep;
-				x += textureVStep;
-				shadeValue += dl;
-				rgb = texture[texelPos((x & 0x3f80) + (index >> 7))];
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-				pixelBufferOffset++;
-				depth += depthSlopeX;
-				index += textureUStep;
-				x += textureVStep;
-				shadeValue += dl;
-				rgb = texture[texelPos((x & 0x3f80) + (index >> 7))];
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-				pixelBufferOffset++;
-				depth += depthSlopeX;
-				index += textureUStep;
-				x += textureVStep;
-				shadeValue += dl;
-				rgb = texture[texelPos((x & 0x3f80) + (index >> 7))];
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-				pixelBufferOffset++;
-				depth += depthSlopeX;
-				index += textureUStep;
-				x += textureVStep;
-				shadeValue += dl;
-				rgb = texture[texelPos((x & 0x3f80) + (index >> 7))];
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-				pixelBufferOffset++;
-				depth += depthSlopeX;
-				index += textureUStep;
-				x += textureVStep;
-				shadeValue += dl;
+				index = nextTextureU;
+				x = nextTextureV;
 				a1 += k2;
 				i2 += a2;
 				j2 += i3;
@@ -2267,10 +2569,8 @@ public final class Rasterizer extends DrawingArea
 				shadeValue += dl;
 			}
 			for (n = end_x - start_x & 7; n-- > 0;) {
-				int rgb;
-				int l;
-				rgb = texture[texelPos((x & 0x3f80) + (index >> 7))];
-				l = shadeValue >> 16;
+				int rgb = texture[texelPos((x & 0x3f80) + (index >> 7))];
+				int l = shadeValue >> 16;
 				pixelBuffer[pixelBufferOffset] = ((rgb & 0xff00ff) * l & ~0xff00ff) + ((rgb & 0xff00) * l & 0xff0000) >> 8;
 				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
 				pixelBufferOffset++;
@@ -2282,87 +2582,21 @@ public final class Rasterizer extends DrawingArea
 			return;
 		}
 		while (n-- > 0) {
-			int i9;
-			int l;
-			if ((i9 = texture[texelPos((x & 0x3f80) + (index >> 7))]) != 0) {
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
+			for (int i = 0; i < 8; i++) {
+				int i9 = texture[texelPos((x & 0x3f80) + (index >> 7))];
+				if (i9 != 0) {
+					int l = shadeValue >> 16;
+					pixelBuffer[pixelBufferOffset] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
+					DrawingArea.depthBuffer[pixelBufferOffset] = depth;
+				}
+				depth += depthSlopeX;
+				pixelBufferOffset++;
+				index += textureUStep;
+				x += textureVStep;
+				shadeValue += dl;
 			}
-			depth += depthSlopeX;
-			pixelBufferOffset++;
-			index += textureUStep;
-			x += textureVStep;
-			shadeValue += dl;
-			if ((i9 = texture[texelPos((x & 0x3f80) + (index >> 7))]) != 0) {
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-			}
-			depth += depthSlopeX;
-			pixelBufferOffset++;
-			index += textureUStep;
-			x += textureVStep;
-			shadeValue += dl;
-			if ((i9 = texture[texelPos((x & 0x3f80) + (index >> 7))]) != 0) {
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-			}
-			depth += depthSlopeX;
-			pixelBufferOffset++;
-			index += textureUStep;
-			x += textureVStep;
-			shadeValue += dl;
-			if ((i9 = texture[texelPos((x & 0x3f80) + (index >> 7))]) != 0) {
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-			}
-			depth += depthSlopeX;
-			pixelBufferOffset++;
-			index += textureUStep;
-			x += textureVStep;
-			shadeValue += dl;
-			if ((i9 = texture[texelPos((x & 0x3f80) + (index >> 7))]) != 0) {
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-			}
-			depth += depthSlopeX;
-			pixelBufferOffset++;
-			index += textureUStep;
-			x += textureVStep;
-			shadeValue += dl;
-			if ((i9 = texture[texelPos((x & 0x3f80) + (index >> 7))]) != 0) {
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-			}
-			depth += depthSlopeX;
-			pixelBufferOffset++;
-			index += textureUStep;
-			x += textureVStep;
-			shadeValue += dl;
-			if ((i9 = texture[texelPos((x & 0x3f80) + (index >> 7))]) != 0) {
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-			}
-			depth += depthSlopeX;
-			pixelBufferOffset++;
-			index += textureUStep;
-			x += textureVStep;
-			shadeValue += dl;
-			if ((i9 = texture[texelPos((x & 0x3f80) + (index >> 7))]) != 0) {
-				l = shadeValue >> 16;
-				pixelBuffer[pixelBufferOffset] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
-			}
-			pixelBufferOffset++;
-			index += textureUStep;
-			x += textureVStep;
-			shadeValue += dl;
+			index = nextTextureU;
+			x = nextTextureV;
 			a1 += k2;
 			i2 += a2;
 			j2 += i3;
@@ -2380,10 +2614,9 @@ public final class Rasterizer extends DrawingArea
 			shadeValue += dl;
 		}
 		for (int l3 = end_x - start_x & 7; l3-- > 0;) {
-			int j9;
-			int l;
-			if ((j9 = texture[texelPos((x & 0x3f80) + (index >> 7))]) != 0) {
-				l = shadeValue >> 16;
+			int j9 = texture[texelPos((x & 0x3f80) + (index >> 7))];
+			if (j9 != 0) {
+				int l = shadeValue >> 16;
 				pixelBuffer[pixelBufferOffset] = ((j9 & 0xff00ff) * l & ~0xff00ff) + ((j9 & 0xff00) * l & 0xff0000) >> 8;
 				DrawingArea.depthBuffer[pixelBufferOffset] = depth;
 			}

@@ -1,56 +1,56 @@
 package com.bestbudz.graphics;
 
 import com.bestbudz.engine.core.gamerender.DrawingArea;
+import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.network.Stream;
-import com.bestbudz.network.StreamLoader;
 
 public final class Background extends DrawingArea
 {
 
   public int[] pixelData;
-  public byte[] aByteArray1450;
-  public int anInt1452;
-  public int anInt1453;
+  public byte[] textureData;
+  public int backgroundWidth;
+  public int backgroundHeight;
   public int anInt1454;
   public int anInt1455;
   public int anInt1456;
   private int anInt1457;
 
-	public Background(StreamLoader streamLoader, String s, int i) {
-		byte[] data = streamLoader.getDataForName(s + ".dat");
+	public Background(ArchiveLoader archiveLoader, String s, int i) {
+		byte[] data = archiveLoader.extractFile(s + ".dat");
 		if (data == null || data.length == 0) {
 			//System.err.println("Background data missing or empty: " + s);
-			aByteArray1450 = new byte[0];
-			anInt1452 = 0;
-			anInt1453 = 0;
+			textureData = new byte[0];
+			backgroundWidth = 0;
+			backgroundHeight = 0;
 			return;
 		}
 		Stream stream = new Stream(data);
 
-		byte[] indexData = streamLoader.getDataForName("index.dat");
+		byte[] indexData = archiveLoader.extractFile("index.dat");
 		if (indexData == null || indexData.length == 0) {
 			//System.err.println("Background index data missing or empty.");
-			aByteArray1450 = new byte[0];
-			anInt1452 = 0;
-			anInt1453 = 0;
+			textureData = new byte[0];
+			backgroundWidth = 0;
+			backgroundHeight = 0;
 			return;
 		}
 		Stream stream_1 = new Stream(indexData);
 
-		if (stream.currentOffset + 2 > stream.buffer.length) {
+		if (stream.position + 2 > stream.buffer.length) {
 			//System.err.println("Background data too short for header.");
-			aByteArray1450 = new byte[0];
-			anInt1452 = 0;
-			anInt1453 = 0;
+			textureData = new byte[0];
+			backgroundWidth = 0;
+			backgroundHeight = 0;
 			return;
 		}
-		stream_1.currentOffset = stream.readUnsignedWord();
+		stream_1.position = stream.readUnsignedWord();
 
-		if (stream_1.currentOffset + 6 > stream_1.buffer.length) {
+		if (stream_1.position + 6 > stream_1.buffer.length) {
 			//System.err.println("Background index data too short.");
-			aByteArray1450 = new byte[0];
-			anInt1452 = 0;
-			anInt1453 = 0;
+			textureData = new byte[0];
+			backgroundWidth = 0;
+			backgroundHeight = 0;
 			return;
 		}
 
@@ -60,11 +60,11 @@ public final class Background extends DrawingArea
 		int j = stream_1.readUnsignedByte();
 		pixelData = new int[j];
 		for (int k = 0; k < j - 1; k++) {
-			if (stream_1.currentOffset + 3 > stream_1.buffer.length) {
+			if (stream_1.position + 3 > stream_1.buffer.length) {
 				//System.err.println("Background index data incomplete reading runes.");
-				aByteArray1450 = new byte[0];
-				anInt1452 = 0;
-				anInt1453 = 0;
+				textureData = new byte[0];
+				backgroundWidth = 0;
+				backgroundHeight = 0;
 				return;
 			}
 			pixelData[k + 1] = stream_1.read3Bytes();
@@ -72,63 +72,63 @@ public final class Background extends DrawingArea
 
 		// Adjust offsets for i layers (skip data)
 		for (int l = 0; l < i; l++) {
-			if (stream_1.currentOffset + 5 > stream_1.buffer.length) {
+			if (stream_1.position + 5 > stream_1.buffer.length) {
 				//System.err.println("Background index data incomplete adjusting offsets.");
-				aByteArray1450 = new byte[0];
-				anInt1452 = 0;
-				anInt1453 = 0;
+				textureData = new byte[0];
+				backgroundWidth = 0;
+				backgroundHeight = 0;
 				return;
 			}
-			stream_1.currentOffset += 2;
+			stream_1.position += 2;
 			int width = stream_1.readUnsignedWord();
 			int height = stream_1.readUnsignedWord();
-			if (width < 0 || height < 0 || stream_1.currentOffset + (width * height) > stream_1.buffer.length) {
+			if (width < 0 || height < 0 || stream_1.position + (width * height) > stream_1.buffer.length) {
 				//System.err.println("Background index data invalid width/height or buffer overflow.");
-				aByteArray1450 = new byte[0];
-				anInt1452 = 0;
-				anInt1453 = 0;
+				textureData = new byte[0];
+				backgroundWidth = 0;
+				backgroundHeight = 0;
 				return;
 			}
-			stream.currentOffset += width * height;
-			stream_1.currentOffset++;
+			stream.position += width * height;
+			stream_1.position++;
 		}
 
-		if (stream_1.currentOffset + 6 > stream_1.buffer.length) {
+		if (stream_1.position + 6 > stream_1.buffer.length) {
 		//	System.err.println("Background index data too short for remaining fields.");
-			aByteArray1450 = new byte[0];
-			anInt1452 = 0;
-			anInt1453 = 0;
+			textureData = new byte[0];
+			backgroundWidth = 0;
+			backgroundHeight = 0;
 			return;
 		}
 
 		anInt1454 = stream_1.readUnsignedByte();
 		anInt1455 = stream_1.readUnsignedByte();
-		anInt1452 = stream_1.readUnsignedWord();
-		anInt1453 = stream_1.readUnsignedWord();
+		backgroundWidth = stream_1.readUnsignedWord();
+		backgroundHeight = stream_1.readUnsignedWord();
 		int i1 = stream_1.readUnsignedByte();
 
-		int j1 = anInt1452 * anInt1453;
-		if (j1 < 0 || stream.currentOffset + j1 > stream.buffer.length) {
+		int j1 = backgroundWidth * backgroundHeight;
+		if (j1 < 0 || stream.position + j1 > stream.buffer.length) {
 		//	System.err.println("Background data length invalid or exceeds buffer size.");
-			aByteArray1450 = new byte[0];
+			textureData = new byte[0];
 			return;
 		}
 
-		aByteArray1450 = new byte[j1];
+		textureData = new byte[j1];
 
 		if (i1 == 0) {
 			for (int k1 = 0; k1 < j1; k1++) {
-				aByteArray1450[k1] = stream.readSignedByte();
+				textureData[k1] = stream.readSignedByte();
 			}
 		} else if (i1 == 1) {
-			for (int l1 = 0; l1 < anInt1452; l1++) {
-				for (int i2 = 0; i2 < anInt1453; i2++) {
-					aByteArray1450[l1 + i2 * anInt1452] = stream.readSignedByte();
+			for (int l1 = 0; l1 < backgroundWidth; l1++) {
+				for (int i2 = 0; i2 < backgroundHeight; i2++) {
+					textureData[l1 + i2 * backgroundWidth] = stream.readSignedByte();
 				}
 			}
 		} else {
 		//	System.err.println("Background format " + i1 + " not supported.");
-			aByteArray1450 = new byte[0];
+			textureData = new byte[0];
 		}
 	}
 
@@ -138,32 +138,32 @@ public final class Background extends DrawingArea
     anInt1457 /= 2;
     byte[] abyte0 = new byte[anInt1456 * anInt1457];
     int i = 0;
-    for (int j = 0; j < anInt1453; j++) {
-      for (int k = 0; k < anInt1452; k++) {
-        abyte0[(k + anInt1454 >> 1) + (j + anInt1455 >> 1) * anInt1456] = aByteArray1450[i++];
+    for (int j = 0; j < backgroundHeight; j++) {
+      for (int k = 0; k < backgroundWidth; k++) {
+        abyte0[(k + anInt1454 >> 1) + (j + anInt1455 >> 1) * anInt1456] = textureData[i++];
       }
     }
-    aByteArray1450 = abyte0;
-    anInt1452 = anInt1456;
-    anInt1453 = anInt1457;
+    textureData = abyte0;
+    backgroundWidth = anInt1456;
+    backgroundHeight = anInt1457;
     anInt1454 = 0;
     anInt1455 = 0;
   }
 
   public void method357() {
-    if (anInt1452 == anInt1456 && anInt1453 == anInt1457) {
+    if (backgroundWidth == anInt1456 && backgroundHeight == anInt1457) {
       return;
     }
     byte[] abyte0 = new byte[anInt1456 * anInt1457];
     int i = 0;
-    for (int j = 0; j < anInt1453; j++) {
-      for (int k = 0; k < anInt1452; k++) {
-        abyte0[k + anInt1454 + (j + anInt1455) * anInt1456] = aByteArray1450[i++];
+    for (int j = 0; j < backgroundHeight; j++) {
+      for (int k = 0; k < backgroundWidth; k++) {
+        abyte0[k + anInt1454 + (j + anInt1455) * anInt1456] = textureData[i++];
       }
     }
-    aByteArray1450 = abyte0;
-    anInt1452 = anInt1456;
-    anInt1453 = anInt1457;
+    textureData = abyte0;
+    backgroundWidth = anInt1456;
+    backgroundHeight = anInt1457;
     anInt1454 = 0;
     anInt1455 = 0;
   }
@@ -200,8 +200,8 @@ public final class Background extends DrawingArea
     k += anInt1455;
     int l = i + k * DrawingArea.width;
     int i1 = 0;
-    int j1 = anInt1453;
-    int k1 = anInt1452;
+    int j1 = backgroundHeight;
+    int k1 = backgroundWidth;
     int l1 = DrawingArea.width - k1;
     int i2 = 0;
     if (k < DrawingArea.topY) {
@@ -230,7 +230,7 @@ public final class Background extends DrawingArea
       l1 += l2;
     }
     if (!(k1 <= 0 || j1 <= 0)) {
-      method362(j1, DrawingArea.pixels, aByteArray1450, l1, l, k1, i1, pixelData, i2);
+      method362(j1, DrawingArea.pixels, textureData, l1, l, k1, i1, pixelData, i2);
     }
   }
 

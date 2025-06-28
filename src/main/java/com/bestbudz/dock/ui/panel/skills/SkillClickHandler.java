@@ -47,7 +47,7 @@ public class SkillClickHandler {
 			int clientButtonId = calculateClientButtonId(serverButtonId);
 
 			try {
-				Client.stream.createFrame(185);
+				Client.stream.writeEncryptedOpcode(185);
 				Client.stream.writeWord(clientButtonId);
 				System.out.println("Skill " + skillName + " clicked - sent ID: " + clientButtonId);
 			} catch (Exception ex) {
@@ -63,7 +63,7 @@ public class SkillClickHandler {
 
 		try {
 			int clientButtonId = calculateClientButtonId(94144);
-			Client.stream.createFrame(185);
+			Client.stream.writeEncryptedOpcode(185);
 			Client.stream.writeWord(clientButtonId);
 			System.out.println("Total Stats clicked - sent button ID: " + clientButtonId);
 		} catch (Exception ex) {

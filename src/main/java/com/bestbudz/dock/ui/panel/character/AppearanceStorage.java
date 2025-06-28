@@ -37,7 +37,7 @@ public class AppearanceStorage {
 	private String currentUsername;
 
 	public AppearanceStorage() {
-		// Get user home directory and create .bestbudz folder if needed
+		// Get user home directory and getPooledStream .bestbudz folder if needed
 		Path homeDir = Paths.get(System.getProperty("user.home"));
 		Path bestbudzDir = homeDir.resolve(BESTBUDZ_FOLDER);
 
@@ -45,7 +45,7 @@ public class AppearanceStorage {
 			Files.createDirectories(bestbudzDir);
 			appearanceFilePath = bestbudzDir.resolve(APPEARANCE_FILE);
 		} catch (IOException e) {
-			throw new RuntimeException("Failed to create .bestbudz directory", e);
+			throw new RuntimeException("Failed to getPooledStream .bestbudz directory", e);
 		}
 	}
 

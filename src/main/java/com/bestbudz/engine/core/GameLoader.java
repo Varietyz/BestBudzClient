@@ -6,6 +6,8 @@ import com.bestbudz.data.AccountManager;
 import com.bestbudz.data.items.ItemDef;
 import static com.bestbudz.engine.core.LoadingErrorScreen.addConsoleMessage;
 import com.bestbudz.engine.core.gamerender.ColorPalette;
+import com.bestbudz.engine.core.loading.LoadingEnums;
+import com.bestbudz.engine.core.loading.LoadingVisual;
 import com.bestbudz.engine.core.login.LoginRenderer;
 import com.bestbudz.entity.EntityDef;
 import com.bestbudz.cache.IdentityKit;
@@ -16,9 +18,9 @@ import com.bestbudz.graphics.sprite.SpriteLoader;
 import com.bestbudz.graphics.text.FontSystem;
 import com.bestbudz.graphics.text.TextController;
 import com.bestbudz.graphics.text.TextDrawingArea;
-import com.bestbudz.network.OnDemandFetcher;
-import com.bestbudz.network.StreamLoader;
-import com.bestbudz.rendering.Animable_Sub5;
+import com.bestbudz.network.ArchiveLoader;
+import com.bestbudz.network.CacheManager;
+import com.bestbudz.rendering.InteractiveObject;
 import com.bestbudz.rendering.OverlayFloor;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.rendering.SequenceFrame;
@@ -31,12 +33,14 @@ import static com.bestbudz.ui.interfaces.StatusOrbs.orbComponents;
 import static com.bestbudz.ui.interfaces.StatusOrbs.orbComponents2;
 import static com.bestbudz.ui.interfaces.StatusOrbs.orbComponents3;
 import com.bestbudz.util.Decompressor;
-import com.bestbudz.world.Class11;
+import com.bestbudz.world.CollisionMap;
 import com.bestbudz.world.Floor;
 import com.bestbudz.world.ObjectDef;
 import com.bestbudz.world.VarBit;
 import com.bestbudz.world.Varp;
 import com.bestbudz.engine.core.gamerender.WorldController;
+import com.bestbudz.engine.core.loading.LoadingEnums.LoadingPhase;
+import com.bestbudz.engine.core.loading.LoadingEnums.LogLevel;
 
 import java.awt.Graphics2D;
 import java.lang.ref.WeakReference;
@@ -44,8 +48,8 @@ import java.util.concurrent.*;
 import java.util.*;
 
 /**
- * Memory-optimized GameLoader maintaining exact original boot sequence
- * with added caching, error handling, and resource management
+ * Memory-optimized GameLoader with comprehensive metrics tracking
+ * and detailed progress reporting for every operation
  */
 public class GameLoader extends Client {
 
@@ -53,69 +57,271 @@ public class GameLoader extends Client {
 	private static final Map<String, WeakReference<Sprite>> spriteCache = new ConcurrentHashMap<>();
 	private static volatile boolean isLoading = false;
 	private static long loadStartTime = 0;
+	private static LoadingVisual loadingScreen;
+
+	// Enhanced metrics tracking
+	private static class LoadingMetrics {
+		// File I/O metrics
+		private int totalFilesRead = 0;
+		private int totalBytesRead = 0;
+		private int totalFilesWritten = 0;
+		private int totalBytesWritten = 0;
+
+		// Processing metrics
+		private int spritesLoaded = 0;
+		private int spritesProcessed = 0;
+		private int backgroundsLoaded = 0;
+		private int configsLoaded = 0;
+		private int modelsProcessed = 0;
+		private int texturesLoaded = 0;
+		private int interfacesLoaded = 0;
+
+		// Cache metrics
+		private int cacheHits = 0;
+		private int cacheMisses = 0;
+		private int cacheEvictions = 0;
+
+		// Memory metrics
+		private long initialMemory = 0;
+		private long peakMemory = 0;
+		private long currentMemory = 0;
+
+		// Timing metrics
+		private final Map<String, Long> phaseTimes = new ConcurrentHashMap<>();
+		private final Map<String, Long> operationTimes = new ConcurrentHashMap<>();
+
+		// Error tracking
+		private int errors = 0;
+		private int warnings = 0;
+
+		public void startPhase(String phase) {
+			phaseTimes.put(phase + "_start", System.currentTimeMillis());
+		}
+
+		public void endPhase(String phase) {
+			long startTime = phaseTimes.getOrDefault(phase + "_start", System.currentTimeMillis());
+			long duration = System.currentTimeMillis() - startTime;
+			phaseTimes.put(phase + "_duration", duration);
+		}
+
+		public void startOperation(String operation) {
+			operationTimes.put(operation + "_start", System.currentTimeMillis());
+		}
+
+		public void endOperation(String operation) {
+			long startTime = operationTimes.getOrDefault(operation + "_start", System.currentTimeMillis());
+			long duration = System.currentTimeMillis() - startTime;
+			operationTimes.put(operation + "_duration", duration);
+		}
+
+		public void updateMemoryMetrics() {
+			Runtime runtime = Runtime.getRuntime();
+			long totalMemory = runtime.totalMemory();
+			long freeMemory = runtime.freeMemory();
+			currentMemory = totalMemory - freeMemory;
+
+			if (initialMemory == 0) {
+				initialMemory = currentMemory;
+			}
+
+			if (currentMemory > peakMemory) {
+				peakMemory = currentMemory;
+			}
+		}
+
+		public String getMemoryReport() {
+			double initialMB = initialMemory / (1024.0 * 1024.0);
+			double currentMB = currentMemory / (1024.0 * 1024.0);
+			double peakMB = peakMemory / (1024.0 * 1024.0);
+			double allocatedMB = (currentMemory - initialMemory) / (1024.0 * 1024.0);
+
+			return String.format("Memory: %.1fMB → %.1fMB (peak: %.1fMB, allocated: +%.1fMB)",
+				initialMB, currentMB, peakMB, allocatedMB);
+		}
+
+		public String getIOReport() {
+			double readMB = totalBytesRead / (1024.0 * 1024.0);
+			double writeMB = totalBytesWritten / (1024.0 * 1024.0);
+
+			return String.format("I/O: %d files read (%.1fMB), %d files written (%.1fMB)",
+				totalFilesRead, readMB, totalFilesWritten, writeMB);
+		}
+
+		public String getCacheReport() {
+			int totalRequests = cacheHits + cacheMisses;
+			double hitRate = totalRequests > 0 ? (cacheHits * 100.0 / totalRequests) : 0;
+
+			return String.format("Cache: %d hits, %d misses (%.1f%% hit rate), %d evictions",
+				cacheHits, cacheMisses, hitRate, cacheEvictions);
+		}
+
+		public String getProcessingReport() {
+			return String.format("Processed: %d sprites, %d backgrounds, %d configs, %d models, %d textures, %d interfaces",
+				spritesProcessed, backgroundsLoaded, configsLoaded, modelsProcessed, texturesLoaded, interfacesLoaded);
+		}
+	}
+
+	private static final LoadingMetrics metrics = new LoadingMetrics();
 
 	/**
-	 * Enhanced sprite factory with caching but no behavioral changes
+	 * Enhanced sprite factory with comprehensive metrics tracking
 	 */
 	static class OptimizedSpriteFactory {
-		public static Sprite createSprite(StreamLoader loader, String name, int index) {
+		public static Sprite createSprite(ArchiveLoader loader, String name, int index) {
 			String key = name + "_" + index;
+			long startTime = System.nanoTime();
 
 			// Check cache first for memory efficiency
 			WeakReference<Sprite> ref = spriteCache.get(key);
 			if (ref != null) {
 				Sprite cached = ref.get();
 				if (cached != null) {
+					metrics.cacheHits++;
+					long duration = (System.nanoTime() - startTime) / 1000000;
+					if (duration > 1) { // Only log if took more than 1ms
+						loadingScreen.addLogEntry(String.format("Cache hit: %s (%.1fms)", key, duration / 1000.0), LogLevel.INFO);
+					}
 					return cached;
+				} else {
+					// Weak reference was garbage collected
+					spriteCache.remove(key);
+					metrics.cacheEvictions++;
 				}
 			}
+
+			metrics.cacheMisses++;
 
 			// Create sprite exactly as original
 			try {
 				Sprite sprite = new Sprite(loader, name, index);
 				if (sprite != null) {
 					spriteCache.put(key, new WeakReference<>(sprite));
+					metrics.spritesLoaded++;
+					metrics.totalFilesRead++;
+
+					// Estimate bytes read (rough calculation)
+					if (sprite.myPixels != null) {
+						metrics.totalBytesRead += sprite.myPixels.length * 4; // ARGB pixels
+					}
+
+					long duration = (System.nanoTime() - startTime) / 1000000;
+					if (duration > 5) { // Log slow sprite loads
+						loadingScreen.addLogEntry(String.format("Sprite loaded: %s [%dx%d] (%.1fms)",
+							key, sprite.myWidth, sprite.myHeight, duration / 1000.0), LogLevel.INFO);
+					}
 				}
 				return sprite;
 			} catch (Exception e) {
-				// Match original behavior - let exception propagate or return null
-				throw new RuntimeException("Failed to create sprite: " + key, e);
+				metrics.errors++;
+				long duration = (System.nanoTime() - startTime) / 1000000;
+				loadingScreen.addLogEntry(String.format("Failed to getPooledStream sprite: %s (%.1fms) - %s",
+					key, duration / 1000.0, e.getMessage()), LogLevel.ERROR);
+				throw new RuntimeException("Failed to getPooledStream sprite: " + key, e);
 			}
 		}
 
 		public static void cleanupCache() {
+			int initialSize = spriteCache.size();
 			spriteCache.entrySet().removeIf(entry -> entry.getValue().get() == null);
+			int cleaned = initialSize - spriteCache.size();
+			if (cleaned > 0) {
+				metrics.cacheEvictions += cleaned;
+				loadingScreen.addLogEntry(String.format("Cache cleanup: removed %d dead references", cleaned), LogLevel.INFO);
+			}
 		}
 	}
 
 	/**
-	 * EXACT reproduction of original startUp method with memory optimizations
+	 * Enhanced startUp method with comprehensive metrics and logging
 	 */
 	static void startUp(Graphics2D g, Client client) {
 		isLoading = true;
 		loadStartTime = System.currentTimeMillis();
+		metrics.updateMemoryMetrics();
+
+		// Initialize and show loading screen
+		loadingScreen = new LoadingVisual();
+		loadingScreen.showLoader();
+		loadingScreen.addLogEntry("🚀 GameLoader initialization started", LogLevel.INFO);
+		loadingScreen.addLogEntry("💾 " + metrics.getMemoryReport(), LogLevel.INFO);
 
 		try {
-			// PHASE 1: Exact original initialization order
-			AccountManager.loadAccount();
-			SpriteLoader.loadSprites();
-			cacheSprite = SpriteLoader.sprites;
-			loginRenderer = new LoginRenderer(client);
+			// PHASE 1: Initialization
+			metrics.startPhase("initialization");
+			loadingScreen.setPhase(LoadingPhase.INITIALIZING);
+			loadingScreen.updateDetail("Setting up core system...");
 
-			// Initialize decompressors - exactly as original
-			if (Signlink.cache_dat != null) {
-				for (int i = 0; i < 6; i++)
-					decompressors[i] = new Decompressor(Signlink.cache_dat, Signlink.cache_idx[i], i + 1);
+			metrics.startOperation("account_manager");
+			AccountManager.loadAccount();
+			metrics.endOperation("account_manager");
+			metrics.configsLoaded++;
+			long accountTime = metrics.operationTimes.get("account_manager_duration");
+			loadingScreen.updateDetailProgress(20);
+			loadingScreen.addLogEntry(String.format("✅ Account manager loaded (%dms)", accountTime), LogLevel.SUCCESS);
+
+			metrics.startOperation("sprite_loader");
+			SpriteLoader.loadSprites();
+			metrics.endOperation("sprite_loader");
+			long spriteLoaderTime = metrics.operationTimes.get("sprite_loader_duration");
+			loadingScreen.updateDetailProgress(40);
+			loadingScreen.addLogEntry(String.format("✅ Sprite loader initialized (%dms)", spriteLoaderTime), LogLevel.SUCCESS);
+
+			cacheSprite = SpriteLoader.sprites;
+			if (cacheSprite != null) {
+				loadingScreen.addLogEntry(String.format("📦 Cache sprite array: %d entries allocated", cacheSprite.length), LogLevel.INFO);
 			}
 
-			addConsoleMessage("🎨 Initializing modern font system...");
+			metrics.startOperation("login_renderer");
+			loginRenderer = new LoginRenderer(client);
+			metrics.endOperation("login_renderer");
+			long loginTime = metrics.operationTimes.get("login_renderer_duration");
+			loadingScreen.updateDetailProgress(60);
+			loadingScreen.addLogEntry(String.format("✅ Login renderer created (%dms)", loginTime), LogLevel.SUCCESS);
+
+			// Initialize decompressors
+			if (Signlink.cache_dat != null) {
+				metrics.startOperation("decompressors");
+				int decompressorsCreated = 0;
+				for (int i = 0; i < 6; i++) {
+					try {
+						decompressors[i] = new Decompressor(Signlink.cache_dat, Signlink.cache_idx[i], i + 1);
+						decompressorsCreated++;
+						loadingScreen.updateDetailProgress(60 + (i * 5));
+					} catch (Exception e) {
+						metrics.errors++;
+						loadingScreen.addLogEntry(String.format("❌ Decompressor %d failed: %s", i, e.getMessage()), LogLevel.ERROR);
+					}
+				}
+				metrics.endOperation("decompressors");
+				long decompTime = metrics.operationTimes.get("decompressors_duration");
+				loadingScreen.addLogEntry(String.format("✅ Cache decompressors: %d/%d created (%dms)",
+					decompressorsCreated, 6, decompTime), LogLevel.SUCCESS);
+			} else {
+				loadingScreen.addLogEntry("⚠️ Cache data unavailable - decompressors skipped", LogLevel.WARNING);
+				metrics.warnings++;
+			}
+
+			metrics.endPhase("initialization");
+			long initTime = metrics.phaseTimes.get("initialization_duration");
+			loadingScreen.updateProgress(LoadingPhase.INITIALIZING.endProgress);
+			loadingScreen.addLogEntry(String.format("🎯 Initialization phase completed (%dms)", initTime), LogLevel.SUCCESS);
+
+			// PHASE 2: Font System
+			metrics.startPhase("fonts");
+			loadingScreen.updateDetail("Initializing modern font system...");
+			loadingScreen.addLogEntry("🎨 Initializing modern font system...", LogLevel.INFO);
 
 			TextDrawingArea aTextDrawingArea_1273;
 			try {
-				// Create all fonts using the modern system
+				metrics.startOperation("font_creation");
 				FontSystem.GameFonts gameFonts = FontSystem.GameFonts.create();
+				metrics.endOperation("font_creation");
+				long fontCreateTime = metrics.operationTimes.get("font_creation_duration");
+				loadingScreen.updateDetailProgress(25);
+				loadingScreen.addLogEntry(String.format("📝 Font objects created (%dms)", fontCreateTime), LogLevel.INFO);
 
-				// Assign to the existing variables (no variable name changes needed)
+				// Assign fonts
+				metrics.startOperation("font_assignment");
 				smallText = gameFonts.smallText;
 				regularText = gameFonts.regularText;
 				boldText = gameFonts.boldText;
@@ -124,188 +330,389 @@ public class GameLoader extends Client {
 				newBoldFont = gameFonts.newBoldFont;
 				newFancyFont = gameFonts.newFancyFont;
 				aTextDrawingArea_1273 = gameFonts.fancyTextArea;
+				metrics.endOperation("font_assignment");
+				long assignTime = metrics.operationTimes.get("font_assignment_duration");
+				loadingScreen.updateDetailProgress(50);
+				loadingScreen.addLogEntry(String.format("📋 Font assignment completed (%dms)", assignTime), LogLevel.INFO);
 
-				// Validate all fonts were created correctly
+				metrics.startOperation("font_validation");
 				if (!gameFonts.validateFonts()) {
 					throw new RuntimeException("Font validation failed");
 				}
+				metrics.endOperation("font_validation");
+				long validationTime = metrics.operationTimes.get("font_validation_duration");
+				loadingScreen.updateDetailProgress(75);
+				loadingScreen.addLogEntry(String.format("✅ Font validation passed (%dms)", validationTime), LogLevel.SUCCESS);
 
-				// Set default text colors and effects
-				TextController.defaultColor = 0xFFFFFF; // White
-				TextController.defaultShadow = -1; // No shadow by default
+				// Set default text properties
+				TextController.defaultColor = 0xFFFFFF;
+				TextController.defaultShadow = -1;
 				TextController.textColor = TextController.defaultColor;
 				TextController.textShadowColor = TextController.defaultShadow;
+				loadingScreen.updateDetailProgress(100);
 
-				addConsoleMessage("🎨 Modern font system initialized successfully!");
-				addConsoleMessage("✨ Features enabled:");
-				addConsoleMessage("   • High-quality anti-aliased text rendering");
-				addConsoleMessage("   • Full Unicode character support");
-				addConsoleMessage("   • Color markup and special effects");
-				addConsoleMessage("   • Image and clan icon embedding");
-				addConsoleMessage("   • Zero font cache dependencies");
+				metrics.endPhase("fonts");
+				long fontTime = metrics.phaseTimes.get("fonts_duration");
+				loadingScreen.addLogEntry(String.format("🎨 Font system ready! (%dms total)", fontTime), LogLevel.SUCCESS);
+				loadingScreen.addLogEntry("✨ High-quality anti-aliased text rendering enabled", LogLevel.INFO);
+				loadingScreen.addLogEntry("✨ Full Unicode character support enabled", LogLevel.INFO);
 
 			} catch (Exception e) {
-				addConsoleMessage("❌ Critical error during font initialization: " + e.getMessage());
+				metrics.errors++;
+				metrics.endPhase("fonts");
+				loadingScreen.addLogEntry("❌ Critical error during font initialization: " + e.getMessage(), LogLevel.ERROR);
 				e.printStackTrace();
-				throw new RuntimeException("Font system initialization failed - cannot continue", e);
+				throw new RuntimeException("Font system initialization failed", e);
 			}
 
-// Optional: Add this debug section if you want extra validation
-			addConsoleMessage("🔍 Final font system validation...");
-			try {
-				// Test that all the main font objects exist and work
-				if (newRegularFont != null) {
-					newRegularFont.setDefaultTextEffectValues(0xFFFFFF, -1, 256);
-					addConsoleMessage("  ✓ newRegularFont ready");
-				}
-				if (newBoldFont != null) {
-					newBoldFont.setDefaultTextEffectValues(0xFFFFFF, -1, 256);
-					addConsoleMessage("  ✓ newBoldFont ready");
-				}
-				if (newSmallFont != null) {
-					newSmallFont.setDefaultTextEffectValues(0xFFFFFF, -1, 256);
-					addConsoleMessage("  ✓ newSmallFont ready");
-				}
-				if (newFancyFont != null) {
-					newFancyFont.setDefaultTextEffectValues(0xFFFFFF, -1, 256);
-					addConsoleMessage("  ✓ newFancyFont ready");
-				}
+			// PHASE 3: Loading Assets
+			metrics.startPhase("assets");
+			loadingScreen.setPhase(LoadingPhase.LOADING_ASSETS);
+			loadingScreen.updateDetail("Loading game assets...");
 
-				addConsoleMessage("🎯 Font system fully operational!");
+			// Load streams with detailed progress tracking
+			ArchiveLoader archiveLoader_2 = loadStreamWithProgress("2d graphics", "media", 4, 15);
+			ArchiveLoader archiveLoader = loadStreamWithProgress("config", "config", 2, 20);
+			ArchiveLoader archiveLoader_1 = loadStreamWithProgress("interface", "interface", 3, 25);
+			ArchiveLoader archiveLoader_3 = loadStreamWithProgress("textures", "textures", 6, 30);
 
-			} catch (Exception e) {
-				addConsoleMessage("⚠️  Warning during final validation: " + e.getMessage());
-				// Don't throw here - the fonts should still work even if this fails
-			}
+			loadingScreen.updateProgress(35);
+			loadingScreen.updateDetail("Setting up world system...");
 
-			// Load remaining streams - exact original order
-			StreamLoader streamLoader_2 = streamLoaderForName(4, "2d graphics", "media", expectedCRCs[4], 40, g);
-			StreamLoader streamLoader = streamLoaderForName(2, "config", "config", expectedCRCs[2], 30, g);
-			StreamLoader streamLoader_1 = streamLoaderForName(3, "interface", "interface", expectedCRCs[3], 35, g);
-			StreamLoader streamLoader_3 = streamLoaderForName(6, "textures", "textures", expectedCRCs[6], 45, g);
-			//streamLoaderForName(8, "sound effects", "sounds", expectedCRCs[8], 55, g);
-
-			// PHASE 3: World systems - exactly as original
+			// World system initialization with metrics
+			metrics.startOperation("world_setup");
 			byteGroundArray = new byte[4][208][208];
 			intGroundArray = new int[4][209][209];
 			worldController = new WorldController(intGroundArray);
-			for (int j = 0; j < 4; j++)
-				aClass11Array1230[j] = new Class11();
 
-			StreamLoader streamLoader_6 = streamLoaderForName(5, "update list", "versionlist", expectedCRCs[5], 60, g);
-			onDemandFetcher = new OnDemandFetcher();
-			onDemandFetcher.start(streamLoader_6, client);
+			int worldControllerSize = 4 * 208 * 208 + 4 * 209 * 209 * 4; // Estimate memory usage
+			metrics.totalBytesWritten += worldControllerSize;
+
+			for (int j = 0; j < 4; j++) {
+				collisionMaps[j] = new CollisionMap();
+			}
+			metrics.endOperation("world_setup");
+			long worldTime = metrics.operationTimes.get("world_setup_duration");
+			loadingScreen.addLogEntry(String.format("🌍 World controller initialized (%dms, ~%.1fMB allocated)",
+				worldTime, worldControllerSize / (1024.0 * 1024.0)), LogLevel.SUCCESS);
+
+			metrics.startOperation("ondemand_fetcher");
+			ArchiveLoader archiveLoader_6 = loadStreamWithProgress("update list", "versionlist", 5, 38);
+			cacheManager = new CacheManager();
+			cacheManager.start(archiveLoader_6, client);
 			EmbeddedMapCache.initialize();
+			metrics.endOperation("ondemand_fetcher");
+			long ondemandTime = metrics.operationTimes.get("ondemand_fetcher_duration");
+			loadingScreen.addLogEntry(String.format("📡 On-demand fetcher started (%dms)", ondemandTime), LogLevel.SUCCESS);
+
+			metrics.startOperation("animation_setup");
 			SequenceFrame.animationlist = new SequenceFrame[2500][0];
-			Model.method459(onDemandFetcher.getModelCount(), onDemandFetcher);
+			int modelCount = cacheManager.getModelCount();
+			Model.initializeCache(modelCount, cacheManager);
+			metrics.modelsProcessed = modelCount;
+			metrics.endOperation("animation_setup");
+			long animTime = metrics.operationTimes.get("animation_setup_duration");
+			loadingScreen.addLogEntry(String.format("🎭 Animation system ready (%dms, %d models registered)",
+				animTime, modelCount), LogLevel.SUCCESS);
 
+			metrics.endPhase("assets");
+			long assetsTime = metrics.phaseTimes.get("assets_duration");
+			loadingScreen.updateProgress(LoadingPhase.LOADING_ASSETS.endProgress);
+			loadingScreen.addLogEntry(String.format("📦 Asset loading phase completed (%dms)", assetsTime), LogLevel.SUCCESS);
 
-			loadSpriteArraySafe(newHitMarks, streamLoader_2, "newhitmarks");
-			loadSpriteArraySafe(channelButtons, streamLoader_2, "cbuttons");
-			loadSpriteArraySafe(fixedGameComponents, streamLoader_2, "fixed");
-			loadSpriteArraySafe(skillIcons, streamLoader_2, "skillicons");
-			loadSpriteArraySafe(gameComponents, streamLoader_2, "fullscreen");
+			// PHASE 4: Processing sprites and data
+			metrics.startPhase("processing");
+			loadingScreen.setPhase(LoadingPhase.PROCESSING_DATA);
+			loadingScreen.updateDetail("Loading sprite collections...");
 
-			loadSpriteArraySafe(orbComponents, streamLoader_2, "orbs3");
-			loadSpriteArraySafe(orbComponents2, streamLoader_2, "orbs4");
-			loadSpriteArraySafe(orbComponents3, streamLoader_2, "orbs5");
-			loadSpriteArraySafe(redStones, streamLoader_2, "redstone1");
-			loadSpriteArraySafe(hpBars, streamLoader_2, "hpbars");
+			// Load sprite arrays with detailed progress tracking
+			loadSpriteArrayWithProgress(newHitMarks, archiveLoader_2, "newhitmarks", 5);
+			loadSpriteArrayWithProgress(channelButtons, archiveLoader_2, "cbuttons", 10);
+			loadSpriteArrayWithProgress(fixedGameComponents, archiveLoader_2, "fixed", 15);
+			loadSpriteArrayWithProgress(skillIcons, archiveLoader_2, "skillicons", 20);
+			loadSpriteArrayWithProgress(gameComponents, archiveLoader_2, "fullscreen", 25);
+			loadSpriteArrayWithProgress(orbComponents, archiveLoader_2, "orbs3", 30);
+			loadSpriteArrayWithProgress(orbComponents2, archiveLoader_2, "orbs4", 35);
+			loadSpriteArrayWithProgress(orbComponents3, archiveLoader_2, "orbs5", 40);
+			loadSpriteArrayWithProgress(redStones, archiveLoader_2, "redstone1", 45);
+			loadSpriteArrayWithProgress(hpBars, archiveLoader_2, "hpbars", 50);
 
-			// Bulk copies - with safety checks but same logic
+			loadingScreen.updateDetail("Processing bulk data...");
 			performSafeBulkCopies();
+			loadingScreen.updateDetailProgress(60);
 
-			// Individual sprites - using safe creation
-			multiOverlay = createSpriteOrThrow(streamLoader_2, "overlay_multiway", 0);
-			mapBack = new Background(streamLoader_2, "mapback", 0);
-			StatusOrbs.compass = createSpriteOrThrow(streamLoader_2, "compass", 0);
-			mapFlag = createSpriteOrThrow(streamLoader_2, "mapmarker", 0);
-			mapMarker = createSpriteOrThrow(streamLoader_2, "mapmarker", 1);
+			// Individual sprites with metrics
+			loadingScreen.updateDetail("Loading individual sprites...");
+			metrics.startOperation("individual_sprites");
 
-			// Side icons - exactly as original
+			multiOverlay = createSpriteOrThrow(archiveLoader_2, "overlay_multiway", 0);
+			mapBack = new Background(archiveLoader_2, "mapback", 0);
+			metrics.backgroundsLoaded++;
+
+			StatusOrbs.compass = createSpriteOrThrow(archiveLoader_2, "compass", 0);
+			mapFlag = createSpriteOrThrow(archiveLoader_2, "mapmarker", 0);
+			mapMarker = createSpriteOrThrow(archiveLoader_2, "mapmarker", 1);
+			loadingScreen.updateDetailProgress(70);
+
+			// Side icons and crosses with counting
+			int sideIconsLoaded = 0;
 			for (int j3 = 0; j3 <= 16; j3++) {
-				sideIcons[j3] = createSpriteOrThrow(streamLoader_2, "sideicons", j3);
+				sideIcons[j3] = createSpriteOrThrow(archiveLoader_2, "sideicons", j3);
+				if (sideIcons[j3] != null) sideIconsLoaded++;
 			}
 
-			// Crosses - exactly as original
-			for (int k4 = 0; k4 < 8; k4++)
-				crosses[k4] = createSpriteOrThrow(streamLoader_2, "cross", k4);
+			int crossesLoaded = 0;
+			for (int k4 = 0; k4 < 8; k4++) {
+				crosses[k4] = createSpriteOrThrow(archiveLoader_2, "cross", k4);
+				if (crosses[k4] != null) crossesLoaded++;
+			}
+			loadingScreen.updateDetailProgress(80);
 
-			// Map dots - exactly as original
-			scrollBar1 = createSpriteOrThrow(streamLoader_2, "scrollbar", 0);
-			scrollBar2 = createSpriteOrThrow(streamLoader_2, "scrollbar", 1);
+			scrollBar1 = createSpriteOrThrow(archiveLoader_2, "scrollbar", 0);
+			scrollBar2 = createSpriteOrThrow(archiveLoader_2, "scrollbar", 1);
 
-			// Optional sprites batch - exactly as original
-			loadOptionalSpritesBatch(streamLoader_2);
+			metrics.endOperation("individual_sprites");
+			long individualTime = metrics.operationTimes.get("individual_sprites_duration");
+			loadingScreen.addLogEntry(String.format("🎯 Individual sprites loaded (%dms): %d side icons, %d crosses, 5 core sprites",
+				individualTime, sideIconsLoaded, crossesLoaded), LogLevel.SUCCESS);
 
-			// Screen frames - exactly as original
-			Sprite sprite = createSpriteOrThrow(streamLoader_2, "screenframe", 0);
+			// Optional sprites
+			loadOptionalSpritesBatch(archiveLoader_2);
+			loadingScreen.updateDetailProgress(90);
+
+			// Screen frames with metrics
+			metrics.startOperation("screen_frames");
+			Sprite sprite = createSpriteOrThrow(archiveLoader_2, "screenframe", 0);
 			leftFrame = new ImageProducer(sprite.myWidth, sprite.myHeight);
-			sprite.method346(0, 0);
-			sprite = createSpriteOrThrow(streamLoader_2, "screenframe", 1);
+			sprite.drawOpaque(0, 0);
+			sprite = createSpriteOrThrow(archiveLoader_2, "screenframe", 1);
 			topFrame = new ImageProducer(sprite.myWidth, sprite.myHeight);
-			sprite.method346(0, 0);
+			sprite.drawOpaque(0, 0);
+			metrics.endOperation("screen_frames");
+			long frameTime = metrics.operationTimes.get("screen_frames_duration");
+			loadingScreen.updateDetailProgress(100);
+			loadingScreen.addLogEntry(String.format("🖼️ Screen frames created (%dms)", frameTime), LogLevel.SUCCESS);
 
-			// Color adjustments - exactly as original
+			metrics.endPhase("processing");
+			long processingTime = metrics.phaseTimes.get("processing_duration");
+			loadingScreen.updateProgress(LoadingPhase.PROCESSING_DATA.endProgress);
+			loadingScreen.addLogEntry(String.format("⚙️ Data processing phase completed (%dms)", processingTime), LogLevel.SUCCESS);
+
+			// PHASE 5: Finalization
+			metrics.startPhase("finalization");
+			loadingScreen.setPhase(LoadingPhase.FINALIZING);
+			loadingScreen.updateDetail("Applying visual effects...");
+
+			metrics.startOperation("color_adjustments");
 			applyColorAdjustmentsOptimized();
+			metrics.endOperation("color_adjustments");
+			long colorTime = metrics.operationTimes.get("color_adjustments_duration");
+			loadingScreen.updateDetailProgress(10);
+			loadingScreen.addLogEntry(String.format("🎨 Color adjustments applied (%dms)", colorTime), LogLevel.SUCCESS);
 
-			// Rendering systems - exactly as original
-			Rasterizer.loadTextures(streamLoader_3);
+			loadingScreen.updateDetail("Initializing rendering system...");
+
+			metrics.startOperation("texture_loading");
+			Rasterizer.loadTextures(archiveLoader_3);
+			metrics.endOperation("texture_loading");
+			long textureTime = metrics.operationTimes.get("texture_loading_duration");
+			metrics.texturesLoaded++; // Increment for texture loading
+			loadingScreen.updateDetailProgress(25);
+			loadingScreen.addLogEntry(String.format("🏞️ Textures loaded (%dms)", textureTime), LogLevel.SUCCESS);
+
+			metrics.startOperation("color_palette");
 			ColorPalette.generateColorPalette(0.80000000000000004D);
+			metrics.endOperation("color_palette");
+			long paletteTime = metrics.operationTimes.get("color_palette_duration");
+			loadingScreen.updateDetailProgress(40);
+			loadingScreen.addLogEntry(String.format("🎨 Color palette generated (%dms)", paletteTime), LogLevel.SUCCESS);
+
+			metrics.startOperation("texture_pool");
 			Rasterizer.initializeTexturePool();
+			metrics.endOperation("texture_pool");
+			long poolTime = metrics.operationTimes.get("texture_pool_duration");
+			loadingScreen.updateDetailProgress(55);
+			loadingScreen.addLogEntry(String.format("🏊 Texture pool initialized (%dms)", poolTime), LogLevel.SUCCESS);
 
-			// Configuration loading - exactly as original order
-			Animation.unpackConfig(streamLoader);
-			ObjectDef.unpackConfig(streamLoader);
-			Floor.unpackConfig(streamLoader);
-			OverlayFloor.unpackConfig(streamLoader);
-			ItemDef.unpackConfig(streamLoader);
-			EntityDef.unpackConfig(streamLoader);
-			IdentityKit.unpackConfig(streamLoader);
-			SpotAnim.unpackConfig(streamLoader);
-			Varp.unpackConfig(streamLoader);
-			VarBit.unpackConfig(streamLoader);
-			ItemDef.isMembers = isMembers;
+			loadingScreen.updateDetail("Loading game configuration...");
+			loadConfigurationsWithMetrics(archiveLoader);
 
-			// Interface unpacking - exactly as original
+			loadingScreen.updateDetail("Finalizing interface system...");
+			metrics.startOperation("interface_setup");
 			TextDrawingArea[] aclass30_sub2_sub1_sub4s = {smallText, regularText, boldText, aTextDrawingArea_1273};
-			RSInterface.unpack(streamLoader_1, aclass30_sub2_sub1_sub4s, streamLoader_2);
+			RSInterface.unpack(archiveLoader_1, aclass30_sub2_sub1_sub4s, archiveLoader_2);
+			metrics.interfacesLoaded++;
+			metrics.endOperation("interface_setup");
+			long interfaceTime = metrics.operationTimes.get("interface_setup_duration");
+			loadingScreen.updateDetailProgress(98);
+			loadingScreen.addLogEntry(String.format("🖥️ Interface system ready (%dms)", interfaceTime), LogLevel.SUCCESS);
 
-			// Map bounds calculation - exactly as original
+			loadingScreen.updateDetail("Calculating map boundaries...");
+			metrics.startOperation("map_bounds");
 			calculateMapBoundsOptimized();
+			metrics.endOperation("map_bounds");
+			long boundsTime = metrics.operationTimes.get("map_bounds_duration");
+			loadingScreen.updateDetailProgress(99);
+			loadingScreen.addLogEntry(String.format("🗺️ Map boundaries calculated (%dms)", boundsTime), LogLevel.SUCCESS);
 
-			// Final steps - exactly as original
-			aRSImageProducer_1109.initDrawingArea();
-			//initializeGPUAfterGraphicsLoad();
-			aRSImageProducer_1109.drawGraphics(0, g, 0);
+			loadingScreen.updateDetail("Completing initialization...");
+			metrics.startOperation("final_setup");
+			gameScreenBuffer.initDrawingArea();
+			gameScreenBuffer.drawGraphics(0, g, 0);
 			setBounds();
-			Animable_Sub5.clientInstance = client;
+			InteractiveObject.clientInstance = client;
 			ObjectDef.clientInstance = client;
 			EntityDef.clientInstance = client;
+			metrics.endOperation("final_setup");
+			long finalTime = metrics.operationTimes.get("final_setup_duration");
+			loadingScreen.updateDetailProgress(100);
+			loadingScreen.addLogEntry(String.format("🔧 Final setup completed (%dms)", finalTime), LogLevel.SUCCESS);
 
-			// Success - log performance
-			long loadTime = System.currentTimeMillis() - loadStartTime;
-			addConsoleMessage("GameLoader: Successfully loaded in " + loadTime + "ms");
+			metrics.endPhase("finalization");
+			long finalizationTime = metrics.phaseTimes.get("finalization_duration");
+			loadingScreen.updateProgress(LoadingPhase.FINALIZING.endProgress);
+			loadingScreen.addLogEntry(String.format("🏁 Finalization phase completed (%dms)", finalizationTime), LogLevel.SUCCESS);
 
-			return;
+			// PHASE 6: Complete with comprehensive metrics report
+			loadingScreen.setPhase(LoadingPhase.COMPLETE);
+			long totalLoadTime = System.currentTimeMillis() - loadStartTime;
+			metrics.updateMemoryMetrics();
+
+			// Generate comprehensive final report
+			loadingScreen.addLogEntry("📊 LOADING COMPLETE - COMPREHENSIVE METRICS REPORT", LogLevel.SUCCESS);
+			loadingScreen.addLogEntry("============================================================", LogLevel.INFO);
+			loadingScreen.addLogEntry(String.format("⏱️ Total loading time: %dms (%.2fs)", totalLoadTime, totalLoadTime / 1000.0), LogLevel.SUCCESS);
+
+			// Phase timing breakdown
+			loadingScreen.addLogEntry("🕐 Phase Breakdown:", LogLevel.INFO);
+			loadingScreen.addLogEntry(String.format("  • Initialization: %dms", metrics.phaseTimes.getOrDefault("initialization_duration", 0L)), LogLevel.INFO);
+			loadingScreen.addLogEntry(String.format("  • Font System: %dms", metrics.phaseTimes.getOrDefault("fonts_duration", 0L)), LogLevel.INFO);
+			loadingScreen.addLogEntry(String.format("  • Asset Loading: %dms", metrics.phaseTimes.getOrDefault("assets_duration", 0L)), LogLevel.INFO);
+			loadingScreen.addLogEntry(String.format("  • Data Processing: %dms", metrics.phaseTimes.getOrDefault("processing_duration", 0L)), LogLevel.INFO);
+			loadingScreen.addLogEntry(String.format("  • Finalization: %dms", metrics.phaseTimes.getOrDefault("finalization_duration", 0L)), LogLevel.INFO);
+
+			// Processing statistics
+			loadingScreen.addLogEntry("📈 Processing Statistics:", LogLevel.INFO);
+			loadingScreen.addLogEntry(metrics.getProcessingReport(), LogLevel.INFO);
+
+			// I/O statistics
+			loadingScreen.addLogEntry("💾 I/O Statistics:", LogLevel.INFO);
+			loadingScreen.addLogEntry(metrics.getIOReport(), LogLevel.INFO);
+
+			// Memory statistics
+			loadingScreen.addLogEntry("🧠 Memory Statistics:", LogLevel.INFO);
+			loadingScreen.addLogEntry(metrics.getMemoryReport(), LogLevel.INFO);
+
+			// Cache performance
+			loadingScreen.addLogEntry("⚡ Cache Performance:", LogLevel.INFO);
+			loadingScreen.addLogEntry(metrics.getCacheReport(), LogLevel.INFO);
+
+			// Error summary
+			if (metrics.errors > 0 || metrics.warnings > 0) {
+				loadingScreen.addLogEntry("⚠️ Issues Summary:", LogLevel.WARNING);
+				loadingScreen.addLogEntry(String.format("  • Errors: %d, Warnings: %d", metrics.errors, metrics.warnings), LogLevel.WARNING);
+			} else {
+				loadingScreen.addLogEntry("✅ No errors or warnings encountered!", LogLevel.SUCCESS);
+			}
+
+			loadingScreen.addLogEntry("============================================================", LogLevel.INFO);
+			loadingScreen.updateProgress(100);
+			loadingScreen.updateDetail("Game ready!");
+			if (loadingScreen != null) {
+				loadingScreen.closeLoader();
+				loadingScreen = null;
+			}
+			com.bestbudz.engine.ClientLauncher.onGameLoadingComplete();
 
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			Signlink.reporterror("loaderror " + aString1049 + " " + anInt1079);
+			metrics.errors++;
+			long failTime = System.currentTimeMillis() - loadStartTime;
+			if (loadingScreen != null) {
+				loadingScreen.reportError("Loading failed: " + exception.getMessage());
+				loadingScreen.updateStatus("Loading Failed");
+				loadingScreen.addLogEntry(String.format("💥 LOADING FAILED after %dms", failTime), LogLevel.ERROR);
+				loadingScreen.addLogEntry("📊 Partial metrics at failure:", LogLevel.INFO);
+				loadingScreen.addLogEntry(metrics.getIOReport(), LogLevel.INFO);
+				loadingScreen.addLogEntry(metrics.getMemoryReport(), LogLevel.INFO);
+				loadingScreen.addLogEntry(String.format("Errors: %d, Warnings: %d", metrics.errors, metrics.warnings), LogLevel.ERROR);
+			}
+			Signlink.reporterror("loaderror " + inputBuffer + " " + minimapState);
 			loadingError = true;
 		} finally {
 			isLoading = false;
-			// Clean up weak references periodically
-			if (System.currentTimeMillis() % 10000 < 1000) { // ~10% chance
+			if (System.currentTimeMillis() % 10000 < 1000) {
 				OptimizedSpriteFactory.cleanupCache();
 			}
 		}
 	}
 
 	/**
+	 * Load configurations with detailed metrics tracking
+	 */
+	private static void loadConfigurationsWithMetrics(ArchiveLoader archiveLoader) {
+		String[] configTypes = {"Animation", "ObjectDef", "Floor", "OverlayFloor", "ItemDef", "EntityDef", "IdentityKit", "SpotAnim", "Varp", "VarBit"};
+		int[] progressSteps = {60, 65, 70, 75, 80, 85, 90, 93, 95, 97};
+
+		for (int i = 0; i < configTypes.length; i++) {
+			String configType = configTypes[i];
+			metrics.startOperation("config_" + configType.toLowerCase());
+
+			try {
+				switch (configType) {
+					case "Animation":
+						Animation.unpackConfig(archiveLoader);
+						break;
+					case "ObjectDef":
+						ObjectDef.unpackConfig(archiveLoader);
+						break;
+					case "Floor":
+						Floor.unpackConfig(archiveLoader);
+						break;
+					case "OverlayFloor":
+						OverlayFloor.unpackConfig(archiveLoader);
+						break;
+					case "ItemDef":
+						ItemDef.unpackConfig(archiveLoader);
+						break;
+					case "EntityDef":
+						EntityDef.unpackConfig(archiveLoader);
+						break;
+					case "IdentityKit":
+						IdentityKit.unpackConfig(archiveLoader);
+						break;
+					case "SpotAnim":
+						SpotAnim.loadConfigurations(archiveLoader);
+						break;
+					case "Varp":
+						Varp.unpackConfig(archiveLoader);
+						break;
+					case "VarBit":
+						VarBit.unpackConfig(archiveLoader);
+						break;
+				}
+
+				metrics.endOperation("config_" + configType.toLowerCase());
+				metrics.configsLoaded++;
+				long configTime = metrics.operationTimes.get("config_" + configType.toLowerCase() + "_duration");
+				loadingScreen.updateDetailProgress(progressSteps[i]);
+				loadingScreen.addLogEntry(String.format("⚙️ %s configuration loaded (%dms)", configType, configTime), LogLevel.SUCCESS);
+
+			} catch (Exception e) {
+				metrics.errors++;
+				loadingScreen.addLogEntry(String.format("❌ Failed to load %s config: %s", configType, e.getMessage()), LogLevel.ERROR);
+			}
+		}
+
+		// Set members flag
+		ItemDef.isMembers = isMembers;
+		loadingScreen.addLogEntry("🎫 Members flag configured", LogLevel.INFO);
+	}
+
+	/**
 	 * Safe sprite creation that matches original behavior exactly
 	 */
-	private static Sprite createSpriteOrThrow(StreamLoader loader, String name, int index) {
+	private static Sprite createSpriteOrThrow(ArchiveLoader loader, String name, int index) {
 		try {
 			return OptimizedSpriteFactory.createSprite(loader, name, index);
 		} catch (Exception e) {
@@ -315,184 +722,339 @@ public class GameLoader extends Client {
 	}
 
 	/**
-	 * Enhanced sprite array loading with null skipping
+	 * Enhanced stream loader with detailed progress tracking and metrics
 	 */
-	private static void loadSpriteArraySafe(Sprite[] array, StreamLoader loader, String name) {
+	private static ArchiveLoader loadStreamWithProgress(String name, String fileName, int index, int progressValue) {
+		loadingScreen.updateDetail("Loading " + name + "...");
+		metrics.startOperation("stream_" + name.replaceAll("\\s+", "_"));
+
+		try {
+			ArchiveLoader loader = loadArchive(index, name, fileName, expectedCRCs[index], progressValue, null);
+
+			metrics.endOperation("stream_" + name.replaceAll("\\s+", "_"));
+			metrics.totalFilesRead++;
+
+			// Estimate stream size (rough calculation)
+			int estimatedSize = 1024 * 1024; // Default 1MB estimate
+			metrics.totalBytesRead += estimatedSize;
+
+			long streamTime = metrics.operationTimes.get("stream_" + name.replaceAll("\\s+", "_") + "_duration");
+			loadingScreen.updateProgress(progressValue);
+			loadingScreen.addLogEntry(String.format("📁 %s stream loaded (%dms, ~%.1fMB estimated)",
+				name, streamTime, estimatedSize / (1024.0 * 1024.0)), LogLevel.SUCCESS);
+			return loader;
+		} catch (Exception e) {
+			metrics.errors++;
+			loadingScreen.addLogEntry(String.format("❌ Failed to load %s stream: %s", name, e.getMessage()), LogLevel.ERROR);
+			throw e;
+		}
+	}
+
+	/**
+	 * Enhanced sprite array loading with progress tracking
+	 */
+	private static void loadSpriteArrayWithProgress(Sprite[] array, ArchiveLoader loader, String name, int progressValue) {
+		loadingScreen.updateDetail("Loading " + name + " sprites...");
+		metrics.startOperation("sprite_array_" + name);
+
+		int initialSpritesLoaded = metrics.spritesLoaded;
+		loadSpriteArraySafe(array, loader, name);
+		int spritesLoadedThisArray = metrics.spritesLoaded - initialSpritesLoaded;
+
+		metrics.endOperation("sprite_array_" + name);
+		long arrayTime = metrics.operationTimes.get("sprite_array_" + name + "_duration");
+		loadingScreen.updateDetailProgress(progressValue);
+		loadingScreen.addLogEntry(String.format("🎨 %s array completed (%dms, %d sprites)",
+			name, arrayTime, spritesLoadedThisArray), LogLevel.SUCCESS);
+	}
+
+	/**
+	 * Enhanced sprite array loading with detailed logging and metrics
+	 */
+	private static void loadSpriteArraySafe(Sprite[] array, ArchiveLoader loader, String name) {
 		if (array == null) {
-			addConsoleMessage("Skipping null sprite array: " + name);
+			loadingScreen.addLogEntry("Skipping null sprite array: " + name, LogLevel.WARNING);
+			metrics.warnings++;
 			return;
 		}
 
 		int loadedCount = 0;
+		int totalCount = array.length;
+		int totalPixels = 0;
+		long startTime = System.currentTimeMillis();
+
 		for (int index = 0; index < array.length; index++) {
 			try {
 				Sprite sprite = OptimizedSpriteFactory.createSprite(loader, name, index);
 				if (sprite != null && sprite.myPixels != null && sprite.myWidth > 0 && sprite.myHeight > 0) {
 					array[index] = sprite;
 					loadedCount++;
+					totalPixels += sprite.myPixels.length;
+					metrics.spritesProcessed++;
+
+					// Update progress for large arrays
+					if (totalCount > 10) {
+						int progress = (int) ((double) loadedCount / totalCount * 100);
+						loadingScreen.updateDetailProgress(progress);
+					}
 				} else {
-					// Don't even allocate empty sprites - just leave null
-					addConsoleMessage("Skipping corrupted sprite: " + name + "[" + index + "]");
-					break; // Original behavior: stop on first invalid sprite
+					loadingScreen.addLogEntry(String.format("⚠️ Corrupted sprite: %s[%d] - stopping array load", name, index), LogLevel.WARNING);
+					metrics.warnings++;
+					break;
 				}
 			} catch (Exception e) {
-				addConsoleMessage("Failed to load sprite " + name + "[" + index + "] - stopping array load");
+				loadingScreen.addLogEntry(String.format("❌ Failed to load sprite %s[%d] - %s", name, index, e.getMessage()), LogLevel.ERROR);
+				metrics.errors++;
 				break;
 			}
 		}
-		addConsoleMessage("Loaded " + loadedCount + "/" + array.length + " sprites for " + name);
+
+		long duration = System.currentTimeMillis() - startTime;
+		double avgTimePerSprite = loadedCount > 0 ? (double) duration / loadedCount : 0;
+		double totalSizeMB = totalPixels * 4.0 / (1024.0 * 1024.0); // ARGB pixels
+
+		if (loadedCount == totalCount) {
+			loadingScreen.addLogEntry(String.format("✅ %s: %d/%d sprites (%.1fMB, avg %.1fms/sprite)",
+				name, loadedCount, totalCount, totalSizeMB, avgTimePerSprite), LogLevel.SUCCESS);
+		} else {
+			loadingScreen.addLogEntry(String.format("⚠️ %s: %d/%d sprites (%.1fMB, avg %.1fms/sprite) - PARTIAL",
+				name, loadedCount, totalCount, totalSizeMB, avgTimePerSprite), LogLevel.WARNING);
+		}
 	}
 
-
 	/**
-	 * Enhanced bulk copy with comprehensive null checking
+	 * Enhanced bulk copy operations with comprehensive progress tracking
 	 */
 	private static void performSafeBulkCopies() {
-		// Currency images copy - skip if source data is corrupted
+		loadingScreen.updateDetail("Processing currency sprites...");
+		metrics.startOperation("bulk_copy_currencies");
+
+		// Currency images copy with detailed metrics
 		if (currencies > 0 && cacheSprite != null && currencyImage != null && cacheSprite.length > 407) {
 			int copyLength = Math.min(currencies, Math.min(currencyImage.length, cacheSprite.length - 407));
 			if (copyLength > 0) {
-				// Validate source sprites aren't null before copying
 				boolean hasValidSprites = true;
+				int validatedSprites = 0;
+
 				for (int i = 0; i < copyLength; i++) {
 					if (cacheSprite[407 + i] == null) {
 						hasValidSprites = false;
 						break;
 					}
+					validatedSprites++;
 				}
 
 				if (hasValidSprites) {
 					System.arraycopy(cacheSprite, 407, currencyImage, 0, copyLength);
-					addConsoleMessage("Copied " + copyLength + " currency sprites");
+					metrics.spritesProcessed += copyLength;
+					metrics.endOperation("bulk_copy_currencies");
+					long currencyTime = metrics.operationTimes.get("bulk_copy_currencies_duration");
+					loadingScreen.addLogEntry(String.format("✅ Currency sprites: %d copied (%dms, %d validated)",
+						copyLength, currencyTime, validatedSprites), LogLevel.SUCCESS);
 				} else {
-					addConsoleMessage("Skipping currency copy - source sprites are null");
+					loadingScreen.addLogEntry(String.format("⚠️ Currency sprites: source data corrupted at sprite %d", validatedSprites), LogLevel.WARNING);
+					metrics.warnings++;
 				}
 			}
 		} else {
-			addConsoleMessage("Skipping currency copy - insufficient data");
+			loadingScreen.addLogEntry(String.format("⚠️ Currency sprites: insufficient data (currencies=%d, cacheLen=%d)",
+				currencies, cacheSprite != null ? cacheSprite.length : 0), LogLevel.WARNING);
+			metrics.warnings++;
 		}
 
-		// Hit marks copy - validate source data
+		loadingScreen.updateDetailProgress(33);
+		loadingScreen.updateDetail("Processing hit mark sprites...");
+		metrics.startOperation("bulk_copy_hitmarks");
+
+		// Hit marks copy with validation
 		if (cacheSprite != null && hitMark != null && cacheSprite.length > 484) {
 			int copyLength = Math.min(9, Math.min(hitMark.length, cacheSprite.length - 475));
 			if (copyLength > 0 && validateSpriteRange(cacheSprite, 475, copyLength)) {
 				System.arraycopy(cacheSprite, 475, hitMark, 0, copyLength);
-				addConsoleMessage("Copied " + copyLength + " hit mark sprites");
+				metrics.spritesProcessed += copyLength;
+				metrics.endOperation("bulk_copy_hitmarks");
+				long hitmarkTime = metrics.operationTimes.get("bulk_copy_hitmarks_duration");
+				loadingScreen.addLogEntry(String.format("✅ Hit mark sprites: %d copied (%dms)", copyLength, hitmarkTime), LogLevel.SUCCESS);
 			} else {
-				addConsoleMessage("Skipping hit mark copy - corrupted source data");
+				loadingScreen.addLogEntry("⚠️ Hit mark sprites: corrupted source data", LogLevel.WARNING);
+				metrics.warnings++;
 			}
 		}
 
-		// Hit icons copy - validate source data
+		loadingScreen.updateDetailProgress(66);
+		loadingScreen.updateDetail("Processing hit icon sprites...");
+		metrics.startOperation("bulk_copy_hiticons");
+
+		// Hit icons copy with validation
 		if (cacheSprite != null && hitIcon != null && cacheSprite.length > 489) {
 			int copyLength = Math.min(6, Math.min(hitIcon.length, cacheSprite.length - 484));
 			if (copyLength > 0 && validateSpriteRange(cacheSprite, 484, copyLength)) {
 				System.arraycopy(cacheSprite, 484, hitIcon, 0, copyLength);
-				addConsoleMessage("Copied " + copyLength + " hit icon sprites");
+				metrics.spritesProcessed += copyLength;
+				metrics.endOperation("bulk_copy_hiticons");
+				long hiticonTime = metrics.operationTimes.get("bulk_copy_hiticons_duration");
+				loadingScreen.addLogEntry(String.format("✅ Hit icon sprites: %d copied (%dms)", copyLength, hiticonTime), LogLevel.SUCCESS);
 			} else {
-				addConsoleMessage("Skipping hit icon copy - corrupted source data");
+				loadingScreen.addLogEntry("⚠️ Hit icon sprites: corrupted source data", LogLevel.WARNING);
+				metrics.warnings++;
 			}
 		}
+
+		loadingScreen.updateDetailProgress(100);
+		loadingScreen.addLogEntry("📦 Bulk copy operations completed", LogLevel.INFO);
 	}
 
 	/**
-	 * Individual sprite creation with corruption detection
+	 * Individual sprite creation with corruption detection and metrics
 	 */
-	private static Sprite createSpriteOrNull(StreamLoader loader, String name, int index) {
+	private static Sprite createSpriteOrNull(ArchiveLoader loader, String name, int index) {
 		try {
+			long startTime = System.nanoTime();
 			Sprite sprite = OptimizedSpriteFactory.createSprite(loader, name, index);
 
 			// Validate sprite integrity
 			if (sprite == null || sprite.myPixels == null || sprite.myWidth <= 0 || sprite.myHeight <= 0) {
+				metrics.warnings++;
 				addConsoleMessage("Corrupted sprite detected: " + name + "[" + index + "] - skipping");
 				return null;
 			}
 
+			long duration = (System.nanoTime() - startTime) / 1000000;
+			if (duration > 10) { // Log slow individual sprite loads
+				loadingScreen.addLogEntry(String.format("🐌 Slow sprite load: %s[%d] (%.1fms)",
+					name, index, duration / 1000.0), LogLevel.WARNING);
+			}
+
 			return sprite;
 		} catch (Exception e) {
-			addConsoleMessage("Failed to create sprite " + name + "[" + index + "]: " + e.getMessage());
+			metrics.errors++;
+			addConsoleMessage("Failed to getPooledStream sprite " + name + "[" + index + "]: " + e.getMessage());
 			return null;
 		}
 	}
 
 	/**
-	 * Skip entire sprite collections that are corrupted
+	 * Enhanced optional sprites loading with comprehensive progress and metrics
 	 */
-	private static void loadOptionalSpritesBatch(StreamLoader streamLoader_2) {
-		// Map scenes - skip if corrupted
-		int mapSceneCount = loadBackgroundArray(mapScenes, streamLoader_2, "mapscene", 100);
-		addConsoleMessage("Loaded " + mapSceneCount + " map scenes");
+	private static void loadOptionalSpritesBatch(ArchiveLoader archiveLoader_2) {
+		metrics.startOperation("optional_sprites");
 
-		// Map functions - skip corrupted ones
-		int mapFunctionCount = loadSpriteArray(mapFunctions, streamLoader_2, "mapfunction", 100);
-		addConsoleMessage("Loaded " + mapFunctionCount + " map functions");
+		loadingScreen.updateDetail("Loading map scenes...");
+		int mapSceneCount = loadBackgroundArrayWithProgress(mapScenes, archiveLoader_2, "mapscene", 100, 20);
+		metrics.backgroundsLoaded += mapSceneCount;
 
-		// Hit marks
-		int hitMarkCount = loadSpriteArray(hitMarks, streamLoader_2, "hitmarks", 20);
-		addConsoleMessage("Loaded " + hitMarkCount + " hit marks");
+		loadingScreen.updateDetail("Loading map functions...");
+		int mapFunctionCount = loadSpriteArrayWithProgress(mapFunctions, archiveLoader_2, "mapfunction", 100, 40);
 
-		// Head icons hint
-		int hintIconCount = loadSpriteArray(headIconsHint, streamLoader_2, "headicons_hint", 6);
-		addConsoleMessage("Loaded " + hintIconCount + " hint icons");
+		loadingScreen.updateDetail("Loading hit marks...");
+		int hitMarkCount = loadSpriteArrayWithProgress(hitMarks, archiveLoader_2, "hitmarks", 20, 60);
 
-		// Head icons prayer
-		int prayerIconCount = loadSpriteArray(headIcons, streamLoader_2, "headicons_prayer", 8);
-		addConsoleMessage("Loaded " + prayerIconCount + " prayer icons");
+		loadingScreen.updateDetail("Loading hint icons...");
+		int hintIconCount = loadSpriteArrayWithProgress(headIconsHint, archiveLoader_2, "headicons_hint", 6, 80);
 
-		// Skull icons
-		int skullIconCount = loadSpriteArray(skullIcons, streamLoader_2, "headicons_pk", 3);
-		addConsoleMessage("Loaded " + skullIconCount + " skull icons");
+		loadingScreen.updateDetail("Loading prayer icons...");
+		int prayerIconCount = loadSpriteArrayWithProgress(headIcons, archiveLoader_2, "headicons_prayer", 8, 90);
 
+		loadingScreen.updateDetail("Loading skull icons...");
+		int skullIconCount = loadSpriteArrayWithProgress(skullIcons, archiveLoader_2, "headicons_pk", 3, 100);
+
+		metrics.endOperation("optional_sprites");
+		long optionalTime = metrics.operationTimes.get("optional_sprites_duration");
+		int totalLoaded = mapSceneCount + mapFunctionCount + hitMarkCount + hintIconCount + prayerIconCount + skullIconCount;
+		loadingScreen.addLogEntry(String.format("🎯 Optional sprites loaded: %d total (%dms)", totalLoaded, optionalTime), LogLevel.SUCCESS);
+		loadingScreen.addLogEntry(String.format("  • Map scenes: %d, Functions: %d, Hit marks: %d", mapSceneCount, mapFunctionCount, hitMarkCount), LogLevel.INFO);
+		loadingScreen.addLogEntry(String.format("  • Hint icons: %d, Prayer icons: %d, Skull icons: %d", hintIconCount, prayerIconCount, skullIconCount), LogLevel.INFO);
 	}
 
-
 	/**
-	 * Generic sprite array loader with null skipping
+	 * Sprite array loader with progress tracking and detailed metrics
 	 */
-	private static int loadSpriteArray(Sprite[] array, StreamLoader loader, String name, int maxCount) {
+	private static int loadSpriteArrayWithProgress(Sprite[] array, ArchiveLoader loader, String name, int maxCount, int progressValue) {
 		if (array == null || array.length == 0) {
-			addConsoleMessage("Skipping empty/null array: " + name);
+			loadingScreen.addLogEntry("Skipping empty/null array: " + name, LogLevel.WARNING);
+			metrics.warnings++;
 			return 0;
 		}
 
 		int loaded = 0;
+		int totalPixels = 0;
+		long startTime = System.currentTimeMillis();
+
 		for (int i = 0; i < Math.min(maxCount, array.length); i++) {
 			Sprite sprite = createSpriteOrNull(loader, name, i);
 			if (sprite != null) {
 				array[i] = sprite;
 				loaded++;
+				totalPixels += sprite.myPixels.length;
+
+				// Update progress for larger arrays
+				if (maxCount > 10) {
+					int progress = (int) ((double) i / Math.min(maxCount, array.length) * progressValue);
+					loadingScreen.updateDetailProgress(progress);
+				}
 			} else {
-				// Stop loading this array - original Vencillio behavior
 				break;
 			}
 		}
+
+		long duration = System.currentTimeMillis() - startTime;
+		double sizeMB = totalPixels * 4.0 / (1024.0 * 1024.0);
+		loadingScreen.updateDetailProgress(progressValue);
+
+		if (loaded > 0) {
+			loadingScreen.addLogEntry(String.format("📊 %s: %d sprites loaded (%.1fMB, %.1fms avg)",
+				name, loaded, sizeMB, (double) duration / loaded), LogLevel.INFO);
+		}
+
 		return loaded;
 	}
 
 	/**
-	 * Background array loader with null skipping
+	 * Background array loader with progress tracking and metrics
 	 */
-	private static int loadBackgroundArray(Background[] array, StreamLoader loader, String name, int maxCount) {
+	private static int loadBackgroundArrayWithProgress(Background[] array, ArchiveLoader loader, String name, int maxCount, int progressValue) {
 		if (array == null || array.length == 0) {
-			addConsoleMessage("Skipping empty/null background array: " + name);
+			loadingScreen.addLogEntry("Skipping empty/null background array: " + name, LogLevel.WARNING);
+			metrics.warnings++;
 			return 0;
 		}
 
 		int loaded = 0;
+		int totalBytes = 0;
+		long startTime = System.currentTimeMillis();
+
 		for (int i = 0; i < Math.min(maxCount, array.length); i++) {
 			try {
 				Background bg = new Background(loader, name, i);
-				if (bg != null && bg.aByteArray1450 != null) {
+				if (bg != null && bg.textureData != null) {
 					array[i] = bg;
 					loaded++;
+					totalBytes += bg.textureData.length;
+
+					// Update progress for larger arrays
+					if (maxCount > 10) {
+						int progress = (int) ((double) i / Math.min(maxCount, array.length) * progressValue);
+						loadingScreen.updateDetailProgress(progress);
+					}
 				} else {
 					break;
 				}
 			} catch (Exception e) {
-				addConsoleMessage("Failed to load background " + name + "[" + i + "]");
+				loadingScreen.addLogEntry(String.format("❌ Failed to load background %s[%d]: %s", name, i, e.getMessage()), LogLevel.ERROR);
+				metrics.errors++;
 				break;
 			}
 		}
+
+		long duration = System.currentTimeMillis() - startTime;
+		double sizeMB = totalBytes / (1024.0 * 1024.0);
+		loadingScreen.updateDetailProgress(progressValue);
+
+		if (loaded > 0) {
+			loadingScreen.addLogEntry(String.format("🖼️ %s backgrounds: %d loaded (%.1fMB, %.1fms avg)",
+				name, loaded, sizeMB, (double) duration / loaded), LogLevel.INFO);
+		}
+
 		return loaded;
 	}
 
@@ -509,9 +1071,12 @@ public class GameLoader extends Client {
 	}
 
 	/**
-	 * Enhanced color adjustment with null skipping
+	 * Enhanced color adjustments with comprehensive progress tracking and metrics
 	 */
 	private static void applyColorAdjustmentsOptimized() {
+		loadingScreen.updateDetail("Calculating color adjustments...");
+		metrics.startOperation("color_calculation");
+
 		int i5 = (int) (Math.random() * 21D) - 10;
 		int j5 = (int) (Math.random() * 21D) - 10;
 		int k5 = (int) (Math.random() * 21D) - 10;
@@ -520,36 +1085,68 @@ public class GameLoader extends Client {
 		int colorAdjust2 = j5 + l5;
 		int colorAdjust3 = k5 + l5;
 
+		metrics.endOperation("color_calculation");
+		long calcTime = metrics.operationTimes.get("color_calculation_duration");
+		loadingScreen.addLogEntry(String.format("🎨 Color adjustments calculated: R%+d, G%+d, B%+d (%dms)",
+			colorAdjust1, colorAdjust2, colorAdjust3, calcTime), LogLevel.INFO);
+
 		int functionsProcessed = 0;
 		int scenesProcessed = 0;
+		int totalPixelsProcessed = 0;
+		long startTime = System.currentTimeMillis();
+
+		loadingScreen.updateDetail("Applying color adjustments...");
+		metrics.startOperation("color_application");
 
 		for (int i6 = 0; i6 < 100; i6++) {
-			// Only process non-null sprites with valid pixel data
 			if (mapFunctions[i6] != null && mapFunctions[i6].myPixels != null) {
-				mapFunctions[i6].method344(colorAdjust1, colorAdjust2, colorAdjust3);
+				mapFunctions[i6].adjustBrightness(colorAdjust1, colorAdjust2, colorAdjust3);
 				functionsProcessed++;
+				totalPixelsProcessed += mapFunctions[i6].myPixels.length;
 			}
-			if (mapScenes[i6] != null && mapScenes[i6].aByteArray1450 != null) {
+			if (mapScenes[i6] != null && mapScenes[i6].textureData != null) {
 				mapScenes[i6].method360(colorAdjust1, colorAdjust2, colorAdjust3);
 				scenesProcessed++;
+				totalPixelsProcessed += mapScenes[i6].textureData.length;
+			}
+
+			// Update progress
+			if (i6 % 10 == 0) {
+				loadingScreen.updateDetailProgress(i6);
 			}
 		}
 
-		addConsoleMessage("Applied color adjustments to " + functionsProcessed + " functions, " + scenesProcessed + " scenes");
+		metrics.endOperation("color_application");
+		long applyTime = metrics.operationTimes.get("color_application_duration");
+		double pixelsMB = totalPixelsProcessed / (1024.0 * 1024.0);
+
+		loadingScreen.addLogEntry(String.format("🎨 Color adjustments applied (%dms):", applyTime), LogLevel.SUCCESS);
+		loadingScreen.addLogEntry(String.format("  • Functions: %d processed, Scenes: %d processed", functionsProcessed, scenesProcessed), LogLevel.INFO);
+		loadingScreen.addLogEntry(String.format("  • Total pixels processed: %.1fMB", pixelsMB), LogLevel.INFO);
 	}
 
 	/**
-	 * Map bounds calculation - exactly as original
+	 * Enhanced map bounds calculation with comprehensive progress tracking
 	 */
 	private static void calculateMapBoundsOptimized() {
 		if (mapBack == null) {
-			addConsoleMessage("Warning: mapBack is null, skipping map bounds calculation");
+			loadingScreen.addLogEntry("Warning: mapBack is null, skipping map bounds calculation", LogLevel.WARNING);
+			metrics.warnings++;
 			return;
 		}
 
-		byte[] mapData = mapBack.aByteArray1450;
-		int mapWidth = mapBack.anInt1452;
+		loadingScreen.updateDetail("Calculating map boundaries...");
+		metrics.startOperation("map_bounds_calculation");
 
+		byte[] mapData = mapBack.textureData;
+		int mapWidth = mapBack.backgroundWidth;
+		int processedBytes = 0;
+
+		loadingScreen.addLogEntry(String.format("🗺️ Map data: %dx%d grid, %d bytes",
+			mapWidth, mapData.length / mapWidth, mapData.length), LogLevel.INFO);
+
+		// Process horizontal bounds
+		metrics.startOperation("horizontal_bounds");
 		for (int j6 = 0; j6 < 33; j6++) {
 			int k6 = 999;
 			int i7 = 0;
@@ -565,10 +1162,20 @@ public class GameLoader extends Client {
 				i7 = k7;
 				break;
 			}
-			anIntArray968[j6] = k6;
-			anIntArray1057[j6] = i7 - k6;
-		}
+			skillExperienceTable[j6] = k6;
+			questStates[j6] = i7 - k6;
+			processedBytes += 34;
 
+			// Update progress
+			if (j6 % 8 == 0) {
+				loadingScreen.updateDetailProgress((int) ((double) j6 / 33 * 50));
+			}
+		}
+		metrics.endOperation("horizontal_bounds");
+		long hTime = metrics.operationTimes.get("horizontal_bounds_duration");
+
+		// Process vertical bounds
+		metrics.startOperation("vertical_bounds");
 		for (int l6 = 1; l6 < 153; l6++) {
 			int j7 = 999;
 			int l7 = 0;
@@ -586,38 +1193,239 @@ public class GameLoader extends Client {
 				l7 = j8;
 				break;
 			}
-			anIntArray1052[l6 - 1] = j7 - 24;
-			anIntArray1229[l6 - 1] = l7 - j7;
+			professionGrades[l6 - 1] = j7 - 24;
+			friendsListIds[l6 - 1] = l7 - j7;
+			processedBytes += 153;
+
+			// Update progress
+			if (l6 % 15 == 0) {
+				loadingScreen.updateDetailProgress(50 + (int) ((double) l6 / 152 * 50));
+			}
 		}
+		metrics.endOperation("vertical_bounds");
+		long vTime = metrics.operationTimes.get("vertical_bounds_duration");
+
+		metrics.endOperation("map_bounds_calculation");
+		long totalTime = metrics.operationTimes.get("map_bounds_calculation_duration");
+
+		loadingScreen.addLogEntry(String.format("🗺️ Map boundaries calculated (%dms total):", totalTime), LogLevel.SUCCESS);
+		loadingScreen.addLogEntry(String.format("  • Horizontal bounds: %dms, Vertical bounds: %dms", hTime, vTime), LogLevel.INFO);
+		loadingScreen.addLogEntry(String.format("  • Processed %d bytes of map data", processedBytes), LogLevel.INFO);
 	}
 
-
 	/**
-	 * Public API for monitoring loading state
+	 * Public API for monitoring loading state with enhanced metrics
 	 */
 	public static boolean isCurrentlyLoading() {
 		return isLoading;
 	}
 
-	/**
-	 * Public API for cache management
-	 */
-	public static void cleanupCaches() {
-		OptimizedSpriteFactory.cleanupCache();
+	public static LoadingVisual getLoadingScreen() {
+		return loadingScreen;
+	}
+
+	public static void updateLoadingStatus(String status) {
+		if (loadingScreen != null) {
+			loadingScreen.updateStatus(status);
+		}
+	}
+
+	public static void addLoadingLogEntry(String message, LoadingEnums.LogLevel level) {
+		if (loadingScreen != null) {
+			loadingScreen.addLogEntry(message, level);
+		}
 	}
 
 	/**
-	 * Get cache statistics for debugging
+	 * Public API for cache management with metrics
+	 */
+	public static void cleanupCaches() {
+		int beforeSize = spriteCache.size();
+		OptimizedSpriteFactory.cleanupCache();
+		int afterSize = spriteCache.size();
+		int cleaned = beforeSize - afterSize;
+
+		if (loadingScreen != null && cleaned > 0) {
+			loadingScreen.addLogEntry(String.format("🧹 Cache cleanup: %d entries removed", cleaned), LogLevel.INFO);
+		}
+	}
+
+	/**
+	 * Get comprehensive cache statistics for debugging
 	 */
 	public static String getCacheStats() {
 		int cacheSize = spriteCache.size();
 		int activeRefs = (int) spriteCache.values().stream()
 			.mapToLong(ref -> ref.get() != null ? 1 : 0)
 			.sum();
-		return String.format("Cache: %d entries, %d active", cacheSize, activeRefs);
+		double hitRate = metrics.cacheHits + metrics.cacheMisses > 0 ?
+			(metrics.cacheHits * 100.0 / (metrics.cacheHits + metrics.cacheMisses)) : 0;
+
+		return String.format("Cache: %d entries (%d active), %.1f%% hit rate, %d evictions",
+			cacheSize, activeRefs, hitRate, metrics.cacheEvictions);
 	}
 
+	/**
+	 * Get comprehensive loading metrics report
+	 */
+	public static String getLoadingMetricsReport() {
+		StringBuilder report = new StringBuilder();
+		report.append("=== GAMELOADER METRICS REPORT ===\n");
+		report.append(metrics.getProcessingReport()).append("\n");
+		report.append(metrics.getIOReport()).append("\n");
+		report.append(metrics.getMemoryReport()).append("\n");
+		report.append(metrics.getCacheReport()).append("\n");
+
+		if (metrics.errors > 0 || metrics.warnings > 0) {
+			report.append(String.format("Issues: %d errors, %d warnings\n", metrics.errors, metrics.warnings));
+		}
+
+		// Phase timing breakdown
+		report.append("Phase Timings:\n");
+		for (Map.Entry<String, Long> entry : metrics.phaseTimes.entrySet()) {
+			if (entry.getKey().endsWith("_duration")) {
+				String phaseName = entry.getKey().replace("_duration", "");
+				report.append(String.format("  %s: %dms\n", phaseName, entry.getValue()));
+			}
+		}
+
+		return report.toString();
+	}
+
+	/**
+	 * Get real-time performance metrics
+	 */
+	public static String getPerformanceMetrics() {
+		metrics.updateMemoryMetrics();
+		Runtime runtime = Runtime.getRuntime();
+		long totalMemory = runtime.totalMemory();
+		long freeMemory = runtime.freeMemory();
+		long maxMemory = runtime.maxMemory();
+
+		double totalMB = totalMemory / (1024.0 * 1024.0);
+		double freeMB = freeMemory / (1024.0 * 1024.0);
+		double maxMB = maxMemory / (1024.0 * 1024.0);
+		double usedMB = totalMB - freeMB;
+		double usagePercent = (usedMB / maxMB) * 100;
+
+		return String.format("Memory: %.1f/%.1fMB (%.1f%% used), Cache: %d entries",
+			usedMB, maxMB, usagePercent, spriteCache.size());
+	}
+
+	/**
+	 * Enhanced error reporting with context
+	 */
+	public static void reportLoadingError(String operation, Exception e) {
+		metrics.errors++;
+		if (loadingScreen != null) {
+			loadingScreen.addLogEntry(String.format("❌ Error in %s: %s", operation, e.getMessage()), LogLevel.ERROR);
+			loadingScreen.addLogEntry(String.format("📊 Current metrics: %s", metrics.getProcessingReport()), LogLevel.INFO);
+		}
+	}
+
+	/**
+	 * Enhanced warning reporting with context
+	 */
+	public static void reportLoadingWarning(String operation, String warning) {
+		metrics.warnings++;
+		if (loadingScreen != null) {
+			loadingScreen.addLogEntry(String.format("⚠️ Warning in %s: %s", operation, warning), LogLevel.WARNING);
+		}
+	}
+
+	/**
+	 * Track custom operation timing
+	 */
+	public static void startCustomOperation(String operationName) {
+		metrics.startOperation("custom_" + operationName);
+	}
+
+	public static void endCustomOperation(String operationName) {
+		metrics.endOperation("custom_" + operationName);
+		Long duration = metrics.operationTimes.get("custom_" + operationName + "_duration");
+		if (duration != null && loadingScreen != null) {
+			loadingScreen.addLogEntry(String.format("⏱️ %s completed in %dms", operationName, duration), LogLevel.INFO);
+		}
+	}
+
+	/**
+	 * Force memory usage update and report
+	 */
+	public static void updateAndReportMemoryUsage(String context) {
+		metrics.updateMemoryMetrics();
+		if (loadingScreen != null) {
+			loadingScreen.addLogEntry(String.format("💾 %s - %s", context, metrics.getMemoryReport()), LogLevel.INFO);
+		}
+	}
+
+	/**
+	 * Integration with loading screen metrics
+	 */
+	public static void updateLoadingScreenMetrics() {
+		if (loadingScreen != null) {
+			loadingScreen.updateItemCount("Sprites", metrics.spritesLoaded);
+			loadingScreen.updateItemCount("Configs", metrics.configsLoaded);
+			loadingScreen.updateItemCount("Models", metrics.modelsProcessed);
+			loadingScreen.updateItemCount("Textures", metrics.texturesLoaded);
+			loadingScreen.updateItemCount("Interfaces", metrics.interfacesLoaded);
+			loadingScreen.updateItemCount("Backgrounds", metrics.backgroundsLoaded);
+
+			loadingScreen.updateBytesProcessed(metrics.totalBytesRead);
+			loadingScreen.updateFilesProcessed(metrics.totalFilesRead);
+			loadingScreen.updateCacheStats(metrics.cacheHits, metrics.cacheMisses);
+		}
+	}
+
+	/**
+	 * Detailed sprite loading with metrics integration
+	 */
+	public static Sprite loadSpriteWithMetrics(ArchiveLoader loader, String name, int index) {
+		long startTime = System.nanoTime();
+		try {
+			Sprite sprite = OptimizedSpriteFactory.createSprite(loader, name, index);
+			long duration = (System.nanoTime() - startTime) / 1000000;
+
+			if (loadingScreen != null && duration > 5) {
+				loadingScreen.addLogEntry(String.format("🎨 Sprite %s[%d] loaded (%dms)", name, index, duration), LogLevel.INFO);
+			}
+
+			updateLoadingScreenMetrics();
+			return sprite;
+		} catch (Exception e) {
+			long duration = (System.nanoTime() - startTime) / 1000000;
+			reportLoadingError("sprite loading: " + name + "[" + index + "]", e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Detailed configuration loading with metrics
+	 */
+	public static void loadConfigWithMetrics(String configName, Runnable configLoader) {
+		long startTime = System.currentTimeMillis();
+		try {
+			configLoader.run();
+			long duration = System.currentTimeMillis() - startTime;
+			metrics.configsLoaded++;
+
+			if (loadingScreen != null) {
+				loadingScreen.addLogEntry(String.format("⚙️ %s config loaded (%dms)", configName, duration), LogLevel.SUCCESS);
+				updateLoadingScreenMetrics();
+			}
+		} catch (Exception e) {
+			long duration = System.currentTimeMillis() - startTime;
+			reportLoadingError("config loading: " + configName, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Method to raise welcome screen (original functionality preserved)
+	 */
 	public void raiseWelcomeScreen() {
 		welcomeScreenRaised = true;
+		if (loadingScreen != null) {
+			loadingScreen.addLogEntry("🎊 Welcome screen raised", LogLevel.INFO);
+		}
 	}
 }

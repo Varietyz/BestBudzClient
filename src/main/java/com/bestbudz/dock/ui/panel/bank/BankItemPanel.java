@@ -3,6 +3,7 @@ package com.bestbudz.dock.ui.panel.bank;
 import com.bestbudz.dock.definitions.ItemBonusManager;
 import com.bestbudz.dock.util.SpriteUtil;
 import com.bestbudz.engine.core.Client;
+import com.bestbudz.network.packets.PacketSender;
 import com.bestbudz.ui.RSInterface;
 import javax.swing.*;
 import java.awt.*;
@@ -560,7 +561,7 @@ public class BankItemPanel extends JPanel {
 
 	private void depositItem(int amount) {
 		try {
-			com.bestbudz.network.packets.SendFrames.sendString(99998, itemId + "," + amount);
+			PacketSender.sendStringToServer(99998, itemId + "," + amount);
 			com.bestbudz.dock.util.ButtonHandler.sendClick(115301);
 		} catch (Exception e) {
 			System.err.println("Error depositing item: " + e.getMessage());
@@ -569,7 +570,7 @@ public class BankItemPanel extends JPanel {
 
 	private void withdrawItem(int amount) {
 		try {
-			com.bestbudz.network.packets.SendFrames.sendString(99999, itemId + "," + amount);
+			PacketSender.sendStringToServer(99999, itemId + "," + amount);
 			com.bestbudz.dock.util.ButtonHandler.sendClick(115300);
 		} catch (Exception e) {
 			System.err.println("Error withdrawing item: " + e.getMessage());
