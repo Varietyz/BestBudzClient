@@ -2,7 +2,7 @@
 package com.bestbudz.entity.pets;
 
 import com.bestbudz.entity.EntityDef;
-import com.bestbudz.entity.pets.npcvariants.DarkBeastNPCVariant;
+import com.bestbudz.entity.pets.npcvariants.AbyssalDemonNPCVariant;
 import com.bestbudz.entity.pets.petvariants.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class PetVariantManager
 		GraardorVariant.createGraardorVariants();
 		ZilyanaVariant.createZilyanaVariants();
 		CorpVariant.createCorpVariants();
-		DarkBeastNPCVariant.createDarkBeastVariants();
+		AbyssalDemonNPCVariant.createAbyssalDemonVariants();
 	}
 
 	private static void prebuildVariantCache() {

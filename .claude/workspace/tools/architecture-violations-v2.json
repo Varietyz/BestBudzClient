@@ -1,0 +1,3247 @@
+{
+  "timestamp": "2026-01-09T18:25:00.416Z",
+  "summary": {
+    "totalFiles": 337,
+    "filesWithViolations": 139,
+    "errors": 132,
+    "warnings": 7
+  },
+  "violations": [
+    {
+      "file": "src\\main\\ai-providers\\ai-analytics-db.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": "ai-providers",
+      "currentTier": 3,
+      "exports": [
+        "const aiAnalyticsDb",
+        "interface AISession",
+        "interface AIMessage",
+        "interface AIToolCall",
+        "interface AIModelUsage",
+        "interface AIDailyStats"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\ai-providers\\ai-analytics-db.ts",
+          "suggestedPath": "src/main/databases/ai-analytics-db-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ai-providers\\ai-provider-registry.ts",
+      "detectedRole": "registry",
+      "detectedTier": 2,
+      "currentFolder": "ai-providers",
+      "currentTier": 3,
+      "exports": [
+        "const aiProviderRegistry"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a registry but not in registries/ folder",
+          "expected": "src/main/registries/<domain>-registry.ts",
+          "actual": "src\\main\\ai-providers\\ai-provider-registry.ts",
+          "suggestedPath": "src/main/registries/ai-provider-registry-registry.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ai-providers\\analytics-ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "ai-providers",
+      "currentTier": 3,
+      "exports": [
+        "function registerAIAnalyticsHandlers"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\ai-providers\\analytics-ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/analytics-ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ai-providers\\ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "ai-providers",
+      "currentTier": 3,
+      "exports": [
+        "function restoreAISessionBindings",
+        "function restoreAllAISessionBindings",
+        "function clearAISessionBindings",
+        "function bindAISession",
+        "function getAISessionInfo",
+        "function registerAIProviderHandlers",
+        "function getSessionState",
+        "function cleanupAIProcesses"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\ai-providers\\ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ai-providers\\stream-parser.ts",
+      "detectedRole": "parser",
+      "detectedTier": 2,
+      "currentFolder": "ai-providers",
+      "currentTier": 3,
+      "exports": [
+        "class AIStreamParser",
+        "function extractTextContent",
+        "function extractToolUses",
+        "function extractToolResults",
+        "function extractGeminiContent",
+        "function extractGeminiStats",
+        "function extractOllamaContent",
+        "function extractOllamaStats",
+        "function extractLMStudioContent",
+        "function extractLMStudioStats",
+        "function extractDisplayContent",
+        "function extractUnifiedAnalytics",
+        "interface ClaudeSystemEvent",
+        "interface ClaudeMessageUsage",
+        "interface ClaudeToolUseContent",
+        "interface ClaudeToolResultContent",
+        "interface ClaudeTextContent",
+        "interface ClaudeAssistantEvent",
+        "interface ClaudeUserEvent",
+        "interface ClaudeModelUsage",
+        "interface ClaudePermissionDenial",
+        "interface ClaudeResultEvent",
+        "interface ClaudeControlRequestEvent",
+        "interface GeminiStats",
+        "interface GeminiStreamEvent",
+        "interface OllamaStreamEvent",
+        "interface LMStudioUsage",
+        "interface LMStudioStats",
+        "interface LMStudioStreamEvent",
+        "interface ParsedEvent",
+        "interface OllamaStats",
+        "interface UnifiedAnalytics",
+        "type ClaudeContent",
+        "type ClaudeStreamEvent"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a parser but not in parsers/ folder",
+          "expected": "src/main/parsers/<domain>-parser.ts",
+          "actual": "src\\main\\ai-providers\\stream-parser.ts",
+          "suggestedPath": "src/main/parsers/stream-parser-parser.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\base\\base-terminal-manager.ts",
+      "detectedRole": "manager",
+      "detectedTier": 2,
+      "currentFolder": "base",
+      "currentTier": 1,
+      "exports": [
+        "class BaseTerminalManager",
+        "const MAX_TABS_PER_CONTAINER",
+        "interface BaseTabInstance",
+        "interface BaseContainerInstance"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a manager but not in managers/ folder",
+          "expected": "src/main/managers/<domain>-manager.ts",
+          "actual": "src\\main\\base\\base-terminal-manager.ts",
+          "suggestedPath": "src/main/managers/base-terminal-manager-manager.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\claude\\claude-db.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": "claude",
+      "currentTier": 3,
+      "exports": [
+        "class ClaudeDb",
+        "function getClaudeDb",
+        "function closeClaudeDb"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\claude\\claude-db.ts",
+          "suggestedPath": "src/main/databases/claude-db-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\claude\\claude-sync-service.ts",
+      "detectedRole": "service",
+      "detectedTier": 2,
+      "currentFolder": "claude",
+      "currentTier": 3,
+      "exports": [
+        "class ClaudeSyncService",
+        "function getClaudeSyncService"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a service but not in services/ folder",
+          "expected": "src/main/services/<domain>-service.ts",
+          "actual": "src\\main\\claude\\claude-sync-service.ts",
+          "suggestedPath": "src/main/services/claude-sync-service-service.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\claude\\ipc-handler-helpers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "claude",
+      "currentTier": 3,
+      "exports": [
+        "function registerDbQueryHandler",
+        "function registerDbQueryHandlerWithParam",
+        "function registerDbQueryHandlerWithParams",
+        "function registerDbInfoHandler",
+        "function registerDbQueryHandlers"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\claude\\ipc-handler-helpers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handler-helpers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\claude\\ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "claude",
+      "currentTier": 3,
+      "exports": [
+        "function registerClaudeIpcHandlers",
+        "function cleanupClaudeHandlers",
+        "const CLAUDE_IPC"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\claude\\ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\claude\\runtime-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "claude",
+      "currentTier": 3,
+      "exports": [
+        "function registerRuntimeHandlers",
+        "const RUNTIME_IPC",
+        "interface RuntimeSession",
+        "interface ShellSnapshot",
+        "interface RuntimeConfig"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\claude\\runtime-handlers.ts",
+          "suggestedPath": "src/main/handlers/runtime-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\database.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "const database",
+        "interface RunResult"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\database\\database.ts",
+          "suggestedPath": "src/main/databases/database-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\ipc-handlers.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "function initializeDatabase",
+        "function registerDatabaseHandlers",
+        "function closeDatabase"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\database\\ipc-handlers.ts",
+          "suggestedPath": "src/main/databases/ipc-handlers-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migration-runner.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "class MigrationRunner",
+        "interface Migration",
+        "interface MigrationStatus"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\database\\migration-runner.ts",
+          "suggestedPath": "src/main/databases/migration-runner-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\001_initial.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "const migration"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\database\\migrations\\001_initial.ts",
+          "suggestedPath": "src/main/databases/001_initial-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\002_settings.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "const migration"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\database\\migrations\\002_settings.ts",
+          "suggestedPath": "src/main/databases/002_settings-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\003_environment.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "const migration"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\database\\migrations\\003_environment.ts",
+          "suggestedPath": "src/main/databases/003_environment-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\004_project_environment.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "const migration"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\database\\migrations\\004_project_environment.ts",
+          "suggestedPath": "src/main/databases/004_project_environment-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\006_settings_history.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "const migration"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\database\\migrations\\006_settings_history.ts",
+          "suggestedPath": "src/main/databases/006_settings_history-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\debug\\debug-db.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "function initializeDebugDb",
+        "function closeDebugDb",
+        "function getDebugDb",
+        "function insertDebugEntry",
+        "function insertDebugEntriesBulk",
+        "function queryDebugEntries",
+        "function getViolationCount",
+        "function insertBuildEvent",
+        "function queryBuildEvents",
+        "function pruneOldEntries",
+        "function clearAllEntries",
+        "interface DbDebugEntry",
+        "interface DbBuildEvent"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\debug\\debug-db.ts",
+          "suggestedPath": "src/main/databases/debug-db-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\debug\\debug-handler.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "function registerDebugHandlers",
+        "function unregisterDebugHandlers",
+        "const DEBUG_CHANNELS"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\debug\\debug-handler.ts",
+          "suggestedPath": "src/main/handlers/debug-handler-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\debug\\migrations\\001-debug-schema.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "function migrateDebugSchema",
+        "const MIGRATION_VERSION"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\debug\\migrations\\001-debug-schema.ts",
+          "suggestedPath": "src/main/databases/001-debug-schema-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\environment\\ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "environment",
+      "currentTier": 3,
+      "exports": [
+        "function registerEnvironmentHandlers"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\environment\\ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\hardware\\hardware-db.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": "hardware",
+      "currentTier": 3,
+      "exports": [
+        "function initializeHardwareDb",
+        "function closeHardwareDb",
+        "function saveHardwareInfo",
+        "function loadHardwareInfo",
+        "function saveHardwareMetrics",
+        "function loadHardwareMetrics"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\hardware\\hardware-db.ts",
+          "suggestedPath": "src/main/databases/hardware-db-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\hardware\\hardware-service.ts",
+      "detectedRole": "service",
+      "detectedTier": 2,
+      "currentFolder": "hardware",
+      "currentTier": 3,
+      "exports": [
+        "class HardwareService",
+        "const hardwareService"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a service but not in services/ folder",
+          "expected": "src/main/services/<domain>-service.ts",
+          "actual": "src\\main\\hardware\\hardware-service.ts",
+          "suggestedPath": "src/main/services/hardware-service-service.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\hardware\\ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "hardware",
+      "currentTier": 3,
+      "exports": [
+        "function registerHardwareHandlers",
+        "function cleanupHardwareHandlers"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\hardware\\ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\main.ts",
+      "detectedRole": "types",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a types but not in types/ folder",
+          "expected": "src/main/types/<domain>-types.ts",
+          "actual": "src\\main\\main.ts",
+          "suggestedPath": "src/main/types/main-types.ts"
+        },
+        {
+          "code": "TYPE_LOCATION",
+          "severity": "error",
+          "message": "Type definitions must be in shared/types/",
+          "expected": "shared/types/<domain>-types.ts",
+          "actual": "src\\main\\main.ts",
+          "suggestedPath": "src\\main\\main.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\preload.ts",
+      "detectedRole": "types",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a types but not in types/ folder",
+          "expected": "src/main/types/<domain>-types.ts",
+          "actual": "src\\main\\preload.ts",
+          "suggestedPath": "src/main/types/preload-types.ts"
+        },
+        {
+          "code": "TYPE_LOCATION",
+          "severity": "error",
+          "message": "Type definitions must be in shared/types/",
+          "expected": "shared/types/<domain>-types.ts",
+          "actual": "src\\main\\preload.ts",
+          "suggestedPath": "src\\main\\preload.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\project\\ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "function registerProjectHandlers"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\project\\ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\settings\\environment-store.ts",
+      "detectedRole": "store",
+      "detectedTier": 2,
+      "currentFolder": "settings",
+      "currentTier": 3,
+      "exports": [
+        "const environmentStore"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a store but not in stores/ folder",
+          "expected": "src/main/stores/<domain>-store.ts",
+          "actual": "src\\main\\settings\\environment-store.ts",
+          "suggestedPath": "src/main/stores/environment-store-store.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\settings\\ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "settings",
+      "currentTier": 3,
+      "exports": [
+        "function registerSettingsHandlers",
+        "function initializeSettings"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\settings\\ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\settings\\project-store.ts",
+      "detectedRole": "store",
+      "detectedTier": 2,
+      "currentFolder": "settings",
+      "currentTier": 3,
+      "exports": [
+        "const projectStore"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a store but not in stores/ folder",
+          "expected": "src/main/stores/<domain>-store.ts",
+          "actual": "src\\main\\settings\\project-store.ts",
+          "suggestedPath": "src/main/stores/project-store-store.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\settings\\settings-store.ts",
+      "detectedRole": "store",
+      "detectedTier": 2,
+      "currentFolder": "settings",
+      "currentTier": 3,
+      "exports": [
+        "const settingsStore"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a store but not in stores/ folder",
+          "expected": "src/main/stores/<domain>-store.ts",
+          "actual": "src\\main\\settings\\settings-store.ts",
+          "suggestedPath": "src/main/stores/settings-store-store.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\helpers\\process-cleanup-helper.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "helpers",
+      "currentTier": 2,
+      "exports": [
+        "function cleanupProcessHandlers",
+        "function clearProcessHandlers"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\terminal\\helpers\\process-cleanup-helper.ts",
+          "suggestedPath": "src/main/handlers/process-cleanup-helper-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\helpers\\tab-registration-helper.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "helpers",
+      "currentTier": 2,
+      "exports": [
+        "function registerTerminalTabWithHandlers"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\terminal\\helpers\\tab-registration-helper.ts",
+          "suggestedPath": "src/main/handlers/tab-registration-helper-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "terminal",
+      "currentTier": 3,
+      "exports": [
+        "function registerTerminalHandlers"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\terminal\\ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\preload.ts",
+      "detectedRole": "types",
+      "detectedTier": 2,
+      "currentFolder": "terminal",
+      "currentTier": 3,
+      "exports": [],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a types but not in types/ folder",
+          "expected": "src/main/types/<domain>-types.ts",
+          "actual": "src\\main\\terminal\\preload.ts",
+          "suggestedPath": "src/main/types/preload-types.ts"
+        },
+        {
+          "code": "TYPE_LOCATION",
+          "severity": "error",
+          "message": "Type definitions must be in shared/types/",
+          "expected": "shared/types/<domain>-types.ts",
+          "actual": "src\\main\\terminal\\preload.ts",
+          "suggestedPath": "src/shared/types/preload.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\ansi-parser.ts",
+      "detectedRole": "parser",
+      "detectedTier": 2,
+      "currentFolder": "terminal",
+      "currentTier": 3,
+      "exports": [
+        "class AnsiParser",
+        "function stripAnsi",
+        "function containsCursorHide",
+        "function containsCursorShow",
+        "function containsLineClear",
+        "function endsWithPartialLine",
+        "function extractLines"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a parser but not in parsers/ folder",
+          "expected": "src/main/parsers/<domain>-parser.ts",
+          "actual": "src\\main\\terminal\\pty-analyzer\\ansi-parser.ts",
+          "suggestedPath": "src/main/parsers/ansi-parser-parser.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "terminal",
+      "currentTier": 3,
+      "exports": [
+        "function getOrCreateAnalyzer",
+        "function registerSession",
+        "function unregisterSession",
+        "function getCurrentPrompt",
+        "function clearPrompt",
+        "function analyzePtyOutput",
+        "function handleUserInput",
+        "function getKeypressForOption",
+        "function registerPtyAnalyzerHandlers",
+        "function cleanupAnalyzers",
+        "interface AnalyzePtyResult"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\terminal\\pty-analyzer\\ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\patterns\\package-manager.ts",
+      "detectedRole": "manager",
+      "detectedTier": 2,
+      "currentFolder": "terminal",
+      "currentTier": 3,
+      "exports": [
+        "function detectPackageManagerPrompt",
+        "function isPackageManagerOutput"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a manager but not in managers/ folder",
+          "expected": "src/main/managers/<domain>-manager.ts",
+          "actual": "src\\main\\terminal\\pty-analyzer\\patterns\\package-manager.ts",
+          "suggestedPath": "src/main/managers/package-manager-manager.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\shell-registry\\ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "terminal",
+      "currentTier": 3,
+      "exports": [
+        "function registerShellRegistryHandlers"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\terminal\\shell-registry\\ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\shell-registry\\shell-registry.ts",
+      "detectedRole": "registry",
+      "detectedTier": 2,
+      "currentFolder": "terminal",
+      "currentTier": 3,
+      "exports": [
+        "const shellRegistry"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a registry but not in registries/ folder",
+          "expected": "src/main/registries/<domain>-registry.ts",
+          "actual": "src\\main\\terminal\\shell-registry\\shell-registry.ts",
+          "suggestedPath": "src/main/registries/shell-registry-registry.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\terminal-history\\ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "terminal",
+      "currentTier": 3,
+      "exports": [
+        "function registerTerminalHistoryHandlers"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\terminal\\terminal-history\\ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\terminal-history\\terminal-history-db.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": "terminal",
+      "currentTier": 3,
+      "exports": [
+        "const terminalHistoryDb"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\terminal\\terminal-history\\terminal-history-db.ts",
+          "suggestedPath": "src/main/databases/terminal-history-db-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\terminal-history\\terminal-history-service.ts",
+      "detectedRole": "service",
+      "detectedTier": 2,
+      "currentFolder": "terminal",
+      "currentTier": 3,
+      "exports": [
+        "const terminalHistoryService"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a service but not in services/ folder",
+          "expected": "src/main/services/<domain>-service.ts",
+          "actual": "src\\main\\terminal\\terminal-history\\terminal-history-service.ts",
+          "suggestedPath": "src/main/services/terminal-history-service-service.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\terminal-window.ts",
+      "detectedRole": "manager",
+      "detectedTier": 2,
+      "currentFolder": "terminal",
+      "currentTier": 3,
+      "exports": [
+        "class TerminalWindowManager",
+        "const terminalManager"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a manager but not in managers/ folder",
+          "expected": "src/main/managers/<domain>-manager.ts",
+          "actual": "src\\main\\terminal\\terminal-window.ts",
+          "suggestedPath": "src/main/managers/terminal-window-manager.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal-paths\\ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "terminal-paths",
+      "currentTier": 3,
+      "exports": [
+        "function registerTerminalPathsHandlers"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\terminal-paths\\ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal-paths\\terminal-paths-store.ts",
+      "detectedRole": "store",
+      "detectedTier": 2,
+      "currentFolder": "terminal-paths",
+      "currentTier": 3,
+      "exports": [
+        "const terminalPathsStore"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a store but not in stores/ folder",
+          "expected": "src/main/stores/<domain>-store.ts",
+          "actual": "src\\main\\terminal-paths\\terminal-paths-store.ts",
+          "suggestedPath": "src/main/stores/terminal-paths-store-store.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ui-store\\css-token-parser.ts",
+      "detectedRole": "parser",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "function discoverCSSTokens",
+        "function discoverTokensByCategory",
+        "function hasTokensDirectory"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a parser but not in parsers/ folder",
+          "expected": "src/main/parsers/<domain>-parser.ts",
+          "actual": "src\\main\\ui-store\\css-token-parser.ts",
+          "suggestedPath": "src/main/parsers/css-token-parser-parser.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ui-store\\ipc-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "function registerUIStoreHandlers"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/main/handlers/<domain>-handler.ts",
+          "actual": "src\\main\\ui-store\\ipc-handlers.ts",
+          "suggestedPath": "src/main/handlers/ipc-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ui-store\\ui-db.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "function initializeUIDb",
+        "function getUIDb",
+        "function closeUIDb",
+        "function registerDefault",
+        "function resolve",
+        "function resolveMany",
+        "function resolveByCategory",
+        "function getDefault",
+        "function getDefaultsByCategory",
+        "function hasOverride",
+        "function setOverride",
+        "function removeOverride",
+        "function getLayout",
+        "function setLayout",
+        "function saveLayoutPreset",
+        "function loadLayoutPreset",
+        "function registerEntity",
+        "function getEntity",
+        "function getEntitiesByType",
+        "function getChildren",
+        "function destroyEntity",
+        "function recordStateChange",
+        "function getStateHistory",
+        "function detectLeaks",
+        "function createTheme",
+        "function activateTheme",
+        "function deactivateTheme",
+        "function listThemes",
+        "function undo",
+        "function redo",
+        "function undoKey",
+        "function getTokenHistory",
+        "function getModifiedTokens",
+        "function getAllUserOverrides",
+        "function getHistory",
+        "function createSnapshot",
+        "function restoreSnapshot",
+        "function listSnapshots",
+        "function deleteSnapshot",
+        "interface UIDefault",
+        "interface ModHistoryEntry",
+        "interface UIOverride",
+        "interface UITheme",
+        "interface LayoutState",
+        "interface LayoutPreset",
+        "interface Entity",
+        "interface EntityStateHistory",
+        "interface EntityOwnershipLog",
+        "interface EntityPerformanceLog",
+        "interface UIHistoryEntry",
+        "interface AppStateSnapshot"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/main/databases/<domain>-database.ts",
+          "actual": "src\\main\\ui-store\\ui-db.ts",
+          "suggestedPath": "src/main/databases/ui-db-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\base\\base-config-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "base",
+      "currentTier": 1,
+      "exports": [
+        "class BaseConfigTab"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\base\\base-config-tab.ts",
+          "suggestedPath": "src/renderer/components/base-config-tab-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\base\\base-event-component.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "base",
+      "currentTier": 1,
+      "exports": [
+        "class BaseEventComponent",
+        "class BaseRenderComponent"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\base\\base-event-component.ts",
+          "suggestedPath": "src/renderer/components/base-event-component-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\base\\base-manager.ts",
+      "detectedRole": "manager",
+      "detectedTier": 2,
+      "currentFolder": "base",
+      "currentTier": 1,
+      "exports": [
+        "class BaseManager",
+        "interface UIStore",
+        "interface LayoutState",
+        "interface EntityMetadata"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a manager but not in managers/ folder",
+          "expected": "src/renderer/managers/<domain>-manager.ts",
+          "actual": "src\\renderer\\base\\base-manager.ts",
+          "suggestedPath": "src/renderer/managers/base-manager-manager.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\base\\base-resource-component.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "base",
+      "currentTier": 1,
+      "exports": [
+        "class BaseResourceComponent",
+        "interface ResourceComponentConfig",
+        "interface ResourceMetrics",
+        "type LifecycleState"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\base\\base-resource-component.ts",
+          "suggestedPath": "src/renderer/components/base-resource-component-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\base\\base-secure-component.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "base",
+      "currentTier": 1,
+      "exports": [
+        "class BaseSecureComponent",
+        "interface SecureComponentConfig",
+        "interface SecurityMetrics",
+        "interface SanitizedInput",
+        "type AuthorityTier"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\base\\base-secure-component.ts",
+          "suggestedPath": "src/renderer/components/base-secure-component-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\ai-history-modal.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class AIHistoryModal",
+        "type AIHistoryMode"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "ai-history-modal.ts",
+          "suggestedName": "ai-history-modal-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\ai-metrics-panel.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class AIMetricsPanel",
+        "function createAIMetricsPanel"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "ai-metrics-panel.ts",
+          "suggestedName": "ai-metrics-panel-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\app-title.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class AppTitle"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "app-title.ts",
+          "suggestedName": "app-title-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\background\\geometric-background.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class GeometricBackground"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "geometric-background.ts",
+          "suggestedName": "geometric-background-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-form-builder.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class ClaudeFormBuilder",
+        "interface FormValues",
+        "interface ValidationError",
+        "interface Preset"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "claude-form-builder.ts",
+          "suggestedName": "claude-form-builder-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\claude-hub-handlers.ts",
+      "detectedRole": "handler",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "function handleEditPermissions",
+        "function handleEditBehavior",
+        "function handleApplyPreset",
+        "function handleCreatePlan",
+        "interface HubHandlerContext"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a handler but not in handlers/ folder",
+          "expected": "src/renderer/handlers/<domain>-handler.ts",
+          "actual": "src\\renderer\\components\\claude-hub\\claude-hub-handlers.ts",
+          "suggestedPath": "src/renderer/handlers/claude-hub-handlers-handler.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\claude-hub-renderer.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "function renderTab"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "claude-hub-renderer.ts",
+          "suggestedName": "claude-hub-renderer-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\claude-hub.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class ClaudeHub"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "claude-hub.ts",
+          "suggestedName": "claude-hub-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\shared\\hub-list-view.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class HubListView",
+        "interface ListItem",
+        "interface HubListViewProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "hub-list-view.ts",
+          "suggestedName": "hub-list-view-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\shared\\hub-section.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class HubSection",
+        "interface HubSectionProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "hub-section.ts",
+          "suggestedName": "hub-section-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\shared\\hub-tab-bar.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class HubTabBar",
+        "interface HubTabBarProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "hub-tab-bar.ts",
+          "suggestedName": "hub-tab-bar-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\agents-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class AgentsTab",
+        "interface AgentsTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "agents-tab.ts",
+          "suggestedName": "agents-tab-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\commands-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class CommandsTab",
+        "interface CommandsTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "commands-tab.ts",
+          "suggestedName": "commands-tab-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\global-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class GlobalTab",
+        "interface GlobalTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "global-tab.ts",
+          "suggestedName": "global-tab-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\hooks-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class HooksTab",
+        "interface HooksTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "hooks-tab.ts",
+          "suggestedName": "hooks-tab-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\local-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class LocalTab",
+        "interface LocalTabData",
+        "interface LocalTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "local-tab.ts",
+          "suggestedName": "local-tab-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\mcp-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class McpTab",
+        "interface McpTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "mcp-tab.ts",
+          "suggestedName": "mcp-tab-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\plans-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class PlansTab",
+        "interface Plan",
+        "interface PlansTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "plans-tab.ts",
+          "suggestedName": "plans-tab-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\projects-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class ProjectsTab",
+        "interface ProjectsTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "projects-tab.ts",
+          "suggestedName": "projects-tab-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\skills-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class SkillsTab",
+        "interface Skill",
+        "interface SkillsTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "skills-tab.ts",
+          "suggestedName": "skills-tab-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\debug-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class DebugTab"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "debug-tab.ts",
+          "suggestedName": "debug-tab-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\file-history-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class FileHistoryTab",
+        "interface FileHistoryTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "file-history-tab.ts",
+          "suggestedName": "file-history-tab-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\runtime-config-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class RuntimeConfigTab",
+        "interface RuntimeConfigTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "runtime-config-tab.ts",
+          "suggestedName": "runtime-config-tab-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\sessions-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class SessionsTab"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "sessions-tab.ts",
+          "suggestedName": "sessions-tab-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\shell-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class ShellTab",
+        "interface ShellTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "shell-tab.ts",
+          "suggestedName": "shell-tab-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\stats-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class StatsTab",
+        "interface StatsTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "stats-tab.ts",
+          "suggestedName": "stats-tab-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\todos-tab.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class TodosTab",
+        "interface TodosTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "todos-tab.ts",
+          "suggestedName": "todos-tab-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-settings-dialog.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "function getModelOptions",
+        "function getPermissionModeOptions",
+        "function getScopeOptions",
+        "function getHookEventOptions",
+        "function getMcpServerTypeOptions",
+        "function getScopeSection",
+        "function showClaudeSettingsDialog",
+        "function showAgentDialog",
+        "function showCommandDialog",
+        "function showSkillDialog",
+        "function showHookDialog",
+        "function showMcpServerDialog",
+        "interface ClaudeDialogSection",
+        "interface ClaudeDialogField",
+        "interface ClaudeDialogOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "claude-settings-dialog.ts",
+          "suggestedName": "claude-settings-dialog-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\context-menu.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class ContextMenu",
+        "interface ContextMenuItem",
+        "interface ContextMenuDivider",
+        "interface ContextMenuOptions",
+        "type ContextMenuEntry"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "context-menu.ts",
+          "suggestedName": "context-menu-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\debug-dashboard.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class DebugDashboard"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "debug-dashboard.ts",
+          "suggestedName": "debug-dashboard-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\debug-panel.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class DebugPanel",
+        "function createDebugPanel"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "debug-panel.ts",
+          "suggestedName": "debug-panel-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\env-export-wizard.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class EnvExportWizard",
+        "function showEnvExportWizard"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "env-export-wizard.ts",
+          "suggestedName": "env-export-wizard-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\env-import-wizard.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class EnvImportWizard",
+        "function showEnvImportWizard"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "env-import-wizard.ts",
+          "suggestedName": "env-import-wizard-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\environment-modal.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class EnvironmentModal"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "environment-modal.ts",
+          "suggestedName": "environment-modal-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\form-controls.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "const FormControls",
+        "interface NumberInputOptions",
+        "interface CheckboxOptions",
+        "interface RadioOptions",
+        "interface SelectOptions",
+        "interface ToggleOptions",
+        "interface TextInputOptions",
+        "interface TextareaOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "form-controls.ts",
+          "suggestedName": "form-controls-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\hardware-panel.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class HardwarePanel",
+        "function createHardwarePanel"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "hardware-panel.ts",
+          "suggestedName": "hardware-panel-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\header-bar.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class HeaderBar",
+        "function createHeaderBar"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "header-bar.ts",
+          "suggestedName": "header-bar-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\home-panel.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class HomePanel",
+        "function createHomePanel"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "home-panel.ts",
+          "suggestedName": "home-panel-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\Logo.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class Logo",
+        "const LOGO_ASPECT_RATIO"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "Logo.ts",
+          "suggestedName": "Logo-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\modal.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "function confirm",
+        "function alert",
+        "interface SelectOption",
+        "interface FormField",
+        "interface ModalButton",
+        "interface FormModalOptions",
+        "interface ConfirmModalOptions",
+        "interface ContentModalOptions",
+        "interface CustomConfirmOptions",
+        "type ModalSize",
+        "type InputType",
+        "type ModalOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "modal.ts",
+          "suggestedName": "modal-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\popover.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class Popover",
+        "function createPopover",
+        "interface PopoverOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "popover.ts",
+          "suggestedName": "popover-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\settings-history-modal.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "settings-history-modal.ts",
+          "suggestedName": "settings-history-modal-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\settings-panel.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class SettingsPanel",
+        "function createSettingsPanel"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "settings-panel.ts",
+          "suggestedName": "settings-panel-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\taskbar.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class Taskbar",
+        "function createTaskbar"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "taskbar.ts",
+          "suggestedName": "taskbar-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\Toast.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "const toast"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "Toast.ts",
+          "suggestedName": "Toast-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\tool-permission-editor.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class ToolPermissionEditor",
+        "class DirectoryEditor",
+        "function parseToolPermission",
+        "function formatToolPermission",
+        "const CLAUDE_TOOLS",
+        "interface ToolPermissionRow",
+        "interface ToolPermissionEditorOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "tool-permission-editor.ts",
+          "suggestedName": "tool-permission-editor-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\ui-customization-panel.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class UICustomizationPanel"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "ui-customization-panel.ts",
+          "suggestedName": "ui-customization-panel-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\window.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class Window"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "window.ts",
+          "suggestedName": "window-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\core\\core-attention-source.ts",
+      "detectedRole": "manager",
+      "detectedTier": 2,
+      "currentFolder": "core",
+      "currentTier": 1,
+      "exports": [
+        "class AttentionSourceTracker",
+        "class AttentionSourceManager",
+        "function createAttentionSourceManager",
+        "interface AttentionSourceWeights",
+        "interface AttentionSource",
+        "interface AttentionSourceConfig",
+        "interface SourceTrackerMetrics",
+        "type AttentionSourceType"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a manager but not in managers/ folder",
+          "expected": "src/renderer/managers/<domain>-manager.ts",
+          "actual": "src\\renderer\\engine\\core\\core-attention-source.ts",
+          "suggestedPath": "src/renderer/managers/core-attention-source-manager.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\core\\core-registry.ts",
+      "detectedRole": "registry",
+      "detectedTier": 2,
+      "currentFolder": "core",
+      "currentTier": 1,
+      "exports": [
+        "class RegistryError",
+        "class Registry",
+        "type RegistryErrorCode"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a registry but not in registries/ folder",
+          "expected": "src/renderer/registries/<domain>-registry.ts",
+          "actual": "src\\renderer\\engine\\core\\core-registry.ts",
+          "suggestedPath": "src/renderer/registries/core-registry-registry.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\culling\\cullable-scroll-container.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "class CullableScrollContainer",
+        "function createCullableScrollContainer",
+        "const DEFAULT_CULLABLE_CONFIG",
+        "interface CullableItem",
+        "interface CullableScrollContainerConfig",
+        "interface CullableScrollContainerMetrics",
+        "type ItemRenderFn"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\engine\\culling\\cullable-scroll-container.ts",
+          "suggestedPath": "src/renderer/components/cullable-scroll-container-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\debug\\sinks\\database-sink.ts",
+      "detectedRole": "database",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "class DatabaseSink",
+        "function getDatabaseSink"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a database but not in databases/ folder",
+          "expected": "src/renderer/databases/<domain>-database.ts",
+          "actual": "src\\renderer\\engine\\debug\\sinks\\database-sink.ts",
+          "suggestedPath": "src/renderer/databases/database-sink-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\pools\\element-pool.ts",
+      "detectedRole": "manager",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "class ElementPoolManager",
+        "function createPooledElement",
+        "function releaseElements",
+        "interface ElementPoolConfig",
+        "interface ElementLifecycle",
+        "type PoolableElementType"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a manager but not in managers/ folder",
+          "expected": "src/renderer/managers/<domain>-manager.ts",
+          "actual": "src\\renderer\\engine\\pools\\element-pool.ts",
+          "suggestedPath": "src/renderer/managers/element-pool-manager.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\pools\\window-state-pool.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "class WindowStatePool",
+        "function createWindowStatePool",
+        "interface CacheableComponent",
+        "interface WindowState",
+        "interface WindowStatePoolMetrics",
+        "interface WindowStatePoolHealth",
+        "interface WindowStatePoolConfig"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\engine\\pools\\window-state-pool.ts",
+          "suggestedPath": "src/renderer/components/window-state-pool-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-api-compliance-validator.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "validators",
+      "currentTier": 2,
+      "exports": [
+        "class DOMComplianceValidator",
+        "function validateDOMCompliance",
+        "function getDOMComplianceViolations",
+        "function clearDOMComplianceViolations",
+        "const domComplianceValidator",
+        "interface DOMComplianceViolation",
+        "interface DOMComplianceValidatorConfig",
+        "type ViolationType",
+        "type ViolationSeverity"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\engine\\validators\\dom-api-compliance-validator.ts",
+          "suggestedPath": "src/renderer/components/dom-api-compliance-validator-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-bypass-validator.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "validators",
+      "currentTier": 2,
+      "exports": [
+        "class DOMBypassValidator",
+        "function validateDOMBypasses",
+        "function getDOMBypassViolations",
+        "const domBypassValidator",
+        "interface DOMBypassViolation",
+        "interface DOMBypassValidatorConfig",
+        "type DOMBypassType"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\engine\\validators\\dom-bypass-validator.ts",
+          "suggestedPath": "src/renderer/components/dom-bypass-validator-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\bypass-detector.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "validators",
+      "currentTier": 2,
+      "exports": [
+        "class BypassDetector",
+        "function detectBypasses",
+        "const bypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\engine\\validators\\dom-factory\\bypass-detector.ts",
+          "suggestedPath": "src/renderer/components/bypass-detector-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\properties-bypass-detector.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "validators",
+      "currentTier": 2,
+      "exports": [
+        "class PropertiesBypassDetector",
+        "function detectPropertiesBypasses",
+        "const propertiesBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\engine\\validators\\dom-factory\\properties-bypass-detector.ts",
+          "suggestedPath": "src/renderer/components/properties-bypass-detector-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\reserved-key-detector.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "validators",
+      "currentTier": 2,
+      "exports": [
+        "class ReservedKeyDetector",
+        "function detectReservedKeyBypasses",
+        "const reservedKeyDetector"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\engine\\validators\\dom-factory\\reserved-key-detector.ts",
+          "suggestedPath": "src/renderer/components/reserved-key-detector-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\type-assertion-bypass-detector.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "validators",
+      "currentTier": 2,
+      "exports": [
+        "class TypeAssertionBypassDetector",
+        "function detectTypeAssertionBypasses",
+        "const typeAssertionBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\engine\\validators\\dom-factory\\type-assertion-bypass-detector.ts",
+          "suggestedPath": "src/renderer/components/type-assertion-bypass-detector-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\validator-utilities.ts",
+      "detectedRole": "helper",
+      "detectedTier": 2,
+      "currentFolder": "validators",
+      "currentTier": 2,
+      "exports": [
+        "function getLineNumber",
+        "function getColumnNumber",
+        "function findMatches",
+        "function hasIgnoreComment",
+        "function groupBySeverity",
+        "function groupByFile"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a helper but not in helpers/ folder",
+          "expected": "src/renderer/helpers/<domain>-helper.ts",
+          "actual": "src\\renderer\\engine\\validators\\validator-utilities.ts",
+          "suggestedPath": "src/renderer/helpers/validator-utilities-helper.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\vite-codebase-validator-plugin.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "validators",
+      "currentTier": 2,
+      "exports": [
+        "function codebaseValidatorPlugin",
+        "interface CodebaseValidatorPluginOptions"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\engine\\validators\\vite-codebase-validator-plugin.ts",
+          "suggestedPath": "src/renderer/components/vite-codebase-validator-plugin-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\virtualization\\virtualized-buffer.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [
+        "class VirtualizedBuffer",
+        "function createVirtualizedBuffer",
+        "interface VirtualizedItem",
+        "interface VirtualizedBufferConfig",
+        "interface VirtualizedBufferMetrics"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\engine\\virtualization\\virtualized-buffer.ts",
+          "suggestedPath": "src/renderer/components/virtualized-buffer-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\main.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": null,
+      "currentTier": 0,
+      "exports": [],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a component but not in components/ folder",
+          "expected": "src/renderer/components/<domain>-component.ts",
+          "actual": "src\\renderer\\main.ts",
+          "suggestedPath": "src/renderer/components/main-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\managers\\physics-shape-manager.ts",
+      "detectedRole": "manager",
+      "detectedTier": 2,
+      "currentFolder": "managers",
+      "currentTier": 2,
+      "exports": [
+        "class PhysicsShapeManager",
+        "function getPhysicsShapeManager",
+        "interface PhysicsShape"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseManager",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\managers\\pool-snapshot-manager.ts",
+      "detectedRole": "manager",
+      "detectedTier": 2,
+      "currentFolder": "managers",
+      "currentTier": 2,
+      "exports": [
+        "class PoolSnapshotManager",
+        "function getPoolSnapshotManager"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseManager",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\managers\\viewport-culling-manager.ts",
+      "detectedRole": "manager",
+      "detectedTier": 2,
+      "currentFolder": "managers",
+      "currentTier": 2,
+      "exports": [
+        "class ViewportCullingManager",
+        "function createViewportCullingManager"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseManager",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\registries\\element-registry.ts",
+      "detectedRole": "registry",
+      "detectedTier": 2,
+      "currentFolder": "registries",
+      "currentTier": 2,
+      "exports": [
+        "class ElementRegistry",
+        "interface ListenerEntry",
+        "interface ElementRegistryEntry"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseRegistry",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\registries\\manager-registry.ts",
+      "detectedRole": "registry",
+      "detectedTier": 2,
+      "currentFolder": "registries",
+      "currentTier": 2,
+      "exports": [
+        "class ManagerRegistry",
+        "type ManagerKey"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseRegistry",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\ai-footer.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class AIFooter"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "ai-footer.ts",
+          "suggestedName": "ai-footer-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\ai-provider-dialog.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class AIProviderDialog",
+        "function showAIProviderDialog"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "ai-provider-dialog.ts",
+          "suggestedName": "ai-provider-dialog-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class AISidebar",
+        "function createAISidebar"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "ai-sidebar.ts",
+          "suggestedName": "ai-sidebar-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\internal-terminal-modal.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class InternalTerminalModal"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "internal-terminal-modal.ts",
+          "suggestedName": "internal-terminal-modal-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\prompt-overlay.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class PromptOverlay"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "prompt-overlay.ts",
+          "suggestedName": "prompt-overlay-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\tabbed-terminal-container.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class TabbedTerminalContainer"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "tabbed-terminal-container.ts",
+          "suggestedName": "tabbed-terminal-container-component.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class TerminalChat"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "terminal-chat.ts",
+          "suggestedName": "terminal-chat-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\terminal-header.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class TerminalHeader",
+        "interface TabDragData"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "terminal-header.ts",
+          "suggestedName": "terminal-header-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "detectedRole": "component",
+      "detectedTier": 2,
+      "currentFolder": "components",
+      "currentTier": 2,
+      "exports": [
+        "class TerminalSidebar",
+        "function createTerminalSidebar"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts'",
+          "expected": "<domain>-component.ts",
+          "actual": "terminal-sidebar.ts",
+          "suggestedName": "terminal-sidebar-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\terminal-main.ts",
+      "detectedRole": "types",
+      "detectedTier": 2,
+      "currentFolder": "terminal",
+      "currentTier": 3,
+      "exports": [],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a types but not in types/ folder",
+          "expected": "src/renderer/types/<domain>-types.ts",
+          "actual": "src\\renderer\\terminal\\terminal-main.ts",
+          "suggestedPath": "src/renderer/types/terminal-main-types.ts"
+        },
+        {
+          "code": "TYPE_LOCATION",
+          "severity": "error",
+          "message": "Type definitions must be in shared/types/",
+          "expected": "shared/types/<domain>-types.ts",
+          "actual": "src\\renderer\\terminal\\terminal-main.ts",
+          "suggestedPath": "src/shared/types/terminal-main.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\tiers\\manager-tier.ts",
+      "detectedRole": "manager",
+      "detectedTier": 2,
+      "currentFolder": "tiers",
+      "currentTier": 2,
+      "exports": [
+        "function getManagerTier",
+        "function isLazyManager",
+        "function isCoreManager",
+        "const CORE_MANAGERS",
+        "const EAGER_MANAGERS",
+        "const LAZY_MANAGERS",
+        "const LAZY_MANAGER_LOADERS",
+        "const TIER_BUNDLE_STATS",
+        "type ManagerTier"
+      ],
+      "violations": [
+        {
+          "code": "WRONG_TIER_FOLDER",
+          "severity": "error",
+          "message": "File is a manager but not in managers/ folder",
+          "expected": "src/renderer/managers/<domain>-manager.ts",
+          "actual": "src\\renderer\\tiers\\manager-tier.ts",
+          "suggestedPath": "src/renderer/managers/manager-tier-manager.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\trackers\\entity-lifecycle-tracker.ts",
+      "detectedRole": "tracker",
+      "detectedTier": 2,
+      "currentFolder": "trackers",
+      "currentTier": 2,
+      "exports": [
+        "class EntityLifecycleTracker",
+        "function getEntityLifecycleTracker"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseTracker",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\trackers\\intent-flow-tracker.ts",
+      "detectedRole": "tracker",
+      "detectedTier": 2,
+      "currentFolder": "trackers",
+      "currentTier": 2,
+      "exports": [
+        "class IntentFlowTracker",
+        "function getIntentFlowTracker",
+        "interface IntentFlowGraph",
+        "interface IntentFlowNode",
+        "interface IntentViolation"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend base class",
+          "expected": "extends BaseTracker",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\helpers\\format-helpers.ts",
+      "detectedRole": "helper",
+      "detectedTier": 2,
+      "currentFolder": "helpers",
+      "currentTier": 2,
+      "exports": [
+        "function formatBytes",
+        "function formatDate"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-helper.ts'",
+          "expected": "<domain>-helper.ts",
+          "actual": "format-helpers.ts",
+          "suggestedName": "format-helpers-helper.ts"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,681 @@
+---
+name: your-skill-name
+description: Brief description of what this Skill does and when to use it
+allowed-tools: Read, Write, Grep, Glob, Bash(npm:*)
+model: claude-sonnet-4-5-20250929
+context: normal
+agent: general-purpose
+hooks: []
+---
+
+THIS SKILL PROVIDES domain-specific knowledge and capabilities
+
+# EMBEDDED KNOWLEDGE PATTERNS
+
+## [Knowledge-Organization-Pattern] Class: Declarative Knowledge
+
+## DECLARE<Concepts> → DEFINE<Relationships> → PROVIDE<Examples> → ENABLE<Application>
+
+## Applied in: Teaching Claude specific domain expertise through structured knowledge
+
+%% META %%:
+intent: "Template for creating Skills that teach Claude domain-specific capabilities"
+context: "Skill creation following PAG and architectural standards"
+priority: medium
+
+# SKILL DEFINITION
+
+DECLARE skill_metadata: object
+SET skill_metadata = {
+"name": "skill-name",
+"type": "model-invoked",
+"scope": "domain-specific-expertise",
+"invocation": "automatic based on description"
+}
+
+# PHASE 1: PURPOSE AND SCOPE
+
+## What This Skill Teaches
+
+DECLARE teaching_objectives: array
+SET teaching_objectives = [
+"Core concept 1: Fundamental understanding",
+"Core concept 2: Practical application",
+"Core concept 3: Problem-solving patterns"
+]
+
+## Specific Problem This Skill Addresses
+
+DECLARE problem_domain: object
+SET problem_domain = {
+"challenge": "Describe the specific challenge this skill solves",
+"scope": "Define clear boundaries of what skill covers",
+"exclusions": "Specify what is NOT covered by this skill"
+}
+
+VALIDATION GATE: Purpose Defined
+✅ Teaching objectives specified
+✅ Invocation triggers clear
+✅ Problem domain bounded
+
+# PHASE 2: CORE KNOWLEDGE
+
+## Concept 1: Fundamental Understanding
+
+DECLARE concept_1: object
+SET concept_1 = {
+"definition": "Clear definition of the concept",
+"importance": "Why this concept matters",
+"relationships": "How it relates to other concepts"
+}
+
+### Example: Concept 1 Application
+
+```typescript
+// Code example demonstrating Concept 1
+interface ExamplePattern {
+    property: string;
+    method(): void;
+}
+```
+
+WHEN applying_concept_1:
+ANALYZE target FOR pattern_match
+IF pattern_found:
+APPLY concept_1_rules
+VERIFY outcome_matches_expected
+
+## Concept 2: Practical Application
+
+DECLARE concept_2: object
+SET concept_2 = {
+"definition": "Clear definition",
+"usage_pattern": "How to apply this concept",
+"constraints": "Important limitations or considerations"
+}
+
+### Example: Concept 2 Application
+
+```typescript
+// Practical example showing Concept 2
+function applyPattern(input: Data): Result {
+    // Implementation following concept_2
+    return processedResult;
+}
+```
+
+## Concept 3: Problem-Solving Patterns
+
+DECLARE concept_3: object
+SET concept_3 = {
+"pattern": "Reusable solution pattern",
+"applicability": "When to use this pattern",
+"alternatives": "Other approaches to consider"
+}
+
+VALIDATION GATE: Core Knowledge Complete
+✅ All concepts defined
+✅ Examples provided
+✅ Relationships established
+
+# PHASE 3: STEP-BY-STEP PROCESS
+
+## Process Overview
+
+WHEN applying_this_skill:
+EXECUTE skill_workflow
+
+## STEP 1: Initial Analysis
+
+DECLARE step_1: object
+SET step_1 = {
+"action": "Analyze the problem domain",
+"details": [
+"Identify key constraints",
+"Determine applicable patterns",
+"Assess complexity level"
+],
+"output": "Analysis results for decision making"
+}
+
+EXECUTE analysis WITH target_domain
+EXTRACT constraints INTO constraint_list
+IDENTIFY patterns INTO pattern_candidates
+
+## STEP 2: Pattern Selection
+
+DECLARE step_2: object
+SET step_2 = {
+"action": "Select appropriate solution pattern",
+"details": [
+"Match patterns to requirements",
+"Evaluate trade-offs",
+"Choose optimal approach"
+],
+"output": "Selected pattern with justification"
+}
+
+FOR EACH pattern IN pattern_candidates:
+ANALYZE pattern FOR fit_score
+IF fit_score > threshold:
+ADD pattern TO viable_patterns
+
+SORT viable_patterns BY fit_score DESC
+SELECT viable_patterns[0] AS chosen_pattern
+
+## STEP 3: Implementation
+
+DECLARE step_3: object
+SET step_3 = {
+"action": "Apply selected pattern to problem",
+"details": [
+"Follow pattern structure",
+"Adapt to specific context",
+"Validate against requirements"
+],
+"output": "Implemented solution"
+}
+
+APPLY chosen_pattern TO problem_domain
+VALIDATE solution AGAINST requirements
+IF validation_fails:
+REPORT issues
+ITERATE TO STEP 2 WITH updated_constraints
+
+VALIDATION GATE: Process Complete
+✅ Analysis performed
+✅ Pattern selected
+✅ Implementation validated
+
+# PHASE 4: PRACTICAL EXAMPLES
+
+## Example 1: Basic Usage
+
+### Scenario
+
+```
+User asks to solve Problem X using approach Y
+```
+
+### Application
+
+WHEN problem_type === "X":
+READ problem_requirements INTO requirements
+ANALYZE requirements FOR complexity
+
+    IF complexity === "low":
+        APPLY basic_pattern
+    ELSE:
+        APPLY advanced_pattern
+
+    VALIDATE solution
+    REPORT results
+
+### Expected Outcome
+
+```
+Solution successfully applies pattern Y with verification
+```
+
+## Example 2: Advanced Usage
+
+### Scenario
+
+```
+Complex multi-step problem requiring pattern composition
+```
+
+### Application
+
+DECLARE composite_solution: object
+SET composite_solution = {}
+
+FOR EACH sub_problem IN complex_problem:
+ANALYZE sub_problem FOR applicable_pattern
+APPLY pattern TO sub_problem INTO partial_solution
+APPEND partial_solution TO composite_solution.parts
+
+INTEGRATE composite_solution.parts INTO final_solution
+VALIDATE final_solution AGAINST full_requirements
+
+### Expected Outcome
+
+```
+Composed solution addressing all aspects of complex problem
+```
+
+VALIDATION GATE: Examples Complete
+✅ Basic usage demonstrated
+✅ Advanced usage shown
+✅ Expected outcomes specified
+
+# PHASE 5: COMMON PITFALLS
+
+## Pitfall 1: Misapplying Pattern Scope
+
+DECLARE pitfall_1: object
+SET pitfall_1 = {
+"description": "Applying skill beyond intended scope",
+"consequence": "Incorrect or suboptimal solutions",
+"avoidance": "Always verify problem matches skill domain"
+}
+
+WHEN tempted_to_over_apply:
+ANALYZE problem FOR scope_match
+IF problem NOT IN skill_domain:
+REPORT "Out of scope for this skill"
+FIND alternative_skill
+ELSE:
+PROCEED WITH skill_application
+
+## Pitfall 2: Ignoring Constraints
+
+DECLARE pitfall_2: object
+SET pitfall_2 = {
+"description": "Not considering important limitations",
+"consequence": "Solutions that violate requirements",
+"avoidance": "Always check constraints before applying patterns"
+}
+
+WHEN applying_pattern:
+READ constraints FROM problem_spec
+FOR EACH constraint IN constraints:
+VERIFY pattern_compatibility WITH constraint
+IF incompatible:
+REJECT pattern
+FIND compatible_alternative
+
+## Pitfall 3: Premature Optimization
+
+DECLARE pitfall_3: object
+SET pitfall_3 = {
+"description": "Applying complex patterns to simple problems",
+"consequence": "Unnecessary complexity and maintenance burden",
+"avoidance": "Start with simplest pattern that solves the problem"
+}
+
+WHEN choosing_pattern:
+SORT patterns BY complexity ASC
+FOR EACH pattern IN patterns:
+IF pattern.solves(problem):
+SELECT pattern
+BREAK
+
+VALIDATION GATE: Pitfalls Documented
+✅ Common mistakes identified
+✅ Consequences explained
+✅ Avoidance strategies provided
+
+# PHASE 6: RELATED FILES AND REFERENCES
+
+## Codebase Files
+
+IF skill_references_specific_files:
+DECLARE file_references: array
+SET file_references = [
+{
+"path": "path/to/file1.ts",
+"relevance": "Example implementation of pattern X"
+},
+{
+"path": "path/to/file2.ts",
+"relevance": "Reference for approach Y"
+}
+]
+
+    FOR EACH ref IN file_references:
+        DOCUMENT ref.path WITH ref.relevance
+
+## External References
+
+DECLARE external_resources: array
+SET external_resources = [
+{
+"title": "Resource 1",
+"url": "https://example.com/resource1",
+"relevance": "Foundational concepts"
+},
+{
+"title": "Resource 2",
+"url": "https://example.com/resource2",
+"relevance": "Advanced techniques"
+}
+]
+
+VALIDATION GATE: References Complete
+✅ File references documented
+✅ External resources linked
+✅ Relevance specified
+
+# SKILL CREATION INSTRUCTIONS
+
+## STEP 1: Create Directory Structure
+
+```
+EXECUTE Bash WITH "mkdir -p .claude/skills/your-skill-name"
+```
+
+## STEP 2: Copy Template
+
+```
+EXECUTE Bash WITH "cp .claude/skills/skills.template .claude/skills/your-skill-name/SKILL.md"
+```
+
+## STEP 3: Update Frontmatter
+
+EDIT frontmatter WITH actual_values FOR: - name: "your-skill-name" (kebab-case, matches directory) - description: "Clear description of what skill teaches and when to use" - allowed-tools: "Tools Claude can use (if restricting)" - model: "Specific model (if needed)"
+
+## STEP 4: Define Core Knowledge
+
+REPLACE template_concepts WITH domain_concepts
+
+FOR EACH concept IN domain_knowledge:
+ADD definition
+ADD practical_examples
+ADD relationship_to_other_concepts
+
+## STEP 5: Document Step-by-Step Process
+
+CREATE detailed_workflow FOR skill_application
+
+FOR EACH step IN workflow:
+SPECIFY action
+PROVIDE implementation_details
+DEFINE expected_output
+
+## STEP 6: Add Examples
+
+CREATE multiple_examples WITH varying_complexity
+
+FOR EACH example:
+DESCRIBE scenario
+SHOW application_code
+SPECIFY expected_outcome
+
+## STEP 7: Progressive Disclosure (If Skill Complex)
+
+IF skill_content > 500_lines:
+CREATE additional_files: - advanced-patterns.md - examples.md - troubleshooting.md
+
+    REFERENCE additional_files FROM SKILL.md:
+        "For advanced patterns, see [advanced-patterns.md](./advanced-patterns.md)"
+
+## STEP 8: Test Skill
+
+CREATE test_task THAT should_trigger_skill
+EXECUTE task WITH Claude
+ANALYZE IF skill_was_invoked
+IF skill_not_applied_correctly:
+REFINE description OR domain_specification
+ITERATE TO STEP 3
+
+## STEP 9: Cleanup
+
+DELETE ".claude/skills/skills.template"
+
+VALIDATION GATE: Creation Workflow Complete
+✅ All steps documented
+✅ Testing procedure defined
+✅ Progressive disclosure explained
+✅ Cleanup specified
+
+# FRONTMATTER FIELDS REFERENCE
+
+| Field           | Required | Description                            | Example                           |
+| --------------- | -------- | -------------------------------------- | --------------------------------- |
+| `name`          | Yes      | Unique identifier (kebab-case)         | `"react-architecture"`            |
+| `description`   | Yes      | What skill teaches, when to use        | `"Implementing React components"` |
+| `allowed-tools` | No       | Tool restrictions (string or YAML list | `"Read, Write, Grep"`             |
+| `model`         | No       | Specific model                         | `"claude-sonnet-4-5-20250929"`    |
+| `context`       | No       | Execution context (normal/fork)        | `"fork"`                          |
+| `agent`         | No       | Agent type for execution               | `"general-purpose"`               |
+| `hooks`         | No       | Hook definitions (YAML list)           | `[{type: PreToolUse}]`            |
+
+## Tool Restrictions
+
+IF allowed_tools_specified:
+SET claude_tools = allowed_tools_list ## Claude limited to these tools when applying skill
+ELSE:
+SET claude_tools = inherit_from_conversation ## Claude has all conversation tools
+
+### Tool Format Options
+
+DECLARE tool_formats: object
+SET tool_formats = {
+"string": "Read, Write, Grep, Glob",
+"yaml_list": [
+"Read",
+"Write",
+"Grep",
+"Glob"
+]
+}
+
+### Use Cases for Restrictions
+
+DECLARE restriction_use_cases: object
+SET restriction_use_cases = {
+"read_only_skill": "Read, Grep (analysis without modification)",
+"controlled_execution": "Bash(git:\*) (only git commands)",
+"documentation_skill": "Read, WebFetch (research-focused)"
+}
+
+## Context Forking (v2.1.0+)
+
+WHEN skill_needs_isolation:
+SET context = "fork"
+
+### Fork Benefits
+
+DECLARE fork_benefits: object
+SET fork_benefits = {
+"isolation": "Skill runs in separate sub-agent context",
+"no_pollution": "Main conversation not cluttered with research/exploration",
+"parallel": "Can run alongside main conversation",
+"clean_state": "Fresh context without anchoring bias"
+}
+
+### Fork Use Cases
+
+DECLARE fork_use_cases: object
+SET fork_use_cases = {
+"research_skill": "Deep exploration without main conversation pollution",
+"analysis_skill": "Code quality analysis with fresh perspective",
+"complex_multi_step": "Multi-step operations that need isolation"
+}
+
+## Agent Specification (v2.1.0+)
+
+WHEN skill_needs_specific_agent:
+SET agent = "agent-type"
+
+DECLARE available_agents: array
+SET available_agents = [
+"general-purpose",
+"Explore",
+"Plan",
+"test-runner",
+"build-validator"
+]
+
+## Hooks Support (v2.1.0+)
+
+WHEN skill_needs_lifecycle_hooks:
+SET hooks = [
+{
+"type": "PreToolUse",
+"command": "echo 'About to use tool'"
+},
+{
+"type": "PostToolUse",
+"command": "echo 'Tool completed'"
+},
+{
+"type": "Stop",
+"command": "echo 'Skill finished'"
+}
+]
+
+DECLARE hook_types: array
+SET hook_types = ["PreToolUse", "PostToolUse", "Stop"]
+
+VALIDATION GATE: Configuration Reference Complete
+✅ All frontmatter fields documented
+✅ Tool restriction patterns explained
+✅ Use cases provided
+
+# PROGRESSIVE DISCLOSURE PATTERN
+
+## Main SKILL.md Structure
+
+WHEN skill_is_complex:
+KEEP SKILL.md < 500_lines
+
+    STRUCTURE AS:
+        - Overview and essential knowledge
+        - Basic application process
+        - Common scenarios
+        - Links to detailed files
+
+## Supporting Files
+
+CREATE supporting_files: - advanced-patterns.md: "Deep dives into complex patterns" - examples.md: "Comprehensive examples library" - troubleshooting.md: "Common issues and solutions" - reference.md: "API references, specifications"
+
+## Cross-Referencing
+
+IN SKILL.md:
+"For advanced composition patterns, see [advanced-patterns.md](./advanced-patterns.md)"
+"See [examples.md](./examples.md) for complete implementation examples"
+
+VALIDATION GATE: Progressive Disclosure Complete
+✅ Main file kept focused
+✅ Supporting files structured
+✅ Cross-references established
+
+# SCOPE HIERARCHY
+
+DECLARE skill_scopes: object
+SET skill_scopes = {
+"Enterprise": {
+"priority": 1,
+"description": "Managed centrally, highest priority",
+"override": "Overrides all lower scopes"
+},
+"Personal": {
+"priority": 2,
+"location": "~/.claude/skills/",
+"description": "User-specific skills",
+"override": "Overrides Project and Plugin"
+},
+"Project": {
+"priority": 3,
+"location": "D:\\GIT\\archlab\\.claude\\skills\\",
+"description": "Project-specific skills",
+"override": "Overrides Plugin only"
+},
+"Plugin": {
+"priority": 4,
+"description": "Installed via plugins",
+"override": "Lowest priority"
+}
+}
+
+## Conflict Resolution
+
+WHEN multiple_skills_with_same_name:
+SELECT skill FROM highest_priority_scope
+REPORT "Using " + skill.scope + " version of " + skill.name
+
+VALIDATION GATE: Scope Hierarchy Complete
+✅ All scopes defined
+✅ Priority order established
+✅ Conflict resolution specified
+
+# SKILL INVOCATION
+
+## Model-Invoked Nature
+
+DECLARE invocation_pattern: object
+SET invocation_pattern = {
+"type": "automatic",
+"trigger": "Claude analyzes description and decides when to apply",
+"user_action": "None required - happens automatically",
+"distinction": "Skills ≠ Slash Commands (commands are user-invoked)"
+}
+
+## How Claude Decides to Use Skill
+
+WHEN claude_processes_user_request:
+ANALYZE request FOR keywords
+EXTRACT intent FROM request
+
+    FOR EACH skill IN available_skills:
+        CALCULATE relevance_score = MATCH(request, skill.description)
+        IF relevance_score > threshold:
+            LOAD skill INTO context
+            APPLY skill_knowledge TO request_processing
+
+## Writing Effective Descriptions
+
+DECLARE description_guidelines: object
+SET description_guidelines = {
+"be_specific": "Use concrete keywords Claude can match",
+"define_triggers": "Specify when to use (not just what it does)",
+"avoid_vague": "Don't use 'helps with' or 'useful for'",
+"include_context": "Mention domain, framework, or problem type"
+}
+
+### Good vs Bad Descriptions
+
+```
+BAD:  "Helps with React development"
+GOOD: "Use when implementing React components following our architecture"
+
+BAD:  "Database skills"
+GOOD: "Use when designing database schemas, writing migrations, or optimizing queries"
+
+BAD:  "Debugging tool"
+GOOD: "Use when investigating memory leaks in Electron applications"
+```
+
+VALIDATION GATE: Invocation Complete
+✅ Model-invoked nature explained
+✅ Decision process documented
+✅ Description guidelines provided
+
+# OPERAT
+
+ALWAYS keep SKILL.md focused and under 500 lines
+ALWAYS write clear, specific descriptions for model invocation
+ALWAYS include practical examples for common scenarios
+ALWAYS document pitfalls and how to avoid them
+ALWAYS reference actual codebase files when applicable
+ALWAYS use PAG keywords and structure
+ALWAYS test that skill triggers correctly
+
+NEVER use skills as slash commands (they are model-invoked)
+NEVER assume skills inherit from main conversation (must be explicit)
+NEVER create overly broad skills (keep focused on one domain)
+NEVER skip examples - they teach application patterns
+NEVER write vague descriptions (use concrete keywords)
+NEVER exceed 500 lines without progressive disclosure
+NEVER reference skills - embed knowledge directly
+
+## Progressive Disclosure Trigger
+
+WHEN skill_content > 500_lines:
+CREATE subdirectory: ".claude/skills/skill-name/"
+MOVE detailed_content TO separate_files
+MAINTAIN overview IN SKILL.md
+ADD cross_references BETWEEN files
+
+# NOTES
+
+- Skills teach capabilities, commands execute tasks
+- Skills are model-invoked (automatic), not user-invoked
+- Higher scopes override lower scopes in naming conflicts
+- Skills do NOT inherit from main conversation context
+- Progressive disclosure keeps main file scannable
+- Description quality determines invocation accuracy
+- Examples are critical for teaching application patterns
+- PAG structure provides clarity and consistency

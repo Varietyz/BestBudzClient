@@ -1,0 +1,1380 @@
+{
+  "timestamp": "2026-01-09T22:56:01.188Z",
+  "summary": {
+    "totalFiles": 302,
+    "filesWithViolations": 80,
+    "missingMarker": 73,
+    "wrongFolder": 8
+  },
+  "violations": [
+    {
+      "file": "src\\main\\ai-providers\\ai-analytics-db.ts",
+      "fileName": "ai-analytics-db.ts",
+      "immediateFolder": "ai-providers",
+      "expectedMarker": "ai-providers",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'ai-providers/' must contain 'ai-providers' in filename",
+          "folder": "ai-providers",
+          "expected": "<prefix>-ai-providers.ts or ai-providers-<suffix>.ts",
+          "actual": "ai-analytics-db.ts",
+          "suggestedName": "ai-analytics-db-ai-providers.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ai-providers\\ai-provider-registry.ts",
+      "fileName": "ai-provider-registry.ts",
+      "immediateFolder": "ai-providers",
+      "expectedMarker": "ai-providers",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'ai-providers/' must contain 'ai-providers' in filename",
+          "folder": "ai-providers",
+          "expected": "<prefix>-ai-providers.ts or ai-providers-<suffix>.ts",
+          "actual": "ai-provider-registry.ts",
+          "suggestedName": "ai-provider-registry-ai-providers.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ai-providers\\analytics-ipc-handlers.ts",
+      "fileName": "analytics-ipc-handlers.ts",
+      "immediateFolder": "ai-providers",
+      "expectedMarker": "ai-providers",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'ai-providers/' must contain 'ai-providers' in filename",
+          "folder": "ai-providers",
+          "expected": "<prefix>-ai-providers.ts or ai-providers-<suffix>.ts",
+          "actual": "analytics-ipc-handlers.ts",
+          "suggestedName": "analytics-ipc-handlers-ai-providers.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ai-providers\\ipc-handlers.ts",
+      "fileName": "ipc-handlers.ts",
+      "immediateFolder": "ai-providers",
+      "expectedMarker": "ai-providers",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'ai-providers/' must contain 'ai-providers' in filename",
+          "folder": "ai-providers",
+          "expected": "<prefix>-ai-providers.ts or ai-providers-<suffix>.ts",
+          "actual": "ipc-handlers.ts",
+          "suggestedName": "ipc-handlers-ai-providers.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ai-providers\\stream-parser.ts",
+      "fileName": "stream-parser.ts",
+      "immediateFolder": "ai-providers",
+      "expectedMarker": "ai-providers",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'ai-providers/' must contain 'ai-providers' in filename",
+          "folder": "ai-providers",
+          "expected": "<prefix>-ai-providers.ts or ai-providers-<suffix>.ts",
+          "actual": "stream-parser.ts",
+          "suggestedName": "stream-parser-ai-providers.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\claude\\ipc-handler-helpers.ts",
+      "fileName": "ipc-handler-helpers.ts",
+      "immediateFolder": "claude",
+      "expectedMarker": "claude",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'claude/' must contain 'claude' in filename",
+          "folder": "claude",
+          "expected": "<prefix>-claude.ts or claude-<suffix>.ts",
+          "actual": "ipc-handler-helpers.ts",
+          "suggestedName": "ipc-handler-helpers-claude.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\claude\\ipc-handlers.ts",
+      "fileName": "ipc-handlers.ts",
+      "immediateFolder": "claude",
+      "expectedMarker": "claude",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'claude/' must contain 'claude' in filename",
+          "folder": "claude",
+          "expected": "<prefix>-claude.ts or claude-<suffix>.ts",
+          "actual": "ipc-handlers.ts",
+          "suggestedName": "ipc-handlers-claude.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\claude\\runtime-handlers.ts",
+      "fileName": "runtime-handlers.ts",
+      "immediateFolder": "claude",
+      "expectedMarker": "claude",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'claude/' must contain 'claude' in filename",
+          "folder": "claude",
+          "expected": "<prefix>-claude.ts or claude-<suffix>.ts",
+          "actual": "runtime-handlers.ts",
+          "suggestedName": "runtime-handlers-claude.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\cli-bridge\\json-rpc-server.ts",
+      "fileName": "json-rpc-server.ts",
+      "immediateFolder": "cli-bridge",
+      "expectedMarker": "cli-bridge",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'cli-bridge/' must contain 'cli-bridge' in filename",
+          "folder": "cli-bridge",
+          "expected": "<prefix>-cli-bridge.ts or cli-bridge-<suffix>.ts",
+          "actual": "json-rpc-server.ts",
+          "suggestedName": "json-rpc-server-cli-bridge.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\ipc-handlers.ts",
+      "fileName": "ipc-handlers.ts",
+      "immediateFolder": "database",
+      "expectedMarker": "database",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'database/' must contain 'database' in filename",
+          "folder": "database",
+          "expected": "<prefix>-database.ts or database-<suffix>.ts",
+          "actual": "ipc-handlers.ts",
+          "suggestedName": "ipc-handlers-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migration-runner.ts",
+      "fileName": "migration-runner.ts",
+      "immediateFolder": "database",
+      "expectedMarker": "database",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'database/' must contain 'database' in filename",
+          "folder": "database",
+          "expected": "<prefix>-database.ts or database-<suffix>.ts",
+          "actual": "migration-runner.ts",
+          "suggestedName": "migration-runner-database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\environment\\ipc-handlers.ts",
+      "fileName": "ipc-handlers.ts",
+      "immediateFolder": "environment",
+      "expectedMarker": "environment",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'environment/' must contain 'environment' in filename",
+          "folder": "environment",
+          "expected": "<prefix>-environment.ts or environment-<suffix>.ts",
+          "actual": "ipc-handlers.ts",
+          "suggestedName": "ipc-handlers-environment.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\hardware\\ipc-handlers.ts",
+      "fileName": "ipc-handlers.ts",
+      "immediateFolder": "hardware",
+      "expectedMarker": "hardware",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'hardware/' must contain 'hardware' in filename",
+          "folder": "hardware",
+          "expected": "<prefix>-hardware.ts or hardware-<suffix>.ts",
+          "actual": "ipc-handlers.ts",
+          "suggestedName": "ipc-handlers-hardware.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\project\\ipc-handlers.ts",
+      "fileName": "ipc-handlers.ts",
+      "immediateFolder": "project",
+      "expectedMarker": "project",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'project/' must contain 'project' in filename",
+          "folder": "project",
+          "expected": "<prefix>-project.ts or project-<suffix>.ts",
+          "actual": "ipc-handlers.ts",
+          "suggestedName": "ipc-handlers-project.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\settings\\environment-store.ts",
+      "fileName": "environment-store.ts",
+      "immediateFolder": "settings",
+      "expectedMarker": "settings",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'settings/' must contain 'settings' in filename",
+          "folder": "settings",
+          "expected": "<prefix>-settings.ts or settings-<suffix>.ts",
+          "actual": "environment-store.ts",
+          "suggestedName": "environment-store-settings.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\settings\\ipc-handlers.ts",
+      "fileName": "ipc-handlers.ts",
+      "immediateFolder": "settings",
+      "expectedMarker": "settings",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'settings/' must contain 'settings' in filename",
+          "folder": "settings",
+          "expected": "<prefix>-settings.ts or settings-<suffix>.ts",
+          "actual": "ipc-handlers.ts",
+          "suggestedName": "ipc-handlers-settings.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\settings\\project-store.ts",
+      "fileName": "project-store.ts",
+      "immediateFolder": "settings",
+      "expectedMarker": "settings",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'settings/' must contain 'settings' in filename",
+          "folder": "settings",
+          "expected": "<prefix>-settings.ts or settings-<suffix>.ts",
+          "actual": "project-store.ts",
+          "suggestedName": "project-store-settings.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\ipc-handlers.ts",
+      "fileName": "ipc-handlers.ts",
+      "immediateFolder": "terminal",
+      "expectedMarker": "terminal",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'terminal/' must contain 'terminal' in filename",
+          "folder": "terminal",
+          "expected": "<prefix>-terminal.ts or terminal-<suffix>.ts",
+          "actual": "ipc-handlers.ts",
+          "suggestedName": "ipc-handlers-terminal.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\preload.ts",
+      "fileName": "preload.ts",
+      "immediateFolder": "terminal",
+      "expectedMarker": "terminal",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'terminal/' must contain 'terminal' in filename",
+          "folder": "terminal",
+          "expected": "<prefix>-terminal.ts or terminal-<suffix>.ts",
+          "actual": "preload.ts",
+          "suggestedName": "preload-terminal.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal-paths\\ipc-handlers.ts",
+      "fileName": "ipc-handlers.ts",
+      "immediateFolder": "terminal-paths",
+      "expectedMarker": "terminal-paths",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'terminal-paths/' must contain 'terminal-paths' in filename",
+          "folder": "terminal-paths",
+          "expected": "<prefix>-terminal-paths.ts or terminal-paths-<suffix>.ts",
+          "actual": "ipc-handlers.ts",
+          "suggestedName": "ipc-handlers-terminal-paths.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\ai-history-modal.ts",
+      "fileName": "ai-history-modal.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "ai-history-modal.ts",
+          "suggestedName": "ai-history-modal-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\ai-metrics-panel.ts",
+      "fileName": "ai-metrics-panel.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "ai-metrics-panel.ts",
+          "suggestedName": "ai-metrics-panel-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\app-title.ts",
+      "fileName": "app-title.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "app-title.ts",
+          "suggestedName": "app-title-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-form-builder.ts",
+      "fileName": "claude-form-builder.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "claude-form-builder.ts",
+          "suggestedName": "claude-form-builder-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\services\\claude-hub-api.ts",
+      "fileName": "claude-hub-api.ts",
+      "immediateFolder": "services",
+      "expectedMarker": "service",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'services/' must contain 'service' in filename",
+          "folder": "services",
+          "expected": "<prefix>-service.ts or service-<suffix>.ts",
+          "actual": "claude-hub-api.ts",
+          "suggestedName": "claude-hub-api-service.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\agents-tab.ts",
+      "fileName": "agents-tab.ts",
+      "immediateFolder": "config",
+      "expectedMarker": "config",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'config/' must contain 'config' in filename",
+          "folder": "config",
+          "expected": "<prefix>-config.ts or config-<suffix>.ts",
+          "actual": "agents-tab.ts",
+          "suggestedName": "agents-tab-config.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\commands-tab.ts",
+      "fileName": "commands-tab.ts",
+      "immediateFolder": "config",
+      "expectedMarker": "config",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'config/' must contain 'config' in filename",
+          "folder": "config",
+          "expected": "<prefix>-config.ts or config-<suffix>.ts",
+          "actual": "commands-tab.ts",
+          "suggestedName": "commands-tab-config.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\global-tab.ts",
+      "fileName": "global-tab.ts",
+      "immediateFolder": "config",
+      "expectedMarker": "config",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'config/' must contain 'config' in filename",
+          "folder": "config",
+          "expected": "<prefix>-config.ts or config-<suffix>.ts",
+          "actual": "global-tab.ts",
+          "suggestedName": "global-tab-config.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\hooks-tab.ts",
+      "fileName": "hooks-tab.ts",
+      "immediateFolder": "config",
+      "expectedMarker": "config",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'config/' must contain 'config' in filename",
+          "folder": "config",
+          "expected": "<prefix>-config.ts or config-<suffix>.ts",
+          "actual": "hooks-tab.ts",
+          "suggestedName": "hooks-tab-config.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\local-tab.ts",
+      "fileName": "local-tab.ts",
+      "immediateFolder": "config",
+      "expectedMarker": "config",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'config/' must contain 'config' in filename",
+          "folder": "config",
+          "expected": "<prefix>-config.ts or config-<suffix>.ts",
+          "actual": "local-tab.ts",
+          "suggestedName": "local-tab-config.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\mcp-tab.ts",
+      "fileName": "mcp-tab.ts",
+      "immediateFolder": "config",
+      "expectedMarker": "config",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'config/' must contain 'config' in filename",
+          "folder": "config",
+          "expected": "<prefix>-config.ts or config-<suffix>.ts",
+          "actual": "mcp-tab.ts",
+          "suggestedName": "mcp-tab-config.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\plans-tab.ts",
+      "fileName": "plans-tab.ts",
+      "immediateFolder": "config",
+      "expectedMarker": "config",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'config/' must contain 'config' in filename",
+          "folder": "config",
+          "expected": "<prefix>-config.ts or config-<suffix>.ts",
+          "actual": "plans-tab.ts",
+          "suggestedName": "plans-tab-config.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\projects-tab.ts",
+      "fileName": "projects-tab.ts",
+      "immediateFolder": "config",
+      "expectedMarker": "config",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'config/' must contain 'config' in filename",
+          "folder": "config",
+          "expected": "<prefix>-config.ts or config-<suffix>.ts",
+          "actual": "projects-tab.ts",
+          "suggestedName": "projects-tab-config.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\skills-tab.ts",
+      "fileName": "skills-tab.ts",
+      "immediateFolder": "config",
+      "expectedMarker": "config",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'config/' must contain 'config' in filename",
+          "folder": "config",
+          "expected": "<prefix>-config.ts or config-<suffix>.ts",
+          "actual": "skills-tab.ts",
+          "suggestedName": "skills-tab-config.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-settings-dialog.ts",
+      "fileName": "claude-settings-dialog.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "claude-settings-dialog.ts",
+          "suggestedName": "claude-settings-dialog-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\context-menu.ts",
+      "fileName": "context-menu.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "context-menu.ts",
+          "suggestedName": "context-menu-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\debug-dashboard.ts",
+      "fileName": "debug-dashboard.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "debug-dashboard.ts",
+          "suggestedName": "debug-dashboard-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\debug-panel.ts",
+      "fileName": "debug-panel.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "debug-panel.ts",
+          "suggestedName": "debug-panel-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\env-export-wizard.ts",
+      "fileName": "env-export-wizard.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "env-export-wizard.ts",
+          "suggestedName": "env-export-wizard-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\env-import-wizard.ts",
+      "fileName": "env-import-wizard.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "env-import-wizard.ts",
+          "suggestedName": "env-import-wizard-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\environment-modal.ts",
+      "fileName": "environment-modal.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "environment-modal.ts",
+          "suggestedName": "environment-modal-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\form-controls.ts",
+      "fileName": "form-controls.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "form-controls.ts",
+          "suggestedName": "form-controls-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\hardware-panel.ts",
+      "fileName": "hardware-panel.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "hardware-panel.ts",
+          "suggestedName": "hardware-panel-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\header-bar.ts",
+      "fileName": "header-bar.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "header-bar.ts",
+          "suggestedName": "header-bar-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\home-panel.ts",
+      "fileName": "home-panel.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "home-panel.ts",
+          "suggestedName": "home-panel-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\icons.ts",
+      "fileName": "icons.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "icons.ts",
+          "suggestedName": "icons-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\Logo.ts",
+      "fileName": "Logo.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "Logo.ts",
+          "suggestedName": "Logo-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\modal.ts",
+      "fileName": "modal.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "modal.ts",
+          "suggestedName": "modal-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\popover.ts",
+      "fileName": "popover.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "popover.ts",
+          "suggestedName": "popover-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\settings-history-modal.ts",
+      "fileName": "settings-history-modal.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "settings-history-modal.ts",
+          "suggestedName": "settings-history-modal-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\settings-panel.ts",
+      "fileName": "settings-panel.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "settings-panel.ts",
+          "suggestedName": "settings-panel-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\taskbar.ts",
+      "fileName": "taskbar.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "taskbar.ts",
+          "suggestedName": "taskbar-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\Toast.ts",
+      "fileName": "Toast.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "Toast.ts",
+          "suggestedName": "Toast-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\tool-permission-editor.ts",
+      "fileName": "tool-permission-editor.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "tool-permission-editor.ts",
+          "suggestedName": "tool-permission-editor-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\ui-customization-panel.ts",
+      "fileName": "ui-customization-panel.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "ui-customization-panel.ts",
+          "suggestedName": "ui-customization-panel-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\window.ts",
+      "fileName": "window.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "window.ts",
+          "suggestedName": "window-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\debug\\health-computation.ts",
+      "fileName": "health-computation.ts",
+      "immediateFolder": "debug",
+      "expectedMarker": "debug",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'debug/' must contain 'debug' in filename",
+          "folder": "debug",
+          "expected": "<prefix>-debug.ts or debug-<suffix>.ts",
+          "actual": "health-computation.ts",
+          "suggestedName": "health-computation-debug.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\auto-action-logger.ts",
+      "fileName": "auto-action-logger.ts",
+      "immediateFolder": "validators",
+      "expectedMarker": "validator",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'validators/' must contain 'validator' in filename",
+          "folder": "validators",
+          "expected": "<prefix>-validator.ts or validator-<suffix>.ts",
+          "actual": "auto-action-logger.ts",
+          "suggestedName": "auto-action-logger-validator.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\registries\\validator-registry.ts",
+      "fileName": "validator-registry.ts",
+      "immediateFolder": "registries",
+      "expectedMarker": "registry",
+      "violations": [
+        {
+          "code": "WRONG_FOLDER",
+          "severity": "error",
+          "message": "File contains 'validator' but is in 'registries/' folder",
+          "folder": "registries",
+          "expected": "Should be in validators/",
+          "actual": "registries",
+          "suggestedPath": "src/renderer/validators/validator-registry.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\validator-utilities.ts",
+      "fileName": "validator-utilities.ts",
+      "immediateFolder": "validators",
+      "expectedMarker": "validator",
+      "violations": [
+        {
+          "code": "WRONG_FOLDER",
+          "severity": "error",
+          "message": "File contains 'util' but is in 'validators/' folder",
+          "folder": "validators",
+          "expected": "Should be in utilities/",
+          "actual": "validators",
+          "suggestedPath": "src/renderer/utilities/validator-utilities.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\vite-comment-cleaner-plugin.ts",
+      "fileName": "vite-comment-cleaner-plugin.ts",
+      "immediateFolder": "validators",
+      "expectedMarker": "validator",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'validators/' must contain 'validator' in filename",
+          "folder": "validators",
+          "expected": "<prefix>-validator.ts or validator-<suffix>.ts",
+          "actual": "vite-comment-cleaner-plugin.ts",
+          "suggestedName": "vite-comment-cleaner-plugin-validator.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\registries\\manager-registry.ts",
+      "fileName": "manager-registry.ts",
+      "immediateFolder": "registries",
+      "expectedMarker": "registry",
+      "violations": [
+        {
+          "code": "WRONG_FOLDER",
+          "severity": "error",
+          "message": "File contains 'manager' but is in 'registries/' folder",
+          "folder": "registries",
+          "expected": "Should be in managers/",
+          "actual": "registries",
+          "suggestedPath": "src/renderer/managers/manager-registry.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\ai-footer.ts",
+      "fileName": "ai-footer.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "ai-footer.ts",
+          "suggestedName": "ai-footer-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\ai-provider-dialog.ts",
+      "fileName": "ai-provider-dialog.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "ai-provider-dialog.ts",
+          "suggestedName": "ai-provider-dialog-component.ts"
+        },
+        {
+          "code": "WRONG_FOLDER",
+          "severity": "error",
+          "message": "File contains 'provider' but is in 'components/' folder",
+          "folder": "components",
+          "expected": "Should be in providers/",
+          "actual": "components",
+          "suggestedPath": "src/renderer/providers/ai-provider-dialog.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "fileName": "ai-sidebar.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "ai-sidebar.ts",
+          "suggestedName": "ai-sidebar-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\internal-terminal-modal.ts",
+      "fileName": "internal-terminal-modal.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "internal-terminal-modal.ts",
+          "suggestedName": "internal-terminal-modal-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\prompt-overlay.ts",
+      "fileName": "prompt-overlay.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "prompt-overlay.ts",
+          "suggestedName": "prompt-overlay-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\tabbed-terminal-container.ts",
+      "fileName": "tabbed-terminal-container.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "tabbed-terminal-container.ts",
+          "suggestedName": "tabbed-terminal-container-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\terminal-chat-culling.ts",
+      "fileName": "terminal-chat-culling.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "terminal-chat-culling.ts",
+          "suggestedName": "terminal-chat-culling-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "fileName": "terminal-chat.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "terminal-chat.ts",
+          "suggestedName": "terminal-chat-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\terminal-header.ts",
+      "fileName": "terminal-header.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "terminal-header.ts",
+          "suggestedName": "terminal-header-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "fileName": "terminal-sidebar.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "terminal-sidebar.ts",
+          "suggestedName": "terminal-sidebar-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\terminal-view.ts",
+      "fileName": "terminal-view.ts",
+      "immediateFolder": "components",
+      "expectedMarker": "component",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'components/' must contain 'component' in filename",
+          "folder": "components",
+          "expected": "<prefix>-component.ts or component-<suffix>.ts",
+          "actual": "terminal-view.ts",
+          "suggestedName": "terminal-view-component.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\services\\virtualized-entries.ts",
+      "fileName": "virtualized-entries.ts",
+      "immediateFolder": "services",
+      "expectedMarker": "service",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'services/' must contain 'service' in filename",
+          "folder": "services",
+          "expected": "<prefix>-service.ts or service-<suffix>.ts",
+          "actual": "virtualized-entries.ts",
+          "suggestedName": "virtualized-entries-service.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\tiers\\manager-tier.ts",
+      "fileName": "manager-tier.ts",
+      "immediateFolder": "tiers",
+      "expectedMarker": "tier",
+      "violations": [
+        {
+          "code": "WRONG_FOLDER",
+          "severity": "error",
+          "message": "File contains 'manager' but is in 'tiers/' folder",
+          "folder": "tiers",
+          "expected": "Should be in managers/",
+          "actual": "tiers",
+          "suggestedPath": "src/renderer/managers/manager-tier.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\config\\features.ts",
+      "fileName": "features.ts",
+      "immediateFolder": "config",
+      "expectedMarker": "config",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'config/' must contain 'config' in filename",
+          "folder": "config",
+          "expected": "<prefix>-config.ts or config-<suffix>.ts",
+          "actual": "features.ts",
+          "suggestedName": "features-config.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\constants\\app.ts",
+      "fileName": "app.ts",
+      "immediateFolder": "constants",
+      "expectedMarker": "constants",
+      "violations": [
+        {
+          "code": "MISSING_FOLDER_MARKER",
+          "severity": "error",
+          "message": "File in 'constants/' must contain 'constants' in filename",
+          "folder": "constants",
+          "expected": "<prefix>-constants.ts or constants-<suffix>.ts",
+          "actual": "app.ts",
+          "suggestedName": "app-constants.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\types\\dom-factory-types.ts",
+      "fileName": "dom-factory-types.ts",
+      "immediateFolder": "types",
+      "expectedMarker": "types",
+      "violations": [
+        {
+          "code": "WRONG_FOLDER",
+          "severity": "error",
+          "message": "File contains 'factory' but is in 'types/' folder",
+          "folder": "types",
+          "expected": "Should be in factories/",
+          "actual": "types",
+          "suggestedPath": "src/shared/factories/dom-factory-types.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\types\\manager-types.ts",
+      "fileName": "manager-types.ts",
+      "immediateFolder": "types",
+      "expectedMarker": "types",
+      "violations": [
+        {
+          "code": "WRONG_FOLDER",
+          "severity": "error",
+          "message": "File contains 'manager' but is in 'types/' folder",
+          "folder": "types",
+          "expected": "Should be in managers/",
+          "actual": "types",
+          "suggestedPath": "src/shared/managers/manager-types.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\types\\validator-types.ts",
+      "fileName": "validator-types.ts",
+      "immediateFolder": "types",
+      "expectedMarker": "types",
+      "violations": [
+        {
+          "code": "WRONG_FOLDER",
+          "severity": "error",
+          "message": "File contains 'validator' but is in 'types/' folder",
+          "folder": "types",
+          "expected": "Should be in validators/",
+          "actual": "types",
+          "suggestedPath": "src/shared/validators/validator-types.ts"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,347 @@
+---
+description: Brief description of what this command does (shown in /help)
+argument-hint: [arg1] [arg2] [optional-arg]
+allowed-tools: Bash(git:*), Read, Write, Grep, Glob
+model: claude-sonnet-4-5-20250929
+disable-model-invocation: false
+context: normal
+agent: general-purpose
+hooks: []
+---
+
+THIS COMMAND EXECUTES user-defined operation with structured arguments
+
+%% META %%:
+intent: "Template for creating slash commands following PAG syntax"
+context: "Command creation and documentation"
+priority: medium
+
+# Command Template Instructions
+
+DECLARE command_name: string
+DECLARE argument_list: array
+DECLARE tool_restrictions: array
+DECLARE execution_model: string
+
+SET command_name = "Replace with your command name"
+SET argument_list = ["$1", "$2", "$3"]
+SET tool_restrictions = ["tools Claude can use"]
+SET execution_model = "claude-sonnet-4-5-20250929"
+
+# PHASE 1: Command Definition
+
+## Define Basic Properties
+
+DECLARE description_text: string
+DECLARE argument_hint_text: string
+
+SET description_text = "Brief description shown in /help menu"
+SET argument_hint_text = "[arg1] [arg2] [optional-arg]"
+
+## Usage Pattern
+
+```
+/command-name arg1 arg2 optional-arg
+```
+
+## Argument Access
+
+- `$ARGUMENTS` - Captures all arguments as single string
+- `$1` - First positional argument
+- `$2` - Second positional argument
+- `$3` - Third positional argument
+- `@file/path` - Reference file contents
+- `!command` - Execute bash command inline
+
+VALIDATION GATE: Definition Complete
+✅ Command name defined
+✅ Arguments documented
+✅ Usage pattern specified
+
+# PHASE 2: Implementation Instructions
+
+## Your Command Logic Here
+
+WHEN user_invokes_command:
+EXTRACT $ARGUMENTS INTO command_input
+
+    IF command_input === null:
+        REPORT "No arguments provided"
+        EXIT 1
+
+    ## Process arguments
+    FOR EACH arg IN $ARGUMENTS:
+        ANALYZE arg FOR validity
+        IF arg.valid:
+            EXECUTE operation WITH arg
+        ELSE:
+            REPORT "Invalid argument: " + arg
+
+## Using Positional Arguments
+
+IF $1 !== null AND $2 !== null:
+EXECUTE structured_operation WITH parameter1: $1, parameter2: $2
+
+    IF $3 !== null:
+        EXECUTE optional_operation WITH $3
+
+## File References
+
+WHEN command_references_file:
+READ @file/path INTO file_content
+ANALYZE file_content FOR target_pattern
+REPORT findings
+
+## Bash Command Execution
+
+IF allowed_tools CONTAINS "Bash":
+EXECUTE Bash WITH "!command_here" INTO command_output
+ANALYZE command_output
+REPORT results
+
+VALIDATION GATE: Implementation Complete
+✅ Argument processing defined
+✅ File reference handling specified
+✅ Bash execution documented
+
+# PHASE 3: Frontmatter Configuration
+
+## Frontmatter Fields Reference
+
+| Field                      | Required | Description                         | Example                      |
+| -------------------------- | -------- | ----------------------------------- | ---------------------------- |
+| `description`              | No\*     | Brief description                   | "Create a git commit"        |
+| `argument-hint`            | No       | Arguments format                    | "[message]"                  |
+| `allowed-tools`            | No       | Tools Claude can use (string/list)  | "Bash(git:\*), Read"         |
+| `model`                    | No       | Specific model                      | "claude-sonnet-4-5-20250929" |
+| `disable-model-invocation` | No       | Hide from SlashCommand tool         | true/false                   |
+| `context`                  | No       | Execution context (normal/fork)     | "fork"                       |
+| `agent`                    | No       | Agent type for execution            | "general-purpose"            |
+| `hooks`                    | No       | Hook definitions (YAML list) v2.1.0 | [{type: PreToolUse}]         |
+
+\*If omitted, first line of content is used as description
+
+## Tool Specification Patterns
+
+DECLARE tool_spec: object
+SET tool_spec = {
+"individual": ["Read", "Write", "Grep", "Glob"],
+"wildcards": ["Bash(git:*)", "Bash(npm:*)"],
+"all_tools": "Omit allowed-tools field to inherit"
+}
+
+## Model Selection
+
+IF task_is_simple:
+SET model = "claude-haiku"
+ELSE IF task_is_complex:
+SET model = "claude-opus"
+ELSE:
+SET model = "claude-sonnet" ## Default
+
+VALIDATION GATE: Configuration Complete
+✅ Frontmatter fields documented
+✅ Tool specifications defined
+✅ Model selection explained
+
+# PHASE 4: Template Creation Workflow
+
+## STEP 1: Copy Template
+
+EXECUTE Bash WITH "cp .claude/commands/commands.template .claude/commands/your-command.md"
+
+## STEP 2: Update Frontmatter
+
+EDIT ".claude/commands/your-command.md" WITH:
+old_string: "description: Brief description..."
+new_string: "description: Your actual description"
+
+EDIT frontmatter WITH actual values FOR: - description - argument-hint - allowed-tools - model (if specific model needed)
+
+## STEP 3: Write Command Instructions
+
+REPLACE template_instructions WITH actual_command_logic
+
+## STEP 4: Test Command
+
+EXECUTE "/your-command test-arg1 test-arg2"
+ANALYZE execution_result
+IF errors_found:
+DEBUG command_logic
+ITERATE TO STEP 3
+ELSE:
+REPORT "Command working correctly"
+
+## STEP 5: Cleanup
+
+DELETE ".claude/commands/commands.template"
+
+VALIDATION GATE: Workflow Complete
+✅ All steps documented
+✅ Testing procedure defined
+✅ Cleanup specified
+
+# EXAMPLES
+
+## Example 1: All Arguments Mode
+
+```
+/process-data $ARGUMENTS
+```
+
+**Implementation:**
+
+```
+EXTRACT $ARGUMENTS INTO data_input
+ANALYZE data_input
+REPORT findings
+```
+
+## Example 2: Positional Arguments Mode
+
+```
+/review-pr $1 $2 $3
+```
+
+**Implementation:**
+
+```
+DECLARE pr_number: string
+DECLARE priority: string
+DECLARE assignee: string
+
+SET pr_number = $1
+SET priority = $2
+SET assignee = $3
+
+EXECUTE gh WITH "pr view " + pr_number
+ANALYZE pr_data
+REPORT review_results
+```
+
+## Example 3: File Reference Mode
+
+```
+/analyze-config @config.json
+```
+
+**Implementation:**
+
+```
+READ @config.json INTO config_data
+VALIDATE config_data AGAINST schema
+REPORT validation_results
+```
+
+## Example 4: Bash Execution Mode
+
+```
+/git-status
+```
+
+**Implementation:**
+
+```
+EXECUTE Bash WITH "git status" INTO git_output
+EXECUTE Bash WITH "git branch --show-current" INTO branch
+ANALYZE git_output
+REPORT "Current branch: " + branch
+REPORT git_output
+```
+
+VALIDATION GATE: Examples Complete
+✅ All argument modes demonstrated
+✅ File references shown
+✅ Bash execution illustrated
+
+# FILE LOCATIONS
+
+DECLARE file_locations: object
+SET file_locations = {
+"project": "D:\\GIT\\archlab\\.claude\\commands\\",
+"user": "~/.claude/commands/",
+"priority": "Project overrides User overrides Plugin"
+}
+
+## Namespacing With Subdirectories
+
+CREATE subdirectory "frontend" IN ".claude/commands/"
+WRITE command TO ".claude/commands/frontend/component.md"
+
+## Shows as: "(project:frontend)" in /help
+
+VALIDATION GATE: Locations Complete
+✅ Project location specified
+✅ User location specified
+✅ Priority order defined
+✅ Namespacing explained
+
+# OPERATIONAL DIRECTIVES
+
+ALWAYS use PAG keywords in uppercase
+ALWAYS define $ARGUMENTS or positional parameters explicitly
+ALWAYS document what each argument does
+ALWAYS test command before deploying
+ALWAYS specify allowed-tools if restricting access
+ALWAYS include usage examples
+
+NEVER use both $ARGUMENTS and $1/$2/$3 ambiguously
+NEVER skip frontmatter validation
+NEVER create commands without description
+NEVER reference undefined arguments
+NEVER use tools not listed in allowed-tools
+NEVER leave commands.template in commands folder after creation
+
+## Template Removal
+
+WHEN command_creation_complete:
+IF ".claude/commands/commands.template" EXISTS:
+DELETE ".claude/commands/commands.template"
+REPORT "Template cleanup complete"
+
+# NEW FEATURES (v2.1.0+)
+
+## Context Forking for Commands
+
+SET context = "fork" TO run command in isolated sub-agent:
+- Separate conversation history
+- No main conversation pollution
+- Useful for research/analysis commands
+- Parallel execution support
+
+## Agent Specification
+
+SET agent = "agent-type" TO use specific agent for command:
+- "general-purpose" - Default all-purpose agent
+- "Explore" - Fast codebase exploration
+- "Plan" - Planning and architecture
+- Custom agents from .claude/agents/
+
+## Command-Scoped Hooks
+
+DEFINE hooks = [
+{
+"type": "PreToolUse",
+"command": "echo 'Command starting'",
+"once": false
+},
+{
+"type": "PostToolUse",
+"command": "validation command"
+},
+{
+"type": "Stop",
+"command": "cleanup command"
+}
+]
+
+# NOTES
+
+- Filename (without .md) becomes the command name
+- Commands are slash-invoked by users: `/command-name args`
+- Dynamic placeholders are replaced at runtime
+- File references (@file) inject content directly
+- Bash commands (!) execute during command processing
+- Project commands override user commands with same name
+- Use `context: fork` for isolation from main conversation
+- Use `hooks:` for lifecycle control (v2.1.0+)

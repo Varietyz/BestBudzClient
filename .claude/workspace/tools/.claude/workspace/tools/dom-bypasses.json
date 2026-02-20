@@ -1,0 +1,16 @@
+{
+  "scannedAt": "2026-01-02T19:07:25.277Z",
+  "scanPath": "root/archlab-ide/src/renderer",
+  "summary": {
+    "totalFiles": 0,
+    "filesWithBypasses": 0,
+    "totalBypasses": 0,
+    "byType": {},
+    "bySeverity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+    }
+  },
+  "bypasses": []
+}

@@ -1,0 +1,487 @@
+════════════════════════════════════════════════════════════
+  BESTBUDZ DEAD CODE REPORT
+  Scanned 331 files | 77499 total lines
+  Generated: 2026-02-20T17:11:45.237Z
+════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────
+  UNREFERENCED TYPES: 17 types, 1927 total lines
+  Never imported, instantiated, or referenced outside their own file.
+────────────────────────────────────────────────────────────
+
+  [509 lines] ExamplePanel
+    main\java\com\bestbudz\dock\ui\panel\example\ExamplePanel.java:93
+  [303 lines] ErrorConsolePanel
+    main\java\com\bestbudz\engine\core\error\panels\ErrorConsolePanel.java:14
+  [240 lines] AppearanceUtils
+    main\java\com\bestbudz\dock\ui\panel\character\AppearanceUtils.java:12
+  [213 lines] ErrorActionsPanel
+    main\java\com\bestbudz\engine\core\error\panels\ErrorActionsPanel.java:14
+  [145 lines] SpriteDumper
+    main\java\com\bestbudz\cache\SpriteDumper.java:12
+  [114 lines] ErrorHeaderPanel
+    main\java\com\bestbudz\engine\core\error\panels\ErrorHeaderPanel.java:11
+  [102 lines] StonerListManager
+    main\java\com\bestbudz\dock\ui\panel\stoner\StonerListManager.java:15
+  [74 lines] rsDrawingArea
+    main\java\com\bestbudz\graphics\rsDrawingArea.java:5
+  [57 lines] StonerPanelHeader
+    main\java\com\bestbudz\dock\ui\panel\stoner\StonerPanelHeader.java:11
+  [56 lines] DockNetworkUtil
+    main\java\com\bestbudz\dock\net\DockNetworkUtil.java:9
+  [33 lines] AESUtil
+    main\java\com\bestbudz\util\crypto\AESUtil.java:8
+  [19 lines] LRUCache
+    main\java\com\bestbudz\util\crypto\LRUCache.java:6
+  [18 lines] ScoreFactory
+    main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\effects\types\score\ScoreFactory.java:7
+  [17 lines] ResourceLoader
+    main\java\com\bestbudz\util\ResourceLoader.java:6
+  [12 lines] PopFactory
+    main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\effects\types\pop\PopFactory.java:7
+  [11 lines] PopupMenu
+    main\java\com\bestbudz\ui\PopupMenu.java:5
+  [4 lines] CreateUID
+    main\java\com\bestbudz\util\CreateUID.java:3
+
+────────────────────────────────────────────────────────────
+  UNREFERENCED METHODS: 248
+  Public/protected methods never called outside their own file.
+  (Excludes: getters/setters, @Override, framework callbacks)
+────────────────────────────────────────────────────────────
+
+  main\java\com\bestbudz\cache\Signlink.java
+    :398  wavesave()
+    :531  opensocket()
+    :545  openurl()
+    :564  startthread()
+    :569  wavereplay()
+  main\java\com\bestbudz\cache\SpriteDumper.java
+    :14  dumpItemSprites()
+    :72  saveSpriteAsImage()
+  main\java\com\bestbudz\data\XP.java
+    :31  increaseY()
+    :56  increaseAlpha()
+    :62  decreaseAlpha()
+  main\java\com\bestbudz\data\items\GetItemDef.java
+    :285  clearVariantCache()
+    :294  printCacheStats()
+  main\java\com\bestbudz\dock\definitions\ItemBonusDefinition.java
+    :136  initializeBonuses()
+    :192  toFormattedString()
+  main\java\com\bestbudz\dock\definitions\ItemBonusLoadResult.java
+    :249  findDefinition()
+  main\java\com\bestbudz\dock\definitions\ItemBonusXMLLoader.java
+    :67  loadFromInputStream()
+  main\java\com\bestbudz\dock\frame\TogglePreview.java
+    :115  hidePreview()
+  main\java\com\bestbudz\dock\frame\UIDockHelper.java
+    :111  dockPanelToMatch()
+    :276  setupCircularScrollBars()
+  main\java\com\bestbudz\dock\net\DockNetworkUtil.java
+    :24  openBank()
+    :28  updateBank()
+  main\java\com\bestbudz\dock\ui\manager\UIPanelManager.java
+    :16  unregister()
+  main\java\com\bestbudz\dock\ui\panel\bank\components\BankFilterPanel.java
+    :261  clearSearch()
+  main\java\com\bestbudz\dock\ui\panel\bank\grid\BankItemPanel.java
+    :87  updateAmount()
+    :109  updateInventoryColors()
+    :117  updateAlsoInBank()
+    :143  resetBackground()
+    :152  forceRedraw()
+  main\java\com\bestbudz\dock\ui\panel\bank\search\BankSearchEngine.java
+    :115  matchesWordStart()
+  main\java\com\bestbudz\dock\ui\panel\bank\state\BankUpdateManager.java
+    :78  scheduleUpdate()
+  main\java\com\bestbudz\dock\ui\panel\bubblebudz\core\GameEventManager.java
+    :74  unsubscribe()
+  main\java\com\bestbudz\dock\ui\panel\bubblebudz\core\GameStateManager.java
+    :17  transitionTo()
+    :30  addStateListener()
+    :34  removeStateListener()
+  main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\effects\EffectEventListener.java
+    :48  onBubblePopped()
+    :81  onScoreChanged()
+  main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\effects\shapes\ShapeRenderer.java
+    :15  renderNeonShape()
+  main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\render\RenderManager.java
+    :17  removeComponent()
+  main\java\com\bestbudz\dock\ui\panel\bubblebudz\ui\managers\GameModeManager.java
+    :89  showOverlay()
+  main\java\com\bestbudz\dock\ui\panel\character\AppearancePanel.java
+    :593  refreshAppearanceData()
+  main\java\com\bestbudz\dock\ui\panel\character\AppearanceUtils.java
+    :17  validateAppearance()
+  main\java\com\bestbudz\dock\ui\panel\debug\DiagnosticPanel.java
+    :191  addCustomDiagnostic()
+    :199  removeDiagnostic()
+  main\java\com\bestbudz\dock\ui\panel\debug\components\DataRow.java
+    :65  updateValue()
+  main\java\com\bestbudz\dock\ui\panel\debug\diagnostics\BaseDiagnostic.java
+    :118  needsUpdate()
+  main\java\com\bestbudz\dock\ui\panel\debug\diagnostics\DiagnosticManager.java
+    :292  clearAll()
+  main\java\com\bestbudz\dock\ui\panel\debug\style\DiagnosticStyle.java
+    :118  createButtonBorder()
+  main\java\com\bestbudz\dock\ui\panel\debug\style\ResponsiveLayout.java
+    :20  calculateOptimalColumns()
+    :30  calculateSectionWidth()
+  main\java\com\bestbudz\dock\ui\panel\example\ExamplePanel.java
+    :225  makeClickable()
+    :240  addRainbowHover()
+    :259  makeClickableWithRainbow()
+    :288  createInteractiveButtonRow()
+    :316  createSpriteButtonRow()
+    :336  createActionButtonRow()
+    :361  createInteractiveButtonGrid()
+    :380  applyRainbowToButton()
+    :388  removeRainbowFromButton()
+    :402  scrollToBottom()
+    :412  scrollToTop()
+    :422  addContentItem()
+    :431  clearContent()
+  main\java\com\bestbudz\dock\ui\panel\example\ExampleStyle.java
+    :120  styleHeaderLabel()
+    :133  styleTitleLabel()
+    :144  styleValueLabel()
+    :170  styleContentPanel()
+    :182  styleListItem()
+    :204  createSeparator()
+    :239  createPrimaryButton()
+    :259  createSecondaryButton()
+    :279  createDangerButton()
+    :299  createSuccessButton()
+    :323  createTitledSection()
+    :341  createButtonRow()
+    :357  createButtonColumn()
+    :382  createTwoColumnLayout()
+    :396  createGridLayout()
+    :417  createStatusIndicator()
+    :458  createLabeledStatus()
+    :480  addFadeInAnimation()
+    :506  addGlowEffect()
+    :541  applyDarkTheme()
+    :556  applyLightTheme()
+  main\java\com\bestbudz\dock\ui\panel\example\ExampleUtils.java
+    :34  processExampleData()
+    :57  formatExampleValue()
+    :86  sendExampleAction()
+    :106  calculateProgress()
+    :132  filterExampleItems()
+    :155  sortExampleItems()
+    :172  createExampleTooltip()
+  main\java\com\bestbudz\dock\ui\panel\game\AchievementsPanel.java
+    :187  updateAchievement()
+  main\java\com\bestbudz\dock\ui\panel\game\InfoTabPanel.java
+    :139  updateQuestLine()
+    :147  showQuestList()
+  main\java\com\bestbudz\dock\ui\panel\skills\AdvancementManager.java
+    :14  parseAdvancementLevel()
+  main\java\com\bestbudz\dock\ui\panel\stoner\StonerListManager.java
+    :35  updateStonerList()
+    :81  updatePanelWidth()
+    :88  refreshComponents()
+  main\java\com\bestbudz\dock\ui\panel\stoner\StonerPanelHeader.java
+    :43  updateStats()
+  main\java\com\bestbudz\dock\util\DockBlocker.java
+    :15  registerAll()
+  main\java\com\bestbudz\engine\ClientLauncher.java
+    :750  waitForInitialization()
+  main\java\com\bestbudz\engine\core\Client.java
+    :1292  dropClient()
+  main\java\com\bestbudz\engine\core\ClientEngine.java
+    :32  method4()
+    :36  focusGained()
+    :50  windowOpened()
+    :56  windowClosed()
+    :59  windowIconified()
+    :62  windowDeiconified()
+    :65  windowActivated()
+    :68  windowDeactivated()
+  main\java\com\bestbudz\engine\core\GameFrame.java
+    :40  renderGameFrame()
+    :152  draw3dScreen()
+  main\java\com\bestbudz\engine\core\GameLoader.java
+    :97  startPhase()
+    :101  endPhase()
+    :107  startOperation()
+    :111  endOperation()
+    :117  updateMemoryMetrics()
+    :223  cleanupCache()
+    :1227  updateLoadingStatus()
+    :1233  addLoadingLogEntry()
+    :1318  reportLoadingError()
+    :1329  reportLoadingWarning()
+    :1339  startCustomOperation()
+    :1343  endCustomOperation()
+    :1354  updateAndReportMemoryUsage()
+    :1364  updateLoadingScreenMetrics()
+    :1382  loadSpriteWithMetrics()
+    :1404  loadConfigWithMetrics()
+  main\java\com\bestbudz\engine\core\error\ErrorUtilities.java
+    :315  deleteCacheFiles()
+  main\java\com\bestbudz\engine\core\error\panels\ErrorConsolePanel.java
+    :208  handleScrollClick()
+    :223  scrollUp()
+    :230  scrollDown()
+    :257  toggleVisibility()
+  main\java\com\bestbudz\engine\core\gamerender\DrawingArea.java
+    :180  fillCircle()
+    :220  filterGrayscale()
+    :554  drawAlphaHorizontalLine()
+    :584  drawAVerticalLine()
+    :685  syncGPUToCPU()
+    :834  drawTextWithShadow()
+    :935  cleanupTextRendering()
+    :946  forceSetCPUMode()
+    :954  enableGPUMode()
+    :974  needsGPUSync()
+  main\java\com\bestbudz\engine\core\gamerender\Rasterizer.java
+    :304  drawDepthTriangle()
+    :1380  rasterizeScanline()
+    :2631  renderTexturedTriangleNoDepth()
+  main\java\com\bestbudz\engine\core\loading\LoadingVisual.java
+    :176  incrementItemCount()
+    :194  incrementCacheHits()
+    :198  incrementCacheMisses()
+    :202  reportOperationTime()
+    :254  reportSuccess()
+    :258  reportWarning()
+    :262  reportMetric()
+    :266  reportTiming()
+    :270  reportErrorWithContext()
+  main\java\com\bestbudz\engine\core\loading\panels\HeaderPanel.java
+    :127  updateTitle()
+  main\java\com\bestbudz\engine\core\loading\panels\LogPanel.java
+    :114  clearLog()
+  main\java\com\bestbudz\engine\core\login\Login.java
+    :500  validateMapData()
+  main\java\com\bestbudz\engine\gpu\GPUContextManager.java
+    :464  createSharedContext()
+    :552  cleanupGPUResources()
+  main\java\com\bestbudz\engine\gpu\GPUMonitor.java
+    :104  startMonitoring()
+    :140  stopMonitoring()
+    :184  recordContextAcquisition()
+    :458  triggerHealthCheck()
+    :467  resetMetrics()
+  main\java\com\bestbudz\engine\gpu\GPURenderingEngine.java
+    :121  makeContextCurrent()
+    :131  createFramebuffer()
+  main\java\com\bestbudz\entity\EntityMovement.java
+    :36  processEntityMovement()
+    :74  interpolateEntityMovement()
+    :92  handleEntityIntermediateMovement()
+    :118  processEntityWalking()
+    :240  updateEntityFacing()
+  main\java\com\bestbudz\entity\ParseAndUpdateEntities.java
+    :71  parseNewNPCs()
+    :165  parseNpcUpdateMasks()
+    :324  parseServerUpdate()
+  main\java\com\bestbudz\entity\UpdateStoners.java
+    :42  parseLocalStonerUpdate()
+    :87  updateLocalStonerList()
+    :149  parseStonerUpdateMasks()
+    :320  parseProjectiles()
+  main\java\com\bestbudz\entity\pets\PetItemCreator.java
+    :361  updateItemRotation()
+    :374  printItemRotation()
+  main\java\com\bestbudz\graphics\buffer\ImageProducer.java
+    :260  markGPUDataReady()
+    :269  forceSyncGPU()
+    :293  handleContextRecreation()
+    :355  validateGPUState()
+  main\java\com\bestbudz\graphics\hpbar\HPbar.java
+    :242  interpolateColor()
+  main\java\com\bestbudz\graphics\rsDrawingArea.java
+    :30  startSetAreaColor()
+    :56  drawVerticalLine()
+  main\java\com\bestbudz\graphics\sprite\Sprite.java
+    :332  toBufferedImage()
+    :366  pixelsToImage()
+  main\java\com\bestbudz\graphics\text\FontSystem.java
+    :27  createModernRSFont()
+  main\java\com\bestbudz\graphics\text\TextController.java
+    :53  handleOldSyntax()
+    :263  drawRAString()
+  main\java\com\bestbudz\network\CacheManager.java
+    :189  preloadMaps()
+    :411  markFileLoaded()
+  main\java\com\bestbudz\network\packets\PacketParser.java
+    :129  parsePacket()
+    :1936  resetPacketCount()
+  main\java\com\bestbudz\rendering\AnimationManager.java
+    :216  loadSpotAnimationData()
+  main\java\com\bestbudz\rendering\model\Model.java
+    :643  decodeModel525()
+    :965  scaleDown()
+    :973  decodeModel622()
+    :1581  calculateBoundingBox()
+  main\java\com\bestbudz\ui\BuildInterface.java
+    :260  processInventorySlots()
+  main\java\com\bestbudz\ui\DrawInterface.java
+    :810  drawBlackBox()
+  main\java\com\bestbudz\ui\InterfaceManagement.java
+    :269  renderFullscreenChild()
+  main\java\com\bestbudz\ui\NotificationMessages.java
+    :106  clearKill()
+  main\java\com\bestbudz\ui\PopupMenu.java
+    :9  addSeparator()
+  main\java\com\bestbudz\ui\RSInterface.java
+    :392  imageLoader()
+    :406  homeTeleport()
+    :428  addTooltipBox()
+    :449  textSize()
+    :454  removeSomething()
+    :591  addAdvancedSprite()
+    :607  addConfigSprite()
+    :665  addHoverImage()
+    :680  addTransparentSprite()
+    :726  addLunarSprite()
+    :741  drawRune()
+    :753  addRuneText()
+    :782  homeTeleport()
+    :803  addLunar2RunesSmallBox()
+    :861  addLunar3RunesSmallBox()
+    :929  addLunar3RunesBigBox()
+    :997  addLunar3RunesLargeBox()
+    :1066  configureLunar()
+    :1164  constructLunar()
+    :1524  addButtons()
+    :1576  addHoverImage()
+    :1609  addOtherChar()
+    :1655  itemsOnDeathDATA()
+    :1760  addTab()
+    :1849  mysteryWonItem()
+    :1875  lotteryItem()
+  main\java\com\bestbudz\ui\TabArea.java
+    :20  drawSideIcons()
+  main\java\com\bestbudz\ui\handling\RightClickMenu.java
+    :184  sortMenuEntries()
+  main\java\com\bestbudz\ui\handling\input\MouseActions.java
+    :327  menuHasAddStoner()
+  main\java\com\bestbudz\ui\handling\input\MouseManager.java
+    :130  mouseDragged()
+    :223  debugMouseListenerStatus()
+  main\java\com\bestbudz\ui\interfaces\CustomInterfaces.java
+    :90  boltEnchanting()
+    :177  itemDetails()
+    :199  dropTable()
+    :261  genie()
+    :322  priceChecker()
+  main\java\com\bestbudz\ui\interfaces\Shop.java
+    :110  loyaltySubShop()
+  main\java\com\bestbudz\util\ColorUtility.java
+    :22  fadeColors()
+  main\java\com\bestbudz\util\ResourceLoader.java
+    :8  loadIcon()
+  main\java\com\bestbudz\util\crypto\AESUtil.java
+    :13  encrypt()
+    :25  decrypt()
+  main\java\com\bestbudz\world\InLocation.java
+    :48  inMaze()
+
+────────────────────────────────────────────────────────────
+  UNUSED IMPORTS: 24 across 17 files
+────────────────────────────────────────────────────────────
+
+  main\java\com\bestbudz\dock\frame\ToggleBarHelper.java
+    :4  SettingHandler
+  main\java\com\bestbudz\dock\frame\UIDockFrame.java
+    :9  ActionEvent
+    :14  KeyEvent
+  main\java\com\bestbudz\dock\frame\UIDockHelper.java
+    :7  SettingsConfig
+    :10  ActionEvent
+    :13  AdjustmentEvent
+    :14  AdjustmentListener
+    :20  Arrays
+  main\java\com\bestbudz\dock\ui\manager\UIDockLayoutState.java
+    :8  SettingHandler
+    :11  Map
+  main\java\com\bestbudz\dock\ui\panel\bank\BankPanel.java
+    :5  BankFilterEngine
+  main\java\com\bestbudz\dock\ui\panel\debug\diagnostics\GPUDiagnostic.java
+    :8  GL11
+  main\java\com\bestbudz\dock\ui\panel\debug\diagnostics\SystemDiagnostic.java
+    :4  EngineConfig
+    :5  worldSelected
+  main\java\com\bestbudz\dock\ui\panel\teleports\TeleportPanel.java
+    :6  RainbowHoverUtil
+  main\java\com\bestbudz\dock\util\InteractiveButtonUtil.java
+    :3  Client
+  main\java\com\bestbudz\engine\gpu\GPUContextManager.java
+    :7  GL30
+  main\java\com\bestbudz\engine\util\ClientDiagnostics.java
+    :3  ColorConfig
+  main\java\com\bestbudz\entity\UpdateEntities.java
+    :11  Stream
+  main\java\com\bestbudz\graphics\Hitmark.java
+    :5  Sprite
+  main\java\com\bestbudz\graphics\hpbar\HPbar.java
+    :4  ColorConfig
+  main\java\com\bestbudz\ui\InterfaceManagement.java
+    :6  UIDockFrame
+  main\java\com\bestbudz\ui\interfaces\Bank.java
+    :3  Client
+  main\java\com\bestbudz\util\NodeCache.java
+    :3  Signlink
+
+────────────────────────────────────────────────────────────
+  STUB / NEAR-EMPTY FILES: 18 (< 8 lines of actual code)
+────────────────────────────────────────────────────────────
+
+  [1 code lines / 4 total] main\java\com\bestbudz\graphics\BufferedImage.java
+  [1 code lines / 4 total] main\java\com\bestbudz\util\CreateUID.java
+  [2 code lines / 5 total] main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\effects\EffectFactory.java
+  [2 code lines / 5 total] main\java\com\bestbudz\dock\ui\panel\social\stoners\MessageSender.java
+  [2 code lines / 5 total] main\java\com\bestbudz\dock\util\DockTextUpdatable.java
+  [3 code lines / 8 total] main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\input\InputHandler.java
+  [3 code lines / 8 total] main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\render\RenderComponent.java
+  [3 code lines / 10 total] main\java\com\bestbudz\network\CacheManagerBase.java
+  [3 code lines / 11 total] main\java\com\bestbudz\ui\PopupMenu.java
+  [4 code lines / 9 total] main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\effects\Effect.java
+  [4 code lines / 12 total] main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\effects\types\pop\PopFactory.java
+  [5 code lines / 14 total] main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\effects\types\score\ScoreEffectData.java
+  [6 code lines / 15 total] main\java\com\bestbudz\dock\ui\panel\bubblebudz\game\scoring\BubbleBudzScore.java
+  [6 code lines / 12 total] main\java\com\bestbudz\rendering\model\Point3D.java
+  [7 code lines / 18 total] main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\effects\types\score\ScoreFactory.java
+  [7 code lines / 20 total] main\java\com\bestbudz\dock\ui\panel\bubblebudz\system\render\components\FooterRenderer.java
+  [7 code lines / 15 total] main\java\com\bestbudz\engine\config\NetworkConfig.java
+  [7 code lines / 17 total] main\java\com\bestbudz\util\ResourceLoader.java
+
+────────────────────────────────────────────────────────────
+  UNUSED PRIVATE FIELDS: 12
+────────────────────────────────────────────────────────────
+
+  main\java\com\bestbudz\dock\ui\panel\bubblebudz\ui\BubbleBudzPanel.java
+    :40  stateManager
+  main\java\com\bestbudz\dock\ui\panel\client\SettingsPanel.java
+    :35  globalHue
+    :159  hovering
+    :161  targetHoverOverlay
+    :162  colorTimer
+  main\java\com\bestbudz\dock\ui\panel\debug\DiagnosticPanel.java
+    :35  titleLabel
+    :36  buttonPanel
+  main\java\com\bestbudz\engine\core\GameState.java
+    :56  lastRenderErrorTime
+  main\java\com\bestbudz\engine\core\LoadingErrorScreen.java
+    :40  customErrorMessage
+    :41  lastException
+  main\java\com\bestbudz\engine\core\gamerender\DrawingArea.java
+    :46  contextLock
+  main\java\com\bestbudz\graphics\buffer\ImageProducer.java
+    :47  sharedContextAcquired
+
+════════════════════════════════════════════════════════════
+  SUMMARY
+════════════════════════════════════════════════════════════
+  Dead types:      17 (1927 lines removable)
+  Dead methods:    248
+  Unused imports:  24
+  Stub files:      18
+  Unused fields:   12
+════════════════════════════════════════════════════════════

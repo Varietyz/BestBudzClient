@@ -6,7 +6,6 @@ import com.bestbudz.dock.ui.panel.client.SettingsPanel;
 import com.bestbudz.dock.ui.panel.debug.DiagnosticPanel;
 import com.bestbudz.dock.ui.panel.emote.EmotePanel;
 import com.bestbudz.dock.ui.panel.game.AchievementsPanel;
-import com.bestbudz.dock.ui.panel.game.InfoTabPanel;
 import com.bestbudz.dock.ui.panel.skills.SkillsPanel;
 import com.bestbudz.dock.ui.panel.shops.ShopPanel;
 import com.bestbudz.dock.ui.panel.social.ChatPanel;

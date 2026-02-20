@@ -1,0 +1,1424 @@
+{
+  "scannedAt": "2026-01-02T19:34:24.977Z",
+  "scanPath": "root/archlab-ide/src/renderer",
+  "summary": {
+    "totalFiles": 110,
+    "filesWithBypasses": 32,
+    "totalBypasses": 156,
+    "byType": {
+      "innerHTML": 152,
+      "document.createTextNode": 4
+    },
+    "bySeverity": {
+      "error": 152,
+      "warning": 0,
+      "info": 4
+    }
+  },
+  "bypasses": [
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "line": 283,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "clearAllBtn.innerHTML = `${icons.trash} <span>Clear All</span>`"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "line": 368,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = provider.icon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "line": 492,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "expandIcon.innerHTML = isExpanded ? icons.collapse : icons.expand"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "line": 691,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "roleIcon.innerHTML = isUser ? icons.user : icons.assistant"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "line": 804,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sendIcon.innerHTML = icons.send"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "line": 843,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = iconSvg"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "line": 246,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "noData.innerHTML = `\n            <div style=\"width: 24px; height: 24px; margi..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "line": 290,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = provider.icon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "line": 303,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "indicator.innerHTML = icons.active"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "line": 528,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = provider.icon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "line": 576,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = icon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-form-builder.ts",
+      "line": 138,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "label.innerHTML = `${field.label}${field.required ? ' <span style=\"color:#ff6..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\claude-hub.ts",
+      "line": 326,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "placeholder.innerHTML = `\n            <div class=\"claude-hub__empty-icon\">🚧<..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\shared\\hub-section.ts",
+      "line": 67,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "toggle.innerHTML = \"&#9662;\""
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\config\\global-tab.ts",
+      "line": 78,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = getIconSvg(\"globe\")"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\config\\global-tab.ts",
+      "line": 157,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = getIconSvg(iconName)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\config\\global-tab.ts",
+      "line": 243,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = getIconSvg(iconName)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\config\\local-tab.ts",
+      "line": 68,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = getIconSvg(\"folder\")"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\config\\local-tab.ts",
+      "line": 179,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = isLocal ? getIconSvg(\"lock\") : getIconSvg(\"folder\")"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\runtime\\debug-tab.ts",
+      "line": 174,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.logContainer.innerHTML = `\n                <div style=\"color: #666; text..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\runtime\\sessions-tab.ts",
+      "line": 159,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "info.innerHTML = `\n            <div style=\"display: flex; gap: 8px;\">\n       ..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 448,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "pathIcon.innerHTML = getIconSvg(\"folder\")"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 904,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = icon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 1283,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "fileIcon.innerHTML = isLocal ? getIconSvg(\"lock\") : getIconSvg(\"folder\")"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 1711,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = `<span style=\"font-size:13px;\">+</span> Add Variable`"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 1750,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "importBtn.innerHTML = `<span style=\"font-size:11px;\">↓</span> Import from IDE`"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 2077,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "item.innerHTML = `<span style=\"color:#4fc3f7;\">agent:</span> <span style=\"col..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 2084,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "item.innerHTML = `<span style=\"color:#81c784;\">command:</span> <span style=\"c..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 2140,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "headerIcon.innerHTML = getIconSvg(\"globe\")"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 2347,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = icon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 2535,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = icon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 2714,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "header.innerHTML = `<strong>${title}</strong><span style=\"font-size:10px\">${c..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 3604,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "idCell.innerHTML = `\n                <div style=\"font-family: monospace; colo..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 3850,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "modelStat.innerHTML = `<strong>Model:</strong> ${agent.model || \"inherit\"}`"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 3854,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "toolsStat.innerHTML = `<strong>Tools:</strong> ${agent.tools || \"all\"}`"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 4151,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "modelStat.innerHTML = `<strong>Model:</strong> ${cmd.model || \"inherit\"}`"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 4156,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "toolsStat.innerHTML = `<strong>Tools:</strong> ${cmd.allowedTools.substring(0..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 4443,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "modelStat.innerHTML = `<strong>Model:</strong> ${skill.model}`"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 4449,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "toolsStat.innerHTML = `<strong>Tools:</strong> ${skill.allowedTools.substring..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 4733,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "matcherRow.innerHTML = `<strong>Matcher:</strong> <span style=\"color:#4fc3f7;..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-settings-dialog.ts",
+      "line": 395,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = `<span style=\"font-size:13px;\">+</span> Add Variable`"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\context-menu.ts",
+      "line": 236,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = item.icon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\debug-dashboard.ts",
+      "line": 108,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = TAB_ICONS[tab.id]"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\draggable-modal.ts",
+      "line": 223,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "closeBtn.innerHTML = `<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentCol..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-export-wizard.ts",
+      "line": 223,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "message.innerHTML = `A <span class=\"env-export-path\">.env</span> file already..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-export-wizard.ts",
+      "line": 235,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "overrideOption.innerHTML = `\n      <input type=\"radio\" name=\"export-option\" v..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-export-wizard.ts",
+      "line": 256,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "saveAsContent.innerHTML = `\n      <div style=\"display: flex; align-items: fle..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-import-wizard.ts",
+      "line": 363,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sharedOption.innerHTML = `\n      <input type=\"radio\" name=\"scope\" value=\"shar..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-import-wizard.ts",
+      "line": 381,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "projectOption.innerHTML = `\n      <input type=\"radio\" name=\"scope\" value=\"pro..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-import-wizard.ts",
+      "line": 442,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "values.innerHTML = `\n      <div>\n        <div class=\"env-wizard-conflict-valu..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\environment-modal.ts",
+      "line": 237,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "thead.innerHTML = `\n            <tr style=\"background: var(--color-bg-tertiar..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\environment-modal.ts",
+      "line": 266,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "emptyRow.innerHTML = `\n                <td colspan=\"3\" style=\"padding: 24px; ..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "line": 139,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "minimizeBtn.innerHTML = headerIcons.hide"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "line": 148,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.maximizeBtn.innerHTML = this.isMaximized ? headerIcons.restore : headerI..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "line": 159,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.fullscreenBtn.innerHTML = this.isFullscreen ? headerIcons.exitFullscreen..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "line": 168,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "closeBtn.innerHTML = headerIcons.close"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "line": 208,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.maximizeBtn.innerHTML = this.isMaximized ? headerIcons.restore : headerI..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "line": 216,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.fullscreenBtn.innerHTML = this.isFullscreen ? headerIcons.exitFullscreen..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\home-panel.ts",
+      "line": 292,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "editBtn.innerHTML = `<svg viewBox=\"0 0 16 16\" width=\"12\" height=\"12\"><path fi..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\home-panel.ts",
+      "line": 303,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = `<svg viewBox=\"0 0 16 16\" width=\"12\" height=\"12\"><path ..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-history-modal.ts",
+      "line": 190,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "clearBtn.innerHTML = `${icons.trash} Clear All`"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-history-modal.ts",
+      "line": 472,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = icons.trash"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-history-modal.ts",
+      "line": 618,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "currentLegend.innerHTML = `<span style=\"color: rgba(255, 100, 100, 0.8);\">Cur..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-history-modal.ts",
+      "line": 621,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "presetLegend.innerHTML = `<span style=\"color: rgba(100, 255, 100, 0.8);\">Pres..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 281,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "homeBtn.innerHTML = taskbarIcons.home"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 315,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.terminalBtn.innerHTML = taskbarIcons.terminal"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 328,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "notificationsBtn.innerHTML = taskbarIcons.bell"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 337,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.debugBtn.innerHTML = taskbarIcons.debug"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 350,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.settingsBtn.innerHTML = taskbarIcons.settings"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 363,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.aiMetricsBtn.innerHTML = taskbarIcons.aiMetrics"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 376,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.hardwareBtn.innerHTML = taskbarIcons.hardware"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 433,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "fpsIcon.innerHTML = taskbarIcons.fps"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 458,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "timerIcon.innerHTML = taskbarIcons.timer"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\toast.ts",
+      "line": 172,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = config.icon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\tool-permission-editor.ts",
+      "line": 254,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "(this.addBtn as HTMLButtonElement).innerHTML = `<span style=\"font-size:13px;\"..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\tool-permission-editor.ts",
+      "line": 425,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = `<span style=\"font-size:13px;\">+</span> Add Directory`"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\main.ts",
+      "line": 282,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "exitFullscreenBtn.innerHTML = `<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"c..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\router\\router.ts",
+      "line": 129,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.viewport.innerHTML = `\n            <div class=\"page-error\">\n            ..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 175,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = `<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" width=\"14\" h..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 241,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sessionIcon.innerHTML = `<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" width=\"..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 288,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "activeLabel.innerHTML = `<span style=\"color: ${activeProvider.color};\">Active..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 381,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "newBtn.innerHTML = `<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" width=\"10\" h..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 445,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "clearAllBtn.innerHTML = sessionIcons.trash"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 621,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML =\n            provider?.icon ??\n            `<svg viewBox=\"0 0..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 754,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = iconSvg"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 967,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = provider.icon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-provider-dialog.ts",
+      "line": 151,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.dialog.innerHTML = `\n            <h3 style=\"margin: 0 0 16px 0; font-siz..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-provider-dialog.ts",
+      "line": 331,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = icon.svg"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 245,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.toggleBtn.innerHTML = this.isCollapsed ? sidebarIcons.chevronLeft : side..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 291,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "collapseBtn.innerHTML = sidebarIcons.chevronDown"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 303,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = icon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 325,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = sidebarIcons.plus"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 340,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "refreshBtn.innerHTML = sidebarIcons.refresh"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 451,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.agent"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 485,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 510,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.agent"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 544,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 554,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "editBtn.innerHTML = sidebarIcons.edit"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 564,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = sidebarIcons.trash"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 615,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.command"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 656,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 681,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.command"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 724,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 734,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "editBtn.innerHTML = sidebarIcons.edit"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 744,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = sidebarIcons.trash"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 777,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.context"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 805,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "editBtn.innerHTML = sidebarIcons.edit"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 844,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.context"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 871,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "removeBtn.innerHTML = sidebarIcons.trash"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 1156,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.toggleBtn.innerHTML = this.isCollapsed ? sidebarIcons.chevronLeft : side..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 1173,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = isCollapsed ? sidebarIcons.chevronRight : sidebarIcons.chevro..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 251,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.todoButtonEl.innerHTML = `\n            <svg width=\"12\" height=\"12\" viewB..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 605,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = toolIcon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 628,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "statusSpan.innerHTML = `<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 634,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "statusSpan.innerHTML = `<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 917,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = toolIcon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 938,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "spinner.innerHTML = `<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"no..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 992,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "resultSpan.innerHTML = `<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 998,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "resultSpan.innerHTML = `<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 1359,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = `<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"n..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 1435,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "allowBtn.innerHTML = `\n            <svg width=\"14\" height=\"14\" viewBox=\"0 0 2..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 1466,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "denyBtn.innerHTML = `\n            <svg width=\"14\" height=\"14\" viewBox=\"0 0 24..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 1498,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "denyExpandBtn.innerHTML = `\n            <svg width=\"12\" height=\"12\" viewBox=\"..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 1990,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.todoPanelEl.innerHTML = `\n            <div style=\"padding: 8px 12px; bor..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "line": 224,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = headerIcons.plus"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "line": 246,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "closeBtn.innerHTML = headerIcons.close"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "line": 446,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = shellIcons[shellIcon] ?? shellIcons.terminal"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "line": 463,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sendBtn.innerHTML = headerIcons.sendOut"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "line": 466,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sendBtn.innerHTML = headerIcons.sendIn"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "line": 474,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "closeBtn.innerHTML = headerIcons.close"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 226,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.toggleBtn.innerHTML = this.isCollapsed ? sidebarIcons.chevronRight : sid..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 250,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "collapseBtn.innerHTML = sidebarIcons.chevronDown"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 262,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = icon"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 280,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "clearAllBtn.innerHTML = sidebarIcons.trash"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 287,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "refreshBtn.innerHTML = sidebarIcons.refresh"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 297,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "saveBtn.innerHTML = sidebarIcons.save"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 307,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = sidebarIcons.plus"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 421,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = shellIcons[shellIcon] ?? shellIcons.terminal"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 482,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sendBtn.innerHTML = sidebarIcons.sendOut"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 485,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sendBtn.innerHTML = sidebarIcons.sendIn"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 502,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 513,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = sidebarIcons.trash"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 559,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.folder"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 586,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 596,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "editBtn.innerHTML = sidebarIcons.edit"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 606,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = sidebarIcons.trash"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 630,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.terminal"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 669,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 679,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "editBtn.innerHTML = sidebarIcons.edit"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 689,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = sidebarIcons.trash"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 1230,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.toggleBtn.innerHTML = this.isCollapsed ? sidebarIcons.chevronRight : sid..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 1247,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = isCollapsed ? sidebarIcons.chevronRight : sidebarIcons.chevro..."
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "line": 579,
+      "type": "document.createTextNode",
+      "severity": "info",
+      "description": "Text nodes are not pooled (usually acceptable)",
+      "fix": "Consider if text content could use textContent property instead",
+      "snippet": "document.createTextNode(label)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\debug-dashboard.ts",
+      "line": 190,
+      "type": "document.createTextNode",
+      "severity": "info",
+      "description": "Text nodes are not pooled (usually acceptable)",
+      "fix": "Consider if text content could use textContent property instead",
+      "snippet": "document.createTextNode(this.apiStatus.running ? \"Running\" : \"Stopped\")"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-panel.ts",
+      "line": 436,
+      "type": "document.createTextNode",
+      "severity": "info",
+      "description": "Text nodes are not pooled (usually acceptable)",
+      "fix": "Consider if text content could use textContent property instead",
+      "snippet": "document.createTextNode(`${label} `)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-panel.ts",
+      "line": 494,
+      "type": "document.createTextNode",
+      "severity": "info",
+      "description": "Text nodes are not pooled (usually acceptable)",
+      "fix": "Consider if text content could use textContent property instead",
+      "snippet": "document.createTextNode(`${label} `)"
+    }
+  ]
+}

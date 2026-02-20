@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(npx electron-rebuild)",
+      "Bash(npx knip:*)",
+      "WebFetch(domain:knip.dev)",
+      "Bash(npx stylelint:*)",
+      "Bash(npx tsc:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(test:*)",
+      "Bash(find:*)",
+      "Skill(verify-loop)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:github-readme-stats.vercel.app)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(done)"
+    ]
+  }
+}

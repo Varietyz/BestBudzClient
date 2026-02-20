@@ -1,0 +1,299 @@
+---
+name: your-agent-name
+version: 1.0.0
+type: AGENT
+description: Description of when this subagent should be invoked
+tools: Read, Grep, Glob, Bash, Write, Edit, MultiEdit, Grep, LS, WebFetch, WebSearch, TodoRead/TodoWrite, AskUserQuestion
+model: sonnet
+color: blue
+permissionMode: default
+skills: skill1, skill2
+context: normal
+hooks: []
+---
+
+THIS TEMPLATE PROVIDES structure for creating PAG-compliant subagents
+
+%% META %%:
+intent: "Template for subagent creation following PAG syntax and Claude Code standards"
+context: "Agent development and documentation"
+priority: medium
+
+# PHASE 1: TEMPLATE STRUCTURE UNDERSTANDING
+
+## Understanding Required Fields
+
+DECLARE required_fields: object
+SET required_fields = {
+"name": "Unique identifier using lowercase letters and hyphens",
+"description": "Natural language description of when to invoke this agent"
+}
+
+## Understanding Optional Fields
+
+DECLARE optional_fields: object
+SET optional_fields = {
+"tools": "Comma-separated list (omit to inherit all tools from main thread)",
+"model": "sonnet, opus, haiku, or inherit",
+"permissionMode": "default, acceptEdits, bypassPermissions, plan, ignore",
+"skills": "Comma-separated skill names to auto-load",
+"context": "normal or fork (v2.1.0+)",
+"hooks": "Hook definitions as YAML list (v2.1.0+)"
+}
+
+## Understanding Extended Fields
+
+DECLARE extended_fields: object
+SET extended_fields = {
+"version": "Version number for tracking agent evolution",
+"type": "AGENT (used for categorization)",
+"color": "Visual identifier (blue, green, cyan, orange, purple)"
+}
+
+VALIDATION GATE:
+✅ Field requirements understood
+✅ Optional vs required fields clarified
+✅ Extended project fields documented
+
+# PHASE 2: AGENT APPROACH SELECTION
+
+## Determine Agent Complexity
+
+DECLARE agent_approaches: array
+SET agent_approaches = [
+{
+"type": "pag",
+"use_when": "Complex agents requiring embedded algorithms",
+"examples": ["forensic verifier", "pattern distiller", "meta agents"]
+}
+]
+
+WHEN agent:
+USE pag_structure_with_phases
+EMBED algorithmic_patterns
+IMPLEMENT safe_iteration_loops
+ADD verification_gates
+DECLARE trust_anchors
+
+VALIDATION GATE:
+✅ Approach selected based on agent complexity
+✅ Structure pattern identified
+✅ Implementation guidance clear
+
+# PHASE 3: AGENT PATTERN
+
+```markdown
+---
+name: forensic-verifier
+version: 1.0.0
+type: AGENT
+description: Verifies claims forensically via skeptical investigation
+tools: Bash, Glob, Grep, Read, Write
+model: sonnet
+color: orange
+---
+
+THIS AGENT EXECUTES forensic verification via structured workflow
+
+# EMBEDDED ALGORITHMIC PATTERNS
+
+## [Production-System-Cycle] Class: Adaptive Loop
+
+## READ<WorkingMemory> → FIND<MatchingProductions> → EXECUTE<SelectedProduction> → WRITE<WorkingMemory>
+
+%% META %%:
+intent: "Forensic verification of claims"
+context: "Verification and validation domain"
+priority: high
+
+# TRUST ANCHOR
+
+DECLARE trust_anchor: object
+SET trust_anchor = {
+"minimal_assumptions": [
+"Tool output is deterministic for same input",
+"File system operations work as documented"
+],
+"verification_required": true
+}
+
+# STATE DECLARATION
+
+DECLARE verified_claims: array
+DECLARE refuted_claims: array
+DECLARE iteration_count: number
+DECLARE max_iterations: number
+DECLARE goal_achieved: boolean
+
+SET verified_claims = []
+SET refuted_claims = []
+SET iteration_count = 0
+SET max_iterations = 10
+SET goal_achieved = false
+
+# PHASE 1: CLAIM EXTRACTION
+
+EXTRACT claims FROM user_input INTO claim_list
+
+FOR EACH claim IN claim_list:
+ANALYZE claim FOR verification_targets
+APPEND claim TO pending_verification
+
+VALIDATION GATE:
+✅ Claims extracted
+✅ Verification targets identified
+✅ Ready for verification phase
+
+# PHASE 2: VERIFICATION LOOP
+
+START VERIFY_CLAIMS
+
+SET iteration_count = iteration_count + 1
+
+IF iteration_count > max_iterations:
+REPORT "Max iterations reached"
+GOTO FINALIZE
+
+FOR EACH claim IN pending_verification:
+TRY:
+EXECUTE verification_procedure WITH claim
+APPEND claim TO verified_claims
+CATCH verification_error:
+APPEND claim TO refuted_claims
+
+IF all_claims_verified:
+SET goal_achieved = true
+GOTO FINALIZE
+
+IF goal_achieved !== true AND iteration_count < max_iterations:
+GOTO VERIFY_CLAIMS
+
+START FINALIZE
+REPORT "Verification complete"
+END
+
+VALIDATION GATE:
+✅ All claims processed
+✅ Verified and refuted claims separated
+✅ Iteration bounds enforced
+
+# OPERATIONAL DIRECTIVES
+
+ALWAYS embed algorithms structurally
+ALWAYS use safe iteration loops with max_iterations
+ALWAYS track verified_claims and refuted_claims
+ALWAYS add validation gates at phase boundaries
+ALWAYS check iteration_count before continuing loops
+
+NEVER reference algorithm files externally
+NEVER use unbounded loops (WHILE true, WHILE 1)
+NEVER exceed max_iterations without user escalation
+NEVER skip verification gates
+NEVER trust output without verification
+```
+
+VALIDATION GATE:
+✅ PAG structure demonstrated
+✅ Embedded algorithms shown
+✅ Safe iteration pattern included
+✅ Verification gates present
+
+# PHASE 4: CREATION WORKFLOW
+
+## STEP 1: Copy Template
+
+EXECUTE Bash WITH command: "cp .claude/agents/agents.template .claude/agents/your-agent-name.md"
+
+## STEP 2: Update Frontmatter
+
+EDIT ".claude/agents/your-agent-name.md" WITH: - name: "your-agent-name" (kebab-case, unique) - description: "Clear description of when Claude should invoke" - tools: "Comma-separated list" (omit to inherit all) - model: "sonnet, opus, haiku, or inherit" - permissionMode: "default, acceptEdits, bypassPermissions, plan, ignore" - skills: "skill1, skill2" (if needed) - context: "normal or fork" (v2.1.0+, default: normal) - hooks: [] (v2.1.0+, hook definitions) - version: "1.0.0" (project convention) - type: "AGENT" (project convention) - color: "blue, green, cyan, orange, purple" (project convention)
+
+## STEP 3: Choose Approach
+
+IF agent_is_simple:
+WRITE natural_language_prompt
+USE numbered_steps
+PROVIDE clear_checklists
+ELSE IF agent_is_complex:
+WRITE pag_structure
+EMBED algorithms
+ADD safe_iteration_loops
+IMPLEMENT verification_gates
+
+## STEP 4: Test Agent
+
+EXECUTE Task WITH subagent_type: "your-agent-name", prompt: "test input"
+ANALYZE agent_output
+VERIFY agent_behavior MATCHES expectations
+
+## STEP 5: Cleanup
+
+DELETE ".claude/agents/agents.template"
+
+VALIDATION GATE:
+✅ Creation workflow documented
+✅ All steps clear
+✅ Testing procedure defined
+✅ Cleanup specified
+
+# OPERATIONAL DIRECTIVES
+
+ALWAYS use proper YAML frontmatter with all required fields
+ALWAYS choose appropriate approach (simple vs PAG-enhanced)
+ALWAYS test agent before deployment
+ALWAYS include clear invocation triggers in description
+ALWAYS document tool access requirements
+
+NEVER skip frontmatter fields (name, description are required)
+NEVER use vague descriptions (Claude uses them for auto-invocation)
+NEVER forget to delete agents.template after creation
+NEVER omit tools field if restricting access
+NEVER skip testing before deployment
+
+WHEN agent_requires_skills:
+ALWAYS list skills explicitly in frontmatter
+NEVER assume skills inherit from main conversation
+
+WHEN agent_needs_isolation:
+SET context = "fork" FOR independent execution context
+
+WHEN agent_needs_lifecycle_control:
+DEFINE hooks IN frontmatter FOR PreToolUse, PostToolUse, Stop events
+
+# NEW FEATURES (v2.1.0+)
+
+## Context Forking
+
+SET context = "fork" TO run agent in isolated sub-agent context with:
+- Separate conversation history
+- No pollution of main conversation
+- Clean state for fresh perspective
+- Parallel execution capability
+
+## Agent-Scoped Hooks
+
+DEFINE hooks = [
+{
+"type": "PreToolUse",
+"command": "bash command or skill invocation",
+"once": false
+},
+{
+"type": "PostToolUse",
+"command": "validation or cleanup command"
+},
+{
+"type": "Stop",
+"command": "finalization command"
+}
+]
+
+DECLARE hook_types: array
+SET hook_types = ["PreToolUse", "PostToolUse", "Stop", "SubagentStart", "SubagentStop"]
+
+# REFERENCE SOURCES
+
+- Agent Skills - Claude Code Docs: https://code.claude.com/docs/en/skills
+- Subagents Official Documentation: https://code.claude.com/docs/en/subagents
+- Context Forking: https://x.com/EricBuess/status/2009073718450889209
+- GitHub Issue #8501 - YAML Frontmatter Gap: https://github.com/anthropics/claude-code/issues/8501

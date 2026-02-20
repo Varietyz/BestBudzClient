@@ -1,0 +1,392 @@
+{
+  "scannedAt": "2026-01-03T13:05:53.876Z",
+  "sourceDir": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer",
+  "summary": {
+    "totalFiles": 139,
+    "filesWithViolations": 17,
+    "totalViolations": 17,
+    "errors": 0,
+    "warnings": 17,
+    "byType": {
+      "SHOULD_EXTEND_BASE_RENDER": 17
+    }
+  },
+  "topFiles": [
+    [
+      "terminal/components/terminal-sidebar.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "terminal/components/terminal-header.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "terminal/components/terminal-chat.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "terminal/components/ai-sidebar.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "terminal/components/ai-provider-dialog.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "terminal/components/ai-footer.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "engine/base/base-event-component.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "components/tool-permission-editor.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "components/toast.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "components/taskbar.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "components/settings-history-modal.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "components/popover.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "components/header-bar.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "components/env-import-wizard.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "components/env-export-wizard.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "components/debug-panel.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ],
+    [
+      "components/context-menu.ts",
+      {
+        "total": 1,
+        "errors": 0,
+        "warnings": 1
+      }
+    ]
+  ],
+  "violations": [
+    {
+      "file": "terminal/components/terminal-sidebar.ts",
+      "line": 146,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "TerminalSidebar",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class TerminalSidebar extends BaseEventComponent",
+      "suggestedFix": "class TerminalSidebar extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "terminal/components/terminal-header.ts",
+      "line": 141,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "TerminalHeader",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class TerminalHeader extends BaseEventComponent",
+      "suggestedFix": "class TerminalHeader extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "terminal/components/terminal-chat.ts",
+      "line": 96,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "TerminalChat",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class TerminalChat extends BaseEventComponent",
+      "suggestedFix": "class TerminalChat extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "terminal/components/ai-sidebar.ts",
+      "line": 149,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "AISidebar",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class AISidebar extends BaseEventComponent",
+      "suggestedFix": "class AISidebar extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "terminal/components/ai-provider-dialog.ts",
+      "line": 89,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "AIProviderDialog",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class AIProviderDialog extends BaseEventComponent",
+      "suggestedFix": "class AIProviderDialog extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "terminal/components/ai-footer.ts",
+      "line": 53,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "AIFooter",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class AIFooter extends BaseEventComponent",
+      "suggestedFix": "class AIFooter extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "engine/base/base-event-component.ts",
+      "line": 296,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "BaseRenderComponent",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class BaseRenderComponent extends BaseEventComponent",
+      "suggestedFix": "class BaseRenderComponent extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "components/tool-permission-editor.ts",
+      "line": 211,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "ToolPermissionEditor",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class ToolPermissionEditor extends BaseEventComponent",
+      "suggestedFix": "class ToolPermissionEditor extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "components/toast.ts",
+      "line": 52,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "ToastManager",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class ToastManager extends BaseEventComponent",
+      "suggestedFix": "class ToastManager extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "components/taskbar.ts",
+      "line": 105,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "Taskbar",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class Taskbar extends BaseEventComponent",
+      "suggestedFix": "class Taskbar extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "components/settings-history-modal.ts",
+      "line": 31,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "SettingsHistoryModal",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class SettingsHistoryModal extends BaseEventComponent",
+      "suggestedFix": "class SettingsHistoryModal extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "components/popover.ts",
+      "line": 685,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "Popover",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class Popover extends BaseEventComponent",
+      "suggestedFix": "class Popover extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "components/header-bar.ts",
+      "line": 66,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "HeaderBar",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class HeaderBar extends BaseEventComponent",
+      "suggestedFix": "class HeaderBar extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "components/env-import-wizard.ts",
+      "line": 249,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "EnvImportWizard",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class EnvImportWizard extends BaseEventComponent",
+      "suggestedFix": "class EnvImportWizard extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "components/env-export-wizard.ts",
+      "line": 169,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "EnvExportWizard",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class EnvExportWizard extends BaseEventComponent",
+      "suggestedFix": "class EnvExportWizard extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "components/debug-panel.ts",
+      "line": 189,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "DebugPanel",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class DebugPanel extends BaseEventComponent",
+      "suggestedFix": "class DebugPanel extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    },
+    {
+      "file": "components/context-menu.ts",
+      "line": 153,
+      "type": "SHOULD_EXTEND_BASE_RENDER",
+      "status": "FAILED",
+      "className": "ContextMenu",
+      "severity": "warning",
+      "condition": "Component uses BaseRenderComponent for render lifecycle",
+      "message": "Component has render pattern but extends BaseEventComponent",
+      "remediation": "Migrate to BaseRenderComponent for automatic lifecycle management",
+      "factoryMethod": "BaseRenderComponent",
+      "snippet": "class ContextMenu extends BaseEventComponent",
+      "suggestedFix": "class ContextMenu extends BaseRenderComponent {\n    protected createContent(): HTMLElement {\n        // Move render() logic here\n    }\n}"
+    }
+  ]
+}

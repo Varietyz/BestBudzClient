@@ -1,0 +1,19 @@
+package com.bestbudz.dock.ui.panel.bubblebudz.system.render.components;
+
+import com.bestbudz.dock.ui.panel.bubblebudz.ui.BubbleBudzRenderer;
+import com.bestbudz.dock.ui.panel.bubblebudz.system.render.RenderComponent;
+import com.bestbudz.dock.ui.panel.bubblebudz.system.render.RenderContext;
+import java.awt.Graphics2D;
+
+public class FooterRenderer implements RenderComponent
+{
+	@Override
+	public void render(Graphics2D g2d, RenderContext context) {
+		if (!context.isLoading) {
+			BubbleBudzRenderer.drawFooter(g2d, context.width, context.height);
+		}
+	}
+
+	@Override
+	public int getRenderOrder() { return 400; }
+}

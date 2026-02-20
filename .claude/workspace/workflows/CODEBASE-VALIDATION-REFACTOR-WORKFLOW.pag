@@ -1,0 +1,734 @@
+---
+name: codebase-validation-refactor-workflow
+type: refactoring
+description: Multi-agent orchestrated workflow to align codebase-validation scanners, validators, and auto-fixers with DEV-RULES-ALGORITHMS.md specifications while maintaining full settings configurability
+model: sonnet
+context:
+    - CLAUDE.md
+    - .claude/workspace/_meta-intel/algorithms/_DEV-RULES-ALGORITHMS.md
+    - .claude/workspace/reports/algorithm-evaluation-report.md
+---
+
+THIS WORKFLOW refactors codebase-validation architecture to comply with algorithmic specifications using 5 specialized agents through shared document refinement
+
+%% META %%:
+intent: "Align codebase-validation with DEV-RULES-ALGORITHMS while preserving settings configurability"
+objective: "Implement State-Snapshot-Recovery, Perceptual-Loop, Verification-Gate protocols in base classes"
+context: "Refactoring scanners, validators, auto-fixers to explicit algorithm patterns"
+priority: critical
+
+ON ERROR file_modified:
+TRY:
+    RENAME current_file TO current_file.bak
+    WRITE updated_content TO [NEW]current_file
+    DELETE current_file.bak
+    EXCEPT IF FAIL:
+    RENAME current_file.bak TO current_file
+END TRY
+
+# PHASE 0: Algorithm Compliance Framework
+
+    READ ".claude/workspace/_meta-intel/algorithms/_DEV-RULES-ALGORITHMS.md" INTO algorithm_spec
+    READ ".claude/workspace/reports/algorithm-evaluation-report.md" INTO evaluation_report
+    READ "root/codebase-validation/settings.json" INTO settings_config
+    READ "root/codebase-validation/core/base-scanner.js" INTO base_scanner
+    READ "root/codebase-validation/core/base-validator.js" INTO base_validator
+    READ "root/codebase-validation/auto-fix/base-auto-fixer.js" INTO base_auto_fixer
+
+    DECLARE algorithm_mappings: object
+    SET algorithm_mappings.scanner = "Perceptual-Loop: FIND → ANALYZE → WRITE"
+    SET algorithm_mappings.validator = "Verification-Gate-Protocol: CREATE → ANALYZE → ANALYZE → EXECUTE"
+    SET algorithm_mappings.auto_fixer = "State-Snapshot-Recovery + Construction-Loop: EXTRACT → CREATE → ANALYZE → WRITE"
+
+    DECLARE settings_integration: object
+    SET settings_integration.principle = "All behavior configurable via settings.json"
+    SET settings_integration.locations = [
+        "rules.tooling.enabled.*",
+        "rules.tooling.autoFix.*",
+        "rules.quality.*",
+        "rules.strictness.*",
+        "rules.severity.*"
+    ]
+
+    VALIDATION GATE:
+        ✅ algorithm_spec loaded FROM _DEV-RULES-ALGORITHMS.md
+        ✅ evaluation_report loaded WITH improvement_recommendations
+        ✅ settings_config loaded FOR configurability_reference
+        ✅ base_classes loaded FOR refactoring_targets
+        ✅ algorithm_mappings defined FOR each_component_type
+
+# PHASE 1: Workspace Configuration
+
+    SET artifact_base_path = ".claude/workspace/refactor-validation"
+    SET workflow_name = "codebase-validation-refactor"
+
+## Task 1.1: Define Core Documents
+
+    DECLARE core_documents: array
+    SET core_documents = [
+        "ARCHITECTURAL-ASSESSMENT.md",
+        "REFACTOR-PLAN.md",
+        "IMPLEMENTATION-LOG.md",
+        "SETTINGS-INTEGRATION.md",
+        "VALIDATION-RESULTS.md",
+        "WORKFLOW-STATE.md"
+    ]
+
+## Task 1.2: Document Purpose Mapping
+
+    DECLARE document_purpose_map: object
+    SET document_purpose_map["ARCHITECTURAL-ASSESSMENT.md"] = "Current state analysis, algorithm gaps, dependency graph"
+    SET document_purpose_map["REFACTOR-PLAN.md"] = "Phased implementation plan with code changes"
+    SET document_purpose_map["IMPLEMENTATION-LOG.md"] = "Executed changes, file modifications, test results"
+    SET document_purpose_map["SETTINGS-INTEGRATION.md"] = "Settings.json schema changes, configurability map"
+    SET document_purpose_map["VALIDATION-RESULTS.md"] = "Algorithm compliance verification, semantic guarantees"
+    SET document_purpose_map["WORKFLOW-STATE.md"] = "Current phase, blockers, next actions"
+
+## Task 1.3: Define Refactoring Targets
+
+    DECLARE refactoring_targets: object
+
+    SET refactoring_targets.critical = {
+        "priority": 1,
+        "component": "BaseAutoFixer",
+        "file": "root/codebase-validation/auto-fix/base-auto-fixer.js",
+        "algorithm": "State-Snapshot-Recovery-Protocol",
+        "required_methods": [
+            "extractCurrentState(file)",
+            "createCheckpointSnapshot(state)",
+            "analyzeStateIntegrity(fixPlan, originalState)",
+            "writeWithRollback(fixedContent, snapshotId)",
+            "rollbackFromSnapshot(snapshotId)"
+        ],
+        "settings_keys": [
+            "rules.tooling.autoFix.createBackups",
+            "rules.tooling.autoFix.backupLocation",
+            "rules.tooling.autoFix.maxRollbackHistory"
+        ]
+    }
+
+    SET refactoring_targets.high_scanner = {
+        "priority": 2,
+        "component": "BaseScanner",
+        "file": "root/codebase-validation/core/base-scanner.js",
+        "algorithm": "Perceptual-Loop",
+        "required_methods": [
+            "findTargetFiles()",
+            "analyzeContentPatterns(files)",
+            "createRegistrySnapshot(violations)",
+            "writeRegistryOutput(snapshot)",
+            "reportSummary(snapshot)"
+        ],
+        "settings_keys": [
+            "rules.scanning.context.*",
+            "rules.exclusions.directories.*",
+            "rules.patterns.*"
+        ]
+    }
+
+    SET refactoring_targets.high_validator = {
+        "priority": 3,
+        "component": "BaseValidator",
+        "file": "root/codebase-validation/core/base-validator.js",
+        "algorithm": "Verification-Gate-Protocol",
+        "required_methods": [
+            "createInvariantSet()",
+            "analyzeSystemState(invariants)",
+            "analyzeViolations(state, invariants)",
+            "classifyBySeverity(violations, invariants)",
+            "executeValidationDecision(violations)"
+        ],
+        "settings_keys": [
+            "rules.severity.*",
+            "rules.strictness.*",
+            "rules.quality.enforce.*"
+        ]
+    }
+
+    SET refactoring_targets.medium = {
+        "priority": 4,
+        "components": ["concrete_scanners", "concrete_validators", "concrete_fixers"],
+        "count": "all_implementations",
+        "algorithm": "inherit_from_base_class",
+        "required_changes": [
+            "Override extension points",
+            "Add semantic guarantee JSDoc",
+            "Map to settings keys"
+        ]
+    }
+
+    VALIDATION GATE:
+        ✅ core_documents defined WITH semantic_purposes
+        ✅ refactoring_targets prioritized BY criticality
+        ✅ algorithm_mappings linked TO targets
+        ✅ settings_keys identified FOR configurability
+
+# PHASE 2: Agent Sequence Definition
+
+    SET agent_count = 5
+    DECLARE agent_sequence: array
+
+## Task 2.1: Agent 1 - Architecture Analyzer
+
+    DECLARE agent_1: object
+    SET agent_1.agent_name = "architecture-analyzer"
+    SET agent_1.agent_type = "code-tracer-agent"
+    SET agent_1.agent_phase = 1
+    SET agent_1.agent_purpose = "Analyze current codebase-validation architecture and map to algorithm requirements"
+    SET agent_1.agent_methodology = "CFG/AST analysis with algorithm gap detection"
+
+    SET agent_1.focus_points = [
+        "Map current BaseScanner flow to Perceptual-Loop steps",
+        "Map current BaseValidator flow to Verification-Gate-Protocol steps",
+        "Map current BaseAutoFixer flow to State-Snapshot-Recovery steps",
+        "Identify all settings.json keys currently used",
+        "Document missing extension points",
+        "Create dependency graph of scanner/validator/fixer hierarchy"
+    ]
+
+    SET agent_1.output_artifacts = [
+        "ARCHITECTURAL-ASSESSMENT.md: Complete gap analysis",
+        "SETTINGS-INTEGRATION.md: Current settings usage map",
+        "WORKFLOW-STATE.md: Phase 1 findings"
+    ]
+
+    SET agent_1.validation_gates = [
+        "All base classes analyzed",
+        "Algorithm gaps documented",
+        "Settings usage mapped"
+    ]
+
+    APPEND agent_1 TO agent_sequence
+
+## Task 2.2: Agent 2 - Refactor Planner
+
+    DECLARE agent_2: object
+    SET agent_2.agent_name = "refactor-planner"
+    SET agent_2.agent_type = "Plan"
+    SET agent_2.agent_phase = 2
+    SET agent_2.agent_purpose = "Create detailed refactoring plan with code changes and settings schema"
+    SET agent_2.agent_methodology = "Implementation planning with backward compatibility"
+
+    SET agent_2.focus_points = [
+        "Design BaseAutoFixer State-Snapshot-Recovery additions",
+        "Design BaseScanner Perceptual-Loop template methods",
+        "Design BaseValidator Verification-Gate-Protocol methods",
+        "Design new settings.json schema extensions",
+        "Plan migration path for existing implementations",
+        "Define semantic guarantee documentation format"
+    ]
+
+    SET agent_2.output_artifacts = [
+        "REFACTOR-PLAN.md: Detailed implementation steps with code",
+        "SETTINGS-INTEGRATION.md: New settings schema design",
+        "WORKFLOW-STATE.md: Phase 2 plan ready"
+    ]
+
+    SET agent_2.validation_gates = [
+        "All required methods designed",
+        "Settings schema backward compatible",
+        "Migration path clear"
+    ]
+
+    APPEND agent_2 TO agent_sequence
+
+## Task 2.3: Agent 3 - Base Class Implementer
+
+    DECLARE agent_3: object
+    SET agent_3.agent_name = "base-class-implementer"
+    SET agent_3.agent_type = "general-purpose"
+    SET agent_3.agent_phase = 3
+    SET agent_3.agent_purpose = "Implement algorithm-compliant base classes with settings integration"
+    SET agent_3.agent_methodology = "Code implementation with test validation"
+
+    SET agent_3.focus_points = [
+        "Implement BaseAutoFixer.extractCurrentState()",
+        "Implement BaseAutoFixer.createCheckpointSnapshot()",
+        "Implement BaseAutoFixer.writeWithRollback()",
+        "Implement BaseScanner template methods",
+        "Implement BaseValidator Verification-Gate methods",
+        "Add settings accessors for new configuration keys",
+        "Add JSDoc semantic guarantee documentation"
+    ]
+
+    SET agent_3.output_artifacts = [
+        "IMPLEMENTATION-LOG.md: Code changes made",
+        "REFACTOR-PLAN.md: Update with completed items",
+        "WORKFLOW-STATE.md: Phase 3 implementation status"
+    ]
+
+    SET agent_3.validation_gates = [
+        "Base classes implement required methods",
+        "Settings integration complete",
+        "Semantic guarantees documented",
+        "npm run verify-codebase passes"
+    ]
+
+    APPEND agent_3 TO agent_sequence
+
+## Task 2.4: Agent 4 - Implementation Migrator
+
+    DECLARE agent_4: object
+    SET agent_4.agent_name = "implementation-migrator"
+    SET agent_4.agent_type = "general-purpose"
+    SET agent_4.agent_phase = 4
+    SET agent_4.agent_purpose = "Migrate concrete scanners, validators, and fixers to new base class patterns"
+    SET agent_4.agent_methodology = "Systematic migration with validation"
+
+    SET agent_4.focus_points = [
+        "Update all scanners to use Perceptual-Loop extension points",
+        "Update all validators to use Verification-Gate extension points",
+        "Update all auto-fixers to use State-Snapshot-Recovery",
+        "Add semantic guarantee JSDoc to all implementations",
+        "Ensure all implementations read from settings",
+        "Run validation after each file change"
+    ]
+
+    SET agent_4.output_artifacts = [
+        "IMPLEMENTATION-LOG.md: All migrated files",
+        "VALIDATION-RESULTS.md: Test results per file",
+        "WORKFLOW-STATE.md: Phase 4 migration status"
+    ]
+
+    SET agent_4.validation_gates = [
+        "All scanners migrated",
+        "All validators migrated",
+        "All auto-fixers migrated",
+        "npm run verify-codebase passes"
+    ]
+
+    APPEND agent_4 TO agent_sequence
+
+## Task 2.5: Agent 5 - Compliance Verifier
+
+    DECLARE agent_5: object
+    SET agent_5.agent_name = "compliance-verifier"
+    SET agent_5.agent_type = "forensic-context-verifier"
+    SET agent_5.agent_phase = 5
+    SET agent_5.agent_purpose = "Verify full algorithm compliance and settings configurability"
+    SET agent_5.agent_methodology = "Forensic verification with compliance checklist"
+
+    SET agent_5.focus_points = [
+        "Verify BaseScanner implements Perceptual-Loop",
+        "Verify BaseValidator implements Verification-Gate-Protocol",
+        "Verify BaseAutoFixer implements State-Snapshot-Recovery",
+        "Verify all settings keys are documented",
+        "Verify semantic guarantees are testable",
+        "Create final compliance report"
+    ]
+
+    SET agent_5.output_artifacts = [
+        "VALIDATION-RESULTS.md: Full compliance report",
+        "SETTINGS-INTEGRATION.md: Final settings documentation",
+        "WORKFLOW-STATE.md: 100% complete"
+    ]
+
+    SET agent_5.validation_gates = [
+        "Algorithm compliance verified",
+        "Settings configurability verified",
+        "All semantic guarantees documented",
+        "npm run verify-codebase passes"
+    ]
+
+    APPEND agent_5 TO agent_sequence
+
+    VALIDATION GATE:
+        ✅ ALL 5 agents defined WITH methodologies
+        ✅ agent_focus_points specify algorithm_requirements
+        ✅ output_artifacts mapped TO core_documents
+        ✅ validation_gates include npm_verification
+
+# PHASE 3: Handoff Protocol Definition
+
+## Task 3.1: Create Handoff Signal Format
+
+    DECLARE handoff_signal_format: object
+
+    SET handoff_signal_format = {
+        "agent_completed": "{AGENT_NAME}",
+        "phase_status": "complete",
+        "artifacts_location": ".claude/workspace/refactor-validation",
+        "next_agent": "{NEXT_AGENT_NAME}",
+        "handoff_context": {
+            "key_findings": [],
+            "files_modified": [],
+            "settings_keys_added": [],
+            "validation_gates_passed": true,
+            "npm_verify_status": "pass|fail"
+        },
+        "orchestrator_action": "ACTIVATE_NEXT_AGENT"
+    }
+
+## Task 3.2: Define Settings Integration Handoff
+
+    DECLARE settings_handoff: object
+
+    SET settings_handoff.new_keys = [
+        "rules.tooling.autoFix.createBackups: boolean (default: true)",
+        "rules.tooling.autoFix.backupLocation: string (default: '.backup')",
+        "rules.tooling.autoFix.maxRollbackHistory: number (default: 10)",
+        "rules.tooling.autoFix.safetyValidation: boolean (default: true)",
+        "rules.severity.halt.critical: boolean (default: true)",
+        "rules.severity.halt.high: boolean (default: false)",
+        "rules.scanning.createSnapshot: boolean (default: true)"
+    ]
+
+    SET settings_handoff.accessors_needed = [
+        "getAutoFixBackupSettings()",
+        "getSeverityHaltSettings()",
+        "getScannerSnapshotSettings()"
+    ]
+
+    VALIDATION GATE:
+        ✅ handoff_signal_format defined
+        ✅ settings_handoff keys documented
+        ✅ accessor functions identified
+
+# PHASE 4: Workflow Coordination Algorithm
+
+    DECLARE coordination_sequence: array
+
+## Task 4.1: Pre-Creation Step
+
+    APPEND "ORCHESTRATOR: Pre-create documents in .claude/workspace/refactor-validation/" TO coordination_sequence
+
+    FOR EACH document IN core_documents:
+        SET purpose = document_purpose_map[document]
+        APPEND " ↓ CREATE " + document + " (purpose: " + purpose + ")" TO coordination_sequence
+
+    APPEND " ↓" TO coordination_sequence
+    APPEND "ORCHESTRATOR: EXECUTE Task tool WITH:" TO coordination_sequence
+    APPEND "   subagent_type: 'code-tracer-agent'" TO coordination_sequence
+    APPEND "   prompt: Architecture analysis for algorithm compliance" TO coordination_sequence
+    APPEND " ↓" TO coordination_sequence
+
+## Task 4.2: Agent Sequence Execution
+
+    FOR EACH index FROM 1 TO agent_count:
+        SET agent = agent_sequence[index]
+        SET next_agent = agent_sequence[index + 1]
+
+        APPEND "PHASE " + index + ": " + agent.agent_name TO coordination_sequence
+        APPEND "   PURPOSE: " + agent.agent_purpose TO coordination_sequence
+        APPEND "   ALGORITHM: " + algorithm_mappings[agent.component_type] TO coordination_sequence
+        APPEND "   ↓ READ all core documents" TO coordination_sequence
+        APPEND "   ↓ EXECUTE phase-specific analysis/implementation" TO coordination_sequence
+        APPEND "   ↓ UPDATE documents with findings" TO coordination_sequence
+        APPEND "   ↓ RUN npm run verify-codebase" TO coordination_sequence
+        APPEND "   ↓ SIGNAL completion to orchestrator" TO coordination_sequence
+        APPEND "   ↓" TO coordination_sequence
+
+        IF index < agent_count:
+            APPEND "ORCHESTRATOR: EXECUTE Task tool WITH:" TO coordination_sequence
+            APPEND "   subagent_type: '" + next_agent.agent_type + "'" TO coordination_sequence
+            APPEND "   prompt: Continue from Phase " + index + " findings" TO coordination_sequence
+            APPEND "   ↓" TO coordination_sequence
+
+    APPEND "ORCHESTRATOR: Workflow complete" TO coordination_sequence
+    APPEND " ↓ WORKFLOW-STATE.md: 100% complete" TO coordination_sequence
+    APPEND " ↓ All base classes algorithm-compliant" TO coordination_sequence
+    APPEND " ↓ All implementations migrated" TO coordination_sequence
+    APPEND " ↓ Settings fully configurable" TO coordination_sequence
+
+    VALIDATION GATE:
+        ✅ coordination_sequence complete
+        ✅ npm_verification included IN each_phase
+        ✅ settings_integration tracked
+
+# PHASE 5: Implementation Specifications
+
+## Task 5.1: BaseAutoFixer State-Snapshot-Recovery Implementation
+
+    DECLARE auto_fixer_spec: object
+
+    SET auto_fixer_spec.algorithm = "State-Snapshot-Recovery-Protocol"
+    SET auto_fixer_spec.verb_chain = "EXTRACT<Current-State> → CREATE<Checkpoint-Snapshot> → ANALYZE<State-Integrity> → WRITE<Checkpoint-Storage>"
+
+    SET auto_fixer_spec.methods = {
+        "extractCurrentState": {
+            "signature": "async extractCurrentState(filePath)",
+            "returns": "{ path, content, stats, timestamp }",
+            "semantic_guarantee": "Non-destructive read; file unmodified",
+            "settings_key": null
+        },
+        "createCheckpointSnapshot": {
+            "signature": "async createCheckpointSnapshot(state)",
+            "returns": "snapshotId",
+            "semantic_guarantee": "Deterministic creation; frozen state artifact",
+            "settings_key": "rules.tooling.autoFix.createBackups"
+        },
+        "analyzeStateIntegrity": {
+            "signature": "analyzeStateIntegrity(fixPlan, originalState)",
+            "returns": "{ valid: boolean, reason?: string }",
+            "semantic_guarantee": "Evaluation check; non-modifying validation",
+            "settings_key": "rules.tooling.autoFix.safetyValidation"
+        },
+        "writeWithRollback": {
+            "signature": "async writeWithRollback(fixedContent, snapshotId)",
+            "returns": "{ success: boolean, rolledBack?: boolean }",
+            "semantic_guarantee": "Atomic write; rollback on failure",
+            "settings_key": "rules.tooling.autoFix.createBackups"
+        },
+        "rollbackFromSnapshot": {
+            "signature": "async rollbackFromSnapshot(snapshotId)",
+            "returns": "void",
+            "semantic_guarantee": "Restores original state exactly",
+            "settings_key": null
+        }
+    }
+
+## Task 5.2: BaseScanner Perceptual-Loop Implementation
+
+    DECLARE scanner_spec: object
+
+    SET scanner_spec.algorithm = "Perceptual-Loop"
+    SET scanner_spec.verb_chain = "FIND<Target-Files> → ANALYZE<Content-Patterns> → WRITE<Registry-Output> → REPORT<Summary>"
+
+    SET scanner_spec.methods = {
+        "findTargetFiles": {
+            "signature": "async findTargetFiles()",
+            "returns": "string[]",
+            "semantic_guarantee": "Boolean existence check; non-invasive",
+            "settings_key": "rules.patterns.codeExtensions"
+        },
+        "analyzeContentPatterns": {
+            "signature": "async analyzeContentPatterns(files)",
+            "returns": "Violation[]",
+            "semantic_guarantee": "Deep examination; non-modifying",
+            "settings_key": "rules.quality.enforce.*"
+        },
+        "createRegistrySnapshot": {
+            "signature": "createRegistrySnapshot(violations)",
+            "returns": "RegistrySnapshot",
+            "semantic_guarantee": "State capture before write",
+            "settings_key": "rules.scanning.createSnapshot"
+        },
+        "writeRegistryOutput": {
+            "signature": "async writeRegistryOutput(snapshot)",
+            "returns": "void",
+            "semantic_guarantee": "Creates new entry; idempotent",
+            "settings_key": null
+        },
+        "reportSummary": {
+            "signature": "reportSummary(snapshot)",
+            "returns": "void",
+            "semantic_guarantee": "Side effects isolated; optional",
+            "settings_key": "rules.display.*"
+        }
+    }
+
+## Task 5.3: BaseValidator Verification-Gate Implementation
+
+    DECLARE validator_spec: object
+
+    SET validator_spec.algorithm = "Verification-Gate-Protocol"
+    SET validator_spec.verb_chain = "CREATE<Invariant-Set> → ANALYZE<System-State> → ANALYZE<Violations> → EXECUTE<Halt-Or-Continue>"
+
+    SET validator_spec.methods = {
+        "createInvariantSet": {
+            "signature": "async createInvariantSet()",
+            "returns": "InvariantSet",
+            "semantic_guarantee": "Non-deterministic creation; generates constraint candidates",
+            "settings_key": "rules.strictness.*"
+        },
+        "analyzeSystemState": {
+            "signature": "async analyzeSystemState(invariants)",
+            "returns": "SystemState",
+            "semantic_guarantee": "Deep examination; delegates to validation tools",
+            "settings_key": null
+        },
+        "analyzeViolations": {
+            "signature": "async analyzeViolations(state, invariants)",
+            "returns": "ClassifiedViolations",
+            "semantic_guarantee": "Evaluation check; validates against severity specification",
+            "settings_key": "rules.severity.*"
+        },
+        "classifyBySeverity": {
+            "signature": "classifyBySeverity(violations, invariants)",
+            "returns": "{ critical, high, medium, low }",
+            "semantic_guarantee": "Deterministic classification",
+            "settings_key": "rules.severity.thresholds.*"
+        },
+        "executeValidationDecision": {
+            "signature": "executeValidationDecision(violations)",
+            "returns": "boolean | never (process.exit on critical)",
+            "semantic_guarantee": "Side effects possible; halts on critical",
+            "settings_key": "rules.severity.halt.*"
+        }
+    }
+
+    VALIDATION GATE:
+        ✅ auto_fixer_spec complete WITH semantic_guarantees
+        ✅ scanner_spec complete WITH semantic_guarantees
+        ✅ validator_spec complete WITH semantic_guarantees
+        ✅ all_settings_keys mapped
+
+# PHASE 6: Settings Schema Extension
+
+## Task 6.1: New Settings Keys
+
+    DECLARE new_settings_schema: object
+
+    SET new_settings_schema = {
+        "rules.tooling.autoFix": {
+            "createBackups": {
+                "type": "boolean",
+                "default": true,
+                "description": "Create backup snapshots before auto-fix modifications"
+            },
+            "backupLocation": {
+                "type": "string",
+                "default": ".claude/workspace/backups",
+                "description": "Directory for storing backup snapshots"
+            },
+            "maxRollbackHistory": {
+                "type": "number",
+                "default": 10,
+                "description": "Maximum number of snapshots to retain per file"
+            },
+            "safetyValidation": {
+                "type": "boolean",
+                "default": true,
+                "description": "Validate fixes don't break invariants before applying"
+            }
+        },
+        "rules.severity.halt": {
+            "critical": {
+                "type": "boolean",
+                "default": true,
+                "description": "Halt process on critical severity violations"
+            },
+            "high": {
+                "type": "boolean",
+                "default": false,
+                "description": "Halt process on high severity violations"
+            }
+        },
+        "rules.scanning": {
+            "createSnapshot": {
+                "type": "boolean",
+                "default": true,
+                "description": "Create registry snapshot before writing"
+            }
+        }
+    }
+
+## Task 6.2: Settings Accessor Functions
+
+    DECLARE new_accessors: array
+
+    SET new_accessors = [
+        "getAutoFixBackupSettings(): { createBackups, backupLocation, maxRollbackHistory, safetyValidation }",
+        "getSeverityHaltSettings(): { critical, high }",
+        "getScannerSnapshotSettings(): { createSnapshot }"
+    ]
+
+    SET accessor_location = "root/codebase-validation/core/settings/accessors/tools/"
+
+    VALIDATION GATE:
+        ✅ new_settings_schema defined WITH types_and_defaults
+        ✅ new_accessors specified WITH return_types
+        ✅ backward_compatible WITH existing_settings
+
+# PHASE 7: Success Criteria
+
+    DECLARE success_criteria: object
+
+    SET success_criteria.algorithm_compliance = [
+        "BaseAutoFixer implements State-Snapshot-Recovery-Protocol",
+        "BaseScanner implements Perceptual-Loop algorithm",
+        "BaseValidator implements Verification-Gate-Protocol",
+        "All methods have JSDoc semantic guarantees",
+        "All implementations use extension points"
+    ]
+
+    SET success_criteria.settings_configurability = [
+        "All new behavior controlled via settings.json",
+        "Settings accessors created for new keys",
+        "Default values maintain backward compatibility",
+        "Documentation updated with new settings"
+    ]
+
+    SET success_criteria.verification = [
+        "npm run verify-codebase passes",
+        "All scanners produce valid registry output",
+        "All validators return correct boolean/halt behavior",
+        "All auto-fixers can rollback on failure"
+    ]
+
+    VALIDATION GATE:
+        ✅ algorithm_compliance checklist defined
+        ✅ settings_configurability checklist defined
+        ✅ verification checklist defined
+
+# PHASE 8: Execution Instructions
+
+## Task 8.1: Orchestrator Execution Protocol
+
+    DECLARE execution_protocol: object
+
+    SET execution_protocol.step_1 = {
+        "action": "Create artifact directory",
+        "command": "mkdir -p .claude/workspace/refactor-validation"
+    }
+
+    SET execution_protocol.step_2 = {
+        "action": "Create core documents",
+        "documents": core_documents
+    }
+
+    SET execution_protocol.step_3 = {
+        "action": "Execute Phase 1 agent",
+        "tool": "Task",
+        "params": {
+            "subagent_type": "code-tracer-agent",
+            "prompt": "Analyze codebase-validation architecture. Read ARCHITECTURAL-ASSESSMENT.md purpose. Map current BaseScanner, BaseValidator, BaseAutoFixer flows to required algorithms from _DEV-RULES-ALGORITHMS.md. Document gaps in ARCHITECTURAL-ASSESSMENT.md. Map current settings.json usage in SETTINGS-INTEGRATION.md."
+        }
+    }
+
+    SET execution_protocol.step_4_5 = {
+        "action": "Continue with remaining agents",
+        "pattern": "Read handoff context, execute phase, signal completion"
+    }
+
+    SET execution_protocol.final = {
+        "action": "Verify completion",
+        "command": "npm run verify-codebase",
+        "expected": "All checks pass with algorithm-compliant architecture"
+    }
+
+## Task 8.2: First Time Initiation
+
+    IF first_time:
+        REPORT workflow_summary WITH:
+            - 5 agents in sequence
+            - Critical: BaseAutoFixer State-Snapshot-Recovery
+            - High: BaseScanner Perceptual-Loop
+            - High: BaseValidator Verification-Gate-Protocol
+            - Medium: Migrate all implementations
+            - Final: Compliance verification
+
+        READ user_choice FROM user_prompt "Review complete. Next action: [Execute Workflow] [Edit Template] [Cancel]?"
+
+        IF user_approves:
+            EXECUTE workflow FROM step_1
+
+    VALIDATION GATE:
+        ✅ execution_protocol complete
+        ✅ first_time_initiation defined
+        ✅ user_approval_required
+
+# ALWAYS RULES
+
+ALWAYS read algorithm specifications BEFORE implementation
+ALWAYS verify settings backward compatibility
+ALWAYS include semantic guarantees in JSDoc
+ALWAYS run npm run verify-codebase AFTER changes
+ALWAYS use Task tool FOR agent execution
+ALWAYS maintain single source of truth IN documents
+NEVER modify existing API signatures WITHOUT deprecation
+NEVER skip safety validation IN auto-fixers
+NEVER hardcode values that should be configurable
+NEVER remove existing settings keys
+ALWAYS create backup BEFORE destructive operations
+ALWAYS document new settings IN schema

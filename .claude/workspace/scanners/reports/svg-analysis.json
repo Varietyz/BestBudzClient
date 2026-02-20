@@ -1,0 +1,590 @@
+{
+  "generatedAt": "2026-01-03T17:39:27.326Z",
+  "summary": {
+    "total": 126,
+    "duplicates": 4,
+    "unique": 122,
+    "repeatedPatterns": 26,
+    "withInlineStyles": 1,
+    "withHardcodedColors": 12
+  },
+  "duplicates": [
+    {
+      "file": "components\\ai-history-modal.ts",
+      "line": 193,
+      "matchingIcon": "circle"
+    },
+    {
+      "file": "components\\debug-dashboard.ts",
+      "line": 31,
+      "matchingIcon": "file"
+    },
+    {
+      "file": "terminal\\components\\ai-footer.ts",
+      "line": 660,
+      "matchingIcon": "circle"
+    },
+    {
+      "file": "terminal\\components\\terminal-chat.ts",
+      "line": 1447,
+      "matchingIcon": "shield"
+    }
+  ],
+  "repeatedPatterns": [
+    {
+      "count": 7,
+      "locations": [
+        {
+          "file": "terminal\\components\\ai-footer.ts",
+          "line": 127
+        },
+        {
+          "file": "terminal\\components\\ai-sidebar.ts",
+          "line": 100
+        },
+        {
+          "file": "terminal\\components\\terminal-chat.ts",
+          "line": 1827
+        },
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 48
+        },
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 131
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 58
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 86
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"16\" height=\"16\"><polyline points=\"4 17 10 11 4 5\"></polyline><line x1=..."
+    },
+    {
+      "count": 5,
+      "locations": [
+        {
+          "file": "components\\ai-history-modal.ts",
+          "line": 37
+        },
+        {
+          "file": "terminal\\components\\ai-sidebar.ts",
+          "line": 140
+        },
+        {
+          "file": "terminal\\components\\terminal-chat.ts",
+          "line": 1603
+        },
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 75
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 111
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"14\" height=\"14\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg>..."
+    },
+    {
+      "count": 5,
+      "locations": [
+        {
+          "file": "components\\ai-history-modal.ts",
+          "line": 40
+        },
+        {
+          "file": "components\\settings-history-modal.ts",
+          "line": 23
+        },
+        {
+          "file": "terminal\\components\\ai-footer.ts",
+          "line": 27
+        },
+        {
+          "file": "terminal\\components\\ai-sidebar.ts",
+          "line": 130
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 98
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"14\" height=\"14\"><polyline points=\"3 6 5 6 21 6\"></polyline><path d=\"M1..."
+    },
+    {
+      "count": 4,
+      "locations": [
+        {
+          "file": "components\\ai-history-modal.ts",
+          "line": 39
+        },
+        {
+          "file": "terminal\\components\\ai-footer.ts",
+          "line": 23
+        },
+        {
+          "file": "terminal\\components\\ai-sidebar.ts",
+          "line": 126
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 94
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"14\" height=\"14\"><path d=\"M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 ..."
+    },
+    {
+      "count": 4,
+      "locations": [
+        {
+          "file": "components\\ai-history-modal.ts",
+          "line": 44
+        },
+        {
+          "file": "terminal\\components\\ai-sidebar.ts",
+          "line": 115
+        },
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 58
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 90
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"14\" height=\"14\"><line x1=\"12\" y1=\"5\" x2=\"12\" y2=\"19\"></line><line x1=\"..."
+    },
+    {
+      "count": 4,
+      "locations": [
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 110
+        },
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 117
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 43
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 48
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\"><rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\" fill=\"#1e1e1e\"/><path d=\"M6 9l4 3-4 3\" fill=\"none\" stroke=\"#4ec724\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"..."
+    },
+    {
+      "count": 3,
+      "locations": [
+        {
+          "file": "components\\draggable-modal.ts",
+          "line": 232
+        },
+        {
+          "file": "terminal\\components\\terminal-chat.ts",
+          "line": 1569
+        },
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 53
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"></line><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"></line></svg>..."
+    },
+    {
+      "count": 3,
+      "locations": [
+        {
+          "file": "components\\taskbar.ts",
+          "line": 49
+        },
+        {
+          "file": "terminal\\components\\ai-footer.ts",
+          "line": 31
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 122
+        }
+      ],
+      "suggestedName": "circle-lg",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><polyline points=\"12 6 12 12 16 14\"><..."
+    },
+    {
+      "count": 3,
+      "locations": [
+        {
+          "file": "terminal\\components\\ai-footer.ts",
+          "line": 20
+        },
+        {
+          "file": "terminal\\components\\ai-sidebar.ts",
+          "line": 123
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 102
+        }
+      ],
+      "suggestedName": "play",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"5 3 19 12 5 21 5 3\"></polygon></svg>..."
+    },
+    {
+      "count": 3,
+      "locations": [
+        {
+          "file": "terminal\\components\\terminal-chat.ts",
+          "line": 670
+        },
+        {
+          "file": "terminal\\components\\terminal-chat.ts",
+          "line": 1052
+        },
+        {
+          "file": "terminal\\components\\terminal-chat.ts",
+          "line": 1536
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#4a9c6d\" stroke-width=\"2\"><polyline points=\"20 6 9 17 4 12\"></polyline></svg>..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "components\\ai-history-modal.ts",
+          "line": 38
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 114
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"14\" height=\"14\"><polyline points=\"18 15 12 9 6 15\"></polyline></svg>..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "components\\ai-metrics-panel.ts",
+          "line": 78
+        },
+        {
+          "file": "terminal\\components\\terminal-chat.ts",
+          "line": 1842
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"14\" height=\"14\"><path d=\"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "components\\header-bar.ts",
+          "line": 49
+        },
+        {
+          "file": "main.ts",
+          "line": 294
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><polyline points=\"4 14 10 14 10 20\"></polyline><polyline points=\"20 10 14 10 14 4\"></polyline><line x1=\"14\" y1=\"10\" x2=\"21\" ..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\ai-footer.ts",
+          "line": 182
+        },
+        {
+          "file": "terminal\\components\\ai-footer.ts",
+          "line": 404
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" width=\"14\" height=\"14\"><path d=\"M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z\"/></svg>..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\ai-sidebar.ts",
+          "line": 119
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 126
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"23 4 23 10 17 10\"></polyline><path d=\"M20.49 15a9 9 0 11-2...."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\ai-sidebar.ts",
+          "line": 134
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 105
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"15 18 9 12 15 6\"></polyline></svg>..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\ai-sidebar.ts",
+          "line": 137
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 108
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"9 18 15 12 9 6\"></polyline></svg>..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\terminal-chat.ts",
+          "line": 266
+        },
+        {
+          "file": "terminal\\components\\terminal-chat.ts",
+          "line": 1835
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M9 11l3 3L22 4\"></path><path d=\"M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11\"><..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\terminal-chat.ts",
+          "line": 664
+        },
+        {
+          "file": "terminal\\components\\terminal-chat.ts",
+          "line": 1046
+        }
+      ],
+      "suggestedName": "circle-lg",
+      "sampleSvg": "<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#f14c4c\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><line x1=\"15\" y1=\"9\" x2=\"9\" y2=\"15\"></line><line x1=\"9\" y1=\"9\" x2=..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 64
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 131
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 17L17 7\"></path><path d=\"M7 7h10v10\"></path></svg>..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 70
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 136
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17 7L7 17\"></path><path d=\"M17 17H7V7\"></path></svg>..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 83
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 24
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\" fill=\"#1e1e1e\"/><text x=\"5\" y=\"15\" font-family=\"Consolas, monospace\" font-size=\"8\" font-weight=\"bold\" fill=..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 89
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 28
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\"><rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\" fill=\"#012456\"/><path d=\"M6 9l4 3-4 3\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 96
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 33
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\"><rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\" fill=\"#1e1e1e\"/><circle cx=\"6\" cy=\"8\" r=\"2\" fill=\"#f34f29\"/><text x=\"10\" y=\"15\" font-family=\"Consolas, monospace\" font-size=\"9\"..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 103
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 38
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\"><rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\" fill=\"#2c001e\"/><circle cx=\"12\" cy=\"11\" r=\"5\" fill=\"#e95420\"/><text x=\"9\" y=\"14\" font-family=\"Ubuntu, sans-serif\" font-size=\"6\"..."
+    },
+    {
+      "count": 2,
+      "locations": [
+        {
+          "file": "terminal\\components\\terminal-header.ts",
+          "line": 124
+        },
+        {
+          "file": "terminal\\components\\terminal-sidebar.ts",
+          "line": 53
+        }
+      ],
+      "suggestedName": "x-circle",
+      "sampleSvg": "<svg viewBox=\"0 0 24 24\"><rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\" fill=\"#1e1e1e\"/><path d=\"M6 12l4-3v6l-4-3zm5 0l4-3v6l-4-3z\" fill=\"#98be65\"/><circle cx=\"18\" cy=\"12\" r=\"1.5\" fill=\"#98be65\"/></s..."
+    }
+  ],
+  "withInlineStyles": [
+    {
+      "file": "terminal\\components\\terminal-chat.ts",
+      "line": 988,
+      "svg": "<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" style=\"animation: spin 1s linear infinite;\"><path d=\"M21 12a9 9 0 11-6.219-8.56\"></path></svg>",
+      "pathData": "M21 12a9 9 0 11-6.219-8.56",
+      "attrs": {
+        "viewBox": "0 0 24 24",
+        "width": "12",
+        "height": "12",
+        "fill": "none",
+        "stroke": "currentColor",
+        "strokeWidth": "2",
+        "inlineStyle": "animation: spin 1s linear infinite;"
+      },
+      "hasInlineStyle": true,
+      "hasHardcodedColor": false
+    }
+  ],
+  "withHardcodedColors": [
+    {
+      "file": "terminal\\components\\ai-provider-dialog.ts",
+      "line": 55,
+      "color": "#1a1a1a"
+    },
+    {
+      "file": "terminal\\components\\terminal-chat.ts",
+      "line": 664,
+      "color": "#f14c4c"
+    },
+    {
+      "file": "terminal\\components\\terminal-chat.ts",
+      "line": 670,
+      "color": "#4a9c6d"
+    },
+    {
+      "file": "terminal\\components\\terminal-chat.ts",
+      "line": 1046,
+      "color": "#f14c4c"
+    },
+    {
+      "file": "terminal\\components\\terminal-chat.ts",
+      "line": 1052,
+      "color": "#4a9c6d"
+    },
+    {
+      "file": "terminal\\components\\terminal-chat.ts",
+      "line": 1447,
+      "color": "#c9a227"
+    },
+    {
+      "file": "terminal\\components\\terminal-header.ts",
+      "line": 89,
+      "color": "#ffffff"
+    },
+    {
+      "file": "terminal\\components\\terminal-header.ts",
+      "line": 110,
+      "color": "#4ec724"
+    },
+    {
+      "file": "terminal\\components\\terminal-header.ts",
+      "line": 117,
+      "color": "#68c756"
+    },
+    {
+      "file": "terminal\\components\\terminal-sidebar.ts",
+      "line": 28,
+      "color": "#ffffff"
+    },
+    {
+      "file": "terminal\\components\\terminal-sidebar.ts",
+      "line": 43,
+      "color": "#4ec724"
+    },
+    {
+      "file": "terminal\\components\\terminal-sidebar.ts",
+      "line": 48,
+      "color": "#68c756"
+    }
+  ]
+}

@@ -1,0 +1,5019 @@
+{
+  "timestamp": "2026-01-09T18:17:52.940Z",
+  "summary": {
+    "totalFiles": 337,
+    "filesWithViolations": 217,
+    "errors": 197,
+    "warnings": 20
+  },
+  "violations": [
+    {
+      "file": "src\\main\\ai-providers\\ai-analytics-db.ts",
+      "tier": 3,
+      "folder": "ai-providers",
+      "exports": [
+        "const aiAnalyticsDb",
+        "interface AISession",
+        "interface AIMessage",
+        "interface AIToolCall",
+        "interface AIModelUsage",
+        "interface AIDailyStats"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'ai-providers-'",
+          "expected": "ai-providers-<identifier>.ts",
+          "actual": "ai-analytics-db.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ai-providers\\ai-provider-registry.ts",
+      "tier": 3,
+      "folder": "ai-providers",
+      "exports": [
+        "const aiProviderRegistry"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'ai-providers-'",
+          "expected": "ai-providers-<identifier>.ts",
+          "actual": "ai-provider-registry.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ai-providers\\analytics-ipc-handlers.ts",
+      "tier": 3,
+      "folder": "ai-providers",
+      "exports": [
+        "function registerAIAnalyticsHandlers"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'ai-providers-'",
+          "expected": "ai-providers-<identifier>.ts",
+          "actual": "analytics-ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "AnalyticsIpcHandlers",
+          "actual": "registerAIAnalyticsHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ai-providers\\ipc-handlers.ts",
+      "tier": 3,
+      "folder": "ai-providers",
+      "exports": [
+        "function restoreAISessionBindings",
+        "function restoreAllAISessionBindings",
+        "function clearAISessionBindings",
+        "function bindAISession",
+        "function getAISessionInfo",
+        "function registerAIProviderHandlers",
+        "function getSessionState",
+        "function cleanupAIProcesses"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'ai-providers-'",
+          "expected": "ai-providers-<identifier>.ts",
+          "actual": "ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlers",
+          "actual": "restoreAISessionBindings"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ai-providers\\stream-parser.ts",
+      "tier": 3,
+      "folder": "ai-providers",
+      "exports": [
+        "class AIStreamParser",
+        "function extractTextContent",
+        "function extractToolUses",
+        "function extractToolResults",
+        "function extractGeminiContent",
+        "function extractGeminiStats",
+        "function extractOllamaContent",
+        "function extractOllamaStats",
+        "function extractLMStudioContent",
+        "function extractLMStudioStats",
+        "function extractDisplayContent",
+        "function extractUnifiedAnalytics",
+        "interface ClaudeSystemEvent",
+        "interface ClaudeMessageUsage",
+        "interface ClaudeToolUseContent",
+        "interface ClaudeToolResultContent",
+        "interface ClaudeTextContent",
+        "interface ClaudeAssistantEvent",
+        "interface ClaudeUserEvent",
+        "interface ClaudeModelUsage",
+        "interface ClaudePermissionDenial",
+        "interface ClaudeResultEvent",
+        "interface ClaudeControlRequestEvent",
+        "interface GeminiStats",
+        "interface GeminiStreamEvent",
+        "interface OllamaStreamEvent",
+        "interface LMStudioUsage",
+        "interface LMStudioStats",
+        "interface LMStudioStreamEvent",
+        "interface ParsedEvent",
+        "interface OllamaStats",
+        "interface UnifiedAnalytics",
+        "type ClaudeContent",
+        "type ClaudeStreamEvent"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'ai-providers-'",
+          "expected": "ai-providers-<identifier>.ts",
+          "actual": "stream-parser.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "StreamParser",
+          "actual": "AIStreamParser"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\claude\\claude-template-engine.ts",
+      "tier": 3,
+      "folder": "claude",
+      "exports": [
+        "function validateValues",
+        "function generateSettingsJson",
+        "function generateAgentMd",
+        "function generateCommandMd",
+        "function generateRuleMd",
+        "function generateMcpJson",
+        "function applyPermissionPreset",
+        "function getAgentPreset",
+        "function getCommandPreset",
+        "function getSchema",
+        "function getDefaultValues",
+        "interface ValidationError",
+        "interface ValidationResult"
+      ],
+      "violations": [
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ClaudeTemplateEngine",
+          "actual": "validateValues"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\claude\\ipc-handler-helpers.ts",
+      "tier": 3,
+      "folder": "claude",
+      "exports": [
+        "function registerDbQueryHandler",
+        "function registerDbQueryHandlerWithParam",
+        "function registerDbQueryHandlerWithParams",
+        "function registerDbInfoHandler",
+        "function registerDbQueryHandlers"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'claude-'",
+          "expected": "claude-<identifier>.ts",
+          "actual": "ipc-handler-helpers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlerHelpers",
+          "actual": "registerDbQueryHandler"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\claude\\ipc-handlers.ts",
+      "tier": 3,
+      "folder": "claude",
+      "exports": [
+        "function registerClaudeIpcHandlers",
+        "function cleanupClaudeHandlers",
+        "const CLAUDE_IPC"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'claude-'",
+          "expected": "claude-<identifier>.ts",
+          "actual": "ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlers",
+          "actual": "registerClaudeIpcHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\claude\\runtime-handlers.ts",
+      "tier": 3,
+      "folder": "claude",
+      "exports": [
+        "function registerRuntimeHandlers",
+        "const RUNTIME_IPC",
+        "interface RuntimeSession",
+        "interface ShellSnapshot",
+        "interface RuntimeConfig"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'claude-'",
+          "expected": "claude-<identifier>.ts",
+          "actual": "runtime-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "RuntimeHandlers",
+          "actual": "registerRuntimeHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\cli-bridge\\cli-bridge.ts",
+      "tier": 3,
+      "folder": "cli-bridge",
+      "exports": [
+        "class CliBridge",
+        "function initializeCliBridge"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'cli-bridge-'",
+          "expected": "cli-bridge-<identifier>.ts",
+          "actual": "cli-bridge.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\cli-bridge\\json-rpc-server.ts",
+      "tier": 3,
+      "folder": "cli-bridge",
+      "exports": [
+        "class JsonRpcServer",
+        "const RPC_ERROR_CODES",
+        "interface JsonRpcRequest",
+        "interface JsonRpcResponse",
+        "interface JsonRpcError",
+        "interface RpcMethodMetadata",
+        "type RpcMethod"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'cli-bridge-'",
+          "expected": "cli-bridge-<identifier>.ts",
+          "actual": "json-rpc-server.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\database.ts",
+      "tier": 3,
+      "folder": "database",
+      "exports": [
+        "const database",
+        "interface RunResult"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'database-'",
+          "expected": "database-<identifier>.ts",
+          "actual": "database.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\ipc-handlers.ts",
+      "tier": 3,
+      "folder": "database",
+      "exports": [
+        "function initializeDatabase",
+        "function registerDatabaseHandlers",
+        "function closeDatabase"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'database-'",
+          "expected": "database-<identifier>.ts",
+          "actual": "ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlers",
+          "actual": "initializeDatabase"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migration-runner.ts",
+      "tier": 3,
+      "folder": "database",
+      "exports": [
+        "class MigrationRunner",
+        "interface Migration",
+        "interface MigrationStatus"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'database-'",
+          "expected": "database-<identifier>.ts",
+          "actual": "migration-runner.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\001_initial.ts",
+      "tier": 3,
+      "folder": "database",
+      "exports": [
+        "const migration"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'database-'",
+          "expected": "database-<identifier>.ts",
+          "actual": "001_initial.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\002_settings.ts",
+      "tier": 3,
+      "folder": "database",
+      "exports": [
+        "const migration"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'database-'",
+          "expected": "database-<identifier>.ts",
+          "actual": "002_settings.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\003_environment.ts",
+      "tier": 3,
+      "folder": "database",
+      "exports": [
+        "const migration"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'database-'",
+          "expected": "database-<identifier>.ts",
+          "actual": "003_environment.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\004_project_environment.ts",
+      "tier": 3,
+      "folder": "database",
+      "exports": [
+        "const migration"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'database-'",
+          "expected": "database-<identifier>.ts",
+          "actual": "004_project_environment.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\006_settings_history.ts",
+      "tier": 3,
+      "folder": "database",
+      "exports": [
+        "const migration"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'database-'",
+          "expected": "database-<identifier>.ts",
+          "actual": "006_settings_history.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\debug\\debug-db.ts",
+      "tier": 3,
+      "folder": "debug",
+      "exports": [
+        "function initializeDebugDb",
+        "function closeDebugDb",
+        "function getDebugDb",
+        "function insertDebugEntry",
+        "function insertDebugEntriesBulk",
+        "function queryDebugEntries",
+        "function getViolationCount",
+        "function insertBuildEvent",
+        "function queryBuildEvents",
+        "function pruneOldEntries",
+        "function clearAllEntries",
+        "interface DbDebugEntry",
+        "interface DbBuildEvent"
+      ],
+      "violations": [
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "DebugDb",
+          "actual": "initializeDebugDb"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\debug\\debug-handler.ts",
+      "tier": 3,
+      "folder": "debug",
+      "exports": [
+        "function registerDebugHandlers",
+        "function unregisterDebugHandlers",
+        "const DEBUG_CHANNELS"
+      ],
+      "violations": [
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "DebugHandler",
+          "actual": "registerDebugHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\debug\\debug-rest-api.ts",
+      "tier": 3,
+      "folder": "debug",
+      "exports": [
+        "function startDebugRestApi",
+        "function stopDebugRestApi",
+        "function getDebugApiPort"
+      ],
+      "violations": [
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "DebugRestApi",
+          "actual": "startDebugRestApi"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\debug\\migrations\\001-debug-schema.ts",
+      "tier": 3,
+      "folder": "debug",
+      "exports": [
+        "function migrateDebugSchema",
+        "const MIGRATION_VERSION"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'debug-'",
+          "expected": "debug-<identifier>.ts",
+          "actual": "001-debug-schema.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "001DebugSchema",
+          "actual": "migrateDebugSchema"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\environment\\ipc-handlers.ts",
+      "tier": 3,
+      "folder": "environment",
+      "exports": [
+        "function registerEnvironmentHandlers"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'environment-'",
+          "expected": "environment-<identifier>.ts",
+          "actual": "ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlers",
+          "actual": "registerEnvironmentHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\hardware\\hardware-db.ts",
+      "tier": 3,
+      "folder": "hardware",
+      "exports": [
+        "function initializeHardwareDb",
+        "function closeHardwareDb",
+        "function saveHardwareInfo",
+        "function loadHardwareInfo",
+        "function saveHardwareMetrics",
+        "function loadHardwareMetrics"
+      ],
+      "violations": [
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "HardwareDb",
+          "actual": "initializeHardwareDb"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\hardware\\ipc-handlers.ts",
+      "tier": 3,
+      "folder": "hardware",
+      "exports": [
+        "function registerHardwareHandlers",
+        "function cleanupHardwareHandlers"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'hardware-'",
+          "expected": "hardware-<identifier>.ts",
+          "actual": "ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlers",
+          "actual": "registerHardwareHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\main.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\preload.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\project\\ipc-handlers.ts",
+      "tier": 3,
+      "folder": "project",
+      "exports": [
+        "function registerProjectHandlers"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'project-'",
+          "expected": "project-<identifier>.ts",
+          "actual": "ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlers",
+          "actual": "registerProjectHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\settings\\environment-store.ts",
+      "tier": 3,
+      "folder": "settings",
+      "exports": [
+        "const environmentStore"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'settings-'",
+          "expected": "settings-<identifier>.ts",
+          "actual": "environment-store.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\settings\\gpu-settings.ts",
+      "tier": 3,
+      "folder": "settings",
+      "exports": [
+        "function readGpuSettingsSync",
+        "function getVsync",
+        "interface GpuStartupSettings"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'settings-'",
+          "expected": "settings-<identifier>.ts",
+          "actual": "gpu-settings.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "GpuSettings",
+          "actual": "readGpuSettingsSync"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\settings\\ipc-handlers.ts",
+      "tier": 3,
+      "folder": "settings",
+      "exports": [
+        "function registerSettingsHandlers",
+        "function initializeSettings"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'settings-'",
+          "expected": "settings-<identifier>.ts",
+          "actual": "ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlers",
+          "actual": "registerSettingsHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\settings\\project-store.ts",
+      "tier": 3,
+      "folder": "settings",
+      "exports": [
+        "const projectStore"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'settings-'",
+          "expected": "settings-<identifier>.ts",
+          "actual": "project-store.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\factories\\container-factory.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function createContainerInstance",
+        "function createContainerInstance",
+        "function createContainerInstance"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "container-factory.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ContainerFactory",
+          "actual": "createContainerInstance"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\helpers\\process-cleanup-helper.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function cleanupProcessHandlers",
+        "function clearProcessHandlers"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "process-cleanup-helper.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ProcessCleanupHelper",
+          "actual": "cleanupProcessHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\helpers\\tab-registration-helper.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function registerTerminalTabWithHandlers"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "tab-registration-helper.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "TabRegistrationHelper",
+          "actual": "registerTerminalTabWithHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\helpers\\window-bounds-helper.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function setupBoundsSaving"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "window-bounds-helper.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "WindowBoundsHelper",
+          "actual": "setupBoundsSaving"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\helpers\\window-creation-helper.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function createTerminalWindowContainer"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "window-creation-helper.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "WindowCreationHelper",
+          "actual": "createTerminalWindowContainer"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\helpers\\window-finder-helper.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function findMainWindow"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "window-finder-helper.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "WindowFinderHelper",
+          "actual": "findMainWindow"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\ipc-handlers.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function registerTerminalHandlers"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlers",
+          "actual": "registerTerminalHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\preload.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "preload.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\ansi-parser.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "class AnsiParser",
+        "function stripAnsi",
+        "function containsCursorHide",
+        "function containsCursorShow",
+        "function containsLineClear",
+        "function endsWithPartialLine",
+        "function extractLines"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "ansi-parser.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\ipc-handlers.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function getOrCreateAnalyzer",
+        "function registerSession",
+        "function unregisterSession",
+        "function getCurrentPrompt",
+        "function clearPrompt",
+        "function analyzePtyOutput",
+        "function handleUserInput",
+        "function getKeypressForOption",
+        "function registerPtyAnalyzerHandlers",
+        "function cleanupAnalyzers",
+        "interface AnalyzePtyResult"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlers",
+          "actual": "getOrCreateAnalyzer"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\keypress-generator.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function generateKeypress",
+        "function bytesToString",
+        "function generateEnter",
+        "function generateRaw",
+        "function generateArrowUp",
+        "function generateArrowDown",
+        "function generateInterrupt",
+        "function generateEOF"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "keypress-generator.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "KeypressGenerator",
+          "actual": "generateKeypress"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\patterns\\arrow-menu.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function detectArrowMenu",
+        "function parseMenuRedraw"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "arrow-menu.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ArrowMenu",
+          "actual": "detectArrowMenu"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\patterns\\autocomplete.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function detectAutocomplete",
+        "function detectShellCompletion",
+        "function isFuzzyFinderOutput"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "autocomplete.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Autocomplete",
+          "actual": "detectAutocomplete"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\patterns\\checkbox.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function detectCheckboxMenu",
+        "function toggleCheckboxOption"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "checkbox.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Checkbox",
+          "actual": "detectCheckboxMenu"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\patterns\\confirm.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function detectConfirmPrompt"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "confirm.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Confirm",
+          "actual": "detectConfirmPrompt"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\patterns\\git-interactive.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function detectGitInteractive",
+        "function isGitInteractiveMode"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "git-interactive.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "GitInteractive",
+          "actual": "detectGitInteractive"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\patterns\\numbered.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function detectNumberedOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "numbered.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Numbered",
+          "actual": "detectNumberedOptions"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\patterns\\package-manager.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function detectPackageManagerPrompt",
+        "function isPackageManagerOutput"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "package-manager.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "PackageManager",
+          "actual": "detectPackageManagerPrompt"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\patterns\\pagination.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function detectPaginationPrompt",
+        "function isPagerOutput"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "pagination.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Pagination",
+          "actual": "detectPaginationPrompt"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\patterns\\password.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function detectPasswordPrompt",
+        "function isHiddenInputPrompt"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "password.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Password",
+          "actual": "detectPasswordPrompt"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\pty-analyzer\\stream-analyzer.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "class StreamAnalyzer",
+        "function createStreamAnalyzer"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "stream-analyzer.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\shell-registry\\ipc-handlers.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function registerShellRegistryHandlers"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlers",
+          "actual": "registerShellRegistryHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\shell-registry\\shell-registry.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "const shellRegistry"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "shell-registry.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\terminal-history\\ipc-handlers.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function registerTerminalHistoryHandlers"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlers",
+          "actual": "registerTerminalHistoryHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\terminal-history\\session-broadcaster.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function setHasRunningProcessChecker",
+        "function broadcastSessionProcessState"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "session-broadcaster.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "SessionBroadcaster",
+          "actual": "setHasRunningProcessChecker"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\terminal-transfer.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "function sendToExternal",
+        "function sendToInternal"
+      ],
+      "violations": [
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "TerminalTransfer",
+          "actual": "sendToExternal"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\terminal-window.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "class TerminalWindowManager",
+        "const terminalManager"
+      ],
+      "violations": [
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "TerminalWindow",
+          "actual": "TerminalWindowManager"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal-paths\\ipc-handlers.ts",
+      "tier": 3,
+      "folder": "terminal-paths",
+      "exports": [
+        "function registerTerminalPathsHandlers"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-paths-'",
+          "expected": "terminal-paths-<identifier>.ts",
+          "actual": "ipc-handlers.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "IpcHandlers",
+          "actual": "registerTerminalPathsHandlers"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ui-store\\bootstrap.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [
+        "function bootstrapUIDefaults",
+        "function getUIDefaults",
+        "function invalidateBootstrap"
+      ],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ui-store\\css-token-parser.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [
+        "function discoverCSSTokens",
+        "function discoverTokensByCategory",
+        "function hasTokensDirectory"
+      ],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ui-store\\ipc-handlers.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [
+        "function registerUIStoreHandlers"
+      ],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\ui-store\\ui-db.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [
+        "function initializeUIDb",
+        "function getUIDb",
+        "function closeUIDb",
+        "function registerDefault",
+        "function resolve",
+        "function resolveMany",
+        "function resolveByCategory",
+        "function getDefault",
+        "function getDefaultsByCategory",
+        "function hasOverride",
+        "function setOverride",
+        "function removeOverride",
+        "function getLayout",
+        "function setLayout",
+        "function saveLayoutPreset",
+        "function loadLayoutPreset",
+        "function registerEntity",
+        "function getEntity",
+        "function getEntitiesByType",
+        "function getChildren",
+        "function destroyEntity",
+        "function recordStateChange",
+        "function getStateHistory",
+        "function detectLeaks",
+        "function createTheme",
+        "function activateTheme",
+        "function deactivateTheme",
+        "function listThemes",
+        "function undo",
+        "function redo",
+        "function undoKey",
+        "function getTokenHistory",
+        "function getModifiedTokens",
+        "function getAllUserOverrides",
+        "function getHistory",
+        "function createSnapshot",
+        "function restoreSnapshot",
+        "function listSnapshots",
+        "function deleteSnapshot",
+        "interface UIDefault",
+        "interface ModHistoryEntry",
+        "interface UIOverride",
+        "interface UITheme",
+        "interface LayoutState",
+        "interface LayoutPreset",
+        "interface Entity",
+        "interface EntityStateHistory",
+        "interface EntityOwnershipLog",
+        "interface EntityPerformanceLog",
+        "interface UIHistoryEntry",
+        "interface AppStateSnapshot"
+      ],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\base\\base-computation-mixin.ts",
+      "tier": 1,
+      "folder": "base",
+      "exports": [
+        "class PureComputation",
+        "function BaseComputationMixin",
+        "interface ComputationMetrics",
+        "interface ValidationResult"
+      ],
+      "violations": [
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "BaseComputationMixin",
+          "actual": "PureComputation"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\base\\base-dom-validator.ts",
+      "tier": 1,
+      "folder": "base",
+      "exports": [
+        "class BaseDOMFactoryValidator",
+        "interface DOMFactoryDetectorOptions"
+      ],
+      "violations": [
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "BaseDomValidator",
+          "actual": "BaseDOMFactoryValidator"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\base\\base-vite-validator-plugin.ts",
+      "tier": 1,
+      "folder": "base",
+      "exports": [
+        "function createValidatorPlugin",
+        "interface ValidatorInterface",
+        "interface ValidatorPluginOptions",
+        "interface ValidatorPluginConfig"
+      ],
+      "violations": [
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "BaseViteValidatorPlugin",
+          "actual": "createValidatorPlugin"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\ai-history-modal.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class AIHistoryModal",
+        "type AIHistoryMode"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "ai-history-modal.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "AiHistoryModal",
+          "actual": "AIHistoryModal"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\ai-metrics-panel.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class AIMetricsPanel",
+        "function createAIMetricsPanel"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "ai-metrics-panel.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "AiMetricsPanel",
+          "actual": "AIMetricsPanel"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\app-title.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class AppTitle"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "app-title.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\background\\geometric-background.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class GeometricBackground"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "geometric-background.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-form-builder.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class ClaudeFormBuilder",
+        "interface FormValues",
+        "interface ValidationError",
+        "interface Preset"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "claude-form-builder.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\claude-hub-constants.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "const CONFIG_TABS",
+        "const RUNTIME_TABS",
+        "const ALL_TABS"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "claude-hub-constants.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\claude-hub-handlers.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "function handleEditPermissions",
+        "function handleEditBehavior",
+        "function handleApplyPreset",
+        "function handleCreatePlan",
+        "interface HubHandlerContext"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "claude-hub-handlers.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\claude-hub-loader.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "function createEmptyData"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "claude-hub-loader.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\claude-hub-renderer.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "function renderTab"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "claude-hub-renderer.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\claude-hub.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class ClaudeHub"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "claude-hub.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\services\\claude-hub-api.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "const claudeHubApi"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "claude-hub-api.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\shared\\hub-list-view.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class HubListView",
+        "interface ListItem",
+        "interface HubListViewProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "hub-list-view.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\shared\\hub-section.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class HubSection",
+        "interface HubSectionProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "hub-section.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\shared\\hub-tab-bar.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class HubTabBar",
+        "interface HubTabBarProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "hub-tab-bar.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\agents-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class AgentsTab",
+        "interface AgentsTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "agents-tab.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\commands-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class CommandsTab",
+        "interface CommandsTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "commands-tab.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\global-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class GlobalTab",
+        "interface GlobalTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "global-tab.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\hooks-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class HooksTab",
+        "interface HooksTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "hooks-tab.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\local-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class LocalTab",
+        "interface LocalTabData",
+        "interface LocalTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "local-tab.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\mcp-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class McpTab",
+        "interface McpTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "mcp-tab.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\plans-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class PlansTab",
+        "interface Plan",
+        "interface PlansTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "plans-tab.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\projects-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class ProjectsTab",
+        "interface ProjectsTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "projects-tab.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\config\\skills-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class SkillsTab",
+        "interface Skill",
+        "interface SkillsTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "skills-tab.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\debug-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class DebugTab"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "debug-tab.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\file-history-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class FileHistoryTab",
+        "interface FileHistoryTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "file-history-tab.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\runtime-config-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class RuntimeConfigTab",
+        "interface RuntimeConfigTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "runtime-config-tab.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\sessions-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class SessionsTab"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "sessions-tab.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\shell-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class ShellTab",
+        "interface ShellTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "shell-tab.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\stats-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class StatsTab",
+        "interface StatsTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "stats-tab.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-hub\\tabs\\runtime\\todos-tab.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class TodosTab",
+        "interface TodosTabProps"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "todos-tab.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\claude-settings-dialog.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "function getModelOptions",
+        "function getPermissionModeOptions",
+        "function getScopeOptions",
+        "function getHookEventOptions",
+        "function getMcpServerTypeOptions",
+        "function getScopeSection",
+        "function showClaudeSettingsDialog",
+        "function showAgentDialog",
+        "function showCommandDialog",
+        "function showSkillDialog",
+        "function showHookDialog",
+        "function showMcpServerDialog",
+        "interface ClaudeDialogSection",
+        "interface ClaudeDialogField",
+        "interface ClaudeDialogOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "claude-settings-dialog.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\context-menu.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class ContextMenu",
+        "interface ContextMenuItem",
+        "interface ContextMenuDivider",
+        "interface ContextMenuOptions",
+        "type ContextMenuEntry"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "context-menu.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\debug-dashboard.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class DebugDashboard"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "debug-dashboard.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\debug-panel.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class DebugPanel",
+        "function createDebugPanel"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "debug-panel.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\env-export-wizard.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class EnvExportWizard",
+        "function showEnvExportWizard"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "env-export-wizard.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\env-import-wizard.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class EnvImportWizard",
+        "function showEnvImportWizard"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "env-import-wizard.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\environment-modal.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class EnvironmentModal"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "environment-modal.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\form-controls.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "const FormControls",
+        "interface NumberInputOptions",
+        "interface CheckboxOptions",
+        "interface RadioOptions",
+        "interface SelectOptions",
+        "interface ToggleOptions",
+        "interface TextInputOptions",
+        "interface TextareaOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "form-controls.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\hardware-panel.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class HardwarePanel",
+        "function createHardwarePanel"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "hardware-panel.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\header-bar.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class HeaderBar",
+        "function createHeaderBar"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "header-bar.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\home-panel.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class HomePanel",
+        "function createHomePanel"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "home-panel.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\icons.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "function getIconSvg",
+        "function getShellIcon",
+        "function getCategoryIcon",
+        "function getSectionIcon",
+        "type IconName"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "icons.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\Logo.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class Logo",
+        "const LOGO_ASPECT_RATIO"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "Logo.ts"
+        },
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseComponent or CoreComponent",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\modal.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "function confirm",
+        "function alert",
+        "interface SelectOption",
+        "interface FormField",
+        "interface ModalButton",
+        "interface FormModalOptions",
+        "interface ConfirmModalOptions",
+        "interface ContentModalOptions",
+        "interface CustomConfirmOptions",
+        "type ModalSize",
+        "type InputType",
+        "type ModalOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "modal.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\popover.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class Popover",
+        "function createPopover",
+        "interface PopoverOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "popover.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\settings-history-modal.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "settings-history-modal.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\settings-panel.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class SettingsPanel",
+        "function createSettingsPanel"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "settings-panel.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\taskbar.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class Taskbar",
+        "function createTaskbar"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "taskbar.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\Toast.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "const toast"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "Toast.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\tool-permission-editor.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class ToolPermissionEditor",
+        "class DirectoryEditor",
+        "function parseToolPermission",
+        "function formatToolPermission",
+        "const CLAUDE_TOOLS",
+        "interface ToolPermissionRow",
+        "interface ToolPermissionEditorOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "tool-permission-editor.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\ui-customization-panel.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class UICustomizationPanel"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "ui-customization-panel.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "UiCustomizationPanel",
+          "actual": "UICustomizationPanel"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\components\\window.ts",
+      "tier": 2,
+      "folder": "components",
+      "exports": [
+        "class Window"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-component.ts' suffix",
+          "expected": "<domain>-component.ts",
+          "actual": "window.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\compression\\state-compressor.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class TerminalCompressionStrategy",
+        "class StateCompressor",
+        "function createTerminalCompressor",
+        "function createStateCompressor",
+        "interface CompressibleState",
+        "interface CompressedStateMetadata",
+        "interface StateCompressorConfig",
+        "interface CompressionStrategy",
+        "interface TerminalFullState",
+        "interface TerminalCompressedState"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "state-compressor.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "StateCompressor",
+          "actual": "TerminalCompressionStrategy"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\core\\core-attention-graph.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class AttentionGraph",
+        "function createAttentionGraph",
+        "interface AttentionGraphState",
+        "interface AttentionGraphMetrics",
+        "interface AttentionNodeWithMeta"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "core-attention-graph.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "CoreAttentionGraph",
+          "actual": "AttentionGraph"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\core\\core-attention-source.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class AttentionSourceTracker",
+        "class AttentionSourceManager",
+        "function createAttentionSourceManager",
+        "interface AttentionSourceWeights",
+        "interface AttentionSource",
+        "interface AttentionSourceConfig",
+        "interface SourceTrackerMetrics",
+        "type AttentionSourceType"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "core-attention-source.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "CoreAttentionSource",
+          "actual": "AttentionSourceTracker"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\core\\core-frame-scheduler.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class FrameScheduler",
+        "interface FrameSchedulerConfig"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "core-frame-scheduler.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "CoreFrameScheduler",
+          "actual": "FrameScheduler"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\core\\core-intent-queue.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class IntentQueue",
+        "interface IntentQueueConfig"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "core-intent-queue.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "CoreIntentQueue",
+          "actual": "IntentQueue"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\core\\core-registry.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class RegistryError",
+        "class Registry",
+        "type RegistryErrorCode"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "core-registry.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "CoreRegistry",
+          "actual": "RegistryError"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\core\\core-work-queue.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class WorkQueue",
+        "function createWorkQueue",
+        "interface WorkQueueConfig",
+        "interface WorkQueueMetrics",
+        "interface WorkQueueStats"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "core-work-queue.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "CoreWorkQueue",
+          "actual": "WorkQueue"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\culling\\content-optimizer.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class ContentOptimizer",
+        "function createContentOptimizer",
+        "const DEFAULT_CONTENT_CONFIG",
+        "interface TruncatedTextState",
+        "interface CollapsedContentState",
+        "interface ContentOptimizerConfig",
+        "interface ContentOptimizerMetrics"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "content-optimizer.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\culling\\cullable-scroll-container.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class CullableScrollContainer",
+        "function createCullableScrollContainer",
+        "const DEFAULT_CULLABLE_CONFIG",
+        "interface CullableItem",
+        "interface CullableScrollContainerConfig",
+        "interface CullableScrollContainerMetrics",
+        "type ItemRenderFn"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "cullable-scroll-container.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\culling\\culling-pool.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class CullingPool",
+        "function createCullingPool",
+        "const DEFAULT_CULLING_POOL_CONFIG",
+        "interface CullingPoolState",
+        "interface CullingPoolMetrics",
+        "interface CullingPoolConfig"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "culling-pool.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\culling\\partial-visibility-renderer.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class PartialVisibilityRenderer",
+        "function createPartialVisibilityRenderer",
+        "const DEFAULT_PARTIAL_CONFIG",
+        "interface ClipBounds",
+        "interface PartialVisibilityState",
+        "interface PartialVisibilityConfig",
+        "interface PartialVisibilityMetrics"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "partial-visibility-renderer.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\culling\\predictive-buffer.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class PredictiveBuffer",
+        "function createPredictiveBuffer",
+        "const DEFAULT_PREDICTIVE_CONFIG",
+        "interface PredictionState",
+        "interface AdaptiveBuffer",
+        "interface PredictiveBufferConfig"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "predictive-buffer.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\debug\\debug-hub.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class DebugHub",
+        "function getDebugHub"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "debug-hub.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\debug\\debug-vite-bridge.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "function getQueuedBuildEvents",
+        "function getQueuedDebugEntries",
+        "function clearEventQueues",
+        "function viteDebugPlugin",
+        "function aggregateBuildEvents",
+        "interface ViteDebugOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "debug-vite-bridge.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "DebugViteBridge",
+          "actual": "getQueuedBuildEvents"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\debug\\formatters\\pag-formatter.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class PAGFormatter",
+        "function getPAGFormatter"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "pag-formatter.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "PagFormatter",
+          "actual": "PAGFormatter"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\debug\\health-computation.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "function computeComponentHealth",
+        "function computeComponentHealthWithRules",
+        "function isValidHealthTransition"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "health-computation.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "HealthComputation",
+          "actual": "computeComponentHealth"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\debug\\query\\log-query-engine.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class LogQueryEngine",
+        "function getLogQueryEngine"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "log-query-engine.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\debug\\retention\\retention-policy-engine.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class RetentionPolicyEngine",
+        "function getRetentionPolicyEngine"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "retention-policy-engine.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\debug\\sinks\\console-sink.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class ConsoleSink",
+        "function getConsoleSink"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "console-sink.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\debug\\sinks\\database-sink.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class DatabaseSink",
+        "function getDatabaseSink"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "database-sink.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\debug\\sinks\\webhook-sink.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class WebhookSink",
+        "function getWebhookSink"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "webhook-sink.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\pools\\element-pool.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class ElementPoolManager",
+        "function createPooledElement",
+        "function releaseElements",
+        "interface ElementPoolConfig",
+        "interface ElementLifecycle",
+        "type PoolableElementType"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "element-pool.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ElementPool",
+          "actual": "ElementPoolManager"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\pools\\window-state-pool.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class WindowStatePool",
+        "function createWindowStatePool",
+        "interface CacheableComponent",
+        "interface WindowState",
+        "interface WindowStatePoolMetrics",
+        "interface WindowStatePoolHealth",
+        "interface WindowStatePoolConfig"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "window-state-pool.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\auto-action-logger.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class AutoActionLogger",
+        "interface AutoActionRecord",
+        "interface AutoActionTransaction",
+        "interface AutoActionsLog"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "auto-action-logger.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\css-import-validator.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class CSSImportValidator",
+        "function validateCSSImports",
+        "function getCSSImportViolationCount",
+        "function getCSSImportViolations",
+        "const cssImportValidator",
+        "interface CSSImportViolation",
+        "interface CSSImportValidatorConfig"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "css-import-validator.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "CssImportValidator",
+          "actual": "CSSImportValidator"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\css-token-validator.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class CSSTokenValidator",
+        "function validateCSSTokens",
+        "function getCSSTokenViolations",
+        "const cssTokenValidator",
+        "interface CSSTokenViolation",
+        "interface CSSTokenValidatorConfig"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "css-token-validator.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "CssTokenValidator",
+          "actual": "CSSTokenValidator"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-api-compliance-validator.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class DOMComplianceValidator",
+        "function validateDOMCompliance",
+        "function getDOMComplianceViolations",
+        "function clearDOMComplianceViolations",
+        "const domComplianceValidator",
+        "interface DOMComplianceViolation",
+        "interface DOMComplianceValidatorConfig",
+        "type ViolationType",
+        "type ViolationSeverity"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "dom-api-compliance-validator.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "DomApiComplianceValidator",
+          "actual": "DOMComplianceValidator"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-bypass-validator.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class DOMBypassValidator",
+        "function validateDOMBypasses",
+        "function getDOMBypassViolations",
+        "const domBypassValidator",
+        "interface DOMBypassViolation",
+        "interface DOMBypassValidatorConfig",
+        "type DOMBypassType"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "dom-bypass-validator.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "DomBypassValidator",
+          "actual": "DOMBypassValidator"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\aria-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class AriaBypassDetector",
+        "function detectAriaBypasses",
+        "const ariaBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "aria-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class BypassDetector",
+        "function detectBypasses",
+        "const bypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\centralization-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class CentralizationBypassDetector",
+        "function detectCentralizationBypasses",
+        "const centralizationBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "centralization-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\class-switch-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class ClassSwitchBypassDetector",
+        "function detectClassSwitchBypasses",
+        "const classSwitchBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "class-switch-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\culling-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class CullingDetector",
+        "function detectCullingIssues",
+        "const cullingDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "culling-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\data-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class DataBypassDetector",
+        "function detectDataBypasses",
+        "const dataBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "data-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\dom-query-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class DOMQueryBypassDetector",
+        "function detectDOMQueryBypasses",
+        "const domQueryBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "dom-query-bypass-detector.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "DomQueryBypassDetector",
+          "actual": "DOMQueryBypassDetector"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\drag-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class DragBypassDetector",
+        "function detectDragBypasses",
+        "const dragBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "drag-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\event-modifier-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class EventModifierBypassDetector",
+        "function detectEventModifierBypasses",
+        "const eventModifierBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "event-modifier-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\form-controls-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class FormControlsBypassDetector",
+        "function detectFormControlsBypasses",
+        "const formControlsBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "form-controls-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\intent-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class IntentBypassDetector",
+        "function detectIntentBypasses",
+        "const intentBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "intent-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\keyboard-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class KeyboardBypassDetector",
+        "function detectKeyboardBypasses",
+        "const keyboardBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "keyboard-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\layout-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class LayoutBypassDetector",
+        "function detectLayoutBypasses",
+        "const layoutBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "layout-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\lifecycle-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class LifecycleDetector",
+        "function detectLifecycleIssues",
+        "const lifecycleDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "lifecycle-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\observer-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class ObserverBypassDetector",
+        "function detectObserverBypasses",
+        "const observerBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "observer-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\properties-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class PropertiesBypassDetector",
+        "function detectPropertiesBypasses",
+        "const propertiesBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "properties-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\reserved-key-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class ReservedKeyDetector",
+        "function detectReservedKeyBypasses",
+        "const reservedKeyDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "reserved-key-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\token-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class TokenDetector",
+        "function detectHardcodedTokens",
+        "const tokenDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "token-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\tooltip-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class TooltipBypassDetector",
+        "function detectTooltipBypasses",
+        "const tooltipBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "tooltip-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\transition-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class TransitionBypassDetector",
+        "function detectTransitionBypasses",
+        "const transitionBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "transition-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\type-assertion-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class TypeAssertionBypassDetector",
+        "function detectTypeAssertionBypasses",
+        "const typeAssertionBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "type-assertion-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\typewriter-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class TypewriterBypassDetector",
+        "function detectTypewriterBypasses",
+        "const typewriterBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "typewriter-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\validate-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class ValidateBypassDetector",
+        "function detectValidateBypasses",
+        "const validateBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "validate-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\dom-factory\\visibility-bypass-detector.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class VisibilityBypassDetector",
+        "function detectVisibilityBypasses",
+        "const visibilityBypassDetector"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "visibility-bypass-detector.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\import-validator.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class ImportValidator",
+        "function validateImports",
+        "function getImportViolationCount",
+        "function getImportViolations",
+        "const importValidator",
+        "interface ImportViolation",
+        "interface ValidatorConfig"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "import-validator.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\registries\\validator-registry.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "const ValidatorRegistry"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "validator-registry.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\render-pattern-validator.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class RenderPatternValidator",
+        "function validateRenderPatterns",
+        "function getRenderPatternViolations",
+        "function getRenderPatternAffectedClasses",
+        "const renderPatternValidator",
+        "interface RenderPatternViolation",
+        "interface RenderPatternValidatorConfig",
+        "type RenderViolationType"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "render-pattern-validator.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\validator-utilities.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "function getLineNumber",
+        "function getColumnNumber",
+        "function findMatches",
+        "function hasIgnoreComment",
+        "function groupBySeverity",
+        "function groupByFile"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "validator-utilities.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ValidatorUtilities",
+          "actual": "getLineNumber"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\vite-code-duplication-validator-plugin.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "function codeDuplicationValidatorPlugin",
+        "interface CodeDuplicationValidatorOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "vite-code-duplication-validator-plugin.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ViteCodeDuplicationValidatorPlugin",
+          "actual": "codeDuplicationValidatorPlugin"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\vite-codebase-validator-plugin.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "function codebaseValidatorPlugin",
+        "interface CodebaseValidatorPluginOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "vite-codebase-validator-plugin.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ViteCodebaseValidatorPlugin",
+          "actual": "codebaseValidatorPlugin"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\vite-comment-cleaner-plugin.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "function commentCleanerPlugin",
+        "interface CommentCleanerPluginOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "vite-comment-cleaner-plugin.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ViteCommentCleanerPlugin",
+          "actual": "commentCleanerPlugin"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\vite-css-import-validator-plugin.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "function cssImportValidatorPlugin",
+        "interface CSSImportValidatorPluginOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "vite-css-import-validator-plugin.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ViteCssImportValidatorPlugin",
+          "actual": "cssImportValidatorPlugin"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\vite-css-token-validator-plugin.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "function cssTokenValidatorPlugin",
+        "interface CSSTokenValidatorPluginOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "vite-css-token-validator-plugin.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ViteCssTokenValidatorPlugin",
+          "actual": "cssTokenValidatorPlugin"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\vite-css-validators-plugin.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "function cssValidatorsPlugin",
+        "interface CssValidatorsPluginOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "vite-css-validators-plugin.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ViteCssValidatorsPlugin",
+          "actual": "cssValidatorsPlugin"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\vite-import-validator-plugin.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "function importValidatorPlugin",
+        "type ImportValidatorPluginOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "vite-import-validator-plugin.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ViteImportValidatorPlugin",
+          "actual": "importValidatorPlugin"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\validators\\__tests__\\comment-cleaner-test.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "function UserProfile",
+        "function UserProfile"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "comment-cleaner-test.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "CommentCleanerTest",
+          "actual": "UserProfile"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\engine\\virtualization\\virtualized-buffer.ts",
+      "tier": 3,
+      "folder": "engine",
+      "exports": [
+        "class VirtualizedBuffer",
+        "function createVirtualizedBuffer",
+        "interface VirtualizedItem",
+        "interface VirtualizedBufferConfig",
+        "interface VirtualizedBufferMetrics"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'engine-'",
+          "expected": "engine-<identifier>.ts",
+          "actual": "virtualized-buffer.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\main.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\managers\\physics-shape-manager.ts",
+      "tier": 2,
+      "folder": "managers",
+      "exports": [
+        "class PhysicsShapeManager",
+        "function getPhysicsShapeManager",
+        "interface PhysicsShape"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseManager or CoreManager",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\managers\\pool-snapshot-manager.ts",
+      "tier": 2,
+      "folder": "managers",
+      "exports": [
+        "class PoolSnapshotManager",
+        "function getPoolSnapshotManager"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseManager or CoreManager",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\managers\\viewport-culling-manager.ts",
+      "tier": 2,
+      "folder": "managers",
+      "exports": [
+        "class ViewportCullingManager",
+        "function createViewportCullingManager"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseManager or CoreManager",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\registries\\element-registry.ts",
+      "tier": 2,
+      "folder": "registries",
+      "exports": [
+        "class ElementRegistry",
+        "interface ListenerEntry",
+        "interface ElementRegistryEntry"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseRegistry or CoreRegistry",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\registries\\manager-registry.ts",
+      "tier": 2,
+      "folder": "registries",
+      "exports": [
+        "class ManagerRegistry",
+        "type ManagerKey"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseRegistry or CoreRegistry",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\router\\router.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [
+        "class Router",
+        "function initRouter",
+        "function getRouter",
+        "interface RouteConfig",
+        "interface RouterOptions",
+        "type Route"
+      ],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\animation.ts",
+      "tier": 3,
+      "folder": "styles",
+      "exports": [
+        "function setAnimationDelay",
+        "function setAnimationDuration",
+        "function setAnimationTiming",
+        "function setTransitionDelay",
+        "function setTransitionDuration",
+        "function clearAnimationTiming",
+        "function clearTransitionTiming",
+        "function clearAllTiming",
+        "interface AnimationOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'styles-'",
+          "expected": "styles-<identifier>.ts",
+          "actual": "animation.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Animation",
+          "actual": "setAnimationDelay"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\colors.ts",
+      "tier": 3,
+      "folder": "styles",
+      "exports": [
+        "function setDynamicColor",
+        "function setTextColor",
+        "function setBackgroundColor",
+        "function setBorderColor",
+        "function setBorderSideColor",
+        "function setFillColor",
+        "function setStrokeColor",
+        "function clearDynamicColor",
+        "function clearAllDynamicColors",
+        "type ColorProperty"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'styles-'",
+          "expected": "styles-<identifier>.ts",
+          "actual": "colors.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Colors",
+          "actual": "setDynamicColor"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\dimensions.ts",
+      "tier": 3,
+      "folder": "styles",
+      "exports": [
+        "function setSize",
+        "function setWidth",
+        "function setHeight",
+        "function updateWidth",
+        "function updateHeight",
+        "function setMinWidth",
+        "function setMinHeight",
+        "function setMaxWidth",
+        "function setMaxHeight",
+        "function clearDimensions",
+        "function setSpacerHeight",
+        "interface Size",
+        "interface DimensionOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'styles-'",
+          "expected": "styles-<identifier>.ts",
+          "actual": "dimensions.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Dimensions",
+          "actual": "setSize"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\modal.ts",
+      "tier": 3,
+      "folder": "styles",
+      "exports": [
+        "function initModal",
+        "function switchModalToTransform",
+        "function switchModalToPosition",
+        "function updateModalTransform",
+        "function updateModalPosition",
+        "function updateModalSize",
+        "function updateModalZIndex",
+        "function clearModalDynamics",
+        "interface ModalDimensions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'styles-'",
+          "expected": "styles-<identifier>.ts",
+          "actual": "modal.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Modal",
+          "actual": "initModal"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\position.ts",
+      "tier": 3,
+      "folder": "styles",
+      "exports": [
+        "function setPosition",
+        "function setPositionX",
+        "function setPositionY",
+        "function setTranslate",
+        "function updatePositionX",
+        "function updatePositionY",
+        "function updateTranslateX",
+        "function updateTranslateY",
+        "function switchToTransform",
+        "function switchToPosition",
+        "function clearTransform",
+        "function clearPosition",
+        "function setLeft",
+        "function setRight",
+        "function updateLeft",
+        "function updateRight",
+        "interface Position",
+        "interface PositionOptions"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'styles-'",
+          "expected": "styles-<identifier>.ts",
+          "actual": "position.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Position",
+          "actual": "setPosition"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\visibility.ts",
+      "tier": 3,
+      "folder": "styles",
+      "exports": [
+        "function setDisplay",
+        "function show",
+        "function hide",
+        "function toggleDisplay",
+        "function setOpacity",
+        "function setVisibility",
+        "function setClipPath",
+        "function clearClipPath",
+        "function clearVisibility",
+        "function setOverflow",
+        "function updateOverflow",
+        "function clearOverflow",
+        "type DisplayValue",
+        "type OverflowValue"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'styles-'",
+          "expected": "styles-<identifier>.ts",
+          "actual": "visibility.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Visibility",
+          "actual": "setDisplay"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\z-index.ts",
+      "tier": 3,
+      "folder": "styles",
+      "exports": [
+        "function setZIndex",
+        "function updateZIndex",
+        "function incrementZIndex",
+        "function setZIndexAbove",
+        "function setZIndexBelow",
+        "function clearZIndex"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'styles-'",
+          "expected": "styles-<identifier>.ts",
+          "actual": "z-index.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "ZIndex",
+          "actual": "setZIndex"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\ai-footer.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "class AIFooter"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "ai-footer.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "AiFooter",
+          "actual": "AIFooter"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\ai-provider-dialog.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "class AIProviderDialog",
+        "function showAIProviderDialog"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "ai-provider-dialog.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "AiProviderDialog",
+          "actual": "AIProviderDialog"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "class AISidebar",
+        "function createAISidebar"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "ai-sidebar.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "AiSidebar",
+          "actual": "AISidebar"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\internal-terminal-modal.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "class InternalTerminalModal"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "internal-terminal-modal.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\prompt-overlay.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "class PromptOverlay"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "prompt-overlay.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\components\\tabbed-terminal-container.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "class TabbedTerminalContainer"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "tabbed-terminal-container.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\services\\virtualized-entries.ts",
+      "tier": 3,
+      "folder": "terminal",
+      "exports": [
+        "class VirtualizedTerminalEntries",
+        "function createVirtualizedEntries",
+        "interface VirtualizedEntriesConfig",
+        "interface VirtualizedEntriesMetrics"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'terminal-'",
+          "expected": "terminal-<identifier>.ts",
+          "actual": "virtualized-entries.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "VirtualizedEntries",
+          "actual": "VirtualizedTerminalEntries"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\trackers\\entity-lifecycle-tracker.ts",
+      "tier": 2,
+      "folder": "trackers",
+      "exports": [
+        "class EntityLifecycleTracker",
+        "function getEntityLifecycleTracker"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseTracker or CoreTracker",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\trackers\\intent-flow-tracker.ts",
+      "tier": 2,
+      "folder": "trackers",
+      "exports": [
+        "class IntentFlowTracker",
+        "function getIntentFlowTracker",
+        "interface IntentFlowGraph",
+        "interface IntentFlowNode",
+        "interface IntentViolation"
+      ],
+      "violations": [
+        {
+          "code": "MISSING_INHERITANCE",
+          "severity": "warning",
+          "message": "Tier 2 class should extend Tier 1 base class",
+          "expected": "extends BaseTracker or CoreTracker",
+          "actual": "No extends clause found"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\utils\\dom-factory.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [
+        "function initDialogInterception",
+        "const DOM",
+        "interface AnimationOptions",
+        "interface ElementOptions",
+        "interface ButtonOptions",
+        "interface InputOptions",
+        "interface IconOptions",
+        "interface WindowOptions",
+        "interface SidebarOptions",
+        "interface SidebarSectionOptions",
+        "interface HeaderOptions",
+        "interface CardOptions",
+        "interface ToastOptions",
+        "interface ToggleOptions",
+        "interface CheckboxOptions",
+        "interface RadioOptions",
+        "interface SelectDropdownOptions",
+        "interface NumberInputOptions",
+        "interface TextInputOptions",
+        "interface TextareaOptions"
+      ],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\utils\\Motion.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [
+        "const Motion",
+        "interface Position",
+        "interface Size",
+        "interface Bounds",
+        "interface MotionState"
+      ],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\claude-schemas.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [
+        "const PERMISSION_MODES",
+        "const MODEL_OPTIONS",
+        "const OUTPUT_STYLE_OPTIONS",
+        "const HOOK_EVENTS",
+        "const MCP_SERVER_TYPES",
+        "const TOOL_PERMISSION_PRESETS",
+        "const SETTINGS_SCHEMA",
+        "const AGENT_SCHEMA",
+        "const COMMAND_SCHEMA",
+        "const SKILL_SCHEMA",
+        "const RULE_SCHEMA",
+        "const HOOK_SCHEMA",
+        "const MCP_SCHEMA",
+        "const CLAUDE_MD_SCHEMA",
+        "const PLUGIN_SCHEMA",
+        "const LSP_SCHEMA",
+        "const AGENT_PRESETS",
+        "const COMMAND_PRESETS",
+        "const SKILL_PRESETS",
+        "const ALL_SCHEMAS",
+        "const ALL_PRESETS",
+        "interface FieldOption",
+        "interface SchemaField",
+        "interface SchemaDefinition",
+        "interface ToolPermissionPreset",
+        "interface AgentPreset",
+        "interface CommandPreset",
+        "interface SkillPreset",
+        "type FieldType"
+      ],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\config\\features.ts",
+      "tier": 3,
+      "folder": "config",
+      "exports": [
+        "function isFeatureEnabled",
+        "function getEnabledFeatures",
+        "function getDisabledFeatures",
+        "function logFeatureStatus",
+        "const FEATURES",
+        "interface FeatureFlags"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'config-'",
+          "expected": "config-<identifier>.ts",
+          "actual": "features.ts"
+        },
+        {
+          "code": "EXPORT_MISMATCH",
+          "severity": "error",
+          "message": "Export name must match filename (kebab → PascalCase)",
+          "expected": "Features",
+          "actual": "isFeatureEnabled"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\constants\\app.ts",
+      "tier": 3,
+      "folder": "constants",
+      "exports": [
+        "const APP_NAME_PREFIX",
+        "const APP_NAME_SUFFIX",
+        "const APP_NAME",
+        "const APP_TAGLINE"
+      ],
+      "violations": [
+        {
+          "code": "TIER3_DOMAIN",
+          "severity": "error",
+          "message": "Tier 3 file should start with domain prefix 'constants-'",
+          "expected": "constants-<identifier>.ts",
+          "actual": "app.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\helpers\\format-helpers.ts",
+      "tier": 2,
+      "folder": "helpers",
+      "exports": [
+        "function formatBytes",
+        "function formatDate"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-helper.ts' suffix",
+          "expected": "<domain>-helper.ts",
+          "actual": "format-helpers.ts"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\ipc-channels.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [
+        "const IPC_CHANNELS",
+        "interface SetSettingsRequest",
+        "interface IpcApi",
+        "type IpcChannel"
+      ],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\shell-commands.ts",
+      "tier": 0,
+      "folder": null,
+      "exports": [
+        "function getShellConfig",
+        "function getShellConfigById",
+        "function formatCdCommand",
+        "function formatCdAndRunCommand",
+        "function formatCommand",
+        "function convertPathForShell",
+        "function getNavigateCommand",
+        "function getNavigateAndRunCommand",
+        "function getRunCommand",
+        "const EXTENDED_SHELL_CONFIGS",
+        "interface ShellCommandConfig"
+      ],
+      "violations": [
+        {
+          "code": "UNKNOWN_TIER",
+          "severity": "warning",
+          "message": "File not in recognized tier folder",
+          "expected": "Tier 1/2/3 folder",
+          "actual": "unknown"
+        }
+      ]
+    },
+    {
+      "file": "src\\shared\\types\\types.ts",
+      "tier": 2,
+      "folder": "types",
+      "exports": [
+        "const DEFAULT_ENGINE_SETTINGS",
+        "const AUTHORITY_TIERS",
+        "interface GraphicsSettings",
+        "interface EngineFrameSettings",
+        "interface EngineWorkSettings",
+        "interface EngineAttentionSettings",
+        "interface EngineDebugSettings",
+        "interface EngineMemorySettings",
+        "interface EngineSecuritySettings",
+        "interface EngineSettings",
+        "interface ShellDefinition",
+        "interface ShellRegistryState",
+        "interface TerminalSettings",
+        "interface TerminalTab",
+        "interface TerminalTransferResult",
+        "interface TerminalDragData",
+        "interface WindowState",
+        "interface AppSettings",
+        "interface AppState",
+        "interface MigrationStatus",
+        "interface HardwareCpuInfo",
+        "interface HardwareMemoryInfo",
+        "interface HardwareGpuInfo",
+        "interface HardwareOsInfo",
+        "interface HardwareMotherboardInfo",
+        "interface HardwareStorageDevice",
+        "interface HardwareMonitorInfo",
+        "interface HardwareInfo",
+        "interface HardwareDiskUsage",
+        "interface HardwareMetrics",
+        "interface TerminalPath",
+        "interface TerminalCommand",
+        "interface TerminalPathCommand",
+        "interface TerminalSession",
+        "interface TerminalEntry",
+        "interface TerminalHistoryQuery",
+        "interface EnvironmentVariable",
+        "interface EnvironmentHistory",
+        "interface ProjectState",
+        "interface AIProvider",
+        "interface AICommandOptions",
+        "interface AIProviderRegistryState",
+        "interface AIHistoryContextSettings",
+        "interface SettingsHistoryEntry",
+        "interface SettingsPreset",
+        "interface SettingsHistoryQuery",
+        "interface AIProviderOutputEvent",
+        "type FontSmoothing",
+        "type AnimationQuality",
+        "type TargetFps",
+        "type FrameOverrunBehavior",
+        "type TerminalDisplayMode",
+        "type ShellType",
+        "type ShellIconType",
+        "type TerminalEntryType",
+        "type AIAuthType",
+        "type AIStreamFormat",
+        "type AIProviderState",
+        "type SettingsChangeSource",
+        "type AuthorityTier"
+      ],
+      "violations": [
+        {
+          "code": "TIER2_SUFFIX",
+          "severity": "error",
+          "message": "Tier 2 file must end with '-types.ts' suffix",
+          "expected": "<domain>-types.ts",
+          "actual": "types.ts"
+        }
+      ]
+    }
+  ]
+}

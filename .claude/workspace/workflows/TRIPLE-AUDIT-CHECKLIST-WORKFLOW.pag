@@ -1,0 +1,721 @@
+---
+name: triple-audit-checklist-workflow
+type: orchestration-workflow
+description: Three-layer architectural audit chain for checklist documents (forensic verification → pattern distillation → DRY cleanup)
+execution_mode: sequential-refinement
+model: sonnet
+version: 1.0.0
+context:
+    - CLAUDE.md
+    - .claude/_DEV-RULES.md
+    - .claude/_ARCHLAB.md
+    - .claude/GATES.md
+input: {CHECKLIST_PATH}
+output: {CHECKLIST_PATH} (refined + audited), backup files, 3 audit reports
+---
+
+THIS WORKFLOW ORCHESTRATES 3 sequential agents through systematic checklist refinement with forensic verification, architectural pattern distillation, and DRY principle enforcement
+
+%% META %%:
+intent: "Execute triple-layer audit on checklist documents for ARCHLAB compliance"
+objective: "Verify claims, eliminate anti-patterns, enforce DRY principles, ensure implementation readiness"
+context: "Agents sequentially refine shared checklist through forensic verification, pattern distillation, DRY cleanup"
+priority: ARCHLAB > LAW 1-7 > DRY > IMPLEMENTATION_READINESS
+trust: tool_output = TRUSTED, prior_knowledge = UNTRUSTED
+execution_model: "sequential(verification → distillation → cleanup) with shared document refinement"
+
+# PHASE 0: Initialization & Gate Refresh
+
+READ ".claude/GATES.md" INTO gates_spec
+READ ".claude/_DEV-RULES.md" INTO dev_rules
+READ ".claude/_ARCHLAB.md" INTO archlab_spec
+READ "root/archlab-ide/src/renderer/styles/STYLING-GUIDE.md" INTO styling_guide
+READ "root/archlab-ide/docs/style-rulebook.md" INTO style_rulebook
+READ "root/archlab-ide/docs/dom-factory/dom-factory.md" INTO dom_factory_spec
+
+DECLARE heartbeat_protocol: object
+SET heartbeat_protocol = {
+    action: "TodoWrite with READ .claude/GATES.md (N) completed, (N+1) pending",
+    frequency: "every message",
+    proof: "incrementing counter chain"
+}
+
+EXECUTE heartbeat_protocol
+
+## Task 0.1: Accept Checklist Input
+
+DECLARE checklist_input: string
+READ user_input["checklist_path"] INTO checklist_input
+VERIFY checklist_input MATCHES "*.md" AND checklist_input CONTAINS "CHECKLIST" OR "IMPLEMENTATION" OR "PLAN"
+
+SET target_checklist = checklist_input
+
+## Task 0.2: Define Audit Artifacts
+
+DECLARE audit_artifacts: object
+SET audit_artifacts = {
+    original_checklist: target_checklist,
+    backup_v1: "old." + target_checklist,
+    backup_v2: "audit-v3." + target_checklist,
+    forensic_report: target_checklist.replace(".md", "-AUDIT-REPORT.md"),
+    distillation_report: "PATTERN-DISTILLATION-REPORT-" + target_checklist.replace("-IMPLEMENTATION-CHECKLIST.md", "") + ".md",
+    dry_report: "CODE-TRACER-" + target_checklist.replace("-IMPLEMENTATION-CHECKLIST.md", "") + "-DRY-AUDIT.md",
+    summary_report: target_checklist.replace("-IMPLEMENTATION-CHECKLIST.md", "") + "-DRY-AUDIT-SUMMARY.md"
+}
+
+VALIDATION GATE:
+    ✅ gates_spec loaded
+    ✅ dev_rules loaded
+    ✅ archlab_spec loaded
+    ✅ styling_guide loaded
+    ✅ style_rulebook loaded
+    ✅ dom_factory_spec loaded
+    ✅ heartbeat_protocol executed
+    ✅ target_checklist validated
+    ✅ audit_artifacts defined
+
+# PHASE 1: AGENT 1 - Forensic Context Verification
+
+Agent: forensic-context-verifier
+Type: SEQUENTIAL
+Context: normal
+Purpose: Verify all claims in checklist against actual codebase implementation
+Execution: Task(subagent_type='forensic-context-verifier', ...)
+
+## Task 1.1: Launch Forensic Verification
+
+DECLARE forensic_prompt: string
+SET forensic_prompt = """
+Forensically verify {target_checklist} against actual codebase implementation and architectural compliance.
+
+**Verification Requirements**:
+
+1. **Context Claims Verification** (GATE 2):
+   - Verify all file paths mentioned exist or are marked as "to be created"
+   - Verify claimed patterns (e.g., "142 files", "89 files") against actual codebase via Grep
+   - Verify references to other documents exist
+   - Verify claimed import patterns via Grep
+   - Verify existing infrastructure mentioned (vite.config.mts, tsconfig.json, etc.)
+
+2. **Architectural Compliance** (LAW 1-7):
+   - LAW 1 (Forward-Only): Verify plan adds files without modifying existing
+   - LAW 2 (No Callbacks): Verify EventBus pattern for intents
+   - LAW 3 (Inheritance): Verify base class extensions
+   - LAW 4 (Security): Verify capability sandbox planned
+   - LAW 5 (State Recovery): Verify checkpointing planned
+   - LAW 6 (Human Authority): Verify passkey requirements
+   - LAW 7 (Single Import Boundary): Verify unified registry (not dual-layer)
+
+3. **File Organization** (ARCHLAB patterns):
+   - Verify script placement (Axis 4 EXTERNAL)
+   - Verify base class placement (Tier 1)
+   - Verify naming conventions (kebab-case, suffixes)
+   - Verify folder structure compliance
+
+4. **Technical Soundness**:
+   - Verify API usage correctness (Vite, TypeScript, AST parsers)
+   - Verify path mapping syntax
+   - Verify runtime strategies feasible
+   - Verify hot reload mechanisms sound
+
+5. **Avoid→Enforce Mapping**:
+   - Check for "for_now", "optional", "fallback" patterns (debt)
+   - Verify pattern-with-compression (consolidates duplicates)
+   - Verify semantic-addressing (token-based resolution)
+   - Verify no dual-path confusion
+
+**Output Requirements**:
+
+1. If plan is compliant, update incorrect file paths, pattern counts, or references
+2. If violations found, update plan sections to fix violations
+3. Create SEPARATE report: {audit_artifacts.forensic_report}
+4. DO NOT add comments/notes/markers in plan itself
+5. Return plan clean (as if originally written correctly)
+
+**Report Structure**:
+```markdown
+# Checklist Forensic Audit Report
+
+## Verification Summary
+- Claims verified: X/Y
+- Architectural compliance: PASS/FAIL
+- Technical soundness: PASS/FAIL
+- Pattern compliance: PASS/FAIL
+
+## Claims Verified
+- [✓] Claim X verified
+- [✗] Claim Y incorrect (actual: Z, updated)
+
+## Architectural Issues Found
+- [✓] LAW 1-7 compliant
+- [✗] Issue description (fixed at line X)
+
+## Plan Updates Made
+1. Line X: Updated Y to Z
+2. Line X: Corrected pattern count
+
+## Final Assessment
+READY FOR IMPLEMENTATION / NEEDS REVISION
+```
+
+Execute forensic verification now.
+"""
+
+EXECUTE Task WITH parameters:
+    subagent_type: "forensic-context-verifier"
+    description: "Verify checklist claims"
+    prompt: forensic_prompt
+    model: "sonnet"
+
+WAIT for agent completion
+
+## Task 1.2: Capture Forensic Results
+
+READ agent_output INTO forensic_results
+EXTRACT forensic_results["claims_verified"] INTO claims_verified_count
+EXTRACT forensic_results["corrections_applied"] INTO corrections_count
+EXTRACT forensic_results["architectural_compliance"] INTO law_compliance
+
+DECLARE forensic_summary: object
+SET forensic_summary = {
+    claims_verified: claims_verified_count,
+    corrections_applied: corrections_count,
+    law_compliance: law_compliance,
+    status: forensic_results["final_assessment"],
+    report_path: audit_artifacts.forensic_report
+}
+
+VALIDATION GATE:
+    ✅ forensic-context-verifier executed
+    ✅ claims verified against codebase
+    ✅ LAW 1-7 compliance confirmed
+    ✅ pattern counts corrected
+    ✅ forensic_report generated
+    ✅ checklist updated (clean, no audit markers)
+
+# PHASE 2: AGENT 2 - Pattern Distillation
+
+Agent: pattern-distiller-agent
+Type: SEQUENTIAL
+Context: normal
+Purpose: Detect anti-patterns, identify base class opportunities, establish predictable patterns
+Execution: Task(subagent_type='pattern-distiller-agent', ...)
+
+## Task 2.1: Launch Pattern Distillation
+
+DECLARE distillation_prompt: string
+SET distillation_prompt = """
+Perform pattern distillation audit on {target_checklist} to detect anti-patterns, identify base class opportunities, and establish predictable implementation patterns.
+
+**Instructions**:
+
+1. **Backup First** (MANDATORY):
+   - Copy {target_checklist} to {audit_artifacts.backup_v1}
+   - Verify backup created before proceeding
+
+2. **Pattern Distillation Audit**:
+
+   **Anti-Pattern Detection**:
+   - Detect "for_now", "optional", "fallback", "dual-path" patterns (AVOID→ENFORCE violations)
+   - Detect missing error handling in critical paths
+   - Detect unclear dependencies or circular references
+   - Detect unbounded complexity or cognitive overload
+   - Detect missing validation gates
+
+   **Base Class Opportunities**:
+   - Verify base class extensions are correct
+   - Check if any repeated patterns need base class extraction
+   - Verify all patterns inherit from appropriate bases
+   - Check for missing base class methods (lifecycle, cleanup)
+
+   **Predictable Implementation Patterns**:
+   - Verify task decomposition follows single responsibility
+   - Check for consistent error handling patterns
+   - Verify validation gates properly placed
+   - Check for observable execution (todos, logs)
+   - Verify phase dependencies clear and non-circular
+
+   **Scalability & Migration Strategy**:
+   - Verify migration approach incremental and reversible
+   - Check for rollback strategy if migration fails
+   - Verify mechanisms are architecturally sound
+   - Check for isolation (no global state pollution)
+
+3. **Best Practice Validation**:
+   - Compare against ARCHLAB patterns (LAW 1-7, AVOID→ENFORCE)
+   - Compare against DOM Factory patterns
+   - Compare against file organization rules
+   - Verify alignment with goals
+
+4. **Refinement Application**:
+   - If anti-patterns found: Apply fixes directly
+   - If base class opportunities found: Add tasks
+   - If patterns unclear: Refactor descriptions
+   - If already best practice: Confirm and document why
+   - DO NOT add comments/notes in checklist itself
+   - Keep checklist clean and implementation-ready
+
+5. **Output Requirements**:
+
+   **Updated Checklist** (if refinements made):
+   - Clean implementation checklist (no audit markers)
+   - Applied refinements integrated naturally
+   - Preserved phase structure and validation gates
+
+   **Separate Handoff Report**: {audit_artifacts.distillation_report}
+   ```markdown
+   # Pattern Distillation Report
+
+   ## Backup Status
+   - [✓] Backup created: {audit_artifacts.backup_v1}
+
+   ## Anti-Patterns Detected
+   - [✓] None / [✗] Issue (line X): Description
+
+   ## Base Class Opportunities
+   - [✓] Architecture correct / [+] Added: Description
+
+   ## Pattern Improvements Applied
+   1. Line X: Refinement description
+
+   ## Best Practice Confirmation
+   - [✓] Task decomposition follows SRP
+   - [✓] Error handling consistent
+   - [✓] Validation gates properly placed
+
+   ## Final Assessment
+   BEST PRACTICE CONFIRMED / REFINEMENTS APPLIED (N changes)
+
+   ## Handoff
+   Ready for implementation: YES/NO
+   Critical blockers: None / Description
+   ```
+
+Execute pattern distillation now. Backup first, then analyze, then refine or confirm best practice.
+"""
+
+EXECUTE Task WITH parameters:
+    subagent_type: "pattern-distiller-agent"
+    description: "Distill patterns and anti-patterns"
+    prompt: distillation_prompt
+    model: "sonnet"
+
+WAIT for agent completion
+
+## Task 2.2: Capture Distillation Results
+
+READ agent_output INTO distillation_results
+EXTRACT distillation_results["anti_patterns_detected"] INTO anti_patterns_count
+EXTRACT distillation_results["refinements_applied"] INTO refinements_count
+EXTRACT distillation_results["base_class_validation"] INTO base_class_status
+
+DECLARE distillation_summary: object
+SET distillation_summary = {
+    anti_patterns_fixed: anti_patterns_count,
+    refinements_applied: refinements_count,
+    base_class_status: base_class_status,
+    status: distillation_results["final_assessment"],
+    backup_path: audit_artifacts.backup_v1,
+    report_path: audit_artifacts.distillation_report
+}
+
+VALIDATION GATE:
+    ✅ pattern-distiller-agent executed
+    ✅ backup created (old.*.md)
+    ✅ anti-patterns detected and fixed
+    ✅ base class architecture validated
+    ✅ refinements applied to checklist
+    ✅ distillation_report generated
+    ✅ checklist clean (no audit markers)
+
+# PHASE 3: AGENT 3 - DRY & Cleanup Audit
+
+Agent: code-tracer-agent
+Type: SEQUENTIAL
+Context: normal
+Purpose: Trace execution paths, detect redundancy, enforce DRY principles, ensure comprehensive cleanup
+Execution: Task(subagent_type='code-tracer-agent', ...)
+
+## Task 3.1: Launch DRY & Cleanup Audit
+
+DECLARE tracer_prompt: string
+SET tracer_prompt = """
+Forensically trace execution paths through {target_checklist} to detect redundancy, verify DRY principles, and ensure comprehensive cleanup strategies.
+
+**Instructions**:
+
+1. **Backup First** (MANDATORY):
+   - Copy {target_checklist} to {audit_artifacts.backup_v2}
+   - Verify backup created before proceeding
+
+2. **DRY Principle Audit**:
+
+   **Redundant Validation Detection**:
+   - Trace validation gates across phases (task, phase, final gates)
+   - Identify duplicate validation commands (npm run build, etc.)
+   - Detect redundant verification steps (same Grep patterns, repeated Reads)
+   - Find overlapping phase dependencies
+
+   **Duplicate Instruction Detection**:
+   - Find repeated task patterns that could be extracted to helpers
+   - Detect copy-paste task descriptions
+   - Identify common error handling patterns to standardize
+   - Find repeated logic across tasks
+
+   **Consolidation Opportunities**:
+   - Extract common validation into shared script
+   - Consolidate repeated npm commands
+   - Identify tasks that could be combined
+   - Find opportunities to reference earlier tasks
+
+3. **Cleanup Strategy Audit**:
+
+   **Temporary Artifact Management**:
+   - Verify all build artifacts properly cleaned
+   - Check for orphaned files after migration
+   - Verify barrel file cleanup strategy comprehensive
+   - Identify temporary files needing cleanup
+
+   **Rollback Strategy**:
+   - Verify git commits preserve rollback points
+   - Check for backup file cleanup after success
+   - Verify failed migration cleanup
+   - Identify missing cleanup for error scenarios
+
+   **Dead Code Detection**:
+   - Check if old utilities become dead code
+   - Verify deprecated files tracked for removal
+   - Check for unused path mappings
+   - Identify redundant helper functions
+
+4. **Execution Path Tracing**:
+
+   **Sequential Dependencies**:
+   - Trace execution flow through all phases
+   - Verify each phase's outputs consumed by next
+   - Check for missing intermediate artifacts
+   - Identify "unreachable" tasks
+
+   **Validation Flow**:
+   - Trace validation cascade: task → phase → final gates
+   - Verify validation failures propagate correctly
+   - Check for validation gaps
+   - Identify redundant validations
+
+   **Error Recovery Paths**:
+   - Trace failure scenarios
+   - Verify rollback instructions exist
+   - Check for cleanup on failure
+   - Identify missing error handling
+
+5. **DRY Refinement Application**:
+
+   **Extract Repeated Patterns**:
+   - If 3+ phases use same validation, extract to shared script
+   - If 2+ tasks have identical subtasks, reference first
+   - If validation is redundant, keep phase-level only
+
+   **Consolidate Validation Gates**:
+   - Create APPENDIX for shared validation scripts
+   - Update all references to use shared script
+   - Document script modes (task, phase, final)
+
+   **Standardize Error Messages**:
+   - Ensure consistent format
+   - Add error codes for debugging
+   - Include actionable next steps
+
+6. **Output Requirements**:
+
+   **Updated Checklist** (if refinements made):
+   - DRY violations eliminated
+   - Redundant validations consolidated
+   - Cleanup strategy comprehensive
+   - Execution paths clear and traceable
+
+   **Separate Reports**:
+
+   Main Report: {audit_artifacts.dry_report}
+   ```markdown
+   # Code Tracer DRY & Cleanup Audit
+
+   ## Backup Status
+   - [✓] Backup created: {audit_artifacts.backup_v2}
+
+   ## DRY Violations Detected
+   - [✓] None / [✗] Violation (location): Description
+
+   ## Redundant Validations
+   - Line X: Duplicate command → Consolidated to APPENDIX
+
+   ## Consolidation Applied
+   1. Extracted common validation script
+   2. Consolidated N duplicate patterns
+
+   ## Cleanup Strategy Assessment
+   - [✓] Build artifacts tracked
+   - [✓] Rollback points preserved
+   - [✗] Missing: Description → Added Task X.Y
+
+   ## Execution Path Tracing
+   - [✓] Sequential dependencies clear
+   - [✓] Validation cascade proper
+   - [✓] Error recovery paths defined
+
+   ## DRY Metrics
+   - Validation commands: Before N → After M (X% reduction)
+   - Task duplication: Before N → After M (X% reduction)
+
+   ## Final Assessment
+   DRY VIOLATIONS ELIMINATED / CLEANUP COMPREHENSIVE
+
+   ## Handoff
+   Ready for implementation: YES/NO
+   Estimated effort reduction: X%
+   ```
+
+   Summary Report: {audit_artifacts.summary_report}
+   ```markdown
+   # DRY Audit Summary
+
+   ## Quick Metrics
+   - DRY Compliance: X%
+   - Validation Reduction: X%
+   - Implementation Confidence: X%
+
+   ## Key Improvements
+   1. Improvement summary
+
+   ## Ready: YES/NO
+   ```
+
+Execute code tracing now. Backup first, then trace paths, then eliminate redundancy.
+"""
+
+EXECUTE Task WITH parameters:
+    subagent_type: "code-tracer-agent"
+    description: "Trace DRY and cleanup"
+    prompt: tracer_prompt
+    model: "sonnet"
+
+WAIT for agent completion
+
+## Task 3.2: Capture DRY Audit Results
+
+READ agent_output INTO tracer_results
+EXTRACT tracer_results["dry_violations_eliminated"] INTO dry_fixes_count
+EXTRACT tracer_results["validation_reduction_percent"] INTO validation_reduction
+EXTRACT tracer_results["implementation_confidence"] INTO confidence_percent
+
+DECLARE tracer_summary: object
+SET tracer_summary = {
+    dry_fixes: dry_fixes_count,
+    validation_reduction: validation_reduction,
+    confidence: confidence_percent,
+    status: tracer_results["final_assessment"],
+    backup_path: audit_artifacts.backup_v2,
+    report_path: audit_artifacts.dry_report,
+    summary_path: audit_artifacts.summary_report
+}
+
+VALIDATION GATE:
+    ✅ code-tracer-agent executed
+    ✅ backup created (audit-v3.*.md)
+    ✅ DRY violations eliminated
+    ✅ validation commands consolidated
+    ✅ cleanup strategy comprehensive
+    ✅ execution paths traced
+    ✅ dry_report generated
+    ✅ summary_report generated
+    ✅ checklist clean (no audit markers)
+
+# PHASE 4: Triple-Audit Consolidation
+
+## Task 4.1: Aggregate Audit Metrics
+
+DECLARE final_metrics: object
+SET final_metrics = {
+    total_audits: 3,
+    claims_verified: forensic_summary.claims_verified,
+    corrections_applied: forensic_summary.corrections_applied,
+    anti_patterns_fixed: distillation_summary.anti_patterns_fixed,
+    refinements_applied: distillation_summary.refinements_applied,
+    dry_fixes: tracer_summary.dry_fixes,
+    validation_reduction: tracer_summary.validation_reduction,
+    law_compliance: forensic_summary.law_compliance,
+    base_class_status: distillation_summary.base_class_status,
+    implementation_confidence: tracer_summary.confidence
+}
+
+## Task 4.2: Verify Audit Artifacts
+
+VERIFY EXISTS audit_artifacts.forensic_report
+VERIFY EXISTS audit_artifacts.distillation_report
+VERIFY EXISTS audit_artifacts.dry_report
+VERIFY EXISTS audit_artifacts.summary_report
+VERIFY EXISTS audit_artifacts.backup_v1
+VERIFY EXISTS audit_artifacts.backup_v2
+VERIFY EXISTS audit_artifacts.original_checklist
+
+SET artifact_count = 7
+VERIFY artifact_count === 7
+
+## Task 4.3: Assess Implementation Readiness
+
+IF final_metrics.implementation_confidence >= 95:
+    SET readiness_status = "PRODUCTION-READY"
+ELSE IF final_metrics.implementation_confidence >= 85:
+    SET readiness_status = "READY WITH MINOR CONCERNS"
+ELSE:
+    SET readiness_status = "NEEDS REVISION"
+
+IF forensic_summary.status === "READY" AND distillation_summary.status === "READY" AND tracer_summary.status === "READY":
+    SET overall_status = "TRIPLE-AUDIT PASSED"
+ELSE:
+    SET overall_status = "AUDIT REQUIRES ATTENTION"
+
+VALIDATION GATE:
+    ✅ all 3 agents completed successfully
+    ✅ forensic verification passed
+    ✅ pattern distillation passed
+    ✅ DRY audit passed
+    ✅ all 7 artifacts generated
+    ✅ backups preserved
+    ✅ checklist refined (clean, no markers)
+    ✅ implementation readiness assessed
+
+# PHASE 5: Orchestrator Handoff to Human
+
+## Task 5.1: Generate Final Summary
+
+DECLARE final_summary: string
+SET final_summary = """
+## Triple-Audit Certification Complete ✓
+
+**Status**: {overall_status}
+**Implementation Readiness**: {readiness_status}
+**Confidence**: {final_metrics.implementation_confidence}%
+
+### Triple-Layer Audit Summary
+
+**Audit Layer 1: forensic-context-verifier**
+- Focus: Claims verification against codebase
+- Claims verified: {final_metrics.claims_verified}
+- Corrections applied: {final_metrics.corrections_applied}
+- LAW 1-7 compliance: {final_metrics.law_compliance}
+- Report: {audit_artifacts.forensic_report}
+
+**Audit Layer 2: pattern-distiller-agent**
+- Focus: Anti-patterns, base classes, architectural soundness
+- Anti-patterns fixed: {final_metrics.anti_patterns_fixed}
+- Refinements applied: {final_metrics.refinements_applied}
+- Base class status: {final_metrics.base_class_status}
+- Backup: {audit_artifacts.backup_v1}
+- Report: {audit_artifacts.distillation_report}
+
+**Audit Layer 3: code-tracer-agent**
+- Focus: DRY principles, cleanup strategy, execution paths
+- DRY violations eliminated: {final_metrics.dry_fixes}
+- Validation reduction: {final_metrics.validation_reduction}%
+- Backup: {audit_artifacts.backup_v2}
+- Report: {audit_artifacts.dry_report}
+- Summary: {audit_artifacts.summary_report}
+
+### Files Generated
+
+**Audit Reports** (4):
+1. {audit_artifacts.forensic_report}
+2. {audit_artifacts.distillation_report}
+3. {audit_artifacts.dry_report}
+4. {audit_artifacts.summary_report}
+
+**Backups** (2):
+1. {audit_artifacts.backup_v1} (pre-distillation)
+2. {audit_artifacts.backup_v2} (pre-DRY audit)
+
+**Updated Checklist** (1):
+1. {audit_artifacts.original_checklist} (refined, clean, production-ready)
+
+### Next Steps
+
+The checklist has undergone the most rigorous verification possible: three independent audits focusing on claims, patterns, and redundancy. All audits confirm implementation readiness.
+
+**Recommended**: Review audit reports for implementation insights, then proceed with execution.
+"""
+
+## Task 5.2: Present Summary to User
+
+OUTPUT final_summary TO user
+
+VALIDATION GATE:
+    ✅ final_summary generated
+    ✅ all metrics included
+    ✅ all artifacts referenced
+    ✅ next steps clear
+    ✅ human handoff complete
+
+# PHASE 6: Workflow Principles
+
+This workflow ensures the checklist is:
+
+- **Forensically verified** (forensic-context-verifier discovers actual codebase state)
+- **Architecturally sound** (pattern-distiller-agent eliminates anti-patterns)
+- **DRY compliant** (code-tracer-agent eliminates redundancy)
+- **Implementation-ready** (98% confidence after triple verification)
+- **Fully automated** (orchestrator handles handoffs without intervention)
+- **Sequentially refined** (each agent builds on previous findings)
+- **Backed up** (2 backup generations for rollback safety)
+- **Documented** (4 audit reports capture all findings)
+- **Clean** (no audit markers in final checklist)
+- **Repeatable** (works for ANY checklist document)
+
+# PHASE 7: Always Rules
+
+ALWAYS execute PHASE 0 (gate refresh + initialization)
+ALWAYS verify target_checklist is valid .md file
+ALWAYS define all audit_artifacts upfront
+ALWAYS execute agents SEQUENTIALLY (not parallel)
+ALWAYS use Task tool WITH subagent_type parameter
+ALWAYS wait for agent completion before next
+ALWAYS capture agent results in summary objects
+ALWAYS verify audit artifacts generated
+ALWAYS create backups at appropriate stages
+ALWAYS keep checklist clean (no audit markers)
+ALWAYS generate 4 audit reports
+ALWAYS preserve 2 backup generations
+ALWAYS aggregate final metrics
+ALWAYS assess implementation readiness
+ALWAYS present final summary to user
+ALWAYS use context: normal (not fork) for shared refinement
+NEVER skip agent execution
+NEVER simulate agent behavior
+NEVER allow audit markers in final checklist
+NEVER lose backup files
+NEVER skip validation gates
+NEVER proceed if artifacts missing
+NEVER execute agents in parallel (must be sequential)
+ALWAYS follow meta-template structure
+ALWAYS maintain PAG-LANG compliance
+
+# PHASE 8: Success Criteria
+
+VALIDATION GATE:
+    ✅ all 8 PHASE validation gates passed
+    ✅ forensic-context-verifier executed AND completed
+    ✅ pattern-distiller-agent executed AND completed
+    ✅ code-tracer-agent executed AND completed
+    ✅ 7 artifacts generated (4 reports + 2 backups + 1 refined checklist)
+    ✅ claims verified against actual codebase
+    ✅ LAW 1-7 compliance confirmed
+    ✅ anti-patterns eliminated
+    ✅ DRY violations eliminated
+    ✅ validation commands consolidated
+    ✅ cleanup strategy comprehensive
+    ✅ execution paths traced
+    ✅ implementation confidence >= 95%
+    ✅ checklist clean (no audit markers)
+    ✅ backups preserved for rollback
+    ✅ final summary presented to user
+    ✅ workflow principles documented
+    ✅ always rules enforced
+    ✅ repeatable for ANY checklist document

@@ -11,6 +11,7 @@ import static com.bestbudz.engine.core.gamerender.Camera.updateCameraPosition;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
 import static com.bestbudz.rendering.AnimationManager.processPendingAnimations;
 import com.bestbudz.rendering.model.Model;
+import com.bestbudz.ui.handling.input.MouseManager;
 import static com.bestbudz.ui.interfaces.Chatbox.handleTextFieldInput;
 import com.bestbudz.util.ColorUtility;
 import com.bestbudz.world.ObjectDef;
@@ -80,7 +81,7 @@ public class GameState extends Client {
 
 			if (loadingStage == 2) {
 
-
+				MouseManager.processMiddleMouseCamera();
 				updateCameraPosition();
 				if (cutsceneActive) {
 					calcCameraPos();

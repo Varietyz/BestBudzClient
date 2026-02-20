@@ -1,0 +1,685 @@
+---
+name: scanner-expansion-workflow
+version: 1.0.0
+type: multi-agent-implementation-workflow
+description: 8-agent orchestrated workflow implementing 23 new scanners from scanner-expansion-blueprint.md
+model: sonnet
+context:
+    - .claude/workspace/scanner-expansion-blueprint.md
+    - root/codebase-validation/core/base-scanner.js
+    - root/codebase-validation/settings.json
+---
+
+THIS WORKFLOW IMPLEMENTS scanner expansion through VERIFY → VALIDATE → ACTION → VERIFY pattern
+
+%% META %%:
+intent: "Implement 23 new language-agnostic scanners following Perceptual-Loop pattern"
+objective: "Working scanners with language awareness, settings integration, and test fixtures"
+context: "Depends on scanner-expansion-blueprint.md analysis completion"
+priority: high
+recursion_limit: 3
+
+# PHASE 0: Setup and Document Pre-Creation
+
+SET artifact_base_path = ".claude/workspace/scanner-expansion-artifacts/"
+SET blueprint_path = ".claude/workspace/scanner-expansion-blueprint.md"
+SET scanner_base_path = "root/codebase-validation/scanners/"
+SET settings_path = "root/codebase-validation/settings.json"
+SET language_specs_path = "root/codebase-validation/core/settings/languages/specs/"
+
+DECLARE core_documents: array
+SET core_documents = [
+    "prerequisite-status.agent-context.md",
+    "implementation-log.agent-context.md",
+    "architecture-decisions.audit-report.md",
+    "scanner-inventory.task-checklist.md",
+    "validation-results.audit-report.md",
+    "workflow-state.task-checklist.md"
+]
+
+FOR EACH document IN core_documents:
+    CREATE artifact_base_path + document WITH empty_template
+
+DECLARE agent_types: object
+SET agent_types.verifier = "forensic-context-verifier"
+SET agent_types.validator = "code-tracer-agent"
+SET agent_types.primary_implementer = "general-purpose"
+SET agent_types.refactor_specialist = "pattern-distiller-agent"
+SET agent_types.compliance_agent = "general-purpose"
+SET agent_types.testing_agent = "general-purpose"
+
+DECLARE agent_sequence_pattern: array
+SET agent_sequence_pattern[0] = agent_types.verifier
+SET agent_sequence_pattern[1] = agent_types.validator
+SET agent_sequence_pattern[2] = agent_types.primary_implementer
+SET agent_sequence_pattern[3] = agent_types.refactor_specialist
+SET agent_sequence_pattern[4] = agent_types.compliance_agent
+SET agent_sequence_pattern[5] = agent_types.testing_agent
+SET agent_sequence_pattern[6] = agent_types.validator
+SET agent_sequence_pattern[7] = agent_types.verifier
+
+DECLARE scanner_categories: object
+SET scanner_categories.solid = ["soc-violations", "srp-violations", "ocp-violations", "lsp-violations", "isp-violations", "dip-violations"]
+SET scanner_categories.anti_patterns = ["production-anti-patterns", "cyclomatic-complexity", "cognitive-complexity", "dead-code"]
+SET scanner_categories.architecture = ["layer-violations", "circular-dependencies", "event-driven-violations"]
+SET scanner_categories.metrics = ["coupling-metrics", "cohesion-metrics"]
+SET scanner_categories.code_smells = ["long-method", "data-clump", "speculative-generality"]
+SET scanner_categories.security = ["security-inheritance", "injection-vulnerabilities"]
+SET scanner_categories.performance = ["n-plus-one-queries", "memory-leak-patterns"]
+SET scanner_categories.documentation = ["api-documentation", "test-coverage-gaps"]
+
+DECLARE priority_matrix: object
+SET priority_matrix.high = ["soc-violations", "srp-violations", "ocp-violations", "dip-violations", "production-anti-patterns", "cyclomatic-complexity", "cognitive-complexity", "layer-violations", "circular-dependencies", "long-method", "injection-vulnerabilities", "n-plus-one-queries"]
+SET priority_matrix.medium = ["lsp-violations", "isp-violations", "dead-code", "event-driven-violations", "coupling-metrics", "cohesion-metrics", "data-clump", "security-inheritance", "memory-leak-patterns"]
+SET priority_matrix.low = ["speculative-generality", "api-documentation", "test-coverage-gaps"]
+
+VALIDATION GATE:
+    ✅ artifact_base_path established
+    ✅ core_documents created (6 documents)
+    ✅ agent_sequence_pattern defined (ev → av → pi → rf → ce → ts → av → ev)
+    ✅ scanner_categories defined (8 categories, 23 scanners)
+    ✅ priority_matrix established (12 high, 9 medium, 3 low)
+
+---
+
+# PHASE 1: Scanner Implementation (8-agent sequence)
+
+## Agent 1: Entry Verifier (ev) - VERIFICATION + DOCUMENTATION
+
+SET agent_1.position = 1
+SET agent_1.type = agent_types.verifier
+SET agent_1.role = "VERIFICATION + DOCUMENTATION"
+
+SET agent_1.focus_points = [
+    "VERIFY blueprint claims against actual codebase structure",
+    "VERIFY BaseScanner class exists at core/base-scanner.js",
+    "VERIFY getSupportedLanguages() method exists in BaseScanner",
+    "VERIFY shouldProcessForLanguage() method exists in BaseScanner",
+    "VERIFY 41 language specs exist in language_specs_path",
+    "VERIFY settings.json structure supports new scanner categories",
+    "VERIFY Perceptual-Loop pattern (FIND→ANALYZE→WRITE→REPORT) implemented",
+    "WRITE baseline state TO prerequisite-status.agent-context.md",
+    "WRITE discoveries TO implementation-log.agent-context.md"
+]
+
+EXECUTE TASK WITH subagent_type: agent_types.verifier, prompt: """
+Phase 1 - Entry Verifier: Verify scanner-expansion-blueprint.md claims against codebase.
+
+VERIFICATION TARGETS:
+1. GLOB "root/codebase-validation/core/base-scanner.js" - verify exists
+2. GREP "getSupportedLanguages" IN base-scanner.js - verify method exists
+3. GREP "shouldProcessForLanguage" IN base-scanner.js - verify method exists
+4. GLOB "root/codebase-validation/core/settings/languages/specs/*.js" - count language specs
+5. READ settings.json - verify structure supports scanner categories
+
+WRITE findings TO prerequisite-status.agent-context.md
+WRITE discoveries TO implementation-log.agent-context.md
+REPORT completion with handoff signal
+"""
+
+SET agent_1.handoff_signal = {
+    "agent_completed": "entry-verifier",
+    "agent_position": 1,
+    "phase": "phase-1",
+    "artifacts_location": artifact_base_path,
+    "orchestrator_action": "ACTIVATE_NEXT_AGENT",
+    "handoff_context": {
+        "phase_status": "complete",
+        "validation_gates_passed": true,
+        "critical_files": [],
+        "key_findings": [],
+        "blockers": []
+    }
+}
+
+VALIDATION GATE:
+    ✅ BaseScanner class verified
+    ✅ Language awareness methods verified
+    ✅ 41 language specs confirmed
+    ✅ Settings structure validated
+    ✅ prerequisite-status.agent-context.md updated
+
+---
+
+## Agent 2: Architecture Validator (av) - VALIDATION + DOCUMENTATION
+
+SET agent_2.position = 2
+SET agent_2.type = agent_types.validator
+SET agent_2.role = "VALIDATION + DOCUMENTATION"
+
+SET agent_2.focus_points = [
+    "TRACE scanner inheritance hierarchy (BaseScanner → Domain scanners)",
+    "ANALYZE registry output format compliance",
+    "FIND language spec applicableScanners field structure",
+    "MAP settings accessor patterns (getSettingSync, getBrowserWindowSettings)",
+    "TRACE error handling patterns (try/catch with cleanup)",
+    "VERIFY file lifecycle pattern (init → run → shutdown)",
+    "WRITE integration analysis TO architecture-decisions.audit-report.md",
+    "WRITE scanner template structure TO scanner-inventory.task-checklist.md"
+]
+
+EXECUTE TASK WITH subagent_type: agent_types.validator, prompt: """
+Phase 1 - Architecture Validator: Trace scanner architecture patterns.
+
+ANALYSIS TARGETS:
+1. TRACE inheritance: BaseScanner → BaseCssScanner, BaseSecurityScanner, etc.
+2. GREP "extends BaseScanner" IN scanners/ - find all scanner classes
+3. READ existing scanner files - extract common patterns
+4. ANALYZE registry output format (VIOLATION_SIMPLE, VIOLATION_COMPLEX)
+5. MAP settings accessor usage across existing scanners
+
+Required scanner template structure:
+- getSupportedLanguages() method
+- analyzeContentPatterns(files) method
+- getName() method
+- getFixSuggestion() method
+
+WRITE architecture analysis TO architecture-decisions.audit-report.md
+WRITE scanner template TO scanner-inventory.task-checklist.md
+REPORT completion with handoff signal
+"""
+
+VALIDATION GATE:
+    ✅ Inheritance hierarchy traced
+    ✅ Scanner template structure defined
+    ✅ Required methods documented
+    ✅ architecture-decisions.audit-report.md updated
+
+---
+
+## Agent 3: Primary Implementer (pi) - ACTION
+
+SET agent_3.position = 3
+SET agent_3.type = agent_types.primary_implementer
+SET agent_3.role = "ACTION"
+
+SET agent_3.implementation_scope = [
+    "soc-violations-scanner.js",
+    "srp-violations-scanner.js",
+    "ocp-violations-scanner.js",
+    "dip-violations-scanner.js",
+    "production-anti-patterns-scanner.js",
+    "cyclomatic-complexity-scanner.js"
+]
+
+SET agent_3.focus_points = [
+    "CREATE SOLID violation scanners (SOC, SRP, OCP, DIP)",
+    "CREATE production anti-patterns scanner",
+    "CREATE cyclomatic complexity scanner",
+    "IMPLEMENT getSupportedLanguages() in each scanner",
+    "IMPLEMENT shouldProcessForLanguage() check in each scanner",
+    "EXTEND settings.json with new scanner configuration"
+]
+
+EXECUTE TASK WITH subagent_type: agent_types.primary_implementer, prompt: """
+Phase 1 - Primary Implementer: Create high-priority scanners.
+
+IMPLEMENTATION TASKS (6 scanners):
+1. CREATE scanners/quality/code/soc-violations-scanner.js
+   - Algorithm: Frame-Based-Reasoning-Loop
+   - Pattern: ANALYZE<Module> → FIND<Responsibilities> → FILTER<SingleConcern>
+
+2. CREATE scanners/quality/code/srp-violations-scanner.js
+   - Algorithm: Change-Reason-Restriction
+   - Pattern: READ<Module> → FIND<ChangeTriggers> → ANALYZE<Reasons>
+
+3. CREATE scanners/quality/code/ocp-violations-scanner.js
+   - Algorithm: Means-Ends-Analysis-Loop
+   - Pattern: FIND<TypeSwitching> → DETECT<Hardcoding>
+
+4. CREATE scanners/quality/code/dip-violations-scanner.js
+   - Algorithm: Dependency-Inversion-Protocol
+   - Pattern: EXTRACT<Concrete-Dependencies> → ANALYZE<LayerViolations>
+
+5. CREATE scanners/quality/code/production-anti-patterns-scanner.js
+   - Algorithm: Production-System-Cycle
+   - Patterns: god-object, feature-envy, primitive-obsession
+
+6. CREATE scanners/quality/code/cyclomatic-complexity-scanner.js
+   - Algorithm: Means-Ends-Analysis-Loop
+   - Threshold: 10 (configurable via settings)
+
+Each scanner MUST:
+- Extend BaseScanner
+- Implement getSupportedLanguages() returning null (all languages)
+- Call shouldProcessForLanguage(filePath) before processing
+- Follow Perceptual-Loop pattern
+- Stay under 150 lines
+
+REPORT completion with handoff signal (scanners_created: 6)
+"""
+
+VALIDATION GATE:
+    ✅ 6 scanners created
+    ✅ All extend BaseScanner
+    ✅ Language awareness implemented
+    ✅ Perceptual-Loop pattern followed
+
+---
+
+## Agent 4: Refactor Specialist (rf) - ACTION
+
+SET agent_4.position = 4
+SET agent_4.type = agent_types.refactor_specialist
+SET agent_4.role = "ACTION"
+
+SET agent_4.implementation_scope = [
+    "cognitive-complexity-scanner.js",
+    "layer-violations-scanner.js",
+    "circular-dependencies-scanner.js",
+    "coupling-metrics-scanner.js"
+]
+
+SET agent_4.refactoring_tasks = [
+    "EXTRACT common parser pattern to helpers/parsers/",
+    "EXTRACT dependency graph builder to helpers/graphs/",
+    "EXTRACT complexity calculator to helpers/complexity/"
+]
+
+EXECUTE TASK WITH subagent_type: agent_types.refactor_specialist, prompt: """
+Phase 1 - Refactor Specialist: Create architecture scanners and extract patterns.
+
+IMPLEMENTATION TASKS (4 scanners):
+1. CREATE scanners/quality/code/cognitive-complexity-scanner.js
+   - Algorithm: Frame-Based-Reasoning-Loop
+   - Nesting penalty calculation
+
+2. CREATE scanners/quality/architecture/layer-violations-scanner.js
+   - Algorithm: Means-Ends-Analysis-Loop
+   - Layer hierarchy: presentation > business > data > infrastructure
+
+3. CREATE scanners/quality/architecture/circular-dependencies-scanner.js
+   - Algorithm: STRIPS-Planning-Loop
+   - Implementation: Tarjan's SCC algorithm
+
+4. CREATE scanners/quality/code/coupling-metrics-scanner.js
+   - Algorithm: Frame-Based-Reasoning-Loop
+   - Metrics: Ca (afferent), Ce (efferent), Instability
+
+REFACTORING TASKS:
+- EXTRACT common graph-building logic to helpers/graphs/dependency-graph-builder.js
+- EXTRACT complexity calculation to helpers/complexity/complexity-calculator.js
+
+REPORT completion with handoff signal (scanners_created: 4, helpers_created: 2)
+"""
+
+VALIDATION GATE:
+    ✅ 4 scanners created
+    ✅ Common patterns extracted to helpers
+    ✅ Code reuse maximized
+
+---
+
+## Agent 5: Compliance Agent (ce) - ACTION
+
+SET agent_5.position = 5
+SET agent_5.type = agent_types.compliance_agent
+SET agent_5.role = "ACTION"
+
+SET agent_5.implementation_scope = [
+    "injection-vulnerabilities-scanner.js",
+    "security-inheritance-scanner.js",
+    "n-plus-one-queries-scanner.js",
+    "memory-leak-patterns-scanner.js"
+]
+
+SET agent_5.compliance_checks = [
+    "DEV-RULES.md: RequireTeardownPath compliance",
+    "DEV-RULES.md: IntentionEmissionProtocol compliance",
+    "Scanner file size <= 150 lines",
+    "Exception-safe cleanup patterns"
+]
+
+EXECUTE TASK WITH subagent_type: agent_types.compliance_agent, prompt: """
+Phase 1 - Compliance Agent: Create security and performance scanners.
+
+IMPLEMENTATION TASKS (4 scanners):
+1. CREATE scanners/security/injection-vulnerabilities-scanner.js
+   - CRITICAL severity
+   - Detect: SQL concatenation, eval usage, command injection
+   - Algorithm: ELIZA-Pattern-Matching
+
+2. CREATE scanners/security/security-inheritance-scanner.js
+   - Detect: Security downgrades in child classes
+   - Algorithm: Security-Inheritance-Protocol
+
+3. CREATE scanners/performance/n-plus-one-queries-scanner.js
+   - Detect: Database queries inside loops
+   - Algorithm: Script-Application-Loop
+
+4. CREATE scanners/performance/memory-leak-patterns-scanner.js
+   - Detect: Unclosed resources, event listener leaks
+   - Algorithm: State-Snapshot-Recovery-Protocol
+
+COMPLIANCE VERIFICATION:
+- VERIFY each scanner has init → run → shutdown lifecycle
+- VERIFY exception-safe cleanup in all scanners
+- VERIFY file size <= 150 lines
+
+REPORT completion with handoff signal (scanners_created: 4)
+"""
+
+VALIDATION GATE:
+    ✅ 4 security/performance scanners created
+    ✅ DEV-RULES compliance verified
+    ✅ File size constraints met
+
+---
+
+## Agent 6: Testing Agent (ts) - ACTION
+
+SET agent_6.position = 6
+SET agent_6.type = agent_types.testing_agent
+SET agent_6.role = "ACTION"
+
+SET agent_6.implementation_scope = [
+    "lsp-violations-scanner.js",
+    "isp-violations-scanner.js",
+    "dead-code-scanner.js",
+    "event-driven-violations-scanner.js",
+    "cohesion-metrics-scanner.js",
+    "long-method-scanner.js",
+    "data-clump-scanner.js",
+    "speculative-generality-scanner.js",
+    "api-documentation-scanner.js",
+    "test-coverage-gaps-scanner.js"
+]
+
+SET agent_6.testing_tasks = [
+    "CREATE test fixtures in test-harness/projects/",
+    "UPDATE language specs with applicableScanners arrays",
+    "EXECUTE npm run verify-codebase",
+    "VALIDATE scanner output format"
+]
+
+EXECUTE TASK WITH subagent_type: agent_types.testing_agent, prompt: """
+Phase 1 - Testing Agent: Create remaining scanners and test fixtures.
+
+IMPLEMENTATION TASKS (10 scanners):
+1. CREATE scanners/quality/code/lsp-violations-scanner.js
+2. CREATE scanners/quality/code/isp-violations-scanner.js
+3. CREATE scanners/quality/code/dead-code-scanner.js
+4. CREATE scanners/quality/architecture/event-driven-violations-scanner.js
+5. CREATE scanners/quality/code/cohesion-metrics-scanner.js
+6. CREATE scanners/quality/code/long-method-scanner.js
+7. CREATE scanners/quality/code/data-clump-scanner.js
+8. CREATE scanners/quality/code/speculative-generality-scanner.js
+9. CREATE scanners/quality/documentation/api-documentation-scanner.js
+10. CREATE scanners/quality/documentation/test-coverage-gaps-scanner.js
+
+TESTING TASKS:
+- CREATE test fixtures in test-harness/projects/ for each scanner
+- UPDATE javascript.js, python.js, java.js specs with applicableScanners
+- EXECUTE npm run verify-codebase on all new scanner files
+- VERIFY good examples produce fewer violations than bad
+
+REPORT completion with handoff signal (scanners_created: 10, tests_passing: true)
+"""
+
+VALIDATION GATE:
+    ✅ 10 remaining scanners created
+    ✅ Test fixtures created
+    ✅ Language specs updated
+    ✅ npm run verify-codebase passes
+
+---
+
+## Agent 7: Exit Validator (av) - VALIDATION + DOCUMENTATION (SAME TYPE as Agent 2)
+
+SET agent_7.position = 7
+SET agent_7.type = agent_types.validator
+SET agent_7.role = "VALIDATION + DOCUMENTATION"
+
+SET agent_7.focus_points = [
+    "ANALYZE post-implementation architecture state",
+    "TRACE all 23 scanners inherit from BaseScanner",
+    "VERIFY all scanners implement language awareness",
+    "VERIFY settings schema complete and consistent",
+    "VERIFY all language specs updated",
+    "VERIFY no circular dependencies in scanner modules",
+    "WRITE analysis results TO validation-results.audit-report.md"
+]
+
+EXECUTE TASK WITH subagent_type: agent_types.validator, prompt: """
+Phase 1 - Exit Validator: Validate post-implementation architecture.
+
+VALIDATION TARGETS:
+1. GLOB "scanners/**/*-scanner.js" - count new scanners (expect 23)
+2. GREP "extends BaseScanner" IN new scanners - verify all inherit correctly
+3. GREP "getSupportedLanguages" IN new scanners - verify all implement
+4. GREP "shouldProcessForLanguage" IN new scanners - verify all call
+5. READ settings.json - verify schema complete
+6. GLOB "specs/*.js" - verify applicableScanners arrays updated
+7. ANALYZE dependency graph - verify no circular dependencies
+
+WRITE validation results TO validation-results.audit-report.md
+WRITE integration status TO workflow-state.task-checklist.md
+REPORT completion with handoff signal
+"""
+
+VALIDATION GATE:
+    ✅ 23 scanners architecturally validated
+    ✅ All scanners inherit correctly
+    ✅ Language awareness implemented
+    ✅ Settings schema complete
+
+---
+
+## Agent 8: Completion Verifier (ev) - VERIFICATION + DOCUMENTATION (SAME TYPE as Agent 1)
+
+SET agent_8.position = 8
+SET agent_8.type = agent_types.verifier
+SET agent_8.role = "VERIFICATION + DOCUMENTATION"
+
+SET agent_8.focus_points = [
+    "VERIFY phase completion against blueprint requirements",
+    "VERIFY all 23 scanners from blueprint implemented",
+    "VERIFY priority matrix respected (high → medium → low)",
+    "VERIFY each scanner follows Perceptual-Loop pattern",
+    "VERIFY language awareness bidirectional mapping complete",
+    "CREATE phase handoff with final summary",
+    "WRITE completion status TO workflow-state.task-checklist.md"
+]
+
+EXECUTE TASK WITH subagent_type: agent_types.verifier, prompt: """
+Phase 1 - Completion Verifier: Final verification against blueprint.
+
+VERIFICATION CHECKLIST:
+1. VERIFY 23 scanners implemented (compare against scanner_categories)
+2. VERIFY priority order respected:
+   - High priority (12): soc, srp, ocp, dip, production-anti-patterns,
+     cyclomatic-complexity, cognitive-complexity, layer-violations,
+     circular-dependencies, long-method, injection-vulnerabilities, n-plus-one-queries
+   - Medium priority (9): lsp, isp, dead-code, event-driven, coupling,
+     cohesion, data-clump, security-inheritance, memory-leak
+   - Low priority (3): speculative-generality, api-documentation, test-coverage-gaps
+
+3. VERIFY Perceptual-Loop pattern in each scanner:
+   - FIND<Target-Files>
+   - ANALYZE<Content-Patterns>
+   - WRITE<Registry-Output>
+   - REPORT<Summary>
+
+4. VERIFY bidirectional language mapping:
+   - Scanner declares getSupportedLanguages()
+   - Language spec includes scanner in applicableScanners
+
+5. CREATE final summary:
+   - gap_analysis: what was planned but not done
+   - delivered: successfully implemented components
+   - recommendations: actionable next steps
+
+WRITE final status TO workflow-state.task-checklist.md
+REPORT "PHASE_COMPLETE" with handoff signal
+"""
+
+SET agent_8.handoff_signal = {
+    "agent_completed": "completion-verifier",
+    "agent_position": 8,
+    "phase": "phase-1",
+    "artifacts_location": artifact_base_path,
+    "orchestrator_action": "WORKFLOW_COMPLETE",
+    "handoff_context": {
+        "phase_status": "complete",
+        "validation_gates_passed": true,
+        "critical_files": [],
+        "key_findings": ["23 scanners implemented", "All validation gates passed"],
+        "blockers": []
+    }
+}
+
+VALIDATION GATE:
+    ✅ All 23 scanners verified
+    ✅ Blueprint requirements met
+    ✅ Priority matrix respected
+    ✅ Final summary created
+    ✅ workflow-state.task-checklist.md shows 100% complete
+
+---
+
+# PHASE 2: Finalization
+
+ANALYZE gaps IN implementation
+WRITE delivered TO artifact_base_path + "/final-summary.json"
+WRITE recommendations TO artifact_base_path + "/final-summary.json"
+
+DECLARE final_summary: object
+SET final_summary.gap_analysis = []
+SET final_summary.delivered = ["23 scanners implemented", "8 settings categories", "41 language specs updated"]
+SET final_summary.already_implemented = ["BaseScanner language awareness", "Settings accessor pattern"]
+SET final_summary.recommendations = ["Run full test harness validation", "Performance benchmark on large codebases"]
+
+WRITE final_summary TO artifact_base_path + "/final-summary.json"
+
+REPORT "WORKFLOW_COMPLETE"
+
+---
+
+# Orchestration Coordination Sequence
+
+DECLARE coordination_sequence: array
+
+APPEND "ORCHESTRATOR: Pre-create 6 artifact documents in " + artifact_base_path TO coordination_sequence
+APPEND " ↓ CREATE prerequisite-status.agent-context.md" TO coordination_sequence
+APPEND " ↓ CREATE implementation-log.agent-context.md" TO coordination_sequence
+APPEND " ↓ CREATE architecture-decisions.audit-report.md" TO coordination_sequence
+APPEND " ↓ CREATE scanner-inventory.task-checklist.md" TO coordination_sequence
+APPEND " ↓ CREATE validation-results.audit-report.md" TO coordination_sequence
+APPEND " ↓ CREATE workflow-state.task-checklist.md" TO coordination_sequence
+APPEND " ↓" TO coordination_sequence
+APPEND "ORCHESTRATOR: EXECUTE Task(subagent_type='forensic-context-verifier', prompt='...')" TO coordination_sequence
+APPEND " ↓ Agent 1 (ev): Entry Verifier - Verify blueprint claims" TO coordination_sequence
+APPEND " ↓" TO coordination_sequence
+APPEND "ORCHESTRATOR: EXECUTE Task(subagent_type='code-tracer-agent', prompt='...')" TO coordination_sequence
+APPEND " ↓ Agent 2 (av): Architecture Validator - Trace patterns" TO coordination_sequence
+APPEND " ↓" TO coordination_sequence
+APPEND "ORCHESTRATOR: EXECUTE Task(subagent_type='general-purpose', prompt='...')" TO coordination_sequence
+APPEND " ↓ Agent 3 (pi): Primary Implementer - Create 6 SOLID/analysis scanners" TO coordination_sequence
+APPEND " ↓" TO coordination_sequence
+APPEND "ORCHESTRATOR: EXECUTE Task(subagent_type='pattern-distiller-agent', prompt='...')" TO coordination_sequence
+APPEND " ↓ Agent 4 (rf): Refactor Specialist - Create 4 architecture scanners" TO coordination_sequence
+APPEND " ↓" TO coordination_sequence
+APPEND "ORCHESTRATOR: EXECUTE Task(subagent_type='general-purpose', prompt='...')" TO coordination_sequence
+APPEND " ↓ Agent 5 (ce): Compliance Agent - Create 4 security/performance scanners" TO coordination_sequence
+APPEND " ↓" TO coordination_sequence
+APPEND "ORCHESTRATOR: EXECUTE Task(subagent_type='general-purpose', prompt='...')" TO coordination_sequence
+APPEND " ↓ Agent 6 (ts): Testing Agent - Create 10 remaining scanners + tests" TO coordination_sequence
+APPEND " ↓" TO coordination_sequence
+APPEND "ORCHESTRATOR: EXECUTE Task(subagent_type='code-tracer-agent', prompt='...')" TO coordination_sequence
+APPEND " ↓ Agent 7 (av): Exit Validator - Validate architecture (SAME as Agent 2)" TO coordination_sequence
+APPEND " ↓" TO coordination_sequence
+APPEND "ORCHESTRATOR: EXECUTE Task(subagent_type='forensic-context-verifier', prompt='...')" TO coordination_sequence
+APPEND " ↓ Agent 8 (ev): Completion Verifier - Final verification (SAME as Agent 1)" TO coordination_sequence
+APPEND " ↓" TO coordination_sequence
+APPEND "WORKFLOW COMPLETE: 23 scanners implemented" TO coordination_sequence
+
+---
+
+# Handoff Signal Template
+
+DECLARE handoff_template: object
+SET handoff_template = {
+    "agent_completed": "{agent_name}",
+    "agent_position": N,
+    "phase": "phase-1",
+    "artifacts_location": artifact_base_path,
+    "orchestrator_action": "ACTIVATE_NEXT_AGENT | PAUSE_FOR_USER | WORKFLOW_COMPLETE",
+    "handoff_context": {
+        "phase_status": "complete | incomplete",
+        "validation_gates_passed": true,
+        "critical_files": ["file:line references"],
+        "key_findings": ["Discovery 1", "Discovery 2"],
+        "blockers": [],
+        "scanners_created": 0,
+        "next_agent_focus": "Specific focus for next agent"
+    }
+}
+
+---
+
+# Workflow Principles
+
+DECLARE workflow_principles: array
+
+APPEND "Grounded in codebase reality (entry-verifier discovers actual structure)" TO workflow_principles
+APPEND "Architecturally sound (architecture-validator traces patterns)" TO workflow_principles
+APPEND "Incrementally implemented (primary-implementer builds in priority order)" TO workflow_principles
+APPEND "Refactored for reuse (refactor-specialist extracts common patterns)" TO workflow_principles
+APPEND "Compliance enforced (compliance-agent validates DEV-RULES)" TO workflow_principles
+APPEND "Thoroughly tested (testing-agent creates fixtures and validates)" TO workflow_principles
+APPEND "Double-validated (exit-validator confirms integration)" TO workflow_principles
+APPEND "Blueprint-complete (completion-verifier confirms all requirements)" TO workflow_principles
+APPEND "Fully automated (orchestrator handles handoffs via Task tool)" TO workflow_principles
+APPEND "Context-aware (handoff signals preserve key findings)" TO workflow_principles
+APPEND "Self-recovering (workflow-state enables resumption)" TO workflow_principles
+
+---
+
+# ALWAYS / NEVER Rules
+
+ALWAYS READ workspace_config FROM config_file
+ALWAYS SET artifact_paths FROM workspace_zones
+ALWAYS CREATE shared_documents BEFORE phase_1
+ALWAYS EDIT documents IN_PLACE
+NEVER CREATE new_document_versions
+NEVER WRITE duplicate_findings TO documents
+
+ALWAYS EXECUTE agents WITH Task tool
+NEVER EXECUTE agent_simulation IN orchestrator
+ALWAYS VERIFY agent_sequence_pattern (ev → av → pi → rf → ce → ts → av → ev)
+ALWAYS WRITE findings FROM documentation_agents (positions 1, 2, 7, 8)
+NEVER WRITE findings FROM action_agents (positions 3, 4, 5, 6)
+ALWAYS APPEND handoff_context TO agent_signal
+NEVER GOTO next_agent WITHOUT validation_gate
+
+ALWAYS VERIFY prerequisites BEFORE phase_start
+ALWAYS WRITE failures TO workflow-state BEFORE handoff
+ALWAYS CREATE final_summary FROM last_agent
+NEVER GOTO next_phase WITHOUT phase_completion_verification
+
+ALWAYS use GLOB for file discovery
+NEVER hardcode file paths
+ALWAYS implement getSupportedLanguages() in every scanner
+ALWAYS call shouldProcessForLanguage() before processing files
+ALWAYS follow Perceptual-Loop pattern (FIND→ANALYZE→WRITE→REPORT)
+ALWAYS keep scanner files <= 150 lines
+ALWAYS run npm run verify-codebase after code changes
+
+---
+
+# Success Criteria
+
+VALIDATION GATE (Final):
+    ✅ All 8 agents completed in sequence (ev → av → pi → rf → ce → ts → av → ev)
+    ✅ 23 scanners implemented per blueprint
+    ✅ Priority matrix respected
+    ✅ Perceptual-Loop pattern followed in all scanners
+    ✅ Language awareness integrated (getSupportedLanguages, shouldProcessForLanguage)
+    ✅ Settings schema extended with 8 new categories
+    ✅ 41 language specs updated with applicableScanners
+    ✅ Test fixtures created in test-harness/
+    ✅ npm run verify-codebase passes
+    ✅ DEV-RULES compliance confirmed
+    ✅ All 6 shared documents updated
+    ✅ Handoff protocol executed correctly
+    ✅ Final summary created

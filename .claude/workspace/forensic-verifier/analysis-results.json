@@ -1,0 +1,953 @@
+{
+  "fileLineCounts": [
+    {
+      "path": "src\\main\\cli-bridge\\cli-bridge.ts",
+      "lines": 331
+    },
+    {
+      "path": "src\\main\\cli-bridge\\index.ts",
+      "lines": 10
+    },
+    {
+      "path": "src\\main\\cli-bridge\\json-rpc-server.ts",
+      "lines": 210
+    },
+    {
+      "path": "src\\main\\database\\database.ts",
+      "lines": 255
+    },
+    {
+      "path": "src\\main\\database\\index.ts",
+      "lines": 11
+    },
+    {
+      "path": "src\\main\\database\\ipc-handlers.ts",
+      "lines": 100
+    },
+    {
+      "path": "src\\main\\database\\migration-runner.ts",
+      "lines": 271
+    },
+    {
+      "path": "src\\main\\database\\migrations\\001_initial.ts",
+      "lines": 53
+    },
+    {
+      "path": "src\\main\\database\\migrations\\002_settings.ts",
+      "lines": 35
+    },
+    {
+      "path": "src\\main\\database\\migrations\\index.ts",
+      "lines": 55
+    },
+    {
+      "path": "src\\main\\hardware\\hardware-db.ts",
+      "lines": 78
+    },
+    {
+      "path": "src\\main\\hardware\\hardware-service.ts",
+      "lines": 347
+    },
+    {
+      "path": "src\\main\\hardware\\index.ts",
+      "lines": 9
+    },
+    {
+      "path": "src\\main\\hardware\\ipc-handlers.ts",
+      "lines": 63
+    },
+    {
+      "path": "src\\main\\main.ts",
+      "lines": 405
+    },
+    {
+      "path": "src\\main\\preload.ts",
+      "lines": 389
+    },
+    {
+      "path": "src\\main\\settings\\gpu-settings.ts",
+      "lines": 109
+    },
+    {
+      "path": "src\\main\\settings\\index.ts",
+      "lines": 10
+    },
+    {
+      "path": "src\\main\\settings\\ipc-handlers.ts",
+      "lines": 40
+    },
+    {
+      "path": "src\\main\\settings\\settings-store.ts",
+      "lines": 175
+    },
+    {
+      "path": "src\\main\\terminal\\index.ts",
+      "lines": 10
+    },
+    {
+      "path": "src\\main\\terminal\\internal-terminal-manager.ts",
+      "lines": 520
+    },
+    {
+      "path": "src\\main\\terminal\\ipc-handlers.ts",
+      "lines": 231
+    },
+    {
+      "path": "src\\main\\terminal\\preload.ts",
+      "lines": 337
+    },
+    {
+      "path": "src\\main\\terminal\\terminal-process.ts",
+      "lines": 241
+    },
+    {
+      "path": "src\\main\\terminal\\terminal-transfer.ts",
+      "lines": 73
+    },
+    {
+      "path": "src\\main\\terminal\\terminal-window.ts",
+      "lines": 560
+    },
+    {
+      "path": "src\\main\\terminal-paths\\index.ts",
+      "lines": 9
+    },
+    {
+      "path": "src\\main\\terminal-paths\\ipc-handlers.ts",
+      "lines": 89
+    },
+    {
+      "path": "src\\main\\terminal-paths\\terminal-paths-store.ts",
+      "lines": 209
+    },
+    {
+      "path": "src\\renderer\\components\\app-title.ts",
+      "lines": 114
+    },
+    {
+      "path": "src\\renderer\\components\\confirm-dialog.ts",
+      "lines": 366
+    },
+    {
+      "path": "src\\renderer\\components\\draggable-modal.ts",
+      "lines": 494
+    },
+    {
+      "path": "src\\renderer\\components\\form-dialog.ts",
+      "lines": 449
+    },
+    {
+      "path": "src\\renderer\\components\\geometric-background.ts",
+      "lines": 411
+    },
+    {
+      "path": "src\\renderer\\components\\hardware-panel.ts",
+      "lines": 340
+    },
+    {
+      "path": "src\\renderer\\components\\header-bar.ts",
+      "lines": 238
+    },
+    {
+      "path": "src\\renderer\\components\\icons.ts",
+      "lines": 108
+    },
+    {
+      "path": "src\\renderer\\components\\index.ts",
+      "lines": 23
+    },
+    {
+      "path": "src\\renderer\\components\\logo.ts",
+      "lines": 99
+    },
+    {
+      "path": "src\\renderer\\components\\popover.ts",
+      "lines": 618
+    },
+    {
+      "path": "src\\renderer\\components\\settings-panel.ts",
+      "lines": 379
+    },
+    {
+      "path": "src\\renderer\\components\\status-indicator.ts",
+      "lines": 107
+    },
+    {
+      "path": "src\\renderer\\components\\taskbar.ts",
+      "lines": 479
+    },
+    {
+      "path": "src\\renderer\\components\\toast.ts",
+      "lines": 228
+    },
+    {
+      "path": "src\\renderer\\main.ts",
+      "lines": 324
+    },
+    {
+      "path": "src\\renderer\\pages\\index.ts",
+      "lines": 9
+    },
+    {
+      "path": "src\\renderer\\router\\index.ts",
+      "lines": 7
+    },
+    {
+      "path": "src\\renderer\\router\\router.ts",
+      "lines": 176
+    },
+    {
+      "path": "src\\renderer\\services\\graphics-service.ts",
+      "lines": 67
+    },
+    {
+      "path": "src\\renderer\\stores\\app-store.ts",
+      "lines": 289
+    },
+    {
+      "path": "src\\renderer\\stores\\index.ts",
+      "lines": 9
+    },
+    {
+      "path": "src\\renderer\\terminal\\components\\internal-terminal-modal.ts",
+      "lines": 232
+    },
+    {
+      "path": "src\\renderer\\terminal\\components\\tabbed-terminal-container.ts",
+      "lines": 236
+    },
+    {
+      "path": "src\\renderer\\terminal\\components\\terminal-header.ts",
+      "lines": 267
+    },
+    {
+      "path": "src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "lines": 627
+    },
+    {
+      "path": "src\\renderer\\terminal\\components\\terminal-view.ts",
+      "lines": 199
+    },
+    {
+      "path": "src\\renderer\\terminal\\internal-terminal-manager.ts",
+      "lines": 289
+    },
+    {
+      "path": "src\\renderer\\terminal\\terminal-main.ts",
+      "lines": 207
+    },
+    {
+      "path": "src\\renderer\\utils\\dom-factory.ts",
+      "lines": 921
+    },
+    {
+      "path": "src\\renderer\\utils\\index.ts",
+      "lines": 22
+    },
+    {
+      "path": "src\\renderer\\utils\\motion.ts",
+      "lines": 525
+    },
+    {
+      "path": "src\\shared\\config\\features.ts",
+      "lines": 74
+    },
+    {
+      "path": "src\\shared\\constants\\app.ts",
+      "lines": 31
+    },
+    {
+      "path": "src\\shared\\constants\\index.ts",
+      "lines": 8
+    },
+    {
+      "path": "src\\shared\\ipc-channels.ts",
+      "lines": 225
+    },
+    {
+      "path": "src\\shared\\types\\index.ts",
+      "lines": 194
+    }
+  ],
+  "oversizedFiles": [
+    {
+      "path": "src\\main\\cli-bridge\\cli-bridge.ts",
+      "lines": 331,
+      "excess": 181
+    },
+    {
+      "path": "src\\main\\cli-bridge\\json-rpc-server.ts",
+      "lines": 210,
+      "excess": 60
+    },
+    {
+      "path": "src\\main\\database\\database.ts",
+      "lines": 255,
+      "excess": 105
+    },
+    {
+      "path": "src\\main\\database\\migration-runner.ts",
+      "lines": 271,
+      "excess": 121
+    },
+    {
+      "path": "src\\main\\hardware\\hardware-service.ts",
+      "lines": 347,
+      "excess": 197
+    },
+    {
+      "path": "src\\main\\main.ts",
+      "lines": 405,
+      "excess": 255
+    },
+    {
+      "path": "src\\main\\preload.ts",
+      "lines": 389,
+      "excess": 239
+    },
+    {
+      "path": "src\\main\\settings\\settings-store.ts",
+      "lines": 175,
+      "excess": 25
+    },
+    {
+      "path": "src\\main\\terminal\\internal-terminal-manager.ts",
+      "lines": 520,
+      "excess": 370
+    },
+    {
+      "path": "src\\main\\terminal\\ipc-handlers.ts",
+      "lines": 231,
+      "excess": 81
+    },
+    {
+      "path": "src\\main\\terminal\\preload.ts",
+      "lines": 337,
+      "excess": 187
+    },
+    {
+      "path": "src\\main\\terminal\\terminal-process.ts",
+      "lines": 241,
+      "excess": 91
+    },
+    {
+      "path": "src\\main\\terminal\\terminal-window.ts",
+      "lines": 560,
+      "excess": 410
+    },
+    {
+      "path": "src\\main\\terminal-paths\\terminal-paths-store.ts",
+      "lines": 209,
+      "excess": 59
+    },
+    {
+      "path": "src\\renderer\\components\\confirm-dialog.ts",
+      "lines": 366,
+      "excess": 216
+    },
+    {
+      "path": "src\\renderer\\components\\draggable-modal.ts",
+      "lines": 494,
+      "excess": 344
+    },
+    {
+      "path": "src\\renderer\\components\\form-dialog.ts",
+      "lines": 449,
+      "excess": 299
+    },
+    {
+      "path": "src\\renderer\\components\\geometric-background.ts",
+      "lines": 411,
+      "excess": 261
+    },
+    {
+      "path": "src\\renderer\\components\\hardware-panel.ts",
+      "lines": 340,
+      "excess": 190
+    },
+    {
+      "path": "src\\renderer\\components\\header-bar.ts",
+      "lines": 238,
+      "excess": 88
+    },
+    {
+      "path": "src\\renderer\\components\\popover.ts",
+      "lines": 618,
+      "excess": 468
+    },
+    {
+      "path": "src\\renderer\\components\\settings-panel.ts",
+      "lines": 379,
+      "excess": 229
+    },
+    {
+      "path": "src\\renderer\\components\\taskbar.ts",
+      "lines": 479,
+      "excess": 329
+    },
+    {
+      "path": "src\\renderer\\components\\toast.ts",
+      "lines": 228,
+      "excess": 78
+    },
+    {
+      "path": "src\\renderer\\main.ts",
+      "lines": 324,
+      "excess": 174
+    },
+    {
+      "path": "src\\renderer\\router\\router.ts",
+      "lines": 176,
+      "excess": 26
+    },
+    {
+      "path": "src\\renderer\\stores\\app-store.ts",
+      "lines": 289,
+      "excess": 139
+    },
+    {
+      "path": "src\\renderer\\terminal\\components\\internal-terminal-modal.ts",
+      "lines": 232,
+      "excess": 82
+    },
+    {
+      "path": "src\\renderer\\terminal\\components\\tabbed-terminal-container.ts",
+      "lines": 236,
+      "excess": 86
+    },
+    {
+      "path": "src\\renderer\\terminal\\components\\terminal-header.ts",
+      "lines": 267,
+      "excess": 117
+    },
+    {
+      "path": "src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "lines": 627,
+      "excess": 477
+    },
+    {
+      "path": "src\\renderer\\terminal\\components\\terminal-view.ts",
+      "lines": 199,
+      "excess": 49
+    },
+    {
+      "path": "src\\renderer\\terminal\\internal-terminal-manager.ts",
+      "lines": 289,
+      "excess": 139
+    },
+    {
+      "path": "src\\renderer\\terminal\\terminal-main.ts",
+      "lines": 207,
+      "excess": 57
+    },
+    {
+      "path": "src\\renderer\\utils\\dom-factory.ts",
+      "lines": 921,
+      "excess": 771
+    },
+    {
+      "path": "src\\renderer\\utils\\motion.ts",
+      "lines": 525,
+      "excess": 375
+    },
+    {
+      "path": "src\\shared\\ipc-channels.ts",
+      "lines": 225,
+      "excess": 75
+    },
+    {
+      "path": "src\\shared\\types\\index.ts",
+      "lines": 194,
+      "excess": 44
+    }
+  ],
+  "importAnalysis": [
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\cli-bridge\\cli-bridge.ts",
+      "type": "parent-import",
+      "line": 13
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\database\\ipc-handlers.ts",
+      "type": "parent-import",
+      "line": 9
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\database\\migrations\\001_initial.ts",
+      "type": "parent-import",
+      "line": 9
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\database\\migrations\\002_settings.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\database\\migrations\\index.ts",
+      "type": "parent-import",
+      "line": 10
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\hardware\\hardware-db.ts",
+      "type": "parent-import",
+      "line": 11
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\hardware\\hardware-service.ts",
+      "type": "parent-import",
+      "line": 35
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\hardware\\ipc-handlers.ts",
+      "type": "parent-import",
+      "line": 9
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\main.ts",
+      "type": "parent-import",
+      "line": 10
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\main.ts",
+      "type": "parent-import",
+      "line": 11
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\main.ts",
+      "type": "parent-import",
+      "line": 12
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\preload.ts",
+      "type": "parent-import",
+      "line": 10
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\preload.ts",
+      "type": "parent-import",
+      "line": 20
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\settings\\ipc-handlers.ts",
+      "type": "parent-import",
+      "line": 9
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\settings\\ipc-handlers.ts",
+      "type": "parent-import",
+      "line": 10
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\settings\\settings-store.ts",
+      "type": "parent-import",
+      "line": 9
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\settings\\settings-store.ts",
+      "type": "parent-import",
+      "line": 10
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal\\internal-terminal-manager.ts",
+      "type": "parent-import",
+      "line": 10
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal\\ipc-handlers.ts",
+      "type": "parent-import",
+      "line": 10
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal\\preload.ts",
+      "type": "parent-import",
+      "line": 9
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal\\preload.ts",
+      "type": "parent-import",
+      "line": 10
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal\\terminal-transfer.ts",
+      "type": "parent-import",
+      "line": 9
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal\\terminal-window.ts",
+      "type": "parent-import",
+      "line": 11
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal-paths\\ipc-handlers.ts",
+      "type": "parent-import",
+      "line": 9
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal-paths\\ipc-handlers.ts",
+      "type": "parent-import",
+      "line": 10
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal-paths\\terminal-paths-store.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal-paths\\terminal-paths-store.ts",
+      "type": "parent-import",
+      "line": 9
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\app-title.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\app-title.ts",
+      "type": "parent-import",
+      "line": 10
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\confirm-dialog.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\form-dialog.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\geometric-background.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\hardware-panel.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\hardware-panel.ts",
+      "type": "parent-import",
+      "line": 10
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\popover.ts",
+      "type": "parent-import",
+      "line": 11
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\settings-panel.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\settings-panel.ts",
+      "type": "parent-import",
+      "line": 11
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\settings-panel.ts",
+      "type": "parent-import",
+      "line": 19
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\status-indicator.ts",
+      "type": "parent-import",
+      "line": 7
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\status-indicator.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\status-indicator.ts",
+      "type": "parent-import",
+      "line": 9
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\toast.ts",
+      "type": "parent-import",
+      "line": 7
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\main.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\main.ts",
+      "type": "parent-import",
+      "line": 13
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\services\\graphics-service.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\stores\\app-store.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\components\\internal-terminal-modal.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\components\\internal-terminal-modal.ts",
+      "type": "parent-import",
+      "line": 12
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\components\\tabbed-terminal-container.ts",
+      "type": "parent-import",
+      "line": 9
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "type": "parent-import",
+      "line": 8
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "type": "parent-import",
+      "line": 10
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "type": "parent-import",
+      "line": 11
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "type": "parent-import",
+      "line": 12
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\internal-terminal-manager.ts",
+      "type": "parent-import",
+      "line": 9
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\terminal-main.ts",
+      "type": "parent-import",
+      "line": 11
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\utils\\dom-factory.ts",
+      "type": "parent-import",
+      "line": 8
+    }
+  ],
+  "classAnalysis": [
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\cli-bridge\\cli-bridge.ts",
+      "className": "CliBridge",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\cli-bridge\\json-rpc-server.ts",
+      "className": "JsonRpcServer",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\database\\database.ts",
+      "className": "DatabaseService",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\database\\migration-runner.ts",
+      "className": "MigrationRunner",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\hardware\\hardware-service.ts",
+      "className": "HardwareService",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\settings\\settings-store.ts",
+      "className": "SettingsStoreService",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal\\internal-terminal-manager.ts",
+      "className": "InternalTerminalManager",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal\\terminal-process.ts",
+      "className": "TerminalProcess",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal\\terminal-window.ts",
+      "className": "TerminalWindowManager",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\main\\terminal-paths\\terminal-paths-store.ts",
+      "className": "TerminalPathsStoreService",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\app-title.ts",
+      "className": "AppTitle",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\confirm-dialog.ts",
+      "className": "ConfirmDialog",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\draggable-modal.ts",
+      "className": "DraggableModal",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\form-dialog.ts",
+      "className": "FormDialog",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\geometric-background.ts",
+      "className": "GeometricBackground",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\hardware-panel.ts",
+      "className": "HardwarePanel",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "className": "HeaderBar",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\logo.ts",
+      "className": "Logo",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\popover.ts",
+      "className": "Popover",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\popover.ts",
+      "className": "to",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\popover.ts",
+      "className": "from",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\settings-panel.ts",
+      "className": "SettingsPanel",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\status-indicator.ts",
+      "className": "StatusIndicator",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "className": "Taskbar",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\components\\toast.ts",
+      "className": "ToastManager",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\router\\router.ts",
+      "className": "Router",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\stores\\app-store.ts",
+      "className": "AppStoreClass",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\components\\internal-terminal-modal.ts",
+      "className": "InternalTerminalModal",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\components\\tabbed-terminal-container.ts",
+      "className": "TabbedTerminalContainer",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "className": "TerminalHeader",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "className": "TerminalSidebar",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-view.ts",
+      "className": "TerminalView",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\terminal\\internal-terminal-manager.ts",
+      "className": "InternalTerminalManagerClass",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\utils\\dom-factory.ts",
+      "className": "DOMFactoryClass",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\utils\\dom-factory.ts",
+      "className": "and",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\utils\\dom-factory.ts",
+      "className": "for",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\utils\\motion.ts",
+      "className": "MotionManagerClass",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\utils\\motion.ts",
+      "className": "if",
+      "extends": null
+    },
+    {
+      "file": "D:\\GIT\\archlab\\root\\archlab-ide\\src\\renderer\\utils\\motion.ts",
+      "className": "for",
+      "extends": null
+    }
+  ]
+}

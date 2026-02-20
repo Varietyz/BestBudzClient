@@ -1,0 +1,244 @@
+{
+  "phase": "3-semantic-overlaps",
+  "timestamp": "2025-12-31T00:00:00Z",
+  "semanticGroups": {
+    "formatting": {
+      "lineLength": {
+        "purpose": "Maximum characters per line",
+        "canonicalRule": "rules.formatting.lineLength",
+        "targetValue": 120,
+        "toolVariations": [
+          {"tool": "prettier", "param": "printWidth", "currentPath": "tools.toolMappings.prettier.printWidth", "status": "mapped"},
+          {"tool": "eslint", "param": "max-len", "currentPath": "tools.toolMappings.eslint.max-len", "status": "mapped"},
+          {"tool": "black", "param": "line-length", "currentPath": "tools.toolMappings.black.line-length", "status": "mapped"},
+          {"tool": "isort", "param": "line_length", "currentPath": "tools.toolMappings.isort.line_length", "status": "mapped"},
+          {"tool": "ruff", "param": "line-length", "currentPath": "tools.toolMappings.ruff.line-length", "status": "mapped"},
+          {"tool": "rustfmt", "param": "max_width", "currentPath": "tools.toolMappings.rustfmt.max_width", "status": "mapped", "conflict": "tools.rust.rustfmt.maxWidth = 100"},
+          {"tool": "clangFormat", "param": "ColumnLimit", "currentPath": "tools.toolMappings.clangFormat.ColumnLimit", "status": "mapped", "conflict": "tools.cpp.clangFormat.columnLimit = 120"},
+          {"tool": "checkstyle", "param": "maxLineLength", "currentPath": "tools.toolMappings.checkstyle.maxLineLength", "status": "mapped"}
+        ]
+      },
+      "indentSize": {
+        "purpose": "Number of spaces for indentation",
+        "canonicalRule": "rules.formatting.indentation.size",
+        "targetValue": 4,
+        "toolVariations": [
+          {"tool": "prettier", "param": "tabWidth", "currentPath": "tools.toolMappings.prettier.tabWidth", "status": "mapped"},
+          {"tool": "eslint", "param": "indent", "currentPath": "tools.toolMappings.eslint.indent", "status": "mapped", "transform": "eslintIndent"},
+          {"tool": "stylelint", "param": "indentation", "currentPath": "tools.toolMappings.stylelint.indentation", "status": "mapped"},
+          {"tool": "rustfmt", "param": "tab_spaces", "currentPath": "tools.toolMappings.rustfmt.tab_spaces", "status": "mapped", "conflict": "tools.rust.rustfmt.tabSpaces = 4"},
+          {"tool": "gofmt", "param": "tabWidth", "currentPath": "tools.toolMappings.gofmt.tabWidth", "status": "mapped"},
+          {"tool": "clangFormat", "param": "IndentWidth", "currentPath": "tools.toolMappings.clangFormat.IndentWidth", "status": "mapped", "conflict": "tools.cpp.clangFormat.indentWidth = 4"},
+          {"tool": "checkstyle", "param": "tabWidth", "currentPath": "tools.toolMappings.checkstyle.tabWidth", "status": "mapped"},
+          {"tool": "editorconfig", "param": "indent_size", "status": "unmapped", "conflict": "tools.multiLang.editorconfig.defaults.indentSize = 4"}
+        ]
+      },
+      "indentStyle": {
+        "purpose": "Use tabs or spaces",
+        "canonicalRule": "rules.formatting.indentation.useTabs",
+        "targetValue": false,
+        "toolVariations": [
+          {"tool": "prettier", "param": "useTabs", "currentPath": "tools.toolMappings.prettier.useTabs", "status": "mapped"},
+          {"tool": "rustfmt", "param": "hard_tabs", "currentPath": "tools.toolMappings.rustfmt.hard_tabs", "status": "mapped", "conflict": "tools.rust.rustfmt.useTabs = false"},
+          {"tool": "clangFormat", "param": "UseTab", "currentPath": "tools.toolMappings.clangFormat.UseTab", "status": "mapped", "transform": "clangUseTab"},
+          {"tool": "editorconfig", "param": "indent_style", "status": "unmapped", "conflict": "tools.multiLang.editorconfig.defaults.indentStyle = 'space'", "note": "Type mismatch: boolean vs string"}
+        ]
+      },
+      "quoteStyle": {
+        "purpose": "Single or double quotes",
+        "canonicalRule": "rules.formatting.quotes",
+        "targetValue": "double",
+        "toolVariations": [
+          {"tool": "prettier", "param": "singleQuote", "currentPath": "tools.toolMappings.prettier.singleQuote", "status": "mapped", "transform": "equals:single"},
+          {"tool": "eslint", "param": "quotes", "currentPath": "tools.toolMappings.eslint.quotes", "status": "mapped"},
+          {"tool": "ruff", "param": "quote-style", "status": "unmapped", "conflict": "tools.python.ruff.format.quoteStyle = 'double'"}
+        ]
+      },
+      "semicolons": {
+        "purpose": "Require semicolons",
+        "canonicalRule": "rules.formatting.semicolons",
+        "targetValue": true,
+        "toolVariations": [
+          {"tool": "prettier", "param": "semi", "currentPath": "tools.toolMappings.prettier.semi", "status": "mapped"},
+          {"tool": "eslint", "param": "semi", "currentPath": "tools.toolMappings.eslint.semi", "status": "mapped", "transform": "eslintSemi"}
+        ]
+      },
+      "trailingComma": {
+        "purpose": "Trailing comma style",
+        "canonicalRule": "rules.formatting.trailingComma",
+        "targetValue": "es5",
+        "toolVariations": [
+          {"tool": "prettier", "param": "trailingComma", "currentPath": "tools.toolMappings.prettier.trailingComma", "status": "mapped"}
+        ]
+      },
+      "endOfLine": {
+        "purpose": "Line ending style (lf/crlf)",
+        "canonicalRule": "rules.formatting.endOfLine",
+        "targetValue": "lf",
+        "toolVariations": [
+          {"tool": "prettier", "param": "endOfLine", "currentPath": "tools.toolMappings.prettier.endOfLine", "status": "mapped"},
+          {"tool": "editorconfig", "param": "end_of_line", "status": "unmapped", "conflict": "tools.multiLang.editorconfig.defaults.endOfLine = 'lf'"}
+        ]
+      },
+      "bracketSpacing": {
+        "purpose": "Spaces in object literals",
+        "canonicalRule": "rules.formatting.bracketSpacing",
+        "targetValue": true,
+        "toolVariations": [
+          {"tool": "prettier", "param": "bracketSpacing", "currentPath": "tools.toolMappings.prettier.bracketSpacing", "status": "mapped"}
+        ]
+      },
+      "arrowParens": {
+        "purpose": "Parens around single arrow param",
+        "canonicalRule": "rules.formatting.arrowParens",
+        "targetValue": "always",
+        "toolVariations": [
+          {"tool": "prettier", "param": "arrowParens", "status": "unmapped", "conflict": "tools.formatting.prettier.arrowParens = 'always'"}
+        ]
+      }
+    },
+    "versions": {
+      "python": {
+        "purpose": "Python target version",
+        "canonicalRule": "rules.versions.python",
+        "targetValue": "3.11",
+        "formatVariations": [
+          {"format": "dotted", "example": "3.11", "usedBy": ["pyright"]},
+          {"format": "py-prefix", "example": "py311", "usedBy": ["ruff", "black (array)"]},
+          {"format": "array", "example": ["py311"], "usedBy": ["black"]}
+        ],
+        "toolVariations": [
+          {"tool": "ruff", "param": "target-version", "status": "unmapped", "currentValue": "py311", "needsTransform": "pyVersion"},
+          {"tool": "pyright", "param": "pythonVersion", "status": "unmapped", "currentValue": "3.11"},
+          {"tool": "black", "param": "target-version", "status": "unmapped", "currentValue": ["py311"], "needsTransform": "pyVersionArray"}
+        ]
+      },
+      "ecmascript": {
+        "purpose": "ECMAScript/JavaScript version",
+        "canonicalRule": "rules.versions.ecmascript",
+        "targetValue": 2024,
+        "formatVariations": [
+          {"format": "year", "example": 2024, "usedBy": ["eslint"]},
+          {"format": "ES-prefix", "example": "ES2024", "usedBy": ["typescript"]}
+        ],
+        "toolVariations": [
+          {"tool": "eslint", "param": "ecmaVersion", "status": "unmapped", "currentValue": 2024},
+          {"tool": "typescript", "param": "target", "status": "unmapped", "currentValue": "ES2024", "needsTransform": "esVersion"}
+        ]
+      },
+      "typescript": {
+        "purpose": "TypeScript module format",
+        "canonicalRule": "rules.versions.typescript.module",
+        "targetValue": "ESNext",
+        "toolVariations": [
+          {"tool": "typescript", "param": "module", "status": "unmapped", "currentValue": "ESNext"}
+        ]
+      },
+      "rust": {
+        "purpose": "Rust edition",
+        "canonicalRule": "rules.versions.rust",
+        "targetValue": "2024",
+        "toolVariations": [
+          {"tool": "rustfmt", "param": "edition", "status": "partial", "currentPath": "tools.rust.rustfmt.edition"}
+        ]
+      },
+      "cpp": {
+        "purpose": "C++ standard",
+        "canonicalRule": "rules.versions.cpp",
+        "targetValue": "c++20",
+        "toolVariations": []
+      },
+      "java": {
+        "purpose": "Java version",
+        "canonicalRule": "rules.versions.java",
+        "targetValue": "17",
+        "toolVariations": []
+      }
+    },
+    "strictness": {
+      "typeChecking": {
+        "purpose": "Type checking strictness level",
+        "canonicalRule": "rules.strictness.typeChecking",
+        "targetValue": "strict",
+        "toolVariations": [
+          {"tool": "typescript", "param": "strict", "status": "unmapped", "currentValue": true, "note": "boolean not string"},
+          {"tool": "pyright", "param": "typeCheckingMode", "status": "unmapped", "currentValue": "strict"},
+          {"tool": "mypy", "param": "strict", "status": "unmapped", "currentValue": true}
+        ]
+      },
+      "nullSafety": {
+        "purpose": "Null safety enforcement",
+        "canonicalRule": "rules.strictness.nullSafety",
+        "targetValue": true,
+        "toolVariations": []
+      }
+    }
+  },
+  "summary": {
+    "totalSemanticGroups": 3,
+    "totalPurposes": 17,
+    "totalToolVariations": 46,
+    "mapped": 23,
+    "unmapped": 15,
+    "conflicting": 13,
+    "needsTransform": 6
+  },
+  "recommendedActions": {
+    "immediate": [
+      "Create rules.formatting section with all 9 formatting rules",
+      "Create rules.versions section with 6 language versions",
+      "Create rules.strictness section with 2 strictness rules"
+    ],
+    "transforms": [
+      {
+        "name": "pyVersion",
+        "purpose": "Convert '3.11' → 'py311'",
+        "example": "3.11 → py311"
+      },
+      {
+        "name": "pyVersionArray",
+        "purpose": "Convert '3.11' → ['py311']",
+        "example": "3.11 → ['py311']"
+      },
+      {
+        "name": "esVersion",
+        "purpose": "Convert 2024 → 'ES2024'",
+        "example": "2024 → ES2024"
+      },
+      {
+        "name": "editorconfigIndentStyle",
+        "purpose": "Convert false → 'space', true → 'tab'",
+        "example": "false → space"
+      }
+    ],
+    "mappingsToAdd": [
+      "tools.toolMappings.ruff['quote-style'] = {source: 'rules.formatting.quotes', transform: 'identity'}",
+      "tools.toolMappings.ruff['target-version'] = {source: 'rules.versions.python', transform: 'pyVersion'}",
+      "tools.toolMappings.pyright.pythonVersion = 'rules.versions.python'",
+      "tools.toolMappings.black['target-version'] = {source: 'rules.versions.python', transform: 'pyVersionArray'}",
+      "tools.toolMappings.eslint.ecmaVersion = 'rules.versions.ecmascript'",
+      "tools.toolMappings.typescript.target = {source: 'rules.versions.ecmascript', transform: 'esVersion'}",
+      "tools.toolMappings.editorconfig.indent_style = {source: 'rules.formatting.indentation.useTabs', transform: 'editorconfigIndentStyle'}",
+      "tools.toolMappings.editorconfig.indent_size = 'rules.formatting.indentation.size'",
+      "tools.toolMappings.editorconfig.end_of_line = 'rules.formatting.endOfLine'",
+      "tools.toolMappings.prettier.arrowParens = 'rules.formatting.arrowParens'"
+    ],
+    "hardcodedToRemove": [
+      "tools.rust.rustfmt.maxWidth (use mapping)",
+      "tools.rust.rustfmt.tabSpaces (use mapping)",
+      "tools.rust.rustfmt.useTabs (use mapping)",
+      "tools.cpp.clangFormat.columnLimit (use mapping)",
+      "tools.cpp.clangFormat.indentWidth (use mapping)",
+      "tools.multiLang.editorconfig.defaults.indentSize (use mapping)",
+      "tools.multiLang.editorconfig.defaults.indentStyle (use mapping)",
+      "tools.multiLang.editorconfig.defaults.endOfLine (use mapping)",
+      "tools.python.ruff.format.quoteStyle (use mapping)",
+      "tools.python.ruff.targetVersion (use mapping)",
+      "tools.python.pyright.pythonVersion (use mapping)",
+      "tools.python.black.targetVersion (use mapping)",
+      "tools.javascript.eslint.ecmaVersion (use mapping)",
+      "tools.javascript.typescript.target (use mapping)",
+      "tools.formatting.prettier.arrowParens (use mapping)"
+    ]
+  }
+}

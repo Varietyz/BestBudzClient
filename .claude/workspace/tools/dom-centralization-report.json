@@ -1,0 +1,2575 @@
+{
+  "scannedAt": "2026-01-02T19:47:30.228Z",
+  "sourceReport": ".claude/workspace/tools/dom-bypasses.json",
+  "summary": {
+    "totalBypasses": 156,
+    "errorBypasses": 152,
+    "totalFiles": 110,
+    "filesWithBypasses": 32,
+    "categoryStats": {
+      "icons": {
+        "count": 11,
+        "errorCount": 11,
+        "tokenViolations": 0,
+        "files": 4
+      },
+      "buttons": {
+        "count": 74,
+        "errorCount": 74,
+        "tokenViolations": 4,
+        "files": 17
+      },
+      "forms": {
+        "count": 2,
+        "errorCount": 2,
+        "tokenViolations": 1,
+        "files": 2
+      },
+      "modals": {
+        "count": 15,
+        "errorCount": 15,
+        "tokenViolations": 3,
+        "files": 6
+      },
+      "sidebars": {
+        "count": 36,
+        "errorCount": 33,
+        "tokenViolations": 5,
+        "files": 5
+      },
+      "headers": {
+        "count": 3,
+        "errorCount": 3,
+        "tokenViolations": 0,
+        "files": 2
+      },
+      "uncategorized": {
+        "count": 15,
+        "errorCount": 14,
+        "tokenViolations": 4,
+        "files": 12
+      }
+    }
+  },
+  "migrationPhases": [
+    {
+      "phase": "phase1_icons",
+      "count": 11,
+      "factoryMethod": "DOM.icon() (already exists)"
+    },
+    {
+      "phase": "phase2_buttons",
+      "count": 74,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "phase": "phase3_forms",
+      "count": 2,
+      "factoryMethod": "DOM.input() or DOM.field()"
+    },
+    {
+      "phase": "phase4_modals",
+      "count": 15,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "phase": "phase5_sidebars",
+      "count": 36,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "phase": "phase6_headers",
+      "count": 3,
+      "factoryMethod": "DOM.header() or DOM.bar()"
+    },
+    {
+      "phase": "phase7_lists",
+      "count": 0,
+      "factoryMethod": "DOM.listItem()"
+    },
+    {
+      "phase": "phase8_tables",
+      "count": 0,
+      "factoryMethod": "DOM.table() (needs implementation)"
+    },
+    {
+      "phase": "phase9_uncategorized",
+      "count": 15,
+      "factoryMethod": "TBD"
+    }
+  ],
+  "dependencyGraph": [
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "bypassCount": 23,
+      "categories": [
+        "buttons",
+        "sidebars"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "bypassCount": 22,
+      "categories": [
+        "buttons",
+        "sidebars"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "bypassCount": 19,
+      "categories": [
+        "buttons",
+        "sidebars"
+      ],
+      "tokenViolations": 6
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "bypassCount": 13,
+      "categories": [
+        "icons",
+        "buttons",
+        "uncategorized"
+      ],
+      "tokenViolations": 1
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "bypassCount": 9,
+      "categories": [
+        "buttons",
+        "headers"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "bypassCount": 8,
+      "categories": [
+        "icons",
+        "buttons",
+        "forms",
+        "uncategorized"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "bypassCount": 6,
+      "categories": [
+        "buttons",
+        "modals"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "bypassCount": 6,
+      "categories": [
+        "buttons"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "bypassCount": 6,
+      "categories": [
+        "buttons",
+        "headers"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "bypassCount": 6,
+      "categories": [
+        "sidebars"
+      ],
+      "tokenViolations": 1
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-history-modal.ts",
+      "bypassCount": 4,
+      "categories": [
+        "buttons",
+        "modals"
+      ],
+      "tokenViolations": 2
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\config\\global-tab.ts",
+      "bypassCount": 3,
+      "categories": [
+        "icons"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-export-wizard.ts",
+      "bypassCount": 3,
+      "categories": [
+        "modals"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-import-wizard.ts",
+      "bypassCount": 3,
+      "categories": [
+        "modals"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\config\\local-tab.ts",
+      "bypassCount": 2,
+      "categories": [
+        "icons",
+        "uncategorized"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\tool-permission-editor.ts",
+      "bypassCount": 2,
+      "categories": [
+        "buttons",
+        "uncategorized"
+      ],
+      "tokenViolations": 2
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\debug-dashboard.ts",
+      "bypassCount": 2,
+      "categories": [
+        "buttons",
+        "uncategorized"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\home-panel.ts",
+      "bypassCount": 2,
+      "categories": [
+        "buttons"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-provider-dialog.ts",
+      "bypassCount": 2,
+      "categories": [
+        "buttons",
+        "modals"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\environment-modal.ts",
+      "bypassCount": 2,
+      "categories": [
+        "modals"
+      ],
+      "tokenViolations": 1
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-panel.ts",
+      "bypassCount": 2,
+      "categories": [
+        "sidebars"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-settings-dialog.ts",
+      "bypassCount": 1,
+      "categories": [
+        "buttons"
+      ],
+      "tokenViolations": 1
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-form-builder.ts",
+      "bypassCount": 1,
+      "categories": [
+        "forms"
+      ],
+      "tokenViolations": 1
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\draggable-modal.ts",
+      "bypassCount": 1,
+      "categories": [
+        "buttons"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\main.ts",
+      "bypassCount": 1,
+      "categories": [
+        "buttons"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\runtime\\debug-tab.ts",
+      "bypassCount": 1,
+      "categories": [
+        "uncategorized"
+      ],
+      "tokenViolations": 1
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\runtime\\sessions-tab.ts",
+      "bypassCount": 1,
+      "categories": [
+        "uncategorized"
+      ],
+      "tokenViolations": 1
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\claude-hub.ts",
+      "bypassCount": 1,
+      "categories": [
+        "uncategorized"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\shared\\hub-section.ts",
+      "bypassCount": 1,
+      "categories": [
+        "uncategorized"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\context-menu.ts",
+      "bypassCount": 1,
+      "categories": [
+        "uncategorized"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\toast.ts",
+      "bypassCount": 1,
+      "categories": [
+        "uncategorized"
+      ],
+      "tokenViolations": 0
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\router\\router.ts",
+      "bypassCount": 1,
+      "categories": [
+        "uncategorized"
+      ],
+      "tokenViolations": 0
+    }
+  ],
+  "bypasses": [
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\config\\global-tab.ts",
+      "line": 78,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = getIconSvg(\"globe\")",
+      "category": "icons",
+      "tokenViolations": [],
+      "priority": 120,
+      "factoryMethod": "DOM.icon() (already exists)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\config\\global-tab.ts",
+      "line": 157,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = getIconSvg(iconName)",
+      "category": "icons",
+      "tokenViolations": [],
+      "priority": 120,
+      "factoryMethod": "DOM.icon() (already exists)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\config\\global-tab.ts",
+      "line": 243,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = getIconSvg(iconName)",
+      "category": "icons",
+      "tokenViolations": [],
+      "priority": 120,
+      "factoryMethod": "DOM.icon() (already exists)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\config\\local-tab.ts",
+      "line": 68,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = getIconSvg(\"folder\")",
+      "category": "icons",
+      "tokenViolations": [],
+      "priority": 120,
+      "factoryMethod": "DOM.icon() (already exists)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 241,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sessionIcon.innerHTML = `<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" width=\"...",
+      "category": "icons",
+      "tokenViolations": [],
+      "priority": 120,
+      "factoryMethod": "DOM.icon() (already exists)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 628,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "statusSpan.innerHTML = `<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=...",
+      "category": "icons",
+      "tokenViolations": [],
+      "priority": 120,
+      "factoryMethod": "DOM.icon() (already exists)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 634,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "statusSpan.innerHTML = `<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=...",
+      "category": "icons",
+      "tokenViolations": [],
+      "priority": 120,
+      "factoryMethod": "DOM.icon() (already exists)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 938,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "spinner.innerHTML = `<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"no...",
+      "category": "icons",
+      "tokenViolations": [],
+      "priority": 120,
+      "factoryMethod": "DOM.icon() (already exists)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 992,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "resultSpan.innerHTML = `<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=...",
+      "category": "icons",
+      "tokenViolations": [],
+      "priority": 120,
+      "factoryMethod": "DOM.icon() (already exists)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 998,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "resultSpan.innerHTML = `<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=...",
+      "category": "icons",
+      "tokenViolations": [],
+      "priority": 120,
+      "factoryMethod": "DOM.icon() (already exists)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 1359,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = `<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"n...",
+      "category": "icons",
+      "tokenViolations": [],
+      "priority": 120,
+      "factoryMethod": "DOM.icon() (already exists)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 1711,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = `<span style=\"font-size:13px;\">+</span> Add Variable`",
+      "category": "buttons",
+      "tokenViolations": [
+        {
+          "type": "sizing",
+          "token_prefix": "--font-size- or --icon-size- or --button-height-",
+          "examples": [
+            "--font-size-md",
+            "--icon-size-lg",
+            "--button-height-md"
+          ]
+        }
+      ],
+      "priority": 110,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 1750,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "importBtn.innerHTML = `<span style=\"font-size:11px;\">↓</span> Import from IDE`",
+      "category": "buttons",
+      "tokenViolations": [
+        {
+          "type": "sizing",
+          "token_prefix": "--font-size- or --icon-size- or --button-height-",
+          "examples": [
+            "--font-size-md",
+            "--icon-size-lg",
+            "--button-height-md"
+          ]
+        }
+      ],
+      "priority": 110,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-settings-dialog.ts",
+      "line": 395,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = `<span style=\"font-size:13px;\">+</span> Add Variable`",
+      "category": "buttons",
+      "tokenViolations": [
+        {
+          "type": "sizing",
+          "token_prefix": "--font-size- or --icon-size- or --button-height-",
+          "examples": [
+            "--font-size-md",
+            "--icon-size-lg",
+            "--button-height-md"
+          ]
+        }
+      ],
+      "priority": 110,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\tool-permission-editor.ts",
+      "line": 425,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = `<span style=\"font-size:13px;\">+</span> Add Directory`",
+      "category": "buttons",
+      "tokenViolations": [
+        {
+          "type": "sizing",
+          "token_prefix": "--font-size- or --icon-size- or --button-height-",
+          "examples": [
+            "--font-size-md",
+            "--icon-size-lg",
+            "--button-height-md"
+          ]
+        }
+      ],
+      "priority": 110,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "line": 283,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "clearAllBtn.innerHTML = `${icons.trash} <span>Clear All</span>`",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "line": 843,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = iconSvg",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-form-builder.ts",
+      "line": 138,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "label.innerHTML = `${field.label}${field.required ? ' <span style=\"color:#ff6...",
+      "category": "forms",
+      "tokenViolations": [
+        {
+          "type": "colors",
+          "token_prefix": "--color-",
+          "examples": [
+            "--color-text-primary",
+            "--color-bg-secondary",
+            "--color-accent-primary"
+          ]
+        }
+      ],
+      "priority": 100,
+      "factoryMethod": "DOM.input() or DOM.field()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\debug-dashboard.ts",
+      "line": 108,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = TAB_ICONS[tab.id]",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\draggable-modal.ts",
+      "line": 223,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "closeBtn.innerHTML = `<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentCol...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "line": 139,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "minimizeBtn.innerHTML = headerIcons.hide",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "line": 148,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.maximizeBtn.innerHTML = this.isMaximized ? headerIcons.restore : headerI...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "line": 159,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.fullscreenBtn.innerHTML = this.isFullscreen ? headerIcons.exitFullscreen...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "line": 168,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "closeBtn.innerHTML = headerIcons.close",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "line": 208,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.maximizeBtn.innerHTML = this.isMaximized ? headerIcons.restore : headerI...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\header-bar.ts",
+      "line": 216,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.fullscreenBtn.innerHTML = this.isFullscreen ? headerIcons.exitFullscreen...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\home-panel.ts",
+      "line": 292,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "editBtn.innerHTML = `<svg viewBox=\"0 0 16 16\" width=\"12\" height=\"12\"><path fi...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\home-panel.ts",
+      "line": 303,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = `<svg viewBox=\"0 0 16 16\" width=\"12\" height=\"12\"><path ...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-history-modal.ts",
+      "line": 190,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "clearBtn.innerHTML = `${icons.trash} Clear All`",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-history-modal.ts",
+      "line": 472,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = icons.trash",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 281,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "homeBtn.innerHTML = taskbarIcons.home",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 315,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.terminalBtn.innerHTML = taskbarIcons.terminal",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 328,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "notificationsBtn.innerHTML = taskbarIcons.bell",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 337,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.debugBtn.innerHTML = taskbarIcons.debug",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 350,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.settingsBtn.innerHTML = taskbarIcons.settings",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 363,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.aiMetricsBtn.innerHTML = taskbarIcons.aiMetrics",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 376,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.hardwareBtn.innerHTML = taskbarIcons.hardware",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\main.ts",
+      "line": 282,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "exitFullscreenBtn.innerHTML = `<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"c...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 175,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = `<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" width=\"14\" h...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 381,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "newBtn.innerHTML = `<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" width=\"10\" h...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 445,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "clearAllBtn.innerHTML = sessionIcons.trash",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 754,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = iconSvg",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 967,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = provider.icon",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-provider-dialog.ts",
+      "line": 331,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = icon.svg",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 245,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.toggleBtn.innerHTML = this.isCollapsed ? sidebarIcons.chevronLeft : side...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 291,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "collapseBtn.innerHTML = sidebarIcons.chevronDown",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 325,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = sidebarIcons.plus",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 340,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "refreshBtn.innerHTML = sidebarIcons.refresh",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 485,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 544,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 554,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "editBtn.innerHTML = sidebarIcons.edit",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 564,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = sidebarIcons.trash",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 656,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 724,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 734,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "editBtn.innerHTML = sidebarIcons.edit",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 744,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = sidebarIcons.trash",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 805,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "editBtn.innerHTML = sidebarIcons.edit",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 871,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "removeBtn.innerHTML = sidebarIcons.trash",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 1156,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.toggleBtn.innerHTML = this.isCollapsed ? sidebarIcons.chevronLeft : side...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 1173,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = isCollapsed ? sidebarIcons.chevronRight : sidebarIcons.chevro...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 1435,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "allowBtn.innerHTML = `\n            <svg width=\"14\" height=\"14\" viewBox=\"0 0 2...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 1466,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "denyBtn.innerHTML = `\n            <svg width=\"14\" height=\"14\" viewBox=\"0 0 24...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 1498,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "denyExpandBtn.innerHTML = `\n            <svg width=\"12\" height=\"12\" viewBox=\"...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "line": 224,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = headerIcons.plus",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "line": 246,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "closeBtn.innerHTML = headerIcons.close",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "line": 463,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sendBtn.innerHTML = headerIcons.sendOut",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "line": 466,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sendBtn.innerHTML = headerIcons.sendIn",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "line": 474,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "closeBtn.innerHTML = headerIcons.close",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 226,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.toggleBtn.innerHTML = this.isCollapsed ? sidebarIcons.chevronRight : sid...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 250,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "collapseBtn.innerHTML = sidebarIcons.chevronDown",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 280,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "clearAllBtn.innerHTML = sidebarIcons.trash",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 287,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "refreshBtn.innerHTML = sidebarIcons.refresh",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 297,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "saveBtn.innerHTML = sidebarIcons.save",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 307,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "addBtn.innerHTML = sidebarIcons.plus",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 482,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sendBtn.innerHTML = sidebarIcons.sendOut",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 485,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sendBtn.innerHTML = sidebarIcons.sendIn",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 502,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 513,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = sidebarIcons.trash",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 586,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 596,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "editBtn.innerHTML = sidebarIcons.edit",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 606,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = sidebarIcons.trash",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 669,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "playBtn.innerHTML = sidebarIcons.play",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 679,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "editBtn.innerHTML = sidebarIcons.edit",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 689,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "deleteBtn.innerHTML = sidebarIcons.trash",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 1230,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.toggleBtn.innerHTML = this.isCollapsed ? sidebarIcons.chevronRight : sid...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 1247,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "btn.innerHTML = isCollapsed ? sidebarIcons.chevronRight : sidebarIcons.chevro...",
+      "category": "buttons",
+      "tokenViolations": [],
+      "priority": 100,
+      "factoryMethod": "DOM.button() or DOM.iconButton()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\environment-modal.ts",
+      "line": 266,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "emptyRow.innerHTML = `\n                <td colspan=\"3\" style=\"padding: 24px; ...",
+      "category": "modals",
+      "tokenViolations": [
+        {
+          "type": "spacing",
+          "token_prefix": "--space-",
+          "examples": [
+            "--space-sm",
+            "--space-md",
+            "--space-lg"
+          ]
+        }
+      ],
+      "priority": 90,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-history-modal.ts",
+      "line": 618,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "currentLegend.innerHTML = `<span style=\"color: rgba(255, 100, 100, 0.8);\">Cur...",
+      "category": "modals",
+      "tokenViolations": [
+        {
+          "type": "colors",
+          "token_prefix": "--color-",
+          "examples": [
+            "--color-text-primary",
+            "--color-bg-secondary",
+            "--color-accent-primary"
+          ]
+        }
+      ],
+      "priority": 90,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-history-modal.ts",
+      "line": 621,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "presetLegend.innerHTML = `<span style=\"color: rgba(100, 255, 100, 0.8);\">Pres...",
+      "category": "modals",
+      "tokenViolations": [
+        {
+          "type": "colors",
+          "token_prefix": "--color-",
+          "examples": [
+            "--color-text-primary",
+            "--color-bg-secondary",
+            "--color-accent-primary"
+          ]
+        }
+      ],
+      "priority": 90,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 288,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "activeLabel.innerHTML = `<span style=\"color: ${activeProvider.color};\">Active...",
+      "category": "forms",
+      "tokenViolations": [],
+      "priority": 90,
+      "factoryMethod": "DOM.input() or DOM.field()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "line": 368,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = provider.icon",
+      "category": "modals",
+      "tokenViolations": [],
+      "priority": 80,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "line": 492,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "expandIcon.innerHTML = isExpanded ? icons.collapse : icons.expand",
+      "category": "modals",
+      "tokenViolations": [],
+      "priority": 80,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "line": 691,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "roleIcon.innerHTML = isUser ? icons.user : icons.assistant",
+      "category": "modals",
+      "tokenViolations": [],
+      "priority": 80,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-history-modal.ts",
+      "line": 804,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sendIcon.innerHTML = icons.send",
+      "category": "modals",
+      "tokenViolations": [],
+      "priority": 80,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "line": 246,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "noData.innerHTML = `\n            <div style=\"width: 24px; height: 24px; margi...",
+      "category": "sidebars",
+      "tokenViolations": [
+        {
+          "type": "sizing",
+          "token_prefix": "--font-size- or --icon-size- or --button-height-",
+          "examples": [
+            "--font-size-md",
+            "--icon-size-lg",
+            "--button-height-md"
+          ]
+        }
+      ],
+      "priority": 80,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 2077,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "item.innerHTML = `<span style=\"color:#4fc3f7;\">agent:</span> <span style=\"col...",
+      "category": "sidebars",
+      "tokenViolations": [
+        {
+          "type": "colors",
+          "token_prefix": "--color-",
+          "examples": [
+            "--color-text-primary",
+            "--color-bg-secondary",
+            "--color-accent-primary"
+          ]
+        }
+      ],
+      "priority": 80,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 2084,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "item.innerHTML = `<span style=\"color:#81c784;\">command:</span> <span style=\"c...",
+      "category": "sidebars",
+      "tokenViolations": [
+        {
+          "type": "colors",
+          "token_prefix": "--color-",
+          "examples": [
+            "--color-text-primary",
+            "--color-bg-secondary",
+            "--color-accent-primary"
+          ]
+        }
+      ],
+      "priority": 80,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 2714,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "header.innerHTML = `<strong>${title}</strong><span style=\"font-size:10px\">${c...",
+      "category": "sidebars",
+      "tokenViolations": [
+        {
+          "type": "sizing",
+          "token_prefix": "--font-size- or --icon-size- or --button-height-",
+          "examples": [
+            "--font-size-md",
+            "--icon-size-lg",
+            "--button-height-md"
+          ]
+        }
+      ],
+      "priority": 80,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 4733,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "matcherRow.innerHTML = `<strong>Matcher:</strong> <span style=\"color:#4fc3f7;...",
+      "category": "sidebars",
+      "tokenViolations": [
+        {
+          "type": "colors",
+          "token_prefix": "--color-",
+          "examples": [
+            "--color-text-primary",
+            "--color-bg-secondary",
+            "--color-accent-primary"
+          ]
+        }
+      ],
+      "priority": 80,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-export-wizard.ts",
+      "line": 223,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "message.innerHTML = `A <span class=\"env-export-path\">.env</span> file already...",
+      "category": "modals",
+      "tokenViolations": [],
+      "priority": 80,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-export-wizard.ts",
+      "line": 235,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "overrideOption.innerHTML = `\n      <input type=\"radio\" name=\"export-option\" v...",
+      "category": "modals",
+      "tokenViolations": [],
+      "priority": 80,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-export-wizard.ts",
+      "line": 256,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "saveAsContent.innerHTML = `\n      <div style=\"display: flex; align-items: fle...",
+      "category": "modals",
+      "tokenViolations": [],
+      "priority": 80,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-import-wizard.ts",
+      "line": 363,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "sharedOption.innerHTML = `\n      <input type=\"radio\" name=\"scope\" value=\"shar...",
+      "category": "modals",
+      "tokenViolations": [],
+      "priority": 80,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-import-wizard.ts",
+      "line": 381,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "projectOption.innerHTML = `\n      <input type=\"radio\" name=\"scope\" value=\"pro...",
+      "category": "modals",
+      "tokenViolations": [],
+      "priority": 80,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\env-import-wizard.ts",
+      "line": 442,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "values.innerHTML = `\n      <div>\n        <div class=\"env-wizard-conflict-valu...",
+      "category": "modals",
+      "tokenViolations": [],
+      "priority": 80,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\environment-modal.ts",
+      "line": 237,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "thead.innerHTML = `\n            <tr style=\"background: var(--color-bg-tertiar...",
+      "category": "modals",
+      "tokenViolations": [],
+      "priority": 80,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-provider-dialog.ts",
+      "line": 151,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.dialog.innerHTML = `\n            <h3 style=\"margin: 0 0 16px 0; font-siz...",
+      "category": "modals",
+      "tokenViolations": [],
+      "priority": 80,
+      "factoryMethod": "DOM.modal() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "line": 290,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = provider.icon",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "line": 303,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "indicator.innerHTML = icons.active",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "line": 528,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = provider.icon",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "line": 576,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = icon",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 448,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "pathIcon.innerHTML = getIconSvg(\"folder\")",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 904,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = icon",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 1283,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "fileIcon.innerHTML = isLocal ? getIconSvg(\"lock\") : getIconSvg(\"folder\")",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 2140,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "headerIcon.innerHTML = getIconSvg(\"globe\")",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 2347,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = icon",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 2535,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = icon",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 3604,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "idCell.innerHTML = `\n                <div style=\"font-family: monospace; colo...",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 3850,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "modelStat.innerHTML = `<strong>Model:</strong> ${agent.model || \"inherit\"}`",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 3854,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "toolsStat.innerHTML = `<strong>Tools:</strong> ${agent.tools || \"all\"}`",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 4151,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "modelStat.innerHTML = `<strong>Model:</strong> ${cmd.model || \"inherit\"}`",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 4156,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "toolsStat.innerHTML = `<strong>Tools:</strong> ${cmd.allowedTools.substring(0...",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 4443,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "modelStat.innerHTML = `<strong>Model:</strong> ${skill.model}`",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-panel.ts",
+      "line": 4449,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "toolsStat.innerHTML = `<strong>Tools:</strong> ${skill.allowedTools.substring...",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 303,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = icon",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 451,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.agent",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 510,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.agent",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 615,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.command",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 681,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.command",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 777,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.context",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-sidebar.ts",
+      "line": 844,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.context",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 262,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = icon",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 421,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = shellIcons[shellIcon] ?? shellIcons.terminal",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 559,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.folder",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-sidebar.ts",
+      "line": 630,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = sidebarIcons.terminal",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 70,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 433,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "fpsIcon.innerHTML = taskbarIcons.fps",
+      "category": "headers",
+      "tokenViolations": [],
+      "priority": 60,
+      "factoryMethod": "DOM.header() or DOM.bar()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\taskbar.ts",
+      "line": 458,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "timerIcon.innerHTML = taskbarIcons.timer",
+      "category": "headers",
+      "tokenViolations": [],
+      "priority": 60,
+      "factoryMethod": "DOM.header() or DOM.bar()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-header.ts",
+      "line": 446,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = shellIcons[shellIcon] ?? shellIcons.terminal",
+      "category": "headers",
+      "tokenViolations": [],
+      "priority": 60,
+      "factoryMethod": "DOM.header() or DOM.bar()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\ai-metrics-panel.ts",
+      "line": 579,
+      "type": "document.createTextNode",
+      "severity": "info",
+      "description": "Text nodes are not pooled (usually acceptable)",
+      "fix": "Consider if text content could use textContent property instead",
+      "snippet": "document.createTextNode(label)",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 45,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-panel.ts",
+      "line": 436,
+      "type": "document.createTextNode",
+      "severity": "info",
+      "description": "Text nodes are not pooled (usually acceptable)",
+      "fix": "Consider if text content could use textContent property instead",
+      "snippet": "document.createTextNode(`${label} `)",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 45,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\settings-panel.ts",
+      "line": 494,
+      "type": "document.createTextNode",
+      "severity": "info",
+      "description": "Text nodes are not pooled (usually acceptable)",
+      "fix": "Consider if text content could use textContent property instead",
+      "snippet": "document.createTextNode(`${label} `)",
+      "category": "sidebars",
+      "tokenViolations": [],
+      "priority": 45,
+      "factoryMethod": "DOM.sidebar() (needs implementation)"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\runtime\\debug-tab.ts",
+      "line": 174,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.logContainer.innerHTML = `\n                <div style=\"color: #666; text...",
+      "category": "uncategorized",
+      "tokenViolations": [
+        {
+          "type": "colors",
+          "token_prefix": "--color-",
+          "examples": [
+            "--color-text-primary",
+            "--color-bg-secondary",
+            "--color-accent-primary"
+          ]
+        }
+      ],
+      "priority": 40,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\runtime\\sessions-tab.ts",
+      "line": 159,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "info.innerHTML = `\n            <div style=\"display: flex; gap: 8px;\">\n       ...",
+      "category": "uncategorized",
+      "tokenViolations": [
+        {
+          "type": "spacing",
+          "token_prefix": "--space-",
+          "examples": [
+            "--space-sm",
+            "--space-md",
+            "--space-lg"
+          ]
+        }
+      ],
+      "priority": 40,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\tool-permission-editor.ts",
+      "line": 254,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "(this.addBtn as HTMLButtonElement).innerHTML = `<span style=\"font-size:13px;\"...",
+      "category": "uncategorized",
+      "tokenViolations": [
+        {
+          "type": "sizing",
+          "token_prefix": "--font-size- or --icon-size- or --button-height-",
+          "examples": [
+            "--font-size-md",
+            "--icon-size-lg",
+            "--button-height-md"
+          ]
+        }
+      ],
+      "priority": 40,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 1990,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.todoPanelEl.innerHTML = `\n            <div style=\"padding: 8px 12px; bor...",
+      "category": "uncategorized",
+      "tokenViolations": [
+        {
+          "type": "spacing",
+          "token_prefix": "--space-",
+          "examples": [
+            "--space-sm",
+            "--space-md",
+            "--space-lg"
+          ]
+        }
+      ],
+      "priority": 40,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\claude-hub.ts",
+      "line": 326,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "placeholder.innerHTML = `\n            <div class=\"claude-hub__empty-icon\">🚧<...",
+      "category": "uncategorized",
+      "tokenViolations": [],
+      "priority": 30,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\shared\\hub-section.ts",
+      "line": 67,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "toggle.innerHTML = \"&#9662;\"",
+      "category": "uncategorized",
+      "tokenViolations": [],
+      "priority": 30,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\claude-hub\\tabs\\config\\local-tab.ts",
+      "line": 179,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML = isLocal ? getIconSvg(\"lock\") : getIconSvg(\"folder\")",
+      "category": "uncategorized",
+      "tokenViolations": [],
+      "priority": 30,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\context-menu.ts",
+      "line": 236,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = item.icon",
+      "category": "uncategorized",
+      "tokenViolations": [],
+      "priority": 30,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\toast.ts",
+      "line": 172,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconEl.innerHTML = config.icon",
+      "category": "uncategorized",
+      "tokenViolations": [],
+      "priority": 30,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\router\\router.ts",
+      "line": 129,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.viewport.innerHTML = `\n            <div class=\"page-error\">\n            ...",
+      "category": "uncategorized",
+      "tokenViolations": [],
+      "priority": 30,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\ai-footer.ts",
+      "line": 621,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "icon.innerHTML =\n            provider?.icon ??\n            `<svg viewBox=\"0 0...",
+      "category": "uncategorized",
+      "tokenViolations": [],
+      "priority": 30,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 251,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "this.todoButtonEl.innerHTML = `\n            <svg width=\"12\" height=\"12\" viewB...",
+      "category": "uncategorized",
+      "tokenViolations": [],
+      "priority": 30,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 605,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = toolIcon",
+      "category": "uncategorized",
+      "tokenViolations": [],
+      "priority": 30,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\terminal\\components\\terminal-chat.ts",
+      "line": 917,
+      "type": "innerHTML",
+      "severity": "error",
+      "description": "innerHTML assignment may create untracked elements",
+      "fix": "Use DOM.createElement() + appendChild() or ensure no element creation",
+      "snippet": "iconSpan.innerHTML = toolIcon",
+      "category": "uncategorized",
+      "tokenViolations": [],
+      "priority": 30,
+      "factoryMethod": "DOM.createElement()"
+    },
+    {
+      "file": "root\\archlab-ide\\src\\renderer\\components\\debug-dashboard.ts",
+      "line": 190,
+      "type": "document.createTextNode",
+      "severity": "info",
+      "description": "Text nodes are not pooled (usually acceptable)",
+      "fix": "Consider if text content could use textContent property instead",
+      "snippet": "document.createTextNode(this.apiStatus.running ? \"Running\" : \"Stopped\")",
+      "category": "uncategorized",
+      "tokenViolations": [],
+      "priority": 5,
+      "factoryMethod": "DOM.createElement()"
+    }
+  ]
+}

@@ -1,0 +1,363 @@
+{
+  "timestamp": "2026-01-10T00:54:15.567Z",
+  "totalFiles": 259,
+  "filesWithViolations": 24,
+  "violationsByType": {
+    "ROLE_NOT_DETECTED": 19,
+    "WRONG_LOCATION": 5
+  },
+  "files": [
+    {
+      "file": "src\\main\\database\\migrations\\001_initial.ts",
+      "fileName": "001_initial.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "001_initial.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\002_settings.ts",
+      "fileName": "002_settings.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "002_settings.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\003_environment.ts",
+      "fileName": "003_environment.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "003_environment.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\004_project_environment.ts",
+      "fileName": "004_project_environment.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "004_project_environment.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\database\\migrations\\006_settings_history.ts",
+      "fileName": "006_settings_history.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "006_settings_history.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\debug\\migrations\\001-debug-schema.ts",
+      "fileName": "001-debug-schema.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "001-debug-schema.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\main.ts",
+      "fileName": "main.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "main.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\preload.ts",
+      "fileName": "preload.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "preload.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\main\\terminal\\preload.ts",
+      "fileName": "preload.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "preload.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\base\\base-attention-node-component.ts",
+      "fileName": "base-attention-node-component.ts",
+      "violations": [
+        {
+          "code": "WRONG_LOCATION",
+          "severity": "error",
+          "message": "STABLE role 'component' must be in components/ folder",
+          "current": "src\\renderer\\base\\base-attention-node-component.ts",
+          "expected": "src\\renderer\\components\\",
+          "action": "MOVE to src\\renderer\\components\\",
+          "violation": true
+        }
+      ],
+      "detectedRole": {
+        "role": "component",
+        "domain": "base-attention-node"
+      },
+      "axis": 1,
+      "axisName": "STABLE"
+    },
+    {
+      "file": "src\\renderer\\base\\base-config-tab-component.ts",
+      "fileName": "base-config-tab-component.ts",
+      "violations": [
+        {
+          "code": "WRONG_LOCATION",
+          "severity": "error",
+          "message": "STABLE role 'component' must be in components/ folder",
+          "current": "src\\renderer\\base\\base-config-tab-component.ts",
+          "expected": "src\\renderer\\components\\",
+          "action": "MOVE to src\\renderer\\components\\",
+          "violation": true
+        }
+      ],
+      "detectedRole": {
+        "role": "component",
+        "domain": "base-config-tab"
+      },
+      "axis": 1,
+      "axisName": "STABLE"
+    },
+    {
+      "file": "src\\renderer\\base\\base-frame-system-manager.ts",
+      "fileName": "base-frame-system-manager.ts",
+      "violations": [
+        {
+          "code": "WRONG_LOCATION",
+          "severity": "error",
+          "message": "STABLE role 'manager' must be in managers/ folder",
+          "current": "src\\renderer\\base\\base-frame-system-manager.ts",
+          "expected": "src\\renderer\\managers\\",
+          "action": "MOVE to src\\renderer\\managers\\",
+          "violation": true
+        }
+      ],
+      "detectedRole": {
+        "role": "manager",
+        "domain": "base-frame-system"
+      },
+      "axis": 1,
+      "axisName": "STABLE"
+    },
+    {
+      "file": "src\\renderer\\base\\base-intent-emitter-component.ts",
+      "fileName": "base-intent-emitter-component.ts",
+      "violations": [
+        {
+          "code": "WRONG_LOCATION",
+          "severity": "error",
+          "message": "STABLE role 'component' must be in components/ folder",
+          "current": "src\\renderer\\base\\base-intent-emitter-component.ts",
+          "expected": "src\\renderer\\components\\",
+          "action": "MOVE to src\\renderer\\components\\",
+          "violation": true
+        }
+      ],
+      "detectedRole": {
+        "role": "component",
+        "domain": "base-intent-emitter"
+      },
+      "axis": 1,
+      "axisName": "STABLE"
+    },
+    {
+      "file": "src\\renderer\\base\\base-pooled-resource-manager.ts",
+      "fileName": "base-pooled-resource-manager.ts",
+      "violations": [
+        {
+          "code": "WRONG_LOCATION",
+          "severity": "error",
+          "message": "STABLE role 'manager' must be in managers/ folder",
+          "current": "src\\renderer\\base\\base-pooled-resource-manager.ts",
+          "expected": "src\\renderer\\managers\\",
+          "action": "MOVE to src\\renderer\\managers\\",
+          "violation": true
+        }
+      ],
+      "detectedRole": {
+        "role": "manager",
+        "domain": "base-pooled-resource"
+      },
+      "axis": 1,
+      "axisName": "STABLE"
+    },
+    {
+      "file": "src\\renderer\\main.ts",
+      "fileName": "main.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "main.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\router\\app-router.ts",
+      "fileName": "app-router.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "app-router.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\animation-inlined.ts",
+      "fileName": "animation-inlined.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "animation-inlined.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\colors-inlined.ts",
+      "fileName": "colors-inlined.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "colors-inlined.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\dimensions-inlined.ts",
+      "fileName": "dimensions-inlined.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "dimensions-inlined.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\modal-inlined.ts",
+      "fileName": "modal-inlined.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "modal-inlined.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\position-inlined.ts",
+      "fileName": "position-inlined.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "position-inlined.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\visibility-inlined.ts",
+      "fileName": "visibility-inlined.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "visibility-inlined.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\styles\\tokens\\inlined\\z-index-inlined.ts",
+      "fileName": "z-index-inlined.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "z-index-inlined.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    },
+    {
+      "file": "src\\renderer\\terminal\\terminal-main.ts",
+      "fileName": "terminal-main.ts",
+      "violations": [
+        {
+          "code": "ROLE_NOT_DETECTED",
+          "severity": "error",
+          "message": "Cannot determine role from filename",
+          "fileName": "terminal-main.ts",
+          "action": "Filename must match a role pattern from global_role_registry"
+        }
+      ]
+    }
+  ]
+}

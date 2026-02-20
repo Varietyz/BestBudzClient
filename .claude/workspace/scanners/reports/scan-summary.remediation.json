@@ -1,0 +1,74 @@
+{
+  "generatedAt": "2026-01-03T13:05:55.165Z",
+  "totalViolations": 1690,
+  "totalErrors": 660,
+  "totalWarnings": 914,
+  "totalInfo": 116,
+  "scannerResults": [
+    {
+      "name": "Inline Style Scanner",
+      "status": "SUCCESS",
+      "duration": 1242,
+      "summary": {
+        "totalFiles": 139,
+        "filesWithViolations": 24,
+        "totalViolations": 1235,
+        "errors": 534,
+        "warnings": 585,
+        "info": 116,
+        "byType": {
+          "STYLE_OBJECT": 87,
+          "HARDCODED_COLOR": 534,
+          "HARDCODED_FONT_SIZE": 154,
+          "HARDCODED_SPACING": 226,
+          "HARDCODED_RADIUS": 118,
+          "FIXED_DIMENSION": 116
+        },
+        "byCategory": {
+          "styleObject": 87,
+          "colors": 534,
+          "fontSize": 154,
+          "spacing": 226,
+          "borderRadius": 118,
+          "fixedDimensions": 116
+        }
+      },
+      "reportFile": "inline-styles.remediation"
+    },
+    {
+      "name": "DOM Bypass Scanner",
+      "status": "SUCCESS",
+      "duration": 1144,
+      "summary": {
+        "totalFiles": 139,
+        "filesWithViolations": 45,
+        "totalViolations": 438,
+        "errors": 126,
+        "warnings": 312,
+        "byType": {
+          "INNERHTML_ICON": 118,
+          "STYLE_PROPERTY": 286,
+          "DOCUMENT_CREATE_ELEMENT": 8,
+          "INNERHTML_GENERIC": 26
+        }
+      },
+      "reportFile": "dom-bypasses.remediation"
+    },
+    {
+      "name": "Listener Pattern Scanner",
+      "status": "SUCCESS",
+      "duration": 1215,
+      "summary": {
+        "totalFiles": 139,
+        "filesWithViolations": 17,
+        "totalViolations": 17,
+        "errors": 0,
+        "warnings": 17,
+        "byType": {
+          "SHOULD_EXTEND_BASE_RENDER": 17
+        }
+      },
+      "reportFile": "listener-patterns.remediation"
+    }
+  ]
+}

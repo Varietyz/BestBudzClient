@@ -3,7 +3,7 @@ package com.bestbudz.entity.pets;
 import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.entity.EntityDef;
 import static com.bestbudz.entity.pets.petvariants.CorpVariant.corpPet;
-import static com.bestbudz.entity.pets.npcvariants.DarkBeastNPCVariant.darkbeastPet;
+import static com.bestbudz.entity.pets.npcvariants.AbyssalDemonNPCVariant.abyssalDemonPet;
 import static com.bestbudz.entity.pets.petvariants.GraardorVariant.graardorPet;
 import static com.bestbudz.entity.pets.petvariants.JadVariant.jadPet;
 import static com.bestbudz.entity.pets.petvariants.KBDVariant.kbdPet;
@@ -27,7 +27,7 @@ public class PetItemCreator
 	public static class ModelRotationData {
 		public final int rotationX;
 		public final int rotationY;
-		public final int rotationZ; // anInt204
+		public final int rotationZ;
 		public final int zoom;
 
 		public ModelRotationData(int rotationX, int rotationY, int rotationZ, int zoom) {
@@ -115,8 +115,8 @@ public class PetItemCreator
 		npcToItemMap.put(corpPetStages++, itemId++); // 13272
 		npcToItemMap.put(corpPetStages++, itemId++); // 13273
 
-		// Dark Beast NPC
-		npcToItemMap.put(darkbeastPet, itemId++); // 13274
+		// Abyssal Demon NPC
+		npcToItemMap.put(abyssalDemonPet, itemId++); // 13274
 	}
 	public static int totalItemsAvailable = 13283; // UPDATE FOR ITEM DUMP INCLUSION
 
@@ -184,7 +184,7 @@ public class PetItemCreator
 		itemRotationMap.put(newItems++, new ModelRotationData(360, 0, 0, 4500));
 		itemRotationMap.put(newItems++, new ModelRotationData(360, 0, 0, 4000));
 
-		// Dark Beast
+		// Abyssal Demon
 		itemRotationMap.put(newItems++, new ModelRotationData(360, 0, 0, 3500));
 	}
 

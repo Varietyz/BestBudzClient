@@ -55,7 +55,7 @@ public class PacketParser extends Client
 	private static final RSInterface[] INTERFACE_CACHE = RSInterface.interfaceCache;
 
 	// Pre-compiled string patterns for chat optimization
-	private static final String DEAL_SUFFIX = " wishes to deal with you.";
+	private static final String DEAL_SUFFIX = ":dealreq:";
 	private static final String CULT_SUFFIX = ":cult:";
 	private static final String DUEL_SUFFIX = ":duelreq:";
 	private static final String CHALLENGE_SUFFIX = ":chalreq:";
@@ -563,11 +563,6 @@ public class PacketParser extends Client
 			final String text = inStream.readString();
 			final int frame = inStream.readWordMixed();
 			//System.out.println("🎭 RAW STRING PACKET: Frame " + frame + " = '" + text + "'");
-
-			UIDockFrame instance = UIDockFrame.getInstance();
-			if (instance != null && instance.getModalManager() != null) {
-				instance.getModalManager().feedStringPacket(frame, text);
-			}
 
 			final DockPanelMapping mapping = DockPanelMapping.fromFrame(frame);
 			if (mapping != null) {
@@ -1520,11 +1515,6 @@ public class PacketParser extends Client
 
 		System.out.println("🎭 RAW STRING PACKET: ItemModel InterfaceID" + interfaceId + " & zoom'" + zoom + "&& item id" + itemId);
 
-		UIDockFrame instance = UIDockFrame.getInstance();
-		if (instance != null && instance.getModalManager() != null) {
-			instance.getModalManager().feedItemDisplay(interfaceId, itemId, 1);
-		}
-
 		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
 
 		if (itemId == 65535) {
@@ -1875,8 +1865,6 @@ public class PacketParser extends Client
 			invOverlayInterfaceID = -1;
 			tabAreaAltered = true;
 		}
-
-		UIDockFrame.handleDialogueInterface(interfaceId, INTERFACE_CACHE[interfaceId]);
 
 		backDialogID = interfaceId;
 		inputTaken = true;

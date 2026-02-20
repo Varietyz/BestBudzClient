@@ -39,7 +39,6 @@ public class InterfaceManagement extends Client
 
 	public static void clearTopInterfaces() {
 		System.out.println("🎭 INTERFACE: clearTopInterfaces called");
-		UIDockFrame.handleCloseInterface();
 
 		// EXISTING: Your normal clear logic
 		stream.writeEncryptedOpcode(130);

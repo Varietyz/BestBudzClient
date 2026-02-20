@@ -1,0 +1,1209 @@
+{
+  "generatedAt": "2026-01-03T17:30:56.054Z",
+  "summary": {
+    "filesAnalyzed": 33,
+    "filesWithMigrations": 19,
+    "totalPatterns": 84,
+    "requiredImports": [
+      "setBorderColor",
+      "setTextColor",
+      "setDisplay",
+      "setBorderSideColor",
+      "setMaxHeight",
+      "setPositionX",
+      "setPositionY",
+      "setTransform",
+      "setWidth",
+      "setHeight",
+      "setZIndex",
+      "setMinHeight",
+      "setBackgroundColor",
+      "setAnimationDelay",
+      "setAnimationDuration",
+      "setTransitionDuration",
+      "setClipPath"
+    ]
+  },
+  "migrations": [
+    {
+      "file": "components/ai-history-modal.ts",
+      "migrations": [
+        {
+          "line": 407,
+          "original": "tab.style.borderColor = provider.color;",
+          "property": "borderColor",
+          "element": "tab",
+          "value": "provider.color",
+          "migration": {
+            "module": "colors",
+            "fn": "setBorderColor",
+            "replacement": "setBorderColor(tab, provider.color)"
+          }
+        },
+        {
+          "line": 408,
+          "original": "tab.style.color = provider.color;",
+          "property": "color",
+          "element": "tab",
+          "value": "provider.color",
+          "migration": {
+            "module": "colors",
+            "fn": "setTextColor",
+            "replacement": "setTextColor(tab, provider.color)"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setBorderColor",
+        "setTextColor"
+      ]
+    },
+    {
+      "file": "components/claude-hub/tabs/config/local-tab.ts",
+      "migrations": [
+        {
+          "line": 336,
+          "original": "chip.style.cssText = `background: ${color}22; border: 1px solid ${color}44; color: ${color};`;",
+          "property": "cssText",
+          "type": "complex",
+          "note": "// MANUAL: Split static styles to CSS class, dynamic to tokens/inlined"
+        }
+      ],
+      "requiredImports": []
+    },
+    {
+      "file": "terminal/components/ai-provider-dialog.ts",
+      "migrations": [
+        {
+          "line": 304,
+          "original": "envVarGroup.style.display = showEnvVar ? \"block\" : \"none\";",
+          "property": "display",
+          "element": "envVarGroup",
+          "value": "showEnvVar ? \"block\" : \"none\"",
+          "migration": {
+            "module": "visibility",
+            "fn": "setDisplay",
+            "replacement": "setDisplay(envVarGroup, showEnvVar ? \"block\" : \"none\")"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setDisplay"
+      ]
+    },
+    {
+      "file": "terminal/components/terminal-chat.ts",
+      "migrations": [
+        {
+          "line": 636,
+          "original": "iconSpan.style.cssText = `display: flex; align-items: center; color: ${toolCall.isError ? \"#f14c4c\" : \"#4a9c6d\"};`;",
+          "property": "cssText",
+          "type": "complex",
+          "note": "// MANUAL: Split static styles to CSS class, dynamic to tokens/inlined"
+        },
+        {
+          "line": 1032,
+          "original": "el.style.borderLeftColor = isError ? \"#f14c4c\" : \"#4a9c6d\";",
+          "property": "borderLeftColor",
+          "element": "el",
+          "value": "isError ? \"#f14c4c\" : \"#4a9c6d\"",
+          "migration": {
+            "module": "colors",
+            "fn": "setBorderSideColor",
+            "replacement": "setBorderSideColor(el, isError ? \"#f14c4c\" : \"#4a9c6d\")"
+          }
+        },
+        {
+          "line": 1706,
+          "original": "denyReasonRow.style.display === \"flex\";",
+          "property": "display",
+          "element": "denyReasonRow",
+          "value": "== \"flex\"",
+          "migration": {
+            "module": "visibility",
+            "fn": "setDisplay",
+            "replacement": "setDisplay(denyReasonRow, == \"flex\")"
+          }
+        },
+        {
+          "line": 1707,
+          "original": "denyReasonRow.style.display = isVisible ? \"none\" : \"flex\";",
+          "property": "display",
+          "element": "denyReasonRow",
+          "value": "isVisible ? \"none\" : \"flex\"",
+          "migration": {
+            "module": "visibility",
+            "fn": "setDisplay",
+            "replacement": "setDisplay(denyReasonRow, isVisible ? \"none\" : \"flex\")"
+          }
+        },
+        {
+          "line": 2014,
+          "original": "todoButtonEl.style.display = hasTodos ? \"flex\" : \"none\";",
+          "property": "display",
+          "element": "todoButtonEl",
+          "value": "hasTodos ? \"flex\" : \"none\"",
+          "migration": {
+            "module": "visibility",
+            "fn": "setDisplay",
+            "replacement": "setDisplay(todoButtonEl, hasTodos ? \"flex\" : \"none\")"
+          }
+        },
+        {
+          "line": 2044,
+          "original": "todoPanelEl.style.display = this.todoPanelVisible ? \"block\" : \"none\";",
+          "property": "display",
+          "element": "todoPanelEl",
+          "value": "this.todoPanelVisible ? \"block\" : \"none\"",
+          "migration": {
+            "module": "visibility",
+            "fn": "setDisplay",
+            "replacement": "setDisplay(todoPanelEl, this.todoPanelVisible ? \"block\" : \"none\")"
+          }
+        },
+        {
+          "line": 2053,
+          "original": "todoPanelEl.style.maxHeight = `${maxHeight}px`;",
+          "property": "maxHeight",
+          "element": "todoPanelEl",
+          "value": "`${maxHeight}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setMaxHeight",
+            "replacement": "setMaxHeight(todoPanelEl, `${maxHeight}px`)"
+          }
+        },
+        {
+          "line": 2298,
+          "original": "btn.style.borderColor = option.isDefault ? \"#4a9c6d\" : \"#4a4a4a\";",
+          "property": "borderColor",
+          "element": "btn",
+          "value": "option.isDefault ? \"#4a9c6d\" : \"#4a4a4a\"",
+          "migration": {
+            "module": "colors",
+            "fn": "setBorderColor",
+            "replacement": "setBorderColor(btn, option.isDefault ? \"#4a9c6d\" : \"#4a4a4a\")"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setBorderSideColor",
+        "setDisplay",
+        "setMaxHeight",
+        "setBorderColor"
+      ]
+    },
+    {
+      "file": "components/claude-hub/tabs/runtime/stats-tab.ts",
+      "migrations": [
+        {
+          "line": 78,
+          "original": "card.style.borderLeftColor = color;",
+          "property": "borderLeftColor",
+          "element": "card",
+          "value": "color",
+          "migration": {
+            "module": "colors",
+            "fn": "setBorderSideColor",
+            "replacement": "setBorderSideColor(card, color)"
+          }
+        },
+        {
+          "line": 92,
+          "original": "valueEl.style.color = color;",
+          "property": "color",
+          "element": "valueEl",
+          "value": "color",
+          "migration": {
+            "module": "colors",
+            "fn": "setTextColor",
+            "replacement": "setTextColor(valueEl, color)"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setBorderSideColor",
+        "setTextColor"
+      ]
+    },
+    {
+      "file": "components/context-menu.ts",
+      "migrations": [
+        {
+          "line": 294,
+          "original": "container.style.left = `${left}px`;",
+          "property": "left",
+          "element": "container",
+          "value": "`${left}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionX",
+            "replacement": "setPositionX(container, `${left}px`)"
+          }
+        },
+        {
+          "line": 295,
+          "original": "container.style.top = `${top}px`;",
+          "property": "top",
+          "element": "container",
+          "value": "`${top}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionY",
+            "replacement": "setPositionY(container, `${top}px`)"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setPositionX",
+        "setPositionY"
+      ]
+    },
+    {
+      "file": "components/draggable-modal.ts",
+      "migrations": [
+        {
+          "line": 336,
+          "original": "element.style.transform = `translate(${this.position.x}px, ${this.position.y}px)`;",
+          "property": "transform",
+          "element": "element",
+          "value": "`translate(${this.position.x}px, ${this.position.y}px)`",
+          "migration": {
+            "module": "position",
+            "fn": "setTransform",
+            "replacement": "setTransform(element, `translate(${this.position.x}px, ${this.position.y}px)`)"
+          }
+        },
+        {
+          "line": 371,
+          "original": "element.style.left = `${this.position.x}px`;",
+          "property": "left",
+          "element": "element",
+          "value": "`${this.position.x}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionX",
+            "replacement": "setPositionX(element, `${this.position.x}px`)"
+          }
+        },
+        {
+          "line": 372,
+          "original": "element.style.top = `${this.position.y}px`;",
+          "property": "top",
+          "element": "element",
+          "value": "`${this.position.y}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionY",
+            "replacement": "setPositionY(element, `${this.position.y}px`)"
+          }
+        },
+        {
+          "line": 404,
+          "original": "element.style.transform = `translate(${this.position.x}px, ${this.position.y}px)`;",
+          "property": "transform",
+          "element": "element",
+          "value": "`translate(${this.position.x}px, ${this.position.y}px)`",
+          "migration": {
+            "module": "position",
+            "fn": "setTransform",
+            "replacement": "setTransform(element, `translate(${this.position.x}px, ${this.position.y}px)`)"
+          }
+        },
+        {
+          "line": 469,
+          "original": "element.style.width = `${this.size.width}px`;",
+          "property": "width",
+          "element": "element",
+          "value": "`${this.size.width}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setWidth",
+            "replacement": "setWidth(element, `${this.size.width}px`)"
+          }
+        },
+        {
+          "line": 470,
+          "original": "element.style.height = `${this.size.height}px`;",
+          "property": "height",
+          "element": "element",
+          "value": "`${this.size.height}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setHeight",
+            "replacement": "setHeight(element, `${this.size.height}px`)"
+          }
+        },
+        {
+          "line": 471,
+          "original": "element.style.left = `${this.position.x}px`;",
+          "property": "left",
+          "element": "element",
+          "value": "`${this.position.x}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionX",
+            "replacement": "setPositionX(element, `${this.position.x}px`)"
+          }
+        },
+        {
+          "line": 472,
+          "original": "element.style.top = `${this.position.y}px`;",
+          "property": "top",
+          "element": "element",
+          "value": "`${this.position.y}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionY",
+            "replacement": "setPositionY(element, `${this.position.y}px`)"
+          }
+        },
+        {
+          "line": 514,
+          "original": "element.style.left = `${this.position.x}px`;",
+          "property": "left",
+          "element": "element",
+          "value": "`${this.position.x}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionX",
+            "replacement": "setPositionX(element, `${this.position.x}px`)"
+          }
+        },
+        {
+          "line": 515,
+          "original": "element.style.top = `${this.position.y}px`;",
+          "property": "top",
+          "element": "element",
+          "value": "`${this.position.y}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionY",
+            "replacement": "setPositionY(element, `${this.position.y}px`)"
+          }
+        },
+        {
+          "line": 524,
+          "original": "element.style.width = `${this.size.width}px`;",
+          "property": "width",
+          "element": "element",
+          "value": "`${this.size.width}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setWidth",
+            "replacement": "setWidth(element, `${this.size.width}px`)"
+          }
+        },
+        {
+          "line": 525,
+          "original": "element.style.height = `${this.size.height}px`;",
+          "property": "height",
+          "element": "element",
+          "value": "`${this.size.height}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setHeight",
+            "replacement": "setHeight(element, `${this.size.height}px`)"
+          }
+        },
+        {
+          "line": 540,
+          "original": "overlayEl.style.zIndex = String(this.zIndex - 1);",
+          "property": "zIndex",
+          "element": "overlayEl",
+          "value": "String(this.zIndex - 1)",
+          "migration": {
+            "module": "z-index",
+            "fn": "setZIndex",
+            "replacement": "setZIndex(overlayEl, String(this.zIndex - 1))"
+          }
+        },
+        {
+          "line": 654,
+          "original": "element.style.zIndex = String(this.zIndex);",
+          "property": "zIndex",
+          "element": "element",
+          "value": "String(this.zIndex)",
+          "migration": {
+            "module": "z-index",
+            "fn": "setZIndex",
+            "replacement": "setZIndex(element, String(this.zIndex))"
+          }
+        },
+        {
+          "line": 657,
+          "original": "overlayEl.style.zIndex = String(this.zIndex - 1);",
+          "property": "zIndex",
+          "element": "overlayEl",
+          "value": "String(this.zIndex - 1)",
+          "migration": {
+            "module": "z-index",
+            "fn": "setZIndex",
+            "replacement": "setZIndex(overlayEl, String(this.zIndex - 1))"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setTransform",
+        "setPositionX",
+        "setPositionY",
+        "setWidth",
+        "setHeight",
+        "setZIndex"
+      ]
+    },
+    {
+      "file": "components/popover.ts",
+      "migrations": [
+        {
+          "line": 766,
+          "original": "overlay.style.zIndex = String(this.zIndex);",
+          "property": "zIndex",
+          "element": "overlay",
+          "value": "String(this.zIndex)",
+          "migration": {
+            "module": "z-index",
+            "fn": "setZIndex",
+            "replacement": "setZIndex(overlay, String(this.zIndex))"
+          }
+        },
+        {
+          "line": 769,
+          "original": "container.style.zIndex = String(this.zIndex + 1);",
+          "property": "zIndex",
+          "element": "container",
+          "value": "String(this.zIndex + 1)",
+          "migration": {
+            "module": "z-index",
+            "fn": "setZIndex",
+            "replacement": "setZIndex(container, String(this.zIndex + 1))"
+          }
+        },
+        {
+          "line": 772,
+          "original": "pointer.style.zIndex = String(this.zIndex + 2);",
+          "property": "zIndex",
+          "element": "pointer",
+          "value": "String(this.zIndex + 2)",
+          "migration": {
+            "module": "z-index",
+            "fn": "setZIndex",
+            "replacement": "setZIndex(pointer, String(this.zIndex + 2))"
+          }
+        },
+        {
+          "line": 797,
+          "original": "container.style.width = `${this.options.width}px`;",
+          "property": "width",
+          "element": "container",
+          "value": "`${this.options.width}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setWidth",
+            "replacement": "setWidth(container, `${this.options.width}px`)"
+          }
+        },
+        {
+          "line": 860,
+          "original": "pointer.style.left = `${anchorRect.left + anchorRect.width / 2 - 3}px`;",
+          "property": "left",
+          "element": "pointer",
+          "value": "`${anchorRect.left + anchorRect.width / 2 - 3}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionX",
+            "replacement": "setPositionX(pointer, `${anchorRect.left + anchorRect.width / 2 - 3}px`)"
+          }
+        },
+        {
+          "line": 863,
+          "original": "pointer.style.right = `${window.innerWidth - anchorRect.left - anchorRect.width / 2 - 3}px`;",
+          "property": "right",
+          "element": "pointer",
+          "value": "`${window.innerWidth - anchorRect.left - anchorRect.width / 2 - 3}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionX",
+            "replacement": "setPositionX(pointer, `${window.innerWidth - anchorRect.left - anchorRect.width / 2 - 3}px`)"
+          },
+          "note": "// Note: use negative for right positioning"
+        }
+      ],
+      "requiredImports": [
+        "setZIndex",
+        "setWidth",
+        "setPositionX"
+      ]
+    },
+    {
+      "file": "engine/culling/cullable-scroll-container.ts",
+      "migrations": [
+        {
+          "line": 501,
+          "original": "element.style.top = `${item.logicalTop}px`;",
+          "property": "top",
+          "element": "element",
+          "value": "`${item.logicalTop}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionY",
+            "replacement": "setPositionY(element, `${item.logicalTop}px`)"
+          }
+        },
+        {
+          "line": 577,
+          "original": "element.style.top = `${item.logicalTop}px`;",
+          "property": "top",
+          "element": "element",
+          "value": "`${item.logicalTop}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionY",
+            "replacement": "setPositionY(element, `${item.logicalTop}px`)"
+          }
+        },
+        {
+          "line": 615,
+          "original": "topSpacer.style.height = `${topHeight}px`;",
+          "property": "height",
+          "element": "topSpacer",
+          "value": "`${topHeight}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setHeight",
+            "replacement": "setHeight(topSpacer, `${topHeight}px`)"
+          }
+        },
+        {
+          "line": 621,
+          "original": "bottomSpacer.style.height = `${bottomHeight}px`;",
+          "property": "height",
+          "element": "bottomSpacer",
+          "value": "`${bottomHeight}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setHeight",
+            "replacement": "setHeight(bottomSpacer, `${bottomHeight}px`)"
+          }
+        },
+        {
+          "line": 623,
+          "original": "bottomSpacer.style.height = `${this.metrics.totalLogicalHeight}px`;",
+          "property": "height",
+          "element": "bottomSpacer",
+          "value": "`${this.metrics.totalLogicalHeight}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setHeight",
+            "replacement": "setHeight(bottomSpacer, `${this.metrics.totalLogicalHeight}px`)"
+          }
+        },
+        {
+          "line": 627,
+          "original": "contentWrapper.style.minHeight = `${this.metrics.totalLogicalHeight}px`;",
+          "property": "minHeight",
+          "element": "contentWrapper",
+          "value": "`${this.metrics.totalLogicalHeight}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setMinHeight",
+            "replacement": "setMinHeight(contentWrapper, `${this.metrics.totalLogicalHeight}px`)"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setPositionY",
+        "setHeight",
+        "setMinHeight"
+      ]
+    },
+    {
+      "file": "engine/virtualization/virtualized-buffer.ts",
+      "migrations": [
+        {
+          "line": 282,
+          "original": "spacerTop.style.height = `${topHeight}px`;",
+          "property": "height",
+          "element": "spacerTop",
+          "value": "`${topHeight}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setHeight",
+            "replacement": "setHeight(spacerTop, `${topHeight}px`)"
+          }
+        },
+        {
+          "line": 291,
+          "original": "spacerBottom.style.height = `${bottomHeight}px`;",
+          "property": "height",
+          "element": "spacerBottom",
+          "value": "`${bottomHeight}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setHeight",
+            "replacement": "setHeight(spacerBottom, `${bottomHeight}px`)"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setHeight"
+      ]
+    },
+    {
+      "file": "utils/motion.ts",
+      "migrations": [
+        {
+          "line": 105,
+          "original": "element.style.transform = `translate(${state.position.x}px, ${state.position.y}px)`;",
+          "property": "transform",
+          "element": "element",
+          "value": "`translate(${state.position.x}px, ${state.position.y}px)`",
+          "migration": {
+            "module": "position",
+            "fn": "setTransform",
+            "replacement": "setTransform(element, `translate(${state.position.x}px, ${state.position.y}px)`)"
+          }
+        },
+        {
+          "line": 107,
+          "original": "element.style.left = `${state.position.x}px`;",
+          "property": "left",
+          "element": "element",
+          "value": "`${state.position.x}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionX",
+            "replacement": "setPositionX(element, `${state.position.x}px`)"
+          }
+        },
+        {
+          "line": 108,
+          "original": "element.style.top = `${state.position.y}px`;",
+          "property": "top",
+          "element": "element",
+          "value": "`${state.position.y}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionY",
+            "replacement": "setPositionY(element, `${state.position.y}px`)"
+          }
+        },
+        {
+          "line": 282,
+          "original": "element.style.transform = `translate(${initialPosition.x}px, ${initialPosition.y}px)`;",
+          "property": "transform",
+          "element": "element",
+          "value": "`translate(${initialPosition.x}px, ${initialPosition.y}px)`",
+          "migration": {
+            "module": "position",
+            "fn": "setTransform",
+            "replacement": "setTransform(element, `translate(${initialPosition.x}px, ${initialPosition.y}px)`)"
+          }
+        },
+        {
+          "line": 332,
+          "original": "element.style.transform = `translate(${state.position.x}px, ${state.position.y}px)`;",
+          "property": "transform",
+          "element": "element",
+          "value": "`translate(${state.position.x}px, ${state.position.y}px)`",
+          "migration": {
+            "module": "position",
+            "fn": "setTransform",
+            "replacement": "setTransform(element, `translate(${state.position.x}px, ${state.position.y}px)`)"
+          }
+        },
+        {
+          "line": 334,
+          "original": "element.style.left = `${state.position.x}px`;",
+          "property": "left",
+          "element": "element",
+          "value": "`${state.position.x}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionX",
+            "replacement": "setPositionX(element, `${state.position.x}px`)"
+          }
+        },
+        {
+          "line": 335,
+          "original": "element.style.top = `${state.position.y}px`;",
+          "property": "top",
+          "element": "element",
+          "value": "`${state.position.y}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionY",
+            "replacement": "setPositionY(element, `${state.position.y}px`)"
+          }
+        },
+        {
+          "line": 354,
+          "original": "element.style.transform = `translate(${state.position.x}px, ${state.position.y}px)`;",
+          "property": "transform",
+          "element": "element",
+          "value": "`translate(${state.position.x}px, ${state.position.y}px)`",
+          "migration": {
+            "module": "position",
+            "fn": "setTransform",
+            "replacement": "setTransform(element, `translate(${state.position.x}px, ${state.position.y}px)`)"
+          }
+        },
+        {
+          "line": 356,
+          "original": "element.style.left = `${state.position.x}px`;",
+          "property": "left",
+          "element": "element",
+          "value": "`${state.position.x}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionX",
+            "replacement": "setPositionX(element, `${state.position.x}px`)"
+          }
+        },
+        {
+          "line": 357,
+          "original": "element.style.top = `${state.position.y}px`;",
+          "property": "top",
+          "element": "element",
+          "value": "`${state.position.y}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionY",
+            "replacement": "setPositionY(element, `${state.position.y}px`)"
+          }
+        },
+        {
+          "line": 384,
+          "original": "element.style.left = `${state.position.x}px`;",
+          "property": "left",
+          "element": "element",
+          "value": "`${state.position.x}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionX",
+            "replacement": "setPositionX(element, `${state.position.x}px`)"
+          }
+        },
+        {
+          "line": 385,
+          "original": "element.style.top = `${state.position.y}px`;",
+          "property": "top",
+          "element": "element",
+          "value": "`${state.position.y}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionY",
+            "replacement": "setPositionY(element, `${state.position.y}px`)"
+          }
+        },
+        {
+          "line": 594,
+          "original": "element.style.width = `${newWidth}px`;",
+          "property": "width",
+          "element": "element",
+          "value": "`${newWidth}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setWidth",
+            "replacement": "setWidth(element, `${newWidth}px`)"
+          }
+        },
+        {
+          "line": 595,
+          "original": "element.style.height = `${newHeight}px`;",
+          "property": "height",
+          "element": "element",
+          "value": "`${newHeight}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setHeight",
+            "replacement": "setHeight(element, `${newHeight}px`)"
+          }
+        },
+        {
+          "line": 596,
+          "original": "element.style.left = `${newX}px`;",
+          "property": "left",
+          "element": "element",
+          "value": "`${newX}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionX",
+            "replacement": "setPositionX(element, `${newX}px`)"
+          }
+        },
+        {
+          "line": 597,
+          "original": "element.style.top = `${newY}px`;",
+          "property": "top",
+          "element": "element",
+          "value": "`${newY}px`",
+          "migration": {
+            "module": "position",
+            "fn": "setPositionY",
+            "replacement": "setPositionY(element, `${newY}px`)"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setTransform",
+        "setPositionX",
+        "setPositionY",
+        "setWidth",
+        "setHeight"
+      ]
+    },
+    {
+      "file": "components/claude-hub/tabs/config/global-tab.ts",
+      "migrations": [
+        {
+          "line": 168,
+          "original": "titleEl.style.color = color;",
+          "property": "color",
+          "element": "titleEl",
+          "value": "color",
+          "migration": {
+            "module": "colors",
+            "fn": "setTextColor",
+            "replacement": "setTextColor(titleEl, color)"
+          }
+        },
+        {
+          "line": 308,
+          "original": "content.style.display === \"none\";",
+          "property": "display",
+          "element": "content",
+          "value": "== \"none\"",
+          "migration": {
+            "module": "visibility",
+            "fn": "setDisplay",
+            "replacement": "setDisplay(content, == \"none\")"
+          }
+        },
+        {
+          "line": 309,
+          "original": "content.style.display = isHidden ? \"block\" : \"none\";",
+          "property": "display",
+          "element": "content",
+          "value": "isHidden ? \"block\" : \"none\"",
+          "migration": {
+            "module": "visibility",
+            "fn": "setDisplay",
+            "replacement": "setDisplay(content, isHidden ? \"block\" : \"none\")"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setTextColor",
+        "setDisplay"
+      ]
+    },
+    {
+      "file": "components/ui-customization-panel.ts",
+      "migrations": [
+        {
+          "line": 283,
+          "original": "swatchEl.style.backgroundColor = token.value;",
+          "property": "backgroundColor",
+          "element": "swatchEl",
+          "value": "token.value",
+          "migration": {
+            "module": "colors",
+            "fn": "setBackgroundColor",
+            "replacement": "setBackgroundColor(swatchEl, token.value)"
+          }
+        },
+        {
+          "line": 341,
+          "original": "swatchEl.style.backgroundColor = this.token.value;",
+          "property": "backgroundColor",
+          "element": "swatchEl",
+          "value": "this.token.value",
+          "migration": {
+            "module": "colors",
+            "fn": "setBackgroundColor",
+            "replacement": "setBackgroundColor(swatchEl, this.token.value)"
+          }
+        },
+        {
+          "line": 717,
+          "original": "swatch.style.backgroundColor = input.value;",
+          "property": "backgroundColor",
+          "element": "swatch",
+          "value": "input.value",
+          "migration": {
+            "module": "colors",
+            "fn": "setBackgroundColor",
+            "replacement": "setBackgroundColor(swatch, input.value)"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setBackgroundColor"
+      ]
+    },
+    {
+      "file": "utils/dom-factory.ts",
+      "migrations": [
+        {
+          "line": 338,
+          "original": "element.style.animationDelay = `${animation.delay}ms`;",
+          "property": "animationDelay",
+          "element": "element",
+          "value": "`${animation.delay}ms`",
+          "migration": {
+            "module": "animation",
+            "fn": "setAnimationDelay",
+            "replacement": "setAnimationDelay(element, `${animation.delay}ms`)"
+          }
+        },
+        {
+          "line": 343,
+          "original": "element.style.animationDuration = durationVar;",
+          "property": "animationDuration",
+          "element": "element",
+          "value": "durationVar",
+          "migration": {
+            "module": "animation",
+            "fn": "setAnimationDuration",
+            "replacement": "setAnimationDuration(element, durationVar)"
+          }
+        },
+        {
+          "line": 433,
+          "original": "span.style.color = options.color;",
+          "property": "color",
+          "element": "span",
+          "value": "options.color",
+          "migration": {
+            "module": "colors",
+            "fn": "setTextColor",
+            "replacement": "setTextColor(span, options.color)"
+          }
+        },
+        {
+          "line": 698,
+          "original": "container.style.width = `${collapsedWidth}px`;",
+          "property": "width",
+          "element": "container",
+          "value": "`${collapsedWidth}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setWidth",
+            "replacement": "setWidth(container, `${collapsedWidth}px`)"
+          }
+        },
+        {
+          "line": 706,
+          "original": "container.style.width = `${width}px`;",
+          "property": "width",
+          "element": "container",
+          "value": "`${width}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setWidth",
+            "replacement": "setWidth(container, `${width}px`)"
+          }
+        },
+        {
+          "line": 1282,
+          "original": "element.style.animationDelay = `${delay}ms`;",
+          "property": "animationDelay",
+          "element": "element",
+          "value": "`${delay}ms`",
+          "migration": {
+            "module": "animation",
+            "fn": "setAnimationDelay",
+            "replacement": "setAnimationDelay(element, `${delay}ms`)"
+          }
+        },
+        {
+          "line": 1327,
+          "original": "element.style.transition = `opacity ${duration}ms var(--anim-ease-out)`;",
+          "property": "transition",
+          "element": "element",
+          "value": "`opacity ${duration}ms var(--anim-ease-out)`",
+          "migration": {
+            "module": "animation",
+            "fn": "setTransitionDuration",
+            "replacement": "setTransitionDuration(element, `opacity ${duration}ms var(--anim-ease-out)`)"
+          },
+          "note": "// Manual: parse transition string"
+        },
+        {
+          "line": 1343,
+          "original": "element.style.transition = `opacity ${duration}ms var(--anim-ease-in)`;",
+          "property": "transition",
+          "element": "element",
+          "value": "`opacity ${duration}ms var(--anim-ease-in)`",
+          "migration": {
+            "module": "animation",
+            "fn": "setTransitionDuration",
+            "replacement": "setTransitionDuration(element, `opacity ${duration}ms var(--anim-ease-in)`)"
+          },
+          "note": "// Manual: parse transition string"
+        }
+      ],
+      "requiredImports": [
+        "setAnimationDelay",
+        "setAnimationDuration",
+        "setTextColor",
+        "setWidth",
+        "setTransitionDuration"
+      ]
+    },
+    {
+      "file": "engine/culling/content-optimizer.ts",
+      "migrations": [
+        {
+          "line": 351,
+          "original": "container.style.transition = `max-height ${this.config.animationDurationMs}ms ease-out`;",
+          "property": "transition",
+          "element": "container",
+          "value": "`max-height ${this.config.animationDurationMs}ms ease-out`",
+          "migration": {
+            "module": "animation",
+            "fn": "setTransitionDuration",
+            "replacement": "setTransitionDuration(container, `max-height ${this.config.animationDurationMs}ms ease-out`)"
+          },
+          "note": "// Manual: parse transition string"
+        },
+        {
+          "line": 403,
+          "original": "container.style.maxHeight = `${height}px`;",
+          "property": "maxHeight",
+          "element": "container",
+          "value": "`${height}px`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setMaxHeight",
+            "replacement": "setMaxHeight(container, `${height}px`)"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setTransitionDuration",
+        "setMaxHeight"
+      ]
+    },
+    {
+      "file": "engine/culling/partial-visibility-renderer.ts",
+      "migrations": [
+        {
+          "line": 167,
+          "original": "element.style.transition = `clip-path ${this.config.transitionDurationMs}ms ease-out`;",
+          "property": "transition",
+          "element": "element",
+          "value": "`clip-path ${this.config.transitionDurationMs}ms ease-out`",
+          "migration": {
+            "module": "animation",
+            "fn": "setTransitionDuration",
+            "replacement": "setTransitionDuration(element, `clip-path ${this.config.transitionDurationMs}ms ease-out`)"
+          },
+          "note": "// Manual: parse transition string"
+        },
+        {
+          "line": 314,
+          "original": "element.style.clipPath = clipPath;",
+          "property": "clipPath",
+          "element": "element",
+          "value": "clipPath",
+          "migration": {
+            "module": "visibility",
+            "fn": "setClipPath",
+            "replacement": "setClipPath(element, clipPath)"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setTransitionDuration",
+        "setClipPath"
+      ]
+    },
+    {
+      "file": "utils/manager/animation-manager.ts",
+      "migrations": [
+        {
+          "line": 124,
+          "original": "element.style.animationDelay = `${delay}ms`;",
+          "property": "animationDelay",
+          "element": "element",
+          "value": "`${delay}ms`",
+          "migration": {
+            "module": "animation",
+            "fn": "setAnimationDelay",
+            "replacement": "setAnimationDelay(element, `${delay}ms`)"
+          }
+        },
+        {
+          "line": 130,
+          "original": "element.style.animationDuration = `${resolvedDuration}ms`;",
+          "property": "animationDuration",
+          "element": "element",
+          "value": "`${resolvedDuration}ms`",
+          "migration": {
+            "module": "animation",
+            "fn": "setAnimationDuration",
+            "replacement": "setAnimationDuration(element, `${resolvedDuration}ms`)"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setAnimationDelay",
+        "setAnimationDuration"
+      ]
+    },
+    {
+      "file": "components/hardware-panel.ts",
+      "migrations": [
+        {
+          "line": 354,
+          "original": "fill.style.width = `${Math.min(100, percent)}%`;",
+          "property": "width",
+          "element": "fill",
+          "value": "`${Math.min(100, percent)}%`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setWidth",
+            "replacement": "setWidth(fill, `${Math.min(100, percent)}%`)"
+          }
+        },
+        {
+          "line": 401,
+          "original": "fill.style.width = `${Math.min(100, percent)}%`;",
+          "property": "width",
+          "element": "fill",
+          "value": "`${Math.min(100, percent)}%`",
+          "migration": {
+            "module": "dimensions",
+            "fn": "setWidth",
+            "replacement": "setWidth(fill, `${Math.min(100, percent)}%`)"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setWidth"
+      ]
+    },
+    {
+      "file": "terminal/components/terminal-header.ts",
+      "migrations": [
+        {
+          "line": 527,
+          "original": "addBtnEl.style.display = canCreateTab ? \"\" : \"none\";",
+          "property": "display",
+          "element": "addBtnEl",
+          "value": "canCreateTab ? \"\" : \"none\"",
+          "migration": {
+            "module": "visibility",
+            "fn": "setDisplay",
+            "replacement": "setDisplay(addBtnEl, canCreateTab ? \"\" : \"none\")"
+          }
+        }
+      ],
+      "requiredImports": [
+        "setDisplay"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "timestamp": "2025-12-27T10:42:58.409Z",
+  "sourceDir": "D:\\GIT\\archlab\\root\\archlab-ide\\src",
+  "totalTsFiles": 54,
+  "totalPascalCase": 22,
+  "claimed": 13,
+  "verified": [
+    {
+      "file": "Database.ts",
+      "path": "main\\database\\Database.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "file": "MigrationRunner.ts",
+      "path": "main\\database\\MigrationRunner.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "file": "SettingsStore.ts",
+      "path": "main\\settings\\SettingsStore.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "file": "HeaderBar.ts",
+      "path": "renderer\\components\\HeaderBar.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "file": "Taskbar.ts",
+      "path": "renderer\\components\\Taskbar.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "file": "Toast.ts",
+      "path": "renderer\\components\\Toast.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "file": "Popover.ts",
+      "path": "renderer\\components\\Popover.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "file": "SettingsPanel.ts",
+      "path": "renderer\\components\\SettingsPanel.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "file": "StatusIndicator.ts",
+      "path": "renderer\\components\\StatusIndicator.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "file": "Router.ts",
+      "path": "renderer\\router\\Router.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "file": "DOMFactory.ts",
+      "path": "renderer\\utils\\DOMFactory.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "file": "AppStore.ts",
+      "path": "renderer\\stores\\AppStore.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "file": "GraphicsService.ts",
+      "path": "renderer\\services\\GraphicsService.ts",
+      "status": "VERIFIED"
+    }
+  ],
+  "refuted": [],
+  "missed": [
+    {
+      "file": "AppTitle.ts",
+      "path": "renderer\\components\\AppTitle.ts",
+      "status": "MISSED - NOT IN CHECKLIST"
+    },
+    {
+      "file": "DraggableModal.ts",
+      "path": "renderer\\components\\DraggableModal.ts",
+      "status": "MISSED - NOT IN CHECKLIST"
+    },
+    {
+      "file": "GeometricBackground.ts",
+      "path": "renderer\\components\\GeometricBackground.ts",
+      "status": "MISSED - NOT IN CHECKLIST"
+    },
+    {
+      "file": "Logo.ts",
+      "path": "renderer\\components\\Logo.ts",
+      "status": "MISSED - NOT IN CHECKLIST"
+    },
+    {
+      "file": "InternalTerminalModal.ts",
+      "path": "renderer\\terminal\\components\\InternalTerminalModal.ts",
+      "status": "MISSED - NOT IN CHECKLIST"
+    },
+    {
+      "file": "TabbedTerminalContainer.ts",
+      "path": "renderer\\terminal\\components\\TabbedTerminalContainer.ts",
+      "status": "MISSED - NOT IN CHECKLIST"
+    },
+    {
+      "file": "TerminalHeader.ts",
+      "path": "renderer\\terminal\\components\\TerminalHeader.ts",
+      "status": "MISSED - NOT IN CHECKLIST"
+    },
+    {
+      "file": "TerminalView.ts",
+      "path": "renderer\\terminal\\components\\TerminalView.ts",
+      "status": "MISSED - NOT IN CHECKLIST"
+    },
+    {
+      "file": "InternalTerminalManager.ts",
+      "path": "renderer\\terminal\\InternalTerminalManager.ts",
+      "status": "MISSED - NOT IN CHECKLIST"
+    }
+  ]
+}

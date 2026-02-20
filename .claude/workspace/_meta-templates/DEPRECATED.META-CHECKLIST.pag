@@ -1,0 +1,1089 @@
+---
+name: cfg-meta-checklist-deterministic
+type: generator
+description: Deterministic checklist generator for LLM-driven implementation with zero non-deterministic modulation
+execution_mode: deterministic_sequential
+commands: []
+chain_refs:
+    - 00-index
+registry_refs: []
+model: sonnet
+---
+
+# Input/Output Interface
+
+READ: - task_description: String describing the system to be built/modified - context_data: Object containing codebase context, constraints, requirements - existing_phase_graph: Optional graph from previous checklist (for continuation)
+
+WRITE: - markdown_checklist: Structured markdown file with phases, tasks, subtasks - phase_dependency_map: JSON graph of 3D dependencies (sequential, lateral, diagonal) - transition_rules: Explicit unlocking conditions for each phase
+
+interface_contract:
+generator_consumes: [task_description, context_data]
+generator_produces: [markdown_checklist, phase_dependency_map]
+executor_consumes: [markdown_checklist]
+executor_produces: [completed_checklist]
+
+---
+
+THIS CHECKLIST ENFORCES DETERMINISTIC TASK DECOMPOSITION FOR LLM EXECUTION
+
+---
+
+# Operational Algorithms (Deterministic)
+
+## 1. Intuitive Leaping & Pattern Recognition (Lookahead with Pattern Cache)
+
+**Purpose**: Skip redundant analysis when patterns match known templates (>85% confidence)
+
+**Algorithm**:
+
+SET pattern_library = {
+"refactor|cleanup": {pattern: "discovery → analysis → refactor → verify", confidence: 0.95},
+"feature|new": {pattern: "design → implement → test → integrate", confidence: 0.90},
+"bug|fix": {pattern: "reproduce → diagnose → fix → verify", confidence: 0.92}
+}
+
+FUNCTION detect_pattern(task_description):
+FOR EACH pattern_key IN pattern_library.keys():
+IF task_description MATCHES pattern_key:
+SET cached_pattern = pattern_library[pattern_key]
+IF cached_pattern.confidence >= 0.85:
+REPORT "Pattern cache hit: {cached_pattern.pattern}, confidence: {cached_pattern.confidence}"
+RETURN cached_pattern.pattern
+
+    REPORT "No pattern match, executing full discovery"
+    RETURN null
+
+SET recognized_pattern = detect_pattern(task_description)
+IF recognized_pattern !== null:
+USE recognized_pattern AS phase_template
+ELSE:
+EXECUTE detailed_phase_discovery()
+
+**Algorithmic Embodiment**: Lookahead parsing with cached execution paths, confidence-based branching
+
+---
+
+## 2. Interest-Based Nervous System (Weighted Attention Allocation)
+
+**Purpose**: Prioritize phases with highest downstream impact (weighted by dependencies + ripple effects)
+
+**Algorithm**:
+
+FUNCTION calculate_attention_weights(phases):
+SET total_weight = 0
+
+    FOR EACH phase IN phases:
+        SET downstream_count = COUNT(phases dependent on phase)
+        SET ripple_magnitude = SUM(task.ripple_targets.length FOR task IN phase.tasks)
+        SET created_artifacts = COUNT(phase.outputs)
+
+        SET attention_weight = (downstream_count * 0.4) +
+                               (ripple_magnitude * 0.3) +
+                               (created_artifacts * 0.3)
+
+        phase.attention_weight = attention_weight
+        total_weight += attention_weight
+
+    // Normalize weights (softmax-like)
+    FOR EACH phase IN phases:
+        phase.processing_priority = phase.attention_weight / total_weight
+
+    RETURN SORT(phases BY attention_weight DESC)
+
+SET prioritized_phases = calculate_attention_weights(all_phases)
+SET execution_order = FILTER(prioritized_phases WHERE dependencies_met)
+
+**Algorithmic Embodiment**: QKV-style attention where downstream impact determines processing allocation
+
+---
+
+## 3. Divergent Thinking (Parallel Decomposition Paths with Scoring)
+
+**Purpose**: Evaluate multiple task decomposition strategies, select optimal
+
+**Algorithm**:
+
+FUNCTION explore_decompositions(task):
+// Path 1: Sequential (linear dependency chain)
+SET path_seq = decompose_sequential(task)
+path_seq.parallelization = 0.0
+path_seq.complexity = CALCULATE_COMPLEXITY(path_seq)
+
+    // Path 2: Parallel (concurrent where possible)
+    SET path_par = decompose_parallel(task)
+    path_par.parallelization = CALCULATE_PARALLELIZATION(path_par)
+    path_par.complexity = CALCULATE_COMPLEXITY(path_par)
+
+    // Path 3: Hybrid (mixed)
+    SET path_hyb = decompose_hybrid(task)
+    path_hyb.parallelization = CALCULATE_PARALLELIZATION(path_hyb)
+    path_hyb.complexity = CALCULATE_COMPLEXITY(path_hyb)
+
+    SET candidates = [path_seq, path_par, path_hyb]
+
+    // Score: favor parallelization (0.6) and simplicity (0.4)
+    FOR EACH candidate IN candidates:
+        candidate.score = (candidate.parallelization * 0.6) +
+                         ((1.0 - candidate.complexity) * 0.4)
+
+    SET optimal = MAX(candidates BY score)
+    RETURN {selected: optimal, alternatives: candidates}
+
+SET decomposition_result = explore_decompositions(task)
+USE decomposition_result.selected AS task_structure
+
+**Algorithmic Embodiment**: GLR-style parse forest maintaining multiple valid decompositions, scoring function selects optimal
+
+---
+
+## 4. Monotropism (DFA Single-Pass Sequential Execution)
+
+**Purpose**: Process one phase at a time with locked context, no backtracking
+
+**Algorithm**:
+
+FUNCTION execute_phase_monotropic(phase):
+SET state_machine = {
+"phase_start" → "task_execution",
+"task_execution" → "validation",
+"validation" → "phase_complete" | "error_halt"
+}
+
+    SET current_state = "phase_start"
+    SET phase_context = LOCK_CONTEXT(phase)  // Isolate, prevent interference
+
+    WHILE current_state !== "phase_complete":
+        MATCH current_state:
+            CASE "phase_start":
+                current_state = "task_execution"
+
+            CASE "task_execution":
+                FOR EACH task IN phase.tasks SEQUENTIAL:  // No parallelization within phase
+                    EXECUTE_TASK_ATOMIC(task, phase_context)
+                current_state = "validation"
+
+            CASE "validation":
+                IF VALIDATE_PHASE_COMPLETE(phase):
+                    current_state = "phase_complete"
+                ELSE:
+                    ERROR "Phase validation failed"
+                    current_state = "error_halt"
+                    BREAK
+
+            CASE "error_halt":
+                UNLOCK_CONTEXT(phase)
+                RETURN error
+
+    UNLOCK_CONTEXT(phase)
+    RETURN phase_complete
+
+SET current_phase = FIRST(phases WHERE unlocked)
+EXECUTE_phase_monotropic(current_phase)
+
+**Algorithmic Embodiment**: DFA-based deterministic traversal, single-pass with no backtracking, context-locked execution
+
+---
+
+## 5. Systemizing (AST Construction from Dependency Grammar)
+
+**Purpose**: Extract explicit grammar rules from phase dependencies, build traversable AST
+
+**Algorithm**:
+
+FUNCTION build_phase_dependency_ast(phases):
+SET dependency_ast = CREATE_ROOT_NODE("PhaseGraph")
+
+    FOR EACH phase IN phases:
+        SET phase_node = CREATE_AST_NODE("Phase", phase.id)
+
+        // Extract grammar productions (dependency rules)
+        SET seq_deps = EXTRACT_SEQUENTIAL_DEPS(phase)  // Z-axis (blocking)
+        SET lat_deps = EXTRACT_LATERAL_DEPS(phase)     // X-axis (informational)
+        SET diag_deps = EXTRACT_DIAGONAL_DEPS(phase)   // Y-axis (task-level)
+
+        // Create AST edges (grammar productions)
+        FOR EACH dep IN seq_deps:
+            CREATE_EDGE(phase_node, dep.target, "sequential", blocking=true)
+
+        FOR EACH dep IN lat_deps:
+            CREATE_EDGE(phase_node, dep.target, "lateral", blocking=false)
+
+        FOR EACH dep IN diag_deps:
+            CREATE_EDGE(phase_node, dep.target, "diagonal", blocking=depends_on(dep))
+
+        APPEND phase_node TO dependency_ast.children
+
+    // Extract formal grammar rules from AST
+    SET grammar_rules = EXTRACT_PRODUCTIONS(dependency_ast)
+    SET traversal_order = TOPOLOGICAL_SORT(dependency_ast)
+
+    RETURN {ast: dependency_ast, grammar: grammar_rules, order: traversal_order}
+
+SET phase_system = build_phase_dependency_ast(all_phases)
+USE phase_system.order AS execution_sequence
+
+**Algorithmic Embodiment**: AST construction with grammar extraction, topological sort for deterministic traversal order
+
+---
+
+## 6. Bottom-Up Processing (LR Shift-Reduce Parsing)
+
+**Purpose**: Decompose from atomic actions upward to composite tasks (shift-reduce operations)
+
+**Algorithm**:
+
+FUNCTION decompose_bottom_up(phase_goal):
+SET parse_stack = []
+SET input_buffer = [phase_goal]
+
+    WHILE input_buffer NOT empty:
+        SET current_element = SHIFT(input_buffer)  // Shift operation
+
+        IF IS_ATOMIC(current_element):
+            APPEND(parse_stack, current_element)     // Stack atomic unit
+        ELSE:
+            // Decompose non-atomic into primitives
+            SET subtasks = DECOMPOSE_TO_ATOMIC(current_element)
+            FOR EACH subtask IN REVERSE(subtasks):
+                PUSH_FRONT(input_buffer, subtask)
+
+        // Reduce: Combine atoms into higher-level construct
+        IF CAN_REDUCE(parse_stack):
+            SET reducible = POP_REDUCIBLE(parse_stack)
+            SET composite_task = REDUCE(reducible)  // Reduce operation
+            APPEND(parse_stack, composite_task)
+
+    // Parse stack now contains hierarchical task structure (bottom-up)
+    RETURN BUILD_HIERARCHY(parse_stack)
+
+FOR EACH phase IN phases:
+SET task_hierarchy = decompose_bottom_up(phase.goal)
+phase.tasks = task_hierarchy
+
+**Algorithmic Embodiment**: LR/LALR shift-reduce parsing, atomic primitives composed into hierarchy
+
+---
+
+## 7. Literal & Logical Precision (Grammar-Enforced State Validation)
+
+**Purpose**: Strict state transitions with tokenization and precondition validation
+
+**Algorithm**:
+
+FUNCTION validate_state_transition(phase, from_state, to_state):
+SET state_grammar = LOAD_STATE_MACHINE(phase)
+
+    // Tokenize states (literal interpretation)
+    SET from_tokens = TOKENIZE(from_state)
+    SET to_tokens = TOKENIZE(to_state)
+
+    // Check grammar allows this transition
+    SET valid_transitions = state_grammar.get_transitions(from_state)
+
+    IF to_state NOT IN valid_transitions:
+        ERROR "Invalid state transition: {from_state} → {to_state}"
+        ERROR "Grammar allows: {valid_transitions}"
+        RETURN false
+
+    // Verify logical preconditions
+    SET preconditions = state_grammar.get_preconditions(from_state, to_state)
+
+    FOR EACH condition IN preconditions:
+        IF NOT EVALUATE_CONDITION(condition):
+            ERROR "Precondition violated: {condition}"
+            RETURN false
+
+    RETURN true
+
+// Example state rules
+task.progress = (COUNT([x]) / COUNT(all_checkboxes)) \* 100 // Mathematical precision
+task.complete = (task.progress === 100) // Exact equality
+phase.complete = ALL(task IN phase.tasks WHERE task.complete) // Logical precision
+
+**Algorithmic Embodiment**: Tokenization + strict grammar enforcement + precondition logic, zero ambiguity
+
+---
+
+## 8. Spatial & 3D Reasoning (Multi-Axis AST Traversal)
+
+**Purpose**: Navigate phase dependency graph across 3 dimensions (depth, breadth, diagonal)
+
+**Algorithm**:
+
+FUNCTION traverse_3d_dependency_graph(phase_ast):
+SET result = {
+sequential_path: [], // Z-axis: depth traversal
+lateral_links: [], // X-axis: breadth traversal
+diagonal_impacts: [] // Y-axis: cross-level edges
+}
+
+    // Z-axis: Depth-First Sequential Dependencies
+    FUNCTION dfs_sequential(node, depth):
+        IF node.visited_z:
+            RETURN
+
+        node.depth = depth
+        node.visited_z = true
+        APPEND node TO result.sequential_path
+
+        FOR EACH child IN node.sequential_children ORDER BY dependency:
+            dfs_sequential(child, depth + 1)
+
+    // X-axis: Breadth-First Lateral Connections
+    FUNCTION bfs_lateral(node):
+        SET queue = [node]
+
+        WHILE queue NOT empty:
+            SET current = DEQUEUE(queue)
+
+            FOR EACH lateral_peer IN current.lateral_connections:
+                IF NOT lateral_peer.visited_x:
+                    lateral_peer.visited_x = true
+                    APPEND {from: current, to: lateral_peer} TO result.lateral_links
+                    ENQUEUE(queue, lateral_peer)
+
+    // Y-axis: Diagonal Cross-Level Task Dependencies
+    FUNCTION detect_diagonal(node):
+        FOR EACH task IN node.tasks:
+            FOR EACH other_node IN phase_ast.all_nodes WHERE other_node !== node:
+                FOR EACH other_task IN other_node.tasks:
+                    IF task.output USED_BY other_task:
+                        APPEND {
+                            source_task: task,
+                            target_task: other_task,
+                            cross_phase: true
+                        } TO result.diagonal_impacts
+
+    dfs_sequential(phase_ast.root, 0)
+    bfs_lateral(phase_ast.root)
+    detect_diagonal(phase_ast.root)
+
+    RETURN result
+
+SET traversal_3d = traverse_3d_dependency_graph(phase_system.ast)
+USE traversal_3d.sequential_path AS primary_execution_order
+
+**Algorithmic Embodiment**: DFS (Z-axis), BFS (X-axis), cross-level detection (Y-axis) for complete 3D graph navigation
+
+---
+
+## 9. Narrative Reasoning (Symbol Table with Causal Linking)
+
+**Purpose**: Track artifact flow through phases, build causal dependency chain via symbol resolution
+
+**Algorithm**:
+
+FUNCTION build_causal_chain(phases):
+SET symbol_table = CREATE_SYMBOL_TABLE()
+SET causal_links = []
+
+    FOR EACH phase IN phases ORDER BY execution_order:
+        // Register outputs in symbol table
+        FOR EACH output IN phase.outputs:
+            symbol_table.define(
+                name: output.name,
+                type: output.type,
+                CREATE: phase.id,
+                REFERENCE: phase.line
+            )
+
+        // Resolve inputs from symbol table (semantic linking)
+        FOR EACH input IN phase.inputs:
+            IF symbol_table.contains(input.name):
+                SET producer_info = symbol_table.lookup(input.name)
+
+                CREATE causal_link:
+                    source_phase: producer_info.producer
+                    target_phase: phase.id
+                    artifact: input.name
+                    relationship: "enables"
+
+                APPEND causal_link TO causal_links
+            ELSE:
+                ERROR "Undefined symbol: {input.name} required by Phase {phase.id}"
+                BREAK
+
+    // Generate narrative from causal links
+    SET narrative = []
+    FOR EACH link IN causal_links:
+        APPEND "Phase {link.source_phase} creates {link.artifact} which enables Phase {link.target_phase}" TO narrative
+
+    RETURN {
+        symbol_table: symbol_table,
+        causal_chain: causal_links,
+        narrative: narrative
+    }
+
+SET causal_system = build_causal_chain(phases)
+USE causal_system.narrative AS phase_documentation
+
+**Algorithmic Embodiment**: Symbol table construction, semantic linking, causal chain extraction from artifact flow
+
+---
+
+## 10. Interconnected Reasoning (Graph Analysis with Transitive Closure)
+
+**Purpose**: Calculate direct + transitive ripple effects, identify critical paths via Floyd-Warshall
+
+**Algorithm**:
+
+FUNCTION analyze_ripple_effects(phase_graph):
+SET n = COUNT(all_tasks)
+SET ripple_matrix = CREATE_MATRIX(n, n, default=0)
+
+    // Build adjacency matrix (direct dependencies)
+    FOR EACH phase IN phase_graph:
+        FOR EACH task IN phase.tasks:
+            SET task_index = GET_INDEX(task)
+
+            // Forward ripple: direct downstream dependencies
+            SET downstream = FIND_DOWNSTREAM(task, phase_graph)
+            task.ripple_targets = downstream
+
+            FOR EACH target IN downstream:
+                SET target_index = GET_INDEX(target)
+                SET impact_weight = CALCULATE_IMPACT(task, target)
+                ripple_matrix[task_index][target_index] = impact_weight
+
+            // Backward ripple: direct upstream dependencies
+            SET upstream = FIND_UPSTREAM(task, phase_graph)
+            task.ripple_sources = upstream
+
+    // Calculate transitive closure (Floyd-Warshall)
+    // Finds ALL indirect paths between tasks
+EACH     FOR k IN [0..n):
+EACH         FOR i IN [0..n):
+EACH             FOR j IN [0..n):
+                IF ripple_matrix[i][k] > 0 AND ripple_matrix[k][j] > 0:
+                    SET indirect_path_weight = ripple_matrix[i][k] * ripple_matrix[k][j]
+                    ripple_matrix[i][j] = MAX(ripple_matrix[i][j], indirect_path_weight)
+
+    // Find critical paths (longest weighted paths)
+    SET critical_paths = []
+EACH     FOR i IN [0..n):
+EACH         FOR j IN [0..n):
+            IF ripple_matrix[i][j] > CRITICAL_THRESHOLD:
+                APPEND {from: TASK(i), to: TASK(j), weight: ripple_matrix[i][j]} TO critical_paths
+
+    RETURN {
+        direct_ripples: ripple_matrix,
+        transitive_closure: ripple_matrix,  // After Floyd-Warshall
+        critical_paths: SORT(critical_paths BY weight DESC)
+    }
+
+SET ripple_analysis = analyze_ripple_effects(phase_system.ast)
+USE ripple_analysis.critical_paths FOR impact_tracking
+
+FUNCTION ripple_update(affected_tasks):
+FOR EACH task_id IN affected_tasks:
+SET task = LOCATE(task_id)
+SET task.upstream_change_detected = true
+REPORT "Task {task_id} notified: upstream dependency updated"
+
+        IF task.state === "complete":
+            SET task.requires_review = true
+
+**Algorithmic Embodiment**: Adjacency matrix + Floyd-Warshall transitive closure + critical path extraction
+
+---
+
+# Structure Rules
+
+Hierarchy (3D Graph):
+
+Phase (state container) ─┬─ Sequential dependency (blocking)
+├─ Task (transformer) │
+│ └─ Subtask (atomic) └─ Lateral connections (non-blocking)
+└─ Diagonal dependencies (task-to-task across phases)
+
+PHASE:
+
+[ ] = pending (not started)
+[x] = complete (verified)
+
+Phase States:
+
+0% = blocked (dependencies incomplete)
+1-99% = active (in progress)
+100% ✅ = complete (all tasks verified)
+
+Phase Transition Triggers (Explicit Unlocking):
+
+N = 1
+phase(N).state = "complete" ↔ phase(N).progress === 100%
+phase(N+1).unlocked ↔ phase(N).state === "complete" AND
+phase(N).outgoing_edges.all_satisfied
+
+outgoing_edge.satisfied ↔ target_phase.dependencies_met OR
+target_phase.dependency_type === "lateral" (non-blocking)
+
+---
+
+# Template Variables
+
+- `{TASK_NAME}`: System identifier
+- `{DATE}`: ISO-8601 date
+- `{PHASE_N_GOAL}`: Phase objective
+- `{VERIFICATION_CMD}`: Verification command
+- `{NARRATIVE}`: Causal story connecting phases
+- `{LATERAL_DEPS}`: Cross-phase connections
+
+---
+
+# PHASE 1: Pattern Recognition Discovery
+
+SET task_type = detect_from_context()
+FIND required_phases = scan_task_dependencies()
+
+## Pattern Recognition Protocol
+
+IF task_type MATCHES /refactor|cleanup/:
+CONTINUE detailed_analysis
+SET known_pattern = "discovery → analysis → refactor → verify"
+SET confidence = 95
+
+ELSE IF task_type MATCHES /feature|new/:
+SET known_pattern = "design → implement → test → integrate"
+SET confidence = 90
+
+ELSE IF task_type MATCHES /bug|fix/:
+SET known_pattern = "reproduce → diagnose → fix → verify"
+SET confidence = 92
+
+IF confidence > 85:
+USE known_pattern
+REPORT "Pattern recognized: {pattern}, confidence: {confidence}%"
+ELSE:
+EXECUTE detailed_discovery()
+
+## Optimal Decomposition Selection
+
+FOR EACH required_output IN required_outputs:
+SET decomposition = optimal_decomposition(required_output)
+REPORT "Selected decomposition strategy: {decomposition.type}"
+
+## 3D Dependency Graph Construction
+
+FOR EACH phase IN required_phases:
+IDENTIFY phase.blocking_dependencies (sequential)
+IDENTIFY phase.cross_phase_connections (lateral)
+IDENTIFY phase.task_level_connections (diagonal)
+SET phase.execution_depth = "comprehensive"
+
+## Causal Chain Construction
+
+FOR EACH phase IN phase_graph_3d:
+CREATE phase.narrative:
+SET current_state_story = "What exists now and why"
+SET transformation_story = "How this phase changes the system"
+SET enablement_story = "What this phase enables for future phases"
+SET foundation_story = "Which future phases depend on this foundation"
+
+    CREATE causal_links:
+        "Phase {N} creates {X} which enables Phase {N+2} to {Y}"
+        "Phase {N} establishes {convention} used by Phases [{N+1}, {N+3}, {N+4}]"
+
+## Phase Template Structure
+
+```markdown
+## PHASE {N}: {PHASE_GOAL}
+
+**State Transformation**: {CURRENT_STATE} → {TARGET_STATE}
+**Narrative**: {TRANSFORMATION_STORY}
+**Enables**: Phase {M} by establishing {FOUNDATION}
+**Dependencies** (3D Graph):
+
+- **Sequential** (Z-axis): Phase {N-1} complete
+- **Lateral** (X-axis): {CROSS_PHASE_CONNECTIONS}
+- **Diagonal** (Y-axis): {TASK_LEVEL_CONNECTIONS}
+
+**Verification**: `{VERIFICATION_COMMAND}`
+
+---
+
+### Task {N}.1: {TASK_NAME}
+
+**Current**: {CURRENT_STATE_DESCRIPTION}
+**Target**: {TARGET_STATE_DESCRIPTION}
+**Strategy**: {DECOMPOSITION_STRATEGY}
+
+**Ripple Impact**: IF changed THEN affects:
+
+- Tasks: [{AFFECTED_TASK_IDS}]
+- Phases: [{AFFECTED_PHASE_IDS}]
+
+- [ ] {Subtask 1}
+- [ ] {Subtask 2}
+- [ ] {Subtask N}
+
+**Progress**: ░░░░░░░░░░░░░░░░░░░░ 0% (0/{M} subtasks)
+
+---
+```
+
+**VALIDATION GATE**:
+
+✅ Pattern shortcuts defined (confidence thresholds)
+✅ 3D dependency graph constructed (sequential, lateral, diagonal)
+✅ Causal chains generated (explicit enablement relationships)
+✅ Deterministic formatting applied (no variability)
+
+---
+
+# PHASE 2: Bottom-Up Task Decomposition
+
+FOR EACH phase IN phase_graph_3d:
+FOR EACH required_output IN phase.outputs:
+
+        SET decomposition = optimal_decomposition(required_output)
+
+        CREATE task:
+            SET task.id = "{phase.number}.{task.number}"
+            SET task.current_state = "describe what exists now"
+            SET task.target_state = "describe what must exist"
+            SET task.decomposition_strategy = decomposition.type
+            SET task.subtasks = []
+
+        SET atomic_actions = decompose_to_irreducible(decomposition)
+
+        FOR EACH atomic_action IN atomic_actions:
+            SET subtask_checkbox = "- [ ] {atomic_action}"
+            APPEND subtask_checkbox TO task.subtasks
+
+        SET task.execution_strategy = "comprehensive"
+        SET task.execution_depth = "full"
+        REPORT "Task {task.id}: Comprehensive execution"
+
+        SET task.ripple_targets = []
+        FOR EACH other_task IN all_future_tasks:
+            IF other_task depends_on task.output:
+                APPEND other_task.id TO task.ripple_targets
+
+        SET task.subtask_count = length(task.subtasks)
+        SET task.progress = 0
+
+        APPEND task TO phase.tasks
+
+**VALIDATION GATE**:
+
+✅ Subtasks decomposed to irreducible atoms (bottom-up)
+✅ Ripple impacts calculated (interconnected)
+✅ Comprehensive execution strategy assigned to all tasks
+✅ No variability in execution depth
+
+---
+
+# PHASE 3: Systemizing Rules Definition
+
+**Rule 1: Phase Sequencing (with 3D Dependencies)**
+
+IF phase(N).sequential_dependencies NOT complete:
+SET phase(N).state = "blocked"
+SET phase(N).accessible = false
+
+IF phase(N).sequential_dependencies complete:
+IF phase(N).lateral_dependencies exist AND NOT satisfied:
+SET phase(N).state = "partially_blocked"
+SET phase(N).warning = "Lateral dependencies unmet"
+
+    IF phase(N).diagonal_task_dependencies exist AND NOT satisfied:
+        SET phase(N).state = "task_level_blocked"
+        SET phase(N).affected_tasks = list_blocked_tasks()
+
+    IF all_dependencies_satisfied:
+        SET phase(N).state = "available"
+        SET phase(N).accessible = true
+
+**Rule 2: Task Progression**
+
+SET task.progress = (count([x]) / count(all_checkboxes)) \* 100
+SET task.complete = (task.progress === 100)
+
+IF task.complete:
+EXECUTE verification_command
+REPORT completion_status
+
+**Rule 3: Phase Progression**
+
+SET phase.progress = (count(complete_tasks) / count(all_tasks)) \* 100
+SET phase.complete = (phase.progress === 100)
+
+**Rule 4: Verification Protocol**
+
+IF task.complete:
+EXECUTE verification_command
+IF verification.result === "pass":
+SET task.verified = true
+EXECUTE ripple_update(task.ripple_targets)
+ELSE:
+SET task.complete = false
+REQUIRE fix_issues BEFORE retry
+
+**Rule 5: State Transitions (One-Way Monotonic)**
+
+[ ] → [x] (irreversible)
+0% → 100% (monotonic increase only)
+Phase(N) complete → Phase(N+1) available
+
+**Rule 6: Ripple Propagation**
+
+FUNCTION ripple_update(affected_tasks):
+FOR EACH task_id IN affected_tasks:
+SET task = LOCATE(task_id)
+SET task.upstream_change_detected = true
+REPORT "Task {task_id} notified: upstream dependency updated"
+
+        IF task.state === "complete":
+            SET task.requires_review = true
+            REPORT "Task {task_id} marked for review (already complete)"
+
+**Rule 7: Pattern Shortcut Activation**
+
+FUNCTION check_shortcut_pattern(current_state, target_state):
+SET pattern_signatures = LOAD(known_pattern_library)
+
+    FOR EACH signature IN pattern_signatures:
+        SET similarity = calculate_pattern_similarity(current_state, signature.input)
+
+        IF similarity > 85:
+            REPORT "Pattern shortcut detected: {signature.name}"
+            REPORT "Confidence: {similarity}%"
+            RETURN signature.execution_path
+
+    RETURN null
+
+**Rule 8: Phase Transition Triggers**
+
+FUNCTION detect_phase_complete(phase):
+RETURN phase.progress === 100 AND
+EXECUTE(tasks IN phase have state "complete") AND
+phase.verification_command passed
+
+FUNCTION unlock_connected_phases(completed_phase):
+SET completed_phase.state = "complete"
+SET completed_phase.outgoing_edges = GET_EDGES(completed_phase)
+
+    FOR EACH edge IN completed_phase.outgoing_edges:
+        SET target_phase = edge.target
+
+        IF edge.type === "sequential":
+            IF ALL(edge.source_phases have state "complete"):
+                SET edge.satisfied = true
+                SET target_phase.sequential_dependencies_met = true
+            ELSE:
+                SET edge.satisfied = false
+                CONTINUE
+
+        ELSE IF edge.type === "lateral":
+            SET edge.satisfied = true
+            SET target_phase.lateral_notification = "Phase {completed_phase.number} complete"
+
+        ELSE IF edge.type === "diagonal":
+            IF edge.source_task.state === "complete":
+                SET edge.satisfied = true
+                SET target_task = LOCATE(edge.target_task)
+                SET target_task.diagonal_dependency_met = true
+            ELSE:
+                SET edge.satisfied = false
+
+        IF target_phase.sequential_dependencies_m:et AND
+           NOT target_phase.has_unsatisfied_blocking_edges:
+            SET target_phase.state = "unlocked"
+            SET target_phase.accessible = true
+            REPORT "Phase {target_phase.number} unlocked"
+        ELSE:
+            REPORT "Phase {target_phase.number} still blocked"
+
+FUNCTION traverse_phase_graph(graph):
+SET current_phase = FIRST(phases WHERE state === "unlocked" AND progress < 100)
+
+    IF current_phase is NULL:
+        SET blocked_phases = FILTER(phases WHERE state === "blocked")
+        IF blocked_phases NOT empty:
+            DETECT_CIRCULAR_DEPENDENCIES(blocked_phases)
+            ERROR "Deadlock detected in phase graph"
+        ELSE:
+            RETURN "all_complete"
+
+    RETURN current_phase
+
+**VALIDATION GATE**:
+
+✅ System rules explicitly defined
+✅ 3D dependency logic integrated (sequential, lateral, diagonal)
+✅ Ripple propagation protocol established
+✅ Pattern shortcut activation defined
+✅ State transition logic deterministic
+✅ Phase transition triggers explicit
+✅ Graph traversal algorithm defined
+✅ Deadlock detection integrated
+
+---
+
+# PHASE 4: Spatial 3D Structure Assembly
+
+SET document_structure = []
+
+APPEND TO document_structure:
+
+```markdown
+# {TASK_NAME}
+
+**Created**: {DATE}
+**Type**: {TASK_TYPE}
+**Total Phases**: {N}
+**Dependency Model**: 3D Graph (Sequential + Lateral + Diagonal)
+**Execution Mode**: Deterministic Sequential
+
+---
+```
+
+FOR EACH phase IN phase_graph_3d ORDER BY dependency_order:
+APPEND phase_header:
+
+```markdown
+## PHASE {N}: {PHASE_GOAL}
+
+**State Transformation**: {CURRENT_STATE} → {TARGET_STATE}
+
+**Narrative**:
+{TRANSFORMATION_STORY}
+This phase creates {FOUNDATION} which enables {FUTURE_PHASES} to {CAPABILITY}.
+
+**Dependencies** (3D Graph):
+
+- **Sequential** (Z-axis): Phase {N-1} complete
+- **Lateral** (X-axis): {CROSS_PHASE_CONNECTIONS}
+- **Diagonal** (Y-axis): {TASK_LEVEL_CONNECTIONS}
+
+**Verification**: `{VERIFICATION_COMMAND}`
+
+---
+```
+
+    FOR EACH task IN phase.tasks:
+        APPEND task_block:
+
+```markdown
+### Task {PHASE}.{TASK}: {TASK_NAME}
+
+**Current**: {CURRENT_STATE}
+**Target**: {TARGET_STATE}
+**Strategy**: {DECOMPOSITION_STRATEGY}
+
+**Ripple Impact**: IF changed THEN affects:
+
+- Tasks: [{AFFECTED_TASK_IDS}]
+- Phases: [{AFFECTED_PHASE_IDS}]
+
+{SUBTASK_CHECKBOXES}
+
+**Progress**: {PROGRESS_BAR} {PERCENTAGE}% ({X}/{N} subtasks)
+
+---
+```
+
+**VALIDATION GATE**:
+
+✅ 3D dependency graph embedded in structure
+✅ Causal chains integrated per phase
+✅ Ripple impacts documented
+✅ Spatial relationships explicit (sequential, lateral, diagonal)
+✅ No variability in formatting
+
+---
+
+# PHASE 5: Progress Calculation Logic
+
+FUNCTION calculate*progress_bar(completed_count, total_count):
+SET percentage = (completed_count / total_count) * 100
+SET bar*length = 20
+SET filled = round((percentage / 100) * bar_length)
+SET empty = bar_length - filled
+
+    SET bar = repeat("█", filled) + repeat("░", empty)
+
+    RETURN (bar, percentage)
+
+FUNCTION update_task_progress(task):
+SET completed = COUNT(checkboxes WITH state "[x]")
+SET total = COUNT(all checkboxes IN task)
+
+    SET (bar, percentage) = calculate_progress_bar(completed, total)
+
+    REPLACE task.progress_line WITH "**Progress**: {bar} {percentage}% ({completed}/{total} subtasks)"
+
+FUNCTION update_phase_progress(phase):
+SET completed_tasks = COUNT(tasks WHERE task.progress === 100)
+SET total_tasks = COUNT(all tasks IN phase)
+
+    SET (bar, percentage) = calculate_progress_bar(completed_tasks, total_tasks)
+
+    IF percentage === 100:
+        SET phase.status_emoji = "✅"
+        SET phase.state = "complete"
+
+        CREATE phase.completion_narrative:
+            "Phase {N} complete: {TRANSFORMATION} achieved"
+            "Foundation established for Phases [{ENABLED_PHASES}]"
+
+    SET phase_header WITH status_emoji
+
+**VALIDATION GATE**:
+
+✅ Progress calculation deterministic
+✅ Visual encoding consistent (█ = done, ░ = pending)
+✅ State derived from checkboxes (not stored)
+
+---
+
+# PHASE 6: Sequential Update Instructions
+
+**Single Phase Edit Protocol**:
+
+IF phase matches known_completion_pattern:
+REPORT "Pattern recognized: standard phase completion"
+EXECUTE fast_path_update
+ELSE:
+EXECUTE full_validation_update
+
+FUNCTION full_validation_update():
+READ checklist_file
+FIND "## PHASE {N}:" section
+
+    FOR EACH task IN phase:
+        FOR EACH subtask IN task:
+            REPLACE "- [ ]" WITH "- [x]"
+
+        CALCULATE new_task_progress
+        SET "**Progress**: ░..." line
+
+    CALCULATE phase_progress
+
+    IF phase complete:
+        APPEND " ✅" TO phase_header
+        CREATE phase.completion_narrative
+        APPEND narrative TO phase
+
+    EXECUTE ripple_notification:
+        FOR EACH laterally_connected_phase IN phase.lateral_connections:
+            ADD notification_marker
+
+        FOR EACH diagonally_connected_task IN phase.diagonal_connections:
+            MARK FOR review
+
+    WRITE file
+
+    EXECUTE phase.verification_command
+
+    IF verification passes:
+        REPORT "Phase {N} complete ✅"
+        REPORT completion_narrative
+        REPORT "Moving to Phase {N+1}"
+    ELSE:
+        FOR EACH subtask IN all_tasks:
+            REPLACE "- [x]" WITH "- [ ]"
+        REPORT failure_reason
+        REQUIRE fix BEFORE retry
+
+**Edit Scope**: ONLY modify current phase section
+**Edit Frequency**: ONCE per phase completion
+**State Source**: Checkboxes (literal precision)
+
+**VALIDATION GATE**:
+
+✅ Sequential focus enforced (single phase edit)
+✅ Pattern recognition shortcuts integrated
+✅ Ripple notification protocol defined
+✅ Causal completion documentation integrated
+
+---
+
+# PHASE 7: Template Output
+
+CREATE final_template WITH:
+
+- Header specification (task name, date, phase count, execution mode)
+- 3D dependency graph documentation
+- Phase sections with causal chains
+- Task blocks with ripple impacts
+- Subtask checkboxes (atomic actions)
+- Progress bars (visual state indicators)
+- Verification commands (per phase)
+- NO total progress footer
+- NO summary sections
+- NO redundant recaps
+
+**STRUCTURE**:
+
+```
+# {TASK_NAME}
+
+## (header + 3D graph metadata)
+
+## PHASE 1: {GOAL}
+  **Narrative**: {STORY}
+  **Dependencies**: 3D graph
+  (tasks with ripple impacts)
+
+---
+
+## PHASE 2: {GOAL}
+  **Narrative**: {STORY}
+  **Dependencies**: 3D graph
+  (tasks with ripple impacts)
+
+---
+
+## PHASE N: {GOAL}
+  **Narrative**: {STORY}
+  **Dependencies**: 3D graph
+  (tasks with ripple impacts)
+
+---
+```
+
+**VALIDATION GATE**:
+
+✅ Deterministic algorithms embodied in structure
+✅ Pattern recognition shortcuts documented
+✅ Sequential execution enforced
+✅ Explicit state rules applied
+✅ Bottom-up decomposition applied
+✅ Literal precision maintained
+✅ 3D spatial model integrated
+✅ Causal chains connected
+✅ Ripple effects mapped
+✅ No redundant summaries
+
+---
+
+# Output Requirements
+
+**Format**: Markdown with checkbox syntax
+**Structure**: Header → Phase sections (no footer)
+**Progress**: Visual bars per task (no totals)
+**Verification**: Commands embedded in phase headers
+**Scope**: Phase-by-phase edits only
+**Execution**: Deterministic sequential processing
+
+---
+
+# Success Criteria
+
+✅ All 7 phases complete
+✅ Pattern recognition protocol defined (confidence thresholds)
+✅ Sequential execution enforced (single-phase focus)
+✅ Explicit state rules defined (mathematical precision)
+✅ Bottom-up processing applied (atomic → composite)
+✅ Literal precision maintained (zero ambiguity)
+✅ 3D spatial model constructed (sequential, lateral, diagonal)
+✅ Causal reasoning integrated (explicit enablement chains)
+✅ Ripple effect logic embodied (change propagation)
+✅ Template generated without summaries
+✅ Zero interest-based conditionals
+✅ Zero priority-based branching
+✅ Zero mode selection logic
+✅ Zero divergent path exploration
+✅ Zero human personality traits
+✅ All execution is deterministic

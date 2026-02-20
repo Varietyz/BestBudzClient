@@ -1,0 +1,447 @@
+{
+  "phase": "4-rules-design",
+  "timestamp": "2025-12-31T00:00:00Z",
+  "designPrinciples": [
+    "Single source of truth for ALL semantic settings",
+    "Rules are canonical - tools map to rules, never duplicate",
+    "Transforms handle format conversions (3.11 → py311)",
+    "Existing resolver architecture (SettingsResolver) already supports this",
+    "Backward compatibility via codeStyle → rules migration path"
+  ],
+  "proposedStructure": {
+    "location": "settings.json at root level",
+    "sections": {
+      "rules": {
+        "description": "Canonical source of truth for all cross-tool settings",
+        "subsections": {
+          "formatting": "Code formatting rules (lineLength, indentation, quotes, etc)",
+          "versions": "Language/platform version targets",
+          "strictness": "Type checking and validation strictness levels",
+          "security": "Security policy settings (CSP, validation, etc)",
+          "quality": "Code quality thresholds and limits"
+        }
+      },
+      "tools.toolMappings": {
+        "description": "Maps tools to rules with optional transforms",
+        "purpose": "Transform canonical rules → tool-specific format"
+      }
+    }
+  },
+  "detailedDesign": {
+    "rules": {
+      "formatting": {
+        "lineLength": {
+          "type": "number",
+          "default": 120,
+          "description": "Maximum characters per line",
+          "affectsTools": ["prettier", "eslint", "black", "isort", "ruff", "rustfmt", "clangFormat", "checkstyle"]
+        },
+        "indentation": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "number",
+              "default": 4,
+              "description": "Number of spaces per indent level",
+              "affectsTools": ["prettier", "eslint", "stylelint", "rustfmt", "gofmt", "clangFormat", "checkstyle", "editorconfig"]
+            },
+            "useTabs": {
+              "type": "boolean",
+              "default": false,
+              "description": "Use tabs instead of spaces",
+              "affectsTools": ["prettier", "rustfmt", "clangFormat", "editorconfig"]
+            }
+          }
+        },
+        "quotes": {
+          "type": "enum",
+          "values": ["single", "double"],
+          "default": "double",
+          "description": "Quote style for strings",
+          "affectsTools": ["prettier", "eslint", "ruff"]
+        },
+        "semicolons": {
+          "type": "boolean",
+          "default": true,
+          "description": "Require semicolons",
+          "affectsTools": ["prettier", "eslint"]
+        },
+        "trailingComma": {
+          "type": "enum",
+          "values": ["none", "es5", "all"],
+          "default": "es5",
+          "description": "Trailing comma style",
+          "affectsTools": ["prettier"]
+        },
+        "endOfLine": {
+          "type": "enum",
+          "values": ["lf", "crlf", "cr", "auto"],
+          "default": "lf",
+          "description": "Line ending style",
+          "affectsTools": ["prettier", "editorconfig"]
+        },
+        "bracketSpacing": {
+          "type": "boolean",
+          "default": true,
+          "description": "Spaces inside object literal braces",
+          "affectsTools": ["prettier"]
+        },
+        "arrowParens": {
+          "type": "enum",
+          "values": ["always", "avoid"],
+          "default": "always",
+          "description": "Parentheses around single arrow function parameter",
+          "affectsTools": ["prettier"]
+        },
+        "quoteProps": {
+          "type": "enum",
+          "values": ["as-needed", "consistent", "preserve"],
+          "default": "as-needed",
+          "description": "Quote style for object properties",
+          "affectsTools": ["prettier"]
+        },
+        "proseWrap": {
+          "type": "enum",
+          "values": ["always", "never", "preserve"],
+          "default": "preserve",
+          "description": "Wrap prose in markdown/text files",
+          "affectsTools": ["prettier"]
+        },
+        "htmlWhitespaceSensitivity": {
+          "type": "enum",
+          "values": ["css", "strict", "ignore"],
+          "default": "css",
+          "description": "HTML whitespace sensitivity",
+          "affectsTools": ["prettier"]
+        },
+        "jsxQuotes": {
+          "type": "enum",
+          "values": ["single", "double"],
+          "default": "double",
+          "description": "Quote style for JSX attributes",
+          "affectsTools": ["prettier"]
+        },
+        "bracketSameLine": {
+          "type": "boolean",
+          "default": false,
+          "description": "Put > of multi-line HTML on last line",
+          "affectsTools": ["prettier"]
+        }
+      },
+      "versions": {
+        "python": {
+          "type": "string",
+          "format": "dotted",
+          "default": "3.11",
+          "description": "Python target version (dotted format: 3.11)",
+          "affectsTools": ["ruff", "pyright", "black", "mypy"],
+          "transforms": {
+            "ruff": "pyVersion (3.11 → py311)",
+            "black": "pyVersionArray (3.11 → ['py311'])",
+            "pyright": "identity",
+            "mypy": "identity"
+          }
+        },
+        "ecmascript": {
+          "type": "number",
+          "default": 2024,
+          "description": "ECMAScript target version (year)",
+          "affectsTools": ["eslint", "typescript"],
+          "transforms": {
+            "eslint": "identity",
+            "typescript": "esVersion (2024 → 'ES2024')"
+          }
+        },
+        "typescript": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "default": "ES2024",
+              "description": "TypeScript compilation target (inherits from ecmascript)"
+            },
+            "module": {
+              "type": "string",
+              "default": "ESNext",
+              "description": "TypeScript module system"
+            }
+          },
+          "affectsTools": ["typescript"]
+        },
+        "rust": {
+          "type": "string",
+          "default": "2024",
+          "description": "Rust edition",
+          "affectsTools": ["rustfmt", "clippy"]
+        },
+        "cpp": {
+          "type": "string",
+          "default": "c++20",
+          "description": "C++ standard",
+          "affectsTools": ["clangFormat", "clangTidy", "cppcheck"]
+        },
+        "java": {
+          "type": "string",
+          "default": "17",
+          "description": "Java version",
+          "affectsTools": ["checkstyle", "pmd", "spotbugs"]
+        },
+        "go": {
+          "type": "string",
+          "default": "1.21",
+          "description": "Go version",
+          "affectsTools": ["gofmt", "goimports", "golangci-lint"]
+        }
+      },
+      "strictness": {
+        "typeChecking": {
+          "type": "enum",
+          "values": ["off", "basic", "standard", "strict"],
+          "default": "strict",
+          "description": "Type checking strictness level",
+          "affectsTools": ["typescript", "pyright", "mypy"],
+          "transforms": {
+            "typescript": "tsStrictMode (strict → {strict: true})",
+            "pyright": "identity",
+            "mypy": "mypyStrictMode (strict → {strict: true})"
+          }
+        },
+        "nullSafety": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enforce null safety checks",
+          "affectsTools": ["typescript", "kotlin", "dart"]
+        }
+      }
+    },
+    "tools": {
+      "toolMappings": {
+        "description": "Extended to include ALL tools, not just currently mapped ones",
+        "additions": [
+          {
+            "tool": "ruff",
+            "mappings": {
+              "line-length": "rules.formatting.lineLength",
+              "target-version": {
+                "source": "rules.versions.python",
+                "transform": "pyVersion"
+              },
+              "quote-style": "rules.formatting.quotes"
+            }
+          },
+          {
+            "tool": "pyright",
+            "mappings": {
+              "pythonVersion": "rules.versions.python",
+              "typeCheckingMode": "rules.strictness.typeChecking"
+            }
+          },
+          {
+            "tool": "black",
+            "mappings": {
+              "line-length": "rules.formatting.lineLength",
+              "target-version": {
+                "source": "rules.versions.python",
+                "transform": "pyVersionArray"
+              }
+            }
+          },
+          {
+            "tool": "editorconfig",
+            "mappings": {
+              "indent_size": "rules.formatting.indentation.size",
+              "indent_style": {
+                "source": "rules.formatting.indentation.useTabs",
+                "transform": "editorconfigIndentStyle"
+              },
+              "end_of_line": "rules.formatting.endOfLine"
+            }
+          },
+          {
+            "tool": "eslint",
+            "mappings": {
+              "ecmaVersion": "rules.versions.ecmascript"
+            }
+          },
+          {
+            "tool": "typescript",
+            "mappings": {
+              "target": {
+                "source": "rules.versions.ecmascript",
+                "transform": "esVersion"
+              },
+              "module": "rules.versions.typescript.module",
+              "strict": {
+                "source": "rules.strictness.typeChecking",
+                "transform": "tsStrictMode"
+              }
+            }
+          },
+          {
+            "tool": "prettier",
+            "mappings": {
+              "arrowParens": "rules.formatting.arrowParens",
+              "quoteProps": "rules.formatting.quoteProps",
+              "proseWrap": "rules.formatting.proseWrap",
+              "htmlWhitespaceSensitivity": "rules.formatting.htmlWhitespaceSensitivity",
+              "jsxQuotes": "rules.formatting.jsxQuotes",
+              "bracketSameLine": "rules.formatting.bracketSameLine"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "transforms": {
+    "existing": [
+      "equals:single",
+      "eslintIndent",
+      "eslintSemi",
+      "eslintMaxLen",
+      "clangUseTab"
+    ],
+    "new": [
+      {
+        "name": "pyVersion",
+        "description": "Convert dotted Python version to py-prefix format",
+        "input": "3.11",
+        "output": "py311",
+        "logic": "value.replace('.', '').replace(/^/, 'py')"
+      },
+      {
+        "name": "pyVersionArray",
+        "description": "Convert dotted Python version to array of py-prefix format",
+        "input": "3.11",
+        "output": ["py311"],
+        "logic": "[pyVersion(value)]"
+      },
+      {
+        "name": "esVersion",
+        "description": "Convert year to ES-prefix format",
+        "input": 2024,
+        "output": "ES2024",
+        "logic": "`ES${value}`"
+      },
+      {
+        "name": "editorconfigIndentStyle",
+        "description": "Convert boolean useTabs to editorconfig format",
+        "input": false,
+        "output": "space",
+        "logic": "value ? 'tab' : 'space'"
+      },
+      {
+        "name": "tsStrictMode",
+        "description": "Convert strictness level to TypeScript strict flag",
+        "input": "strict",
+        "output": true,
+        "logic": "value === 'strict'"
+      },
+      {
+        "name": "mypyStrictMode",
+        "description": "Convert strictness level to mypy strict flag",
+        "input": "strict",
+        "output": true,
+        "logic": "value === 'strict'"
+      },
+      {
+        "name": "identity",
+        "description": "Pass through value unchanged",
+        "input": "any",
+        "output": "any",
+        "logic": "value"
+      }
+    ]
+  },
+  "migrationPlan": {
+    "step1": {
+      "title": "Create rules section",
+      "actions": [
+        "Add rules.formatting with all formatting settings",
+        "Add rules.versions with all language versions",
+        "Add rules.strictness with strictness levels",
+        "Keep existing tools.codeStyle for backward compatibility (mark deprecated)"
+      ]
+    },
+    "step2": {
+      "title": "Add new transforms",
+      "actions": [
+        "Add pyVersion, pyVersionArray, esVersion to mapping-transforms.js",
+        "Add editorconfigIndentStyle transform",
+        "Add tsStrictMode, mypyStrictMode transforms",
+        "Add identity transform for no-op mappings"
+      ]
+    },
+    "step3": {
+      "title": "Extend toolMappings",
+      "actions": [
+        "Add mappings for ruff, pyright, black (Python versions)",
+        "Add mappings for eslint, typescript (ECMAScript versions)",
+        "Add mappings for editorconfig (all relevant settings)",
+        "Add mappings for prettier (remaining unmapped settings)"
+      ]
+    },
+    "step4": {
+      "title": "Remove hardcoded duplicates",
+      "actions": [
+        "Remove tools.rust.rustfmt.{maxWidth, tabSpaces, useTabs}",
+        "Remove tools.cpp.clangFormat.{columnLimit, indentWidth}",
+        "Remove tools.multiLang.editorconfig.defaults.{indentSize, indentStyle, endOfLine}",
+        "Remove tools.python.ruff.format.quoteStyle",
+        "Remove tools.python.{ruff, pyright, black}.targetVersion/pythonVersion",
+        "Remove tools.javascript.{eslint, typescript}.ecmaVersion/target",
+        "Remove tools.formatting.prettier.arrowParens"
+      ]
+    },
+    "step5": {
+      "title": "Update resolver",
+      "actions": [
+        "Extend SettingsResolver.getNestedValue() to handle 'rules.' paths",
+        "Add getRulesValue() method parallel to getCodeStyleValue()",
+        "Support backward compatibility: 'codeStyle.*' → 'rules.formatting.*'"
+      ]
+    },
+    "step6": {
+      "title": "Update accessors",
+      "actions": [
+        "Add getRules() accessor",
+        "Add getFormattingRules() accessor",
+        "Add getVersionRules() accessor",
+        "Add getStrictnessRules() accessor",
+        "Mark codeStyle accessors as deprecated (but keep functional)"
+      ]
+    },
+    "step7": {
+      "title": "Validation",
+      "actions": [
+        "Run tool-config-audit.js to verify no conflicts",
+        "Run comprehensive-settings-audit.js to verify no duplicates",
+        "Test resolver with all tools",
+        "Verify backward compatibility with existing scanners"
+      ]
+    }
+  },
+  "backwardCompatibility": {
+    "approach": "Dual-path support during transition",
+    "details": {
+      "codeStyle": {
+        "status": "Deprecated but functional",
+        "behavior": "tools.codeStyle.* remains, resolver checks rules.formatting.* first, falls back to codeStyle.*",
+        "migration": "Gradual - no breaking changes"
+      },
+      "toolMappings": {
+        "status": "Extended, not replaced",
+        "behavior": "Existing mappings continue working, new mappings added",
+        "migration": "Immediate - new mappings active once added"
+      }
+    }
+  },
+  "successCriteria": [
+    "ONE change to rules.formatting.lineLength updates ALL 8 tools",
+    "ONE change to rules.versions.python updates ruff, pyright, black, mypy",
+    "ONE change to rules.versions.ecmascript updates eslint, typescript",
+    "NO hardcoded duplicates in tools.* sections",
+    "NO conflicts reported by tool-config-audit.js",
+    "Existing code continues working without changes",
+    "All transforms properly convert canonical → tool-specific format"
+  ]
+}

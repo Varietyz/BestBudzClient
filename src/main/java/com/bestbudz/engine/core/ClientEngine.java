@@ -12,7 +12,7 @@ import java.awt.event.WindowListener;
 public class ClientEngine implements FocusListener, WindowListener {
 
 	public static LoginRenderer loginRenderer;
-	protected static int screenGliding;
+	public static int screenGliding;
 	final int minDelay;
 	boolean shouldDebug;
 	public static ImageProducer gameWorldScreen;

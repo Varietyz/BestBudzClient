@@ -1,8 +1,7 @@
 package com.bestbudz.dock.frame;
 
 import com.bestbudz.dock.ui.manager.UIPanelManager;
-import com.bestbudz.dock.ui.manager.UIModalManager;
-import com.bestbudz.dock.ui.panel.client.bubblebudz.ui.BubbleBudzPanel;
+import com.bestbudz.dock.ui.panel.bubblebudz.ui.BubbleBudzPanel;
 import com.bestbudz.dock.config.RegisteredPanels;
 import com.bestbudz.dock.util.UIPanel;
 
@@ -26,7 +25,6 @@ public class UIDockFrame extends JDialog {
 	private JSplitPane splitPane;
 
 	private final UIPanelManager panelManager;
-	private final UIModalManager modalManager;
 
 	public static TogglePreview.ScrollPaneWithTabs scrollTopWithTabs;
 	public static TogglePreview.ScrollPaneWithTabs scrollBottomWithTabs;
@@ -68,7 +66,6 @@ public class UIDockFrame extends JDialog {
 
 		// Initialize managers first
 		panelManager = new UIPanelManager();
-		modalManager = new UIModalManager(this, Client.instance);
 
 		setupMainLayeredPane();
 		setupPanels();
@@ -88,9 +85,6 @@ public class UIDockFrame extends JDialog {
 		if (loginOverlay != null) {
 			loginOverlay.refreshLoginState();
 		}
-
-		// Configure modal manager based on user preferences
-		configureModalManager();
 	}
 
 	/**
@@ -114,95 +108,14 @@ public class UIDockFrame extends JDialog {
 	}
 
 	/**
-	 * Configure the modal manager with default settings
-	 */
-	private void configureModalManager() {
-		boolean debugMode = Boolean.getBoolean("dock.debug") || System.getProperty("env", "prod").equals("dev");
-		modalManager.setDebugMode(debugMode);
-
-		boolean useModals = !Boolean.getBoolean("dock.disableModals");
-		modalManager.setUseModalDialogues(useModals);
-
-		if (debugMode) {
-			System.out.println("Modal manager configured - Debug: " + debugMode + ", Modals: " + useModals);
-		}
-	}
-
-	/**
 	 * Setup keyboard shortcuts for the dock frame including modal shortcuts
 	 */
 	private void setupKeyboardShortcuts() {
 		InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 		ActionMap actionMap = getRootPane().getActionMap();
 
-		// ESC key - Close all modals or minimize dock
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "closeModalsOrMinimize");
-		actionMap.put("closeModalsOrMinimize", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (modalManager.hasVisibleModals()) {
-					modalManager.closeAllModals();
-				} else {
-					setVisible(false);
-				}
-			}
-		});
-
-		// F12 - Toggle modal debug mode
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0), "toggleModalDebug");
-		actionMap.put("toggleModalDebug", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				boolean currentDebug = modalManager.isDebugMode();
-				modalManager.setDebugMode(!currentDebug);
-				showTemporaryMessage("Modal Debug: " + (!currentDebug ? "ON" : "OFF"));
-			}
-		});
-
-		// Ctrl+M - Toggle modal dialogues on/off
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK), "toggleModalDialogues");
-		actionMap.put("toggleModalDialogues", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				boolean currentUse = modalManager.isUsingModalDialogues();
-				modalManager.setUseModalDialogues(!currentUse);
-				showTemporaryMessage("Modal Dialogues: " + (!currentUse ? "ON" : "OFF"));
-			}
-		});
-
-		// Ctrl+Shift+T - Show test dialogue (development only)
-		if (modalManager.isDebugMode()) {
-			inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK), "testDialogue");
-			actionMap.put("testDialogue", new AbstractAction() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					showTestDialogue();
-				}
-			});
-		}
 	}
 
-	/**
-	 * Show a temporary message in the UI
-	 */
-	private void showTemporaryMessage(String message) {
-		System.out.println("UI Message: " + message);
-		modalManager.showConfirmation("Information", message, null, null);
-	}
-
-	/**
-	 * Show test dialogue for development purposes
-	 */
-	private void showTestDialogue() {
-		if (!modalManager.isDebugMode()) return;
-
-		modalManager.showConfirmation(
-			"Test Dialogue",
-			"This is a test dialogue. Modal system is working correctly!",
-			() -> System.out.println("Test dialogue confirmed"),
-			() -> System.out.println("Test dialogue cancelled")
-		);
-	}
 
 	/**
 	 * Sets up the main layered pane that contains everything including toggle bars and login overlay
@@ -295,41 +208,6 @@ public class UIDockFrame extends JDialog {
 		}
 	}
 
-	// MODAL INTEGRATION METHODS
-
-	public void showDialogue(int interfaceId, Object rsInterface) {
-		if (modalManager != null) {
-			modalManager.showDialogue(interfaceId, rsInterface);
-		}
-	}
-
-	public void onServerCloseDialogue() {
-		if (modalManager != null) {
-			modalManager.onServerCloseDialogue();
-		}
-	}
-
-	public UIModalManager getModalManager() {
-		return modalManager;
-	}
-
-	// CLIENT PACKET HANDLING INTEGRATION
-
-	public static void handleDialogueInterface(int interfaceId, Object rsInterface) {
-		UIDockFrame instance = getInstance();
-		if (instance != null) {
-			instance.showDialogue(interfaceId, rsInterface);
-		}
-	}
-
-	public static void handleCloseInterface() {
-		UIDockFrame instance = getInstance();
-		if (instance != null) {
-			instance.onServerCloseDialogue();
-		}
-	}
-
-
 	// DELEGATE PANEL METHODS (no more automatic saving)
 
 	public void registerPanel(UIPanel uiPanel) {
@@ -395,11 +273,6 @@ public class UIDockFrame extends JDialog {
 	 */
 	@Override
 	public void dispose() {
-
-		// Dispose modal manager first
-		if (modalManager != null) {
-			modalManager.dispose();
-		}
 
 		if (loginOverlay != null) {
 			loginOverlay.dispose();

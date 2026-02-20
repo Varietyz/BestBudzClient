@@ -1,0 +1,9 @@
+{
+    "permissions": {
+        "allow": ["Bash(node:*)", "Bash(py:*)", "Bash(npm:*)", "Read(root/**)"],
+        "deny": ["Read(.env)", "Read(.env.*)"]
+    },
+    "env": {
+        "PYTHONIOENCODING": "utf-8"
+    }
+}
