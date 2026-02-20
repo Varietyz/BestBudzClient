@@ -8,7 +8,6 @@ import com.bestbudz.engine.core.gamerender.Rasterizer;
 import static com.bestbudz.entity.ParseAndUpdateEntities.npcScreenPos;
 import static com.bestbudz.graphics.Hitmark.enhancedHitmarkDraw;
 import com.bestbudz.graphics.hpbar.HPbar;
-import com.bestbudz.network.Stream;
 import static com.bestbudz.ui.interfaces.Chatbox.publicChatMode;
 
 public class UpdateEntities extends Client
@@ -110,7 +109,6 @@ public class UpdateEntities extends Client
 					try {
 						npcScreenPos(((Entity) (obj)), ((Entity) (obj)).height + 15);
 
-						// SIMPLE: Is the entity actually visible on screen?
 						int screenWidth = Rasterizer.viewportCenterX * 2;
 						int screenHeight = Rasterizer.viewportCenterY * 2;
 
@@ -128,7 +126,6 @@ public class UpdateEntities extends Client
 								HPbar.drawHPBar(barX, barY, currentHealth, maxHealth);
 							}
 						}
-						// If not on screen = no HP bar. Period.
 
 					} catch (Exception e) {
 						System.err.println("Error drawing HP bar: " + e.getMessage());
@@ -136,75 +133,68 @@ public class UpdateEntities extends Client
 				}
 				if (!SettingsConfig.enableNewHitmarks)
 				{
-					int maxHitmarks = Math.min(7, ((Entity) (obj)).hitsLoopCycle.length); // Prevent array out of bounds
+					int maxHitmarks = Math.min(7, ((Entity) (obj)).hitsLoopCycle.length);
 					for (int j1 = 0; j1 < maxHitmarks; j1++) {
 						if (j1 < ((Entity) (obj)).hitsLoopCycle.length && ((Entity) (obj)).hitsLoopCycle[j1] > loopCycle) {
 							npcScreenPos(((Entity) (obj)), ((Entity) (obj)).height / 2);
 							if (spriteDrawX > -1) {
 								Entity e = ((Entity) (obj));
 
-								// Calculate position offsets for 7-point spread
 								int offsetX = 0, offsetY = 0;
 								switch (j1) {
-									case 0: // Center
+									case 0:
 										offsetX = 0; offsetY = 0;
 										break;
-									case 1: // Top
+									case 1:
 										offsetX = 0; offsetY = -25;
 										break;
-									case 2: // Left
+									case 2:
 										offsetX = -25; offsetY = 0;
 										break;
-									case 3: // Right
+									case 3:
 										offsetX = 25; offsetY = 0;
 										break;
-									case 4: // Top-Left diagonal
+									case 4:
 										offsetX = -18; offsetY = -18;
 										break;
-									case 5: // Top-Right diagonal
+									case 5:
 										offsetX = 18; offsetY = -18;
 										break;
-									case 6: // Bottom (or could be bottom-left/right)
+									case 6:
 										offsetX = 0; offsetY = 20;
 										break;
 								}
 
-								// Apply animation movement with fade
 								if (j1 < e.hitmarkMove.length && e.hitmarkMove[j1] > -30) {
-									e.hitmarkMove[j1]--; // Animation frame counter
+									e.hitmarkMove[j1]--;
 								}
 								if (j1 < e.hitmarkTrans.length && e.hitmarkMove[j1] < -26) {
-									e.hitmarkTrans[j1] -= 5; // Fade out
+									e.hitmarkTrans[j1] -= 5;
 								}
 
-								// Calculate movement based on damage type
 								int animationFrame = Math.abs(e.hitmarkMove[j1]);
 								int movementX = 0, movementY = 0;
 
-								// Check if this is damage (positive value) or defensive (0 or negative)
 								boolean isDamage = e.hitArray[j1] > 0;
 
 								if (isDamage) {
-									// Damage hitmarks move diagonally up-right (reduced distance)
-									movementX = (int)(animationFrame * 0.5); // Move right slower
-									movementY = (int)(animationFrame * -0.8); // Move up slower
+
+									movementX = (int)(animationFrame * 0.5);
+									movementY = (int)(animationFrame * -0.8);
 								} else {
-									// Defensive hitmarks (blocks, misses) move straight up (reduced distance)
-									movementX = 0; // No horizontal movement
-									movementY = (int)(animationFrame * -0.7); // Move straight up slower
+
+									movementX = 0;
+									movementY = (int)(animationFrame * -0.7);
 								}
 
-								// Calculate final position with spread offset and movement animation
 								int finalX = spriteDrawX + offsetX + movementX;
 								int finalY = spriteDrawY + offsetY + movementY;
 
-								// Position defensive hitmarks lower on the entity
 								if (!isDamage) {
-									finalY += 25; // Move defensive hitmarks down by 25 pixels
+									finalY += 25;
 								}
 								int currentOpacity = j1 < e.hitmarkTrans.length ? e.hitmarkTrans[j1] : 255;
 
-								// Draw the enhanced hitmark with appropriate movement
 								enhancedHitmarkDraw(String.valueOf(e.hitArray[j1]).length(),
 									e.hitMarkTypes[j1], e.hitIcon[j1], e.hitArray[j1],
 									finalX, finalY, currentOpacity);
@@ -213,7 +203,7 @@ public class UpdateEntities extends Client
 					}
 				}
 				else
-				{// MAIN HITMARK LOGIC
+				{
 					for (int j1 = 0; j1 < 4; j1++)
 					{
 						if (((Entity) (obj)).hitsLoopCycle[j1] > loopCycle)
@@ -272,57 +262,57 @@ public class UpdateEntities extends Client
 				String s = chatMessageTexts[k];
 				if (chatDisplayMode == 0)
 				{
-					int i3 = ColorConfig.CHAT_COLOR; // default pastel yellow
+					int i3 = ColorConfig.CHAT_COLOR;
 
 					if (chatMessageTypes[k] < 6)
-						i3 = configuredChatColors[chatMessageTypes[k]]; // already modernized
+						i3 = configuredChatColors[chatMessageTypes[k]];
 
 					if (chatMessageTypes[k] == 6) {
-						// Flashing between yellow and pink
-						i3 = currentTick % 20 >= 10 ? ColorConfig.CHAT_COLOR : ColorConfig.CHAT_SOFT_PINK; // pastel yellow ↔ soft pink
+
+						i3 = currentTick % 20 >= 10 ? ColorConfig.CHAT_COLOR : ColorConfig.CHAT_SOFT_PINK;
 					}
 
 					if (chatMessageTypes[k] == 7) {
-						// Flashing between mint and cyan
-						i3 = currentTick % 20 >= 10 ? 0xB2F2BB : ColorConfig.CHAT_MINT_AQUA; // mint green ↔ aqua mint
+
+						i3 = currentTick % 20 >= 10 ? 0xB2F2BB : ColorConfig.CHAT_MINT_AQUA;
 					}
 
 					if (chatMessageTypes[k] == 8) {
-						// Flashing between lime and peach
-						i3 = currentTick % 20 >= 10 ? 0xD0F4DE : 0xFFD180; // light green ↔ peach
+
+						i3 = currentTick % 20 >= 10 ? 0xD0F4DE : 0xFFD180;
 					}
 
 					if (chatMessageTypes[k] == 9) {
-						// Smooth rainbow scroll (remap red → magenta, yellow → violet, green → blue)
+
 						int j3 = 150 - chatMessageCycles[k];
 						if (j3 < 50)
-							i3 = ColorConfig.CHAT_SOFT_PINK + 50 * j3; // soft pink → lighter
+							i3 = ColorConfig.CHAT_SOFT_PINK + 50 * j3;
 						else if (j3 < 100)
-							i3 = 0xCE93D8 - 0x30000 * (j3 - 50); // pastel violet → lavender
+							i3 = 0xCE93D8 - 0x30000 * (j3 - 50);
 						else if (j3 < 150)
-							i3 = ColorConfig.CHAT_BABY_BLUE + 20 * (j3 - 100); // baby blue → mint
+							i3 = ColorConfig.CHAT_BABY_BLUE + 20 * (j3 - 100);
 					}
 
 					if (chatMessageTypes[k] == 10) {
-						// Oscillate between pink and yellow then fade to green
+
 						int k3 = 150 - chatMessageCycles[k];
 						if (k3 < 50)
-							i3 = ColorConfig.CHAT_SOFT_PINK + 3 * k3; // pastel pink → orange-pink
+							i3 = ColorConfig.CHAT_SOFT_PINK + 3 * k3;
 						else if (k3 < 100)
-							i3 = ColorConfig.CHAT_COLOR - 0x20000 * (k3 - 50); // yellow → peach
+							i3 = ColorConfig.CHAT_COLOR - 0x20000 * (k3 - 50);
 						else if (k3 < 150)
-							i3 = (0xB2FF59 + 0x20000 * (k3 - 100)) - 3 * (k3 - 100); // lime fade
+							i3 = (0xB2FF59 + 0x20000 * (k3 - 100)) - 3 * (k3 - 100);
 					}
 
 					if (chatMessageTypes[k] == 11) {
-						// White fade to mint then fade to blue
+
 						int l3 = 150 - chatMessageCycles[k];
 						if (l3 < 50)
-							i3 = ColorConfig.WHITE_COLOR - 0x10101 * l3; // white → light gray
+							i3 = ColorConfig.WHITE_COLOR - 0x10101 * l3;
 						else if (l3 < 100)
-							i3 = ColorConfig.CHAT_MINT_AQUA + 0x10101 * (l3 - 50); // mint → frost teal
+							i3 = ColorConfig.CHAT_MINT_AQUA + 0x10101 * (l3 - 50);
 						else if (l3 < 150)
-							i3 = 0x90CAF9 - 0x10000 * (l3 - 100); // soft blue → light mint
+							i3 = 0x90CAF9 - 0x10000 * (l3 - 100);
 					}
 
 					if (chatMessageEffects[k] == 0)

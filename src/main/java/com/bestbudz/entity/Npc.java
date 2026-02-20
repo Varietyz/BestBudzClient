@@ -70,5 +70,4 @@ public final class Npc extends Entity
 		return desc != null;
 	}
 
-
 }

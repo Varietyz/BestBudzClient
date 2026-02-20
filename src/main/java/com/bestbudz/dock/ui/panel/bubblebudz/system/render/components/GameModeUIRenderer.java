@@ -1,4 +1,4 @@
-// GameModeUIRenderer.java
+
 package com.bestbudz.dock.ui.panel.bubblebudz.system.render.components;
 
 import com.bestbudz.dock.ui.panel.bubblebudz.ui.managers.GameModeManager;
@@ -6,9 +6,6 @@ import com.bestbudz.dock.ui.panel.bubblebudz.system.render.RenderComponent;
 import com.bestbudz.dock.ui.panel.bubblebudz.system.render.RenderContext;
 import java.awt.Graphics2D;
 
-/**
- * Render component for game mode selection UI
- */
 public class GameModeUIRenderer implements RenderComponent {
 	private final GameModeManager gameModeManager;
 
@@ -25,6 +22,6 @@ public class GameModeUIRenderer implements RenderComponent {
 
 	@Override
 	public int getRenderOrder() {
-		return 350; // Render after bubbles but before effects
+		return 350;
 	}
 }

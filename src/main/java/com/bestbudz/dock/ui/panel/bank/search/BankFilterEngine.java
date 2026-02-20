@@ -4,9 +4,6 @@ import com.bestbudz.dock.ui.panel.bank.grid.BankItemPanel;
 import java.util.List;
 import java.util.Comparator;
 
-/**
- * Handles filtering and sorting logic for bank items
- */
 public class BankFilterEngine {
 
 	public enum FilterType {
@@ -37,9 +34,6 @@ public class BankFilterEngine {
 		public String getDisplayName() { return displayName; }
 	}
 
-	/**
-	 * Tests if an item passes the specified filter
-	 */
 	public static boolean passesFilter(BankItemPanel item, FilterType filter) {
 		if (filter == null) {
 			return true;
@@ -61,9 +55,6 @@ public class BankFilterEngine {
 		}
 	}
 
-	/**
-	 * Sorts a list of items according to the specified sort type
-	 */
 	public static void sortItems(List<BankItemPanel> itemsToSort, SortType sortType) {
 		if (sortType == null || sortType == SortType.NONE) {
 			return;
@@ -98,9 +89,6 @@ public class BankFilterEngine {
 		}
 	}
 
-	/**
-	 * Calculates the actual value of an item considering amount and type
-	 */
 	private static long getActualValue(BankItemPanel item) {
 		if (item.getItemId() == 995) {
 			return item.getCurrentAmount();
@@ -109,9 +97,6 @@ public class BankFilterEngine {
 		return itemValue * item.getCurrentAmount();
 	}
 
-	/**
-	 * Gets display names for all filter types
-	 */
 	public static String[] getFilterDisplayNames() {
 		FilterType[] filters = FilterType.values();
 		String[] names = new String[filters.length];
@@ -121,9 +106,6 @@ public class BankFilterEngine {
 		return names;
 	}
 
-	/**
-	 * Gets display names for all sort types
-	 */
 	public static String[] getSortDisplayNames() {
 		SortType[] sorts = SortType.values();
 		String[] names = new String[sorts.length];

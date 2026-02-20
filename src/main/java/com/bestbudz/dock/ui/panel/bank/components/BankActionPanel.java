@@ -6,9 +6,6 @@ import com.bestbudz.engine.core.Client;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Action buttons for bank panel (deposit inventory/equipment)
- */
 public class BankActionPanel extends JPanel {
 
 	private static final int DOCK_DEPOSIT_ALL_INVENTORY = 115247;
@@ -48,7 +45,7 @@ public class BankActionPanel extends JPanel {
 		button.addActionListener(e -> {
 			if (Client.loggedIn) {
 				action.run();
-				// Notify parent that an action occurred
+
 				if (actionCallback != null) {
 					actionCallback.run();
 				}
@@ -73,9 +70,6 @@ public class BankActionPanel extends JPanel {
 		}
 	}
 
-	/**
-	 * Sets the callback to run after any action is performed
-	 */
 	public void setActionCallback(Runnable callback) {
 		this.actionCallback = callback;
 	}

@@ -14,22 +14,19 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
 	public int mouseWheelY;
 	public static boolean mouseWheelDown;
 
-	// Middle mouse button state for camera rotation
 	private static boolean middleMouseDown = false;
 	private static int lastMiddleMouseX = 0;
 	private static int lastMiddleMouseY = 0;
-	private static final float CAMERA_ROTATION_SENSITIVITY = 5.0f; // Much higher sensitivity
+	private static final float CAMERA_ROTATION_SENSITIVITY = 5.0f;
 
 	public static void processMiddleMouseCamera() {
-		// Simplified - we're now doing direct control, so no velocity processing needed
-		// This method can be empty or removed since we're bypassing the velocity system
+
 	}
 
 	public void mouseWheelMoved(MouseWheelEvent event) {
 		int rotation = event.getWheelRotation();
 		MouseScrollHandler.handle(event);
 
-		// Chat area scrolling
 		if (MouseState.x > 0 && MouseState.x < 512 && MouseState.y > Client.frameHeight - 165 - Client.extendChatArea && MouseState.y < Client.frameHeight - 25) {
 			int scrollPos = Client.loadingProgress;
 			scrollPos -= rotation * 30;
@@ -43,7 +40,6 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
 			}
 		}
 
-		// Camera zoom with Ctrl+Wheel
 		if (event.isControlDown()) {
 			if (rotation == -1) {
 				if (Client.cameraZoom > (EngineConfig.CAMERA_ZOOM - 400)) {
@@ -79,7 +75,6 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
 			MouseState.rightClicked = true;
 		}
 
-		// Handle middle mouse button press for camera rotation
 		if (e.getButton() == MouseEvent.BUTTON2) {
 			System.out.println("MIDDLE MOUSE DETECTED (BUTTON2)!");
 			middleMouseDown = true;
@@ -109,7 +104,6 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
 			MouseState.rightDown = false;
 		}
 
-		// Handle middle mouse button release
 		if (e.getButton() == MouseEvent.BUTTON2) {
 			System.out.println("MIDDLE MOUSE RELEASED!");
 			middleMouseDown = false;
@@ -123,7 +117,7 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
 		MouseState.idleTime = 0;
 		MouseState.x = -1;
 		MouseState.y = -1;
-		// Reset middle mouse state when leaving the component
+
 		middleMouseDown = false;
 	}
 
@@ -133,19 +127,17 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
 		int x = e.getX();
 		int y = e.getY();
 
-		// Handle middle mouse camera rotation FIRST
 		if (middleMouseDown) {
 			int deltaX = x - lastMiddleMouseX;
 			int deltaY = y - lastMiddleMouseY;
 
 			System.out.println("!!! MIDDLE MOUSE CAMERA DRAG: deltaX=" + deltaX + ", deltaY=" + deltaY);
 
-			// Apply camera rotation based on mouse movement
 			applyMouseCameraRotation(deltaX, deltaY);
 
 			lastMiddleMouseX = x;
 			lastMiddleMouseY = y;
-			return; // Don't update regular mouse state during camera rotation
+			return;
 		}
 
 		if (System.currentTimeMillis() - MouseState.lastMoveTime >= 250L || Math.abs(MouseState.x - x) > 5 || Math.abs(MouseState.y - y) > 5) {
@@ -179,30 +171,23 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
 	}
 
 	void mouseWheelDragged(int param1, int param2) {
-		// Existing wheel drag functionality
+
 	}
 
-	/**
-	 * Apply mouse movement to camera velocities (integrates with existing system)
-	 */
 	private static void applyMouseCameraRotation(int deltaX, int deltaY) {
-		// Direct camera control - bypass velocity system for immediate response
 
-		// Horizontal movement controls yaw (left/right rotation)
 		if (Math.abs(deltaX) > 0) {
-			// Directly modify minimap rotation for immediate yaw control
+
 			int yawChange = deltaX * (int)CAMERA_ROTATION_SENSITIVITY;
 			Client.minimapRotation = (Client.minimapRotation + yawChange) & 0x7ff;
 			System.out.println("Direct yaw change: " + yawChange + ", new rotation: " + Client.minimapRotation);
 		}
 
-		// Vertical movement controls pitch (up/down angle)
 		if (Math.abs(deltaY) > 0) {
-			// Directly modify camera height for immediate pitch control
-			int pitchChange = deltaY * (int)(CAMERA_ROTATION_SENSITIVITY * 0.8f); // Slightly less sensitive for pitch
+
+			int pitchChange = deltaY * (int)(CAMERA_ROTATION_SENSITIVITY * 0.8f);
 			Client.minCameraHeight += pitchChange;
 
-			// Clamp to valid ranges
 			if (Client.minCameraHeight < 128) Client.minCameraHeight = 128;
 			if (Client.minCameraHeight > 383) Client.minCameraHeight = 383;
 
@@ -210,16 +195,10 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
 		}
 	}
 
-	/**
-	 * Check if middle mouse button is currently being used for camera rotation
-	 */
 	public static boolean isMiddleMouseCameraActive() {
 		return middleMouseDown;
 	}
 
-	/**
-	 * Debug method to check mouse listener status
-	 */
 	public static void debugMouseListenerStatus() {
 		System.out.println("=== MOUSE LISTENER DEBUG ===");
 		System.out.println("MouseManager class loaded: " + MouseManager.class.getName());

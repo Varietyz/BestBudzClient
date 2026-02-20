@@ -45,8 +45,6 @@ public final class IdentityKit
 			cache[j].readValues(stream);
 		}
 
-		// Save colors to cache after all identities are loaded
-		//saveColorsToCache();
 	}
 
 	private void readValues(Stream stream)
@@ -56,7 +54,7 @@ public final class IdentityKit
 			int i = stream.readUnsignedByte();
 			if (i == 0)
 			{
-				// Collect colors when this identity kit is fully loaded
+
 				collectColors();
 				return;
 			}
@@ -85,114 +83,26 @@ public final class IdentityKit
 
 	private void collectColors()
 	{
-		// Collect original colors (anIntArray659)
+
 		for (int color : anIntArray659) {
 			if (color != 0) {
 				originalColors.add(color);
 			}
 		}
 
-		// Collect replacement colors (anIntArray660)
 		for (int color : anIntArray660) {
 			if (color != 0) {
 				replacementColors.add(color);
 			}
 		}
 
-		// Collect additional colors (anIntArray661)
 		for (int color : anIntArray661) {
 			if (color != -1) {
 				additionalColors.add(color);
 			}
 		}
 	}
-/*
-	// Add this debug method to your IdentityKit class
-	private static void saveColorsToCache()
-	{
-		int totalKits = 0;
-		int kitsWithOriginalColors = 0;
-		int kitsWithReplacementColors = 0;
-		int kitsWithAdditionalColors = 0;
 
-		try (FileWriter writer = new FileWriter("cache_colors.txt")) {
-			writer.write("// IdentityKit Colors Cache - Organized\n");
-			writer.write("// Generated automatically during IdentityKit loading\n");
-			writer.write("// Total IdentityKit instances loaded: " + length + "\n\n");
-
-			// Debug: Count how many kits actually have colors
-			if (cache != null) {
-				for (IdentityKit kit : cache) {
-					if (kit != null) {
-						totalKits++;
-
-						boolean hasOriginal = false, hasReplacement = false, hasAdditional = false;
-
-						for (int color : kit.anIntArray659) {
-							if (color != 0) hasOriginal = true;
-						}
-						for (int color : kit.anIntArray660) {
-							if (color != 0) hasReplacement = true;
-						}
-						for (int color : kit.anIntArray661) {
-							if (color != -1) hasAdditional = true;
-						}
-
-						if (hasOriginal) kitsWithOriginalColors++;
-						if (hasReplacement) kitsWithReplacementColors++;
-						if (hasAdditional) kitsWithAdditionalColors++;
-					}
-				}
-			}
-
-			writer.write("// Debug Info:\n");
-			writer.write("// - Total kits loaded: " + totalKits + "\n");
-			writer.write("// - Kits with original colors: " + kitsWithOriginalColors + "\n");
-			writer.write("// - Kits with replacement colors: " + kitsWithReplacementColors + "\n");
-			writer.write("// - Kits with additional colors: " + kitsWithAdditionalColors + "\n\n");
-
-			writer.write("// Original Colors (anIntArray659 - colors to be replaced)\n");
-			writer.write("// Count: " + originalColors.size() + "\n");
-			for (Integer color : originalColors) {
-				writer.write(color + "\n");
-			}
-
-			writer.write("\n// Replacement Colors (anIntArray660 - new colors)\n");
-			writer.write("// Count: " + replacementColors.size() + "\n");
-			for (Integer color : replacementColors) {
-				writer.write(color + "\n");
-			}
-
-			writer.write("\n// Additional Colors (anIntArray661 - extra model colors)\n");
-			writer.write("// Count: " + additionalColors.size() + "\n");
-			for (Integer color : additionalColors) {
-				writer.write(color + "\n");
-			}
-
-			// Combine all unique colors
-			Set<Integer> allColors = new HashSet<>();
-			allColors.addAll(originalColors);
-			allColors.addAll(replacementColors);
-			allColors.addAll(additionalColors);
-
-			writer.write("\n// All Unique Colors Combined\n");
-			writer.write("// Total Count: " + allColors.size() + "\n");
-			for (Integer color : allColors) {
-				writer.write(color + "\n");
-			}
-
-			System.out.println("IdentityKit Debug:");
-			System.out.println("  - Total kits loaded: " + totalKits + "/" + length);
-			System.out.println("  - Kits with original colors: " + kitsWithOriginalColors);
-			System.out.println("  - Kits with replacement colors: " + kitsWithReplacementColors);
-			System.out.println("  - Kits with additional colors: " + kitsWithAdditionalColors);
-			System.out.println("  - Unique colors saved: " + allColors.size());
-
-		} catch (IOException e) {
-			System.err.println("IdentityKit: Error writing colors to cache_colors.txt: " + e.getMessage());
-		}
-	}
-*/
 	public boolean method537()
 	{
 		if (anIntArray658 == null)

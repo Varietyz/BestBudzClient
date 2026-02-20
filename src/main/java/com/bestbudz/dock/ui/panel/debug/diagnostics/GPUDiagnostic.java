@@ -5,23 +5,22 @@ import com.bestbudz.engine.gpu.GPURenderingEngine;
 import com.bestbudz.engine.gpu.GPUContextManager;
 import com.bestbudz.engine.gpu.GPUMonitor;
 import com.bestbudz.engine.core.GameState;
-import org.lwjgl.opengl.GL11;
 
 public class GPUDiagnostic extends BaseDiagnostic {
 
 	public GPUDiagnostic() {
 		super("[GPU Acceleration]", DiagnosticStyle.CATEGORY_GPU, DiagnosticStyle.CATEGORY_GPU);
-		setUpdateInterval(2000); // Update every 2 seconds for GPU stats
+		setUpdateInterval(2000);
 	}
 
 	@Override
 	protected void onInitialize() {
-		// No special initialization needed
+
 	}
 
 	@Override
 	protected void collectData() {
-		// GPU Engine Status
+
 		boolean gpuEnabled = GPURenderingEngine.isEnabled();
 		boolean gpuInitialized = GPURenderingEngine.initialized;
 
@@ -31,7 +30,6 @@ public class GPUDiagnostic extends BaseDiagnostic {
 		addRow("Initialized", gpuInitialized ? "Yes" : "No",
 			gpuInitialized ? DiagnosticStyle.STATUS_GOOD : DiagnosticStyle.STATUS_CRITICAL);
 
-		// Context Manager Status
 		GPUContextManager contextManager = null;
 		try {
 			contextManager = GPUContextManager.getInstance();
@@ -43,25 +41,17 @@ public class GPUDiagnostic extends BaseDiagnostic {
 			addRow("Context", "Error", DiagnosticStyle.STATUS_CRITICAL);
 		}
 
-		// Shader Status
-		//boolean shadersInit = GPUShaders.isInitialized();
-		//addRow("Shaders", shadersInit ? "Loaded" : "Not Loaded",
-		//	shadersInit ? DiagnosticStyle.STATUS_GOOD : DiagnosticStyle.STATUS_CRITICAL);
-
-		// OpenGL Information (cached - safe for UI thread)
 		if (gpuEnabled && gpuInitialized) {
-			// THREAD-SAFE: Get cached OpenGL info instead of direct GL calls
-			// This avoids context conflicts between UI thread and GameLoop thread
+
 			try {
 				String gpuStats = GPURenderingEngine.getGPUStatistics();
 				if (gpuStats != null && gpuStats.contains("OpenGL")) {
-					// Extract cached version info from statistics
+
 					addRow("OpenGL", "Available", DiagnosticStyle.STATUS_GOOD);
 				} else {
 					addRow("OpenGL", "Unknown", DiagnosticStyle.TEXT_MUTED);
 				}
 
-				// Show generic GPU info without GL calls
 				addRow("GPU Info", "Context Active", DiagnosticStyle.TEXT_MUTED);
 
 			} catch (Exception e) {
@@ -69,14 +59,12 @@ public class GPUDiagnostic extends BaseDiagnostic {
 			}
 		}
 
-		// Framebuffer Information
 		if (gpuEnabled) {
 			int fbWidth = GPURenderingEngine.getWidth();
 			int fbHeight = GPURenderingEngine.getHeight();
 			addRow("Framebuffer", fbWidth + "x" + fbHeight, DiagnosticStyle.TEXT_MUTED);
 		}
 
-		// GPU Monitor Health
 		try {
 			GPUMonitor monitor = GPUMonitor.getInstance();
 			boolean healthy = monitor.isHealthy();
@@ -93,18 +81,16 @@ public class GPUDiagnostic extends BaseDiagnostic {
 			addRow("Monitor", "Unavailable", DiagnosticStyle.STATUS_WARNING);
 		}
 
-		// GameState GPU Status
 		try {
 			String gpuStatus = GameState.getGPUStatus();
 			if (gpuStatus != null && !gpuStatus.isEmpty()) {
-				// Extract key info from status string
+
 				if (gpuStatus.contains("Valid: true")) {
 					addRow("State Valid", "Yes", DiagnosticStyle.STATUS_GOOD);
 				} else if (gpuStatus.contains("Valid: false")) {
 					addRow("State Valid", "No", DiagnosticStyle.STATUS_WARNING);
 				}
 
-				// Extract failure count if present
 				if (gpuStatus.contains("Failures: ")) {
 					try {
 						String failuresPart = gpuStatus.substring(gpuStatus.indexOf("Failures: ") + 10);
@@ -118,12 +104,11 @@ public class GPUDiagnostic extends BaseDiagnostic {
 			addRow("Game State", "Error", DiagnosticStyle.STATUS_WARNING);
 		}
 
-		// Performance Statistics
 		if (gpuEnabled) {
 			try {
 				String gpuStats = GPURenderingEngine.getGPUStatistics();
 				if (gpuStats != null) {
-					// Try to extract framebuffer info
+
 					if (gpuStats.contains("Framebuffer: ")) {
 						String fbInfo = gpuStats.substring(gpuStats.indexOf("Framebuffer: ") + 13);
 						String fbSize = fbInfo.split(",")[0].trim();
@@ -133,11 +118,10 @@ public class GPUDiagnostic extends BaseDiagnostic {
 					}
 				}
 			} catch (Exception e) {
-				// Ignore statistics errors
+
 			}
 		}
 
-		// Last error information
 		if (!gpuEnabled || !gpuInitialized) {
 			try {
 				String lastError = GPURenderingEngine.getLastError();
@@ -146,7 +130,7 @@ public class GPUDiagnostic extends BaseDiagnostic {
 					addRow("Last Error", truncatedError, DiagnosticStyle.STATUS_CRITICAL);
 				}
 			} catch (Exception e) {
-				// Ignore error retrieval errors
+
 			}
 		}
 	}
@@ -158,6 +142,6 @@ public class GPUDiagnostic extends BaseDiagnostic {
 
 	@Override
 	public int getPriority() {
-		return 2; // High priority for GPU diagnostics
+		return 2;
 	}
 }

@@ -2,9 +2,6 @@ package com.bestbudz.dock.ui.panel.bank.state;
 
 import javax.swing.Timer;
 
-/**
- * Manages update timing and coordination for bank panel
- */
 public class BankUpdateManager {
 
 	private static final int UPDATE_INTERVAL_MS = 500;
@@ -20,9 +17,6 @@ public class BankUpdateManager {
 		this.updateCallback = updateCallback;
 	}
 
-	/**
-	 * Starts normal update cycle
-	 */
 	public void startUpdates() {
 		stopAllTimers();
 
@@ -30,21 +24,14 @@ public class BankUpdateManager {
 		updateTimer.start();
 	}
 
-	/**
-	 * Stops all update timers
-	 */
 	public void stopUpdates() {
 		stopAllTimers();
 	}
 
-	/**
-	 * Enables fast update mode for responsive UI after user actions
-	 */
 	public void enableFastUpdateMode() {
 		if (!isInFastUpdateMode) {
 			isInFastUpdateMode = true;
 
-			// Stop normal timer and start fast timer
 			if (updateTimer != null && updateTimer.isRunning()) {
 				updateTimer.stop();
 			}
@@ -53,7 +40,6 @@ public class BankUpdateManager {
 			updateTimer.start();
 		}
 
-		// Reset the fast mode timer
 		if (fastUpdateModeTimer != null && fastUpdateModeTimer.isRunning()) {
 			fastUpdateModeTimer.stop();
 		}
@@ -63,40 +49,26 @@ public class BankUpdateManager {
 		fastUpdateModeTimer.start();
 	}
 
-	/**
-	 * Forces an immediate update
-	 */
 	public void forceUpdate() {
 		if (updateCallback != null) {
 			updateCallback.run();
 		}
 	}
 
-	/**
-	 * Schedules a delayed update
-	 */
 	public void scheduleUpdate(int delayMs) {
 		Timer delayedUpdate = new Timer(delayMs, e -> updateCallback.run());
 		delayedUpdate.setRepeats(false);
 		delayedUpdate.start();
 	}
 
-	/**
-	 * Enables fast updates and schedules multiple refresh points
-	 */
 	public void forceUpdateAfterAction() {
 		enableFastUpdateMode();
 
-		// Immediate refresh
 		scheduleUpdate(50);
 
-		// Server response refresh
 		scheduleUpdate(300);
 	}
 
-	/**
-	 * Checks if currently in fast update mode
-	 */
 	public boolean isInFastUpdateMode() {
 		return isInFastUpdateMode;
 	}
@@ -105,7 +77,6 @@ public class BankUpdateManager {
 		if (isInFastUpdateMode) {
 			isInFastUpdateMode = false;
 
-			// Stop fast timer and restart normal timer
 			if (updateTimer != null && updateTimer.isRunning()) {
 				updateTimer.stop();
 			}

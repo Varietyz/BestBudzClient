@@ -5,7 +5,6 @@ import java.text.NumberFormat;
 public class SkillCalculator {
 	private static final NumberFormat formatter = NumberFormat.getInstance();
 
-	// Experience table for calculating XP to next level
 	private static final long[] XP_TABLE = {
 		0, 15053, 30322, 45812, 61525, 77465, 93635, 110038, 126678, 143558,
 		160681, 178051, 195671, 213546, 231678, 250072, 268732, 287660, 306862, 326340,
@@ -74,7 +73,6 @@ public class SkillCalculator {
 			return "MAX LEVEL";
 		}
 
-		// Find the XP required for the next level
 		int nextLevel = currentGrade + 1;
 		if (nextLevel >= XP_TABLE.length) {
 			return "MAX LEVEL";
@@ -83,7 +81,6 @@ public class SkillCalculator {
 		long xpForNextLevel = XP_TABLE[nextLevel];
 		long xpNeeded = xpForNextLevel - currentXp;
 
-		// Format the XP needed
 		return formatter.format(xpNeeded) + " XP to level " + nextLevel;
 	}
 }

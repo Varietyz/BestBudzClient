@@ -8,15 +8,11 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.Map;
 
-/**
- * Main equipment panel - now focused on coordination and UI layout
- */
 public class EquipmentSection implements EquipmentDataManager.EquipmentUpdateListener {
 
 	private JPanel panel;
 	private JLabel statsLabel;
 
-	// Separated concerns
 	private final EquipmentDataManager dataManager;
 	private final EquipmentStatsRenderer statsRenderer;
 	private final EquipmentGridLayout gridLayout;
@@ -24,7 +20,7 @@ public class EquipmentSection implements EquipmentDataManager.EquipmentUpdateLis
 	private final EquipmentMagebook equipmentMagebook;
 
 	public EquipmentSection() {
-		// Initialize components with proper dependency injection
+
 		this.clickBatcher = new EquipmentClickBatcher(this::onBatchComplete);
 		this.dataManager = new EquipmentDataManager(this);
 		this.statsRenderer = new EquipmentStatsRenderer();
@@ -39,7 +35,7 @@ public class EquipmentSection implements EquipmentDataManager.EquipmentUpdateLis
 			BorderFactory.createLineBorder(EquipmentConstants.BORDER, 1),
 			BorderFactory.createEmptyBorder(8, 8, 8, 8)
 		));
-		panel.setPreferredSize(new Dimension(width - 16, 360)); // Increased height for buttons
+		panel.setPreferredSize(new Dimension(width - 16, 360));
 		panel.setMaximumSize(new Dimension(width - 16, 360));
 
 		createComponents(width);
@@ -47,22 +43,18 @@ public class EquipmentSection implements EquipmentDataManager.EquipmentUpdateLis
 	}
 
 	private void createComponents(int width) {
-		// Header with title and controls
+
 		JPanel header = createHeader();
 		panel.add(header, BorderLayout.NORTH);
 
-		// Main content area
 		JPanel mainContent = new JPanel(new BorderLayout());
 		mainContent.setBackground(EquipmentConstants.SECTION_BG);
 		mainContent.setOpaque(true);
 
-		// Equipment grid (left side) - now managed by EquipmentGridLayout
 		JPanel equipmentGrid = gridLayout.getGridPanel();
 
-		// Stats panel (right side)
 		JPanel statsPanel = createStatsPanel();
 
-		// Split main content
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, equipmentGrid, statsPanel);
 		splitPane.setDividerLocation(170);
 		splitPane.setDividerSize(2);
@@ -72,7 +64,6 @@ public class EquipmentSection implements EquipmentDataManager.EquipmentUpdateLis
 
 		mainContent.add(splitPane, BorderLayout.CENTER);
 
-		// Add magebook controls at the bottom
 		mainContent.add(equipmentMagebook.getControlsPanel(), BorderLayout.SOUTH);
 
 		panel.add(mainContent, BorderLayout.CENTER);
@@ -88,7 +79,6 @@ public class EquipmentSection implements EquipmentDataManager.EquipmentUpdateLis
 		titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
 		titleLabel.setForeground(EquipmentConstants.TEXT_PRIMARY);
 
-		// Control buttons
 		JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0));
 		controlsPanel.setBackground(EquipmentConstants.SECTION_BG);
 		controlsPanel.setOpaque(true);
@@ -120,7 +110,6 @@ public class EquipmentSection implements EquipmentDataManager.EquipmentUpdateLis
 		return statsContainer;
 	}
 
-	// EquipmentDataManager.EquipmentUpdateListener implementation
 	@Override
 	public void onEquipmentChanged() {
 		updateEquipmentSlots();
@@ -182,8 +171,7 @@ public class EquipmentSection implements EquipmentDataManager.EquipmentUpdateLis
 				return;
 			}
 
-			// Debug: Print equipment interface data for ring and ammo slots
-			boolean debugRingAmmo = false; // Set to true for debugging
+			boolean debugRingAmmo = false;
 			if (debugRingAmmo) {
 				System.out.println("=== Equipment Interface Debug ===");
 				System.out.println("Interface 1688 inv length: " + equipmentInterface.inv.length);
@@ -195,7 +183,6 @@ public class EquipmentSection implements EquipmentDataManager.EquipmentUpdateLis
 				}
 			}
 
-			// Update each slot using the grid layout manager
 			Map<Integer, EquipmentSlotPanel> slotPanels = gridLayout.getSlotPanels();
 			for (Map.Entry<Integer, EquipmentSlotPanel> entry : slotPanels.entrySet()) {
 				int slotId = entry.getKey();
@@ -209,7 +196,6 @@ public class EquipmentSection implements EquipmentDataManager.EquipmentUpdateLis
 						amount = equipmentInterface.invStackSizes[equipmentIndex];
 					}
 
-					// Debug specific slots
 					if (debugRingAmmo && (slotId == 1654 || slotId == 1655)) {
 						System.out.println("Slot " + slotId + " (index " + equipmentIndex + "): itemId=" + itemId + ", amount=" + amount);
 					}
@@ -221,7 +207,7 @@ public class EquipmentSection implements EquipmentDataManager.EquipmentUpdateLis
 			}
 		} catch (Exception e) {
 			System.err.println("Error updating equipment slots: " + e.getMessage());
-			e.printStackTrace(); // Add stack trace for debugging
+			e.printStackTrace();
 			clearEquipment();
 		}
 	}
@@ -231,7 +217,6 @@ public class EquipmentSection implements EquipmentDataManager.EquipmentUpdateLis
 		statsLabel.setText(statsHtml);
 	}
 
-	// Callback for when click batch is complete
 	private void onBatchComplete() {
 		if (Client.myStoner != null) {
 			dataManager.forceUpdate();

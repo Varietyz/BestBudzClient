@@ -3,7 +3,6 @@ package com.bestbudz.dock.ui.panel.teleports;
 import com.bestbudz.dock.util.DockTextUpdatable;
 import com.bestbudz.dock.util.UIPanel;
 import com.bestbudz.dock.util.ButtonHandler;
-import com.bestbudz.dock.util.RainbowHoverUtil;
 import com.bestbudz.engine.config.ColorConfig;
 import com.bestbudz.engine.core.Client;
 
@@ -17,19 +16,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Clean Teleport Panel - Responsive and compact teleportation interface
- *
- * Features:
- * - Clean, compact design with proper spacing
- * - Responsive button layout that adapts to panel width
- * - Reliable dropdown categories with proper click handling
- * - No overlapping components or dead zones
- * - Proper visibility handling on minimize/restore
- */
 public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
-	// Clean color scheme
 	private static final Color CARD_BG = new Color(35, 35, 35);
 	private static final Color HEADER_BG = new Color(45, 45, 45);
 	private static final Color ACCENT = new Color(185, 160, 66);
@@ -53,11 +41,11 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 	}
 
 	private void initializeComponents() {
-		// Header with title and stats
+
 		headerPanel = new JPanel(new BorderLayout()) {
 			@Override
 			protected void paintComponent(Graphics g) {
-				// Ensure solid background to prevent bleed-through
+
 				Graphics2D g2 = (Graphics2D) g.create();
 				try {
 					g2.setColor(getBackground());
@@ -86,11 +74,10 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 		headerPanel.add(titleLabel, BorderLayout.WEST);
 		headerPanel.add(statsLabel, BorderLayout.EAST);
 
-		// Content area with proper scrolling
 		contentPanel = new JPanel() {
 			@Override
 			protected void paintComponent(Graphics g) {
-				// Ensure solid background
+
 				Graphics2D g2 = (Graphics2D) g.create();
 				try {
 					g2.setColor(getBackground());
@@ -115,19 +102,17 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 		scrollPane.getViewport().setOpaque(true);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-		// Add components
 		add(headerPanel, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
 	}
 
 	private void setupCategories() {
-		// Essential locations (always expanded)
+
 		addCategory("Essential", true, new String[][]{
 			{"Home", "115132"},
 			{"Fisher", "115159"},
 		});
 
-		// Combat areas
 		addCategory("Combat Training", false, new String[][]{
 			{"Cows", "115147"},
 			{"Rock Crabs", "115144"},
@@ -138,7 +123,6 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 			{"Mercenary Tower", "115151"}
 		});
 
-		// Wilderness
 		addCategory("Wilderness", false, new String[][]{
 			{"Lava Dragons", "115152"},
 			{"Mithril Dragons", "115153"},
@@ -147,7 +131,6 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 			{"Mage Bank", "115166"}
 		});
 
-		// Boss encounters
 		addCategory("Boss Encounters", false, new String[][]{
 			{"King Black Dragon", "115167"},
 			{"Corporeal Beast", "115170"},
@@ -165,7 +148,6 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 			{"Sea Troll Queen", "115168"}
 		});
 
-		// Runecrafting altars
 		addCategory("Altars", false, new String[][]{
 			{"Air Altar", "115133"},
 			{"Mind Altar", "115134"},
@@ -180,7 +162,6 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 			{"Death Altar", "115143"}
 		});
 
-		// Minigames
 		addCategory("Minigames", false, new String[][]{
 			{"Barrows", "115182"},
 			{"Warriors Guild", "115183"},
@@ -197,7 +178,6 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 			{"Al Kharid", "115146"}
 		});
 
-		// Special access
 		addCategory("Special Access", false, new String[][]{
 			{"Membership Area", "115189"},
 			{"Staff Zone", "115190"}
@@ -230,7 +210,7 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 
 			@Override
 			public void componentShown(ComponentEvent e) {
-				// Fix for panels being hidden after minimize/restore
+
 				setVisible(true);
 				updateButtonLayouts();
 				revalidate();
@@ -242,14 +222,12 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 	private void updateButtonLayouts() {
 		if (currentPanelWidth <= 0) return;
 
-		// Calculate columns based on available width
-		int availableWidth = currentPanelWidth - 32; // Account for padding and scrollbar
+		int availableWidth = currentPanelWidth - 32;
 		int buttonWidth = 90;
 		int spacing = 4;
 		int columns = Math.max(1, (availableWidth + spacing) / (buttonWidth + spacing));
-		columns = Math.min(columns, 4); // Maximum 4 columns
+		columns = Math.min(columns, 4);
 
-		// Update all category button layouts
 		for (TeleportCategory category : categories) {
 			category.updateButtonLayout(columns);
 		}
@@ -258,9 +236,6 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 		repaint();
 	}
 
-	/**
-	 * Individual teleport category with clean dropdown functionality
-	 */
 	private class TeleportCategory extends JPanel {
 		private final String name;
 		private final String[][] teleports;
@@ -291,7 +266,7 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 			headerPanel = new JPanel(new BorderLayout()) {
 				@Override
 				protected void paintComponent(Graphics g) {
-					// Ensure proper background painting without transparency issues
+
 					Graphics2D g2 = (Graphics2D) g.create();
 					try {
 						g2.setColor(getBackground());
@@ -331,13 +306,12 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 			headerPanel.add(leftPanel, BorderLayout.WEST);
 			headerPanel.add(expandIcon, BorderLayout.EAST);
 
-			// Simplified click handler without complex hover effects
 			MouseAdapter clickHandler = new MouseAdapter() {
 				private Color originalBg = HEADER_BG;
 
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					// Prevent event propagation that might switch panels
+
 					e.consume();
 					toggleExpanded();
 				}
@@ -364,7 +338,6 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 			buttonPanel.setBackground(CARD_BG);
 			buttonPanel.setBorder(new EmptyBorder(4, 6, 6, 6));
 
-			// Create buttons
 			for (String[] teleport : teleports) {
 				JButton button = createTeleportButton(teleport[0], Integer.parseInt(teleport[1]));
 				buttonPanel.add(button);
@@ -377,17 +350,15 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 			JButton button = new JButton(name) {
 				@Override
 				protected void paintComponent(Graphics g) {
-					// Ensure we paint our own background without interference
+
 					Graphics2D g2 = (Graphics2D) g.create();
 					try {
 						g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-						// Paint background based on state
 						Color bgColor = getModel().isRollover() ? ACCENT : ColorConfig.GRAPHITE_COLOR;
 						g2.setColor(bgColor);
 						g2.fillRect(0, 0, getWidth(), getHeight());
 
-						// Paint border
 						g2.setColor(BORDER);
 						g2.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 
@@ -409,9 +380,8 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 			button.setMinimumSize(new Dimension(85, 24));
 			button.setMaximumSize(new Dimension(85, 24));
 
-			// Simple click handling without external rainbow effects
 			button.addActionListener(e -> {
-				// Ensure we stay on EDT and don't trigger panel switches
+
 				SwingUtilities.invokeLater(() -> {
 					try {
 						ButtonHandler.createButtonListener(interfaceId).actionPerformed(e);
@@ -442,7 +412,6 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 				buttonPanel.setVisible(expanded);
 			}
 
-			// Update preferred size
 			if (expanded) {
 				setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 			} else {
@@ -454,7 +423,6 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 		}
 	}
 
-	// UIPanel interface methods
 	@Override
 	public String getPanelID() {
 		return "Teleports";
@@ -469,12 +437,10 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 	public void onActivate() {
 		if (!Client.loggedIn) return;
 
-		// Ensure this panel is properly shown and focused
 		SwingUtilities.invokeLater(() -> {
 			setVisible(true);
 			setOpaque(true);
 
-			// Bring this panel to front to prevent other panels showing through
 			if (getParent() != null) {
 				getParent().setComponentZOrder(this, 0);
 			}
@@ -488,7 +454,7 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 
 	@Override
 	public void onDeactivate() {
-		// Clean deactivation
+
 	}
 
 	@Override
@@ -499,7 +465,7 @@ public class TeleportPanel extends JPanel implements UIPanel, DockTextUpdatable 
 	@Override
 	public void updateDockText(int index, String text) {
 		if (!Client.loggedIn) return;
-		// Handle dock text updates if needed
+
 	}
 
 	public String getPanelIconPath() {

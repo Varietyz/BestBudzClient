@@ -6,9 +6,6 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Handles the layout and positioning of equipment slots in the grid
- */
 public class EquipmentGridLayout {
 
 	private final JPanel gridPanel;
@@ -35,24 +32,18 @@ public class EquipmentGridLayout {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(1, 1, 1, 1);
 
-		// Equipment layout (classic RuneScape style)
-		// Row 0: Helmet
 		addSlotPanel(1645, 1, 0, gbc);
 
-		// Row 1: Cape, Amulet, Ammo
 		addSlotPanel(1646, 0, 1, gbc);
 		addSlotPanel(1647, 1, 1, gbc);
 		addSlotPanel(1655, 2, 1, gbc);
 
-		// Row 2: Weapon, Body, Shield
 		addSlotPanel(1648, 0, 2, gbc);
 		addSlotPanel(1649, 1, 2, gbc);
 		addSlotPanel(1650, 2, 2, gbc);
 
-		// Row 3: Legs
 		addSlotPanel(1651, 1, 3, gbc);
 
-		// Row 4: Hands, Feet, Ring
 		addSlotPanel(1652, 0, 4, gbc);
 		addSlotPanel(1653, 1, 4, gbc);
 		addSlotPanel(1654, 2, 4, gbc);

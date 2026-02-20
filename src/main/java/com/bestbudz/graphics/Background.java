@@ -19,7 +19,7 @@ public final class Background extends DrawingArea
 	public Background(ArchiveLoader archiveLoader, String s, int i) {
 		byte[] data = archiveLoader.extractFile(s + ".dat");
 		if (data == null || data.length == 0) {
-			//System.err.println("Background data missing or empty: " + s);
+
 			textureData = new byte[0];
 			backgroundWidth = 0;
 			backgroundHeight = 0;
@@ -29,7 +29,7 @@ public final class Background extends DrawingArea
 
 		byte[] indexData = archiveLoader.extractFile("index.dat");
 		if (indexData == null || indexData.length == 0) {
-			//System.err.println("Background index data missing or empty.");
+
 			textureData = new byte[0];
 			backgroundWidth = 0;
 			backgroundHeight = 0;
@@ -38,7 +38,7 @@ public final class Background extends DrawingArea
 		Stream stream_1 = new Stream(indexData);
 
 		if (stream.position + 2 > stream.buffer.length) {
-			//System.err.println("Background data too short for header.");
+
 			textureData = new byte[0];
 			backgroundWidth = 0;
 			backgroundHeight = 0;
@@ -47,7 +47,7 @@ public final class Background extends DrawingArea
 		stream_1.position = stream.readUnsignedWord();
 
 		if (stream_1.position + 6 > stream_1.buffer.length) {
-			//System.err.println("Background index data too short.");
+
 			textureData = new byte[0];
 			backgroundWidth = 0;
 			backgroundHeight = 0;
@@ -61,7 +61,7 @@ public final class Background extends DrawingArea
 		pixelData = new int[j];
 		for (int k = 0; k < j - 1; k++) {
 			if (stream_1.position + 3 > stream_1.buffer.length) {
-				//System.err.println("Background index data incomplete reading runes.");
+
 				textureData = new byte[0];
 				backgroundWidth = 0;
 				backgroundHeight = 0;
@@ -70,10 +70,9 @@ public final class Background extends DrawingArea
 			pixelData[k + 1] = stream_1.read3Bytes();
 		}
 
-		// Adjust offsets for i layers (skip data)
 		for (int l = 0; l < i; l++) {
 			if (stream_1.position + 5 > stream_1.buffer.length) {
-				//System.err.println("Background index data incomplete adjusting offsets.");
+
 				textureData = new byte[0];
 				backgroundWidth = 0;
 				backgroundHeight = 0;
@@ -83,7 +82,7 @@ public final class Background extends DrawingArea
 			int width = stream_1.readUnsignedWord();
 			int height = stream_1.readUnsignedWord();
 			if (width < 0 || height < 0 || stream_1.position + (width * height) > stream_1.buffer.length) {
-				//System.err.println("Background index data invalid width/height or buffer overflow.");
+
 				textureData = new byte[0];
 				backgroundWidth = 0;
 				backgroundHeight = 0;
@@ -94,7 +93,7 @@ public final class Background extends DrawingArea
 		}
 
 		if (stream_1.position + 6 > stream_1.buffer.length) {
-		//	System.err.println("Background index data too short for remaining fields.");
+
 			textureData = new byte[0];
 			backgroundWidth = 0;
 			backgroundHeight = 0;
@@ -109,7 +108,7 @@ public final class Background extends DrawingArea
 
 		int j1 = backgroundWidth * backgroundHeight;
 		if (j1 < 0 || stream.position + j1 > stream.buffer.length) {
-		//	System.err.println("Background data length invalid or exceeds buffer size.");
+
 			textureData = new byte[0];
 			return;
 		}
@@ -127,11 +126,10 @@ public final class Background extends DrawingArea
 				}
 			}
 		} else {
-		//	System.err.println("Background format " + i1 + " not supported.");
+
 			textureData = new byte[0];
 		}
 	}
-
 
 	public void method356() {
     anInt1456 /= 2;

@@ -2,12 +2,11 @@ package com.bestbudz.util.compression;
 
 public final class BZip2Compression
 {
-	// Only safe optimization: bit mask lookup table
+
 	private static final int[] BIT_MASKS = {
 		0, 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535
 	};
 
-	// EXACT same decompress as original
 	public static void decompress(byte[] abyte0, int i, byte[] abyte1, int j, int k) {
 		synchronized (decompressor) {
 			decompressor.inputBuffer = abyte1;
@@ -28,7 +27,6 @@ public final class BZip2Compression
 		}
 	}
 
-	// EXACT same decodeBlock as original
 	private static void decodeBlock() {
 		byte byte4 = BZip2Compression.decompressor.currentByte;
 		int i = BZip2Compression.decompressor.repeatCount;
@@ -132,7 +130,6 @@ public final class BZip2Compression
 		BZip2Compression.decompressor.outputRemaining = j1;
 	}
 
-	// EXACT same processStream as original
 	private static void processStream() {
 		int k8 = 0;
 		int[] ai = null;
@@ -403,17 +400,14 @@ public final class BZip2Compression
 		}
 	}
 
-	// EXACT same readByte as original
 	private static byte readByte() {
 		return (byte) readBits(8, BZip2Compression.decompressor);
 	}
 
-	// EXACT same readBit as original
 	private static byte readBit() {
 		return (byte) readBits(1, BZip2Compression.decompressor);
 	}
 
-	// ONLY optimization: use BIT_MASKS lookup instead of (1 << i) - 1
 	private static int readBits(int i, BZip2Decompressor BZip2Decompressor) {
 		int j;
 		do {
@@ -433,7 +427,6 @@ public final class BZip2Compression
 		return j;
 	}
 
-	// EXACT same buildSymbolMap as original
 	private static void buildSymbolMap() {
 		BZip2Compression.decompressor.symbolCount = 0;
 		for (int i = 0; i < 256; i++)
@@ -443,7 +436,6 @@ public final class BZip2Compression
 			}
 	}
 
-	// EXACT same buildHuffmanTables as original
 	private static void buildHuffmanTables(int[] ai, int[] ai1, int[] ai2, byte[] abyte0, int i, int j, int k) {
 		int l = 0;
 		for (int i1 = i; i1 <= j; i1++) {
@@ -472,6 +464,5 @@ public final class BZip2Compression
 		for (int k2 = i + 1; k2 <= j; k2++) ai1[k2] = (ai[k2 - 1] + 1 << 1) - ai1[k2];
 	}
 
-	// EXACT same static field as original
 	private static final BZip2Decompressor decompressor = new BZip2Decompressor();
 }

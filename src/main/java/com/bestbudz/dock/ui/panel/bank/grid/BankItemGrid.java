@@ -12,9 +12,6 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Fixed bank item grid - addresses painting issues during filtering/sorting/searching
- */
 public class BankItemGrid extends JPanel {
 
 	private static final int COLUMNS = 7;
@@ -24,12 +21,10 @@ public class BankItemGrid extends JPanel {
 	private final List<BankItemPanel> allItems = new ArrayList<>();
 	private final Object parentBankPanel;
 
-	// Current filters and settings
 	private BankFilterEngine.FilterType currentFilter = BankFilterEngine.FilterType.ALL;
 	private BankFilterEngine.SortType currentSort = BankFilterEngine.SortType.NONE;
 	private String searchText = "";
 
-	// Track if we're currently updating to prevent recursive calls
 	private boolean isUpdating = false;
 
 	public BankItemGrid(Object parentBankPanel) {
@@ -39,13 +34,9 @@ public class BankItemGrid extends JPanel {
 		setOpaque(true);
 		setBorder(new EmptyBorder(0, 8, 8, 8));
 
-		// Ensure double buffering is enabled for smooth repaints
 		setDoubleBuffered(true);
 	}
 
-	/**
-	 * Sets the current filter and applies changes
-	 */
 	public void setFilter(BankFilterEngine.FilterType filter) {
 		if (this.currentFilter != filter && !isUpdating) {
 			this.currentFilter = filter;
@@ -53,9 +44,6 @@ public class BankItemGrid extends JPanel {
 		}
 	}
 
-	/**
-	 * Sets the current sort and applies changes
-	 */
 	public void setSort(BankFilterEngine.SortType sort) {
 		if (this.currentSort != sort && !isUpdating) {
 			this.currentSort = sort;
@@ -63,16 +51,12 @@ public class BankItemGrid extends JPanel {
 		}
 	}
 
-	/**
-	 * Sets the search text and applies changes
-	 */
 	public void setSearchText(String text) {
 		String newSearchText = BankSearchEngine.normalizeSearchText(text);
 		if (!this.searchText.equals(newSearchText) && !isUpdating) {
 			this.searchText = newSearchText;
 			applyFiltersAndSort();
 
-			// Optional: Print search results count for debugging
 			if (!searchText.isEmpty()) {
 				int resultCount = getFilteredItemCount();
 				System.out.println("Search '" + text + "' found " + resultCount + " items");
@@ -80,9 +64,6 @@ public class BankItemGrid extends JPanel {
 		}
 	}
 
-	/**
-	 * Gets count of items that pass current filters
-	 */
 	public int getFilteredItemCount() {
 		return (int) allItems.stream()
 			.filter(item -> BankFilterEngine.passesFilter(item, currentFilter))
@@ -90,9 +71,6 @@ public class BankItemGrid extends JPanel {
 			.count();
 	}
 
-	/**
-	 * Applies current filters and sorting with simple coordination
-	 */
 	private void applyFiltersAndSort() {
 		if (isUpdating) {
 			return;
@@ -101,20 +79,15 @@ public class BankItemGrid extends JPanel {
 		SwingUtilities.invokeLater(this::performFilterAndSort);
 	}
 
-	/**
-	 * Simple filter and sort operation
-	 */
 	private void performFilterAndSort() {
 		isUpdating = true;
 
 		try {
-			// Clear hover states
+
 			clearHoverStates();
 
-			// Remove all components
 			removeAll();
 
-			// Filter and sort items
 			List<BankItemPanel> displayItems = allItems.stream()
 				.filter(item -> BankFilterEngine.passesFilter(item, currentFilter))
 				.filter(item -> BankSearchEngine.passesSearch(item, searchText))
@@ -122,7 +95,6 @@ public class BankItemGrid extends JPanel {
 
 			BankFilterEngine.sortItems(displayItems, currentSort);
 
-			// Add items back
 			for (BankItemPanel item : displayItems) {
 				if (item != null) {
 					item.setParentBankPanel(parentBankPanel);
@@ -132,7 +104,6 @@ public class BankItemGrid extends JPanel {
 
 			updateGridHeight();
 
-			// Simple revalidation
 			revalidate();
 			repaint();
 
@@ -140,14 +111,12 @@ public class BankItemGrid extends JPanel {
 			isUpdating = false;
 		}
 
-		// FORCE THE SAME UPDATE CYCLE THAT HAPPENS WHEN CLICKING AN ITEM
-		// This is what fixes the display - trigger parent update
 		if (parentBankPanel != null) {
 			try {
-				// Call the parent's force update method (same as clicking does)
+
 				parentBankPanel.getClass().getMethod("forceUpdateAfterClick").invoke(parentBankPanel);
 			} catch (Exception e) {
-				// Fallback - try the generic update method
+
 				try {
 					parentBankPanel.getClass().getMethod("updateBankData").invoke(parentBankPanel);
 				} catch (Exception ex) {
@@ -157,9 +126,6 @@ public class BankItemGrid extends JPanel {
 		}
 	}
 
-	/**
-	 * Finds the scroll pane parent
-	 */
 	private Container getScrollPaneParent() {
 		Container parent = getParent();
 		while (parent != null) {
@@ -171,22 +137,16 @@ public class BankItemGrid extends JPanel {
 		return null;
 	}
 
-	/**
-	 * Clears hover states on all items - NO REPAINTS
-	 */
 	public void clearHoverStates() {
 		for (BankItemPanel itemPanel : allItems) {
 			if (itemPanel != null) {
-				// Just reset the state, no fucking repaints
+
 				itemPanel.isHovered = false;
 				itemPanel.currentBackground = itemPanel.originalBackground;
 			}
 		}
 	}
 
-	/**
-	 * Refreshes item amounts from game data
-	 */
 	public void refreshItemAmounts() {
 		if (isUpdating) {
 			return;
@@ -199,14 +159,10 @@ public class BankItemGrid extends JPanel {
 				}
 			}
 
-			// Force repaint after amount refresh
 			repaint();
 		});
 	}
 
-	/**
-	 * Updates all items from game data with improved painting coordination
-	 */
 	public void updateItems() {
 		if (!SwingUtilities.isEventDispatchThread()) {
 			SwingUtilities.invokeLater(this::updateItems);
@@ -214,7 +170,7 @@ public class BankItemGrid extends JPanel {
 		}
 
 		if (isUpdating) {
-			return; // Prevent recursive updates
+			return;
 		}
 
 		isUpdating = true;
@@ -231,16 +187,13 @@ public class BankItemGrid extends JPanel {
 				return;
 			}
 
-			// Get inventory and bank item maps
 			Map<Integer, Integer> inventoryItems = getInventoryItems();
 			Map<Integer, Integer> bankItems = getBankItems();
 
-			// Add all items to the list
 			addInventoryItemsToList(inventoryItems, bankItems);
 			addPlaceholderItemsToList(inventoryItems, bankItems);
 			addBankItemsToList(bankItems, inventoryItems);
 
-			// Apply current filters and sort
 			performFilterAndSort();
 
 		} catch (Exception e) {
@@ -250,9 +203,6 @@ public class BankItemGrid extends JPanel {
 		}
 	}
 
-	/**
-	 * Clears all items with proper cleanup
-	 */
 	public void clearItems() {
 		if (!SwingUtilities.isEventDispatchThread()) {
 			SwingUtilities.invokeLater(this::clearItems);
@@ -278,9 +228,6 @@ public class BankItemGrid extends JPanel {
 		}
 	}
 
-	/**
-	 * Override paintComponent to ensure proper background painting
-	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		g.setColor(getBackground());
@@ -288,12 +235,10 @@ public class BankItemGrid extends JPanel {
 		super.paintComponent(g);
 	}
 
-	// Getters for current state
 	public BankFilterEngine.FilterType getCurrentFilter() { return currentFilter; }
 	public BankFilterEngine.SortType getCurrentSort() { return currentSort; }
 	public String getSearchText() { return searchText; }
 
-	// Private helper methods for data extraction (unchanged)
 	private Map<Integer, Integer> getInventoryItems() {
 		Map<Integer, Integer> items = new HashMap<>();
 		try {
@@ -384,44 +329,34 @@ public class BankItemGrid extends JPanel {
 			return;
 		}
 
-		// Calculate rows needed
-		int rows = (componentCount + COLUMNS - 1) / COLUMNS; // Ceiling division
+		int rows = (componentCount + COLUMNS - 1) / COLUMNS;
 
-		// Calculate exact height needed for those rows
 		int totalHeight = (rows * ITEM_SIZE) + ((rows - 1) * GAP);
 
-		// Set the grid's preferred height
 		Dimension currentSize = getPreferredSize();
 		setPreferredSize(new Dimension(currentSize.width, totalHeight));
 
-		// Force the parent to respect this new size
 		revalidate();
 	}
-
-	// Add this method to BankItemGrid class - ONLY THIS, NOTHING ELSE
 
 	@Override
 	public void setBounds(int x, int y, int width, int height) {
 		int componentCount = getComponentCount();
 
 		if (componentCount == 0) {
-			// Empty grid - minimum height for 1 row
+
 			int minHeight = ITEM_SIZE + GAP;
 			super.setBounds(x, y, width, minHeight);
 			return;
 		}
 
-		// Calculate rows needed for current content
-		int rows = (componentCount + COLUMNS - 1) / COLUMNS; // Ceiling division
+		int rows = (componentCount + COLUMNS - 1) / COLUMNS;
 
-		// Calculate EXACT height needed for these rows
 		int neededHeight = (rows * ITEM_SIZE) + ((rows - 1) * GAP);
 
-		// Add border/padding
 		Insets insets = getInsets();
 		neededHeight += insets.top + insets.bottom;
 
-		// Use the smaller of: what's requested vs what's actually needed
 		int actualHeight = Math.max(neededHeight, Math.min(height, neededHeight));
 
 		super.setBounds(x, y, width, actualHeight);

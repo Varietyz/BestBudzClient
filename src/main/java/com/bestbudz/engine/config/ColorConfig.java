@@ -6,14 +6,13 @@ public class ColorConfig
 {
 	public static Color MAIN_FRAME_COLOR = new Color(60, 63, 65);
 
-	// Modern color scheme
 	public static Color TILE_BACKGROUND_COLOR = new Color(60, 60, 60);
 	public static Color TILE_HOVER_COLOR = new Color(75, 75, 75);
 	public static Color TILE_PRESSED_COLOR = new Color(50, 50, 50);
 	public static Color BORDER_COLOR = new Color(100, 100, 100);
 	public static Color TEXT_PRIMARY_COLOR = Color.WHITE;
 	public static Color TEXT_SECONDARY_COLOR = new Color(200, 200, 200);
-	public static Color XP_TEXT_COLOR = new Color(150, 150, 255); // Made non-final for color customization
+	public static Color XP_TEXT_COLOR = new Color(150, 150, 255);
 
 	public static Color ADVANCE_LEVEL1_COLOR = new Color(46, 125, 50);
 	public static Color ADVANCE_LEVEL2_COLOR = new Color(183, 28, 28);
@@ -21,19 +20,17 @@ public class ColorConfig
 	public static Color ADVANCE_LEVEL4_COLOR = new Color(123, 31, 162);
 	public static Color ADVANCE_LEVEL5_COLOR = new Color(13, 71, 161);
 
-	// Advancement level colors (1-5+ grading system)
 	public static Color[] ADVANCE_COLORS = {
-		TEXT_SECONDARY_COLOR,    // Level 0 (shouldn't show, but just in case)
-		ADVANCE_LEVEL1_COLOR,      // Level 1 - Green (Bronze equivalent)
-		ADVANCE_LEVEL2_COLOR,      // Level 2 - Red (Iron equivalent)
-		ADVANCE_LEVEL3_COLOR,     // Level 3 - Orange (Gold equivalent)
-		ADVANCE_LEVEL4_COLOR,     // Level 4 - Purple (Platinum equivalent)
-		ADVANCE_LEVEL5_COLOR,      // Level 5+ - Blue (Diamond equivalent)
+		TEXT_SECONDARY_COLOR,
+		ADVANCE_LEVEL1_COLOR,
+		ADVANCE_LEVEL2_COLOR,
+		ADVANCE_LEVEL3_COLOR,
+		ADVANCE_LEVEL4_COLOR,
+		ADVANCE_LEVEL5_COLOR,
 	};
 
-	// UI colors
 	public static  Color BLACK_COLOR = new Color(0, 0, 0);
-	public static  Color BG_COLOR = new Color(15, 25, 20); // Login BG_COLOR
+	public static  Color BG_COLOR = new Color(15, 25, 20);
 	public static  Color PANEL_COLOR = new Color(25, 40, 35, 220);
 	public static  Color GRAPHITE_COLOR = new Color(45, 45, 45);
 	public static  Color GRAY_UI_COLOR = new Color(77, 77, 77);
@@ -66,8 +63,7 @@ public class ColorConfig
 	public static  Color UNAVAILABLE_COLOR = new Color(203, 68, 68);
 	public static  Color IN_PROGRESS_COLOR = new Color(220, 180, 80);
 
-	// INGAME-COLORING
-	public static  int CHAT_COLOR         = 0x98FF98; // Neon mint
+	public static  int CHAT_COLOR         = 0x98FF98;
 	public static  int CHAT_SOFT_PINK     = 0xFF99CC;
 	public static  int CHAT_BABY_BLUE     = 0xB3E5FC;
 	public static  int CHAT_MINT_AQUA     = 0xA7FDEB;
@@ -81,14 +77,14 @@ public class ColorConfig
 	public static  int COLOR_SOFT_ROSE        = 0xFFCDD2;
 	public static  int COLOR_LIME_GREEN       = 0xB2FF59;
 	public static  int COLOR_PASTEL_VIOLET    = 0xCE93D8;
-	public static  int COLOR_SPRING_GREEN 		= 0x8FFFC1; // Interface options
+	public static  int COLOR_SPRING_GREEN 		= 0x8FFFC1;
 	public static  int COLOR_FROST_TEAL       = 0xE0F7FA;
 	public static  int COLOR_DUSTY_PERIWINKLE = 0xC5CAE9;
 	public static  int COLOR_SUNFLOWER_YELLOW = 0xFFF176;
 	public static  int COLOR_LIGHT_AMBER      = 0xFFECB3;
 	public static  int COLOR_CYAN_TURQUOISE   = 0x80DEEA;
 	public static  int COLOR_LAVENDER         = 0xB39DDB;
-	public static  int COLOR_ROSE_PINK        = 0xF48FB1; // interfaces
+	public static  int COLOR_ROSE_PINK        = 0xF48FB1;
 	public static  int COLOR_SOFT_PEACH       = 0xFFD180;
 	public static  int COLOR_CORAL_ORANGE     = 0xFFAB91;
 	public static  int COLOR_CREAM_ROSE       = 0xFFCCBC;

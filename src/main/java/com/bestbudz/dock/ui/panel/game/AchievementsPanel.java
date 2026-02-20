@@ -61,15 +61,14 @@ panel.setPreferredSize(null);
 				}
 
 				if (index == hoverIndex) {
-					// You could apply a rainbow color here
-					Color rainbowColor = RainbowHoverUtil.getNextHoverColor(); // You'd need to make this public
+
+					Color rainbowColor = RainbowHoverUtil.getNextHoverColor();
 					label.setBackground(rainbowColor);
 				}
 
 				return label;
 			}
 		});
-
 
 		achievementList.addMouseMotionListener(new MouseAdapter() {
 			@Override
@@ -140,19 +139,17 @@ panel.setPreferredSize(null);
 		return panel;
 	}
 
-
 	@Override
 	public void onActivate() {
-		// immediate fetch
+
 		requestAchievements();
-		// start periodic refresh every 5 seconds
+
 		if (achievementRequestTimer == null) {
 			achievementRequestTimer = new Timer(5000, e -> requestAchievements());
 			achievementRequestTimer.setRepeats(true);
 			achievementRequestTimer.start();
 		}
 	}
-
 
 	@Override
 	public void onDeactivate() {
@@ -161,7 +158,6 @@ panel.setPreferredSize(null);
 			achievementRequestTimer = null;
 		}
 	}
-
 
 	@Override
 	public String getPanelIconPath() {
@@ -182,7 +178,6 @@ panel.setPreferredSize(null);
 			ex.printStackTrace();
 		}
 	}
-
 
 	public void updateAchievement(int index, String rawText) {
 		if (index < 0) return;
@@ -207,4 +202,3 @@ panel.setPreferredSize(null);
 	}
 
 }
-

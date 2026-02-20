@@ -4,15 +4,8 @@ import com.bestbudz.dock.ui.panel.bubblebudz.game.entities.GeometricShape;
 import java.awt.*;
 import java.awt.geom.*;
 
-/**
- * Factory for creating geometric shapes and retrieving their vertices.
- * Centralized shape logic for reuse across the entire game.
- */
 public class ShapeFactory {
 
-	/**
-	 * Creates a Shape object for the given type and radius
-	 */
 	public static Shape createShape(GeometricShape.ShapeType shapeType, float radius) {
 		switch (shapeType) {
 			case TRIANGLE:
@@ -36,9 +29,6 @@ public class ShapeFactory {
 		}
 	}
 
-	/**
-	 * Gets vertices for shape outlines and sparkle placement
-	 */
 	public static float[] getShapeVertices(GeometricShape.ShapeType shapeType, float radius) {
 		switch (shapeType) {
 			case TRIANGLE:
@@ -72,9 +62,6 @@ public class ShapeFactory {
 				return new float[] { 0, -radius };
 		}
 	}
-
-
-	// ========== STANDARD SHAPES (unchanged) ==========
 
 	private static Shape createTriangle(float radius) {
 		Path2D triangle = new Path2D.Float();
@@ -146,7 +133,6 @@ public class ShapeFactory {
 		return cross;
 	}
 
-	// Helper methods
 	private static float[] getPolygonVertices(int sides, float radius) {
 		float[] vertices = new float[sides * 2];
 		for (int i = 0; i < sides; i++) {

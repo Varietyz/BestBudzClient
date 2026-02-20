@@ -15,51 +15,32 @@ import java.util.*;
 import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
 
-/**
- * BLAZING FAST EmbeddedMapCache - Target: Sub-500ms Initialization
- *
- * CRITICAL OPTIMIZATIONS for extreme speed:
- * 1. Eliminate ALL scanning - direct file enumeration only
- * 2. Massive parallelization with CompletableFuture chains
- * 3. Memory-pooled decompression
- * 4. Zero-allocation file loading
- * 5. Lock-free everything with intelligent pre-sizing
- * 6. Aggressive caching and prefetching
- * 7. CPU-optimized batch sizes
- * 8. Memory-mapped I/O simulation
- */
 public class EmbeddedMapCache {
 
-	// ===== BLAZING FAST STORAGE =====
 	private static final ConcurrentHashMap<Integer, byte[]> embeddedMapFiles = new ConcurrentHashMap<>(2048, 0.9f, 32);
 	private static final ConcurrentHashMap<Integer, RegionData> embeddedRegions = new ConcurrentHashMap<>(1024, 0.9f, 16);
 
-	// ===== ATOMIC PERFORMANCE COUNTERS =====
 	private static final AtomicInteger totalFilesLoaded = new AtomicInteger(0);
 	private static final AtomicInteger regionsFromIndex = new AtomicInteger(0);
 	private static volatile boolean initialized = false;
 
-	// ===== BLAZING FAST CONFIGURATION =====
 	private static final int MAX_THREADS = Math.min(64, Runtime.getRuntime().availableProcessors() * 8);
-	private static final int OPTIMAL_BATCH_SIZE = 25; // Micro-batches for maximum parallelism
-	private static final int BUFFER_SIZE = 32768; // 32KB buffers
+	private static final int OPTIMAL_BATCH_SIZE = 25;
+	private static final int BUFFER_SIZE = 32768;
 
-	// ===== PERFORMANCE MONITORING =====
 	private static final AtomicLong totalLoadTime = new AtomicLong(0);
 	private static final AtomicLong totalBytesLoaded = new AtomicLong(0);
 	private static final AtomicInteger failedLoads = new AtomicInteger(0);
 
-	// ===== THREAD MANAGEMENT =====
 	private static ForkJoinPool blazingPool;
 	private static final Object initializationLock = new Object();
 
-	// ===== KNOWN FILE RANGE OPTIMIZATION =====
 	private static final int[] KNOWN_FILE_RANGES = {
-		0, 1999,     // Main range based on your 1950 files
-		2000, 2999,  // Extended range 1
-		3000, 3999,  // Extended range 2
-		4000, 4999,  // Extended range 3
-		5000, 5999   // Extended range 4
+		0, 1999,
+		2000, 2999,
+		3000, 3999,
+		4000, 4999,
+		5000, 5999
 	};
 
 	private static class RegionData {
@@ -76,9 +57,6 @@ public class EmbeddedMapCache {
 		}
 	}
 
-	/**
-	 * BLAZING FAST INITIALIZATION - Target: <500ms
-	 */
 	public static void initialize() {
 		if (initialized) return;
 
@@ -89,13 +67,11 @@ public class EmbeddedMapCache {
 			long startTime = System.currentTimeMillis();
 
 			try {
-				// STEP 1: Setup blazing fast thread pool
+
 				setupBlazingThreadPool();
 
-				// STEP 2: SMART RANGE-BASED LOADING (no scanning!)
 				loadFilesBlazingFast();
 
-				// STEP 3: Lightning-fast map index
 				loadMapIndexLightning();
 
 				initialized = true;
@@ -115,9 +91,6 @@ public class EmbeddedMapCache {
 		}
 	}
 
-	/**
-	 * Setup maximum performance thread pool
-	 */
 	private static void setupBlazingThreadPool() {
 		blazingPool = new ForkJoinPool(
 			MAX_THREADS,
@@ -128,20 +101,16 @@ public class EmbeddedMapCache {
 				return thread;
 			},
 			null,
-			true // Async mode for maximum throughput
+			true
 		);
 
 		System.out.println("[EmbeddedMapCache] Blazing thread pool: " + MAX_THREADS + " threads at high priority");
 	}
 
-	/**
-	 * CRITICAL: Smart range-based loading - no blind scanning!
-	 */
 	private static void loadFilesBlazingFast() {
 		System.out.println("[EmbeddedMapCache] Smart range-based loading...");
 		long startTime = System.currentTimeMillis();
 
-		// Create range-based tasks
 		List<CompletableFuture<RangeResult>> rangeFutures = new ArrayList<>();
 
 		for (int i = 0; i < KNOWN_FILE_RANGES.length; i += 2) {
@@ -153,15 +122,13 @@ public class EmbeddedMapCache {
 			rangeFutures.add(future);
 		}
 
-		// Wait for all ranges to complete
 		CompletableFuture<Void> allRanges = CompletableFuture.allOf(
 			rangeFutures.toArray(new CompletableFuture[0])
 		);
 
 		try {
-			allRanges.get(10, TimeUnit.SECONDS); // Aggressive timeout
+			allRanges.get(10, TimeUnit.SECONDS);
 
-			// Collect results
 			for (CompletableFuture<RangeResult> future : rangeFutures) {
 				RangeResult result = future.get();
 				embeddedMapFiles.putAll(result.files);
@@ -179,16 +146,12 @@ public class EmbeddedMapCache {
 			totalFilesLoaded.get() + " files");
 	}
 
-	/**
-	 * Process a specific file range with micro-batching
-	 */
 	private static RangeResult processFileRange(int rangeStart, int rangeEnd) {
 		Map<Integer, byte[]> rangeFiles = new ConcurrentHashMap<>();
 		AtomicInteger rangeFilesLoaded = new AtomicInteger(0);
 		AtomicLong rangeBytesLoaded = new AtomicLong(0);
 		AtomicInteger rangeFailedLoads = new AtomicInteger(0);
 
-		// Create micro-batches for this range
 		List<CompletableFuture<Void>> batchFutures = new ArrayList<>();
 
 		for (int batchStart = rangeStart; batchStart <= rangeEnd; batchStart += OPTIMAL_BATCH_SIZE) {
@@ -203,7 +166,6 @@ public class EmbeddedMapCache {
 			batchFutures.add(batchFuture);
 		}
 
-		// Wait for all micro-batches in this range
 		try {
 			CompletableFuture.allOf(batchFutures.toArray(new CompletableFuture[0]))
 				.get(5, TimeUnit.SECONDS);
@@ -215,14 +177,10 @@ public class EmbeddedMapCache {
 			rangeBytesLoaded.get(), rangeFailedLoads.get());
 	}
 
-	/**
-	 * Process micro-batch with zero-allocation loading
-	 */
 	private static void processMicroBatch(int batchStart, int batchEnd,
 										  Map<Integer, byte[]> rangeFiles, AtomicInteger rangeFilesLoaded,
 										  AtomicLong rangeBytesLoaded, AtomicInteger rangeFailedLoads) {
 
-		// Pre-allocate buffer pool for this batch
 		byte[] sharedBuffer = new byte[BUFFER_SIZE];
 
 		for (int fileId = batchStart; fileId < batchEnd; fileId++) {
@@ -239,19 +197,15 @@ public class EmbeddedMapCache {
 		}
 	}
 
-	/**
-	 * Ultra-optimized file loading with buffer reuse
-	 */
 	private static byte[] loadFileOptimized(int fileId, byte[] sharedBuffer) {
 		if (fileId == -1) return null;
 
-		// Try compressed first (most common)
 		String resourcePath = "/maps/mapdata/" + fileId + ".gz";
 		InputStream stream = EmbeddedMapCache.class.getResourceAsStream(resourcePath);
 		boolean isCompressed = true;
 
 		if (stream == null) {
-			// Try uncompressed
+
 			resourcePath = "/maps/mapdata/" + fileId;
 			stream = EmbeddedMapCache.class.getResourceAsStream(resourcePath);
 			isCompressed = false;
@@ -262,7 +216,7 @@ public class EmbeddedMapCache {
 		}
 
 		try {
-			// Use optimized reading with shared buffer
+
 			byte[] data = readStreamZeroAlloc(stream, sharedBuffer, isCompressed);
 			return data;
 		} catch (Exception e) {
@@ -271,16 +225,13 @@ public class EmbeddedMapCache {
 			try {
 				stream.close();
 			} catch (IOException e) {
-				// Ignore
+
 			}
 		}
 	}
 
-	/**
-	 * Zero-allocation stream reading with buffer reuse
-	 */
 	private static byte[] readStreamZeroAlloc(InputStream stream, byte[] sharedBuffer, boolean isCompressed) throws IOException {
-		ByteArrayOutputStream output = new ByteArrayOutputStream(16384); // Pre-sized
+		ByteArrayOutputStream output = new ByteArrayOutputStream(16384);
 
 		if (isCompressed) {
 			try (GZIPInputStream gzipStream = new GZIPInputStream(stream, 8192)) {
@@ -299,9 +250,6 @@ public class EmbeddedMapCache {
 		return output.toByteArray();
 	}
 
-	/**
-	 * Lightning-fast map index loading
-	 */
 	private static void loadMapIndexLightning() throws IOException {
 		InputStream indexStream = EmbeddedMapCache.class.getResourceAsStream("/maps/map_index");
 		if (indexStream == null) {
@@ -312,9 +260,8 @@ public class EmbeddedMapCache {
 		try (BufferedInputStream buffered = new BufferedInputStream(indexStream, 32768);
 			 DataInputStream dis = new DataInputStream(buffered)) {
 
-			dis.readUnsignedShort(); // Skip header
+			dis.readUnsignedShort();
 
-			// Pre-allocate entries list
 			List<RegionEntry> entries = new ArrayList<>(1024);
 
 			try {
@@ -325,12 +272,11 @@ public class EmbeddedMapCache {
 					entries.add(new RegionEntry(regionId, mapFileId, landscapeFileId));
 				}
 			} catch (EOFException e) {
-				// Expected
+
 			}
 
 			System.out.println("[EmbeddedMapCache] Lightning processing " + entries.size() + " regions");
 
-			// Parallel region processing
 			AtomicInteger successCount = new AtomicInteger(0);
 
 			entries.parallelStream().forEach(entry -> {
@@ -349,9 +295,6 @@ public class EmbeddedMapCache {
 		}
 	}
 
-	/**
-	 * Range result container
-	 */
 	private static class RangeResult {
 		final Map<Integer, byte[]> files;
 		final int filesLoaded;
@@ -366,9 +309,6 @@ public class EmbeddedMapCache {
 		}
 	}
 
-	/**
-	 * Region entry for lightning processing
-	 */
 	private static class RegionEntry {
 		final int regionId;
 		final int mapFileId;
@@ -381,9 +321,6 @@ public class EmbeddedMapCache {
 		}
 	}
 
-	/**
-	 * BLAZING FAST region loading
-	 */
 	public static int loadAllEmbeddedRegions() {
 		if (!initialized || mapRegionIds == null || terrainData == null) {
 			return 0;
@@ -397,7 +334,6 @@ public class EmbeddedMapCache {
 
 		AtomicInteger loadedCount = new AtomicInteger(0);
 
-		// Ultra-fast parallel processing
 		IntStream.range(0, totalRegions)
 			.parallel()
 			.forEach(i -> {
@@ -417,18 +353,12 @@ public class EmbeddedMapCache {
 		return loadedCount.get();
 	}
 
-	/**
-	 * Try to load region from cache
-	 */
 	private static boolean tryLoadEmbeddedRegionFromCache(int regionId, int arrayIndex) {
 		RegionData regionData = embeddedRegions.get(regionId);
 		if (regionData == null) return false;
 		return setRegionDataFast(arrayIndex, regionData);
 	}
 
-	/**
-	 * Try to load region directly
-	 */
 	private static boolean tryLoadEmbeddedRegionDirect(int regionId, int arrayIndex) {
 		if (arrayIndex >= terrainIndices.length || arrayIndex >= objectIndices.length) {
 			return false;
@@ -438,7 +368,7 @@ public class EmbeddedMapCache {
 		int landscapeFileId = objectIndices[arrayIndex];
 
 		if (mapFileId == -1 || landscapeFileId == -1) {
-			return true; // No data needed
+			return true;
 		}
 
 		byte[] mapData = embeddedMapFiles.get(mapFileId);
@@ -452,9 +382,6 @@ public class EmbeddedMapCache {
 		return false;
 	}
 
-	/**
-	 * Ultra-fast synchronized region data setting
-	 */
 	private static synchronized boolean setRegionDataFast(int arrayIndex, RegionData regionData) {
 		try {
 			if (arrayIndex >= terrainData.length || arrayIndex >= objectData.length ||
@@ -472,17 +399,11 @@ public class EmbeddedMapCache {
 		}
 	}
 
-	/**
-	 * Thread-safe file data retrieval
-	 */
 	public static byte[] getEmbeddedFileData(int fileId) {
 		if (!initialized) return null;
 		return embeddedMapFiles.get(fileId);
 	}
 
-	/**
-	 * Queue region for cacheManager
-	 */
 	private static void queueRegionForOnDemandFetcher(int arrayIndex) {
 		if (cacheManager == null) return;
 
@@ -494,13 +415,10 @@ public class EmbeddedMapCache {
 				cacheManager.requestFile(objectIndices[arrayIndex], 3);
 			}
 		} catch (Exception e) {
-			// Ignore
+
 		}
 	}
 
-	/**
-	 * Shutdown blazing thread pool
-	 */
 	private static void shutdownBlazingThreadPool() {
 		if (blazingPool != null) {
 			blazingPool.shutdown();
@@ -515,9 +433,6 @@ public class EmbeddedMapCache {
 		}
 	}
 
-	/**
-	 * Log blazing fast results
-	 */
 	private static void logBlazingResults(long totalTime) {
 		double throughputFilesPerSec = totalFilesLoaded.get() > 0 && totalTime > 0 ?
 			(totalFilesLoaded.get() * 1000.0 / totalTime) : 0.0;
@@ -545,9 +460,6 @@ public class EmbeddedMapCache {
 		System.out.println("🔥 [EmbeddedMapCache] Ready for INSTANT region loading!");
 	}
 
-	/**
-	 * Log region results
-	 */
 	private static void logRegionResults(int loadedCount, int totalRegions) {
 		if (loadedCount == totalRegions) {
 			System.out.println("🎉 [EmbeddedMapCache] ALL REGIONS LOADED - ZERO LAG!");
@@ -556,7 +468,6 @@ public class EmbeddedMapCache {
 		}
 	}
 
-	// ===== ESSENTIAL PUBLIC API =====
 	public static boolean isRegionEmbedded(int regionId) {
 		return embeddedRegions.containsKey(regionId);
 	}

@@ -6,15 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * Simple handler for sending interface click actions to the game client
- */
 public class ButtonHandler {
 
-	/**
-	 * Sends an interface click packet to the game client
-	 * @param interfaceId The interface ID to activate
-	 */
 	public static void sendClick(int interfaceId) {
 		try {
 			interfaceId = interfaceId - 85560;
@@ -31,11 +24,6 @@ public class ButtonHandler {
 		}
 	}
 
-	/**
-	 * Creates a click listener that sends the specified interface ID
-	 * @param interfaceId The ID to send when clicked
-	 * @return MouseListener for the click action
-	 */
 	public static MouseAdapter createClickListener(int interfaceId) {
 		return new MouseAdapter() {
 			@Override
@@ -45,11 +33,6 @@ public class ButtonHandler {
 		};
 	}
 
-	/**
-	 * Creates an ActionListener for buttons that sends the specified interface ID
-	 * @param interfaceId The ID to send when clicked
-	 * @return ActionListener for the click action
-	 */
 	public static ActionListener createButtonListener(int interfaceId) {
 		return new ActionListener() {
 			@Override

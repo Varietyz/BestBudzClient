@@ -17,7 +17,6 @@ public class MouseActions extends Client
 	public static boolean getMousePositions()
 	{
 
-
 		if (showTabComponents)
 		{
 			if (frameWidth > 1000)
@@ -37,8 +36,6 @@ public class MouseActions extends Client
 		}
 		return true;
 	}
-
-
 
 	public static void handleDragAndDrop() {
 		if (activeInterfaceType == 0) return;
@@ -154,9 +151,8 @@ public class MouseActions extends Client
 		if (!SettingsConfig.enableStatusOrbs) return false;
 
 		boolean insideOrbRegion =
-				(SettingsConfig.enablePouch && inBounds(MouseState.x, MouseState.y, frameWidth - 65, 165, 62, 31)); // Pouch
+				(SettingsConfig.enablePouch && inBounds(MouseState.x, MouseState.y, frameWidth - 65, 165, 62, 31));
 
-		// ⛔ Do NOT block logout button (top-right)
 		boolean isLogoutArea = inBounds(MouseState.x, MouseState.y, frameWidth - 26, 2, 25, 22);
 
 		return insideOrbRegion && !isLogoutArea;
@@ -255,8 +251,6 @@ public class MouseActions extends Client
 			i = MouseState.x - (frameWidth - 182 + 24);
 			j = MouseState.y - 8;
 
-
-
 			{
 				i -= 73;
 				j -= 75;
@@ -267,7 +261,6 @@ public class MouseActions extends Client
 				int l1 = j * j1 - i * i1 >> 11;
 				int i2 = myStoner.x + k1 >> 7;
 				int j2 = myStoner.y - l1 >> 7;
-
 
 				boolean flag1 = doWalkTo(
 					1,

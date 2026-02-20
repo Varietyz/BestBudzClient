@@ -7,9 +7,6 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-/**
- * Amount input and withdraw mode control for bank panel
- */
 public class BankAmountControl extends JPanel {
 
 	private static final int DOCK_TOGGLE_WITHDRAW_MODE = 115249;
@@ -27,7 +24,7 @@ public class BankAmountControl extends JPanel {
 	}
 
 	private void initializeComponents() {
-		// Amount input field
+
 		amountField = new JTextField("1", 4);
 		amountField.setFont(new Font("Segoe UI", Font.PLAIN, 10));
 		amountField.setBackground(new Color(55, 55, 55));
@@ -42,7 +39,6 @@ public class BankAmountControl extends JPanel {
 		});
 		amountField.addActionListener(e -> updateLeftClickAmount());
 
-		// Withdraw mode label (Item/Note)
 		withdrawModeLabel = new JLabel("Item");
 		withdrawModeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 10));
 		withdrawModeLabel.setForeground(new Color(200, 200, 200));
@@ -63,9 +59,6 @@ public class BankAmountControl extends JPanel {
 		add(withdrawModeLabel);
 	}
 
-	/**
-	 * Updates the left-click amount based on text field input
-	 */
 	private void updateLeftClickAmount() {
 		try {
 			String text = amountField.getText().trim().toLowerCase();
@@ -83,9 +76,6 @@ public class BankAmountControl extends JPanel {
 		}
 	}
 
-	/**
-	 * Toggles between Item and Note withdraw mode
-	 */
 	private void toggleWithdrawMode() {
 		try {
 			ButtonHandler.sendClick(DOCK_TOGGLE_WITHDRAW_MODE);
@@ -94,9 +84,6 @@ public class BankAmountControl extends JPanel {
 		}
 	}
 
-	/**
-	 * Updates the withdraw mode display text
-	 */
 	public void updateWithdrawMode(String mode) {
 		SwingUtilities.invokeLater(() -> {
 			withdrawModeLabel.setText(mode);
@@ -104,16 +91,10 @@ public class BankAmountControl extends JPanel {
 		});
 	}
 
-	/**
-	 * Gets the current left-click amount setting
-	 */
 	public int getLeftClickAmount() {
 		return leftClickAmount;
 	}
 
-	/**
-	 * Sets the amount field value
-	 */
 	public void setAmount(String amount) {
 		SwingUtilities.invokeLater(() -> {
 			amountField.setText(amount);
@@ -121,9 +102,6 @@ public class BankAmountControl extends JPanel {
 		});
 	}
 
-	/**
-	 * Gets the amount field component for direct access
-	 */
 	public JTextField getAmountField() {
 		return amountField;
 	}

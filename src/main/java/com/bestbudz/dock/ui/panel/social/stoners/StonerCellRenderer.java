@@ -18,10 +18,8 @@ public class StonerCellRenderer extends JPanel implements ListCellRenderer<Stone
 		setBorder(new EmptyBorder(2, 8, 2, 8));
 		setMaximumSize(new Dimension(280, 22));
 
-		// Avatar setup - no fixed size, will be hidden when empty
 		avatarLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
-		// Title setup
 		titleLabel.setFont(new Font("SansSerif", Font.BOLD, 11));
 		titleLabel.setForeground(WHITE_UI_COLOR);
 
@@ -31,7 +29,6 @@ public class StonerCellRenderer extends JPanel implements ListCellRenderer<Stone
 		statusLabel.setFont(new Font("SansSerif", Font.BOLD, 11));
 		statusLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
-		// Create a panel for avatar + title + name to keep them together
 		JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
 		leftPanel.setOpaque(false);
 		leftPanel.add(avatarLabel);
@@ -46,12 +43,10 @@ public class StonerCellRenderer extends JPanel implements ListCellRenderer<Stone
 	public Component getListCellRendererComponent(JList<? extends StonerEntry> list, StonerEntry value, int index,
 												  boolean isSelected, boolean cellHasFocus) {
 
-		// Set avatar and hide/show based on availability
 		ImageIcon avatar = UserAvatarConfig.getAvatarForUser(value.name);
 		avatarLabel.setIcon(avatar);
 		avatarLabel.setVisible(avatar != null);
 
-		// Set title if available
 		if (value.title != null && !value.title.trim().isEmpty()) {
 			String cleanTitle = UserTitleUtil.processTitleText(value.title);
 			titleLabel.setText("[" + cleanTitle + "]");
@@ -69,13 +64,12 @@ public class StonerCellRenderer extends JPanel implements ListCellRenderer<Stone
 		statusLabel.setForeground(value.isHigh ? ONLINE_COLOR : OFFLINE_COLOR);
 
 		if (isSelected) {
-			Color rainbowColor = RainbowHoverUtil.getNextHoverColor(); // You'd need to make this public
+			Color rainbowColor = RainbowHoverUtil.getNextHoverColor();
 			setBackground(rainbowColor);
 		} else {
 			setBackground(MAIN_FRAME_COLOR);
 		}
 
-		// Only show hand cursor for users who are high
 		setCursor(value.isHigh ?
 			Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) :
 			Cursor.getDefaultCursor());

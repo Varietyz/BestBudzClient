@@ -6,12 +6,10 @@ import com.bestbudz.dock.config.RegisteredPanels;
 import com.bestbudz.dock.util.UIPanel;
 
 import com.bestbudz.engine.core.Client;
-import java.awt.event.ActionEvent;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -44,7 +42,6 @@ public class UIDockFrame extends JDialog {
 	private final Map<String, Component> panelMap = new LinkedHashMap<>();
 	public static final Map<String, JToggleButton> toggleButtons = new LinkedHashMap<>();
 
-	// Login overlay components
 	private BubbleBudzPanel loginOverlay;
 	private JLayeredPane mainLayeredPane;
 	private JPanel contentPanel;
@@ -64,34 +61,27 @@ public class UIDockFrame extends JDialog {
 		setResizable(true);
 		setUndecorated(true);
 
-		// Initialize managers first
 		panelManager = new UIPanelManager();
 
 		setupMainLayeredPane();
 		setupPanels();
 		setupKeyboardShortcuts();
 
-
 		setVisible(true);
 
 		UIDockHelper.updateToggleInteractivity();
 
-		// Start login state monitoring
 		if (!Client.loggedIn) {
 			new Timer(2000, e -> UIDockHelper.updateToggleInteractivity()).start();
 		}
 
-		// Initialize login overlay state
 		if (loginOverlay != null) {
 			loginOverlay.refreshLoginState();
 		}
 	}
 
-	/**
-	 * Setup panels using centralized configuration
-	 */
 	private void setupPanels() {
-		// Register all panels from the centralized configuration
+
 		UIPanel[] panels = RegisteredPanels.createAllPanels();
 
 		System.out.println("Registering " + panels.length + " panels from configuration...");
@@ -101,25 +91,17 @@ public class UIDockFrame extends JDialog {
 			System.out.println("Registered panel: " + panel.getPanelID());
 		}
 
-		// Load default layout using the centralized configuration
 		loadDockPanelLayout();
 
 		System.out.println("Panel registration and layout setup complete.");
 	}
 
-	/**
-	 * Setup keyboard shortcuts for the dock frame including modal shortcuts
-	 */
 	private void setupKeyboardShortcuts() {
 		InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 		ActionMap actionMap = getRootPane().getActionMap();
 
 	}
 
-
-	/**
-	 * Sets up the main layered pane that contains everything including toggle bars and login overlay
-	 */
 	private void setupMainLayeredPane() {
 		mainLayeredPane = new JLayeredPane();
 		mainLayeredPane.setPreferredSize(new Dimension(300, 750));
@@ -167,24 +149,20 @@ public class UIDockFrame extends JDialog {
 		scrollBottom.setBorder(BorderFactory.createEmptyBorder());
 		scrollBottom.setViewportBorder(null);
 
-		// Create enhanced scroll panes with side tabs and store references
 		scrollTopWithTabs = new TogglePreview.ScrollPaneWithTabs(scrollTop, toggleBarTop);
 		scrollBottomWithTabs = new TogglePreview.ScrollPaneWithTabs(scrollBottom, toggleBarBottom);
 
-		// Create the basic wrapper first
 		JPanel basicToggleWrapper = new JPanel(new GridLayout(2, 1, 0, 2));
 		basicToggleWrapper.setBorder(BorderFactory.createEmptyBorder());
 		basicToggleWrapper.add(scrollTopWithTabs);
 		basicToggleWrapper.add(scrollBottomWithTabs);
 
-		// NOW add the single hover tab wrapper
 		java.util.List<JScrollPane> scrollPanes = java.util.Arrays.asList(scrollTop, scrollBottom);
 		java.util.List<JPanel> toggleBars = java.util.Arrays.asList(toggleBarTop, toggleBarBottom);
 		toggleWrapper = new TogglePreview.ToggleBarWithSinglePreview(basicToggleWrapper, scrollPanes, toggleBars);
 
 		contentPanel.add(toggleWrapper, BorderLayout.NORTH);
 
-		// DON'T ADD ANY SCROLL LISTENERS HERE - LET UIDockHelper.setupLoopingScrollBars() HANDLE IT!
 	}
 
 	private void setupMainContent() {
@@ -193,9 +171,6 @@ public class UIDockFrame extends JDialog {
 		contentPanel.add(splitPane, BorderLayout.CENTER);
 	}
 
-	/**
-	 * Updates the bounds of all components in the main layered pane
-	 */
 	private void updateMainLayeredPaneBounds() {
 		if (mainLayeredPane != null && contentPanel != null && loginOverlay != null) {
 			Dimension size = mainLayeredPane.getSize();
@@ -207,8 +182,6 @@ public class UIDockFrame extends JDialog {
 			}
 		}
 	}
-
-	// DELEGATE PANEL METHODS (no more automatic saving)
 
 	public void registerPanel(UIPanel uiPanel) {
 		UIDockHelper.registerPanel(this, uiPanel);
@@ -242,8 +215,6 @@ public class UIDockFrame extends JDialog {
 		return panelPositions.getOrDefault(id, "top");
 	}
 
-	// ACCESSORS
-
 	public JPanel getToggleBar() { return toggleBarTop; }
 	public JPanel getToggleBarBottom() { return toggleBarBottom; }
 	public JSplitPane getSplitPane() { return splitPane; }
@@ -261,16 +232,10 @@ public class UIDockFrame extends JDialog {
 	public String getTopVisiblePanelID() { return topVisiblePanelID; }
 	public String getBottomVisiblePanelID() { return bottomVisiblePanelID; }
 
-	/**
-	 * Get access to the login overlay for manual refresh if needed
-	 */
 	public BubbleBudzPanel getLoginOverlay() {
 		return loginOverlay;
 	}
 
-	/**
-	 * Clean up resources when closing
-	 */
 	@Override
 	public void dispose() {
 

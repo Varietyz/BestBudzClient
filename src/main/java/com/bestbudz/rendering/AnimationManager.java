@@ -55,7 +55,6 @@ public final class AnimationManager extends Client {
 	public static void processEntityAnimation(Entity entity) {
 		if (entity == null) return;
 
-		// Basic animation processing
 		if (entity.currentAnimation > 13798) {
 			entity.currentAnimation = -1;
 		}
@@ -87,7 +86,6 @@ public final class AnimationManager extends Client {
 			}
 		}
 
-		// Spot animation processing
 		if (entity.spotAnimId != -1 && loopCycle >= entity.spotAnimStart) {
 			if (entity.spotAnimFrame < 0) {
 				entity.spotAnimFrame = 0;
@@ -115,7 +113,6 @@ public final class AnimationManager extends Client {
 			}
 		}
 
-		// Main animation processing
 		if (entity.anim != -1) {
 			Animation mainAnimation = Animation.anims[entity.anim];
 			if (mainAnimation != null) {

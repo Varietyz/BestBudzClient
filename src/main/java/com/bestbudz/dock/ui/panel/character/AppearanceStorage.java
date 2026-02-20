@@ -1,4 +1,3 @@
-// AppearanceStorage.java - Fixed version with proper default loading
 
 package com.bestbudz.dock.ui.panel.character;
 
@@ -6,19 +5,12 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.Properties;
 
-/**
- * Manages persistence of appearance data to the .bestbudz folder
- *
- * Stores appearance data in a simple properties file format for easy reading/writing.
- * Each character's appearance is saved and loaded based on their username.
- */
 public class AppearanceStorage {
 
 	private static final String BESTBUDZ_FOLDER = ".BestBudzCache";
 	private static final String APPEARANCE_FILE = "appearance.dock";
 	private static final String CURRENT_USER_KEY = "current.user";
 
-	// Property keys for appearance data
 	private static final String GENDER_KEY = "gender";
 	private static final String HEAD_KEY = "head";
 	private static final String JAW_KEY = "jaw";
@@ -37,7 +29,7 @@ public class AppearanceStorage {
 	private String currentUsername;
 
 	public AppearanceStorage() {
-		// Get user home directory and getPooledStream .bestbudz folder if needed
+
 		Path homeDir = Paths.get(System.getProperty("user.home"));
 		Path bestbudzDir = homeDir.resolve(BESTBUDZ_FOLDER);
 
@@ -49,16 +41,10 @@ public class AppearanceStorage {
 		}
 	}
 
-	/**
-	 * Sets the current username for loading/saving appearance data
-	 */
 	public void setCurrentUser(String username) {
 		this.currentUsername = username;
 	}
 
-	/**
-	 * Saves the current appearance data for the current user
-	 */
 	public void saveAppearance(AppearanceData appearance) {
 		if (currentUsername == null || currentUsername.trim().isEmpty()) {
 			System.err.println("Cannot save appearance: no username set");
@@ -68,10 +54,8 @@ public class AppearanceStorage {
 		try {
 			Properties props = loadProperties();
 
-			// Save current user
 			props.setProperty(CURRENT_USER_KEY, currentUsername);
 
-			// Save appearance data with user prefix
 			String userPrefix = currentUsername + ".";
 			props.setProperty(userPrefix + GENDER_KEY, String.valueOf(appearance.gender));
 			props.setProperty(userPrefix + HEAD_KEY, String.valueOf(appearance.head));
@@ -97,9 +81,6 @@ public class AppearanceStorage {
 		}
 	}
 
-	/**
-	 * Loads appearance data for the current user, or returns defaults if not found
-	 */
 	public AppearanceData loadAppearance() {
 		if (currentUsername == null || currentUsername.trim().isEmpty()) {
 			System.out.println("No username set, using defaults");
@@ -110,19 +91,15 @@ public class AppearanceStorage {
 			Properties props = loadProperties();
 			String userPrefix = currentUsername + ".";
 
-			// Check if user has saved data
 			if (!props.containsKey(userPrefix + GENDER_KEY)) {
 				System.out.println("No saved appearance for user: " + currentUsername + ", using defaults");
 				return getDefaultAppearance();
 			}
 
-			// Load saved appearance data
 			AppearanceData appearance = new AppearanceData();
 
-			// Load gender first as it affects other defaults
 			appearance.gender = getByte(props, userPrefix + GENDER_KEY, AppearanceConfig.Defaults.GENDER);
 
-			// Load parts with gender-appropriate defaults
 			appearance.head = getByte(props, userPrefix + HEAD_KEY, getDefaultForGender(appearance.gender, "head"));
 			appearance.jaw = getByte(props, userPrefix + JAW_KEY, getDefaultForGender(appearance.gender, "jaw"));
 			appearance.torso = getByte(props, userPrefix + TORSO_KEY, getDefaultForGender(appearance.gender, "torso"));
@@ -131,7 +108,6 @@ public class AppearanceStorage {
 			appearance.legs = getByte(props, userPrefix + LEGS_KEY, getDefaultForGender(appearance.gender, "legs"));
 			appearance.feet = getByte(props, userPrefix + FEET_KEY, getDefaultForGender(appearance.gender, "feet"));
 
-			// Load colors
 			appearance.hairColor = getByte(props, userPrefix + HAIR_COLOR_KEY, AppearanceConfig.Defaults.HAIR_COLOR);
 			appearance.torsoColor = getByte(props, userPrefix + TORSO_COLOR_KEY, AppearanceConfig.Defaults.TORSO_COLOR);
 			appearance.legsColor = getByte(props, userPrefix + LEGS_COLOR_KEY, AppearanceConfig.Defaults.LEGS_COLOR);
@@ -149,9 +125,6 @@ public class AppearanceStorage {
 		}
 	}
 
-	/**
-	 * Gets the last logged in user from the storage file
-	 */
 	public String getLastUser() {
 		try {
 			Properties props = loadProperties();
@@ -161,9 +134,6 @@ public class AppearanceStorage {
 		}
 	}
 
-	/**
-	 * Checks if appearance data exists for a specific user
-	 */
 	public boolean hasAppearanceData(String username) {
 		if (username == null || username.trim().isEmpty()) {
 			return false;
@@ -180,7 +150,6 @@ public class AppearanceStorage {
 		}
 	}
 
-	// Helper methods
 	private Properties loadProperties() throws IOException {
 		Properties props = new Properties();
 		if (Files.exists(appearanceFilePath)) {
@@ -219,7 +188,7 @@ public class AppearanceStorage {
 	}
 
 	private byte getDefaultForGender(byte gender, String part) {
-		if (gender == 0) { // Male
+		if (gender == 0) {
 			switch (part) {
 				case "head": return AppearanceConfig.Defaults.MALE_HEAD;
 				case "jaw": return AppearanceConfig.Defaults.MALE_JAW;
@@ -230,7 +199,7 @@ public class AppearanceStorage {
 				case "feet": return AppearanceConfig.Defaults.MALE_FEET;
 				default: return 0;
 			}
-		} else { // Female
+		} else {
 			switch (part) {
 				case "head": return AppearanceConfig.Defaults.FEMALE_HEAD;
 				case "jaw": return AppearanceConfig.Defaults.FEMALE_JAW;
@@ -248,8 +217,7 @@ public class AppearanceStorage {
 		AppearanceData appearance = new AppearanceData();
 		appearance.gender = AppearanceConfig.Defaults.GENDER;
 
-		// Use gender-appropriate defaults
-		if (appearance.gender == 0) { // Male
+		if (appearance.gender == 0) {
 			appearance.head = AppearanceConfig.Defaults.MALE_HEAD;
 			appearance.jaw = AppearanceConfig.Defaults.MALE_JAW;
 			appearance.torso = AppearanceConfig.Defaults.MALE_TORSO;
@@ -257,7 +225,7 @@ public class AppearanceStorage {
 			appearance.hands = AppearanceConfig.Defaults.MALE_HANDS;
 			appearance.legs = AppearanceConfig.Defaults.MALE_LEGS;
 			appearance.feet = AppearanceConfig.Defaults.MALE_FEET;
-		} else { // Female
+		} else {
 			appearance.head = AppearanceConfig.Defaults.FEMALE_HEAD;
 			appearance.jaw = AppearanceConfig.Defaults.FEMALE_JAW;
 			appearance.torso = AppearanceConfig.Defaults.FEMALE_TORSO;
@@ -277,9 +245,6 @@ public class AppearanceStorage {
 		return appearance;
 	}
 
-	/**
-	 * Simple data class to hold appearance information
-	 */
 	public static class AppearanceData {
 		public byte gender;
 		public byte head, jaw, torso, arms, hands, legs, feet;

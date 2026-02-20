@@ -10,7 +10,6 @@ public class TextController extends DrawingArea {
 	public static Sprite[] chatImages;
 	public static Sprite[] clanImages;
 
-	// Text effect strings
 	public static String startColor = "col=";
 	public static String endColor = "/col";
 	public static String startImage = "img=";
@@ -25,7 +24,6 @@ public class TextController extends DrawingArea {
 	public static String endShadow = "/shad";
 	public static String lineBreak = "br";
 
-	// Text state
 	public static int defaultColor = 0;
 	public static int textColor = 0;
 	public static int textShadowColor = -1;
@@ -35,12 +33,11 @@ public class TextController extends DrawingArea {
 	public static int transparency = 256;
 	public static int defaultTransparency = 256;
 
-	// Modern fields
 	private Font currentFont;
 	public int baseCharacterHeight = 0;
 
 	public TextController() {
-		// Simple constructor
+
 	}
 
 	public void initializeFont(String fontName, int style, int size) {
@@ -51,7 +48,7 @@ public class TextController extends DrawingArea {
 	}
 
 	public static String handleOldSyntax(String text) {
-		// Convert old @color@ syntax to new <col=color> syntax
+
 		text = text.replaceAll("@gry@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LIME_YELLOW) + ">");
 		text = text.replaceAll("@pt2@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CORAL_PEACH) + ">");
 		text = text.replaceAll("@pt1@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LIGHT_ORANGE) + ">");
@@ -77,7 +74,6 @@ public class TextController extends DrawingArea {
 		text = text.replaceAll("@gr2@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CORAL_ORANGE) + ">");
 		text = text.replaceAll("@gr3@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CREAM_ROSE) + ">");
 
-		// Uppercase petvariants
 		text = text.replaceAll("@RED@", "<col=" + Integer.toHexString(ColorConfig.CHAT_SOFT_PINK) + ">");
 		text = text.replaceAll("@GRE@", "<col=" + Integer.toHexString(ColorConfig.CHAT_BABY_BLUE) + ">");
 		text = text.replaceAll("@BLU@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LIME_GREEN) + ">");
@@ -95,11 +91,9 @@ public class TextController extends DrawingArea {
 		text = text.replaceAll("@GR2@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CORAL_ORANGE) + ">");
 		text = text.replaceAll("@GR3@", "<col=" + Integer.toHexString(ColorConfig.COLOR_CREAM_ROSE) + ">");
 
-		// Special colors
 		text = text.replaceAll("@ric@", "<col=" + Integer.toHexString(ColorConfig.COLOR_WARM_PEACH) + ">");
 		text = text.replaceAll("@mbl@", "<col=" + Integer.toHexString(ColorConfig.COLOR_LAVENDER_PINK) + ">");
 
-		// Images
 		text = text.replaceAll("@cr1@", "<img=0>");
 		text = text.replaceAll("@cr2@", "<img=1>");
 		text = text.replaceAll("@cr3@", "<img=2>");
@@ -108,9 +102,6 @@ public class TextController extends DrawingArea {
 		return text;
 	}
 
-	/**
-	 * Get text width using modern FontMetrics
-	 */
 	public int getTextWidth(String string) {
 		if (string == null || string.isEmpty()) {
 			return 0;
@@ -118,7 +109,7 @@ public class TextController extends DrawingArea {
 
 		if (currentFont == null) {
 			System.err.println("❌ ERROR: currentFont is null in getTextWidth()");
-			return string.length() * 8; // Emergency fallback
+			return string.length() * 8;
 		}
 
 		string = handleOldSyntax(string);
@@ -164,9 +155,6 @@ public class TextController extends DrawingArea {
 		return totalWidth;
 	}
 
-	/**
-	 * Main text drawing method
-	 */
 	public void drawBasicString(String string, int drawX, int drawY) {
 		if (string == null || string.isEmpty()) {
 			return;
@@ -238,14 +226,13 @@ public class TextController extends DrawingArea {
 
 			if (!inMarkup) {
 				if (ch != ' ') {
-					// Draw shadow
+
 					if (shadow != -1) {
 						DrawingArea.drawText(String.valueOf(ch), currentX + 1, y + baseCharacterHeight + 1, shadow, currentFont);
 					}
-					// Draw main text
+
 					DrawingArea.drawText(String.valueOf(ch), currentX, y + baseCharacterHeight, currentColor, currentFont);
 
-					// Draw effects
 					int charWidth = DrawingArea.getTextWidth(String.valueOf(ch), currentFont);
 					if (strikethroughColor != -1) {
 						DrawingArea.drawHorizontalLine(currentX, y + (int)(baseCharacterHeight * 0.7), charWidth, strikethroughColor);
@@ -302,7 +289,6 @@ public class TextController extends DrawingArea {
 		transparency = defaultTransparency = trans;
 	}
 
-	// Getter for font access
 	public Font getFont() {
 		return currentFont;
 	}

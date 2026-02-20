@@ -26,7 +26,7 @@ public class GameEngine implements Runnable {
 		long lastFrame = System.nanoTime();
 
 		while (running) {
-			// Wait until canvas is visible
+
 			if (!canvas.isDisplayable()) {
 				try { Thread.sleep(10); } catch (InterruptedException ignored) {}
 				continue;
@@ -51,7 +51,7 @@ public class GameEngine implements Runnable {
 				calcCameraPos();
 
 				DrawingArea.setDrawingArea(Client.frameHeight, 0, Client.frameWidth, 0);
-				DrawingArea.setAllPixelsToZero(); // Force-clear the new buffer
+				DrawingArea.setAllPixelsToZero();
 
 				try {
 					canvas.createBufferStrategy(EngineConfig.BUFFERS);
@@ -90,8 +90,6 @@ public class GameEngine implements Runnable {
 							started = true;
 						}
 						DrawingArea.setAllPixelsToZero();
-
-
 
 						long now = System.nanoTime();
 						int logicRuns = 0;
@@ -139,6 +137,5 @@ public class GameEngine implements Runnable {
 	public void shutdown() {
 		running = false;
 	}
-
 
 }

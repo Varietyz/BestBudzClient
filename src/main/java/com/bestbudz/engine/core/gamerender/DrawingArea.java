@@ -12,19 +12,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-/**
- * Thread-Safe GPU-POWERED DrawingArea - NO ANTI-ALIASING
- *
- * CRITICAL: This file completely replaces the original DrawingArea.java
- * Same package, same class name = ZERO refactoring needed anywhere in the project
- *
- * Every call to DrawingArea.* automatically becomes GPU-accelerated with thread safety!
- * Now handles context management properly across different threads.
- * TEXT RENDERING: NO ANTI-ALIASING to prevent conflicts with main Graphics2D
- */
 public class DrawingArea extends NodeSub {
 
-	// IDENTICAL API - all existing code works unchanged
 	public static float[] depthBuffer;
 	public static int[] pixels;
 	public static int width;
@@ -37,12 +26,10 @@ public class DrawingArea extends NodeSub {
 	public static int centerY;
 	public static int centerYHalf;
 
-	// GPU backend state tracking
 	private static boolean needsCPUSync = false;
 	private static final int[] ALPHA_LOOKUP = new int[256];
 	private static final int[] INV_ALPHA_LOOKUP = new int[256];
 
-	// Context safety
 	private static final Object contextLock = new Object();
 	private static ImageProducer currentImageProducer = null;
 	private static boolean gpuModeEnabled = false;
@@ -53,7 +40,7 @@ public class DrawingArea extends NodeSub {
 	private static int textBufferHeight = 0;
 
 	static {
-		// Pre-calculate alpha lookup tables for CPU fallback
+
 		for (int i = 0; i < 256; i++) {
 			ALPHA_LOOKUP[i] = i;
 			INV_ALPHA_LOOKUP[i] = 256 - i;
@@ -61,36 +48,30 @@ public class DrawingArea extends NodeSub {
 	}
 
 	public static void initDrawingArea(int i, int j, int[] ai, float[] depth) {
-		// ===== SMART REDUNDANCY CHECK =====
+
 		boolean dimensionsChanged = (width != j || height != i);
 		boolean arraysChanged = (pixels != ai || depthBuffer != depth);
 
 		if (!dimensionsChanged && !arraysChanged) {
-			// Nothing changed at all - skip completely
+
 			return;
 		}
 
-		// If only arrays changed but same dimensions, just update references
 		if (!dimensionsChanged && arraysChanged) {
 			depthBuffer = depth;
 			pixels = ai;
 			return;
 		}
 
-		// Only log when dimensions actually change (the important case)
-		//System.out.println("🚀 [DrawingArea] initDrawingArea: " + j + "x" + i + " (dimensions changed)");
-
-		// Update the core drawing area fields
 		depthBuffer = depth;
 		pixels = ai;
 		width = j;
 		height = i;
 
-		// ===== GPU HANDLING (only when dimensions change) =====
 		boolean isMainGame = (width >= 1000 && height >= 620);
 
 		if (isMainGame && GPURenderingEngine.isEnabled()) {
-			// MAIN GAME: Check if GPU framebuffer needs updating
+
 			int currentGPUWidth = GPURenderingEngine.getWidth();
 			int currentGPUHeight = GPURenderingEngine.getHeight();
 
@@ -107,7 +88,6 @@ public class DrawingArea extends NodeSub {
 			}
 		}
 
-		// Set drawing bounds (only when dimensions change)
 		setDrawingArea(i, 0, j, 0);
 	}
 
@@ -120,11 +100,8 @@ public class DrawingArea extends NodeSub {
 		centerY = bottomX / 2;
 	}
 
-	/**
-	 * Updated GPU operation wrapper that respects the GPU mode flag
-	 */
 	private static boolean executeGPUOperation(String operationName, Runnable gpuOperation, Runnable cpuFallback) {
-		// Check if GPU mode is explicitly disabled (e.g., during resize)
+
 		if (!gpuModeEnabled) {
 			if (cpuFallback != null) {
 				cpuFallback.run();
@@ -132,18 +109,16 @@ public class DrawingArea extends NodeSub {
 			return false;
 		}
 
-		// SMART CHECK: Only use GPU for main game dimensions
 		boolean isMainGame = (width >= 1200 && height >= 700);
 
 		if (!isMainGame) {
-			// UI PANELS: Always use CPU
+
 			if (cpuFallback != null) {
 				cpuFallback.run();
 			}
 			return false;
 		}
 
-		// MAIN GAME: Try GPU, fallback to CPU
 		if (!GPURenderingEngine.isEnabled()) {
 			if (cpuFallback != null) {
 				cpuFallback.run();
@@ -160,7 +135,6 @@ public class DrawingArea extends NodeSub {
 				return false;
 			}
 
-			// Execute GPU operation for main game
 			GPURenderingEngine.bindFramebuffer();
 			gpuOperation.run();
 			GPURenderingEngine.unbindFramebuffer();
@@ -220,7 +194,6 @@ public class DrawingArea extends NodeSub {
 	public static void filterGrayscale(int x, int y, int width, int height, double amount) {
 		if (amount <= 0) return;
 
-		// Clamp to bounds
 		if (x < topX) {
 			width -= topX - x;
 			x = topX;
@@ -333,13 +306,11 @@ public class DrawingArea extends NodeSub {
 		if (pixels == null || depthBuffer == null)
 			throw new IllegalStateException("DrawingArea not initialized");
 
-		// GPU clear with thread safety
 		executeGPUOperation("Clear Screen",
 			() -> GPURenderingEngine.clear(),
-			null // No CPU fallback needed for clear
+			null
 		);
 
-		// Always clear CPU arrays for compatibility
 		int pixelCount = width * height;
 		java.util.Arrays.fill(pixels, 0, pixelCount, 0);
 		java.util.Arrays.fill(depthBuffer, 0, pixelCount, Float.MAX_VALUE);
@@ -502,7 +473,6 @@ public class DrawingArea extends NodeSub {
 		}
 	}
 
-	// Continue with other methods using the same pattern...
 	public static void fillPixels(int i, int j, int k, int l, int i1) {
 		drawAHorizontalLine(i1, l, j, i);
 		drawAHorizontalLine((i1 + k) - 1, l, j, i);
@@ -679,9 +649,6 @@ public class DrawingArea extends NodeSub {
 		}
 	}
 
-	/**
-	 * Thread-safe GPU to CPU synchronization
-	 */
 	public static void syncGPUToCPU() {
 		if (!GPURenderingEngine.isEnabled() || !needsCPUSync) {
 			return;
@@ -693,8 +660,6 @@ public class DrawingArea extends NodeSub {
 				return;
 			}
 
-			// Use the existing sync implementation from ImageProducer
-			// This should be moved to a shared utility class in a real implementation
 			syncGPUToCPUInternal();
 			needsCPUSync = false;
 
@@ -704,9 +669,7 @@ public class DrawingArea extends NodeSub {
 	}
 
 	private static void syncGPUToCPUInternal() {
-		// Implementation would be similar to ImageProducer's sync method
-		// Reading GPU framebuffer back to CPU pixels array
-		// This is a placeholder - in practice, you'd implement the actual sync
+
 		System.out.println("[GPU DrawingArea] GPU to CPU sync completed");
 	}
 
@@ -716,15 +679,11 @@ public class DrawingArea extends NodeSub {
 			(imageProducer != null ? imageProducer.canvasWidth + "x" + imageProducer.canvasHeight : "null"));
 	}
 
-	/**
-	 * Initialize text rendering system - NO ANTI-ALIASING
-	 */
 	public static void initTextRendering() {
 		if (textBuffer == null || textBufferWidth != width || textBufferHeight != height) {
 			textBufferWidth = width;
 			textBufferHeight = height;
 
-			// Use TYPE_INT_ARGB for better color handling
 			textBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
 			if (textGraphics != null) {
@@ -733,7 +692,6 @@ public class DrawingArea extends NodeSub {
 
 			textGraphics = textBuffer.createGraphics();
 
-			// CRITICAL: NO ANTI-ALIASING - Explicitly disable all smoothing
 			textGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_OFF);
 
@@ -743,7 +701,6 @@ public class DrawingArea extends NodeSub {
 			textGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
 				RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
 
-			// Use speed over quality to avoid any smoothing
 			textGraphics.setRenderingHint(RenderingHints.KEY_RENDERING,
 				RenderingHints.VALUE_RENDER_SPEED);
 
@@ -754,59 +711,46 @@ public class DrawingArea extends NodeSub {
 		}
 	}
 
-	/**
-	 * Draw text directly to the pixel buffer with NO ANTI-ALIASING
-	 */
 	public static void drawText(String text, int x, int y, int color, Font font) {
 		if (text == null || text.isEmpty() || pixels == null) return;
 
-		// Bounds check
 		if (x >= bottomX || y >= bottomY) return;
 
 		initTextRendering();
 
 		try {
-			// Get font metrics for this specific font
+
 			FontMetrics fm = textGraphics.getFontMetrics(font);
-			int textWidth = fm.stringWidth(text) + 6;  // Extra padding
+			int textWidth = fm.stringWidth(text) + 6;
 			int textHeight = fm.getHeight() + 6;
 
-			// Create optimized buffer for this text
 			BufferedImage charBuffer = new BufferedImage(textWidth, textHeight,
 				BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g2d = charBuffer.createGraphics();
 
-			// CRITICAL: NO ANTI-ALIASING - Apply strict non-smoothing hints
 			setupNonAntiAliasedRenderingHints(g2d);
 
-			// Clear background (transparent)
 			g2d.setComposite(AlphaComposite.Clear);
 			g2d.fillRect(0, 0, textWidth, textHeight);
 			g2d.setComposite(AlphaComposite.SrcOver);
 
-			// Set font and color
 			g2d.setFont(font);
 			g2d.setColor(new Color(color));
 
-			// Draw text with proper baseline
 			g2d.drawString(text, 3, fm.getAscent() + 3);
 			g2d.dispose();
 
-			// Copy to main buffer with proper blending
 			copyTextToPixels(charBuffer, x, y - fm.getAscent());
 
 		} catch (Exception e) {
 			System.err.println("[DrawingArea] Error in non-anti-aliased text rendering: " + e.getMessage());
-			// Fallback to basic method
+
 			drawTextFallback(text, x, y, color, font);
 		}
 	}
 
-	/**
-	 * Setup NON-ANTI-ALIASED rendering hints for pixel-perfect text
-	 */
 	private static void setupNonAntiAliasedRenderingHints(Graphics2D g2d) {
-		// CRITICAL: Explicitly disable ALL anti-aliasing and smoothing
+
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 			RenderingHints.VALUE_ANTIALIAS_OFF);
 
@@ -816,21 +760,16 @@ public class DrawingArea extends NodeSub {
 		g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
 			RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
 
-		// Use speed over quality to ensure no smoothing
 		g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
 			RenderingHints.VALUE_RENDER_SPEED);
 
 		g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
 			RenderingHints.VALUE_COLOR_RENDER_SPEED);
 
-		// Ensure stroke control doesn't add smoothing
 		g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
 			RenderingHints.VALUE_STROKE_DEFAULT);
 	}
 
-	/**
-	 * Draw text with shadow - NO ANTI-ALIASING
-	 */
 	public static void drawTextWithShadow(String text, int x, int y, int color, int shadowColor, Font font) {
 		if (shadowColor != -1) {
 			drawText(text, x + 1, y + 1, shadowColor, font);
@@ -838,9 +777,6 @@ public class DrawingArea extends NodeSub {
 		drawText(text, x, y, color, font);
 	}
 
-	/**
-	 * Get text width for a given font
-	 */
 	public static int getTextWidth(String text, Font font) {
 		if (text == null || text.isEmpty()) return 0;
 
@@ -849,14 +785,11 @@ public class DrawingArea extends NodeSub {
 			FontMetrics fm = textGraphics.getFontMetrics(font);
 			return fm.stringWidth(text);
 		} catch (Exception e) {
-			// Fallback estimation
+
 			return text.length() * (font.getSize() * 2 / 3);
 		}
 	}
 
-	/**
-	 * Get text height for a given font
-	 */
 	public static int getTextHeight(Font font) {
 		try {
 			initTextRendering();
@@ -867,14 +800,10 @@ public class DrawingArea extends NodeSub {
 		}
 	}
 
-	/**
-	 * Copy rendered text image to pixel buffer - NO ANTI-ALIASING BLENDING
-	 */
 	private static void copyTextToPixels(BufferedImage textImage, int destX, int destY) {
 		int imgWidth = textImage.getWidth();
 		int imgHeight = textImage.getHeight();
 
-		// Bounds checking
 		int startX = Math.max(0, topX - destX);
 		int startY = Math.max(0, topY - destY);
 		int endX = Math.min(imgWidth, bottomX - destX);
@@ -882,7 +811,6 @@ public class DrawingArea extends NodeSub {
 
 		if (startX >= endX || startY >= endY) return;
 
-		// Get the image data for faster processing
 		int[] imagePixels = new int[imgWidth * imgHeight];
 		textImage.getRGB(0, 0, imgWidth, imgHeight, imagePixels, 0, imgWidth);
 
@@ -895,23 +823,19 @@ public class DrawingArea extends NodeSub {
 					int rgb = imagePixels[y * imgWidth + x];
 					int alpha = (rgb >> 24) & 0xFF;
 
-					// STRICT ALPHA THRESHOLD - Only use fully opaque pixels to avoid anti-aliasing
-					if (alpha >= 250) { // Only nearly-opaque pixels
+					if (alpha >= 250) {
 						int pixelIndex = screenY * width + screenX;
 						if (pixelIndex >= 0 && pixelIndex < pixels.length) {
-							// Direct copy without blending to avoid anti-aliasing artifacts
+
 							pixels[pixelIndex] = rgb | 0xFF000000;
 						}
 					}
-					// Ignore semi-transparent pixels completely to prevent anti-aliasing
+
 				}
 			}
 		}
 	}
 
-	/**
-	 * Simple fallback text rendering (rectangles) - NO ANTI-ALIASING
-	 */
 	private static void drawTextFallback(String text, int x, int y, int color, Font font) {
 		int charWidth = font.getSize() * 2 / 3;
 		int charHeight = font.getSize();
@@ -921,7 +845,6 @@ public class DrawingArea extends NodeSub {
 			if (ch != ' ') {
 				int charX = x + i * charWidth;
 
-				// Draw simple rectangle for character
 				if (charX >= topX && charX < bottomX && y >= topY && y < bottomY) {
 					drawPixels(charHeight, y - charHeight + 2, charX, color, charWidth - 1);
 				}
@@ -929,9 +852,6 @@ public class DrawingArea extends NodeSub {
 		}
 	}
 
-	/**
-	 * Cleanup text rendering resources
-	 */
 	public static void cleanupTextRendering() {
 		if (textGraphics != null) {
 			textGraphics.dispose();
@@ -940,17 +860,11 @@ public class DrawingArea extends NodeSub {
 		textBuffer = null;
 	}
 
-	/**
-	 * Force CPU-only rendering mode (for resize operations)
-	 */
 	public static void forceSetCPUMode() {
 		gpuModeEnabled = false;
 		System.out.println("[DrawingArea] Forced CPU mode");
 	}
 
-	/**
-	 * Enable GPU rendering mode (after successful GPU initialization)
-	 */
 	public static void enableGPUMode() {
 		if (GPURenderingEngine.isEnabled()) {
 			gpuModeEnabled = true;
@@ -961,23 +875,14 @@ public class DrawingArea extends NodeSub {
 		}
 	}
 
-	/**
-	 * Check if GPU mode is currently enabled
-	 */
 	public static boolean isGPUModeEnabled() {
 		return gpuModeEnabled && GPURenderingEngine.isEnabled();
 	}
 
-	/**
-	 * Check if GPU sync is needed
-	 */
 	public static boolean needsGPUSync() {
 		return needsCPUSync;
 	}
 
-	/**
-	 * Get GPU texture for final rendering
-	 */
 	public static int getGPUTexture() {
 		if (GPURenderingEngine.isEnabled()) {
 			return GPURenderingEngine.getColorTexture();

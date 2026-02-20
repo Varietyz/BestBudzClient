@@ -18,7 +18,6 @@ public class StonerPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	private JScrollPane scrollPane;
 	private JPanel sectionsPanel;
 
-	// Section components
 	private EquipmentSection equipmentSection;
 	private KillcountSection killcountSection;
 	private PetsSection petsSection;
@@ -42,7 +41,6 @@ public class StonerPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	private void initializeComponents() {
 		controlsManager = new StonerControlsManager();
 
-		// Initialize sections
 		equipmentSection = new EquipmentSection();
 		killcountSection = new KillcountSection();
 		petsSection = new PetsSection();
@@ -52,11 +50,10 @@ public class StonerPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	}
 
 	private void setupLayout() {
-		// Fixed header with controls
+
 		JPanel headerPanel = createHeaderPanel();
 		add(headerPanel, BorderLayout.NORTH);
 
-		// Scrollable sections
 		createScrollableSections();
 		add(scrollPane, BorderLayout.CENTER);
 
@@ -82,7 +79,6 @@ public class StonerPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		sectionsPanel.setBackground(ColorConfig.MAIN_FRAME_COLOR);
 		sectionsPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
-		// Add sections
 		addSection(equipmentSection.createPanel(PANEL_WIDTH));
 		addSection(attackStyleSection.createPanel(PANEL_WIDTH));
 		addSection(killcountSection.createPanel(PANEL_WIDTH));
@@ -115,7 +111,6 @@ public class StonerPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		});
 	}
 
-	// Extension API
 	public void addCustomControl(JComponent control) {
 		controlsManager.addCustomControl(control);
 	}
@@ -132,7 +127,6 @@ public class StonerPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		controlsManager.setAutoCombatState(enabled);
 	}
 
-	// UIPanel interface
 	@Override
 	public String getPanelID() {
 		return "My Info";

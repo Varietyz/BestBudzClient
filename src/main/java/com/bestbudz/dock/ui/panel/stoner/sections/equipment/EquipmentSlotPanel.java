@@ -10,10 +10,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * Individual equipment slot panel with item display and interaction
- * Enhanced with item bonus tooltips
- */
 public class EquipmentSlotPanel extends JPanel {
 
 	private final int slotId;
@@ -53,7 +49,7 @@ public class EquipmentSlotPanel extends JPanel {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// Changed from right-click to left-click for removing items
+
 				if (currentItemId >= 0 && SwingUtilities.isLeftMouseButton(e)) {
 					unequipItem();
 				}
@@ -85,7 +81,6 @@ public class EquipmentSlotPanel extends JPanel {
 				return;
 			}
 
-			// Use the click batcher for batched execution
 			clickBatcher.batchUnequip(slotId, equipmentSlot, currentItemId);
 
 		} catch (Exception e) {
@@ -171,7 +166,6 @@ public class EquipmentSlotPanel extends JPanel {
 
 				tooltip.append("Item ID: ").append(currentItemId).append("<br/>");
 
-				// Add equipment bonuses section using ItemBonusManager
 				addEquipmentBonuses(tooltip);
 
 				if (itemDef.value > 1) {
@@ -198,39 +192,30 @@ public class EquipmentSlotPanel extends JPanel {
 		}
 	}
 
-	/**
-	 * Adds equipment bonuses to the tooltip using ItemBonusManager
-	 */
 	private void addEquipmentBonuses(StringBuilder tooltip) {
 		try {
-			// Get item bonuses from the ItemBonusManager
+
 			short[] bonuses = ItemBonusManager.getBonuses(currentItemId);
 
 			if (bonuses == null || bonuses.length == 0) {
-				return; // No bonuses to display
+				return;
 			}
 
-			// Check if item has any non-zero bonuses
 			boolean hasAnyBonuses = ItemBonusManager.hasEquipmentBonuses(currentItemId);
 			if (!hasAnyBonuses) {
-				return; // All bonuses are zero
+				return;
 			}
 
 			tooltip.append("<br/><b>Bonuses:</b><br/>");
 
-			// Get bonus names for proper labeling
 			String[] bonusNames = ItemBonusManager.getBonusNames();
 
-			// Add assault bonuses (indices 0-4)
 			boolean hasAssaultBonuses = addBonusSection(tooltip, bonuses, bonusNames, 0, 5, "Assault:");
 
-			// Add aegis bonuses (indices 5-9)
 			boolean hasAegisBonuses = addBonusSection(tooltip, bonuses, bonusNames, 5, 10, "Aegis:");
 
-			// Add other bonuses (indices 10+)
 			boolean hasOtherBonuses = addBonusSection(tooltip, bonuses, bonusNames, 10, bonuses.length, "Extra:");
 
-			// Add a line break if we added any bonus sections
 			if (hasAssaultBonuses || hasAegisBonuses || hasOtherBonuses) {
 				tooltip.append("<br/>");
 			}
@@ -240,10 +225,6 @@ public class EquipmentSlotPanel extends JPanel {
 		}
 	}
 
-	/**
-	 * Adds a section of bonuses to the tooltip
-	 * @return true if any bonuses were added to this section
-	 */
 	private boolean addBonusSection(StringBuilder tooltip, short[] bonuses, String[] bonusNames,
 									int startIndex, int endIndex, String sectionName) {
 		boolean addedAny = false;
@@ -272,9 +253,6 @@ public class EquipmentSlotPanel extends JPanel {
 		return addedAny;
 	}
 
-	/**
-	 * Formats a bonus value with proper color and sign
-	 */
 	private String formatBonus(short bonus) {
 		if (bonus > 0) {
 			return "<font color='#00ff00'>+" + bonus + "</font>";
@@ -284,9 +262,6 @@ public class EquipmentSlotPanel extends JPanel {
 			return "0";
 		}
 	}
-
-	// Remove the old getItemBonuses method since we're now using ItemBonusManager directly
-	// Also remove the BONUS_NAMES constant since we get them from ItemBonusManager
 
 	private String formatAmount(int amount) {
 		if (amount >= 1000000) return (amount / 1000000) + "M";
@@ -303,17 +278,16 @@ public class EquipmentSlotPanel extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
 		if (itemIcon != null && currentItemId >= 0) {
-			// Draw item icon
+
 			int x = (getWidth() - itemIcon.getIconWidth()) / 2;
 			int y = (getHeight() - itemIcon.getIconHeight()) / 2;
 			itemIcon.paintIcon(this, g2d, x, y);
 
-			// Draw amount if > 1
 			if (currentAmount > 1) {
 				drawAmountLabel(g2d);
 			}
 		} else if (currentItemId >= 0) {
-			// Draw item ID as fallback
+
 			g2d.setColor(EquipmentConstants.TEXT_SECONDARY);
 			g2d.setFont(new Font("Segoe UI", Font.PLAIN, 8));
 			String text = String.valueOf(currentItemId);
@@ -339,14 +313,12 @@ public class EquipmentSlotPanel extends JPanel {
 		int x = getWidth() - textWidth - padding;
 		int y = getHeight() - padding;
 
-		// Background
 		g2d.setColor(new Color(0, 0, 0, 200));
 		g2d.fillRoundRect(x - 2, y - textHeight + 2, textWidth + 4, textHeight, 4, 4);
 
 		g2d.setColor(new Color(80, 80, 80));
 		g2d.drawRoundRect(x - 2, y - textHeight + 2, textWidth + 4, textHeight, 4, 4);
 
-		// Amount color coding
 		Color amountColor;
 		if (currentAmount >= 10000000) amountColor = new Color(0, 255, 0);
 		else if (currentAmount >= 1000000) amountColor = new Color(150, 255, 150);

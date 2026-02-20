@@ -12,7 +12,7 @@ public class CameraDiagnostic extends BaseDiagnostic {
 
 	@Override
 	protected void onInitialize() {
-		// No special initialization needed
+
 	}
 
 	@Override
@@ -21,11 +21,9 @@ public class CameraDiagnostic extends BaseDiagnostic {
 		addRow("Mouse", String.format("(%d, %d)", MouseState.x, MouseState.y), DiagnosticStyle.TEXT_MUTED);
 		addRow("Resolution", String.format("%dx%d", Client.frameWidth, Client.frameHeight), DiagnosticStyle.TEXT_MUTED);
 
-		// Calculate aspect ratio
 		double aspectRatio = (double) Client.frameWidth / Client.frameHeight;
 		addRow("Aspect", String.format("%.2f:1", aspectRatio), DiagnosticStyle.TEXT_MUTED);
 
-		// Pixel density
 		int totalPixels = Client.frameWidth * Client.frameHeight;
 		addRow("Pixels", DiagnosticStyle.formatNumber(totalPixels), DiagnosticStyle.TEXT_MUTED);
 	}

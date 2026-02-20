@@ -2,14 +2,8 @@ package com.bestbudz.dock.ui.panel.bank.util;
 
 import com.bestbudz.dock.definitions.ItemBonusManager;
 
-/**
- * Handles tooltip construction for bank items
- */
 public class BankTooltipBuilder {
 
-	/**
-	 * Builds a complete tooltip for a bank item
-	 */
 	public static String buildTooltip(int itemId, int amount, boolean isPlaceholder,
 									  boolean isInventoryItem, boolean isAlsoInBank) {
 		if (isPlaceholder) {
@@ -36,7 +30,6 @@ public class BankTooltipBuilder {
 
 		tooltip.append("Item ID: ").append(itemId).append("<br/>");
 
-		// Add equipment bonuses section
 		addEquipmentBonuses(tooltip, itemId);
 
 		addValueInformation(tooltip, itemId, amount, itemDef);

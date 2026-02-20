@@ -1,6 +1,5 @@
 package com.bestbudz.ui.handling.input;
 
-// MouseState.java
 public final class MouseState {
 	public static volatile int x, y;
 	public static boolean leftDown, rightDown;

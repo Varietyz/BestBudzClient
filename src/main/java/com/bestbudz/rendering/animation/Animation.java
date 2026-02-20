@@ -65,7 +65,6 @@ private void readValues(Stream stream) {
 			int i;
 			while ((i = stream.readUnsignedByte()) != 0){
 
-
 			if (i == 1) {
 				frameCount = stream.readUnsignedWord();
 				frameIds = new int[frameCount];
@@ -75,7 +74,6 @@ private void readValues(Stream stream) {
 						frameIds[j] = stream.readDWord();
 						anIntArray354[j] = -1;
 					}
-
 
 					for (int j = 0; j < frameCount; j++)
 						anIntArray355[j] = stream.readUnsignedByte();

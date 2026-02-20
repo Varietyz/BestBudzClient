@@ -11,16 +11,13 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Overlay for selecting game modes
- */
 public class GameModeOverlay extends MouseAdapter {
 	private boolean isVisible = false;
 	private Rectangle overlayBounds;
 	private List<GameModeOption> modeOptions;
 	private GameModeOverlayListener listener;
 	private int hoveredIndex = -1;
-	private int panelWidth, panelHeight; // Store panel dimensions
+	private int panelWidth, panelHeight;
 
 	public interface GameModeOverlayListener {
 		void onGameModeSelected(GameMode gameMode, String modeName);
@@ -67,11 +64,9 @@ public class GameModeOverlay extends MouseAdapter {
 		this.panelWidth = panelWidth;
 		this.panelHeight = panelHeight;
 
-		// FUCK IT - HARDCODE THE DIMENSIONS
-		int overlayWidth = 250;  // FIXED WIDTH
-		int overlayHeight = 160; // FIXED HEIGHT
+		int overlayWidth = 250;
+		int overlayHeight = 160;
 
-		// Center it manually
 		int x = (panelWidth - overlayWidth) / 3;
 		int y = (panelHeight - overlayHeight);
 
@@ -93,18 +88,15 @@ public class GameModeOverlay extends MouseAdapter {
 	public void render(Graphics2D g2d, String currentModeName) {
 		if (!isVisible || overlayBounds == null) return;
 
-		// Overlay background
 		g2d.setColor(new Color(15, 15, 25, 240));
 		g2d.fill(new RoundRectangle2D.Float(overlayBounds.x, overlayBounds.y,
 			overlayBounds.width, overlayBounds.height, 12, 12));
 
-		// Border
 		g2d.setColor(BubbleBudzStyle.TEXT_NEON_CYAN);
 		g2d.setStroke(new BasicStroke(2f));
 		g2d.draw(new RoundRectangle2D.Float(overlayBounds.x, overlayBounds.y,
 			overlayBounds.width, overlayBounds.height, 12, 12));
 
-		// Title
 		g2d.setFont(BubbleBudzStyle.FONT_BRAND);
 		g2d.setColor(BubbleBudzStyle.TEXT_NEON_CYAN);
 		String title = "Select Mode";
@@ -112,7 +104,6 @@ public class GameModeOverlay extends MouseAdapter {
 		int titleX = overlayBounds.x + (overlayBounds.width - fm.stringWidth(title)) / 2;
 		g2d.drawString(title, titleX, overlayBounds.y + 25);
 
-		// Mode options
 		int optionY = overlayBounds.y + 45;
 		int optionHeight = 35;
 		int optionSpacing = 8;
@@ -130,7 +121,6 @@ public class GameModeOverlay extends MouseAdapter {
 				option.name.equals(currentModeName));
 		}
 
-		// Close instruction
 		g2d.setFont(BubbleBudzStyle.FONT_INSTRUCTION);
 		g2d.setColor(BubbleBudzStyle.TEXT_SECONDARY);
 		String closeText = "Click outside to close";
@@ -141,7 +131,7 @@ public class GameModeOverlay extends MouseAdapter {
 
 	private void renderModeOption(Graphics2D g2d, GameModeOption option, Rectangle bounds,
 								  boolean isHovered, boolean isSelected) {
-		// Option background
+
 		Color bgColor;
 		if (isSelected) {
 			bgColor = new Color(option.accentColor.getRed(), option.accentColor.getGreen(),
@@ -155,7 +145,6 @@ public class GameModeOverlay extends MouseAdapter {
 		g2d.setColor(bgColor);
 		g2d.fill(new RoundRectangle2D.Float(bounds.x, bounds.y, bounds.width, bounds.height, 6, 6));
 
-		// Border
 		Color borderColor = isSelected ? option.accentColor :
 			isHovered ? BubbleBudzStyle.TEXT_SECONDARY :
 				new Color(60, 60, 80);
@@ -163,17 +152,14 @@ public class GameModeOverlay extends MouseAdapter {
 		g2d.setStroke(new BasicStroke(isSelected ? 2f : 1f));
 		g2d.draw(new RoundRectangle2D.Float(bounds.x, bounds.y, bounds.width, bounds.height, 6, 6));
 
-		// Mode name
 		g2d.setFont(new Font("SansSerif", Font.BOLD, 13));
 		g2d.setColor(isSelected ? option.accentColor : BubbleBudzStyle.TEXT_PRIMARY);
 		g2d.drawString(option.name, bounds.x + 12, bounds.y + 16);
 
-		// Description
 		g2d.setFont(new Font("SansSerif", Font.PLAIN, 10));
 		g2d.setColor(BubbleBudzStyle.TEXT_SECONDARY);
 		g2d.drawString(option.description, bounds.x + 12, bounds.y + 28);
 
-		// Selected indicator
 		if (isSelected) {
 			g2d.setColor(option.accentColor);
 			g2d.fillOval(bounds.x + bounds.width - 20, bounds.y + 10, 8, 8);
@@ -185,7 +171,7 @@ public class GameModeOverlay extends MouseAdapter {
 		if (!isVisible) return;
 
 		if (overlayBounds.contains(e.getX(), e.getY())) {
-			// Check if clicking on a mode option
+
 			int optionY = overlayBounds.y + 45;
 			int optionHeight = 35;
 			int optionSpacing = 8;
@@ -208,7 +194,7 @@ public class GameModeOverlay extends MouseAdapter {
 				}
 			}
 		} else {
-			// Clicked outside overlay - close it
+
 			hide();
 		}
 	}

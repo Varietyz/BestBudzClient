@@ -125,7 +125,6 @@ public class RSInterface {
 					k = stream.readUnsignedWord();
 				}
 
-				// Bounds check for interface ID
 				if (k < 0 || k >= interfaceCache.length) {
 					System.err.println("Interface ID out of bounds: " + k);
 					continue;
@@ -148,7 +147,7 @@ public class RSInterface {
 					rsInterface.hoverType = -1;
 
 				int i1 = stream.readUnsignedByte();
-				if (i1 > 0 && i1 < 1000) { // Sanity check
+				if (i1 > 0 && i1 < 1000) {
 					rsInterface.anIntArray245 = new int[i1];
 					rsInterface.anIntArray212 = new int[i1];
 					for (int j1 = 0; j1 < i1; j1++) {
@@ -158,11 +157,11 @@ public class RSInterface {
 				}
 
 				int k1 = stream.readUnsignedByte();
-				if (k1 > 0 && k1 < 1000) { // Sanity check
+				if (k1 > 0 && k1 < 1000) {
 					rsInterface.valueIndexArray = new int[k1][];
 					for (int l1 = 0; l1 < k1; l1++) {
 						int i3 = stream.readUnsignedWord();
-						if (i3 > 0 && i3 < 10000) { // Sanity check
+						if (i3 > 0 && i3 < 10000) {
 							rsInterface.valueIndexArray[l1] = new int[i3];
 							for (int l4 = 0; l4 < i3; l4++)
 								rsInterface.valueIndexArray[l1][l4] = stream.readUnsignedWord();
@@ -175,7 +174,7 @@ public class RSInterface {
 					rsInterface.scrollMax = stream.readUnsignedWord();
 					rsInterface.isMouseoverTriggered = stream.readUnsignedByte() == 1;
 					int i2 = stream.readUnsignedWord();
-					if (i2 > 0 && i2 < 10000) { // Sanity check
+					if (i2 > 0 && i2 < 10000) {
 						rsInterface.children = new int[i2];
 						rsInterface.childX = new int[i2];
 						rsInterface.childY = new int[i2];
@@ -192,7 +191,7 @@ public class RSInterface {
 				}
 				if (rsInterface.type == 2) {
 					int slotCount = rsInterface.width * rsInterface.height;
-					if (slotCount > 0 && slotCount < 10000) { // Sanity check
+					if (slotCount > 0 && slotCount < 10000) {
 						rsInterface.inv = new int[slotCount];
 						rsInterface.invStackSizes = new int[slotCount];
 					}
@@ -230,7 +229,7 @@ public class RSInterface {
 						if (rsInterface.actions[l3].isEmpty()) {
 							rsInterface.actions[l3] = null;
 						}
-						// Safe bounds check before setting hardcoded actions
+
 						if (rsInterface.actions.length > 4) {
 							if (rsInterface.parentID == 3824) {
 								rsInterface.actions[4] = "Buy X";
@@ -320,7 +319,7 @@ public class RSInterface {
 				}
 				if (rsInterface.type == 7) {
 					int slotCount = rsInterface.width * rsInterface.height;
-					if (slotCount > 0 && slotCount < 10000) { // Sanity check
+					if (slotCount > 0 && slotCount < 10000) {
 						rsInterface.inv = new int[slotCount];
 						rsInterface.invStackSizes = new int[slotCount];
 					}
@@ -367,13 +366,12 @@ public class RSInterface {
 
 			} catch (Exception e) {
 				System.err.println("Error loading interface at position " + stream.position + ": " + e.getMessage());
-				// Continue to next interface
+
 			}
 		}
 
 		aClass44 = archiveLoader;
 
-		// Safe calls for post-processing
 		try { constructLunar(); } catch (Exception e) { System.err.println("Error in constructLunar: " + e.getMessage()); }
 		try { configureLunar(textDrawingAreas); } catch (Exception e) { System.err.println("Error in configureLunar: " + e.getMessage()); }
 		try { homeTeleport(textDrawingAreas); } catch (Exception e) { System.err.println("Error in homeTeleport: " + e.getMessage()); }
@@ -445,19 +443,6 @@ public class RSInterface {
 		rsi.id = id;
 		rsi.type = 4;
 	}
-
-	public static void textSize(int id, TextDrawingArea[] tda, int idx) {
-		RSInterface rsi = interfaceCache[id];
-		rsi.textDrawingAreas = tda[idx];
-	}
-
-	public static void removeSomething(int id) {
-		@SuppressWarnings("unused")
-		RSInterface rsi = interfaceCache[id] = new RSInterface();
-	}
-
-
-
 
 	public static void addText(int id, String text, TextDrawingArea[] wid, int idx, int color) {
 		RSInterface rsinterface = addTab(id);
@@ -588,45 +573,6 @@ public class RSInterface {
 		tab.height = 334;
 	}
 
-	public static void addAdvancedSprite(int id, int spriteId) {
-		RSInterface widget = addInterface(id);
-		widget.id = id;
-		widget.parentID = id;
-		widget.type = 5;
-		widget.atActionType = 0;
-		widget.contentType = 0;
-		widget.hoverType = 52;
-		widget.enabledSprite = Client.cacheSprite[spriteId];
-		widget.disabledSprite = Client.cacheSprite[spriteId];
-		widget.drawsTransparent = true;
-		widget.opacity = 64;
-		widget.width = 512;
-		widget.height = 334;
-	}
-
-	public static void addConfigSprite(int id, int spriteId, int spriteId2, int state, int config) {
-		RSInterface widget = addTabInterface(id);
-		widget.id = id;
-		widget.parentID = id;
-		widget.type = 5;
-		widget.atActionType = 0;
-		widget.contentType = 0;
-		widget.width = 512;
-		widget.height = 334;
-		widget.opacity = 0;
-		widget.hoverType = -1;
-		widget.anIntArray245 = new int[1];
-		widget.anIntArray212 = new int[1];
-		widget.anIntArray245[0] = 1;
-		widget.anIntArray212[0] = state;
-		widget.valueIndexArray = new int[1][3];
-		widget.valueIndexArray[0][0] = 5;
-		widget.valueIndexArray[0][1] = config;
-		widget.valueIndexArray[0][2] = 0;
-		widget.enabledSprite = spriteId < 0 ? null : Client.cacheSprite[spriteId];
-		widget.disabledSprite = spriteId2 < 0 ? null : Client.cacheSprite[spriteId2];
-	}
-
 	public static void addHoverButton(int i, String imageName, int j, int width, int height, String text,
 			int contentType, int hoverOver, int aT)
 	{
@@ -677,22 +623,6 @@ public class RSInterface {
 		tab.enabledSprite = Client.cacheSprite[k];
 	}
 
-	public static void addTransparentSprite(int id, int spriteId) {
-		RSInterface tab = interfaceCache[id] = new RSInterface();
-		tab.id = id;
-		tab.parentID = id;
-		tab.type = 5;
-		tab.atActionType = 0;
-		tab.contentType = 0;
-		tab.opacity = (byte) 0;
-		tab.hoverType = 52;
-		tab.disabledSprite = Client.cacheSprite[spriteId];
-		tab.enabledSprite = Client.cacheSprite[spriteId];
-		tab.width = 512;
-		tab.height = 334;
-		tab.drawsTransparent = true;
-	}
-
 	protected static Sprite method207(int i, ArchiveLoader archiveLoader, String s) {
 		long l = (TextClass.method585(s) << 8) + (long) i;
 		Sprite sprite = (Sprite) aMRUNodes_238.insertFromCache(l);
@@ -703,14 +633,14 @@ public class RSInterface {
 			aMRUNodes_238.removeFromCache(sprite, l);
 		} catch (Exception _ex) {
 			System.err.println("Failed to load sprite " + s + " index " + i + ": " + _ex.getMessage());
-			// Return empty sprite instead of null to prevent crashes
+
 			sprite = createEmptySprite();
 		}
 		return sprite;
 	}
 
 	public static Sprite createEmptySprite() {
-		return new Sprite(); // Uses your new default constructor
+		return new Sprite();
 	}
 
 	public static void method208(boolean flag, Model model) {
@@ -1060,8 +990,6 @@ public class RSInterface {
 		addRuneText(ID + 7, ra3 + 1, r3, TDA);
 		setBounds(ID + 7, 142, 92, 8, INT);
 	}
-
-
 
 	public static void configureLunar(TextDrawingArea[] TDA) {
 		homeTeleport();
@@ -1521,23 +1449,6 @@ public class RSInterface {
 		rsinterface.child(0, id + 1, 0, 0);
 	}
 
-	public static void addButtons(int id, int sid, String tooltip, int mOver, int atAction) {
-		RSInterface rsinterface = interfaceCache[id] = new RSInterface();
-		rsinterface.id = id;
-		rsinterface.parentID = id;
-		rsinterface.type = 5;
-		rsinterface.atActionType = atAction;
-		rsinterface.contentType = 0;
-		rsinterface.opacity = (byte) 0;
-		rsinterface.hoverType = mOver;
-		rsinterface.disabledSprite = Client.cacheSprite[sid];
-		rsinterface.enabledSprite = Client.cacheSprite[sid];
-		rsinterface.width = rsinterface.disabledSprite.myWidth;
-		rsinterface.height = rsinterface.enabledSprite.myHeight;
-		rsinterface.tooltip = tooltip;
-		rsinterface.boxhover = true;
-	}
-
 	public static void addHoveredButton(int i, Sprite sprite, int w, int h, int IMAGEID)
 	{
 		RSInterface tab = addTabInterface(i);
@@ -1595,24 +1506,6 @@ public class RSInterface {
 		t.type = 6;
 		t.atActionType = 0;
 		t.contentType = 328;
-		t.width = 136;
-		t.height = 168;
-		t.opacity = 0;
-		t.hoverType = 0;
-		t.modelZoom = zoom;
-		t.modelRotation1 = 150;
-		t.modelRotation2 = 0;
-		t.verticalOffset = -1;
-		t.anInt258 = -1;
-	}
-
-	public static void addOtherChar(int ID, int zoom) {
-		RSInterface t = interfaceCache[ID] = new RSInterface();
-		t.id = ID;
-		t.parentID = ID;
-		t.type = 6;
-		t.atActionType = 0;
-		t.contentType = 330;
 		t.width = 136;
 		t.height = 168;
 		t.opacity = 0;
@@ -1757,20 +1650,6 @@ public class RSInterface {
 		return rsi;
 	}
 
-	public static RSInterface addTab(int id) {
-		RSInterface Tab = interfaceCache[id] = new RSInterface();
-		Tab.id = id;
-		Tab.parentID = id;
-		Tab.type = 0;
-		Tab.atActionType = 0;
-		Tab.contentType = 0;
-		Tab.width = 512;
-		Tab.height = 334;
-		Tab.opacity = (byte) 0;
-		Tab.textColor = 0;
-		return Tab;
-	}
-
 	public static RSInterface addTabInterface(int id) {
 		RSInterface tab = interfaceCache[id] = new RSInterface();
 		if (tab.id == 3917) id = -1;
@@ -1785,7 +1664,6 @@ public class RSInterface {
 		tab.hoverType = -1;
 		return tab;
 	}
-
 
 	public static void itemDisplay(int index, int itemSpaceX, int itemSpaceY, int itemX, int itemY, String... options) {
 		RSInterface rsi = interfaceCache[index] = new RSInterface();
@@ -1845,203 +1723,6 @@ public class RSInterface {
 		rsi.id = id;
 		rsi.type = 2;
 	}
-
-	public static void mysteryWonItem(int index) {
-		RSInterface rsi = interfaceCache[index] = new RSInterface();
-		rsi.actions = new String[10];
-		rsi.spritesX = new int[20];
-		rsi.invStackSizes = new int[25];
-		rsi.inv = new int[30];
-		rsi.spritesY = new int[20];
-		rsi.children = new int[0];
-		rsi.childX = new int[0];
-		rsi.childY = new int[0];
-		rsi.centerText = true;
-		rsi.aBoolean227 = false;
-		rsi.aBoolean235 = false;
-		rsi.usableItemInterface = false;
-		rsi.isBoxInterface = false;
-		rsi.aBoolean259 = true;
-		rsi.textShadow = false;
-		rsi.invSpritePadX = 30;
-		rsi.invSpritePadY = 30;
-		rsi.height = 5;
-		rsi.width = 4;
-		rsi.parentID = 59806;
-		rsi.id = 4393;
-		rsi.type = 2;
-	}
-
-	public static void lotteryItem(int i) {
-		RSInterface rsinterface = interfaceCache[i] = new RSInterface();
-		rsinterface.actions = new String[5];
-		rsinterface.spritesX = new int[36];
-		rsinterface.invStackSizes = new int[36];
-		rsinterface.inv = new int[36];
-		rsinterface.spritesY = new int[36];
-		rsinterface.children = new int[0];
-		rsinterface.childX = new int[0];
-		rsinterface.childY = new int[0];
-		rsinterface.spritesY[0] = 0;
-		rsinterface.spritesY[1] = 0;
-		rsinterface.spritesY[2] = 0;
-		rsinterface.spritesY[3] = 0;
-		rsinterface.spritesY[4] = 0;
-		rsinterface.spritesY[5] = 0;
-		rsinterface.spritesY[6] = 0;
-		rsinterface.spritesY[7] = 0;
-		rsinterface.spritesY[8] = 0;
-		rsinterface.spritesY[9] = 0;
-		rsinterface.spritesY[10] = 0;
-		rsinterface.spritesY[11] = 0;
-		rsinterface.spritesY[12] = 0;
-		rsinterface.spritesY[13] = 0;
-		rsinterface.spritesY[14] = 0;
-		rsinterface.spritesY[15] = 0;
-		rsinterface.spritesY[16] = 0;
-		rsinterface.spritesY[17] = 0;
-		rsinterface.spritesY[18] = 0;
-		rsinterface.spritesY[19] = 0;
-		rsinterface.spritesY[20] = 0;
-		rsinterface.spritesY[21] = 0;
-		rsinterface.spritesY[22] = 0;
-		rsinterface.spritesY[23] = 0;
-		rsinterface.spritesY[24] = 0;
-		rsinterface.spritesY[25] = 0;
-		rsinterface.spritesY[26] = 0;
-		rsinterface.spritesY[27] = 0;
-		rsinterface.spritesY[28] = 0;
-		rsinterface.spritesY[29] = 0;
-		rsinterface.spritesY[30] = 0;
-		rsinterface.spritesY[31] = 0;
-		rsinterface.spritesY[32] = 0;
-		rsinterface.spritesY[33] = 0;
-		rsinterface.spritesY[34] = 0;
-		rsinterface.spritesY[35] = 0;
-		rsinterface.invStackSizes[0] = 0;
-		rsinterface.invStackSizes[1] = 0;
-		rsinterface.invStackSizes[2] = 0;
-		rsinterface.invStackSizes[3] = 0;
-		rsinterface.invStackSizes[4] = 0;
-		rsinterface.invStackSizes[5] = 0;
-		rsinterface.invStackSizes[6] = 0;
-		rsinterface.invStackSizes[7] = 0;
-		rsinterface.invStackSizes[8] = 0;
-		rsinterface.invStackSizes[9] = 0;
-		rsinterface.invStackSizes[10] = 0;
-		rsinterface.invStackSizes[11] = 0;
-		rsinterface.invStackSizes[12] = 0;
-		rsinterface.invStackSizes[13] = 0;
-		rsinterface.invStackSizes[14] = 0;
-		rsinterface.invStackSizes[15] = 0;
-		rsinterface.invStackSizes[16] = 0;
-		rsinterface.invStackSizes[17] = 0;
-		rsinterface.invStackSizes[18] = 0;
-		rsinterface.invStackSizes[19] = 0;
-		rsinterface.invStackSizes[20] = 0;
-		rsinterface.invStackSizes[21] = 0;
-		rsinterface.invStackSizes[22] = 0;
-		rsinterface.invStackSizes[23] = 0;
-		rsinterface.invStackSizes[24] = 0;
-		rsinterface.invStackSizes[25] = 0;
-		rsinterface.invStackSizes[26] = 0;
-		rsinterface.invStackSizes[27] = 0;
-		rsinterface.invStackSizes[28] = 0;
-		rsinterface.invStackSizes[29] = 0;
-		rsinterface.invStackSizes[30] = 0;
-		rsinterface.invStackSizes[31] = 0;
-		rsinterface.invStackSizes[32] = 0;
-		rsinterface.invStackSizes[33] = 0;
-		rsinterface.invStackSizes[34] = 0;
-		rsinterface.invStackSizes[35] = 0;
-		rsinterface.inv[0] = 0;
-		rsinterface.inv[1] = 0;
-		rsinterface.inv[2] = 0;
-		rsinterface.inv[3] = 0;
-		rsinterface.inv[4] = 0;
-		rsinterface.inv[5] = 0;
-		rsinterface.inv[6] = 0;
-		rsinterface.inv[7] = 0;
-		rsinterface.inv[8] = 0;
-		rsinterface.inv[9] = 0;
-		rsinterface.inv[10] = 0;
-		rsinterface.inv[11] = 0;
-		rsinterface.inv[12] = 0;
-		rsinterface.inv[13] = 0;
-		rsinterface.inv[14] = 0;
-		rsinterface.inv[15] = 0;
-		rsinterface.inv[16] = 0;
-		rsinterface.inv[17] = 0;
-		rsinterface.inv[18] = 0;
-		rsinterface.inv[19] = 0;
-		rsinterface.inv[20] = 0;
-		rsinterface.inv[21] = 0;
-		rsinterface.inv[22] = 0;
-		rsinterface.inv[23] = 0;
-		rsinterface.inv[24] = 0;
-		rsinterface.inv[25] = 0;
-		rsinterface.inv[26] = 0;
-		rsinterface.inv[27] = 0;
-		rsinterface.inv[28] = 0;
-		rsinterface.inv[29] = 0;
-		rsinterface.inv[30] = 0;
-		rsinterface.inv[31] = 0;
-		rsinterface.inv[32] = 0;
-		rsinterface.inv[33] = 0;
-		rsinterface.inv[34] = 0;
-		rsinterface.inv[35] = 0;
-		rsinterface.spritesX[0] = 0;
-		rsinterface.spritesX[1] = 0;
-		rsinterface.spritesX[2] = 0;
-		rsinterface.spritesX[3] = 0;
-		rsinterface.spritesX[4] = 0;
-		rsinterface.spritesX[5] = 0;
-		rsinterface.spritesX[6] = 0;
-		rsinterface.spritesX[7] = 0;
-		rsinterface.spritesX[8] = 0;
-		rsinterface.spritesX[9] = 0;
-		rsinterface.spritesX[10] = 0;
-		rsinterface.spritesX[11] = 0;
-		rsinterface.spritesX[12] = 0;
-		rsinterface.spritesX[13] = 0;
-		rsinterface.spritesX[14] = 0;
-		rsinterface.spritesX[15] = 0;
-		rsinterface.spritesX[16] = 0;
-		rsinterface.spritesX[17] = 0;
-		rsinterface.spritesX[18] = 0;
-		rsinterface.spritesX[19] = 0;
-		rsinterface.spritesX[20] = 0;
-		rsinterface.spritesX[21] = 0;
-		rsinterface.spritesX[22] = 0;
-		rsinterface.spritesX[23] = 0;
-		rsinterface.spritesX[24] = 0;
-		rsinterface.spritesX[25] = 0;
-		rsinterface.spritesX[26] = 0;
-		rsinterface.spritesX[27] = 0;
-		rsinterface.spritesX[28] = 0;
-		rsinterface.spritesX[29] = 0;
-		rsinterface.spritesX[30] = 0;
-		rsinterface.spritesX[31] = 0;
-		rsinterface.spritesX[32] = 0;
-		rsinterface.spritesX[33] = 0;
-		rsinterface.spritesX[34] = 0;
-		rsinterface.spritesX[35] = 0;
-		rsinterface.centerText = false;
-		rsinterface.aBoolean227 = false;
-		rsinterface.aBoolean235 = false;
-		rsinterface.isBoxInterface = false;
-		rsinterface.aBoolean259 = true;
-		rsinterface.textShadow = false;
-		rsinterface.width = 8;
-		rsinterface.hoverType = -1;
-		rsinterface.invSpritePadX = 24;
-		rsinterface.parentID = 17827;
-		rsinterface.invSpritePadY = 24;
-		rsinterface.id = 17824;
-		rsinterface.type = 2;
-		rsinterface.height = 4;
-	}
-
 
 	public static void addInputField(int parentId, int id, int characterLimit, int defaultColor, int defaultHoverColor,
 			int selectedColor, int selectedHoverColor, String text, int width, int height, boolean onlyNumbers,
@@ -2134,10 +1815,6 @@ public class RSInterface {
 			model_1.applyTransformation(j);
 		model_1.applyLighting(84, 1000, -90, -580, -90, true);
 		return model_1;
-	}
-
-	public void setSprite(Sprite sprite) {
-		disabledSprite = sprite;
 	}
 
 }

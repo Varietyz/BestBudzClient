@@ -59,15 +59,14 @@ public class GameFrame extends Client{
 			}
 			int calc = minimapRotation + cameraRotation & 0x7ff;
 
-			int cameraViewDistance = cameraZoom + i;  // Just for camera view calculation
+			int cameraViewDistance = cameraZoom + i;
 
-// Apply screen size compensation without affecting world render area
 			if (frameWidth >= 1024) {
 				cameraViewDistance += (cameraZoom - frameHeight / 200);
 			}
 
 			setCameraPos(
-				cameraViewDistance,  // ✅ Just camera view distance - no world render multiplier
+				cameraViewDistance,
 				i, cameraX, getTerrainHeight(plane, myStoner.y, myStoner.x) - 50, calc, cameraZ);
 		}
 		int j;
@@ -139,13 +138,11 @@ public class GameFrame extends Client{
 		mainGameRendering.drawGraphics(0, g,
 			0);
 
-
 		xCameraPos = l;
 		zCameraPos = i1;
 		yCameraPos = j1;
 		yCameraCurve = k1;
 		xCameraCurve = l1;
-
 
 	}
 
@@ -178,6 +175,5 @@ public class GameFrame extends Client{
 
 		gameTickCounter = 0;
 	}
-
 
 }

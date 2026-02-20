@@ -41,20 +41,18 @@ public class StatusOrbs {
 	private static void loadAllOrbs(int xOffset) {
 		if (!SettingsConfig.enableStatusOrbs) return;
 
-		// ──────────────── POUCH DRAW ────────────────
 		if (SettingsConfig.enablePouch) {
-			int setPouchPosX = 62; // Modify
+			int setPouchPosX = 62;
 			int pouchPosX = frameWidth - setPouchPosX;
 			int pouchTextPosX = frameWidth - (setPouchPosX - 30);
 			int pouchFillPosX = frameWidth - (setPouchPosX - 16);
 			int pouchIconPosX = frameWidth - (setPouchPosX - 8);
 
-			int setPouchPosY = 45; // Modify
+			int setPouchPosY = 45;
 			int pouchTextPosY = setPouchPosY + 25;
 			int pouchFillPosY = setPouchPosY + 15;
 			int pouchIconPosY = setPouchPosY + 7;
 
-			// { X, Y, TextX, TextY, FillX, FillY, CoinIconX, CoinIconY }
 			final int[] pouchLayout = new int[] { pouchPosX, setPouchPosY, pouchTextPosX, pouchTextPosY, pouchFillPosX, pouchFillPosY, pouchIconPosX, pouchIconPosY };
 
 			int pouchX       = pouchLayout[0];
@@ -92,10 +90,6 @@ public class StatusOrbs {
 		}
 	}
 
-
-
-
-
 	public static void drawGameOverlays() {
 		if (crossType == 1) {
 			crosses[crossIndex / 100].drawSprite(crossX - 8, crossY - 8);
@@ -115,7 +109,6 @@ public class StatusOrbs {
 		}
 	}
 
-
 	private static void gameOrbUIsetup()
 	{
 		if (SettingsConfig.enableStatusOrbs)
@@ -123,7 +116,7 @@ public class StatusOrbs {
 
 			loadAllOrbs(frameWidth - 217);
 		}
-// ──────────────── COMPASS ────────────────
+
 		{
 			int setCompassPosX = 62;
 			int setCompassPosY = 10;
@@ -134,8 +127,6 @@ public class StatusOrbs {
 			compass.drawRotatedSpriteAt(compassX, compassY, minimapRotation, 256);
 
 		}
-
-
 
 		boolean hoveringLogout =
 			MouseState.x >= frameWidth - 26 && MouseState.x <= frameWidth - 1 &&
@@ -167,11 +158,10 @@ public class StatusOrbs {
 		if (leftClick && SettingsConfig.enableStatusOrbs) {
 			if (pouchHover && SettingsConfig.enablePouch) {
 				stream.writeEncryptedOpcode(185);
-				stream.writeWord(713); // mimic "Withdraw from debit"
+				stream.writeWord(713);
 			}
 
 		}
-
 
 		if (MouseState.x >= frameWidth - 26 && MouseState.x <= frameWidth - 1 &&
 			MouseState.y >= 2 && MouseState.y <= 24) {

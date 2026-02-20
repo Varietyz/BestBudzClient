@@ -15,13 +15,12 @@ public class CacheDiagnostic extends BaseDiagnostic {
 
 	@Override
 	protected void onInitialize() {
-		// No special initialization needed
+
 	}
 
 	@Override
 	protected void collectData() {
-		// Signlink information
-		// Engine version
+
 		if (worldSelected == 3) {
 			addRow("Client Version", String.valueOf(EngineConfig.DEV_ENGINE_VERSION), DiagnosticStyle.TEXT_MUTED);
 		} else {
@@ -45,7 +44,6 @@ public class CacheDiagnostic extends BaseDiagnostic {
 				activeIndexes == 6 ? DiagnosticStyle.STATUS_GOOD : DiagnosticStyle.STATUS_WARNING);
 		}
 
-		// OnDemand information
 		if (Client.cacheManager != null) {
 			String status = Client.cacheManager.statusString;
 			addRow("OD Status", (status != null && !status.isEmpty()) ?
@@ -57,10 +55,9 @@ public class CacheDiagnostic extends BaseDiagnostic {
 				int nodeCount = Client.cacheManager.getNodeCount();
 				addRow("Nodes", String.valueOf(nodeCount),
 					nodeCount > 0 ? DiagnosticStyle.STATUS_WARNING : DiagnosticStyle.STATUS_GOOD);
-			} catch (Exception e) { /* Skip if unavailable */ }
+			} catch (Exception e) {  }
 		}
 
-		// Cache file system details
 		try {
 			String cacheDir = Signlink.findCacheDir();
 			if (cacheDir != null) {

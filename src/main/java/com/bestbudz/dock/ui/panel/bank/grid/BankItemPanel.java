@@ -11,9 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
-/**
- * Simplified bank item panel - back to basics
- */
 public class BankItemPanel extends JPanel {
 
 	private final int itemId;
@@ -29,13 +26,11 @@ public class BankItemPanel extends JPanel {
 	private Object parentBankPanel;
 	public boolean isHovered = false;
 
-	// Cached item definition and display data
 	private final ItemDefCache.CachedItemDef itemDef;
 	private String cachedTooltip;
 	private String cachedAmountText;
 	private Color cachedAmountColor;
 
-	// Rendering system
 	private final BankItemRenderer renderer;
 	private BufferedImage cachedImage;
 
@@ -47,7 +42,6 @@ public class BankItemPanel extends JPanel {
 		this.isAlsoInBank = isAlsoInBank;
 		this.itemSize = size;
 
-		// Cache item definition once
 		this.itemDef = ItemDefCache.get(itemId);
 		this.renderer = new BankItemRenderer(size);
 
@@ -93,7 +87,6 @@ public class BankItemPanel extends JPanel {
 		this.amount = newAmount;
 		updateCachedStrings();
 
-		// Reload sprite for coins when needed
 		if (itemId == 995) {
 			int oldSpriteId = BankItemRenderer.getCoinSpriteId(oldAmount);
 			int newSpriteId = BankItemRenderer.getCoinSpriteId(newAmount);
@@ -141,20 +134,16 @@ public class BankItemPanel extends JPanel {
 	}
 
 	public void resetBackground() {
-		// Just reset the state - NO FUCKING REPAINTS
+
 		isHovered = false;
 		currentBackground = originalBackground;
 	}
 
-	/**
-	 * Forces a complete redraw of the item - ONLY when actually needed
-	 */
 	public void forceRedraw() {
 		renderToCache();
 		repaint();
 	}
 
-	// Getters
 	public int getCurrentAmount() { return this.amount; }
 	public int getItemId() { return this.itemId; }
 	public boolean isPlaceholder() { return this.isPlaceholder; }
@@ -163,7 +152,7 @@ public class BankItemPanel extends JPanel {
 	public ItemDefCache.CachedItemDef getItemDef() { return this.itemDef; }
 
 	private void renderToCache() {
-		// Pass the actual panel size, not itemSize
+
 		cachedImage = renderer.renderItem(itemId, amount, isPlaceholder, isInventoryItem,
 			itemIcon, cachedAmountText, cachedAmountColor);
 	}
@@ -256,19 +245,17 @@ public class BankItemPanel extends JPanel {
 				}
 			}
 
-
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				if (!isPlaceholder && !isHovered) {
 					isHovered = true;
-					// ONLY change the background color
+
 					currentBackground = new Color(
 						Math.min(255, originalBackground.getRed() + 60),
 						Math.min(255, originalBackground.getGreen() + 40),
 						Math.min(255, originalBackground.getBlue() + 20)
 					);
 
-					// DON'T call renderToCache() - just repaint!
 					repaint();
 				}
 			}
@@ -277,10 +264,9 @@ public class BankItemPanel extends JPanel {
 			public void mouseExited(MouseEvent e) {
 				if (isHovered) {
 					isHovered = false;
-					// ONLY restore the original background color
+
 					currentBackground = originalBackground;
 
-					// DON'T call renderToCache() - just repaint!
 					repaint();
 				}
 			}
@@ -291,7 +277,6 @@ public class BankItemPanel extends JPanel {
 		itemIcon = BankItemRenderer.loadItemIcon(itemId, amount, itemSize);
 	}
 
-	// Game data access methods
 	private int getInventoryAmount() {
 		RSInterface inventoryInterface = RSInterface.interfaceCache[3214];
 		if (inventoryInterface == null || inventoryInterface.inv == null || inventoryInterface.invStackSizes == null) {
@@ -359,7 +344,6 @@ public class BankItemPanel extends JPanel {
 		}
 	}
 
-	// Action methods
 	private void handleLeftClick() {
 		if (parentBankPanel == null) return;
 
@@ -429,11 +413,10 @@ public class BankItemPanel extends JPanel {
 
 	@Override
 	public void paintComponent(Graphics g) {
-		// Paint the current background (this changes on hover)
+
 		g.setColor(currentBackground);
 		g.fillRect(0, 0, getWidth(), getHeight());
 
-		// Paint border
 		Color borderColor = new Color(
 			Math.min(255, currentBackground.getRed() + 30),
 			Math.min(255, currentBackground.getGreen() + 30),
@@ -442,8 +425,6 @@ public class BankItemPanel extends JPanel {
 		g.setColor(borderColor);
 		g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 
-		// Draw the cached content (sprite, text, indicators) on top
-		// This NEVER changes on hover - it's cached for performance!
 		if (cachedImage != null) {
 			g.drawImage(cachedImage, 0, 0, null);
 		}

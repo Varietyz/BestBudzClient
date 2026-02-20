@@ -47,7 +47,6 @@ public class MouseScrollHandler {
 		}
 	}
 
-
 	private static void scrollInterface(RSInterface parent, int offsetX, int offsetY, int rotation) {
 		for (int i = 0; i < parent.children.length; i++) {
 			RSInterface child = RSInterface.interfaceCache[parent.children[i]];
@@ -66,7 +65,6 @@ public class MouseScrollHandler {
 			}
 		}
 	}
-
 
 	private static boolean isMouseWithin(int x, int y, int width, int height) {
 		return MouseState.x > x && MouseState.y > y &&

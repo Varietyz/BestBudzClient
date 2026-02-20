@@ -2,12 +2,8 @@ package com.bestbudz.engine.core.loading;
 
 import java.awt.Color;
 
-/**
- * Enums and constants for the loading system
- */
 public class LoadingEnums {
 
-	// Visual constants
 	public static final Color BACKGROUND = new Color(18, 18, 20);
 	public static final Color CARD_BACKGROUND = new Color(28, 28, 32);
 	public static final Color PRIMARY_TEXT = new Color(220, 220, 220);
@@ -17,9 +13,6 @@ public class LoadingEnums {
 	public static final Color WARNING_COLOR = new Color(255, 159, 10);
 	public static final Color ERROR_COLOR = new Color(255, 69, 58);
 
-	/**
-	 * Loading phases with progress ranges
-	 */
 	public enum LoadingPhase {
 		INITIALIZING("Getting Ready", 0, 10),
 		LOADING_ASSETS("Loading Game Assets", 10, 40),
@@ -38,9 +31,6 @@ public class LoadingEnums {
 		}
 	}
 
-	/**
-	 * Log levels with visual styling
-	 */
 	public enum LogLevel {
 		INFO("INFO", PRIMARY_TEXT, "ℹ️"),
 		SUCCESS("SUCCESS", SUCCESS_COLOR, "✅"),
@@ -58,9 +48,6 @@ public class LoadingEnums {
 		}
 	}
 
-	/**
-	 * Simple log entry class
-	 */
 	public static class LogEntry {
 		public final long timestamp;
 		public final String message;

@@ -9,14 +9,8 @@ import java.io.InputStream;
 
 import static com.bestbudz.engine.core.loading.LoadingEnums.*;
 
-/**
- * Utility methods for loading screen components
- */
 public class LoadingUtilities {
 
-	/**
-	 * Initialize fonts with fallbacks
-	 */
 	public static class FontManager {
 		public Font titleFont;
 		public Font statusFont;
@@ -41,7 +35,7 @@ public class LoadingUtilities {
 				this.monospaceFont = new Font(monospaceFont, Font.PLAIN, 11);
 
 			} catch (Exception e) {
-				// Fallback fonts
+
 				this.titleFont = new Font("Arial", Font.BOLD, 24);
 				this.statusFont = new Font("Arial", Font.PLAIN, 16);
 				this.detailFont = new Font("Arial", Font.PLAIN, 12);
@@ -50,9 +44,6 @@ public class LoadingUtilities {
 		}
 	}
 
-	/**
-	 * Logo management utility
-	 */
 	public static class LogoManager {
 		private BufferedImage originalLogoImage;
 
@@ -106,9 +97,6 @@ public class LoadingUtilities {
 		}
 	}
 
-	/**
-	 * Create styled progress bar
-	 */
 	public static JProgressBar createStyledProgressBar() {
 		JProgressBar progressBar = new JProgressBar(0, 100) {
 			@Override
@@ -116,15 +104,12 @@ public class LoadingUtilities {
 				Graphics2D g2d = (Graphics2D) g.create();
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-				// Background
 				g2d.setColor(new Color(40, 40, 44));
 				g2d.fillRoundRect(0, 0, getWidth(), getHeight(), getHeight(), getHeight());
 
-				// Progress
 				if (getValue() > 0) {
 					int progressWidth = (int) ((double) getValue() / getMaximum() * getWidth());
 
-					// Gradient effect
 					GradientPaint gradient = new GradientPaint(
 						0, 0, ACCENT_COLOR,
 						progressWidth, 0, ACCENT_COLOR.brighter()
@@ -143,9 +128,6 @@ public class LoadingUtilities {
 		return progressBar;
 	}
 
-	/**
-	 * Style scroll pane with custom scrollbar
-	 */
 	public static void styleScrollBar(JScrollPane scrollPane) {
 		scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
 			@Override
@@ -172,9 +154,6 @@ public class LoadingUtilities {
 		});
 	}
 
-	/**
-	 * Format elapsed time as MM:SS
-	 */
 	public static String formatElapsedTime(long startTime) {
 		long elapsed = System.currentTimeMillis() - startTime;
 		int seconds = (int) (elapsed / 1000) % 60;
@@ -182,9 +161,6 @@ public class LoadingUtilities {
 		return String.format("%02d:%02d", minutes, seconds);
 	}
 
-	/**
-	 * Format elapsed time from timestamp
-	 */
 	public static String formatElapsedTime(long timestamp, long startTime) {
 		long elapsed = timestamp - startTime;
 		int seconds = (int) (elapsed / 1000) % 60;

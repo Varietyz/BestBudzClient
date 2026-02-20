@@ -10,24 +10,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * GPU System Monitor and Diagnostics
- *
- * Provides comprehensive monitoring, diagnostics, and health checking
- * for the GPU rendering system with thread safety and performance tracking.
- */
 public class GPUMonitor {
 
-	// ===== SINGLETON PATTERN =====
 	private static volatile GPUMonitor instance;
 	private static final Object instanceLock = new Object();
 
-	// ===== MONITORING STATE =====
 	private final AtomicBoolean monitoringEnabled = new AtomicBoolean(false);
 	private final AtomicBoolean healthCheckEnabled = new AtomicBoolean(true);
 	private ScheduledExecutorService monitorExecutor;
 
-	// ===== PERFORMANCE METRICS =====
 	private final AtomicLong totalGPUOperations = new AtomicLong(0);
 	private final AtomicLong successfulGPUOperations = new AtomicLong(0);
 	private final AtomicLong failedGPUOperations = new AtomicLong(0);
@@ -36,30 +27,27 @@ public class GPUMonitor {
 	private final AtomicLong totalContextTime = new AtomicLong(0);
 	private final AtomicLong maxContextTime = new AtomicLong(0);
 
-	// ===== ERROR TRACKING =====
 	private final ConcurrentLinkedQueue<ErrorEvent> recentErrors = new ConcurrentLinkedQueue<>();
 	private final AtomicLong totalErrors = new AtomicLong(0);
 	private final AtomicReference<String> lastError = new AtomicReference<>("");
 	private final AtomicLong lastErrorTime = new AtomicLong(0);
 
-	// ===== HEALTH STATUS =====
 	private final AtomicReference<HealthStatus> currentHealth = new AtomicReference<>(HealthStatus.UNKNOWN);
 	private final AtomicLong lastHealthCheck = new AtomicLong(0);
 	private final Map<String, Object> healthMetrics = new ConcurrentHashMap<>();
 
-	// ===== CONFIGURATION =====
 	private static final int MAX_ERROR_HISTORY = 100;
-	private static final long HEALTH_CHECK_INTERVAL_MS = 5000; // 5 seconds
-	private static final long ERROR_RETENTION_MS = 300000; // 5 minutes
-	private static final long CONTEXT_TIME_WARNING_MS = 1000; // 1 second
+	private static final long HEALTH_CHECK_INTERVAL_MS = 5000;
+	private static final long ERROR_RETENTION_MS = 300000;
+	private static final long CONTEXT_TIME_WARNING_MS = 1000;
 
 	public enum HealthStatus {
-		HEALTHY,     // Everything working normally
-		WARNING,     // Some issues but still functional
-		DEGRADED,    // Significant issues, limited functionality
-		CRITICAL,    // Major problems, may need intervention
-		FAILED,      // GPU system has failed
-		UNKNOWN      // Status not yet determined
+		HEALTHY,
+		WARNING,
+		DEGRADED,
+		CRITICAL,
+		FAILED,
+		UNKNOWN
 	}
 
 	public static class ErrorEvent {
@@ -84,7 +72,7 @@ public class GPUMonitor {
 	}
 
 	private GPUMonitor() {
-		// Private constructor for singleton
+
 	}
 
 	public static GPUMonitor getInstance() {
@@ -98,24 +86,19 @@ public class GPUMonitor {
 		return instance;
 	}
 
-	/**
-	 * Start monitoring with periodic health checks
-	 */
 	public void startMonitoring() {
 		if (monitoringEnabled.getAndSet(true)) {
-			return; // Already started
+			return;
 		}
 
 		System.out.println("[GPU Monitor] Starting GPU system monitoring...");
 
-		// Create monitoring executor
 		monitorExecutor = Executors.newScheduledThreadPool(1, r -> {
 			Thread t = new Thread(r, "GPU-Monitor");
 			t.setDaemon(true);
 			return t;
 		});
 
-		// Schedule periodic health checks
 		monitorExecutor.scheduleAtFixedRate(
 			this::performHealthCheck,
 			HEALTH_CHECK_INTERVAL_MS,
@@ -123,7 +106,6 @@ public class GPUMonitor {
 			TimeUnit.MILLISECONDS
 		);
 
-		// Schedule periodic cleanup
 		monitorExecutor.scheduleAtFixedRate(
 			this::performCleanup,
 			ERROR_RETENTION_MS,
@@ -134,12 +116,9 @@ public class GPUMonitor {
 		System.out.println("[GPU Monitor] ✅ Monitoring started");
 	}
 
-	/**
-	 * Stop monitoring
-	 */
 	public void stopMonitoring() {
 		if (!monitoringEnabled.getAndSet(false)) {
-			return; // Already stopped
+			return;
 		}
 
 		System.out.println("[GPU Monitor] Stopping GPU system monitoring...");
@@ -159,9 +138,6 @@ public class GPUMonitor {
 		System.out.println("[GPU Monitor] ✅ Monitoring stopped");
 	}
 
-	/**
-	 * Record a GPU operation
-	 */
 	public void recordGPUOperation(String operation, boolean success, long durationMs) {
 		totalGPUOperations.incrementAndGet();
 
@@ -172,20 +148,15 @@ public class GPUMonitor {
 			recordError(operation, "Operation failed", Thread.currentThread().getName());
 		}
 
-		// Track long operations
 		if (durationMs > CONTEXT_TIME_WARNING_MS) {
 			recordError(operation, "Long operation duration: " + durationMs + "ms", Thread.currentThread().getName());
 		}
 	}
 
-	/**
-	 * Record context acquisition
-	 */
 	public void recordContextAcquisition(String operation, boolean success, long durationMs) {
 		contextAcquisitions.incrementAndGet();
 		totalContextTime.addAndGet(durationMs);
 
-		// Update max context time
 		long currentMax;
 		do {
 			currentMax = maxContextTime.get();
@@ -199,9 +170,6 @@ public class GPUMonitor {
 		}
 	}
 
-	/**
-	 * Record an error
-	 */
 	public void recordError(String operation, String error, String thread) {
 		totalErrors.incrementAndGet();
 		lastError.set(error);
@@ -210,23 +178,17 @@ public class GPUMonitor {
 		ErrorEvent errorEvent = new ErrorEvent(operation, error, thread);
 		recentErrors.offer(errorEvent);
 
-		// Limit error history size
 		while (recentErrors.size() > MAX_ERROR_HISTORY) {
 			recentErrors.poll();
 		}
 
-		// Log error if monitoring is enabled
 		if (monitoringEnabled.get()) {
 			System.err.println("[GPU Monitor] ERROR: " + errorEvent);
 		}
 
-		// Update health status based on error patterns
 		updateHealthBasedOnErrors();
 	}
 
-	/**
-	 * Perform health check
-	 */
 	private void performHealthCheck() {
 		if (!healthCheckEnabled.get()) {
 			return;
@@ -237,7 +199,6 @@ public class GPUMonitor {
 			HealthStatus oldHealth = currentHealth.getAndSet(newHealth);
 			lastHealthCheck.set(System.currentTimeMillis());
 
-			// Log health status changes
 			if (oldHealth != newHealth) {
 				System.out.println("[GPU Monitor] Health status changed: " + oldHealth + " -> " + newHealth);
 
@@ -247,7 +208,6 @@ public class GPUMonitor {
 				}
 			}
 
-			// Update health metrics
 			updateHealthMetrics();
 
 		} catch (Exception e) {
@@ -256,11 +216,8 @@ public class GPUMonitor {
 		}
 	}
 
-	/**
-	 * Calculate current health status
-	 */
 	private HealthStatus calculateHealthStatus() {
-		// Check if GPU is completely disabled
+
 		if (!GPURenderingEngine.isEnabled()) {
 			return HealthStatus.FAILED;
 		}
@@ -270,16 +227,13 @@ public class GPUMonitor {
 		long contextFailures = contextAcquisitionFailures.get();
 		long totalContextAcqs = contextAcquisitions.get();
 
-		// Calculate failure rates
 		double operationFailureRate = totalOps > 0 ? (double) failedOps / totalOps : 0.0;
 		double contextFailureRate = totalContextAcqs > 0 ? (double) contextFailures / totalContextAcqs : 0.0;
 
-		// Check recent errors (last 60 seconds)
 		long recentErrorCount = recentErrors.stream()
 			.mapToLong(e -> System.currentTimeMillis() - e.timestamp < 60000 ? 1 : 0)
 			.sum();
 
-		// Determine health status
 		if (operationFailureRate > 0.5 || contextFailureRate > 0.3 || recentErrorCount > 20) {
 			return HealthStatus.CRITICAL;
 		} else if (operationFailureRate > 0.2 || contextFailureRate > 0.1 || recentErrorCount > 10) {
@@ -293,14 +247,11 @@ public class GPUMonitor {
 		}
 	}
 
-	/**
-	 * Update health based on error patterns
-	 */
 	private void updateHealthBasedOnErrors() {
-		// Check for rapid error accumulation
+
 		long now = System.currentTimeMillis();
 		long recentErrors = this.recentErrors.stream()
-			.mapToLong(e -> now - e.timestamp < 5000 ? 1 : 0) // Last 5 seconds
+			.mapToLong(e -> now - e.timestamp < 5000 ? 1 : 0)
 			.sum();
 
 		if (recentErrors > 10) {
@@ -309,9 +260,6 @@ public class GPUMonitor {
 		}
 	}
 
-	/**
-	 * Update health metrics
-	 */
 	private void updateHealthMetrics() {
 		long totalOps = totalGPUOperations.get();
 		long successOps = successfulGPUOperations.get();
@@ -325,7 +273,6 @@ public class GPUMonitor {
 		healthMetrics.put("recent_errors", recentErrors.size());
 		healthMetrics.put("last_health_check", lastHealthCheck.get());
 
-		// GPU-specific metrics
 		if (GPURenderingEngine.isEnabled()) {
 			healthMetrics.put("gpu_enabled", true);
 			healthMetrics.put("gpu_width", GPURenderingEngine.getWidth());
@@ -335,21 +282,13 @@ public class GPUMonitor {
 		}
 	}
 
-	/**
-	 * Perform cleanup of old data
-	 */
 	private void performCleanup() {
 		long cutoffTime = System.currentTimeMillis() - ERROR_RETENTION_MS;
 
-		// Remove old errors
 		recentErrors.removeIf(error -> error.timestamp < cutoffTime);
 
-		// Additional cleanup could be added here
 	}
 
-	/**
-	 * Log detailed diagnostics
-	 */
 	private void logDetailedDiagnostics() {
 		System.err.println("=== GPU SYSTEM DIAGNOSTICS ===");
 		System.err.println("Health Status: " + currentHealth.get());
@@ -369,8 +308,6 @@ public class GPUMonitor {
 
 		System.err.println("=== END DIAGNOSTICS ===");
 	}
-
-	// ===== PUBLIC API =====
 
 	public HealthStatus getHealthStatus() {
 		return currentHealth.get();
@@ -445,25 +382,16 @@ public class GPUMonitor {
 		return report.toString();
 	}
 
-	/**
-	 * Enable/disable health checking
-	 */
 	public void setHealthCheckEnabled(boolean enabled) {
 		healthCheckEnabled.set(enabled);
 	}
 
-	/**
-	 * Trigger immediate health check
-	 */
 	public void triggerHealthCheck() {
 		if (monitoringEnabled.get()) {
 			performHealthCheck();
 		}
 	}
 
-	/**
-	 * Reset all metrics (for testing/debugging)
-	 */
 	public void resetMetrics() {
 		totalGPUOperations.set(0);
 		successfulGPUOperations.set(0);

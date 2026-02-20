@@ -73,7 +73,6 @@ public class FormatHelpers {
 		}
 	}
 
-	// Define your custom hex color ranges here
 	private static final ColorRange[] colorRanges = {
 		new ColorRange(Integer.MIN_VALUE, -421, "<col=" + Integer.toHexString(COMBATGRADE_SOFT_MAGENTA) + ">"),
 		new ColorRange(-420, -361, "<col=" + Integer.toHexString(COMBATGRADE_LAVENDER_PINK) + ">"),
@@ -94,7 +93,6 @@ public class FormatHelpers {
 		new ColorRange(421, Integer.MAX_VALUE, "<col=" + Integer.toHexString(COMBATGRADE_LIGHT_AZURE) + ">")
 	};
 
-
 	public static String combatDiffColor(int myLevel, int targetLevel) {
 		int diff = myLevel - targetLevel;
 		for (ColorRange range : colorRanges) {
@@ -102,7 +100,7 @@ public class FormatHelpers {
 				return range.hexColor;
 			}
 		}
-		return "<col=FFFF00>"; // fallback yellow
+		return "<col=FFFF00>";
 	}
 
 	public static String formatBestBucks(long amount)

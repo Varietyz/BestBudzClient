@@ -24,9 +24,8 @@ public class GameEventManager {
 		public final int score;
 		public final Color color;
 		public final GeometricShape.ShapeType shapeType;
-		public final float rotation; // Add rotation field
+		public final float rotation;
 
-		// Constructor for geometric shapes
 		public BubblePoppedEvent(float x, float y, float radius, int score, Color color,
 								 GeometricShape.ShapeType shapeType, float rotation) {
 			this.x = x;
@@ -38,7 +37,6 @@ public class GameEventManager {
 			this.rotation = rotation;
 		}
 
-		// Constructor for regular bubbles
 		public BubblePoppedEvent(float x, float y, float radius, int score, Color color) {
 			this.x = x;
 			this.y = y;

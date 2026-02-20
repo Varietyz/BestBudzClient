@@ -6,10 +6,6 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.util.Random;
 
-/**
- * Extended bubble class that renders as various geometric shapes.
- * Each shape type has different visual complexity and scoring multipliers.
- */
 public class GeometricShape extends Bubble {
 
 	public enum ShapeType {
@@ -36,13 +32,13 @@ public class GeometricShape extends Bubble {
 	}
 
 	private final ShapeType shapeType;
-	private final float rotation; // Random rotation for visual variety
+	private final float rotation;
 	private static final Random random = new Random();
 
 	public GeometricShape(float x, float y, float targetRadius, Color color) {
 		super(x, y, targetRadius, color);
 		this.shapeType = ShapeType.values()[random.nextInt(ShapeType.values().length)];
-		this.rotation = random.nextFloat() * 360f; // Random rotation
+		this.rotation = random.nextFloat() * 360f;
 	}
 
 	public GeometricShape(float x, float y, float targetRadius, Color color, ShapeType shapeType) {
@@ -55,13 +51,10 @@ public class GeometricShape extends Bubble {
 	public boolean contains(int px, int py) {
 		if (currentRadius <= 1) return false;
 
-		// For simplicity, use circular hit detection with generous buffer
-		// More complex shapes could implement precise hit detection
 		float dx = px - x;
 		float dy = py - y;
 		float distance = (float) Math.sqrt(dx * dx + dy * dy);
 
-		// Slightly larger clickbox for geometric shapes (they can be trickier to click)
 		float clickRadius = currentRadius + 12;
 		return distance <= clickRadius;
 	}
@@ -70,24 +63,16 @@ public class GeometricShape extends Bubble {
 	public float getScoreMultiplier() { return shapeType.getScoreMultiplier(); }
 	public float getRotation() { return rotation; }
 
-	/**
-	 * Static drawing method for geometric shapes.
-	 * Replaces the circular bubble drawing with various geometric forms.
-	 */
 	public static void drawGeometricShape(Graphics2D g2d, GeometricShape shape) {
 		if (shape.currentRadius <= 0) return;
 
-		// Save original transform
 		AffineTransform originalTransform = g2d.getTransform();
 
-		// Apply rotation and translation
 		g2d.translate(shape.x, shape.y);
 		g2d.rotate(Math.toRadians(shape.rotation));
 
-		// Use ShapeFactory for consistent shape creation
 		Shape geometricPath = ShapeFactory.createShape(shape.shapeType, shape.currentRadius);
 
-		// Create gradient fill
 		RadialGradientPaint gradient = new RadialGradientPaint(
 			0, 0, shape.currentRadius,
 			new float[]{0f, 0.6f, 1f},
@@ -98,33 +83,25 @@ public class GeometricShape extends Bubble {
 			}
 		);
 
-		// Fill shape
 		g2d.setPaint(gradient);
 		g2d.fill(geometricPath);
 
-		// Use ShapeRenderer for consistent neon styling
 		ShapeRenderer.renderShapeOutline(g2d, geometricPath, shape.color, shape.alpha, 2.5f);
 
-		// Outer glow
 		g2d.setColor(new Color(shape.color.getRed(), shape.color.getGreen(), shape.color.getBlue(), (int)(100 * shape.alpha)));
 		g2d.setStroke(new BasicStroke(4f));
 		AffineTransform glowTransform = AffineTransform.getScaleInstance(1.2, 1.2);
 		Shape glowShape = glowTransform.createTransformedShape(geometricPath);
 		g2d.draw(glowShape);
 
-		// Inner highlight
 		float highlightRadius = shape.currentRadius * 0.15f;
 		g2d.setColor(new Color(255, 255, 255, (int)(120 * shape.alpha)));
 		g2d.fill(new Ellipse2D.Float(-highlightRadius, -highlightRadius,
 			highlightRadius * 2, highlightRadius * 2));
 
-		// Restore transform
 		g2d.setTransform(originalTransform);
 	}
 
-	/**
-	 * Creates the geometric path for each shape type.
-	 */
 	private static Shape createShapePath(ShapeType shapeType, float radius) {
 		switch (shapeType) {
 			case TRIANGLE:
@@ -158,14 +135,14 @@ public class GeometricShape extends Bubble {
 	}
 
 	private static Shape createSquare(float radius) {
-		float size = radius * 0.707f; // Inscribed square
+		float size = radius * 0.707f;
 		return new Rectangle2D.Float(-size, -size, size * 2, size * 2);
 	}
 
 	private static Shape createPolygon(int sides, float radius) {
 		Path2D polygon = new Path2D.Float();
 		for (int i = 0; i < sides; i++) {
-			double angle = 2 * Math.PI * i / sides - Math.PI / 2; // Start at top
+			double angle = 2 * Math.PI * i / sides - Math.PI / 2;
 			float x = (float) (radius * Math.cos(angle));
 			float y = (float) (radius * Math.sin(angle));
 
@@ -214,10 +191,8 @@ public class GeometricShape extends Bubble {
 		float thickness = radius * 0.3f;
 		Area cross = new Area();
 
-		// Vertical bar
 		cross.add(new Area(new Rectangle2D.Float(-thickness, -radius, thickness * 2, radius * 2)));
 
-		// Horizontal bar
 		cross.add(new Area(new Rectangle2D.Float(-radius, -thickness, radius * 2, thickness * 2)));
 
 		return cross;

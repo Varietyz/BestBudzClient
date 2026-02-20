@@ -191,7 +191,6 @@ public final class ObjectManager {
 		return true;
 	}
 
-	// Enhanced bounds checking for byte arrays
 	private static boolean isWithinBounds(byte[][][] array, int plane, int x, int y, String methodName) {
 		if (array == null) {
 			if (ENABLE_BOUNDS_LOGGING) {
@@ -241,16 +240,13 @@ public final class ObjectManager {
 	public static void placeWorldObject(WorldController worldController, int i, int j, int k, int l, CollisionMap collisionMap,
 										int[][][] ai, int i1, int j1, int k1) {
 
-		// CRITICAL FIX: Add comprehensive bounds checking before any array access
 		final String methodName = "placeWorldObject";
 
-		// Validate input parameters first
 		if (ai == null) {
 			System.err.println("[ERROR] " + methodName + ": height array (ai) is null");
 			return;
 		}
 
-		// Check if the coordinates are within reasonable bounds
 		if (i1 < 0 || j < 0 || l < 0 || l >= ai.length) {
 			if (ENABLE_BOUNDS_LOGGING) {
 				System.err.println("[BOUNDS] " + methodName + ": Invalid coordinates - i1:" + i1 + ", j:" + j + ", l:" + l + ", ai.length:" + ai.length);
@@ -258,7 +254,6 @@ public final class ObjectManager {
 			return;
 		}
 
-		// Ensure we don't access ai[l][i1+1] or ai[l][i1][j+1] out of bounds
 		if (!isWithinBounds(ai, l, i1, j, methodName) ||
 			!isWithinBounds(ai, l, i1 + 1, j, methodName) ||
 			!isWithinBounds(ai, l, i1 + 1, j + 1, methodName) ||
@@ -276,14 +271,12 @@ public final class ObjectManager {
 			return;
 		}
 
-		// Pre-calculate height values once - NOW SAFE
 		final int l1 = ai[l][i1][j];
 		final int i2 = ai[l][i1 + 1][j];
 		final int j2 = ai[l][i1 + 1][j + 1];
 		final int k2 = ai[l][i1][j + 1];
 		final int l2 = (l1 + i2 + j2 + k2) >> 2;
 
-		// Cache ObjectDef lookup
 		final ObjectDef objectDef = ObjectDef.forID(j1);
 		if (objectDef == null) {
 			if (ENABLE_BOUNDS_LOGGING) {
@@ -292,11 +285,9 @@ public final class ObjectManager {
 			return;
 		}
 
-		// Pre-calculate common values
 		final int i3 = calculateI3(i1, j, j1, objectDef.hasActions);
 		final byte byte1 = (byte)((i << 6) + k);
 
-		// Use switch statement for better branch prediction and JIT optimization
 		try {
 			switch (k) {
 				case 0:
@@ -343,11 +334,10 @@ public final class ObjectManager {
 			System.err.println("[CRITICAL] " + methodName + ": Bounds error in handler for k=" + k);
 			System.err.println("  Parameters: i=" + i + ", j=" + j + ", k=" + k + ", l=" + l + ", i1=" + i1 + ", j1=" + j1 + ", k1=" + k1);
 			System.err.println("  Heights: l1=" + l1 + ", i2=" + i2 + ", j2=" + j2 + ", k2=" + k2 + ", l2=" + l2);
-			throw e; // Re-throw for debugging
+			throw e;
 		}
 	}
 
-	// Helper method to calculate i3 value
 	private static int calculateI3(int i1, int j, int j1, boolean hasActions) {
 		int i3 = i1 + (j << 7) + (j1 << 14) + 0x40000000;
 		if (!hasActions) {
@@ -356,7 +346,6 @@ public final class ObjectManager {
 		return i3;
 	}
 
-	// Helper method for creating Animable objects (reduces code duplication)
 	private static Animable createAnimable(ObjectDef objectDef, int j1, int i, int k, int l1, int i2, int j2, int k2) {
 		if (objectDef.animationId == -1 && objectDef.childIds == null) {
 			return objectDef.getModel(k, i, l1, i2, j2, k2, -1);
@@ -365,7 +354,6 @@ public final class ObjectManager {
 		}
 	}
 
-	// Optimized handler methods
 	private static void handleWallObjects(WorldController worldController, CollisionMap collisionMap, int i, int j, int k,
 										  int l2, ObjectDef objectDef, int i3, byte byte1, int i1, int j1,
 										  int l1, int i2, int j2, int k2, int k1) {
@@ -396,14 +384,13 @@ public final class ObjectManager {
 	private static void handleDiagonalWalls(WorldController worldController, int i, int j, int k,
 											int l2, ObjectDef objectDef, int i3, byte byte1, int i1, int j1,
 											int l1, int i2, int j2, int k2, int k1) {
-		// Apply height transformation if needed
+
 		final int[] heights = objectDef.rotateHeights ?
 			transformHeights(new int[]{l1, i2, j2, k2}, i) :
 			new int[]{l1, i2, j2, k2};
 
 		final Animable obj = createAnimable(objectDef, j1, 0, 4, heights[0], heights[1], heights[2], heights[3]);
 
-		// Calculate parameters based on k value
 		final int rotation, offsetX, offsetZ, direction;
 		switch (k) {
 			case 4:
@@ -501,37 +488,36 @@ public final class ObjectManager {
 		}
 	}
 
-	// Helper method for height transformation
 	private static int[] transformHeights(int[] heights, int i) {
 		final int[] result = heights.clone();
 
 		switch (i) {
 			case 1:
-				// Rotate once: k2 -> j2 -> i2 -> l1 -> k2
-				final int temp1 = result[3]; // k2
-				result[3] = result[2]; // k2 = j2
-				result[2] = result[1]; // j2 = i2
-				result[1] = result[0]; // i2 = l1
-				result[0] = temp1;     // l1 = k2
+
+				final int temp1 = result[3];
+				result[3] = result[2];
+				result[2] = result[1];
+				result[1] = result[0];
+				result[0] = temp1;
 				break;
 
 			case 2:
-				// Rotate twice: swap opposite corners
-				final int temp2a = result[3]; // k2
-				result[3] = result[1]; // k2 = i2
-				result[1] = temp2a;    // i2 = k2
-				final int temp2b = result[2]; // j2
-				result[2] = result[0]; // j2 = l1
-				result[0] = temp2b;    // l1 = j2
+
+				final int temp2a = result[3];
+				result[3] = result[1];
+				result[1] = temp2a;
+				final int temp2b = result[2];
+				result[2] = result[0];
+				result[0] = temp2b;
 				break;
 
 			case 3:
-				// Rotate three times: k2 -> l1 -> i2 -> j2 -> k2
-				final int temp3 = result[3]; // k2
-				result[3] = result[0]; // k2 = l1
-				result[0] = result[1]; // l1 = i2
-				result[1] = result[2]; // i2 = j2
-				result[2] = temp3;     // j2 = k2
+
+				final int temp3 = result[3];
+				result[3] = result[0];
+				result[0] = result[1];
+				result[1] = result[2];
+				result[2] = temp3;
 				break;
 		}
 
@@ -586,22 +572,22 @@ public final class ObjectManager {
 	}
 
 	public void renderScene(CollisionMap[] aclass11, WorldController worldController) {
-		// PHASE 1: Initial visibility pass with bounds checking
+
 		for (int j = 0; j < 4; j++) {
-			// Check if the plane exists
+
 			if (tileFlags == null || j >= tileFlags.length ||
 				tileFlags[j] == null) {
 				continue;
 			}
 
 			for (int k = 0; k < 104; k++) {
-				// Check if the row exists
+
 				if (k >= tileFlags[j].length || tileFlags[j][k] == null) {
 					continue;
 				}
 
 				for (int i1 = 0; i1 < 104; i1++) {
-					// Check if the element exists
+
 					if (i1 >= tileFlags[j][k].length) {
 						continue;
 					}
@@ -610,7 +596,6 @@ public final class ObjectManager {
 						if ((tileFlags[j][k][i1] & 1) == 1) {
 							int k1 = j;
 
-							// Safe check for plane 1 array access
 							if (j >= 1 && tileFlags.length > 1 &&
 								tileFlags[1] != null &&
 								k < tileFlags[1].length &&
@@ -626,15 +611,14 @@ public final class ObjectManager {
 						}
 					} catch (ArrayIndexOutOfBoundsException e) {
 						System.err.println("[ERROR] renderScene Phase1: Bounds error at j=" + j + ", k=" + k + ", i1=" + i1);
-						continue; // Skip this element and continue
+						continue;
 					}
 				}
 			}
 		}
 
-		// PHASE 2: Lighting calculation for each plane
 		for (int l = 0; l < 4; l++) {
-			// Validate arrays exist for this plane
+
 			if (shadowMap == null || l >= shadowMap.length ||
 				shadowMap[l] == null) {
 				System.err.println("[ERROR] renderScene: aByteArrayArrayArray134[" + l + "] is null");
@@ -658,7 +642,6 @@ public final class ObjectManager {
 				directional_light_y * directional_light_y);
 			int specular_distribution = specular_distribution_factor * directional_light_length >> 8;
 
-			// Safe bounds for lighting calculation
 			int maxY = Math.min(mapHeight - 1, heightMap[l].length - 1);
 			int maxX = Math.min(mapWidth - 1,
 				heightMap[l].length > 0 && heightMap[l][0] != null ?
@@ -669,11 +652,10 @@ public final class ObjectManager {
 
 				for (int x = 1; x < maxX; x++) {
 					try {
-						// Safe height difference calculations with bounds checking
+
 						int x_height_difference = 0;
 						int y_height_difference = 0;
 
-						// Check bounds before accessing height arrays
 						if (x + 1 < heightMap[l].length &&
 							heightMap[l][x + 1] != null &&
 							y < heightMap[l][x + 1].length &&
@@ -691,7 +673,7 @@ public final class ObjectManager {
 						int normal_length = (int) Math.sqrt(x_height_difference * x_height_difference +
 							0x10000 + y_height_difference * y_height_difference);
 
-						if (normal_length == 0) normal_length = 1; // Prevent division by zero
+						if (normal_length == 0) normal_length = 1;
 
 						int normalized_normal_x = (x_height_difference << 8) / normal_length;
 						int normalized_normal_z = 0x10000 / normal_length;
@@ -702,7 +684,6 @@ public final class ObjectManager {
 								directional_light_y * normalized_normal_y) /
 								(specular_distribution == 0 ? 1 : specular_distribution);
 
-						// Safe shadow intensity calculation with bounds checking
 						int weighted_shadow_intensity = 0;
 						if (shadowIntensity != null) {
 							if (x - 1 >= 0 && x - 1 < shadowIntensity.length &&
@@ -726,7 +707,6 @@ public final class ObjectManager {
 							}
 						}
 
-						// Safe assignment to lighting array
 						if (lightMap != null && x < lightMap.length &&
 							lightMap[x] != null && y < lightMap[x].length) {
 							lightMap[x][y] = directional_light_intensity - weighted_shadow_intensity;
@@ -739,7 +719,6 @@ public final class ObjectManager {
 				}
 			}
 
-			// PHASE 3: Initialize color accumulation arrays
 			if (redAccumulator != null && greenAccumulator != null && blueAccumulator != null &&
 				saturationAccumulator != null && colorCount != null) {
 				int arrayLength = Math.min(mapHeight, Math.min(redAccumulator.length,
@@ -755,10 +734,9 @@ public final class ObjectManager {
 				}
 			}
 
-			// PHASE 4: Color accumulation pass
 			for (int l6 = -5; l6 < mapWidth + 5; l6++) {
 				for (int i8 = 0; i8 < mapHeight; i8++) {
-					// Safe bounds checking for array access
+
 					if (redAccumulator == null || i8 >= redAccumulator.length ||
 						greenAccumulator == null || i8 >= greenAccumulator.length ||
 						blueAccumulator == null || i8 >= blueAccumulator.length ||
@@ -816,7 +794,6 @@ public final class ObjectManager {
 					}
 				}
 
-				// PHASE 5: Main rendering pass
 				if (l6 >= 1 && l6 < mapWidth - 1) {
 					int l9 = 0;
 					int j13 = 0;
@@ -873,7 +850,6 @@ public final class ObjectManager {
 				}
 			}
 
-			// PHASE 6: Final scene setup
 			for (int j8 = 1; j8 < mapHeight - 1; j8++) {
 				for (int i10 = 1; i10 < mapWidth - 1; i10++) {
 					try {
@@ -885,11 +861,9 @@ public final class ObjectManager {
 			}
 		}
 
-		// PHASE 7: World controller setup
 		if (worldController != null) {
 			worldController.applyLighting(-10, -50, -50);
 
-			// Safe bridge setup
 			for (int j1 = 0; j1 < mapWidth; j1++) {
 				for (int l1 = 0; l1 < mapHeight; l1++) {
 					try {
@@ -906,7 +880,6 @@ public final class ObjectManager {
 			}
 		}
 
-		// PHASE 8: Occlusion culling with bounds checking
 		int i2 = 1;
 		int j2 = 2;
 		int k2 = 4;
@@ -933,19 +906,16 @@ public final class ObjectManager {
 		}
 	}
 
-	// Helper method for low memory conditions check
 	private boolean checkLowMemConditions(int l, int l6, int k17) {
 		try {
 			if (tileFlags == null || tileFlags.length == 0) return true;
 
-			// Check plane 0 condition
 			if (tileFlags[0] != null && l6 < tileFlags[0].length &&
 				tileFlags[0][l6] != null && k17 < tileFlags[0][l6].length &&
 				(tileFlags[0][l6][k17] & 2) != 0) {
 				return true;
 			}
 
-			// Check current plane condition
 			if (l < tileFlags.length && tileFlags[l] != null &&
 				l6 < tileFlags[l].length && tileFlags[l][l6] != null &&
 				k17 < tileFlags[l][l6].length &&
@@ -956,11 +926,10 @@ public final class ObjectManager {
 
 			return false;
 		} catch (Exception e) {
-			return true; // Default to allowing rendering if check fails
+			return true;
 		}
 	}
 
-	// Helper method for tile rendering
 	private void renderTileIfValid(WorldController worldController, int l, int l6, int k17,
 								   int l9, int j13, int j14, int k15, int k16) {
 
@@ -980,7 +949,7 @@ public final class ObjectManager {
 		int i19 = overlayIds[l][l6][k17] & 0xff;
 
 		if (l18 > 0 || i19 > 0) {
-			// Safe height and lighting access
+
 			int j19 = safeGetHeight(heightMap, l, l6, k17, 0);
 			int k19 = safeGetHeight(heightMap, l, l6 + 1, k17, 0);
 			int l19 = safeGetHeight(heightMap, l, l6 + 1, k17 + 1, 0);
@@ -1036,7 +1005,6 @@ public final class ObjectManager {
 		}
 	}
 
-	// Helper method for overlay floor rendering
 	private void renderOverlayFloor(WorldController worldController, int l, int l6, int k17, int i19,
 									int j19, int k19, int l19, int i20, int j20, int k20, int l20, int i21,
 									int j21, int i22) {
@@ -1083,7 +1051,6 @@ public final class ObjectManager {
 				k23 = Rasterizer.colorPalette[adjustColor(overlay_flo.anInt399, 96)];
 			}
 
-			// Special overlay handling
 			if ((i19 - 1) == 111) {
 				k23 = Rasterizer.getTextureAverageColor(1);
 				j23 = -1;
@@ -1113,7 +1080,6 @@ public final class ObjectManager {
 				j23 = -1;
 			}
 
-			// Safe color collection
 			if (colors != null && colors.size() < 256 && !colors.contains(k23)) {
 				colors.add(k23);
 			}
@@ -1128,7 +1094,6 @@ public final class ObjectManager {
 		}
 	}
 
-	// Helper method for occlusion culling processing
 	private void processOcclusionCulling(int i2, int j2, int k2, int l2, int i3, int k3, int i4) {
 		if (occlusionFlags == null || i3 >= occlusionFlags.length ||
 			occlusionFlags[i3] == null || i4 >= occlusionFlags[i3].length ||
@@ -1136,23 +1101,19 @@ public final class ObjectManager {
 			return;
 		}
 
-		// Process X-axis occlusion
 		if ((occlusionFlags[i3][i4][k3] & i2) != 0) {
 			processXAxisOcclusion(i2, l2, i3, k3, i4);
 		}
 
-		// Process Y-axis occlusion
 		if ((occlusionFlags[i3][i4][k3] & j2) != 0) {
 			processYAxisOcclusion(j2, l2, i3, k3, i4);
 		}
 
-		// Process Z-axis occlusion
 		if ((occlusionFlags[i3][i4][k3] & k2) != 0) {
 			processZAxisOcclusion(k2, l2, i3, k3, i4);
 		}
 	}
 
-	// Helper method for X-axis occlusion processing
 	private void processXAxisOcclusion(int i2, int l2, int i3, int k3, int i4) {
 		try {
 			int k4 = k3;
@@ -1160,7 +1121,6 @@ public final class ObjectManager {
 			int i7 = i3;
 			int k8 = i3;
 
-			// Find bounds
 			for (; k4 > 0 && safeCheckOcclusionFlag(occlusionFlags, i3, i4, k4 - 1, i2); k4--);
 			for (; l5 < mapHeight && safeCheckOcclusionFlag(occlusionFlags, i3, i4, l5 + 1, i2); l5++);
 
@@ -1188,7 +1148,6 @@ public final class ObjectManager {
 
 				WorldController.method277(l2, i4 * 128, l15, i4 * 128, l5 * 128 + 128, k14, k4 * 128, 1);
 
-				// Clear processed flags
 				for (int l16 = i7; l16 <= k8; l16++) {
 					for (int l17 = k4; l17 <= l5; l17++) {
 						safeClearOcclusionFlag(occlusionFlags, l16, i4, l17, i2);
@@ -1200,7 +1159,6 @@ public final class ObjectManager {
 		}
 	}
 
-	// Helper method for Y-axis occlusion processing
 	private void processYAxisOcclusion(int j2, int l2, int i3, int k3, int i4) {
 		try {
 			int l4 = i4;
@@ -1208,7 +1166,6 @@ public final class ObjectManager {
 			int j7 = i3;
 			int l8 = i3;
 
-			// Find bounds
 			for (; l4 > 0 && safeCheckOcclusionFlag(occlusionFlags, i3, l4 - 1, k3, j2); l4--);
 			for (; i6 < mapWidth && safeCheckOcclusionFlag(occlusionFlags, i3, i6 + 1, k3, j2); i6++);
 
@@ -1236,7 +1193,6 @@ public final class ObjectManager {
 
 				WorldController.method277(l2, l4 * 128, i16, i6 * 128 + 128, k3 * 128, l14, k3 * 128, 2);
 
-				// Clear processed flags
 				for (int i17 = j7; i17 <= l8; i17++) {
 					for (int i18 = l4; i18 <= i6; i18++) {
 						safeClearOcclusionFlag(occlusionFlags, i17, i18, k3, j2);
@@ -1248,7 +1204,6 @@ public final class ObjectManager {
 		}
 	}
 
-	// Helper method for Z-axis occlusion processing
 	private void processZAxisOcclusion(int k2, int l2, int i3, int k3, int i4) {
 		try {
 			int i5 = i4;
@@ -1256,7 +1211,6 @@ public final class ObjectManager {
 			int k7 = k3;
 			int i9 = k3;
 
-			// Find bounds
 			for (; k7 > 0 && safeCheckOcclusionFlag(occlusionFlags, i3, i4, k7 - 1, k2); k7--);
 			for (; i9 < mapHeight && safeCheckOcclusionFlag(occlusionFlags, i3, i4, i9 + 1, k2); i9++);
 
@@ -1281,7 +1235,6 @@ public final class ObjectManager {
 
 				WorldController.method277(l2, i5 * 128, j12, j6 * 128 + 128, i9 * 128 + 128, j12, k7 * 128, 4);
 
-				// Clear processed flags
 				for (int k13 = i5; k13 <= j6; k13++) {
 					for (int i15 = k7; i15 <= i9; i15++) {
 						safeClearOcclusionFlag(occlusionFlags, i3, k13, i15, k2);
@@ -1293,7 +1246,6 @@ public final class ObjectManager {
 		}
 	}
 
-	// Safe helper methods for array access
 	private static int safeGetHeight(int[][][] heightArray, int plane, int x, int y, int defaultValue) {
 		try {
 			if (heightArray != null &&
@@ -1305,7 +1257,7 @@ public final class ObjectManager {
 				return heightArray[plane][x][y];
 			}
 		} catch (Exception e) {
-			// Silently return default value
+
 		}
 		return defaultValue;
 	}
@@ -1321,7 +1273,7 @@ public final class ObjectManager {
 				return byteArray[plane][x][y];
 			}
 		} catch (Exception e) {
-			// Silently return default value
+
 		}
 		return defaultValue;
 	}
@@ -1335,7 +1287,7 @@ public final class ObjectManager {
 				return lightArray[x][y];
 			}
 		} catch (Exception e) {
-			// Silently return default value
+
 		}
 		return defaultValue;
 	}
@@ -1351,7 +1303,7 @@ public final class ObjectManager {
 				return (occlusionArray[plane][x][y] & flag) != 0;
 			}
 		} catch (Exception e) {
-			// Silently return false
+
 		}
 		return false;
 	}
@@ -1367,7 +1319,7 @@ public final class ObjectManager {
 				occlusionArray[plane][x][y] &= ~flag;
 			}
 		} catch (Exception e) {
-			// Silently ignore errors
+
 		}
 	}
 

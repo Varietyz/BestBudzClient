@@ -118,12 +118,12 @@ public class Client extends ClientEngine
 	public static String[] chatMessages = new String[500];
 	public static final String[] clanList = new String[100];
 	public static final int[] configuredChatColors = {
-		ColorConfig.CHAT_COLOR, // pastel yellow
-		ColorConfig.CHAT_SOFT_PINK, // soft pink
-		ColorConfig.CHAT_BABY_BLUE, // baby blue
-		ColorConfig.CHAT_MINT_AQUA, // mint aqua
-		ColorConfig.CHAT_LIGHT_MAGENTA, // light magenta
-		ColorConfig.WHITE_COLOR  // white (kept for contrast pulse)
+		ColorConfig.CHAT_COLOR,
+		ColorConfig.CHAT_SOFT_PINK,
+		ColorConfig.CHAT_BABY_BLUE,
+		ColorConfig.CHAT_MINT_AQUA,
+		ColorConfig.CHAT_LIGHT_MAGENTA,
+		ColorConfig.WHITE_COLOR
 	};
 	public static final int[] skillExperienceTable = new int[33];
 	public static final int maxChatMessages = 50;
@@ -225,7 +225,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static boolean flagged;
 	public static int lastMouseX;
 	public static int lastMouseY;
-	// config
+
 	public static boolean clientData = true;
 	public static int channelRights;
 	public static int rights;
@@ -235,7 +235,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static int[] skillLevels;
 	public static int[] skillExperiences;
 	public static int loginScreenState;
-	//public static String prayerBook;
+
 	public static int[] configValues;
 		public static Background loginBackground1;
 	public static Background loginBackground2;
@@ -667,7 +667,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static void setCanvas(GameCanvas canvas) {
 	}
 
-
 	public static void setBounds()
 	{
 		Rasterizer.setViewportSize(frameWidth, frameHeight);
@@ -689,21 +688,18 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 
 		WorldController.viewDistance = RenderSettings.WORLD_VIEW_DISTANCE;
 
-// ✅ GOOD: Camera zoom only affects FOV, not render distance
 		cameraZoom = EngineConfig.CAMERA_ZOOM;
 
 		if (extendChatArea > frameHeight - 170) {
 			extendChatArea = frameHeight - 170;
 		}
 
-// ✅ GOOD: WorldController uses render settings, not camera settings
 		WorldController.calculateVisibility(500, 800, frameWidth, frameHeight, ai);
 		if (loggedIn)
 		{
 			mainGameRendering = new ImageProducer(frameWidth, frameHeight);
 		}
 	}
-
 
 	public static AbstractMap.SimpleEntry<Integer, Integer> getNextInteger(ArrayList<Integer> values)
 	{
@@ -730,7 +726,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		return frequencies.get(maxIndex);
 	}
 
-
 	public static void setHighMem()
 	{
 		WorldController.lowMemoryMode = false;
@@ -750,8 +745,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	{
 		return new java.net.Socket(InetAddress.getByName(NetworkConfig.LOCALHOST ? "localhost" : server), port);
 	}
-
-
 
 	public static ArchiveLoader loadArchive(int i, String s, String s1, int j, int k, Graphics2D g)
 	{
@@ -880,13 +873,11 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		return mx >= x && mx <= x + w && my >= y && my <= y + h;
 	}
 
-
 	public static void renderChatIfInvalidated() {
 		if (inputTaken) {
 			inputTaken = false;
 		}
 	}
-
 
 	public static boolean isStonerOrSelf(String s)
 	{
@@ -898,10 +889,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		return s.equalsIgnoreCase(myStoner.name);
 	}
 
-	/**
-	 * FIXED: Enhanced frame refresh with proper GPU state management
-	 * Key fix: Don't shutdown context manager during resize - just recreate framebuffer
-	 */
 	public void refreshFrameSize(GameCanvas canvas, int lockedW, int lockedH) throws InterruptedException {
 		if (lockedW <= 0 || lockedH <= 0) return;
 
@@ -911,27 +898,27 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		GPUContextManager.ContextToken contextToken = null;
 
 		try {
-			// ===== STEP 1: SMART GPU STATE CHECK =====
+
 			wasGPUEnabled = GPURenderingEngine.isEnabled() && gpuInitialized;
 
 			if (wasGPUEnabled) {
 				System.out.println("[Client] GPU active - performing safe resize (NO SHUTDOWN)");
 
 				try {
-					// CRITICAL FIX: Don't shutdown GPU - just resize the framebuffer
+
 					contextToken = gpuContextManager.acquireContext("Resize Operation", 5000);
 					if (contextToken != null && contextToken.isValid()) {
-						// Just resize the GPU framebuffer - don't cleanup everything
+
 						GPURenderingEngine.resize(lockedW, lockedH);
 						System.out.println("[Client] ✅ GPU framebuffer resized to " + lockedW + "x" + lockedH);
 					} else {
 						System.err.println("[Client] ⚠️ Failed to acquire context for GPU resize");
-						// Continue with CPU-only resize
+
 						wasGPUEnabled = false;
 					}
 				} catch (Exception e) {
 					System.err.println("[Client] ⚠️ Error during GPU resize: " + e.getMessage());
-					wasGPUEnabled = false; // Fall back to CPU-only
+					wasGPUEnabled = false;
 				} finally {
 					if (contextToken != null) {
 						try {
@@ -944,43 +931,34 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 				}
 			}
 
-			// ===== STEP 2: ALWAYS DO CPU BUFFER RESIZE =====
 			System.out.println("[Client] Performing CPU buffer resize to " + lockedW + "x" + lockedH);
 
-			// Create new buffers
 			int[] newPixels = new int[lockedW * lockedH];
 			float[] newDepthBuffer = new float[lockedW * lockedH];
 			java.util.Arrays.fill(newPixels, 0);
 			java.util.Arrays.fill(newDepthBuffer, Float.MAX_VALUE);
 
-			// Update DrawingArea with new dimensions
 			DrawingArea.initDrawingArea(lockedH, lockedW, newPixels, newDepthBuffer);
 
-			// Update global size variables
 			frameWidth = lockedW;
 			frameHeight = lockedH;
 			screenAreaWidth = lockedW;
 			screenAreaHeight = lockedH;
 
-			// Update other system that depend on screen size
 			setBounds();
 
-			// Create new ImageProducers with correct dimensions
 			Client.gameScreenBuffer = new ImageProducer(lockedW, lockedH);
 			DrawingArea.setCurrentImageProducer(Client.gameScreenBuffer);
 
-			// Update dock system
 			DockSync.refreshHeight(lockedH);
 
 			System.out.println("[Client] ✅ CPU resize complete");
 
-			// ===== STEP 3: VALIDATE GPU STATE (NO RESTORATION NEEDED) =====
 			if (wasGPUEnabled) {
-				// GPU should still be working since we didn't shut it down
+
 				if (GPURenderingEngine.isEnabled()) {
 					System.out.println("[Client] ✅ GPU resize complete - engine still enabled");
 
-					// Update the RS317 GPU interface with new screen size
 					try {
 						RS317GPUInterface.setScreenSize(lockedW, lockedH);
 					} catch (Exception e) {
@@ -991,7 +969,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 					gpuInitialized = false;
 				}
 			} else if (GPURenderingEngine.isEnabled()) {
-				// GPU is enabled but we didn't think it was - update our flag
+
 				gpuInitialized = true;
 				System.out.println("[Client] ✅ GPU discovered to be enabled after resize");
 			}
@@ -1002,7 +980,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 			System.err.println("[Client] ❌ Resize failed: " + e.getMessage());
 			e.printStackTrace();
 
-			// Emergency cleanup
 			try {
 				if (contextToken != null) {
 					contextToken.close();
@@ -1032,15 +1009,13 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		return new DataInputStream(inputstream);
 	}
 
-
 	public void processDrawing(Graphics2D g, GameCanvas canvas) {
-		// Quick validation before rendering
+
 		int expected = screenAreaWidth * screenAreaHeight;
 		if (DrawingArea.pixels == null || DrawingArea.pixels.length != expected) {
 			System.err.println("❌ Buffer mismatch detected - expected: " + expected +
 				", actual: " + (DrawingArea.pixels != null ? DrawingArea.pixels.length : "null"));
 
-			// Simple fix: recreate buffers with correct size
 			DrawingArea.pixels = new int[expected];
 			DrawingArea.depthBuffer = new float[expected];
 			DrawingArea.width = screenAreaWidth;
@@ -1051,9 +1026,8 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 			System.err.println("🔧 Emergency buffer fix applied");
 		}
 
-		// Rest of method unchanged...
 		if (gameAlreadyLoaded || loadingError || genericLoadingError) {
-			LoadingErrorScreen.showErrorScreen(g, canvas); // Keep original error screen
+			LoadingErrorScreen.showErrorScreen(g, canvas);
 			return;
 		}
 		if (!loggedIn)
@@ -1089,7 +1063,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		Signlink.midifade = flag ? 1 : 0;
 		Signlink.midisave(abyte0, abyte0.length);
 	}
-
 
 	private void processOnDemandQueue()
 	{
@@ -1144,9 +1117,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		} while (true);
 	}
 
-	/**
-	 * FIXED: Main game processor with proper GPU initialization timing
-	 */
 	private void mainGameProcessor(Graphics2D g, GameCanvas canvas) throws IOException
 	{
 		boolean leftClick = MouseState.leftClicked;
@@ -1171,7 +1141,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		processMenuClick(leftClick, rightClick);
 		handleInputTick(leftClick, rightClick);
 
-		// RESTORED: Original GPU initialization logic - keep it simple!
 		if (EngineConfig.ENABLE_GPU){
 			if (!initialized) {
 				System.out.println("[Client] GPU not initialized, calling initializeGPUAfterGraphicsLoad()");
@@ -1184,11 +1153,9 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		handleIdle();
 		tryFlushStream(g, canvas);
 
-		// Reset click flags at end of frame
 		MouseState.leftClicked = false;
 		MouseState.rightClicked = false;
 	}
-
 
 	private void handleDecrements() {
 		if (systemMessageTimer > 1) systemMessageTimer--;
@@ -1445,7 +1412,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		RSInterface.interfaceCache = null;
 		Animation.anims = null;
 		SpotAnim.cache = null;
-		//SpotAnim.aMRUNodes_415 = null;
+
 		Varp.cache = null;
 		Stoner.mruNodes = null;
 		Rasterizer.nullLoader();

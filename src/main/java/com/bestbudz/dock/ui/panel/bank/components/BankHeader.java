@@ -5,9 +5,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-/**
- * Header component for bank panel showing title and item count
- */
 public class BankHeader extends JPanel {
 
 	private final JLabel titleLabel;
@@ -37,32 +34,20 @@ public class BankHeader extends JPanel {
 		add(itemCountLabel, BorderLayout.EAST);
 	}
 
-	/**
-	 * Updates the item count display
-	 */
 	public void updateItemCount(int bankItemCount) {
 		SwingUtilities.invokeLater(() -> {
 			itemCountLabel.setText(bankItemCount + "/420");
 		});
 	}
 
-	/**
-	 * Updates the withdraw mode display
-	 */
 	public void updateWithdrawMode(String mode) {
 		amountControl.updateWithdrawMode(mode);
 	}
 
-	/**
-	 * Gets the current left-click amount setting
-	 */
 	public int getLeftClickAmount() {
 		return amountControl.getLeftClickAmount();
 	}
 
-	/**
-	 * Gets the amount control component for direct access
-	 */
 	public BankAmountControl getAmountControl() {
 		return amountControl;
 	}

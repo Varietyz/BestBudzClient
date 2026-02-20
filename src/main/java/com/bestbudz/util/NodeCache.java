@@ -1,7 +1,5 @@
 package com.bestbudz.util;
 
-import com.bestbudz.cache.Signlink;
-
 final class NodeCache {
 	private final int size;
 	private final Node[] cache;

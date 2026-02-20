@@ -9,7 +9,6 @@ public class PopEffectData extends EffectData {
 	public final boolean isGeometric;
 	public final float rotation;
 
-	// Constructor for geometric shapes with rotation
 	public PopEffectData(float x, float y, float radius, Color color, GeometricShape.ShapeType shapeType, float rotation) {
 		super(x, y, radius, color);
 		this.shapeType = shapeType;
@@ -17,7 +16,6 @@ public class PopEffectData extends EffectData {
 		this.rotation = rotation;
 	}
 
-	// Constructor for regular circular bubbles
 	public PopEffectData(float x, float y, float radius, Color color) {
 		super(x, y, radius, color);
 		this.shapeType = null;

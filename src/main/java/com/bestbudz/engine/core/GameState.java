@@ -18,32 +18,19 @@ import com.bestbudz.world.ObjectDef;
 import com.bestbudz.engine.core.gamerender.ObjectManager;
 import java.awt.Graphics2D;
 
-/**
- * Enhanced GameState with GPU Integration and Persistence
- *
- * Key improvements:
- * - Comprehensive GPU state management during game loads
- * - Integration with GPU monitoring system
- * - Thread-safe GPU context handling
- * - Graceful fallback mechanisms for GPU failures
- * - Performance monitoring and diagnostics
- */
 public class GameState extends Client {
 
-	// ===== CONSTANTS =====
 	private static final int DEFAULT_MAP_SIZE = 104;
 	private static final int MAX_SAFE_MAP_SIZE = 512;
 	private static final boolean DEBUG_LOGGING = true;
-	private static final int MEMORY_GC_THRESHOLD = 320; // KB
+	private static final int MEMORY_GC_THRESHOLD = 320;
 
-	// ===== GPU STATE MANAGEMENT =====
 	private static boolean gpuStateValid = false;
 	private static long lastGPUValidation = 0;
-	private static final long GPU_VALIDATION_INTERVAL = 5000; // 5 seconds
+	private static final long GPU_VALIDATION_INTERVAL = 5000;
 	private static int consecutiveGPUFailures = 0;
 	private static final int MAX_GPU_FAILURES = 3;
 
-	// ===== MEMORY AND PERFORMANCE MONITORING =====
 	private static long lastResetTime = 0;
 	private static int resetCount = 0;
 	private static long peakMemoryUsage = 0;
@@ -51,18 +38,15 @@ public class GameState extends Client {
 	private static int consecutiveErrors = 0;
 	private static long lastErrorTime = 0;
 
-	// ===== RENDERING ERROR TRACKING =====
 	private static int renderingErrors = 0;
 	private static long lastRenderErrorTime = 0;
 	private static int validationPreventedErrors = 0;
 	private static int totalRenderCalls = 0;
 
-	// ===== MAP DIMENSION CACHE =====
 	private static int cachedMapWidth = DEFAULT_MAP_SIZE;
 	private static int cachedMapHeight = DEFAULT_MAP_SIZE;
 	private static boolean dimensionsCached = false;
 
-	// ===== CAMERA VALIDATION =====
 	private static int lastValidXCameraPos = 0;
 	private static int lastValidYCameraPos = 0;
 	private static int lastValidXCameraCurve = 0;
@@ -71,13 +55,8 @@ public class GameState extends Client {
 	private static int lastValidYCameraCurve = 0;
 	private static boolean hasValidPosition = false;
 
-	/**
-	 * Main scene rendering method with GPU state management
-	 */
 	public static void runSceneRendering(Graphics2D g) {
 		try {
-			// Validate GPU state before rendering
-
 
 			if (loadingStage == 2) {
 
@@ -88,7 +67,6 @@ public class GameState extends Client {
 				}
 			}
 
-			// Safe array access with bounds checking
 			if (cameraShakeCounters != null && cameraShakeCounters.length >= 5) {
 				for (int i = 0; i < 5; i++) {
 					cameraShakeCounters[i]++;
@@ -104,13 +82,10 @@ public class GameState extends Client {
 		}
 	}
 
-	/**
-	 * Validate GPU state periodically - FIXED VERSION
-	 */
 	public static void validateGPUStateIfNeeded() {
 		long currentTime = System.currentTimeMillis();
 		if (currentTime - lastGPUValidation < GPU_VALIDATION_INTERVAL) {
-			return; // Skip validation if done recently
+			return;
 		}
 
 		lastGPUValidation = currentTime;
@@ -121,26 +96,24 @@ public class GameState extends Client {
 		}
 
 		try {
-			// SIMPLE FIX: Just check if GPU rendering engine is enabled and initialized
-			// The complex health checks were causing false failures
+
 			boolean basicGPUCheck = GPURenderingEngine.isEnabled() &&
 				GPURenderingEngine.initialized &&
 				GPUContextManager.getInstance().isContextCurrent();
 
 			if (basicGPUCheck) {
-				consecutiveGPUFailures = 0; // Reset on success
+				consecutiveGPUFailures = 0;
 				gpuStateValid = true;
 				logDebug("GPU validation passed - basic checks OK");
 			} else {
 				consecutiveGPUFailures++;
 				logError("Basic GPU validation failed (failure " + consecutiveGPUFailures + "/" + MAX_GPU_FAILURES + ")");
 
-				// Only attempt recovery after multiple failures
 				if (consecutiveGPUFailures >= MAX_GPU_FAILURES) {
 					logError("Maximum GPU failures reached, attempting recovery...");
 					attemptGPURecovery();
 				} else {
-					// For initial failures, just mark as invalid but don't trigger recovery
+
 					gpuStateValid = false;
 				}
 			}
@@ -150,16 +123,12 @@ public class GameState extends Client {
 			logError("GPU validation exception: " + e.getMessage());
 			gpuStateValid = false;
 
-			// Only trigger recovery on repeated exceptions
 			if (consecutiveGPUFailures >= MAX_GPU_FAILURES) {
 				attemptGPURecovery();
 			}
 		}
 	}
 
-	/**
-	 * Attempt GPU recovery
-	 */
 	private static void attemptGPURecovery() {
 		logInfo("Attempting GPU system recovery...");
 
@@ -180,37 +149,30 @@ public class GameState extends Client {
 		}
 	}
 
-	/**
-	 * Safe world rendering with GPU context management
-	 */
 	public static void safeRenderWorld(int xCameraPos, int yCameraPos, int xCameraCurve,
 									   int zCameraPos, int j, int yCameraCurve) {
 		totalRenderCalls++;
 		long renderStart = System.currentTimeMillis();
 
 		try {
-			// Record GPU operation for monitoring
 
 			boolean gpuEnabled = GPURenderingEngine.isEnabled() && gpuStateValid;
 
 			if (gpuEnabled) {
-				// Try GPU-accelerated rendering with context management
+
 				try (GPUContextManager.ContextToken context = GPURenderingEngine.acquireContext("World Rendering")) {
 					if (context != null) {
 						renderWorldWithGPU(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 
-						// Record successful GPU operation
 						long duration = System.currentTimeMillis() - renderStart;
 						GPUMonitor.getInstance().recordGPUOperation("World Rendering", true, duration);
 
-						// Cache successful position
 						cacheValidCameraPosition(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 						return;
 					}
 				}
 			}
 
-			// Fallback to CPU rendering or use cached position
 			renderWorldFallback(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 
 		} catch (ArrayIndexOutOfBoundsException e) {
@@ -222,7 +184,6 @@ public class GameState extends Client {
 			logError("Rendering error: " + e.getMessage());
 			GPUMonitor.getInstance().recordError("World Rendering", e.getMessage(), Thread.currentThread().getName());
 
-			// Try cached position as last resort
 			if (hasValidPosition && worldController != null) {
 				try {
 					worldController.render(lastValidXCameraPos, lastValidYCameraPos, lastValidXCameraCurve,
@@ -234,22 +195,16 @@ public class GameState extends Client {
 		}
 	}
 
-	/**
-	 * Render world using GPU acceleration
-	 */
 	private static void renderWorldWithGPU(int xCameraPos, int yCameraPos, int xCameraCurve,
 										   int zCameraPos, int j, int yCameraCurve) throws Exception {
 		if (worldController != null) {
-			// GPU-accelerated world rendering
+
 			worldController.render(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 		} else {
 			throw new IllegalStateException("worldController is null");
 		}
 	}
 
-	/**
-	 * Fallback rendering without GPU or using cached position
-	 */
 	private static void renderWorldFallback(int xCameraPos, int yCameraPos, int xCameraCurve,
 											int zCameraPos, int j, int yCameraCurve) {
 		try {
@@ -265,9 +220,6 @@ public class GameState extends Client {
 		}
 	}
 
-	/**
-	 * Cache valid camera position for fallback
-	 */
 	private static void cacheValidCameraPosition(int xCameraPos, int yCameraPos, int xCameraCurve,
 												 int zCameraPos, int j, int yCameraCurve) {
 		lastValidXCameraPos = xCameraPos;
@@ -279,23 +231,18 @@ public class GameState extends Client {
 		hasValidPosition = true;
 	}
 
-	/**
-	 * Handle rendering bounds errors with detailed diagnostics
-	 */
 	private static void handleRenderingBoundsError(ArrayIndexOutOfBoundsException e,
 												   int xCameraPos, int yCameraPos, int xCameraCurve,
 												   int zCameraPos, int j, int yCameraCurve) {
-		if (renderingErrors % 50 == 0) { // Log detailed info every 50 errors
+		if (renderingErrors % 50 == 0) {
 			logError("=== BOUNDS ERROR ANALYSIS ===");
 			logError("Camera Params: xCameraPos=" + xCameraPos + ", yCameraPos=" + yCameraPos + ", zCameraPos=" + zCameraPos);
 			logError("Error: " + e.getMessage());
 
-			// Calculate tile coordinates
 			int tileX = xCameraPos >> 7;
 			int tileY = yCameraPos >> 7;
 			logError("Tile coordinates: tileX=" + tileX + ", tileY=" + tileY);
 
-			// Check array bounds
 			if (byteGroundArray != null && byteGroundArray.length > 0 && byteGroundArray[0] != null) {
 				int maxTileX = byteGroundArray[0].length - 1;
 				int maxTileY = byteGroundArray[0].length > 0 && byteGroundArray[0][0] != null ?
@@ -311,16 +258,9 @@ public class GameState extends Client {
 
 		GPUMonitor.getInstance().recordError("Bounds Error", e.getMessage(), Thread.currentThread().getName());
 
-		// Try fallback rendering
 		renderWorldFallback(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 	}
 
-	/**
-	 * Enhanced resetGameState with GPU persistence
-	 */
-	/**
-	 * Enhanced resetGameState with embedded map loading integration
-	 */
 	public static void resetGameState() {
 		if (isResetting) {
 			logDebug("Reset already in progress, skipping");
@@ -334,34 +274,25 @@ public class GameState extends Client {
 		logInfo("Starting GameState reset #" + (resetCount + 1) + " with embedded map cache");
 
 		try {
-			// PHASE 0: GPU STATE PRESERVATION
+
 			preserveGPUState();
 
-			// PHASE 1: Environment validation
 			validateEnvironmentAndCacheDimensions();
 
-			// PHASE 2: Quick cleanup
 			performQuickCleanup();
 
-			// PHASE 3: Array operations
 			performArrayOperationsSafe();
 
-			// PHASE 4: Object management
 			ObjectManager objectManager = createObjectManagerSafe();
 
-			// PHASE 5: EMBEDDED MAP LOADING (NEW!)
 			int embeddedRegionsLoaded = loadEmbeddedMapsIfAvailable();
 
-			// PHASE 6: Main processing (updated to handle embedded maps)
 			performMainProcessingSafeWithEmbedded(objectManager, embeddedRegionsLoaded);
 
-			// PHASE 7: Model cleanup
 			performModelCleanupSafe();
 
-			// PHASE 8: Final operations
 			performFinalOperationsSafe();
 
-			// PHASE 9: GPU STATE RESTORATION
 			restoreGPUState();
 
 			consecutiveErrors = 0;
@@ -375,9 +306,6 @@ public class GameState extends Client {
 		}
 	}
 
-	/**
-	 * Preserve GPU state before reset
-	 */
 	private static void preserveGPUState() {
 		if (!GPURenderingEngine.isEnabled()) {
 			return;
@@ -386,10 +314,9 @@ public class GameState extends Client {
 		logDebug("Preserving GPU state...");
 
 		try {
-			// Persist GPU state through the reset
+
 			GPURenderingEngine.persistThroughGameLoad();
 
-			// Validate GPU state after preservation
 			validateGPUStateIfNeeded();
 
 			logDebug("✅ GPU state preserved");
@@ -401,9 +328,6 @@ public class GameState extends Client {
 		}
 	}
 
-	/**
-	 * Restore and validate GPU state after reset - FIXED VERSION
-	 */
 	private static void restoreGPUState() {
 		if (!GPURenderingEngine.isEnabled()) {
 			return;
@@ -412,19 +336,16 @@ public class GameState extends Client {
 		logDebug("Restoring GPU state...");
 
 		try {
-			// SIMPLE FIX: Don't immediately validate, just assume GPU is OK if engine is enabled
-			// The validation was too aggressive and causing false failures
 
 			if (GPURenderingEngine.isEnabled() && GPURenderingEngine.initialized) {
-				gpuStateValid = true; // Assume valid since engine reports enabled
-				consecutiveGPUFailures = 0; // Reset failure counter
+				gpuStateValid = true;
+				consecutiveGPUFailures = 0;
 				logDebug("✅ GPU state restored - engine reports enabled");
 			} else {
 				logError("GPU engine not properly enabled after restore");
 				gpuStateValid = false;
 			}
 
-			// Schedule a validation for later (not immediately)
 			lastGPUValidation = System.currentTimeMillis() - (GPU_VALIDATION_INTERVAL - 1000);
 
 		} catch (Exception e) {
@@ -433,18 +354,14 @@ public class GameState extends Client {
 		}
 	}
 
-	/**
-	 * Game load persistence - public API for handling game loads
-	 */
 	public static void handleGameLoad() {
 		logInfo("Handling game load with GPU persistence...");
 
 		try {
 			if (GPURenderingEngine.isEnabled()) {
-				// Tell the ClientLauncher to handle GPU persistence
+
 				com.bestbudz.engine.ClientLauncher.handleGameLoad();
 
-				// Validate GPU state after game load
 				validateGPUStateIfNeeded();
 
 				if (gpuStateValid) {
@@ -463,21 +380,14 @@ public class GameState extends Client {
 		}
 	}
 
-	// ===== IMPLEMENTATION OF EXISTING METHODS WITH GPU AWARENESS =====
-
-	/**
-	 * Validate environment with GPU state checking
-	 */
 	private static void validateEnvironmentAndCacheDimensions() {
 		logDebug("=== ENVIRONMENT VALIDATION WITH GPU ===");
 
-		// Check GPU state first
 		if (GPURenderingEngine.isEnabled()) {
 			validateGPUStateIfNeeded();
 			logDebug("GPU State Valid: " + gpuStateValid);
 		}
 
-		// Continue with original validation logic...
 		try {
 			if (byteGroundArray != null) {
 				logDebug("byteGroundArray planes: " + byteGroundArray.length);
@@ -515,8 +425,6 @@ public class GameState extends Client {
 
 		logDebug("=== VALIDATION COMPLETE ===");
 	}
-
-	// ===== REST OF THE ORIGINAL METHODS (unchanged but with GPU monitoring) =====
 
 	private static void validateCriticalArrays() {
 		if (collisionMaps != null) {
@@ -636,7 +544,7 @@ public class GameState extends Client {
 	}
 
 	private static void clearGroundArraysOptimized() {
-		final int blockSize = 32; // BLOCK_SIZE
+		final int blockSize = 32;
 
 		for (int plane = 0; plane < Math.min(4, byteGroundArray.length); plane++) {
 			byte[][] currentPlane = byteGroundArray[plane];
@@ -708,7 +616,7 @@ public class GameState extends Client {
 					try {
 						byteGroundArray[plane][x][y] = 0;
 					} catch (Exception e) {
-						// Skip this element and continue
+
 					}
 				}
 			}
@@ -736,9 +644,6 @@ public class GameState extends Client {
 		}
 	}
 
-	/**
-	 * NEW: Load embedded maps if available
-	 */
 	private static int loadEmbeddedMapsIfAvailable() {
 		logDebug("Phase 5: Loading embedded maps");
 
@@ -750,7 +655,6 @@ public class GameState extends Client {
 		try {
 			long embeddedStartTime = System.currentTimeMillis();
 
-			// Load all possible regions from embedded cache
 			int embeddedCount = EmbeddedMapCache.loadAllEmbeddedRegions();
 
 			long embeddedLoadTime = System.currentTimeMillis() - embeddedStartTime;
@@ -768,9 +672,6 @@ public class GameState extends Client {
 		}
 	}
 
-	/**
-	 * UPDATED: Main processing with embedded map awareness
-	 */
 	private static void performMainProcessingSafeWithEmbedded(ObjectManager objectManager, int embeddedRegionsLoaded) {
 		logDebug("Phase 6: Main processing (with " + embeddedRegionsLoaded + " embedded regions)");
 
@@ -800,14 +701,11 @@ public class GameState extends Client {
 		}
 	}
 
-	/**
-	 * UPDATED: Process normal mode with embedded map optimization
-	 */
 	private static void processNormalModeWithEmbedded(ObjectManager objectManager, int k2, int embeddedRegionsLoaded) {
 		logDebug("Processing normal mode with " + k2 + " regions (" + embeddedRegionsLoaded + " embedded)");
 
 		try {
-			// PASS 1: Process map data (many regions already loaded from embedded cache)
+
 			for (int i3 = 0; i3 < k2; i3++) {
 				if (i3 >= terrainData.length || i3 >= mapRegionIds.length) {
 					logError("Index " + i3 + " exceeds array bounds in normal mode pass 1");
@@ -831,7 +729,6 @@ public class GameState extends Client {
 				}
 			}
 
-			// PASS 2: Handle null regions (not loaded yet) - these will use cacheManager
 			if (inventoryOffsetY < 800) {
 				int nullRegionsProcessed = 0;
 				for (int j4 = 0; j4 < k2; j4++) {
@@ -860,7 +757,6 @@ public class GameState extends Client {
 				}
 			}
 
-			// Update network statistics
 			anInt1097++;
 			if (anInt1097 > 160) {
 				anInt1097 = 0;
@@ -870,7 +766,6 @@ public class GameState extends Client {
 
 			stream.writeEncryptedOpcode(0);
 
-			// PASS 3: Process landscape data (also benefits from embedded cache)
 			if (objectData != null) {
 				for (int i6 = 0; i6 < k2; i6++) {
 					if (i6 >= objectData.length || i6 >= mapRegionIds.length) {
@@ -1426,8 +1321,6 @@ public class GameState extends Client {
 		}
 	}
 
-	// ===== UTILITY METHODS =====
-
 	private static boolean isValidMapCoordinate(int x, int y, int index) {
 		if (x < -1000 || x > 10000 || y < -1000 || y > 10000) {
 			logError("Coordinate validation failed: extreme values x=" + x + ", y=" + y + " for index=" + index);
@@ -1450,8 +1343,6 @@ public class GameState extends Client {
 			return 0;
 		}
 	}
-
-	// ===== PUBLIC API =====
 
 	public static String getRenderingStatistics() {
 		return String.format("Rendering Stats - Total calls: %d, LoadingErrorScreen: %d, Prevented: %d, " +
@@ -1487,8 +1378,6 @@ public class GameState extends Client {
 			MAX_GPU_FAILURES,
 			GPUMonitor.getInstance().getHealthStatus());
 	}
-
-	// ===== LOGGING METHODS =====
 
 	private static void logInfo(String message) {
 		System.out.println("[GameState INFO] " + message);

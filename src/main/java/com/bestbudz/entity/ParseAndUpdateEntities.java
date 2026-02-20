@@ -292,23 +292,19 @@ public class ParseAndUpdateEntities extends Client
 		l = i1 * j1 + l * k1 >> 16;
 		i1 = j2;
 
-		// ONLY prevent mirroring, allow off-screen extension
-		if (l <= 50) // Behind camera
+		if (l <= 50)
 		{
 			spriteDrawX = -1;
 			spriteDrawY = -1;
 			return;
 		}
 
-		// Calculate screen position
 		int screenX = Rasterizer.viewportCenterX + (i << WorldController.viewDistance) / l;
 		int screenY = Rasterizer.viewportCenterY + (i1 << WorldController.viewDistance) / l;
 
-		// Only check for extreme mirroring (not normal off-screen)
 		int screenWidth = Rasterizer.viewportCenterX * 2;
 		int screenHeight = Rasterizer.viewportCenterY * 2;
 
-		// Detect obvious mirroring (coordinates way beyond reasonable bounds)
 		if (Math.abs(screenX) > screenWidth * 5 || Math.abs(screenY) > screenHeight * 5)
 		{
 			spriteDrawX = -1;
@@ -316,7 +312,6 @@ public class ParseAndUpdateEntities extends Client
 			return;
 		}
 
-		// Allow any reasonable coordinate, even if off-screen
 		spriteDrawX = screenX;
 		spriteDrawY = screenY;
 	}

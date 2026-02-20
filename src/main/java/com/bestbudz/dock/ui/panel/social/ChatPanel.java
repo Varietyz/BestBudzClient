@@ -17,10 +17,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Simple ChatPanel - Minimal Logic with Reversed Display Order
- * Just displays messages as they come, no complex timestamp tracking or sorting
- */
 public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 	private JScrollPane scrollPane;
@@ -32,7 +28,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	private ScheduledExecutorService updateScheduler;
 	private volatile boolean isDisposed = false;
 
-	// Simple tracking - just remember what we've already displayed
 	private String lastDisplayedContent = "";
 
 	private static final String[] CHANNELS = {"All", "Public", "Private", "Trade"};
@@ -47,11 +42,10 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		setOpaque(false);
 		setBorder(new EmptyBorder(10, 10, 5, 10));
 
-		// Chat display
 		chatDisplay = new JTextPane() {
 			@Override
 			public boolean getScrollableTracksViewportWidth() {
-				return true; // Force text to wrap to viewport width
+				return true;
 			}
 		};
 		chatDisplay.setEditable(false);
@@ -69,18 +63,15 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		scrollPane.getViewport().setOpaque(false);
 		scrollPane.setBorder(BorderFactory.createLineBorder(SCROLLBAR_COLOR, 1, true));
 
-		// Hide scrollbar UI but keep functionality
 		scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
 		scrollPane.getVerticalScrollBar().setOpaque(false);
 
 		add(scrollPane, BorderLayout.CENTER);
 
-		// Input area
 		JPanel inputPanel = new JPanel(new BorderLayout(8, 0));
 		inputPanel.setOpaque(false);
 		inputPanel.setBorder(new EmptyBorder(8, 0, 0, 0));
 
-		// Channel selector
 		channelSelector = new JComboBox<>(CHANNELS);
 		channelSelector.setBackground(CHAT_INPUT_BACKGROUND_COLOR);
 		channelSelector.setForeground(WHITE_UI_COLOR);
@@ -88,7 +79,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		channelSelector.setPreferredSize(new Dimension(85, 32));
 		channelSelector.addActionListener(e -> updateDisplay());
 
-		// Input field
 		inputField = new JTextField();
 		inputField.setBackground(CHAT_INPUT_BACKGROUND_COLOR);
 		inputField.setForeground(WHITE_UI_COLOR);
@@ -100,7 +90,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		inputField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		inputField.addActionListener(this::sendMessage);
 
-		// Send button
 		JButton sendButton = new JButton("Send");
 		sendButton.setBackground(BUTTON_COLOR);
 		sendButton.setForeground(WHITE_UI_COLOR);
@@ -135,7 +124,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	private void checkForUpdates() {
 		if (!Client.loggedIn || isDisposed) return;
 
-		// Simple check - just see if chat content changed
 		StringBuilder currentContent = new StringBuilder();
 		for (int i = 0; i < 1000; i++) {
 			if (Chatbox.chatMessages[i] != null) {
@@ -154,16 +142,14 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		if (!Client.loggedIn || isDisposed) return;
 
 		try {
-			// Remember scroll position
+
 			JScrollBar vBar = scrollPane.getVerticalScrollBar();
 			boolean wasAtBottom = vBar.getValue() >= (vBar.getMaximum() - vBar.getVisibleAmount() - 10);
 
-			// Clear and rebuild
 			document.remove(0, document.getLength());
 
 			int selectedChannel = channelSelector.getSelectedIndex();
 
-			// Display messages in reverse order (99 to 0 instead of 0 to 99)
 			for (int i = 99; i >= 0; i--) {
 				if (Chatbox.chatMessages[i] != null && !Chatbox.chatMessages[i].trim().isEmpty()) {
 					String message = Chatbox.chatMessages[i];
@@ -171,14 +157,13 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 					int messageType = (i < Chatbox.chatTypes.length) ? Chatbox.chatTypes[i] : 0;
 					int rights = (i < Chatbox.chatRights.length) ? Chatbox.chatRights[i] : 0;
 
-					// Get title and title color
 					String title = null;
 					String titleColor = null;
 					try {
 						title = getChatTitle(i);
 						titleColor = getChatTitleColor(i);
 					} catch (Exception e) {
-						// Fallback if title access fails
+
 					}
 
 					if (shouldShowMessage(messageType, selectedChannel)) {
@@ -187,7 +172,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 				}
 			}
 
-			// Auto-scroll if we were at bottom
 			if (wasAtBottom) {
 				SwingUtilities.invokeLater(() -> {
 					vBar.setValue(vBar.getMaximum());
@@ -201,10 +185,10 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 	private boolean shouldShowMessage(int messageType, int channel) {
 		switch (channel) {
-			case 0: return true; // All
-			case 1: return messageType == 1 || messageType == 2; // Public
-			case 2: return messageType == 3 || messageType == 5 || messageType == 6 || messageType == 7; // Private
-			case 3: return messageType == 4 || messageType == 8; // Trade
+			case 0: return true;
+			case 1: return messageType == 1 || messageType == 2;
+			case 2: return messageType == 3 || messageType == 5 || messageType == 6 || messageType == 7;
+			case 3: return messageType == 4 || messageType == 8;
 			default: return true;
 		}
 	}
@@ -214,10 +198,9 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 			Color baseColor = getMessageColor(messageType);
 
 			if (username != null && !username.trim().isEmpty()) {
-				// Clean username (remove @cr tags)
+
 				String cleanUsername = cleanUsername(username);
 
-				// Add rank if present
 				if (rights > 0) {
 					Style rankStyle = document.addStyle("rank", null);
 					StyleConstants.setForeground(rankStyle, new Color(255, 215, 0));
@@ -225,7 +208,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 					document.insertString(document.getLength(), getRankSymbol(rights) + " ", rankStyle);
 				}
 
-				// Add title if present
 				if (title != null && !title.trim().isEmpty()) {
 					String cleanTitle = processTitleText(title);
 					Color titleColorObj = parseTitleColor(titleColor);
@@ -235,25 +217,20 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 					document.insertString(document.getLength(), cleanTitle + " ", titleStyle);
 				}
 
-				// Add username
 				Style usernameStyle = document.addStyle("username", null);
 				StyleConstants.setForeground(usernameStyle, new Color(114, 137, 218));
 				StyleConstants.setBold(usernameStyle, true);
 				document.insertString(document.getLength(), cleanUsername + ": ", usernameStyle);
 			}
 
-			// Add message with color code support
 			addFormattedMessage(message, baseColor);
 			document.insertString(document.getLength(), "\n", null);
 
 		} catch (BadLocationException e) {
-			// Ignore
+
 		}
 	}
 
-	/**
-	 * Get rank symbol for rights level
-	 */
 	private String getRankSymbol(int rights) {
 		switch (rights) {
 			case 1: return "★";
@@ -265,17 +242,11 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		}
 	}
 
-	/**
-	 * Process title text for color codes
-	 */
 	private String processTitleText(String title) {
 		if (title == null) return null;
 		return title.replaceAll("<[^>]+>", "");
 	}
 
-	/**
-	 * Parse title color from hex string to Color object
-	 */
 	private Color parseTitleColor(String colorHex) {
 		if (colorHex == null || colorHex.isEmpty()) {
 			return new Color(255, 255, 255);
@@ -292,9 +263,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		}
 	}
 
-	/**
-	 * Helper method to get chat title with fallback
-	 */
 	private String getChatTitle(int index) {
 		try {
 			Class<?> chatboxClass = Class.forName("com.bestbudz.ui.interfaces.Chatbox");
@@ -311,9 +279,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		}
 	}
 
-	/**
-	 * Helper method to get chat title color with fallback
-	 */
 	private String getChatTitleColor(int index) {
 		try {
 			Class<?> chatboxClass = Class.forName("com.bestbudz.ui.interfaces.Chatbox");
@@ -330,9 +295,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		}
 	}
 
-	/**
-	 * Clean username by removing @cr tags
-	 */
 	private String cleanUsername(String username) {
 		if (username == null) return "";
 		if (username.startsWith("@cr")) {
@@ -344,53 +306,38 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		return username;
 	}
 
-	/**
-	 * Add message with RuneScape color code support and proper text wrapping
-	 */
 	private void addFormattedMessage(String message, Color defaultColor) throws BadLocationException {
 		if (message == null) return;
 
-		// Remove image tags and HTML-style formatting tags
 		String processedMessage = message.replaceAll("<img=\\d+>", "");
 		processedMessage = cleanHtmlTags(processedMessage);
 
-		// Force word wrapping by breaking long strings
 		processedMessage = wrapLongText(processedMessage);
 
-		// Check for RuneScape style color codes (@red@, @gre@, etc.)
 		if (hasColorCodes(processedMessage)) {
 			addColorCodedMessage(processedMessage, defaultColor);
 		} else {
-			// Regular message
+
 			Style messageStyle = document.addStyle("message", null);
 			StyleConstants.setForeground(messageStyle, defaultColor);
 			document.insertString(document.getLength(), processedMessage, messageStyle);
 		}
 	}
 
-	/**
-	 * Clean HTML-style tags like <col=FFFF64>, <shad=0>, </shad>, </col>, etc.
-	 */
 	private String cleanHtmlTags(String text) {
 		if (text == null) return null;
 
-		// Remove color tags: <col=FFFF64>, </col>
 		text = text.replaceAll("<col=[^>]*>", "");
 		text = text.replaceAll("</col>", "");
 
-		// Remove shadow tags: <shad=0>, </shad>
 		text = text.replaceAll("<shad=[^>]*>", "");
 		text = text.replaceAll("</shad>", "");
 
-		// Remove any other HTML-style tags
 		text = text.replaceAll("<[^>]+>", "");
 
 		return text;
 	}
 
-	/**
-	 * Wrap long text to prevent overflow
-	 */
 	private String wrapLongText(String text) {
 		if (text == null) return text;
 
@@ -399,13 +346,13 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		int lineLength = 0;
 
 		for (String word : words) {
-			// If a single word is too long, break it up
+
 			if (word.length() > 50) {
 				if (lineLength > 0) {
 					wrapped.append("\n");
 					lineLength = 0;
 				}
-				// Break long words into chunks
+
 				while (word.length() > 50) {
 					wrapped.append(word.substring(0, 50)).append("\n");
 					word = word.substring(50);
@@ -416,7 +363,7 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 					lineLength = word.length();
 				}
 			} else {
-				// Normal word wrapping
+
 				if (lineLength + word.length() + 1 > 60) {
 					wrapped.append("\n").append(word);
 					lineLength = word.length();
@@ -434,18 +381,12 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		return wrapped.toString();
 	}
 
-	/**
-	 * Check if message has color codes
-	 */
 	private boolean hasColorCodes(String message) {
 		return message != null && message.matches(".*@\\w{3,}@.*");
 	}
 
-	/**
-	 * Add message with color code processing and proper wrapping
-	 */
 	private void addColorCodedMessage(String message, Color defaultColor) throws BadLocationException {
-		// First wrap the message to prevent overflow
+
 		String wrappedMessage = wrapLongText(message);
 
 		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(@\\w+@)");
@@ -455,7 +396,7 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		Color currentColor = defaultColor;
 
 		while (matcher.find()) {
-			// Add text before the color code
+
 			if (matcher.start() > lastEnd) {
 				String textPart = wrappedMessage.substring(lastEnd, matcher.start());
 				if (!textPart.isEmpty()) {
@@ -465,18 +406,16 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 				}
 			}
 
-			// Extract and apply color code
 			String colorCode = matcher.group(1);
 			String colorName = colorCode.substring(1, colorCode.length() - 1);
 			Color newColor = getColorFromName(colorName);
 
-			// Only change color if we found a valid color
 			if (!newColor.equals(Color.WHITE) ||
 				colorName.toLowerCase().equals("whi") ||
 				colorName.toLowerCase().equals("white")) {
 				currentColor = newColor;
 			} else {
-				// If it's not a recognized color, just add the text as-is
+
 				Style style = document.addStyle("colored", null);
 				StyleConstants.setForeground(style, currentColor);
 				document.insertString(document.getLength(), colorCode, style);
@@ -485,7 +424,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 			lastEnd = matcher.end();
 		}
 
-		// Add remaining text after last color code
 		if (lastEnd < wrappedMessage.length()) {
 			String remaining = wrappedMessage.substring(lastEnd);
 			if (!remaining.isEmpty()) {
@@ -496,9 +434,6 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		}
 	}
 
-	/**
-	 * Get color from RuneScape color name
-	 */
 	private Color getColorFromName(String colorName) {
 		if (colorName == null) return Color.WHITE;
 
@@ -524,16 +459,16 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 	private Color getMessageColor(int messageType) {
 		switch (messageType) {
-			case 0: return new Color(250, 166, 26); // System
+			case 0: return new Color(250, 166, 26);
 			case 1:
-			case 2: return new Color(185, 187, 190); // Public
+			case 2: return new Color(185, 187, 190);
 			case 3:
 			case 5:
 			case 6:
-			case 7: return new Color(237, 66, 69); // Private
+			case 7: return new Color(237, 66, 69);
 			case 4:
-			case 8: return new Color(163, 190, 140); // Trade
-			default: return new Color(220, 221, 222); // Default
+			case 8: return new Color(163, 190, 140);
+			default: return new Color(220, 221, 222);
 		}
 	}
 
@@ -593,7 +528,7 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 	@Override
 	public void onDeactivate() {
-		// Nothing needed
+
 	}
 
 	@Override

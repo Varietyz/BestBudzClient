@@ -10,48 +10,38 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Settings panel UI component.
- * Provides a scrollable grid of toggle buttons for various game settings.
- */
 public class SettingsPanel implements UIPanel {
 
 	private final JPanel panel;
 	private final Map<String, ToggleButton> toggleMap = new HashMap<>();
 	private final SettingsPanelConfig config;
 
-	// Layout constants
 	private static final int BORDER_SIZE = 15;
 	private static final int GRID_COLUMNS = 2;
 	private static final int GRID_H_GAP = 10;
 	private static final int GRID_V_GAP = 10;
 
-	// Modern toggle button colors
 	private static final Color TOGGLE_OFF_COLOR = new Color(60, 60, 65);
 	private static final Color TOGGLE_ON_COLOR = new Color(76, 175, 80);
 	private static final Color TEXT_COLOR = new Color(220, 220, 220);
 
-	// Dynamic color generation parameters - more visible with frequent shifts
-	private static float globalHue = 0.6f; // Start with a nice blue-ish hue
-	private static final float HUE_SHIFT_AMOUNT = 0.08f; // More frequent color shifts
-	private static final float SATURATION = 0.3f; // Higher saturation for more visible colors
-	private static final float BRIGHTNESS = 0.4f; // Brighter for better visibility
+	private static float globalHue = 0.6f;
+	private static final float HUE_SHIFT_AMOUNT = 0.08f;
+	private static final float SATURATION = 0.3f;
+	private static final float BRIGHTNESS = 0.4f;
 
 	public SettingsPanel() {
 		this.config = new SettingsPanelConfig();
 		this.panel = createMainPanel();
 	}
 
-	/**
-	 * Create and configure the main panel.
-	 */
 	private JPanel createMainPanel() {
 		JPanel mainPanel = new JPanel(new BorderLayout(0, 10));
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
 		mainPanel.setPreferredSize(null);
 		mainPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 		mainPanel.setMinimumSize(new Dimension(0, 0));
-		mainPanel.setOpaque(false); // Let parent handle background
+		mainPanel.setOpaque(false);
 
 		JScrollPane scrollPane = createScrollPane();
 		mainPanel.add(scrollPane, BorderLayout.CENTER);
@@ -59,15 +49,11 @@ public class SettingsPanel implements UIPanel {
 		return mainPanel;
 	}
 
-	/**
-	 * Create the scroll pane containing the settings grid.
-	 */
 	private JScrollPane createScrollPane() {
 		JPanel settingsGrid = createSettingsGrid();
 
-		// Create a wrapper that enforces proper sizing
 		JPanel gridWrapper = new JPanel(new BorderLayout());
-		gridWrapper.add(settingsGrid, BorderLayout.NORTH); // North instead of center to prevent stretching
+		gridWrapper.add(settingsGrid, BorderLayout.NORTH);
 		gridWrapper.setOpaque(false);
 
 		JScrollPane scrollPane = new JScrollPane(gridWrapper);
@@ -77,21 +63,18 @@ public class SettingsPanel implements UIPanel {
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-		// Disable horizontal scrolling completely
 		scrollPane.getHorizontalScrollBar().setEnabled(false);
 		scrollPane.getHorizontalScrollBar().setVisible(false);
 
-		// Override the scroll behavior to prevent horizontal movement
 		scrollPane.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					e.consume(); // Consume left/right arrow key events
+					e.consume();
 				}
 			}
 		});
 
-		// Ensure the viewport respects the horizontal constraint
 		scrollPane.getViewport().addChangeListener(e -> {
 			Point viewPosition = scrollPane.getViewport().getViewPosition();
 			if (viewPosition.x != 0) {
@@ -103,18 +86,13 @@ public class SettingsPanel implements UIPanel {
 		return scrollPane;
 	}
 
-
-	/**
-	 * Create the grid panel containing all setting toggle buttons.
-	 */
 	private JPanel createSettingsGrid() {
 		JPanel grid = new JPanel(new GridLayout(0, GRID_COLUMNS, GRID_H_GAP, GRID_V_GAP));
 		grid.setAlignmentX(Component.CENTER_ALIGNMENT);
 		grid.setOpaque(false);
-		// Add some right margin to prevent scrollbar overlap
+
 		grid.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 20));
 
-		// Sort settings alphabetically before adding them
 		String[] settingNames = config.getSettingNames();
 		Arrays.sort(settingNames);
 
@@ -125,23 +103,18 @@ public class SettingsPanel implements UIPanel {
 		return grid;
 	}
 
-	/**
-	 * Create and add a toggle button for a specific setting.
-	 */
 	private void addSettingToggle(JPanel parent, String settingName) {
 		boolean initialValue = config.getSettingValue(settingName);
 		ToggleButton toggle = new ToggleButton(settingName, initialValue);
 
-		// Add action listener
 		toggle.addActionListener(e -> {
-			// Get current value from config (source of truth)
+
 			boolean currentValue = config.getSettingValue(settingName);
-			// Toggle to opposite
+
 			boolean newValue = !currentValue;
 			handleSettingChange(settingName, newValue);
 		});
 
-		// Wrap in a container panel to handle bounds
 		JPanel container = new JPanel();
 		container.setLayout(new GridBagLayout());
 		container.setOpaque(false);
@@ -151,16 +124,13 @@ public class SettingsPanel implements UIPanel {
 		toggleMap.put(settingName, toggle);
 	}
 
-	/**
-	 * Custom toggle button with separate toggle state and hover effects
-	 */
 	private static class ToggleButton extends JButton {
 		private boolean selected;
 		private boolean hovering = false;
-		private Color currentHoverOverlay = null; // null means no hover overlay
+		private Color currentHoverOverlay = null;
 		private Color targetHoverOverlay = null;
 		private Timer colorTimer;
-		private static final int FADE_OUT_DURATION = 500; // 0.5 seconds for fade out
+		private static final int FADE_OUT_DURATION = 500;
 		private static final int COLOR_ANIMATION_FPS = 60;
 
 		public ToggleButton(String text, boolean selected) {
@@ -174,7 +144,6 @@ public class SettingsPanel implements UIPanel {
 			setContentAreaFilled(false);
 			setOpaque(false);
 
-			// Make buttons uniform width for better grid alignment
 			int buttonWidth = 120;
 			int buttonHeight = 24;
 
@@ -183,7 +152,6 @@ public class SettingsPanel implements UIPanel {
 			setMaximumSize(new Dimension(buttonWidth, buttonHeight));
 			setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-			// Add hover effects - separate from toggle state
 			RainbowHoverUtil.applyRainbowHover(this, new RainbowHoverUtil.HoverOverlayRenderer() {
 				@Override
 				public void setHoverOverlay(Color overlayColor) {
@@ -204,7 +172,7 @@ public class SettingsPanel implements UIPanel {
 		public void setSelected(boolean selected) {
 			if (this.selected != selected) {
 				this.selected = selected;
-				repaint(); // Simple repaint - no color state management needed
+				repaint();
 			}
 		}
 
@@ -213,25 +181,21 @@ public class SettingsPanel implements UIPanel {
 			Graphics2D g2 = (Graphics2D) g.create();
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-			// Draw base color based purely on selection state
 			Color baseColor = selected ? TOGGLE_ON_COLOR : TOGGLE_OFF_COLOR;
 
 			int padding = 2;
 			g2.setColor(baseColor);
 			g2.fillRoundRect(padding, padding, getWidth() - padding * 2, getHeight() - padding * 2, 6, 6);
 
-			// Draw hover overlay if present
 			if (currentHoverOverlay != null) {
 				g2.setColor(currentHoverOverlay);
 				g2.fillRoundRect(padding, padding, getWidth() - padding * 2, getHeight() - padding * 2, 6, 6);
 			}
 
-			// Draw border
 			g2.setColor(selected ? TOGGLE_ON_COLOR.brighter() : new Color(80, 80, 85));
 			g2.setStroke(new BasicStroke(1f));
 			g2.drawRoundRect(padding, padding, getWidth() - padding * 2 - 1, getHeight() - padding * 2 - 1, 6, 6);
 
-			// Draw text
 			g2.setColor(selected ? Color.BLACK : TEXT_COLOR);
 			FontMetrics fm = g2.getFontMetrics();
 			int textX = (getWidth() - fm.stringWidth(getText())) / 2;
@@ -242,21 +206,18 @@ public class SettingsPanel implements UIPanel {
 		}
 	}
 
-	/**
-	 * Handle setting value change from UI interaction.
-	 */
 	private void handleSettingChange(String settingName, boolean newValue) {
 		try {
 			config.setSettingValue(settingName, newValue);
-			// Update the toggle button's visual state immediately
+
 			ToggleButton toggle = toggleMap.get(settingName);
 			if (toggle != null) {
 				toggle.setSelected(newValue);
 			}
 		} catch (IllegalArgumentException e) {
-			// This shouldn't happen with proper initialization, but handle gracefully
+
 			System.err.println("Unknown setting: " + settingName);
-			// Revert toggle state
+
 			ToggleButton toggle = toggleMap.get(settingName);
 			if (toggle != null) {
 				toggle.setSelected(!newValue);
@@ -264,10 +225,6 @@ public class SettingsPanel implements UIPanel {
 		}
 	}
 
-	/**
-	 * Refresh all toggle states from the current config values.
-	 * This is useful when settings might have been changed externally.
-	 */
 	private void refreshToggles() {
 		for (Map.Entry<String, ToggleButton> entry : toggleMap.entrySet()) {
 			String settingName = entry.getKey();
@@ -275,7 +232,7 @@ public class SettingsPanel implements UIPanel {
 
 			try {
 				boolean currentValue = config.getSettingValue(settingName);
-				// Only update if different to avoid unnecessary events
+
 				if (toggle.isSelected() != currentValue) {
 					toggle.setSelected(currentValue);
 				}
@@ -285,19 +242,13 @@ public class SettingsPanel implements UIPanel {
 		}
 	}
 
-	/**
-	 * Get the configuration manager for this panel.
-	 * Useful for external access to settings.
-	 */
 	public SettingsPanelConfig getConfig() {
 		return config;
 	}
 
-	// UIPanel interface implementation
-
 	@Override
 	public void updateText() {
-		// No text updates needed for this panel
+
 	}
 
 	@Override
@@ -317,12 +268,11 @@ public class SettingsPanel implements UIPanel {
 
 	@Override
 	public void onDeactivate() {
-		// Optionally force save when deactivating
-		// config.saveImmediately();
+
 	}
 
 	@Override
 	public void updateDockText(int index, String text) {
-		// Not used by this panel
+
 	}
 }

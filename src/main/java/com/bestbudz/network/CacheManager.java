@@ -35,7 +35,7 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 			int available = inputStream.available();
 			if (expectedSize == 0 && available >= 6) {
 				waiting = true;
-				// Read 6-byte header
+
 				int totalRead = 0;
 				while (totalRead < 6) {
 					int read = inputStream.read(ioBuffer, totalRead, 6 - totalRead);
@@ -48,7 +48,6 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 				int fileSize = ((ioBuffer[3] & 0xff) << 8) + (ioBuffer[4] & 0xff);
 				int blockIndex = ioBuffer[5] & 0xff;
 
-				// Find matching request
 				current = null;
 				for (OnDemandData data = (OnDemandData) requested.reverseGetFirst();
 					 data != null;
@@ -63,7 +62,7 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 				if (current != null) {
 					loopCycle = 0;
 					if (fileSize == 0) {
-						// Request rejected
+
 						Signlink.reporterror("Rej: " + dataType + "," + fileId);
 						current.buffer = null;
 						if (current.incomplete) {
@@ -75,7 +74,7 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 						}
 						current = null;
 					} else {
-						// Allocate buffer for first block
+
 						if (current.buffer == null && blockIndex == 0) {
 							current.buffer = new byte[fileSize];
 						}
@@ -99,7 +98,6 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 					offset = completedSize;
 				}
 
-				// Read data block
 				int totalRead = 0;
 				while (totalRead < expectedSize) {
 					int read = inputStream.read(targetBuffer, offset + totalRead, expectedSize - totalRead);
@@ -107,7 +105,6 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 					totalRead += read;
 				}
 
-				// Check if file is complete
 				if (current != null && expectedSize + completedSize >= current.buffer.length) {
 					if (Client.decompressors[0] != null) {
 						Client.decompressors[current.dataType + 1].method234(
@@ -212,7 +209,6 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 				outputStream = socket.getOutputStream();
 				outputStream.write(15);
 
-				// Skip 8 bytes
 				for (int i = 0; i < 8; i++) {
 					inputStream.read();
 				}
@@ -243,7 +239,7 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 
 	public void enqueueRequest(int dataType, int id) {
 		synchronized (activeRequests) {
-			// Check if already exists
+
 			for (OnDemandData data = (OnDemandData) activeRequests.reverseGetFirst();
 				 data != null;
 				 data = (OnDemandData) activeRequests.reverseGetNext()) {
@@ -271,7 +267,6 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 			while (running) {
 				onDemandCycle++;
 
-				// Dynamic sleep timing
 				int sleepTime = (maxPriority == 0 && client.decompressors[0] != null) ? 50 : 20;
 				Thread.sleep(sleepTime);
 
@@ -285,7 +280,6 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 					if (inputStream != null) readData();
 				}
 
-				// Handle request timeouts
 				boolean hasIncomplete = processRequestTimeouts();
 
 				if (hasIncomplete) {
@@ -298,7 +292,6 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 					statusString = "";
 				}
 
-				// Send keepalive
 				if (Client.loggedIn && socket != null && outputStream != null &&
 					(maxPriority > 0 || client.decompressors[0] == null)) {
 					keepAliveCounter++;
@@ -377,7 +370,6 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 
 		if (data.buffer == null) return data;
 
-		// Decompress if needed
 		try (GZIPInputStream gzipStream = new GZIPInputStream(new ByteArrayInputStream(data.buffer))) {
 			byte[] decompressed = gzipStream.readAllBytes();
 			data.buffer = decompressed;
@@ -514,7 +506,6 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 				}
 			}
 
-			// Process file status arrays
 			for (int type = 0; type < 4; type++) {
 				byte[] status = fileStatus[type];
 				for (int id = 0; id < status.length; id++) {
@@ -543,7 +534,6 @@ public final class CacheManager extends CacheManagerBase implements Runnable {
 		return midiIndices[i] == 1;
 	}
 
-	// Fields remain the same
 	private int totalFileCount;
 	private final NodeList requested;
 	private int maxPriority;

@@ -2,14 +2,8 @@ package com.bestbudz.graphics.text;
 
 import java.awt.*;
 
-/**
- * FontSystem with NO ANTI-ALIASING - Pixel perfect text rendering
- */
 public class FontSystem {
 
-	/**
-	 * Create TextDrawingArea with NO anti-aliasing
-	 */
 	public static TextDrawingArea createModernTextDrawingArea(boolean fancy, int size) {
 		String fontName = getFontName(fancy, size);
 		int style = getFontStyle(fancy, size);
@@ -21,9 +15,6 @@ public class FontSystem {
 		return textArea;
 	}
 
-	/**
-	 * Create TextController with NO anti-aliasing
-	 */
 	public static TextController createModernRSFont(boolean fancy, int size) {
 		String fontName = getFontName(fancy, size);
 		int style = getFontStyle(fancy, size);
@@ -33,10 +24,9 @@ public class FontSystem {
 		return textController;
 	}
 
-	// Font selection optimized for pixel-perfect rendering
 	private static String getFontName(boolean fancy, int size) {
 		if (fancy) {
-			// Use monospace fonts for better pixel-perfect rendering
+
 			String[] preferredFonts = {"JetBrains Mono", "Monospaced", "Lucida Console", "Consolas"};
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			String[] availableFonts = ge.getAvailableFontFamilyNames();
@@ -50,7 +40,6 @@ public class FontSystem {
 			}
 		}
 
-		// Default to Arial for consistency - good for non-anti-aliased rendering
 		return "JetBrains Mono";
 	}
 
@@ -64,9 +53,6 @@ public class FontSystem {
 		}
 	}
 
-	/**
-	 * GameFonts with NO anti-aliasing
-	 */
 	public static class GameFonts {
 		public final TextDrawingArea smallText;
 		public final TextDrawingArea regularText;
@@ -80,10 +66,8 @@ public class FontSystem {
 		private GameFonts() {
 			System.out.println("🎨 Creating pixel-perfect fonts (NO anti-aliasing)...");
 
-			// Initialize NON-anti-aliased text rendering first
 			com.bestbudz.engine.core.gamerender.DrawingArea.initTextRendering();
 
-			// Create fonts with pixel-perfect sizes
 			smallText = createModernTextDrawingArea(false, 10);
 			regularText = createModernTextDrawingArea(false, 11);
 			boldText = createModernTextDrawingArea(false, 13);

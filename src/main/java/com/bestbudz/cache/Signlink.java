@@ -29,13 +29,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 
-/**
- * Optimized Signlink with intelligent cache management and memory optimization
- * Addresses memory spikes from file I/O operations and cache synchronization
- */
 public final class Signlink implements Runnable {
 
-	// Original constants and fields
 	public static final int clientversion = 317;
 	public static final RandomAccessFile[] cache_idx = new RandomAccessFile[6];
 	public static int uid;
@@ -67,15 +62,13 @@ public final class Signlink implements Runnable {
 	private static boolean waveplay;
 	private static int wavepos;
 
-	// NEW: Cache optimization fields
 	private static final Map<String, WeakReference<byte[]>> fileCache = new ConcurrentHashMap<>();
 	private static final Map<String, Long> fileCacheAccessTimes = new ConcurrentHashMap<>();
 	private static final ReentrantReadWriteLock cacheLock = new ReentrantReadWriteLock();
 	private static final int MAX_FILE_CACHE_SIZE = 50;
-	private static final int MAX_CACHED_FILE_SIZE = 512 * 1024; // 512KB max per file
-	private static final long CACHE_CLEANUP_INTERVAL = 60000; // 1 minute
+	private static final int MAX_CACHED_FILE_SIZE = 512 * 1024;
+	private static final long CACHE_CLEANUP_INTERVAL = 60000;
 
-	// Performance monitoring
 	private static long totalFilesProcessed = 0;
 	private static long totalBytesProcessed = 0;
 	private static long cacheHits = 0;
@@ -114,18 +107,15 @@ public final class Signlink implements Runnable {
 		}
 	}
 
-	/**
-	 * Enhanced cache directory finder with caching and optimization
-	 */
 	public static String findCacheDir() {
-		// Return cached result if available
+
 		if (cachedCacheDir != null) {
 			return cachedCacheDir;
 		}
 
 		cacheLock.writeLock().lock();
 		try {
-			// Double-check after acquiring lock
+
 			if (cachedCacheDir != null) {
 				return cachedCacheDir;
 			}
@@ -136,7 +126,6 @@ public final class Signlink implements Runnable {
 			try {
 				Files.createDirectories(cacheDir);
 
-				// Optimized cache synchronization with memory management
 				Set<Path> expected = new HashSet<>();
 				expected.addAll(syncOnceOptimized("/caches/fixed", cacheDir));
 				expected.addAll(syncOnceOptimized("/caches/" + theme, cacheDir));
@@ -154,9 +143,6 @@ public final class Signlink implements Runnable {
 		}
 	}
 
-	/**
-	 * Optimized cache synchronization with memory management
-	 */
 	private static Set<Path> syncOnceOptimized(String resourceRoot, Path targetDir)
 		throws IOException, URISyntaxException {
 
@@ -203,16 +189,15 @@ public final class Signlink implements Runnable {
 					if (Files.notExists(dest)) {
 						Files.createDirectories(dest.getParent());
 
-						// Check file size before caching
 						long fileSize = je.getSize();
 						if (fileSize > 0 && fileSize <= MAX_CACHED_FILE_SIZE) {
-							// Try to use cached data first
+
 							byte[] cachedData = getCachedFileData(name);
 							if (cachedData != null) {
 								Files.write(dest, cachedData);
 								cacheHits++;
 							} else {
-								// Read and cache file data
+
 								try (InputStream in = jar.getInputStream(je)) {
 									byte[] fileData = readAllBytesCompat(in);
 									Files.write(dest, fileData);
@@ -222,7 +207,7 @@ public final class Signlink implements Runnable {
 								}
 							}
 						} else {
-							// Large files - direct copy without caching
+
 							try (InputStream in = jar.getInputStream(je)) {
 								Files.copy(in, dest);
 								cacheMisses++;
@@ -235,7 +220,6 @@ public final class Signlink implements Runnable {
 					processedCount++;
 					totalFilesProcessed++;
 
-					// Periodic memory management during large operations
 					if (processedCount % 100 == 0) {
 						performPeriodicCacheCleanup();
 					}
@@ -248,15 +232,11 @@ public final class Signlink implements Runnable {
 		}
 	}
 
-	/**
-	 * Optimized file copying with caching
-	 */
 	private static void copyIfMissingOptimized(Path src, Path dest) {
 		if (Files.notExists(dest)) {
 			try {
 				Files.createDirectories(dest.getParent());
 
-				// Check if we can cache this file
 				long fileSize = Files.size(src);
 				if (fileSize <= MAX_CACHED_FILE_SIZE) {
 					String cacheKey = src.toString();
@@ -273,7 +253,7 @@ public final class Signlink implements Runnable {
 						totalBytesProcessed += fileData.length;
 					}
 				} else {
-					// Large files - direct copy
+
 					Files.copy(src, dest);
 					cacheMisses++;
 				}
@@ -287,9 +267,6 @@ public final class Signlink implements Runnable {
 		}
 	}
 
-	/**
-	 * Optimized stale file deletion with batching
-	 */
 	private static void deleteStaleOptimized(Path cacheDir, Set<Path> keep) throws IOException {
 		try (Stream<Path> s = Files.walk(cacheDir)) {
 			s.filter(Files::isRegularFile)
@@ -297,7 +274,7 @@ public final class Signlink implements Runnable {
 				.forEach(p -> {
 					try {
 						Files.deleteIfExists(p);
-						// Remove from cache if deleted
+
 						String cacheKey = p.toString();
 						fileCache.remove(cacheKey);
 						fileCacheAccessTimes.remove(cacheKey);
@@ -307,9 +284,6 @@ public final class Signlink implements Runnable {
 		}
 	}
 
-	/**
-	 * File data caching methods
-	 */
 	private static byte[] getCachedFileData(String key) {
 		WeakReference<byte[]> ref = fileCache.get(key);
 		if (ref != null) {
@@ -330,7 +304,6 @@ public final class Signlink implements Runnable {
 			return;
 		}
 
-		// Clean up cache if it's getting too large
 		if (fileCache.size() >= MAX_FILE_CACHE_SIZE) {
 			cleanupOldestFileCache();
 		}
@@ -342,7 +315,6 @@ public final class Signlink implements Runnable {
 	private static void cleanupOldestFileCache() {
 		if (fileCacheAccessTimes.isEmpty()) return;
 
-		// Remove oldest 30% of cache entries
 		int removeCount = Math.max(1, fileCacheAccessTimes.size() * 3 / 10);
 
 		fileCacheAccessTimes.entrySet().stream()
@@ -360,15 +332,12 @@ public final class Signlink implements Runnable {
 		if (currentTime - lastCacheCleanup > CACHE_CLEANUP_INTERVAL) {
 			lastCacheCleanup = currentTime;
 
-			// Clean up dead weak references
 			fileCache.entrySet().removeIf(entry -> entry.getValue().get() == null);
 
-			// Remove stale access times
 			fileCacheAccessTimes.entrySet().removeIf(entry -> !fileCache.containsKey(entry.getKey()));
 
-			// Check memory usage
 			long memoryUsage = getCurrentMemoryUsage();
-			if (memoryUsage > 300) { // 300KB threshold
+			if (memoryUsage > 300) {
 				performEmergencyCacheCleanup();
 			}
 		}
@@ -377,11 +346,9 @@ public final class Signlink implements Runnable {
 	private static void performEmergencyCacheCleanup() {
 		addConsoleMessage("Signlink: Emergency cache cleanup at " + getCurrentMemoryUsage() + "KB");
 
-		// Clear file cache
 		fileCache.clear();
 		fileCacheAccessTimes.clear();
 
-		// Force garbage collection
 		System.gc();
 
 		addConsoleMessage("Signlink: Memory after cleanup: " + getCurrentMemoryUsage() + "KB");
@@ -392,14 +359,10 @@ public final class Signlink implements Runnable {
 		return (runtime.totalMemory() - runtime.freeMemory()) / 1024;
 	}
 
-	/**
-	 * Enhanced wave saving with memory optimization
-	 */
 	public static synchronized boolean wavesave(byte[] abyte0, int i) {
 		if (i > 0x1e8480) return false;
 		if (savereq != null) return false;
 
-		// Check memory before proceeding
 		if (getCurrentMemoryUsage() > 280) {
 			performPeriodicCacheCleanup();
 		}
@@ -412,14 +375,10 @@ public final class Signlink implements Runnable {
 		return true;
 	}
 
-	/**
-	 * Enhanced MIDI saving with memory optimization
-	 */
 	public static synchronized void midisave(byte[] abyte0, int i) {
 		if (i > 0x1e8480) return;
 		if (savereq != null) return;
 
-		// Check memory before proceeding
 		if (getCurrentMemoryUsage() > 280) {
 			performPeriodicCacheCleanup();
 		}
@@ -431,9 +390,6 @@ public final class Signlink implements Runnable {
 		savereq = "jingle" + midipos + ".mid";
 	}
 
-	/**
-	 * Enhanced run method with memory management
-	 */
 	public void run() {
 		active = true;
 		addConsoleMessage("[CACHE] (signlink) active – opening cache files");
@@ -492,9 +448,8 @@ public final class Signlink implements Runnable {
 				savereq = null;
 			}
 
-			// Periodic memory management
 			cleanupCounter++;
-			if (cleanupCounter % 100 == 0) { // Every ~5 seconds (50ms * 100)
+			if (cleanupCounter % 100 == 0) {
 				performPeriodicCacheCleanup();
 			}
 
@@ -506,7 +461,6 @@ public final class Signlink implements Runnable {
 		}
 	}
 
-	// Original methods remain unchanged
 	private static int getuid(String s) {
 		try {
 			File file = new File(s + "uid.dat");
@@ -581,7 +535,6 @@ public final class Signlink implements Runnable {
 		addConsoleMessage("Error: " + s);
 	}
 
-	// NEW: Public API for cache statistics and management
 	public static String getCacheStatistics() {
 		long hitRate = (cacheHits + cacheMisses) > 0 ?
 			(cacheHits * 100) / (cacheHits + cacheMisses) : 0;
@@ -603,12 +556,9 @@ public final class Signlink implements Runnable {
 		addConsoleMessage("Signlink: Cache directory cleared, will be recalculated on next access");
 	}
 
-	/**
-	 * Java 8 compatible method to read all bytes from InputStream
-	 */
 	private static byte[] readAllBytesCompat(InputStream inputStream) throws IOException {
 		try {
-			// Use a reasonable buffer size
+
 			byte[] buffer = new byte[8192];
 			int bytesRead;
 			java.io.ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();

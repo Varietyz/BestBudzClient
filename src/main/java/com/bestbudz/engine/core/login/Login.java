@@ -54,7 +54,7 @@ public class Login extends Client
 		if (loadingStage == 2 && plane != draggedInterfaceId)
 		{
 			draggedInterfaceId = plane;
-			//renderMinimap(plane);
+
 		}
 	}
 
@@ -70,11 +70,10 @@ public class Login extends Client
 				SettingHandler.save();
 			}
 
-			// Only show once per manual login
 			if (!flag) {
 				loginMessage1 = "";
 				loginMessage2 = "Rolling a fat blunt...";
-				//	loginRenderer.displayLoginScreen(g, canvas);
+
 			}
 
 			server = NetworkConfig.SERVER_IPS[worldSelected - 1];
@@ -145,7 +144,7 @@ public class Login extends Client
 			}
 
 			if (k == 2) {
-				// Login success
+
 				myUsername = username;
 				myPassword = password;
 				myPrivilege = socketStream.read();
@@ -174,7 +173,6 @@ public class Login extends Client
 				MouseState.pressed = false;
 				MouseState.clickEvent = false;
 
-				// Game init
 				stream.position = 0;
 				inStream.position = 0;
 				pktType = -1;
@@ -261,7 +259,6 @@ public class Login extends Client
 				return;
 			}
 
-			// All error handling paths
 			loginInProgress = false;
 
 			switch (k) {

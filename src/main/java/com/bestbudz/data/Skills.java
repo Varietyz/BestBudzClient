@@ -90,7 +90,6 @@ public final class Skills {
 	static {
 		System.arraycopy(EXP_FOR_GRADE, 0, EXP_FOR_LEVEL, 0, EXP_FOR_LEVEL.length);
 
-
 		SKILL_ENABLED[ASSAULT] = true;
 		SKILL_ENABLED[AEGIS] = true;
 		SKILL_ENABLED[VIGOUR] = true;

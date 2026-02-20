@@ -6,9 +6,6 @@ import com.bestbudz.dock.ui.panel.bubblebudz.game.modes.GameMode;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-/**
- * Manages game mode selection UI components
- */
 public class GameModeManager implements
 	GameModeButton.GameModeButtonListener,
 	GameModeOverlay.GameModeOverlayListener {
@@ -29,16 +26,15 @@ public class GameModeManager implements
 	}
 
 	public void render(Graphics2D g2d, int panelWidth, int panelHeight) {
-		// Position button between timer and viewport edge
+
 		int buttonWidth = 60;
 		int buttonHeight = 16;
 		int buttonX = panelWidth - buttonWidth - 10;
-		int buttonY = 5; // Changed from 45 - position above timer, below logo/title
+		int buttonY = 5;
 
 		button.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
 		button.render(g2d, currentModeName);
 
-		// Render overlay if visible
 		overlay.render(g2d, currentModeName);
 	}
 
@@ -60,15 +56,12 @@ public class GameModeManager implements
 		return overlay.isVisible();
 	}
 
-	// GameModeButton.GameModeButtonListener implementation
 	@Override
 	public void onButtonClicked() {
-		// Get panel dimensions - this should be passed from the main panel
-		// For now, using reasonable defaults
+
 		overlay.show(400, 300);
 	}
 
-	// GameModeOverlay.GameModeOverlayListener implementation
 	@Override
 	public void onGameModeSelected(GameMode gameMode, String modeName) {
 		this.currentModeName = modeName;
@@ -79,7 +72,7 @@ public class GameModeManager implements
 
 	@Override
 	public void onOverlayClosed() {
-		// Overlay closed, no action needed
+
 	}
 
 	public void setCurrentMode(String modeName) {

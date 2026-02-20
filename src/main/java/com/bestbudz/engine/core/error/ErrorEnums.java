@@ -2,12 +2,8 @@ package com.bestbudz.engine.core.error;
 
 import java.awt.Color;
 
-/**
- * Enums and constants for the error screen system
- */
 public class ErrorEnums {
 
-	// Visual constants matching the loading screen style
 	public static final Color BACKGROUND = new Color(18, 18, 20);
 	public static final Color CARD_BACKGROUND = new Color(28, 28, 32);
 	public static final Color PRIMARY_TEXT = new Color(220, 220, 220);
@@ -18,9 +14,6 @@ public class ErrorEnums {
 	public static final Color ERROR_COLOR = new Color(255, 69, 58);
 	public static final Color PANEL_COLOR = new Color(28, 28, 32, 240);
 
-	/**
-	 * Error types with descriptions and suggested actions
-	 */
 	public enum ErrorType {
 		LOADING_ERROR("Loading Error", "Game failed to load properly",
 			new String[]{"Corrupted cache files", "Network connectivity issues", "Insufficient system resources", "Java compatibility problems"}),
@@ -50,9 +43,6 @@ public class ErrorEnums {
 		}
 	}
 
-	/**
-	 * Console message levels for error screen
-	 */
 	public enum ConsoleLevel {
 		INFO("INFO", PRIMARY_TEXT, "ℹ️"),
 		SUCCESS("SUCCESS", SUCCESS_COLOR, "✅"),
@@ -71,9 +61,6 @@ public class ErrorEnums {
 		}
 	}
 
-	/**
-	 * Console message entry
-	 */
 	public static class ConsoleEntry {
 		public final long timestamp;
 		public final String message;
@@ -86,9 +73,6 @@ public class ErrorEnums {
 		}
 	}
 
-	/**
-	 * Action button types
-	 */
 	public enum ActionType {
 		TOGGLE_CONSOLE("Toggle Console", ACCENT_COLOR),
 		CLEAR_CACHE("Clear Cache", WARNING_COLOR),
@@ -108,9 +92,6 @@ public class ErrorEnums {
 		}
 	}
 
-	/**
-	 * Layout rectangle helper
-	 */
 	public static class Rect {
 		public final int x, y, w, h;
 

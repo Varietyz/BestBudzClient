@@ -6,9 +6,6 @@ import java.awt.*;
 
 import static com.bestbudz.engine.core.loading.LoadingEnums.*;
 
-/**
- * Metrics panel displaying current phase and memory usage
- */
 public class MetricsPanel extends JPanel {
 	private JLabel currentPhaseLabel;
 	private JLabel memoryUsageLabel;
@@ -50,9 +47,6 @@ public class MetricsPanel extends JPanel {
 		add(metricsRow);
 	}
 
-	/**
-	 * Update current phase
-	 */
 	public void updatePhase(LoadingPhase phase) {
 		this.currentPhase = phase;
 		SwingUtilities.invokeLater(() -> {
@@ -60,9 +54,6 @@ public class MetricsPanel extends JPanel {
 		});
 	}
 
-	/**
-	 * Update memory usage
-	 */
 	public void updateMemoryUsage(double memoryUsage) {
 		this.memoryUsage = memoryUsage;
 		SwingUtilities.invokeLater(() -> {
@@ -70,16 +61,10 @@ public class MetricsPanel extends JPanel {
 		});
 	}
 
-	/**
-	 * Get current phase
-	 */
 	public LoadingPhase getCurrentPhase() {
 		return currentPhase;
 	}
 
-	/**
-	 * Get current memory usage
-	 */
 	public double getMemoryUsage() {
 		return memoryUsage;
 	}

@@ -12,22 +12,21 @@ import static com.bestbudz.ui.InterfaceManagement.drawInterfaceRecursive;
 public class BuildInterface extends Client {
 
 	public static void buildInterfaceMenu(int interfaceX, RSInterface parentInterface, int interfaceY, int scrollPosition) {
-		// Early validation and setup
+
 		if (!validateInterfaceInput(parentInterface, interfaceX, interfaceY)) {
 			return;
 		}
 
-		// Process all child interfaces
 		processChildInterfaces(interfaceX, parentInterface, interfaceY, scrollPosition);
 	}
 
 	private static boolean validateInterfaceInput(RSInterface parentInterface, int interfaceX, int interfaceY) {
-		// Early null check and fallback
+
 		if (parentInterface == null) {
 			parentInterface = RSInterface.interfaceCache[21356];
-			// Additional safety check for the fallback interface
+
 			if (parentInterface == null) {
-				return false; // Exit if both original and fallback are null
+				return false;
 			}
 		}
 
@@ -52,19 +51,16 @@ public class BuildInterface extends Client {
 		for (int childIndex = 0; childIndex < parentInterface.children.length; childIndex++) {
 			RSInterface childInterface = RSInterface.interfaceCache[parentInterface.children[childIndex]];
 
-			// Add null check for child interface
 			if (childInterface == null) {
-				continue; // Skip this child if it's null
+				continue;
 			}
 
 			int childX = calculateChildX(parentInterface, childInterface, interfaceX, childIndex);
 			int childY = calculateChildY(parentInterface, childInterface, interfaceY, childIndex, scrollPosition);
 
-			// Handle interface interactions
 			handleHoverEffects(childInterface, childX, childY);
 			handleSpecialHoverTypes(childInterface, childX, childY);
 
-			// Process interface based on type
 			if (childInterface.type == 0) {
 				handleContainerInterface(childX, childInterface, childY);
 			} else {
@@ -75,13 +71,13 @@ public class BuildInterface extends Client {
 
 	private static int calculateChildX(RSInterface parentInterface, RSInterface childInterface, int interfaceX, int childIndex) {
 		int childX = parentInterface.childX[childIndex] + interfaceX;
-		childX += childInterface.anInt263; // Additional X offset
+		childX += childInterface.anInt263;
 		return childX;
 	}
 
 	private static int calculateChildY(RSInterface parentInterface, RSInterface childInterface, int interfaceY, int childIndex, int scrollPosition) {
 		int childY = (parentInterface.childY[childIndex] + interfaceY) - scrollPosition;
-		childY += childInterface.positionScroll; // Additional Y offset
+		childY += childInterface.positionScroll;
 		return childY;
 	}
 
@@ -110,13 +106,11 @@ public class BuildInterface extends Client {
 	}
 
 	private static void handleClickableInterface(RSInterface childInterface, int childX, int childY, RSInterface parentInterface) {
-		// Handle specific action types
+
 		handleActionTypes(childInterface, childX, childY);
 
-		// Handle general interface actions
 		handleGeneralInterfaceActions(childInterface, childX, childY);
 
-		// Handle inventory interfaces (type 2)
 		if (childInterface.type == 2) {
 			handleInventoryInterface(childInterface, childX, childY, parentInterface);
 		}
@@ -177,7 +171,7 @@ public class BuildInterface extends Client {
 	private static void handleActionType4(RSInterface childInterface) {
 		addMenuAction(childInterface.tooltip, 169, childInterface.id);
 		if (childInterface.hoverText != null) {
-			// Handle hover text if needed
+
 		}
 	}
 
@@ -245,7 +239,7 @@ public class BuildInterface extends Client {
 		}
 
 		private void initializeBankTabs() {
-			// Handle bank tab selection
+
 			if (childInterface.contentType == 206 && variousSettings[1000] != 0 && variousSettings[1012] == 0) {
 				for (int tabIndex = 0; tabIndex < tabAmounts.length; tabIndex++) {
 					if (tabIndex == variousSettings[1000]) {
@@ -281,7 +275,6 @@ public class BuildInterface extends Client {
 			int slotX = childX + widthIndex * (32 + childInterface.invSpritePadX);
 			int slotY = childY + heightIndex * (32 + childInterface.invSpritePadY) + heightOffset;
 
-			// Apply sprite position offsets for small slot numbers
 			if (inventorySlot < 20 && childInterface.spritesX != null && childInterface.spritesY != null) {
 				slotX += childInterface.spritesX[inventorySlot];
 				slotY += childInterface.spritesY[inventorySlot];
@@ -291,20 +284,20 @@ public class BuildInterface extends Client {
 		}
 
 		private boolean handleBankTabLogic(int heightIndex) {
-			// Handle bank tab logic
+
 			if (childInterface.contentType == 206 && variousSettings[1012] == 0) {
-				if (variousSettings[1000] == 0) { // All tabs view
+				if (variousSettings[1000] == 0) {
 					if (inventorySlot >= currentTabAmount) {
 						if (currentTabSlot + 1 < tabAmounts.length) {
 							currentTabAmount += tabAmounts[++currentTabSlot];
 							if (currentTabSlot > 0 && tabAmounts[currentTabSlot - 1] % 8 == 0) {
-								return false; // Break heightIndex loop
+								return false;
 							}
 							heightOffset += 8;
 						}
 						return false;
 					}
-				} else if (variousSettings[1000] <= 9) { // Specific tab view
+				} else if (variousSettings[1000] <= 9) {
 					if (inventorySlot >= tabAmounts[variousSettings[1000]] + baseSlotOffset) {
 						return false;
 					}
@@ -333,11 +326,11 @@ public class BuildInterface extends Client {
 
 		private int getItemIdFromSlot() {
 			int itemId = -1;
-			// Get item ID from regular inventory
+
 			if (childInterface.inv != null && inventorySlot < childInterface.inv.length) {
 				itemId = childInterface.inv[inventorySlot] - 1;
 			}
-			// Get item ID from bank temporary array
+
 			if (variousSettings[1012] == 1 && childInterface.contentType == 206 &&
 				bankInvTemp != null && inventorySlot < bankInvTemp.length) {
 				itemId = bankInvTemp[inventorySlot] - 1;
@@ -346,34 +339,33 @@ public class BuildInterface extends Client {
 		}
 
 		private void processItemActions(ItemDef itemDefinition) {
-			// Force bank items to behave exactly like box interface items
+
 			boolean isBoxOrBank = childInterface.isBoxInterface || childInterface.contentType == 206;
 
-			// Handle item combination when another item is selected
 			if (itemSelected == 1 && isBoxOrBank) {
 				handleItemCombination(itemDefinition);
 			}
-			// Handle spell casting on items
+
 			else if (spellSelected == 1 && isBoxOrBank) {
 				handleSpellCasting(itemDefinition);
 			}
-			// Handle normal item actions
+
 			else {
 				handleNormalItemActions(itemDefinition);
 			}
 		}
 
 		private void handleBankItemActions(ItemDef itemDefinition) {
-			// Only add inspect option in debug mode for bank items
+
 			if (EngineConfig.DEBUG_MODE) {
 				String inspectText = "@lre@" + itemDefinition.name + " @gre@(@whi@" + itemDefinition.id + "@gre@)";
 				addItemMenuAction(inspectText, 1125, itemDefinition.id, inventorySlot, childInterface.id);
 			}
-			// All other actions are skipped for bank items
+
 		}
 
 		private void handleItemCombination(ItemDef itemDefinition) {
-			// Force bank items to use box interface logic for item combination
+
 			boolean isBoxOrBank = childInterface.isBoxInterface || childInterface.contentType == 206;
 
 			if (isBoxOrBank && (childInterface.id != selectedItemInterfaceId || inventorySlot != selectedItemSlot)) {
@@ -383,7 +375,7 @@ public class BuildInterface extends Client {
 		}
 
 		private void handleSpellCasting(ItemDef itemDefinition) {
-			// Force bank items to use box interface logic for spell casting
+
 			boolean isBoxOrBank = childInterface.isBoxInterface || childInterface.contentType == 206;
 
 			if (isBoxOrBank && (spellUsableOn & 0x10) == 16) {
@@ -393,24 +385,20 @@ public class BuildInterface extends Client {
 		}
 
 		private void handleNormalItemActions(ItemDef itemDefinition) {
-			// Add high-priority item actions (indices 4 and 3)
+
 			addHighPriorityItemActions(itemDefinition);
 
-			// Add "Select" action for usable items
 			addSelectAction(itemDefinition);
 
-			// Add remaining item actions (indices 2, 1, 0)
 			addRemainingItemActions(itemDefinition);
 
-			// Add interface-specific actions
 			addInterfaceSpecificActions(itemDefinition);
 
-			// Add "Inspect" action (always available in debug mode)
 			addInspectAction(itemDefinition);
 		}
 
 		private void addHighPriorityItemActions(ItemDef itemDefinition) {
-			// Force bank items to use box interface logic
+
 			boolean isBoxOrBank = childInterface.isBoxInterface || childInterface.contentType == 206;
 
 			if (isBoxOrBank) {
@@ -420,7 +408,7 @@ public class BuildInterface extends Client {
 						int actionId = actionIndex == 3 ? 493 : 847;
 						addItemMenuAction(actionText, actionId, itemDefinition.id, inventorySlot, childInterface.id);
 					} else if (actionIndex == 4) {
-						// Default "Throw away" action for action slot 4
+
 						String throwAwayText = "Throw away @lre@" + itemDefinition.name;
 						addItemMenuAction(throwAwayText, 847, itemDefinition.id, inventorySlot, childInterface.id);
 					}
@@ -429,7 +417,7 @@ public class BuildInterface extends Client {
 		}
 
 		private void addSelectAction(ItemDef itemDefinition) {
-			// Force bank items to use box interface logic for usable items
+
 			boolean isUsableBoxOrBank = childInterface.usableItemInterface ||
 				(childInterface.contentType == 206 && childInterface.usableItemInterface);
 
@@ -440,7 +428,7 @@ public class BuildInterface extends Client {
 		}
 
 		private void addRemainingItemActions(ItemDef itemDefinition) {
-			// Force bank items to use box interface logic
+
 			boolean isBoxOrBank = childInterface.isBoxInterface || childInterface.contentType == 206;
 
 			if (isBoxOrBank && itemDefinition.itemActions != null) {
@@ -462,11 +450,10 @@ public class BuildInterface extends Client {
 						String actionText = childInterface.actions[actionIndex] + " @lre@" + itemDefinition.name;
 						int actionId = getInterfaceActionId(actionIndex);
 
-						// For bank items, use standard inventory action IDs instead of bank-specific ones
 						if (childInterface.contentType == 206) {
-							actionId = getInventoryActionId(actionIndex); // Use inventory IDs for bank items
+							actionId = getInventoryActionId(actionIndex);
 						} else if (parentInterface.parentID == 5292) {
-							// Only apply bank-specific handling for non-206 content types
+
 							actionId = getBankSpecificActionId(actionIndex);
 						}
 
@@ -504,15 +491,15 @@ public class BuildInterface extends Client {
 		}
 
 		private int getInventoryActionId(int actionIndex) {
-			// Return standard inventory action IDs for bank items to trick the system
+
 			switch (actionIndex) {
-				case 0: return 632; // Same as regular inventory
-				case 1: return 78;  // Same as regular inventory
-				case 2: return 867; // Same as regular inventory
-				case 3: return 431; // Same as regular inventory
-				case 4: return 53;  // Same as regular inventory
-				case 5: return 632; // Force to inventory action instead of bank
-				case 6: return 78;  // Force to inventory action instead of bank
+				case 0: return 632;
+				case 1: return 78;
+				case 2: return 867;
+				case 3: return 431;
+				case 4: return 53;
+				case 5: return 632;
+				case 6: return 78;
 				default: return getInterfaceActionId(actionIndex);
 			}
 		}
@@ -538,7 +525,6 @@ public class BuildInterface extends Client {
 		}
 	}
 
-	// Utility methods
 	private static boolean isMouseOverInterface(int x, int y, int width, int height) {
 		return MouseState.x >= x && MouseState.y >= y &&
 			MouseState.x < x + width && MouseState.y < y + height;

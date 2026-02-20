@@ -98,13 +98,7 @@ public class PacketSender extends Client
 	public static void handleInventorySwap() {
 		RSInterface rsi = RSInterface.interfaceCache[focusedDragWidget];
 
-		// FORCE BANK TO BEHAVE AS INVENTORY: Always set bankMode to false for bank interfaces
-		// This tricks the system into sending inventory packets for bank items
-		boolean bankMode = false; // Force all bank items to use inventory mode
-
-		// Original logic (now commented out):
-		// boolean bankMode = (anInt913 == 1 && rsi.contentType == 206);
-		// if (rsi.inv[mouseInvInterfaceIndex] <= 0) bankMode = false;
+		boolean bankMode = false;
 
 		if (rsi.aBoolean235) {
 			int a = dragFromSlot;
@@ -114,15 +108,13 @@ public class PacketSender extends Client
 			rsi.inv[a] = -1;
 			rsi.invStackSizes[a] = 0;
 		} else if (!bankMode) {
-			// Now ALL interfaces (including bank) will use box item swapping logic
+
 			rsi.swapBoxItems(dragFromSlot, mouseInvInterfaceIndex);
 		}
 
-		// Send packet with bankMode = false (0) for ALL interfaces
-		// This means bank items send the same packets as inventory items
 		stream.writeEncryptedOpcode(214);
 		stream.writeWordMixedLE(focusedDragWidget);
-		stream.writeByteNegated(0); // Always send 0 (inventory mode) instead of bankMode ? 1 : 0
+		stream.writeByteNegated(0);
 		stream.writeWordMixedLE(dragFromSlot);
 		stream.writeWordLittleEndian(mouseInvInterfaceIndex);
 	}

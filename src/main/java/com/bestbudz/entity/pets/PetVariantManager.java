@@ -1,4 +1,4 @@
-// Simplified PetVariantManager.java - Size and Action petvariants only
+
 package com.bestbudz.entity.pets;
 
 import com.bestbudz.entity.EntityDef;
@@ -9,20 +9,20 @@ import java.util.Map;
 
 public class PetVariantManager
 {
-	// Map to store variant configurations - PROTECTED so subclasses can access
+
 	protected static final Map<Integer, VariantConfig> variants = new HashMap<>();
 	private static final Map<Integer, EntityDef> variantCache = new HashMap<>();
-	// Starting ID for petvariants (use unused NPC ID range)
+
 	private static final int VARIANT_START_ID = 10000;
 
 	static {
-		// Initialize all petvariants here
+
 		initializeVariants();
 		prebuildVariantCache();
 	}
 
 	private static void initializeVariants() {
-		// Call all variant creation methods
+
 		JadVariant.createJadVariants();
 		KBDVariant.createDragonVariants();
 		GraardorVariant.createGraardorVariants();
@@ -44,28 +44,19 @@ public class PetVariantManager
 		return variantCache.get(variantId);
 	}
 
-	/**
-	 * Check if an NPC ID is a variant
-	 */
 	public static boolean isVariant(int npcId) {
 		return variants.containsKey(npcId);
 	}
 
-	/**
-	 * Apply variant modifications to an EntityDef
-	 */
 	public static void applyVariant(int variantId, EntityDef entityDef) {
 		VariantConfig config = variants.get(variantId);
 		if (config == null) return;
 
-		// Get the base EntityDef to copy from
 		EntityDef baseEntity = EntityDef.forID(config.baseId, false);
 		if (baseEntity == null) return;
 
-		// Copy base properties
 		copyBaseProperties(baseEntity, entityDef);
 
-		// Apply variant modifications
 		if (config.name != null) {
 			entityDef.name = config.name;
 		}
@@ -88,7 +79,7 @@ public class PetVariantManager
 	}
 
 	private static void copyBaseProperties(EntityDef source, EntityDef target) {
-		// Copy essential properties from base NPC
+
 		if (source.models != null) {
 			target.models = source.models.clone();
 		}
@@ -106,12 +97,10 @@ public class PetVariantManager
 		target.modelHeight = source.modelHeight;
 		target.size = source.size;
 
-		// Copy actions if not overridden
 		if (source.actions != null) {
 			target.actions = source.actions.clone();
 		}
 
-		// Copy name and description if not overridden
 		if (source.name != null) {
 			target.name = source.name;
 		}
@@ -120,9 +109,6 @@ public class PetVariantManager
 		}
 	}
 
-	/**
-	 * Configuration class for NPC petvariants - PROTECTED so subclasses can use it
-	 */
 	protected static class VariantConfig {
 		int baseId;
 		String name;

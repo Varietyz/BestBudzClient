@@ -77,7 +77,6 @@ public class RightClickMenu extends Client
 		}
 	}
 
-
 	public static void deterquarryMenuSize() {
 		int boxWidth = getMaxMenuTextWidth() + 8;
 		int boxHeight = 15 * menuActionRow + 22;
@@ -89,7 +88,6 @@ public class RightClickMenu extends Client
 		int xClick = MouseState.x - boxWidth / 2;
 		int yClick = MouseState.y - MENU_Y_SHIFT;
 
-		// Clamp within canvas
 		if (xClick + boxWidth > frameWidth - 4)
 			xClick = frameWidth - 4 - boxWidth;
 		if (xClick < 0)
@@ -107,7 +105,6 @@ public class RightClickMenu extends Client
 		menuHeight = boxHeight;
 	}
 
-
 	private static int getMaxMenuTextWidth() {
 		int max = newBoldFont.getTextWidth("Choose already");
 		for (int i = 0; i < menuActionRow; i++) {
@@ -123,7 +120,7 @@ public class RightClickMenu extends Client
 
 	public static void processMenuClick(boolean leftClick, boolean rightClick) {
 		if (activeInterfaceType != 0) {
-			//System.out.println("🚫 BLOCKED: activeInterfaceType = " + activeInterfaceType);
+
 			return;
 		}
 
@@ -150,7 +147,6 @@ public class RightClickMenu extends Client
 				doAction(menuActionRow - 1);
 				menuOpen = false;
 			}
-
 
 		}
 
@@ -304,7 +300,7 @@ public class RightClickMenu extends Client
 
 			if (!stoner.titlePrefix) {
 				s = title
-					+ diffColor + stoner.name + "</col>"  // name in diff color
+					+ diffColor + stoner.name + "</col>"
 					+ diffColor + " <img=11> " + stoner.combatLevel + "</col>";
 			} else {
 				s = diffColor + stoner.name + "</col>"

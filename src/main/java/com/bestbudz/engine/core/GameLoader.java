@@ -47,27 +47,20 @@ import java.lang.ref.WeakReference;
 import java.util.concurrent.*;
 import java.util.*;
 
-/**
- * Memory-optimized GameLoader with comprehensive metrics tracking
- * and detailed progress reporting for every operation
- */
 public class GameLoader extends Client {
 
-	// Memory management and caching
 	private static final Map<String, WeakReference<Sprite>> spriteCache = new ConcurrentHashMap<>();
 	private static volatile boolean isLoading = false;
 	private static long loadStartTime = 0;
 	private static LoadingVisual loadingScreen;
 
-	// Enhanced metrics tracking
 	private static class LoadingMetrics {
-		// File I/O metrics
+
 		private int totalFilesRead = 0;
 		private int totalBytesRead = 0;
 		private int totalFilesWritten = 0;
 		private int totalBytesWritten = 0;
 
-		// Processing metrics
 		private int spritesLoaded = 0;
 		private int spritesProcessed = 0;
 		private int backgroundsLoaded = 0;
@@ -76,21 +69,17 @@ public class GameLoader extends Client {
 		private int texturesLoaded = 0;
 		private int interfacesLoaded = 0;
 
-		// Cache metrics
 		private int cacheHits = 0;
 		private int cacheMisses = 0;
 		private int cacheEvictions = 0;
 
-		// Memory metrics
 		private long initialMemory = 0;
 		private long peakMemory = 0;
 		private long currentMemory = 0;
 
-		// Timing metrics
 		private final Map<String, Long> phaseTimes = new ConcurrentHashMap<>();
 		private final Map<String, Long> operationTimes = new ConcurrentHashMap<>();
 
-		// Error tracking
 		private int errors = 0;
 		private int warnings = 0;
 
@@ -163,27 +152,23 @@ public class GameLoader extends Client {
 
 	private static final LoadingMetrics metrics = new LoadingMetrics();
 
-	/**
-	 * Enhanced sprite factory with comprehensive metrics tracking
-	 */
 	static class OptimizedSpriteFactory {
 		public static Sprite createSprite(ArchiveLoader loader, String name, int index) {
 			String key = name + "_" + index;
 			long startTime = System.nanoTime();
 
-			// Check cache first for memory efficiency
 			WeakReference<Sprite> ref = spriteCache.get(key);
 			if (ref != null) {
 				Sprite cached = ref.get();
 				if (cached != null) {
 					metrics.cacheHits++;
 					long duration = (System.nanoTime() - startTime) / 1000000;
-					if (duration > 1) { // Only log if took more than 1ms
+					if (duration > 1) {
 						loadingScreen.addLogEntry(String.format("Cache hit: %s (%.1fms)", key, duration / 1000.0), LogLevel.INFO);
 					}
 					return cached;
 				} else {
-					// Weak reference was garbage collected
+
 					spriteCache.remove(key);
 					metrics.cacheEvictions++;
 				}
@@ -191,7 +176,6 @@ public class GameLoader extends Client {
 
 			metrics.cacheMisses++;
 
-			// Create sprite exactly as original
 			try {
 				Sprite sprite = new Sprite(loader, name, index);
 				if (sprite != null) {
@@ -199,13 +183,12 @@ public class GameLoader extends Client {
 					metrics.spritesLoaded++;
 					metrics.totalFilesRead++;
 
-					// Estimate bytes read (rough calculation)
 					if (sprite.myPixels != null) {
-						metrics.totalBytesRead += sprite.myPixels.length * 4; // ARGB pixels
+						metrics.totalBytesRead += sprite.myPixels.length * 4;
 					}
 
 					long duration = (System.nanoTime() - startTime) / 1000000;
-					if (duration > 5) { // Log slow sprite loads
+					if (duration > 5) {
 						loadingScreen.addLogEntry(String.format("Sprite loaded: %s [%dx%d] (%.1fms)",
 							key, sprite.myWidth, sprite.myHeight, duration / 1000.0), LogLevel.INFO);
 					}
@@ -231,22 +214,18 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Enhanced startUp method with comprehensive metrics and logging
-	 */
 	static void startUp(Graphics2D g, Client client) {
 		isLoading = true;
 		loadStartTime = System.currentTimeMillis();
 		metrics.updateMemoryMetrics();
 
-		// Initialize and show loading screen
 		loadingScreen = new LoadingVisual();
 		loadingScreen.showLoader();
 		loadingScreen.addLogEntry("🚀 GameLoader initialization started", LogLevel.INFO);
 		loadingScreen.addLogEntry("💾 " + metrics.getMemoryReport(), LogLevel.INFO);
 
 		try {
-			// PHASE 1: Initialization
+
 			metrics.startPhase("initialization");
 			loadingScreen.setPhase(LoadingPhase.INITIALIZING);
 			loadingScreen.updateDetail("Setting up core system...");
@@ -278,7 +257,6 @@ public class GameLoader extends Client {
 			loadingScreen.updateDetailProgress(60);
 			loadingScreen.addLogEntry(String.format("✅ Login renderer created (%dms)", loginTime), LogLevel.SUCCESS);
 
-			// Initialize decompressors
 			if (Signlink.cache_dat != null) {
 				metrics.startOperation("decompressors");
 				int decompressorsCreated = 0;
@@ -306,7 +284,6 @@ public class GameLoader extends Client {
 			loadingScreen.updateProgress(LoadingPhase.INITIALIZING.endProgress);
 			loadingScreen.addLogEntry(String.format("🎯 Initialization phase completed (%dms)", initTime), LogLevel.SUCCESS);
 
-			// PHASE 2: Font System
 			metrics.startPhase("fonts");
 			loadingScreen.updateDetail("Initializing modern font system...");
 			loadingScreen.addLogEntry("🎨 Initializing modern font system...", LogLevel.INFO);
@@ -320,7 +297,6 @@ public class GameLoader extends Client {
 				loadingScreen.updateDetailProgress(25);
 				loadingScreen.addLogEntry(String.format("📝 Font objects created (%dms)", fontCreateTime), LogLevel.INFO);
 
-				// Assign fonts
 				metrics.startOperation("font_assignment");
 				smallText = gameFonts.smallText;
 				regularText = gameFonts.regularText;
@@ -344,7 +320,6 @@ public class GameLoader extends Client {
 				loadingScreen.updateDetailProgress(75);
 				loadingScreen.addLogEntry(String.format("✅ Font validation passed (%dms)", validationTime), LogLevel.SUCCESS);
 
-				// Set default text properties
 				TextController.defaultColor = 0xFFFFFF;
 				TextController.defaultShadow = -1;
 				TextController.textColor = TextController.defaultColor;
@@ -365,12 +340,10 @@ public class GameLoader extends Client {
 				throw new RuntimeException("Font system initialization failed", e);
 			}
 
-			// PHASE 3: Loading Assets
 			metrics.startPhase("assets");
 			loadingScreen.setPhase(LoadingPhase.LOADING_ASSETS);
 			loadingScreen.updateDetail("Loading game assets...");
 
-			// Load streams with detailed progress tracking
 			ArchiveLoader archiveLoader_2 = loadStreamWithProgress("2d graphics", "media", 4, 15);
 			ArchiveLoader archiveLoader = loadStreamWithProgress("config", "config", 2, 20);
 			ArchiveLoader archiveLoader_1 = loadStreamWithProgress("interface", "interface", 3, 25);
@@ -379,13 +352,12 @@ public class GameLoader extends Client {
 			loadingScreen.updateProgress(35);
 			loadingScreen.updateDetail("Setting up world system...");
 
-			// World system initialization with metrics
 			metrics.startOperation("world_setup");
 			byteGroundArray = new byte[4][208][208];
 			intGroundArray = new int[4][209][209];
 			worldController = new WorldController(intGroundArray);
 
-			int worldControllerSize = 4 * 208 * 208 + 4 * 209 * 209 * 4; // Estimate memory usage
+			int worldControllerSize = 4 * 208 * 208 + 4 * 209 * 209 * 4;
 			metrics.totalBytesWritten += worldControllerSize;
 
 			for (int j = 0; j < 4; j++) {
@@ -420,12 +392,10 @@ public class GameLoader extends Client {
 			loadingScreen.updateProgress(LoadingPhase.LOADING_ASSETS.endProgress);
 			loadingScreen.addLogEntry(String.format("📦 Asset loading phase completed (%dms)", assetsTime), LogLevel.SUCCESS);
 
-			// PHASE 4: Processing sprites and data
 			metrics.startPhase("processing");
 			loadingScreen.setPhase(LoadingPhase.PROCESSING_DATA);
 			loadingScreen.updateDetail("Loading sprite collections...");
 
-			// Load sprite arrays with detailed progress tracking
 			loadSpriteArrayWithProgress(newHitMarks, archiveLoader_2, "newhitmarks", 5);
 			loadSpriteArrayWithProgress(channelButtons, archiveLoader_2, "cbuttons", 10);
 			loadSpriteArrayWithProgress(fixedGameComponents, archiveLoader_2, "fixed", 15);
@@ -441,7 +411,6 @@ public class GameLoader extends Client {
 			performSafeBulkCopies();
 			loadingScreen.updateDetailProgress(60);
 
-			// Individual sprites with metrics
 			loadingScreen.updateDetail("Loading individual sprites...");
 			metrics.startOperation("individual_sprites");
 
@@ -454,7 +423,6 @@ public class GameLoader extends Client {
 			mapMarker = createSpriteOrThrow(archiveLoader_2, "mapmarker", 1);
 			loadingScreen.updateDetailProgress(70);
 
-			// Side icons and crosses with counting
 			int sideIconsLoaded = 0;
 			for (int j3 = 0; j3 <= 16; j3++) {
 				sideIcons[j3] = createSpriteOrThrow(archiveLoader_2, "sideicons", j3);
@@ -476,11 +444,9 @@ public class GameLoader extends Client {
 			loadingScreen.addLogEntry(String.format("🎯 Individual sprites loaded (%dms): %d side icons, %d crosses, 5 core sprites",
 				individualTime, sideIconsLoaded, crossesLoaded), LogLevel.SUCCESS);
 
-			// Optional sprites
 			loadOptionalSpritesBatch(archiveLoader_2);
 			loadingScreen.updateDetailProgress(90);
 
-			// Screen frames with metrics
 			metrics.startOperation("screen_frames");
 			Sprite sprite = createSpriteOrThrow(archiveLoader_2, "screenframe", 0);
 			leftFrame = new ImageProducer(sprite.myWidth, sprite.myHeight);
@@ -498,7 +464,6 @@ public class GameLoader extends Client {
 			loadingScreen.updateProgress(LoadingPhase.PROCESSING_DATA.endProgress);
 			loadingScreen.addLogEntry(String.format("⚙️ Data processing phase completed (%dms)", processingTime), LogLevel.SUCCESS);
 
-			// PHASE 5: Finalization
 			metrics.startPhase("finalization");
 			loadingScreen.setPhase(LoadingPhase.FINALIZING);
 			loadingScreen.updateDetail("Applying visual effects...");
@@ -516,7 +481,7 @@ public class GameLoader extends Client {
 			Rasterizer.loadTextures(archiveLoader_3);
 			metrics.endOperation("texture_loading");
 			long textureTime = metrics.operationTimes.get("texture_loading_duration");
-			metrics.texturesLoaded++; // Increment for texture loading
+			metrics.texturesLoaded++;
 			loadingScreen.updateDetailProgress(25);
 			loadingScreen.addLogEntry(String.format("🏞️ Textures loaded (%dms)", textureTime), LogLevel.SUCCESS);
 
@@ -573,17 +538,14 @@ public class GameLoader extends Client {
 			loadingScreen.updateProgress(LoadingPhase.FINALIZING.endProgress);
 			loadingScreen.addLogEntry(String.format("🏁 Finalization phase completed (%dms)", finalizationTime), LogLevel.SUCCESS);
 
-			// PHASE 6: Complete with comprehensive metrics report
 			loadingScreen.setPhase(LoadingPhase.COMPLETE);
 			long totalLoadTime = System.currentTimeMillis() - loadStartTime;
 			metrics.updateMemoryMetrics();
 
-			// Generate comprehensive final report
 			loadingScreen.addLogEntry("📊 LOADING COMPLETE - COMPREHENSIVE METRICS REPORT", LogLevel.SUCCESS);
 			loadingScreen.addLogEntry("============================================================", LogLevel.INFO);
 			loadingScreen.addLogEntry(String.format("⏱️ Total loading time: %dms (%.2fs)", totalLoadTime, totalLoadTime / 1000.0), LogLevel.SUCCESS);
 
-			// Phase timing breakdown
 			loadingScreen.addLogEntry("🕐 Phase Breakdown:", LogLevel.INFO);
 			loadingScreen.addLogEntry(String.format("  • Initialization: %dms", metrics.phaseTimes.getOrDefault("initialization_duration", 0L)), LogLevel.INFO);
 			loadingScreen.addLogEntry(String.format("  • Font System: %dms", metrics.phaseTimes.getOrDefault("fonts_duration", 0L)), LogLevel.INFO);
@@ -591,23 +553,18 @@ public class GameLoader extends Client {
 			loadingScreen.addLogEntry(String.format("  • Data Processing: %dms", metrics.phaseTimes.getOrDefault("processing_duration", 0L)), LogLevel.INFO);
 			loadingScreen.addLogEntry(String.format("  • Finalization: %dms", metrics.phaseTimes.getOrDefault("finalization_duration", 0L)), LogLevel.INFO);
 
-			// Processing statistics
 			loadingScreen.addLogEntry("📈 Processing Statistics:", LogLevel.INFO);
 			loadingScreen.addLogEntry(metrics.getProcessingReport(), LogLevel.INFO);
 
-			// I/O statistics
 			loadingScreen.addLogEntry("💾 I/O Statistics:", LogLevel.INFO);
 			loadingScreen.addLogEntry(metrics.getIOReport(), LogLevel.INFO);
 
-			// Memory statistics
 			loadingScreen.addLogEntry("🧠 Memory Statistics:", LogLevel.INFO);
 			loadingScreen.addLogEntry(metrics.getMemoryReport(), LogLevel.INFO);
 
-			// Cache performance
 			loadingScreen.addLogEntry("⚡ Cache Performance:", LogLevel.INFO);
 			loadingScreen.addLogEntry(metrics.getCacheReport(), LogLevel.INFO);
 
-			// Error summary
 			if (metrics.errors > 0 || metrics.warnings > 0) {
 				loadingScreen.addLogEntry("⚠️ Issues Summary:", LogLevel.WARNING);
 				loadingScreen.addLogEntry(String.format("  • Errors: %d, Warnings: %d", metrics.errors, metrics.warnings), LogLevel.WARNING);
@@ -647,9 +604,6 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Load configurations with detailed metrics tracking
-	 */
 	private static void loadConfigurationsWithMetrics(ArchiveLoader archiveLoader) {
 		String[] configTypes = {"Animation", "ObjectDef", "Floor", "OverlayFloor", "ItemDef", "EntityDef", "IdentityKit", "SpotAnim", "Varp", "VarBit"};
 		int[] progressSteps = {60, 65, 70, 75, 80, 85, 90, 93, 95, 97};
@@ -704,26 +658,19 @@ public class GameLoader extends Client {
 			}
 		}
 
-		// Set members flag
 		ItemDef.isMembers = isMembers;
 		loadingScreen.addLogEntry("🎫 Members flag configured", LogLevel.INFO);
 	}
 
-	/**
-	 * Safe sprite creation that matches original behavior exactly
-	 */
 	private static Sprite createSpriteOrThrow(ArchiveLoader loader, String name, int index) {
 		try {
 			return OptimizedSpriteFactory.createSprite(loader, name, index);
 		} catch (Exception e) {
-			// Match original behavior - if sprite creation fails, let it fail
+
 			return new Sprite(loader, name, index);
 		}
 	}
 
-	/**
-	 * Enhanced stream loader with detailed progress tracking and metrics
-	 */
 	private static ArchiveLoader loadStreamWithProgress(String name, String fileName, int index, int progressValue) {
 		loadingScreen.updateDetail("Loading " + name + "...");
 		metrics.startOperation("stream_" + name.replaceAll("\\s+", "_"));
@@ -734,8 +681,7 @@ public class GameLoader extends Client {
 			metrics.endOperation("stream_" + name.replaceAll("\\s+", "_"));
 			metrics.totalFilesRead++;
 
-			// Estimate stream size (rough calculation)
-			int estimatedSize = 1024 * 1024; // Default 1MB estimate
+			int estimatedSize = 1024 * 1024;
 			metrics.totalBytesRead += estimatedSize;
 
 			long streamTime = metrics.operationTimes.get("stream_" + name.replaceAll("\\s+", "_") + "_duration");
@@ -750,9 +696,6 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Enhanced sprite array loading with progress tracking
-	 */
 	private static void loadSpriteArrayWithProgress(Sprite[] array, ArchiveLoader loader, String name, int progressValue) {
 		loadingScreen.updateDetail("Loading " + name + " sprites...");
 		metrics.startOperation("sprite_array_" + name);
@@ -768,9 +711,6 @@ public class GameLoader extends Client {
 			name, arrayTime, spritesLoadedThisArray), LogLevel.SUCCESS);
 	}
 
-	/**
-	 * Enhanced sprite array loading with detailed logging and metrics
-	 */
 	private static void loadSpriteArraySafe(Sprite[] array, ArchiveLoader loader, String name) {
 		if (array == null) {
 			loadingScreen.addLogEntry("Skipping null sprite array: " + name, LogLevel.WARNING);
@@ -792,7 +732,6 @@ public class GameLoader extends Client {
 					totalPixels += sprite.myPixels.length;
 					metrics.spritesProcessed++;
 
-					// Update progress for large arrays
 					if (totalCount > 10) {
 						int progress = (int) ((double) loadedCount / totalCount * 100);
 						loadingScreen.updateDetailProgress(progress);
@@ -811,7 +750,7 @@ public class GameLoader extends Client {
 
 		long duration = System.currentTimeMillis() - startTime;
 		double avgTimePerSprite = loadedCount > 0 ? (double) duration / loadedCount : 0;
-		double totalSizeMB = totalPixels * 4.0 / (1024.0 * 1024.0); // ARGB pixels
+		double totalSizeMB = totalPixels * 4.0 / (1024.0 * 1024.0);
 
 		if (loadedCount == totalCount) {
 			loadingScreen.addLogEntry(String.format("✅ %s: %d/%d sprites (%.1fMB, avg %.1fms/sprite)",
@@ -822,14 +761,10 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Enhanced bulk copy operations with comprehensive progress tracking
-	 */
 	private static void performSafeBulkCopies() {
 		loadingScreen.updateDetail("Processing currency sprites...");
 		metrics.startOperation("bulk_copy_currencies");
 
-		// Currency images copy with detailed metrics
 		if (currencies > 0 && cacheSprite != null && currencyImage != null && cacheSprite.length > 407) {
 			int copyLength = Math.min(currencies, Math.min(currencyImage.length, cacheSprite.length - 407));
 			if (copyLength > 0) {
@@ -866,7 +801,6 @@ public class GameLoader extends Client {
 		loadingScreen.updateDetail("Processing hit mark sprites...");
 		metrics.startOperation("bulk_copy_hitmarks");
 
-		// Hit marks copy with validation
 		if (cacheSprite != null && hitMark != null && cacheSprite.length > 484) {
 			int copyLength = Math.min(9, Math.min(hitMark.length, cacheSprite.length - 475));
 			if (copyLength > 0 && validateSpriteRange(cacheSprite, 475, copyLength)) {
@@ -885,7 +819,6 @@ public class GameLoader extends Client {
 		loadingScreen.updateDetail("Processing hit icon sprites...");
 		metrics.startOperation("bulk_copy_hiticons");
 
-		// Hit icons copy with validation
 		if (cacheSprite != null && hitIcon != null && cacheSprite.length > 489) {
 			int copyLength = Math.min(6, Math.min(hitIcon.length, cacheSprite.length - 484));
 			if (copyLength > 0 && validateSpriteRange(cacheSprite, 484, copyLength)) {
@@ -904,15 +837,11 @@ public class GameLoader extends Client {
 		loadingScreen.addLogEntry("📦 Bulk copy operations completed", LogLevel.INFO);
 	}
 
-	/**
-	 * Individual sprite creation with corruption detection and metrics
-	 */
 	private static Sprite createSpriteOrNull(ArchiveLoader loader, String name, int index) {
 		try {
 			long startTime = System.nanoTime();
 			Sprite sprite = OptimizedSpriteFactory.createSprite(loader, name, index);
 
-			// Validate sprite integrity
 			if (sprite == null || sprite.myPixels == null || sprite.myWidth <= 0 || sprite.myHeight <= 0) {
 				metrics.warnings++;
 				addConsoleMessage("Corrupted sprite detected: " + name + "[" + index + "] - skipping");
@@ -920,7 +849,7 @@ public class GameLoader extends Client {
 			}
 
 			long duration = (System.nanoTime() - startTime) / 1000000;
-			if (duration > 10) { // Log slow individual sprite loads
+			if (duration > 10) {
 				loadingScreen.addLogEntry(String.format("🐌 Slow sprite load: %s[%d] (%.1fms)",
 					name, index, duration / 1000.0), LogLevel.WARNING);
 			}
@@ -933,9 +862,6 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Enhanced optional sprites loading with comprehensive progress and metrics
-	 */
 	private static void loadOptionalSpritesBatch(ArchiveLoader archiveLoader_2) {
 		metrics.startOperation("optional_sprites");
 
@@ -966,9 +892,6 @@ public class GameLoader extends Client {
 		loadingScreen.addLogEntry(String.format("  • Hint icons: %d, Prayer icons: %d, Skull icons: %d", hintIconCount, prayerIconCount, skullIconCount), LogLevel.INFO);
 	}
 
-	/**
-	 * Sprite array loader with progress tracking and detailed metrics
-	 */
 	private static int loadSpriteArrayWithProgress(Sprite[] array, ArchiveLoader loader, String name, int maxCount, int progressValue) {
 		if (array == null || array.length == 0) {
 			loadingScreen.addLogEntry("Skipping empty/null array: " + name, LogLevel.WARNING);
@@ -987,7 +910,6 @@ public class GameLoader extends Client {
 				loaded++;
 				totalPixels += sprite.myPixels.length;
 
-				// Update progress for larger arrays
 				if (maxCount > 10) {
 					int progress = (int) ((double) i / Math.min(maxCount, array.length) * progressValue);
 					loadingScreen.updateDetailProgress(progress);
@@ -1009,9 +931,6 @@ public class GameLoader extends Client {
 		return loaded;
 	}
 
-	/**
-	 * Background array loader with progress tracking and metrics
-	 */
 	private static int loadBackgroundArrayWithProgress(Background[] array, ArchiveLoader loader, String name, int maxCount, int progressValue) {
 		if (array == null || array.length == 0) {
 			loadingScreen.addLogEntry("Skipping empty/null background array: " + name, LogLevel.WARNING);
@@ -1031,7 +950,6 @@ public class GameLoader extends Client {
 					loaded++;
 					totalBytes += bg.textureData.length;
 
-					// Update progress for larger arrays
 					if (maxCount > 10) {
 						int progress = (int) ((double) i / Math.min(maxCount, array.length) * progressValue);
 						loadingScreen.updateDetailProgress(progress);
@@ -1058,9 +976,6 @@ public class GameLoader extends Client {
 		return loaded;
 	}
 
-	/**
-	 * Validate a range of sprites for null/corruption
-	 */
 	private static boolean validateSpriteRange(Sprite[] sprites, int start, int length) {
 		for (int i = start; i < start + length && i < sprites.length; i++) {
 			if (sprites[i] == null) {
@@ -1070,9 +985,6 @@ public class GameLoader extends Client {
 		return true;
 	}
 
-	/**
-	 * Enhanced color adjustments with comprehensive progress tracking and metrics
-	 */
 	private static void applyColorAdjustmentsOptimized() {
 		loadingScreen.updateDetail("Calculating color adjustments...");
 		metrics.startOperation("color_calculation");
@@ -1110,7 +1022,6 @@ public class GameLoader extends Client {
 				totalPixelsProcessed += mapScenes[i6].textureData.length;
 			}
 
-			// Update progress
 			if (i6 % 10 == 0) {
 				loadingScreen.updateDetailProgress(i6);
 			}
@@ -1125,9 +1036,6 @@ public class GameLoader extends Client {
 		loadingScreen.addLogEntry(String.format("  • Total pixels processed: %.1fMB", pixelsMB), LogLevel.INFO);
 	}
 
-	/**
-	 * Enhanced map bounds calculation with comprehensive progress tracking
-	 */
 	private static void calculateMapBoundsOptimized() {
 		if (mapBack == null) {
 			loadingScreen.addLogEntry("Warning: mapBack is null, skipping map bounds calculation", LogLevel.WARNING);
@@ -1145,7 +1053,6 @@ public class GameLoader extends Client {
 		loadingScreen.addLogEntry(String.format("🗺️ Map data: %dx%d grid, %d bytes",
 			mapWidth, mapData.length / mapWidth, mapData.length), LogLevel.INFO);
 
-		// Process horizontal bounds
 		metrics.startOperation("horizontal_bounds");
 		for (int j6 = 0; j6 < 33; j6++) {
 			int k6 = 999;
@@ -1166,7 +1073,6 @@ public class GameLoader extends Client {
 			questStates[j6] = i7 - k6;
 			processedBytes += 34;
 
-			// Update progress
 			if (j6 % 8 == 0) {
 				loadingScreen.updateDetailProgress((int) ((double) j6 / 33 * 50));
 			}
@@ -1174,7 +1080,6 @@ public class GameLoader extends Client {
 		metrics.endOperation("horizontal_bounds");
 		long hTime = metrics.operationTimes.get("horizontal_bounds_duration");
 
-		// Process vertical bounds
 		metrics.startOperation("vertical_bounds");
 		for (int l6 = 1; l6 < 153; l6++) {
 			int j7 = 999;
@@ -1197,7 +1102,6 @@ public class GameLoader extends Client {
 			friendsListIds[l6 - 1] = l7 - j7;
 			processedBytes += 153;
 
-			// Update progress
 			if (l6 % 15 == 0) {
 				loadingScreen.updateDetailProgress(50 + (int) ((double) l6 / 152 * 50));
 			}
@@ -1213,9 +1117,6 @@ public class GameLoader extends Client {
 		loadingScreen.addLogEntry(String.format("  • Processed %d bytes of map data", processedBytes), LogLevel.INFO);
 	}
 
-	/**
-	 * Public API for monitoring loading state with enhanced metrics
-	 */
 	public static boolean isCurrentlyLoading() {
 		return isLoading;
 	}
@@ -1236,9 +1137,6 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Public API for cache management with metrics
-	 */
 	public static void cleanupCaches() {
 		int beforeSize = spriteCache.size();
 		OptimizedSpriteFactory.cleanupCache();
@@ -1250,9 +1148,6 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Get comprehensive cache statistics for debugging
-	 */
 	public static String getCacheStats() {
 		int cacheSize = spriteCache.size();
 		int activeRefs = (int) spriteCache.values().stream()
@@ -1265,9 +1160,6 @@ public class GameLoader extends Client {
 			cacheSize, activeRefs, hitRate, metrics.cacheEvictions);
 	}
 
-	/**
-	 * Get comprehensive loading metrics report
-	 */
 	public static String getLoadingMetricsReport() {
 		StringBuilder report = new StringBuilder();
 		report.append("=== GAMELOADER METRICS REPORT ===\n");
@@ -1280,7 +1172,6 @@ public class GameLoader extends Client {
 			report.append(String.format("Issues: %d errors, %d warnings\n", metrics.errors, metrics.warnings));
 		}
 
-		// Phase timing breakdown
 		report.append("Phase Timings:\n");
 		for (Map.Entry<String, Long> entry : metrics.phaseTimes.entrySet()) {
 			if (entry.getKey().endsWith("_duration")) {
@@ -1292,9 +1183,6 @@ public class GameLoader extends Client {
 		return report.toString();
 	}
 
-	/**
-	 * Get real-time performance metrics
-	 */
 	public static String getPerformanceMetrics() {
 		metrics.updateMemoryMetrics();
 		Runtime runtime = Runtime.getRuntime();
@@ -1312,9 +1200,6 @@ public class GameLoader extends Client {
 			usedMB, maxMB, usagePercent, spriteCache.size());
 	}
 
-	/**
-	 * Enhanced error reporting with context
-	 */
 	public static void reportLoadingError(String operation, Exception e) {
 		metrics.errors++;
 		if (loadingScreen != null) {
@@ -1323,9 +1208,6 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Enhanced warning reporting with context
-	 */
 	public static void reportLoadingWarning(String operation, String warning) {
 		metrics.warnings++;
 		if (loadingScreen != null) {
@@ -1333,9 +1215,6 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Track custom operation timing
-	 */
 	public static void startCustomOperation(String operationName) {
 		metrics.startOperation("custom_" + operationName);
 	}
@@ -1348,9 +1227,6 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Force memory usage update and report
-	 */
 	public static void updateAndReportMemoryUsage(String context) {
 		metrics.updateMemoryMetrics();
 		if (loadingScreen != null) {
@@ -1358,9 +1234,6 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Integration with loading screen metrics
-	 */
 	public static void updateLoadingScreenMetrics() {
 		if (loadingScreen != null) {
 			loadingScreen.updateItemCount("Sprites", metrics.spritesLoaded);
@@ -1376,9 +1249,6 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Detailed sprite loading with metrics integration
-	 */
 	public static Sprite loadSpriteWithMetrics(ArchiveLoader loader, String name, int index) {
 		long startTime = System.nanoTime();
 		try {
@@ -1398,9 +1268,6 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Detailed configuration loading with metrics
-	 */
 	public static void loadConfigWithMetrics(String configName, Runnable configLoader) {
 		long startTime = System.currentTimeMillis();
 		try {
@@ -1419,9 +1286,6 @@ public class GameLoader extends Client {
 		}
 	}
 
-	/**
-	 * Method to raise welcome screen (original functionality preserved)
-	 */
 	public void raiseWelcomeScreen() {
 		welcomeScreenRaised = true;
 		if (loadingScreen != null) {

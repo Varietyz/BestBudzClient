@@ -238,7 +238,6 @@ public final class Stoner extends Entity
 			return desc.getAnimatedModel(-1, k, nextAnim, currCycle, nextCycle, null);
 		}
 
-		// Cache animation reference to avoid repeated array access
 		Animation animation = null;
 		if (super.anim >= 0 && super.animDelay == 0) {
 			animation = Animation.anims[super.anim];

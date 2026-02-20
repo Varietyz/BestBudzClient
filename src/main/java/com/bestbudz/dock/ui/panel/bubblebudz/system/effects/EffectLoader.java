@@ -32,7 +32,6 @@ public class EffectLoader
 	private static Set<String> findEffectDirectories() throws Exception {
 		Set<String> directories = new HashSet<>();
 
-		// Get the effects package URL
 		ClassLoader classLoader = EffectLoader.class.getClassLoader();
 		URL effectsUrl = classLoader.getResource(EFFECTS_PATH);
 
@@ -48,10 +47,10 @@ public class EffectLoader
 		System.out.println("URL protocol: " + protocol);
 
 		if ("file".equals(protocol)) {
-			// Running in IDE or exploded directory
+
 			findDirectoriesInFileSystem(new File(effectsUrl.toURI()), directories);
 		} else if ("jar".equals(protocol)) {
-			// Running from JAR
+
 			findDirectoriesInJar(effectsUrl, directories);
 		}
 
@@ -107,7 +106,6 @@ public class EffectLoader
 				}
 			}
 
-			// Check which directories have factory classes
 			for (String dirName : foundDirs) {
 				if (hasFactoryClassInJar(jar, dirName)) {
 					directories.add(dirName);
@@ -121,7 +119,6 @@ public class EffectLoader
 		File factoryFile = new File(directory, expectedFactoryName);
 		System.out.println("Looking for factory file: " + factoryFile.getAbsolutePath() + " (exists: " + factoryFile.exists() + ")");
 
-		// Also check for .class files in case we're running compiled
 		String expectedFactoryClass = capitalizeFirst(effectName) + "Factory.class";
 		File factoryClassFile = new File(directory, expectedFactoryClass);
 		System.out.println("Looking for factory class: " + factoryClassFile.getAbsolutePath() + " (exists: " + factoryClassFile.exists() + ")");

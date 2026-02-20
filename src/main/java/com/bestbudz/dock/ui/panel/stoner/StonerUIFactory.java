@@ -6,9 +6,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-/**
- * Factory for creating consistent UI elements
- */
 public class StonerUIFactory {
 
 	private static final Color TEXT_SECONDARY = new Color(170, 170, 170);
@@ -40,19 +37,19 @@ public class StonerUIFactory {
 		verticalBar.setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
 			@Override
 			protected void configureScrollBarColors() {
-				// Make thumb and track completely transparent/invisible
-				this.thumbColor = new Color(0, 0, 0, 0); // Fully transparent
-				this.trackColor = new Color(0, 0, 0, 0); // Fully transparent
+
+				this.thumbColor = new Color(0, 0, 0, 0);
+				this.trackColor = new Color(0, 0, 0, 0);
 			}
 
 			@Override
 			protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
-				// Don't paint the track - leave it invisible
+
 			}
 
 			@Override
 			protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
-				// Don't paint the thumb - leave it invisible
+
 			}
 
 			@Override
@@ -74,7 +71,6 @@ public class StonerUIFactory {
 			}
 		});
 
-		// Set scrollbar width to 0 to completely hide it
 		verticalBar.setPreferredSize(new Dimension(0, 0));
 		verticalBar.setSize(new Dimension(0, 0));
 	}

@@ -15,19 +15,8 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-/**
- * Clean Shop Panel - Responsive and compact shop interface
- *
- * Features:
- * - Clean, compact design with proper spacing
- * - Responsive button layout that adapts to panel width
- * - Reliable dropdown categories with proper click handling
- * - No overlapping components or dead zones
- * - Proper visibility handling on minimize/restore
- */
 public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
-	// Clean color scheme
 	private static final Color CARD_BG = new Color(35, 35, 35);
 	private static final Color HEADER_BG = new Color(45, 45, 45);
 	private static final Color ACCENT = new Color(185, 160, 66);
@@ -51,11 +40,11 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	}
 
 	private void initializeComponents() {
-		// Header with title and stats
+
 		headerPanel = new JPanel(new BorderLayout()) {
 			@Override
 			protected void paintComponent(Graphics g) {
-				// Ensure solid background to prevent bleed-through
+
 				Graphics2D g2 = (Graphics2D) g.create();
 				try {
 					g2.setColor(getBackground());
@@ -84,11 +73,10 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		headerPanel.add(titleLabel, BorderLayout.WEST);
 		headerPanel.add(statsLabel, BorderLayout.EAST);
 
-		// Content area with proper scrolling
 		contentPanel = new JPanel() {
 			@Override
 			protected void paintComponent(Graphics g) {
-				// Ensure solid background
+
 				Graphics2D g2 = (Graphics2D) g.create();
 				try {
 					g2.setColor(getBackground());
@@ -113,13 +101,12 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		scrollPane.getViewport().setOpaque(true);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-		// Add components
 		add(headerPanel, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
 	}
 
 	private void setupCategories() {
-		// Shops
+
 		addCategory("Shops", true, new String[][]{
 			{"General Store", "115082"},
 			{"Pack store", "115083"},
@@ -135,7 +122,6 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 			{"Advancement capes", "115093"}
 		});
 
-		// Point Shops
 		addCategory("Point Shops", false, new String[][]{
 			{"Chill points", "115097"},
 			{"Weed protect points", "115098"},
@@ -148,7 +134,6 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 		updateStatsLabel();
 	}
-
 
 	private void addCategory(String name, boolean expanded, String[][] shops) {
 		ShopCategory category = new ShopCategory(name, expanded, shops);
@@ -174,7 +159,7 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 			@Override
 			public void componentShown(ComponentEvent e) {
-				// Fix for panels being hidden after minimize/restore
+
 				setVisible(true);
 				updateButtonLayouts();
 				revalidate();
@@ -186,14 +171,12 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	private void updateButtonLayouts() {
 		if (currentPanelWidth <= 0) return;
 
-		// Calculate columns based on available width
-		int availableWidth = currentPanelWidth - 32; // Account for padding and scrollbar
+		int availableWidth = currentPanelWidth - 32;
 		int buttonWidth = 90;
 		int spacing = 4;
 		int columns = Math.max(1, (availableWidth + spacing) / (buttonWidth + spacing));
-		columns = Math.min(columns, 4); // Maximum 4 columns
+		columns = Math.min(columns, 4);
 
-		// Update all category button layouts
 		for (ShopCategory category : categories) {
 			category.updateButtonLayout(columns);
 		}
@@ -202,9 +185,6 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		repaint();
 	}
 
-	/**
-	 * Individual shop category with clean dropdown functionality
-	 */
 	private class ShopCategory extends JPanel {
 		private final String name;
 		private final String[][] shops;
@@ -235,7 +215,7 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 			headerPanel = new JPanel(new BorderLayout()) {
 				@Override
 				protected void paintComponent(Graphics g) {
-					// Ensure proper background painting without transparency issues
+
 					Graphics2D g2 = (Graphics2D) g.create();
 					try {
 						g2.setColor(getBackground());
@@ -275,13 +255,12 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 			headerPanel.add(leftPanel, BorderLayout.WEST);
 			headerPanel.add(expandIcon, BorderLayout.EAST);
 
-			// Simplified click handler without complex hover effects
 			MouseAdapter clickHandler = new MouseAdapter() {
 				private Color originalBg = HEADER_BG;
 
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					// Prevent event propagation that might switch panels
+
 					e.consume();
 					toggleExpanded();
 				}
@@ -308,7 +287,6 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 			buttonPanel.setBackground(CARD_BG);
 			buttonPanel.setBorder(new EmptyBorder(4, 6, 6, 6));
 
-			// Create buttons
 			for (String[] shop : shops) {
 				JButton button = createShopButton(shop[0], Integer.parseInt(shop[1]));
 				buttonPanel.add(button);
@@ -321,17 +299,15 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 			JButton button = new JButton(name) {
 				@Override
 				protected void paintComponent(Graphics g) {
-					// Ensure we paint our own background without interference
+
 					Graphics2D g2 = (Graphics2D) g.create();
 					try {
 						g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-						// Paint background based on state
 						Color bgColor = getModel().isRollover() ? ACCENT : ColorConfig.GRAPHITE_COLOR;
 						g2.setColor(bgColor);
 						g2.fillRect(0, 0, getWidth(), getHeight());
 
-						// Paint border
 						g2.setColor(BORDER);
 						g2.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 
@@ -353,9 +329,8 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 			button.setMinimumSize(new Dimension(85, 24));
 			button.setMaximumSize(new Dimension(85, 24));
 
-			// Simple click handling without external rainbow effects
 			button.addActionListener(e -> {
-				// Ensure we stay on EDT and don't trigger panel switches
+
 				SwingUtilities.invokeLater(() -> {
 					try {
 						ButtonHandler.createButtonListener(interfaceId).actionPerformed(e);
@@ -386,7 +361,6 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 				buttonPanel.setVisible(expanded);
 			}
 
-			// Update preferred size
 			if (expanded) {
 				setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 			} else {
@@ -398,7 +372,6 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		}
 	}
 
-	// UIPanel interface methods
 	@Override
 	public String getPanelID() {
 		return "Shops";
@@ -413,12 +386,10 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	public void onActivate() {
 		if (!Client.loggedIn) return;
 
-		// Ensure this panel is properly shown and focused
 		SwingUtilities.invokeLater(() -> {
 			setVisible(true);
 			setOpaque(true);
 
-			// Bring this panel to front to prevent other panels showing through
 			if (getParent() != null) {
 				getParent().setComponentZOrder(this, 0);
 			}
@@ -432,7 +403,7 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 	@Override
 	public void onDeactivate() {
-		// Clean deactivation
+
 	}
 
 	@Override
@@ -443,7 +414,7 @@ public class ShopPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	@Override
 	public void updateDockText(int index, String text) {
 		if (!Client.loggedIn) return;
-		// Handle dock text updates if needed
+
 	}
 
 	public String getPanelIconPath() {

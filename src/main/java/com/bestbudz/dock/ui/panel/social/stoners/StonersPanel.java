@@ -24,10 +24,8 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 		setMinimumSize(new Dimension(0, 0));
 
-		// Initialize services
 		messageService = new PrivateMessageService(this);
 
-		// List
 		stonerList = new JList<>(listModel);
 		stonerList.setOpaque(false);
 		stonerList.setCellRenderer(new StonerCellRenderer());
@@ -35,7 +33,6 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		stonerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		stonerList.setVisibleRowCount(20);
 
-		// Initialize controller
 		listController = new StonerListController(listModel, stonerList, messageService);
 
 		JScrollPane scroll = new JScrollPane(stonerList);
@@ -49,7 +46,7 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 		refreshTimer = new Timer(3000, e -> {
 			if (isShowing() && Client.loggedIn) {
-				onActivate(); // safely refresh list
+				onActivate();
 			}
 		});
 		refreshTimer.setRepeats(true);
@@ -57,12 +54,12 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 		ToolTipManager.sharedInstance().setInitialDelay(300);
 		ToolTipManager.sharedInstance().setDismissDelay(4000);
 
-		stonerList.setToolTipText(""); // activate tooltip system
+		stonerList.setToolTipText("");
 	}
 
 	@Override
 	public void updateText() {
-		// Implementation remains the same
+
 	}
 
 	@Override
@@ -78,12 +75,12 @@ public class StonersPanel extends JPanel implements UIPanel, DockTextUpdatable {
 	@Override
 	public void onActivate() {
 		listController.refreshList();
-		refreshTimer.start(); // 🔄 begin auto-refresh
+		refreshTimer.start();
 	}
 
 	@Override
 	public void onDeactivate() {
-		refreshTimer.stop(); // 🛑 disable while hidden
+		refreshTimer.stop();
 	}
 
 	@Override

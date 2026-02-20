@@ -7,9 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.bestbudz.engine.core.loading.LoadingEnums.*;
 
-/**
- * Progress panel containing status, progress bars, and details
- */
 public class ProgressPanel extends JPanel {
 	private JLabel statusLabel;
 	private JLabel detailLabel;
@@ -61,44 +58,29 @@ public class ProgressPanel extends JPanel {
 		add(detailProgressBar);
 	}
 
-	/**
-	 * Update main progress
-	 */
 	public void updateProgress(int progress) {
 		SwingUtilities.invokeLater(() -> {
 			mainProgressBar.setValue(Math.max(0, Math.min(100, progress)));
 		});
 	}
 
-	/**
-	 * Update status text
-	 */
 	public void updateStatus(String status) {
 		SwingUtilities.invokeLater(() -> {
 			statusLabel.setText(status);
-			statusLabel.setForeground(SECONDARY_TEXT); // Reset color
+			statusLabel.setForeground(SECONDARY_TEXT);
 		});
 	}
 
-	/**
-	 * Update detail text
-	 */
 	public void updateDetail(String detail) {
 		SwingUtilities.invokeLater(() -> detailLabel.setText(detail));
 	}
 
-	/**
-	 * Update detail progress bar
-	 */
 	public void updateDetailProgress(int progress) {
 		SwingUtilities.invokeLater(() -> {
 			detailProgressBar.setValue(Math.max(0, Math.min(100, progress)));
 		});
 	}
 
-	/**
-	 * Set error state
-	 */
 	public void setErrorState(String message) {
 		SwingUtilities.invokeLater(() -> {
 			statusLabel.setText("❌ " + message);
@@ -106,9 +88,6 @@ public class ProgressPanel extends JPanel {
 		});
 	}
 
-	/**
-	 * Get current progress value
-	 */
 	public int getCurrentProgress() {
 		return currentProgress.get();
 	}

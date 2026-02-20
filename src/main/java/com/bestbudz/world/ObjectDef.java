@@ -17,9 +17,9 @@ public final class ObjectDef {
 	public static int[] streamIndices;
 	public static Client clientInstance;
 	public static int cacheIndex;
-	public static MRUNodes mruNodes2 = new MRUNodes(64); // Increased from 30
+	public static MRUNodes mruNodes2 = new MRUNodes(64);
 	public static ObjectDef[] cache;
-	public static MRUNodes mruNodes1 = new MRUNodes(1024); // Increased from 500
+	public static MRUNodes mruNodes1 = new MRUNodes(1024);
 
 	public boolean aBoolean736;
 	public byte aByte737;
@@ -575,7 +575,6 @@ public final class ObjectDef {
 			}
 		}
 
-		// Optimize flag calculations - do them once
 		boolean needsScale = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
 		boolean needsTranslate = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
 
@@ -588,7 +587,6 @@ public final class ObjectDef {
 			model_3.anIntArrayArray1657 = null;
 		}
 
-		// Optimize rotation loop
 		for (int rot = 0; rot < l; rot++)
 			model_3.rotateY180();
 

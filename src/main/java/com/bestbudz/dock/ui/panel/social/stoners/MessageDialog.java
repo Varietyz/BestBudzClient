@@ -1,6 +1,5 @@
 package com.bestbudz.dock.ui.panel.social.stoners;
 
-
 import com.bestbudz.dock.util.RainbowHoverUtil;
 import static com.bestbudz.engine.config.ColorConfig.*;
 
@@ -18,7 +17,6 @@ public class MessageDialog {
 			return;
 		}
 
-		// Create custom dialog
 		JDialog messageDialog = new JDialog();
 		messageDialog.setTitle("Send Message to " + recipientName);
 		messageDialog.setModal(true);
@@ -27,11 +25,9 @@ public class MessageDialog {
 		messageDialog.setLocationRelativeTo(parentComponent);
 		messageDialog.setResizable(false);
 
-		// Style the dialog
 		messageDialog.getContentPane().setBackground(GRAPHITE_COLOR);
 		messageDialog.setLayout(new BorderLayout(10, 10));
 
-		// Message input area
 		JTextArea messageArea = new JTextArea(3, 30);
 		messageArea.setBackground(GRAY_UI_COLOR);
 		messageArea.setForeground(WHITE_UI_COLOR);
@@ -46,21 +42,18 @@ public class MessageDialog {
 		scrollPane.setBorder(BorderFactory.createLineBorder(ACCENT_COLOR, 1));
 		scrollPane.setBackground(GRAY_UI_COLOR);
 
-		// Button panel
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		buttonPanel.setBackground(GRAY_UI_COLOR);
 
 		JButton sendButton = new JButton("Send");
 		JButton cancelButton = new JButton("Cancel");
 
-		// Style buttons
 		styleButton(sendButton, ONLINE_COLOR);
 		styleButton(cancelButton, OFFLINE_COLOR);
 
 		buttonPanel.add(cancelButton);
 		buttonPanel.add(sendButton);
 
-		// Add components to dialog
 		JLabel instructionLabel = new JLabel("Enter your message:");
 		instructionLabel.setForeground(WHITE_UI_COLOR);
 		instructionLabel.setBorder(new EmptyBorder(10, 10, 0, 10));
@@ -69,7 +62,6 @@ public class MessageDialog {
 		messageDialog.add(scrollPane, BorderLayout.CENTER);
 		messageDialog.add(buttonPanel, BorderLayout.SOUTH);
 
-		// Button actions
 		ActionListener sendAction = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -84,7 +76,6 @@ public class MessageDialog {
 		sendButton.addActionListener(sendAction);
 		cancelButton.addActionListener(e -> messageDialog.dispose());
 
-		// Enter key sends message, Escape cancels
 		messageArea.getInputMap(JComponent.WHEN_FOCUSED).put(
 			KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.CTRL_DOWN_MASK), "send");
 		messageArea.getActionMap().put("send", new AbstractAction() {
@@ -103,7 +94,6 @@ public class MessageDialog {
 			}
 		});
 
-		// Show dialog
 		SwingUtilities.invokeLater(() -> {
 			messageDialog.setVisible(true);
 			messageArea.requestFocusInWindow();

@@ -3,9 +3,6 @@ package com.bestbudz.dock.ui.panel.bank.state;
 import com.bestbudz.ui.RSInterface;
 import java.util.Arrays;
 
-/**
- * Manages bank and inventory state tracking for efficient change detection
- */
 public class BankStateManager {
 
 	private int[] lastBankStateHash = null;
@@ -13,9 +10,6 @@ public class BankStateManager {
 	private int lastItemCount = -1;
 	private int lastInventoryItemCount = -1;
 
-	/**
-	 * Checks if inventory contents have changed since last check
-	 */
 	public boolean hasInventoryChanged() {
 		try {
 			RSInterface inventoryInterface = RSInterface.interfaceCache[3214];
@@ -35,9 +29,6 @@ public class BankStateManager {
 		}
 	}
 
-	/**
-	 * Checks if bank contents have changed since last check
-	 */
 	public boolean hasBankChanged() {
 		try {
 			RSInterface bankInterface = RSInterface.interfaceCache[5382];
@@ -57,9 +48,6 @@ public class BankStateManager {
 		}
 	}
 
-	/**
-	 * Checks if item counts have changed
-	 */
 	public boolean hasItemCountChanged() {
 		RSInterface bankInterface = RSInterface.interfaceCache[5382];
 		RSInterface inventoryInterface = RSInterface.interfaceCache[3214];
@@ -77,25 +65,16 @@ public class BankStateManager {
 		return changed;
 	}
 
-	/**
-	 * Gets current bank item count
-	 */
 	public int getBankItemCount() {
 		RSInterface bankInterface = RSInterface.interfaceCache[5382];
 		return countItems(bankInterface);
 	}
 
-	/**
-	 * Gets current inventory item count
-	 */
 	public int getInventoryItemCount() {
 		RSInterface inventoryInterface = RSInterface.interfaceCache[3214];
 		return countItems(inventoryInterface);
 	}
 
-	/**
-	 * Resets all state tracking (call when logging out)
-	 */
 	public void reset() {
 		lastBankStateHash = null;
 		lastInventoryStateHash = null;
@@ -103,17 +82,11 @@ public class BankStateManager {
 		lastInventoryItemCount = -1;
 	}
 
-	/**
-	 * Forces next check to detect changes (useful after actions)
-	 */
 	public void invalidate() {
 		lastBankStateHash = null;
 		lastInventoryStateHash = null;
 	}
 
-	/**
-	 * Computes a hash of the state for efficient comparison
-	 */
 	private int[] computeStateHash(int[] items, int[] amounts) {
 		if (items == null || amounts == null) {
 			return new int[0];
@@ -123,16 +96,13 @@ public class BankStateManager {
 		int[] hash = new int[maxIndex];
 
 		for (int i = 0; i < maxIndex; i++) {
-			// Combine item ID and amount into a single hash value
+
 			hash[i] = items[i] * 31 + amounts[i];
 		}
 
 		return hash;
 	}
 
-	/**
-	 * Counts non-empty items in an interface
-	 */
 	private int countItems(RSInterface itemInterface) {
 		if (itemInterface == null || itemInterface.inv == null || itemInterface.invStackSizes == null) {
 			return 0;

@@ -3,7 +3,6 @@ package com.bestbudz.dock.util;
 import java.awt.Insets;
 import javax.swing.JFrame;
 
-// In a neutral utility
 public class DockSync {
 	private static JFrame dockFrame;
 
@@ -20,6 +19,4 @@ public class DockSync {
 		}
 	}
 
-
 }
-

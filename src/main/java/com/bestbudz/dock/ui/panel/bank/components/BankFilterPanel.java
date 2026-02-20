@@ -9,9 +9,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.function.Consumer;
 
-/**
- * Filter, sort, and search controls for bank panel
- */
 public class BankFilterPanel extends JPanel {
 
 	private final JComboBox<BankFilterEngine.FilterType> filterComboBox;
@@ -33,7 +30,6 @@ public class BankFilterPanel extends JPanel {
 		sortComboBox = createSortComboBox();
 		searchField = createSearchField();
 
-		// Search delay timer for performance
 		searchDelayTimer = new Timer(200, e -> applySearch());
 		searchDelayTimer.setRepeats(false);
 
@@ -153,7 +149,6 @@ public class BankFilterPanel extends JPanel {
 		field.setCaretColor(Color.WHITE);
 		field.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80)));
 
-		// Real-time search with delay
 		field.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
 			@Override
 			public void insertUpdate(javax.swing.event.DocumentEvent e) {
@@ -178,7 +173,6 @@ public class BankFilterPanel extends JPanel {
 			}
 		});
 
-		// Immediate search on Enter and focus lost
 		field.addActionListener(e -> {
 			if (searchDelayTimer.isRunning()) {
 				searchDelayTimer.stop();
@@ -204,60 +198,38 @@ public class BankFilterPanel extends JPanel {
 			String searchText = searchField.getText().trim();
 			searchChangeCallback.accept(searchText);
 
-			// Visual feedback for active search
 			if (!searchText.isEmpty()) {
-				searchField.setBackground(new Color(45, 60, 45)); // Slight green tint when searching
+				searchField.setBackground(new Color(45, 60, 45));
 			} else {
-				searchField.setBackground(new Color(55, 55, 55)); // Normal background
+				searchField.setBackground(new Color(55, 55, 55));
 			}
 		}
 	}
 
-	/**
-	 * Sets the callback for filter changes
-	 */
 	public void setFilterChangeCallback(Consumer<BankFilterEngine.FilterType> callback) {
 		this.filterChangeCallback = callback;
 	}
 
-	/**
-	 * Sets the callback for sort changes
-	 */
 	public void setSortChangeCallback(Consumer<BankFilterEngine.SortType> callback) {
 		this.sortChangeCallback = callback;
 	}
 
-	/**
-	 * Sets the callback for search changes
-	 */
 	public void setSearchChangeCallback(Consumer<String> callback) {
 		this.searchChangeCallback = callback;
 	}
 
-	/**
-	 * Gets the current filter selection
-	 */
 	public BankFilterEngine.FilterType getCurrentFilter() {
 		return (BankFilterEngine.FilterType) filterComboBox.getSelectedItem();
 	}
 
-	/**
-	 * Gets the current sort selection
-	 */
 	public BankFilterEngine.SortType getCurrentSort() {
 		return (BankFilterEngine.SortType) sortComboBox.getSelectedItem();
 	}
 
-	/**
-	 * Gets the current search text
-	 */
 	public String getSearchText() {
 		return searchField.getText().trim();
 	}
 
-	/**
-	 * Clears the search field
-	 */
 	public void clearSearch() {
 		searchField.setText("");
 		applySearch();

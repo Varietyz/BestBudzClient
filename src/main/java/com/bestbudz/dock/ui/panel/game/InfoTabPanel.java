@@ -32,7 +32,7 @@ public class InfoTabPanel implements UIPanel, DockTextUpdatable
 
 		JPanel buttonBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 		buttonBar.setOpaque(false);
-		
+
 		questList.setCellRenderer(new DefaultListCellRenderer() {
 			@Override
 			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -43,11 +43,11 @@ public class InfoTabPanel implements UIPanel, DockTextUpdatable
 				label.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 
 				if (index == clickedIndex) {
-					label.setBackground(SELECTED_COLOR); // flash green
+					label.setBackground(SELECTED_COLOR);
 					label.setForeground(WHITE_UI_COLOR);
 				} else  if (index == hoverIndex) {
-					// You could apply a rainbow color here
-					Color rainbowColor = RainbowHoverUtil.getNextHoverColor(); // You'd need to make this public
+
+					Color rainbowColor = RainbowHoverUtil.getNextHoverColor();
 					label.setBackground(rainbowColor);
 				} else {
 					label.setBackground(new Color(30, 30, 30));
@@ -57,7 +57,6 @@ public class InfoTabPanel implements UIPanel, DockTextUpdatable
 				return label;
 			}
 		});
-
 
 		questList.addMouseMotionListener(new MouseAdapter() {
 			@Override
@@ -95,8 +94,6 @@ public class InfoTabPanel implements UIPanel, DockTextUpdatable
 			}
 		});
 
-
-
 		JScrollPane scrollPane = new JScrollPane(questList);
 		scrollPane.setPreferredSize(new Dimension(200, 300));
 		scrollPane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
@@ -118,11 +115,10 @@ public class InfoTabPanel implements UIPanel, DockTextUpdatable
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 1 && !e.isConsumed()) {
 					int index = questList.locationToIndex(e.getPoint());
-					int childId = 29501 + index; // Matches original RSInterface child ID
+					int childId = 29501 + index;
 
 					System.out.println("Clicked info line " + index + " (ID " + childId + ")");
 
-					// Send interaction
 					try {
 						Client.stream.writeEncryptedOpcode(185);
 						Client.stream.writeWord(childId);
@@ -133,16 +129,14 @@ public class InfoTabPanel implements UIPanel, DockTextUpdatable
 			}
 			});
 
-
 	}
 
 	public void updateQuestLine(int index, String text) {
 		while (listModel.size() <= index) {
-			listModel.addElement(""); // add blanks until we reach desired index
+			listModel.addElement("");
 		}
 		listModel.set(index, text);
 	}
-
 
 	public void showQuestList() {
 		if (placeholderLabel.getParent() != null) {
@@ -152,7 +146,6 @@ public class InfoTabPanel implements UIPanel, DockTextUpdatable
 		}
 		questList.setVisible(true);
 	}
-
 
 	@Override
 	public void updateText()
@@ -172,12 +165,12 @@ public class InfoTabPanel implements UIPanel, DockTextUpdatable
 
 	@Override
 	public void onActivate() {
-		// Optional: focus or reload logic
+
 	}
 
 	@Override
 	public void onDeactivate() {
-		// Optional: save or cleanup logic
+
 	}
 
 	@Override
@@ -187,7 +180,7 @@ public class InfoTabPanel implements UIPanel, DockTextUpdatable
 	@Override
 	public void updateDockText(int index, String text) {
 		updateQuestLine(index, text);
-		showQuestList(); // Optional
+		showQuestList();
 	}
 
 	@Override

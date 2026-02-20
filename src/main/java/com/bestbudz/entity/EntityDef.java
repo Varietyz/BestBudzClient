@@ -14,10 +14,10 @@ public final class EntityDef {
 	Client client;
 
   public static EntityDef forID(int i, boolean cached) {
-	  // *** CHECK FOR VARIANTS FIRST - BEFORE ANYTHING ELSE ***
+
 	  if (PetVariantManager.isVariant(i)) {
 		  if (cached) {
-			  // Check cache for petvariants too
+
 			  for (int j = 0; j < 20; j++) {
 				  if (cache[j].interfaceType == (long) i) {
 					  return cache[j];
@@ -25,7 +25,6 @@ public final class EntityDef {
 			  }
 		  }
 
-		  // Create and cache variant
 		  cacheIndex = (cacheIndex + 1) % 20;
 		  EntityDef entityDef = cached ? cache[cacheIndex] : new EntityDef();
 		  entityDef.interfaceType = i;
@@ -35,7 +34,6 @@ public final class EntityDef {
 		  return entityDef;
 	  }
 
-	  // Original forID logic for non-variant NPCs
 	  if (cached) {
 		  for (int j = 0; j < 20; j++) {
 			  if (cache[j].interfaceType == (long) i) {
@@ -50,7 +48,6 @@ public final class EntityDef {
 		  cache[cacheIndex] = entityDef;
 	  }
 
-	  // Only read from stream if it's NOT a variant
 	  stream.position = streamIndices[i];
 	  entityDef.interfaceType = i;
 	  entityDef.readValues(stream);
@@ -342,7 +339,7 @@ public final class EntityDef {
 		  entityDef.modelHeight = 30;
         break;
 
-      case 2130: //Snakelings (Zulrah)
+      case 2130:
       case 2131:
       case 2132:
         entityDef.actions = new String[5];

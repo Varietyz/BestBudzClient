@@ -6,9 +6,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-/**
- * Display component for logged-in stoner info
- */
 public class StonerComponent extends JPanel {
 
 	private static final Color CARD_BG = new Color(35, 35, 35);
@@ -45,7 +42,7 @@ public class StonerComponent extends JPanel {
 	}
 
 	private void createComponents() {
-		// Top row with status indicator and name
+
 		JPanel topRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		topRow.setOpaque(false);
 
@@ -62,7 +59,6 @@ public class StonerComponent extends JPanel {
 		topRow.add(Box.createHorizontalStrut(8));
 		topRow.add(nameLabel);
 
-		// Info panel
 		JPanel infoPanel = new JPanel(new GridLayout(3, 1, 0, 4));
 		infoPanel.setOpaque(false);
 		infoPanel.setBorder(new EmptyBorder(8, 0, 0, 0));

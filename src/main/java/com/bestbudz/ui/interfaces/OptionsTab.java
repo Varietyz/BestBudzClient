@@ -6,58 +6,52 @@ import com.bestbudz.ui.RSInterface;
 public class OptionsTab extends RSInterface {
 
   public static void optionTab(TextDrawingArea[] bestbudz) {
-	  RSInterface tab = addTabInterface(904); // Main Options tab
-	  RSInterface energy = interfaceCache[149]; // Used later, likely a text label
+	  RSInterface tab = addTabInterface(904);
+	  RSInterface energy = interfaceCache[149];
 	  energy.textColor = 0xff9933;
 
-// === Decorative Backgrounds & UI Frames ===
-	  addSprite(905, 86);       // Unknown, used in child(25)
-	  addSprite(907, 87);       // Possibly unused?
-	  addSprite(909, 88);       // Possibly unused?
-	  addSprite(951, 89);       // Used in child(5)
-	  addSprite(953, 90);       // Used in child(3)
-	  addSprite(955, 91);       // Used in child(1)
-	  addSprite(947, 102);      // Used in child(9)
-	  addSprite(949, 103);      // Used in child(7)
-	  addSprite(36001, 38);     // Logo or icon (child 11)
-	  addSprite(36002, 38);     // Possibly offscreen (child 12)
-	  addSprite(36017, 38);     // Header or label bar? (child 24)
+	  addSprite(905, 86);
+	  addSprite(907, 87);
+	  addSprite(909, 88);
+	  addSprite(951, 89);
+	  addSprite(953, 90);
+	  addSprite(955, 91);
+	  addSprite(947, 102);
+	  addSprite(949, 103);
+	  addSprite(36001, 38);
+	  addSprite(36002, 38);
+	  addSprite(36017, 38);
 
-// === Config Buttons (Click to Toggle State) ===
-	  addConfigButton(152, 904, 92, 93, 40, 40, "Haste Yo' Ass", 1, 5, 173);      // child 8
-	  addConfigButton(913, 904, 92, 93, 40, 40, "Pointless Button", 0, 5, 170);  // child 0
-	  addConfigButton(957, 904, 92, 93, 40, 40, "Split PM", 1, 5, 287);          // child 4
-	  addConfigButton(12464, 904, 92, 93, 40, 40, "Too Stoned...", 0, 5, 427);   // child 6
+	  addConfigButton(152, 904, 92, 93, 40, 40, "Haste Yo' Ass", 1, 5, 173);
+	  addConfigButton(913, 904, 92, 93, 40, 40, "Pointless Button", 0, 5, 170);
+	  addConfigButton(957, 904, 92, 93, 40, 40, "Split PM", 1, 5, 287);
+	  addConfigButton(12464, 904, 92, 93, 40, 40, "Too Stoned...", 0, 5, 427);
 
-// Chatbox brightness options
-	  addConfigButton(906, 904, 94, 95, 32, 16, "Shit Its Dark", 1, 5, 166);     // child 26
-	  addConfigButton(908, 904, 96, 97, 32, 16, "Ait, Can See", 2, 5, 166);      // child 27
-	  addConfigButton(910, 904, 98, 99, 32, 16, "Tis Sunny", 3, 5, 166);         // child 28
-	  addConfigButton(912, 904, 100, 101, 32, 16, "AAAHH MY EYES", 4, 5, 166);   // child 29
+	  addConfigButton(906, 904, 94, 95, 32, 16, "Shit Its Dark", 1, 5, 166);
+	  addConfigButton(908, 904, 96, 97, 32, 16, "Ait, Can See", 2, 5, 166);
+	  addConfigButton(910, 904, 98, 99, 32, 16, "Tis Sunny", 3, 5, 166);
+	  addConfigButton(912, 904, 100, 101, 32, 16, "AAAHH MY EYES", 4, 5, 166);
 
-// === Hover Buttons: Fixed/Resizable/Fullscreen (Unlinked states) ===
-	  addHoverButton(36004, 470, 40, 40, "Transparent side panel", -1, 36005, 1);        // fixed mode? → child 14
-	  addHoveredButton(36005, 471, 40, 40, 36006);// hover state → child 15
+	  addHoverButton(36004, 470, 40, 40, "Transparent side panel", -1, 36005, 1);
+	  addHoveredButton(36005, 471, 40, 40, 36006);
 
-	  addHoverButton(36007, 468, 40, 40, "Transparent chatbox", -1, 36008, 1);         // resizable → child 16
-	  addHoveredButton(36008, 469, 40, 40, 36009);                     // hover state → child 17
+	  addHoverButton(36007, 468, 40, 40, "Transparent chatbox", -1, 36008, 1);
+	  addHoveredButton(36008, 469, 40, 40, 36009);
 
-	  addHoverButton(36010, 466, 40, 40, "Side-stones arrangement", -1, 36011, 1);        // fullscreen → child 18
-	  addHoveredButton(36011, 467, 40, 40, 36012);                     // hover state → child 19
+	  addHoverButton(36010, 466, 40, 40, "Side-stones arrangement", -1, 36011, 1);
+	  addHoveredButton(36011, 467, 40, 40, 36012);
 
-// === Custom & Chat Coloring Buttons ===
-	  addHoverButton(36026, 104, 40, 40, "Custom", -1, 36027, 1); // Custom Settings Tab = AVAILABLE    // child 31
-	  addHoveredButton(36027, 105, 40, 40, 36028);                   // child 32
-	  addHoverButton(36029, 69, 40, 40, "Chat Coloring", -1, 36030, 1); // child 2
-	  addHoveredButton(36030, 70, 40, 40, 36031);                    // child 33
+	  addHoverButton(36026, 104, 40, 40, "Custom", -1, 36027, 1);
+	  addHoveredButton(36027, 105, 40, 40, 36028);
+	  addHoverButton(36029, 69, 40, 40, "Chat Coloring", -1, 36030, 1);
+	  addHoveredButton(36030, 70, 40, 40, 36031);
 
-// === Text Labels ===
-	  addText(36003, "Hmmm, Where's the button?", bestbudz, 1, 0xff9933, true, true); // child 13
-	  addText(36013, "", bestbudz, 0, 0xff9933, true, true);   // hidden label – fixed? (child 20)
-	  addText(36014, "Fuck Fixed Or Fullscreen!", bestbudz, 0, 0xff9933, true, true); // child 21
-	  addText(36015, "", bestbudz, 0, 0xff9933, true, true);   // hidden label – fullscreen? (child 22)
-	  addText(36016, "", bestbudz, 1, 0xff9933, true, true);   // spacing/padding label (child 23)
-	  addHoverText(36025, "Buggy Options", "Go Ahead", bestbudz, 0, 0xff981f, true, true, 60); // child 30
+	  addText(36003, "Hmmm, Where's the button?", bestbudz, 1, 0xff9933, true, true);
+	  addText(36013, "", bestbudz, 0, 0xff9933, true, true);
+	  addText(36014, "Fuck Fixed Or Fullscreen!", bestbudz, 0, 0xff9933, true, true);
+	  addText(36015, "", bestbudz, 0, 0xff9933, true, true);
+	  addText(36016, "", bestbudz, 1, 0xff9933, true, true);
+	  addHoverText(36025, "Buggy Options", "Go Ahead", bestbudz, 0, 0xff981f, true, true, 60);
 
     tab.totalChildren(34);
 

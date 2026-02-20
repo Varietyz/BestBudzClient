@@ -9,9 +9,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * Manages all control buttons and their interactions
- */
 public class StonerControlsManager {
 
 	private static final int AUTO_COMBAT_BUTTON_ID = 115116;
@@ -32,7 +29,6 @@ public class StonerControlsManager {
 		controlsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0));
 		controlsPanel.setOpaque(false);
 
-		// Auto-combat toggle
 		autoCombatToggle = createAutoCombatToggle();
 		controlsPanel.add(autoCombatToggle);
 	}
@@ -50,7 +46,7 @@ public class StonerControlsManager {
 		updateAutoCombatButtonState(toggle);
 
 		toggle.addActionListener(e -> {
-			// Only process if this panel is actually visible and active
+
 			if (!isPanelActiveAndVisible()) {
 				return;
 			}
@@ -109,7 +105,7 @@ public class StonerControlsManager {
 	}
 
 	private boolean isPanelActiveAndVisible() {
-		// Walk up the component tree to find the root panel
+
 		Container parent = controlsPanel.getParent();
 		while (parent != null && !(parent instanceof StonerPanel)) {
 			if (!parent.isVisible() || !parent.isDisplayable()) {
@@ -118,7 +114,6 @@ public class StonerControlsManager {
 			parent = parent.getParent();
 		}
 
-		// Check if the StonerPanel is visible and displayable
 		if (parent instanceof StonerPanel) {
 			StonerPanel stonerPanel = (StonerPanel) parent;
 			return stonerPanel.isVisible() &&
@@ -150,10 +145,9 @@ public class StonerControlsManager {
 	}
 
 	public void handleDockTextUpdate(int index, String text) {
-		// Handle specific updates from server (e.g., auto-combat state changes)
+
 		if (text != null && text.contains("auto-combat")) {
-			// Parse server response and update state if needed
-			// This is where you'd handle server-side auto-combat state updates
+
 		}
 	}
 }

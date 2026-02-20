@@ -2,76 +2,37 @@ package com.bestbudz.dock.definitions;
 
 import java.util.Arrays;
 
-/**
- * Data class representing a single item bonus definition from XML
- * Maps directly to the XML structure for easy parsing
- */
 public class ItemBonusDefinition {
 
 	private int id;
 	private short[] bonuses;
 
-	/**
-	 * Default constructor for XML parsing
-	 */
 	public ItemBonusDefinition() {
 		this.id = -1;
 		this.bonuses = null;
 	}
 
-	/**
-	 * Constructor for programmatic creation
-	 *
-	 * @param id the item ID
-	 * @param bonuses the bonus values array
-	 */
 	public ItemBonusDefinition(int id, short[] bonuses) {
 		this.id = id;
 		this.bonuses = bonuses != null ? Arrays.copyOf(bonuses, bonuses.length) : null;
 	}
 
-	/**
-	 * Get the item ID
-	 *
-	 * @return the item ID
-	 */
 	public int getId() {
 		return id;
 	}
 
-	/**
-	 * Set the item ID
-	 *
-	 * @param id the item ID
-	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	/**
-	 * Get the bonuses array
-	 *
-	 * @return the bonuses array (defensive copy)
-	 */
 	public short[] getBonuses() {
 		return bonuses != null ? Arrays.copyOf(bonuses, bonuses.length) : null;
 	}
 
-	/**
-	 * Set the bonuses array
-	 *
-	 * @param bonuses the bonuses array
-	 */
 	public void setBonuses(short[] bonuses) {
 		this.bonuses = bonuses != null ? Arrays.copyOf(bonuses, bonuses.length) : null;
 	}
 
-	/**
-	 * Get a specific bonus value
-	 *
-	 * @param index the bonus index
-	 * @return the bonus value, or 0 if index is invalid
-	 */
 	public short getBonus(int index) {
 		if (bonuses == null || index < 0 || index >= bonuses.length) {
 			return 0;
@@ -79,41 +40,20 @@ public class ItemBonusDefinition {
 		return bonuses[index];
 	}
 
-	/**
-	 * Set a specific bonus value
-	 *
-	 * @param index the bonus index
-	 * @param value the bonus value
-	 */
 	public void setBonus(int index, short value) {
 		if (bonuses != null && index >= 0 && index < bonuses.length) {
 			bonuses[index] = value;
 		}
 	}
 
-	/**
-	 * Get the number of bonuses
-	 *
-	 * @return the bonuses array length, or 0 if null
-	 */
 	public int getBonusCount() {
 		return bonuses != null ? bonuses.length : 0;
 	}
 
-	/**
-	 * Check if this definition is valid
-	 *
-	 * @return true if the definition has valid data
-	 */
 	public boolean isValid() {
 		return id >= 0 && bonuses != null && bonuses.length > 0;
 	}
 
-	/**
-	 * Check if this item has any non-zero bonuses
-	 *
-	 * @return true if any bonus is non-zero
-	 */
 	public boolean hasAnyBonuses() {
 		if (bonuses == null) {
 			return false;
@@ -127,23 +67,12 @@ public class ItemBonusDefinition {
 		return false;
 	}
 
-	/**
-	 * Initialize bonuses array with a specific size
-	 * Useful for XML parsers that need to set individual bonus values
-	 *
-	 * @param size the size of the bonuses array
-	 */
 	public void initializeBonuses(int size) {
 		if (size > 0) {
 			this.bonuses = new short[size];
 		}
 	}
 
-	/**
-	 * Copy constructor
-	 *
-	 * @param other the definition to copy from
-	 */
 	public ItemBonusDefinition(ItemBonusDefinition other) {
 		if (other != null) {
 			this.id = other.id;
@@ -152,11 +81,6 @@ public class ItemBonusDefinition {
 		}
 	}
 
-	/**
-	 * Create a copy of this definition
-	 *
-	 * @return a new ItemBonusDefinition with the same data
-	 */
 	public ItemBonusDefinition copy() {
 		return new ItemBonusDefinition(this);
 	}
@@ -183,12 +107,6 @@ public class ItemBonusDefinition {
 			id, Arrays.toString(bonuses));
 	}
 
-	/**
-	 * Get a formatted string representation
-	 *
-	 * @param bonusNames optional array of bonus names for better formatting
-	 * @return formatted string
-	 */
 	public String toFormattedString(String[] bonusNames) {
 		if (!isValid()) {
 			return "ItemBonusDefinition{invalid}";
@@ -224,11 +142,6 @@ public class ItemBonusDefinition {
 		return sb.toString();
 	}
 
-	/**
-	 * Validate the definition and return validation errors
-	 *
-	 * @return null if valid, error message if invalid
-	 */
 	public String validate() {
 		if (id < 0) {
 			return "Item ID cannot be negative: " + id;
@@ -242,23 +155,19 @@ public class ItemBonusDefinition {
 			return "Bonuses array is empty for item " + id;
 		}
 
-		if (bonuses.length > 50) {  // Reasonable upper limit
+		if (bonuses.length > 50) {
 			return "Bonuses array too large (" + bonuses.length + ") for item " + id;
 		}
 
-		// Check for extreme values that might indicate data corruption
 		for (int i = 0; i < bonuses.length; i++) {
 			if (bonuses[i] < -32767 || bonuses[i] > 32767) {
 				return "Bonus value out of range at index " + i + " for item " + id + ": " + bonuses[i];
 			}
 		}
 
-		return null; // Valid
+		return null;
 	}
 
-	/**
-	 * Builder pattern for creating ItemBonusDefinition instances
-	 */
 	public static class Builder {
 		private int id = -1;
 		private short[] bonuses;

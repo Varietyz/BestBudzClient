@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Result container for item bonus loading operations
- * Provides success/failure status with detailed information about the loading process
- */
 public final class ItemBonusLoadResult {
 
 	private final boolean success;
@@ -16,9 +12,6 @@ public final class ItemBonusLoadResult {
 	private final String errorMessage;
 	private final long timestamp;
 
-	/**
-	 * Private constructor - use static factory methods
-	 */
 	private ItemBonusLoadResult(boolean success, List<ItemBonusDefinition> definitions,
 								List<String> warnings, String errorMessage) {
 		this.success = success;
@@ -28,137 +21,58 @@ public final class ItemBonusLoadResult {
 		this.timestamp = System.currentTimeMillis();
 	}
 
-	/**
-	 * Create a successful result
-	 *
-	 * @param definitions the loaded item bonus definitions
-	 * @return successful ItemBonusLoadResult
-	 */
 	public static ItemBonusLoadResult success(List<ItemBonusDefinition> definitions) {
 		return new ItemBonusLoadResult(true, definitions, null, null);
 	}
 
-	/**
-	 * Create a successful result with warnings
-	 *
-	 * @param definitions the loaded item bonus definitions
-	 * @param warnings list of warning messages encountered during loading
-	 * @return successful ItemBonusLoadResult with warnings
-	 */
 	public static ItemBonusLoadResult success(List<ItemBonusDefinition> definitions, List<String> warnings) {
 		return new ItemBonusLoadResult(true, definitions, warnings, null);
 	}
 
-	/**
-	 * Create a failure result
-	 *
-	 * @param errorMessage the error message describing what went wrong
-	 * @return failed ItemBonusLoadResult
-	 */
 	public static ItemBonusLoadResult failure(String errorMessage) {
 		return new ItemBonusLoadResult(false, null, null, errorMessage);
 	}
 
-	/**
-	 * Create a failure result with partial data and warnings
-	 *
-	 * @param errorMessage the error message describing what went wrong
-	 * @param partialDefinitions any definitions that were successfully parsed before failure
-	 * @param warnings list of warning messages encountered
-	 * @return failed ItemBonusLoadResult with partial data
-	 */
 	public static ItemBonusLoadResult failure(String errorMessage, List<ItemBonusDefinition> partialDefinitions, List<String> warnings) {
 		return new ItemBonusLoadResult(false, partialDefinitions, warnings, errorMessage);
 	}
 
-	/**
-	 * Check if the loading operation was successful
-	 *
-	 * @return true if successful, false if failed
-	 */
 	public boolean isSuccess() {
 		return success;
 	}
 
-	/**
-	 * Check if the loading operation failed
-	 *
-	 * @return true if failed, false if successful
-	 */
 	public boolean isFailure() {
 		return !success;
 	}
 
-	/**
-	 * Get the loaded item bonus definitions
-	 * Returns an empty list if loading failed or no definitions were found
-	 *
-	 * @return unmodifiable list of item bonus definitions
-	 */
 	public List<ItemBonusDefinition> getDefinitions() {
 		return Collections.unmodifiableList(definitions);
 	}
 
-	/**
-	 * Get the number of successfully loaded definitions
-	 *
-	 * @return count of loaded definitions
-	 */
 	public int getDefinitionCount() {
 		return definitions.size();
 	}
 
-	/**
-	 * Get warning messages from the loading process
-	 * Warnings indicate non-fatal issues that didn't prevent loading
-	 *
-	 * @return unmodifiable list of warning messages
-	 */
 	public List<String> getWarnings() {
 		return Collections.unmodifiableList(warnings);
 	}
 
-	/**
-	 * Check if there were any warnings during loading
-	 *
-	 * @return true if warnings were encountered
-	 */
 	public boolean hasWarnings() {
 		return !warnings.isEmpty();
 	}
 
-	/**
-	 * Get the number of warnings
-	 *
-	 * @return count of warning messages
-	 */
 	public int getWarningCount() {
 		return warnings.size();
 	}
 
-	/**
-	 * Get the error message if loading failed
-	 *
-	 * @return error message, or null if loading was successful
-	 */
 	public String getErrorMessage() {
 		return errorMessage;
 	}
 
-	/**
-	 * Get the timestamp when this result was created
-	 *
-	 * @return timestamp in milliseconds since epoch
-	 */
 	public long getTimestamp() {
 		return timestamp;
 	}
 
-	/**
-	 * Get a summary of the loading result
-	 *
-	 * @return formatted summary string
-	 */
 	public String getSummary() {
 		if (success) {
 			StringBuilder sb = new StringBuilder();
@@ -185,11 +99,6 @@ public final class ItemBonusLoadResult {
 		}
 	}
 
-	/**
-	 * Get detailed information about the result
-	 *
-	 * @return detailed formatted string with all available information
-	 */
 	public String getDetailedInfo() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("ItemBonusLoadResult:\n");
@@ -204,7 +113,7 @@ public final class ItemBonusLoadResult {
 
 		if (hasWarnings()) {
 			sb.append("  Warning details:\n");
-			for (int i = 0; i < warnings.size() && i < 10; i++) { // Limit to first 10 warnings
+			for (int i = 0; i < warnings.size() && i < 10; i++) {
 				sb.append("    - ").append(warnings.get(i)).append("\n");
 			}
 			if (warnings.size() > 10) {
@@ -212,7 +121,6 @@ public final class ItemBonusLoadResult {
 			}
 		}
 
-		// Show some sample definitions if available
 		if (!definitions.isEmpty()) {
 			sb.append("  Sample definitions:\n");
 			int sampleCount = Math.min(5, definitions.size());
@@ -231,21 +139,10 @@ public final class ItemBonusLoadResult {
 		return sb.toString();
 	}
 
-	/**
-	 * Get statistics about the loaded definitions
-	 *
-	 * @return ItemBonusStatistics object with detailed stats
-	 */
 	public ItemBonusStatistics getStatistics() {
 		return new ItemBonusStatistics(definitions);
 	}
 
-	/**
-	 * Find a specific definition by item ID
-	 *
-	 * @param itemId the item ID to search for
-	 * @return the ItemBonusDefinition if found, null otherwise
-	 */
 	public ItemBonusDefinition findDefinition(int itemId) {
 		for (ItemBonusDefinition definition : definitions) {
 			if (definition.getId() == itemId) {
@@ -255,21 +152,10 @@ public final class ItemBonusLoadResult {
 		return null;
 	}
 
-	/**
-	 * Check if a specific item ID has a definition in this result
-	 *
-	 * @param itemId the item ID to check
-	 * @return true if the item has a definition
-	 */
 	public boolean hasDefinition(int itemId) {
 		return findDefinition(itemId) != null;
 	}
 
-	/**
-	 * Get all unique item IDs in this result
-	 *
-	 * @return list of item IDs
-	 */
 	public List<Integer> getItemIds() {
 		List<Integer> itemIds = new ArrayList<>();
 		for (ItemBonusDefinition definition : definitions) {
@@ -283,9 +169,6 @@ public final class ItemBonusLoadResult {
 		return getSummary();
 	}
 
-	/**
-	 * Statistics container for bonus definitions
-	 */
 	public static class ItemBonusStatistics {
 		private final int totalItems;
 		private final int itemsWithBonuses;

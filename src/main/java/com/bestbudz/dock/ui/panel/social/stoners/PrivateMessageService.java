@@ -1,6 +1,5 @@
 package com.bestbudz.dock.ui.panel.social.stoners;
 
-
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.graphics.text.TextInput;
 import com.bestbudz.ui.interfaces.Chatbox;
@@ -23,10 +22,9 @@ public class PrivateMessageService implements MessageSender {
 		}
 
 		try {
-			// Convert recipient name to hash
+
 			long recipientHash = TextClass.longForName(recipientName);
 
-			// Find the recipient in the stoners list
 			int recipientIndex = -1;
 			for (int i = 0; i < Client.stonersCount; i++) {
 				if (Client.stonersListAsLongs[i] == recipientHash) {
@@ -35,7 +33,6 @@ public class PrivateMessageService implements MessageSender {
 				}
 			}
 
-			// Verify recipient is online and reachable
 			if (recipientIndex == -1 || Client.stonersNodeIDs[recipientIndex] <= 0) {
 				JOptionPane.showMessageDialog(parentComponent,
 					recipientName + " is not available for messaging.",
@@ -44,7 +41,6 @@ public class PrivateMessageService implements MessageSender {
 				return;
 			}
 
-			// Send the message using the game's protocol (frame 126)
 			Client.stream.writeEncryptedOpcode(126);
 			Client.stream.writeByte(0);
 			int frameStart = Client.stream.position;
@@ -52,11 +48,9 @@ public class PrivateMessageService implements MessageSender {
 			TextInput.method526(message, Client.stream);
 			Client.stream.writePacketLength(Client.stream.position - frameStart);
 
-			// Process and display the message locally using the correct method
 			String processedMessage = TextInput.processText(message);
 			Chatbox.pushMessage(processedMessage, 6, TextClass.fixName(TextClass.nameForLong(recipientHash)));
 
-			// Handle private chat mode if needed
 			if (Chatbox.privateChatMode == 2) {
 				Chatbox.privateChatMode = 1;
 				Client.stream.writeEncryptedOpcode(95);
@@ -67,7 +61,6 @@ public class PrivateMessageService implements MessageSender {
 			System.err.println("Failed to send private message: " + e.getMessage());
 			e.printStackTrace();
 
-			// Show error dialog
 			JOptionPane.showMessageDialog(parentComponent,
 				"Failed to send message to " + recipientName,
 				"Error",

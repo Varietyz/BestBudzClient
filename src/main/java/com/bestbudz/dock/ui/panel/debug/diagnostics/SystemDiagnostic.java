@@ -1,8 +1,6 @@
 package com.bestbudz.dock.ui.panel.debug.diagnostics;
 
 import com.bestbudz.dock.ui.panel.debug.style.DiagnosticStyle;
-import com.bestbudz.engine.config.EngineConfig;
-import static com.bestbudz.engine.config.EngineConfig.worldSelected;
 import java.io.File;
 
 public class SystemDiagnostic extends BaseDiagnostic {

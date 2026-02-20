@@ -2,10 +2,9 @@ package com.bestbudz.util.compression;
 
 final class BZip2Decompressor
 {
-	// Static shared buffer - optimize for single-threaded game usage
+
 	public static int[] sharedWorkspace;
 
-	// Pre-allocated arrays to avoid GC pressure
 	final int[] symbolFrequencies = new int[256];
 	final int[] cumulativeFrequencies = new int[257];
 	final boolean[] symbolInUse = new boolean[256];
@@ -21,42 +20,37 @@ final class BZip2Decompressor
 	final int[][] huffmanPermutation = new int[6][258];
 	final int[] huffmanMinLengths = new int[6];
 
-	// I/O buffers
-	byte[] inputBuffer;  // input buffer
-	int inputPosition;          // input position
-	int inputRemaining;          // input remaining
-	int bytesRead;          // block counter
-	int overflow;          // block overflow
+	byte[] inputBuffer;
+	int inputPosition;
+	int inputRemaining;
+	int bytesRead;
+	int overflow;
 
-	byte[] outputBuffer;  // output buffer
-	int outputPosition;          // output position
-	int outputRemaining;          // output remaining
+	byte[] outputBuffer;
+	int outputPosition;
+	int outputRemaining;
 
-	// State variables
-	int crcLow;          // crc low
-	int crcHigh;          // crc high
-	byte currentByte;         // current byte
-	int repeatCount;          // repeat count
+	int crcLow;
+	int crcHigh;
+	byte currentByte;
+	int repeatCount;
 
-	// Bit buffer for efficient bit reading
-	int bitBuffer;          // bit buffer
-	int bitsAvailable;          // bits available
+	int bitBuffer;
+	int bitsAvailable;
 
-	// Algorithm state
-	int blockSize;          // block size
-	int blockNumber;          // block number
-	int origPtr;          // origPtr
-	int currentIndex;          // current index
-	int currentByteValue;          // current byte value
-	int decoderPosition;          // decoder position
-	int symbolCount;          // symbol count
-	int totalSymbols;          // total symbols
+	int blockSize;
+	int blockNumber;
+	int origPtr;
+	int currentIndex;
+	int currentByteValue;
+	int decoderPosition;
+	int symbolCount;
+	int totalSymbols;
 
 	BZip2Decompressor() {
-		// Constructor is empty - arrays initialized inline for better performance
+
 	}
 
-	// Optimized method to clear state arrays without creating new objects
 	final void resetState() {
 		java.util.Arrays.fill(symbolFrequencies, 0);
 		java.util.Arrays.fill(symbolInUse, false);

@@ -24,17 +24,14 @@ public class Animable extends NodeSub {
 		if (model != null) {
 			modelHeight = model.modelHeight;
 
-			// FORCE GPU RENDERING - Remove conditional check
 			if (RS317GPUInterface.isActive()) {
-				// Add debug logging to see if this path is taken
+
 				System.out.println("[GPU DEBUG] Rendering model via GPU: " + worldX + "," + worldY + "," + worldZ);
 
-				// Convert parameters: worldX=worldX, worldY=worldY, worldZ=worldZ, rotation=rotation
 				RS317GPUInterface.renderModel(model, worldX, worldY, worldZ, rotation, 0, 0, 64);
-				return; // STOP HERE - don't call CPU render
+				return;
 			}
 
-			// CPU fallback
 			model.render(rotation, sinVertical, cosVertical, sinHorizontal, cosHorizontal, worldX, worldY, worldZ, id);
 		}
 	}

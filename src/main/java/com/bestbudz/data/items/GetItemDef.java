@@ -6,25 +6,17 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Refactored GetItemDef class that uses the ItemDefinitions enum for O(1) lookup performance
- * and much easier maintenance. All item definitions are now centralized in the enum.
- * Enhanced with variant item caching to prevent recreation on every hover.
- */
 public class GetItemDef
 {
 
-	// Set of IDs that should have "Unpack" action - for better performance than multiple comparisons
 	private static final Set<Integer> UNPACK_ITEMS = new HashSet<>();
 
-	// Cache for variant items to prevent recreation
 	private static final Map<Integer, ItemDef> variantItemCache = new HashMap<>();
 
-	// Flag to track if variant items have been pre-loaded
 	private static boolean variantItemsPreloaded = false;
 
 	static {
-		// Initialize unpack items set
+
 		int[] unpackIds = {
 			12690, 12962, 12972, 12974, 12984, 12986, 12988, 12990, 13000, 13002,
 			13012, 13014, 13024, 13026, 9666, 9670, 12865, 12867, 12869, 12871,
@@ -37,20 +29,14 @@ public class GetItemDef
 			UNPACK_ITEMS.add(id);
 		}
 
-		// Pre-load variant items to prevent recreation
 		preloadVariantItems();
 	}
 
-	/**
-	 * Pre-load all variant items during initialization to prevent recreation.
-	 * This eliminates the repetitive creation you're seeing in the logs.
-	 */
 	private static void preloadVariantItems() {
 		if (variantItemsPreloaded) return;
 
 		System.out.println("Pre-loading variant pet items...");
 
-		// Load all variant items from PetItemCreator range
 		for (int itemId = 13224; itemId <= PetItemCreator.totalItemsAvailable; itemId++) {
 			if (PetItemCreator.isVariantPetItem(itemId)) {
 				ItemDef variantItem = PetItemCreator.createVariantPetItem(itemId);
@@ -65,27 +51,18 @@ public class GetItemDef
 		System.out.println("Pre-loaded " + variantItemCache.size() + " variant items - no more recreation needed!");
 	}
 
-	/**
-	 * Main method to get item definitions. Now uses enum lookup for O(1) performance
-	 * instead of the massive switch statement. Enhanced with variant item caching.
-	 *
-	 * @param id The item ID to get definition for
-	 * @return ItemDef instance with all properties applied
-	 */
 	public static ItemDef getItemDefinition(int id) {
-		// Handle variant items with caching - this prevents the recreation issue
+
 		if (PetItemCreator.isVariantPetItem(id)) {
 			return getVariantItemDefinition(id);
 		}
 
-		// Check cache first - same as original implementation
 		for (int j = 0; j < 10; j++) {
 			if (ItemDef.cache[j].id == id) {
 				return ItemDef.cache[j];
 			}
 		}
 
-		// Load from stream - same as original implementation
 		ItemDef.cacheIndex = (ItemDef.cacheIndex + 1) % 10;
 		ItemDef itemDef = ItemDef.cache[ItemDef.cacheIndex];
 		ItemDef.stream.position = ItemDef.streamIndices[id];
@@ -93,7 +70,6 @@ public class GetItemDef
 		itemDef.setDefaults();
 		itemDef.readValues(ItemDef.stream);
 
-		// Handle members check - same as original implementation
 		if (!ItemDef.isMembers && itemDef.membersObject) {
 			itemDef.name = "BestBudz Members Bug";
 			itemDef.description = "Membership is bugged.".getBytes();
@@ -103,13 +79,10 @@ public class GetItemDef
 			return itemDef;
 		}
 
-		// Apply custom definitions using enum lookup - O(1) performance!
 		applyCustomDefinition(itemDef, id);
 
-		// Handle special cases that don't fit the standard pattern
 		handleSpecialCases(itemDef, id);
 
-		// Handle certification - same as original implementation
 		if (itemDef.certTemplateID != -1) {
 			itemDef.toNote();
 		}
@@ -117,25 +90,17 @@ public class GetItemDef
 		return itemDef;
 	}
 
-	/**
-	 * Get variant item definition from cache. This prevents recreation every time.
-	 *
-	 * @param id The variant item ID
-	 * @return Cached ItemDef or null if not found
-	 */
 	private static ItemDef getVariantItemDefinition(int id) {
-		// Ensure items are pre-loaded
+
 		if (!variantItemsPreloaded) {
 			preloadVariantItems();
 		}
 
-		// Return cached item - NO MORE RECREATION!
 		ItemDef cached = variantItemCache.get(id);
 		if (cached != null) {
 			return cached;
 		}
 
-		// Fallback: Create on demand if somehow not in cache
 		System.out.println("Warning: Variant item " + id + " not found in cache, creating on demand");
 		ItemDef variantItem = PetItemCreator.createVariantPetItem(id);
 		if (variantItem != null) {
@@ -144,35 +109,24 @@ public class GetItemDef
 		return variantItem;
 	}
 
-	/**
-	 * Apply custom item definition from enum if it exists.
-	 * This replaces the massive switch statement with a single O(1) lookup.
-	 *
-	 * @param itemDef The ItemDef to modify
-	 * @param id The item ID
-	 */
 	private static void applyCustomDefinition(ItemDef itemDef, int id) {
 		ItemDefinitions definition = ItemDefinitions.getById(id);
 		if (definition == null) {
-			return; // No custom definition for this item
+			return;
 		}
 
-		// Apply name
 		if (definition.getName() != null) {
 			itemDef.name = definition.getName();
 		}
 
-		// Apply actions
 		if (definition.getActions() != null) {
 			itemDef.itemActions = definition.getActions().clone();
 		}
 
-		// Apply description
 		if (definition.getDescription() != null) {
 			itemDef.description = definition.getDescription().getBytes();
 		}
 
-		// Apply model properties
 		if (definition.getModelID() != null) {
 			itemDef.modelID = definition.getModelID();
 		}
@@ -210,29 +164,20 @@ public class GetItemDef
 		}
 	}
 
-	/**
-	 * Handle special cases that don't fit the standard enum pattern.
-	 * This keeps the special logic separate and maintainable.
-	 *
-	 * @param itemDef The ItemDef to modify
-	 * @param id The item ID
-	 */
 	private static void handleSpecialCases(ItemDef itemDef, int id) {
 		switch (id) {
-			// Special case: Check charges action modification
+
 			case 2568:
 				ensureItemActionsArray(itemDef);
 				itemDef.itemActions[2] = "Check charges";
 				break;
 
-			// Special case: Mercenary gem with specific action
 			case 4155:
 				itemDef.name = "Mercenary gem";
 				itemDef.itemActions = new String[5];
 				itemDef.itemActions[0] = "Check-task";
 				break;
 
-			// Armor sets with unpack action
 			case 6828:
 				itemDef.name = "Armour set 1";
 				ensureItemActionsArray(itemDef);
@@ -258,7 +203,7 @@ public class GetItemDef
 				break;
 
 			default:
-				// Handle generic unpack items using the set for O(1) lookup
+
 				if (UNPACK_ITEMS.contains(id)) {
 					ensureItemActionsArray(itemDef);
 					itemDef.itemActions[0] = "Unpack";
@@ -267,30 +212,18 @@ public class GetItemDef
 		}
 	}
 
-	/**
-	 * Utility method to ensure itemActions array exists before modifying it.
-	 * Prevents NullPointerException when setting actions.
-	 *
-	 * @param itemDef The ItemDef to check/modify
-	 */
 	private static void ensureItemActionsArray(ItemDef itemDef) {
 		if (itemDef.itemActions == null) {
 			itemDef.itemActions = new String[5];
 		}
 	}
 
-	/**
-	 * Clear variant item cache (useful for debugging/reloading)
-	 */
 	public static void clearVariantCache() {
 		variantItemCache.clear();
 		variantItemsPreloaded = false;
 		System.out.println("Cleared variant item cache");
 	}
 
-	/**
-	 * Get cache statistics for debugging
-	 */
 	public static void printCacheStats() {
 		System.out.println("Variant item cache: " + variantItemCache.size() + " items cached");
 		System.out.println("Preloaded: " + variantItemsPreloaded);

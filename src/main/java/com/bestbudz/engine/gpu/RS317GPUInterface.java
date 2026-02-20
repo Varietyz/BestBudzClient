@@ -2,18 +2,12 @@ package com.bestbudz.engine.gpu;
 
 import com.bestbudz.rendering.model.Model;
 
-/**
- * RS317 GPU Interface - FIXED VERSION
- */
 public class RS317GPUInterface {
 
 	private static boolean gpuEnabled = false;
 	private static boolean initializationAttempted = false;
 	private static GPUContextManager contextManager;
 
-	/**
-	 * FIXED: Initialize GPU rendering system - INTEGRATED with existing system
-	 */
 	public static boolean initialize() {
 		if (gpuEnabled) {
 			System.out.println("[RS317 GPU] Already initialized, returning true");
@@ -29,19 +23,16 @@ public class RS317GPUInterface {
 		System.out.println("[RS317 GPU] Initializing GPU rendering system (INTEGRATED)...");
 
 		try {
-			// Get the existing context manager instance
+
 			contextManager = GPUContextManager.getInstance();
 
-			// FIXED: Check if context manager is properly initialized
 			if (contextManager == null) {
 				System.err.println("[RS317 GPU] Context manager is null");
 				return false;
 			}
 
-			// FIXED: Don't check if context is current here - acquire it properly
 			System.out.println("[RS317 GPU] Context manager found, acquiring context for model renderer...");
 
-			// Use existing context to initialize model renderer
 			try (GPUContextManager.ContextToken context =
 					 contextManager.acquireContext("RS317 Model Renderer Init", 5000)) {
 
@@ -52,7 +43,6 @@ public class RS317GPUInterface {
 
 				System.out.println("[RS317 GPU] Context acquired, initializing model renderer...");
 
-				// Initialize the model renderer using the existing context
 				if (!RS317ModelRenderer.initialize()) {
 					System.err.println("[RS317 GPU] Failed to initialize model renderer");
 					return false;
@@ -72,16 +62,10 @@ public class RS317GPUInterface {
 		}
 	}
 
-	/**
-	 * Check if GPU rendering is active
-	 */
 	public static boolean isActive() {
 		return gpuEnabled && contextManager != null;
 	}
 
-	/**
-	 * Render a 3D model using existing context system
-	 */
 	public static void renderModel(Model model, int worldX, int worldY, int worldZ,
 								   int rotationX, int rotationY, int rotationZ,
 								   int lightingModifier) {
@@ -96,22 +80,16 @@ public class RS317GPUInterface {
 			}
 		} catch (Exception e) {
 			System.err.println("[RS317 GPU] Error in renderModel: " + e.getMessage());
-			// Don't disable GPU on single errors
+
 		}
 	}
 
-	/**
-	 * Set screen size for proper rendering
-	 */
 	public static void setScreenSize(int width, int height) {
 		if (gpuEnabled) {
 			System.out.println("[RS317 GPU] Screen size set to: " + width + "x" + height);
 		}
 	}
 
-	/**
-	 * Cleanup GPU resources
-	 */
 	public static void cleanup() {
 		if (gpuEnabled) {
 			System.out.println("[RS317 GPU] Shutting down GPU rendering...");
@@ -127,9 +105,6 @@ public class RS317GPUInterface {
 		}
 	}
 
-	/**
-	 * Get GPU status for debugging
-	 */
 	public static String getStatus() {
 		if (!gpuEnabled) {
 			return "GPU: Disabled" + (initializationAttempted ? " (Failed Init)" : " (Not Attempted)");

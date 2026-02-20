@@ -23,7 +23,6 @@ public class PetItemCreator
 		}
 	};
 
-	// Inner class to store rotation data
 	public static class ModelRotationData {
 		public final int rotationX;
 		public final int rotationY;
@@ -43,9 +42,8 @@ public class PetItemCreator
 		initializeRotationMappings();
 	}
 
-
 	private static void initializeNPCItemMappings() {
-		// Sequential item IDs starting from 13224
+
 		int itemId = 13224;
 
 		int jadPetStages = 10001;
@@ -54,101 +52,80 @@ public class PetItemCreator
 		int zilyanaPetStages = 10031;
 		int corpPetStages = 10041;
 
-		// Jad
-		npcToItemMap.put(jadPet, itemId++); // 13224 = Item ID
-		npcToItemMap.put(jadPetStages++, itemId++); // 13225
-		npcToItemMap.put(jadPetStages++, itemId++); // 13226
-		npcToItemMap.put(jadPetStages++, itemId++); // 13227
-		npcToItemMap.put(jadPetStages++, itemId++); // 13228
-		npcToItemMap.put(jadPetStages++, itemId++); // 13229
-		npcToItemMap.put(jadPetStages++, itemId++); // 13230
-		npcToItemMap.put(jadPetStages++, itemId++); // 13231
-		npcToItemMap.put(jadPetStages++, itemId++); // 13232
-		npcToItemMap.put(jadPetStages++, itemId++); // 13233
+		npcToItemMap.put(jadPet, itemId++);
+		npcToItemMap.put(jadPetStages++, itemId++);
+		npcToItemMap.put(jadPetStages++, itemId++);
+		npcToItemMap.put(jadPetStages++, itemId++);
+		npcToItemMap.put(jadPetStages++, itemId++);
+		npcToItemMap.put(jadPetStages++, itemId++);
+		npcToItemMap.put(jadPetStages++, itemId++);
+		npcToItemMap.put(jadPetStages++, itemId++);
+		npcToItemMap.put(jadPetStages++, itemId++);
+		npcToItemMap.put(jadPetStages++, itemId++);
 
-		// Graardor
-		npcToItemMap.put(graardorPet, itemId++); // 13234
-		npcToItemMap.put(graardorPetStages++, itemId++); // 13235
-		npcToItemMap.put(graardorPetStages++, itemId++); // 13236
-		npcToItemMap.put(graardorPetStages++, itemId++); // 13237
-		npcToItemMap.put(graardorPetStages++, itemId++); // 13238
-		npcToItemMap.put(graardorPetStages++, itemId++); // 13239
-		npcToItemMap.put(graardorPetStages++, itemId++); // 13240
-		npcToItemMap.put(graardorPetStages++, itemId++); // 13241
-		npcToItemMap.put(graardorPetStages++, itemId++); // 13242
-		npcToItemMap.put(graardorPetStages++, itemId++); // 13243
+		npcToItemMap.put(graardorPet, itemId++);
+		npcToItemMap.put(graardorPetStages++, itemId++);
+		npcToItemMap.put(graardorPetStages++, itemId++);
+		npcToItemMap.put(graardorPetStages++, itemId++);
+		npcToItemMap.put(graardorPetStages++, itemId++);
+		npcToItemMap.put(graardorPetStages++, itemId++);
+		npcToItemMap.put(graardorPetStages++, itemId++);
+		npcToItemMap.put(graardorPetStages++, itemId++);
+		npcToItemMap.put(graardorPetStages++, itemId++);
+		npcToItemMap.put(graardorPetStages++, itemId++);
 
-		// KBD
-		npcToItemMap.put(kbdPet, itemId++); // 13244
-		npcToItemMap.put(kbdPetStages++, itemId++); // 13245
-		npcToItemMap.put(kbdPetStages++, itemId++); // 13246
-		npcToItemMap.put(kbdPetStages++, itemId++); // 13247
-		npcToItemMap.put(kbdPetStages++, itemId++); // 13248
-		npcToItemMap.put(kbdPetStages++, itemId++); // 13249
-		npcToItemMap.put(kbdPetStages++, itemId++); // 13250
-		npcToItemMap.put(kbdPetStages++, itemId++); // 13251
-		npcToItemMap.put(kbdPetStages++, itemId++); // 13252
-		npcToItemMap.put(kbdPetStages++, itemId++); // 13253
+		npcToItemMap.put(kbdPet, itemId++);
+		npcToItemMap.put(kbdPetStages++, itemId++);
+		npcToItemMap.put(kbdPetStages++, itemId++);
+		npcToItemMap.put(kbdPetStages++, itemId++);
+		npcToItemMap.put(kbdPetStages++, itemId++);
+		npcToItemMap.put(kbdPetStages++, itemId++);
+		npcToItemMap.put(kbdPetStages++, itemId++);
+		npcToItemMap.put(kbdPetStages++, itemId++);
+		npcToItemMap.put(kbdPetStages++, itemId++);
+		npcToItemMap.put(kbdPetStages++, itemId++);
 
+		npcToItemMap.put(zilyanaPet, itemId++);
+		npcToItemMap.put(zilyanaPetStages++, itemId++);
+		npcToItemMap.put(zilyanaPetStages++, itemId++);
+		npcToItemMap.put(zilyanaPetStages++, itemId++);
+		npcToItemMap.put(zilyanaPetStages++, itemId++);
+		npcToItemMap.put(zilyanaPetStages++, itemId++);
+		npcToItemMap.put(zilyanaPetStages++, itemId++);
+		npcToItemMap.put(zilyanaPetStages++, itemId++);
+		npcToItemMap.put(zilyanaPetStages++, itemId++);
+		npcToItemMap.put(zilyanaPetStages++, itemId++);
 
-		// Zilyana
-		npcToItemMap.put(zilyanaPet, itemId++); // 13254
-		npcToItemMap.put(zilyanaPetStages++, itemId++); // 13255
-		npcToItemMap.put(zilyanaPetStages++, itemId++); // 13256
-		npcToItemMap.put(zilyanaPetStages++, itemId++); // 13257
-		npcToItemMap.put(zilyanaPetStages++, itemId++); // 13258
-		npcToItemMap.put(zilyanaPetStages++, itemId++); // 13259
-		npcToItemMap.put(zilyanaPetStages++, itemId++); // 13260
-		npcToItemMap.put(zilyanaPetStages++, itemId++); // 13261
-		npcToItemMap.put(zilyanaPetStages++, itemId++); // 13262
-		npcToItemMap.put(zilyanaPetStages++, itemId++); // 13263
+		npcToItemMap.put(corpPet, itemId++);
+		npcToItemMap.put(corpPetStages++, itemId++);
+		npcToItemMap.put(corpPetStages++, itemId++);
+		npcToItemMap.put(corpPetStages++, itemId++);
+		npcToItemMap.put(corpPetStages++, itemId++);
+		npcToItemMap.put(corpPetStages++, itemId++);
+		npcToItemMap.put(corpPetStages++, itemId++);
+		npcToItemMap.put(corpPetStages++, itemId++);
+		npcToItemMap.put(corpPetStages++, itemId++);
+		npcToItemMap.put(corpPetStages++, itemId++);
 
-		// Corp
-		npcToItemMap.put(corpPet, itemId++); // 13264
-		npcToItemMap.put(corpPetStages++, itemId++); // 13265
-		npcToItemMap.put(corpPetStages++, itemId++); // 13266
-		npcToItemMap.put(corpPetStages++, itemId++); // 13267
-		npcToItemMap.put(corpPetStages++, itemId++); // 13268
-		npcToItemMap.put(corpPetStages++, itemId++); // 13269
-		npcToItemMap.put(corpPetStages++, itemId++); // 13270
-		npcToItemMap.put(corpPetStages++, itemId++); // 13271
-		npcToItemMap.put(corpPetStages++, itemId++); // 13272
-		npcToItemMap.put(corpPetStages++, itemId++); // 13273
-
-		// Abyssal Demon NPC
-		npcToItemMap.put(abyssalDemonPet, itemId++); // 13274
+		npcToItemMap.put(abyssalDemonPet, itemId++);
 	}
-	public static int totalItemsAvailable = 13283; // UPDATE FOR ITEM DUMP INCLUSION
+	public static int totalItemsAvailable = 13283;
 
 	private static void initializeRotationMappings() {
-		// Define custom rotations for each item
-		// Format: itemId -> ModelRotationData(rotationX, rotationY, rotationZ, zoom)
+
 		int newItems = 13224;
-		// Jad
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //pet
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //toy
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //infant
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //hatchling
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //cub
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //youth
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //teen
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //young adult
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //adult
-		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500)); //prime
 
-		// Graardor
-		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
-		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
-		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
-		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
-		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
-		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
-		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
-		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
-		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
-		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500));
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500));
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500));
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500));
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500));
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500));
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500));
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500));
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500));
+		itemRotationMap.put(newItems++, new ModelRotationData(300, 100, 0, 9500));
 
-		// KBD
 		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
 		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
 		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
@@ -160,7 +137,6 @@ public class PetItemCreator
 		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
 		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
 
-		// Zilyana
 		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
 		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
 		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
@@ -172,7 +148,17 @@ public class PetItemCreator
 		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
 		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
 
-		// Corp
+		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
+		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
+		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
+		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
+		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
+		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
+		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
+		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
+		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
+		itemRotationMap.put(newItems++, new ModelRotationData(0, 0, 0, 9000));
+
 		itemRotationMap.put(newItems++, new ModelRotationData(360, 0, 0, 3500));
 		itemRotationMap.put(newItems++, new ModelRotationData(360, 0, 0, 8000));
 		itemRotationMap.put(newItems++, new ModelRotationData(360, 0, 0, 7500));
@@ -184,7 +170,6 @@ public class PetItemCreator
 		itemRotationMap.put(newItems++, new ModelRotationData(360, 0, 0, 4500));
 		itemRotationMap.put(newItems++, new ModelRotationData(360, 0, 0, 4000));
 
-		// Abyssal Demon
 		itemRotationMap.put(newItems++, new ModelRotationData(360, 0, 0, 3500));
 	}
 
@@ -205,12 +190,10 @@ public class PetItemCreator
 		return npcToItemMap.containsValue(itemId);
 	}
 
-	// Add method to get rotation data for an item
 	public static ModelRotationData getRotationData(int itemId) {
 		return itemRotationMap.get(itemId);
 	}
 
-	// Add method to set custom rotation for an item
 	public static void setItemRotation(int itemId, int rotationX, int rotationY, int rotationZ, int zoom) {
 		itemRotationMap.put(itemId, new ModelRotationData(rotationX, rotationY, rotationZ, zoom));
 		System.out.println("Set custom rotation for item " + itemId +
@@ -218,7 +201,7 @@ public class PetItemCreator
 	}
 
 	public static ItemDef createVariantPetItem(int itemId) {
-		// Prevent recursion
+
 		if (isCreatingVariant.get()) {
 			System.out.println("Preventing recursion for item " + itemId);
 			return null;
@@ -236,17 +219,13 @@ public class PetItemCreator
 		int npcId = getNPCForItem(itemId);
 		if (npcId == -1) return null;
 
-		// Get the variant NPC definition
 		EntityDef npcDef = EntityDef.forID(npcId);
 		if (npcDef == null) return null;
 
-		// Create new item definition WITHOUT calling getItemDefinition recursively
 		ItemDef variantItem = new ItemDef();
 
-		// Set basic defaults directly instead of copying from another item
 		variantItem.setDefaults();
 
-		// Apply variant-specific properties
 		variantItem.id = itemId;
 		variantItem.name = npcDef.name;
 
@@ -256,21 +235,17 @@ public class PetItemCreator
 		variantItem.itemActions = new String[5];
 		variantItem.itemActions[4] = "Choose";
 
-		// Use the NPC's model for the item
 		if (npcDef.models != null && npcDef.models.length > 0) {
 			variantItem.modelID = npcDef.models[0];
 		} else {
-			variantItem.modelID = 2677; // Fallback model
+			variantItem.modelID = 2677;
 		}
 
-		// Apply custom rotation and zoom settings
 		applyModelRotation(variantItem, itemId);
 
-		// Set reasonable item properties
 		variantItem.stackable = false;
 		variantItem.value = 1;
 
-		// Apply variant modifications (size and actions only)
 		applyVariantModifications(npcDef, variantItem, npcId);
 
 		System.out.println("Created variant item " + itemId + " for NPC " + npcId +
@@ -287,7 +262,7 @@ public class PetItemCreator
 		ModelRotationData rotationData = getRotationData(itemId);
 
 		if (rotationData != null) {
-			// Apply custom rotation settings
+
 			itemDef.modelRotationX = rotationData.rotationX;
 			itemDef.modelRotationY = rotationData.rotationY;
 			itemDef.anInt204 = rotationData.rotationZ;
@@ -299,7 +274,7 @@ public class PetItemCreator
 				", Z=" + rotationData.rotationZ +
 				", Zoom=" + rotationData.zoom);
 		} else {
-			// Apply default rotation settings
+
 			itemDef.modelRotationX = 0;
 			itemDef.modelRotationY = 0;
 			itemDef.anInt204 = 0;
@@ -310,54 +285,48 @@ public class PetItemCreator
 	}
 
 	private static void applyVariantModifications(EntityDef npcDef, ItemDef itemDef, int npcId) {
-		// 1. Apply size modifications based on NPC scaling
+
 		if (isScaleVariant(npcId)) {
 			applyScaleModifications(itemDef, npcId);
 		}
 
-		// 2. Apply special action modifications
 		if (hasSpecialActions(npcId)) {
 			applySpecialActions(npcDef, itemDef, npcId);
 		}
 	}
 
 	private static boolean isScaleVariant(int npcId) {
-		// Mini/Giant petvariants (size-based)
-		return npcId == 10001 || npcId == 10002; // Mini Jad, Giant Jad
+
+		return npcId == 10001 || npcId == 10002;
 	}
 
 	private static void applyScaleModifications(ItemDef itemDef, int npcId) {
-		// Adjust item zoom based on NPC scale
+
 		switch (npcId) {
-			case 10001: // Mini Jad
-				itemDef.modelZoom = (int)(itemDef.modelZoom * 0.7); // Smaller in inventory
+			case 10001:
+				itemDef.modelZoom = (int)(itemDef.modelZoom * 0.7);
 				System.out.println("Applied mini scale to item " + itemDef.id);
 				break;
-			case 10002: // Giant Jad
-				itemDef.modelZoom = (int)(itemDef.modelZoom * 1.3); // Bigger in inventory
+			case 10002:
+				itemDef.modelZoom = (int)(itemDef.modelZoom * 1.3);
 				System.out.println("Applied giant scale to item " + itemDef.id);
 				break;
 		}
 	}
 
 	private static boolean hasSpecialActions(int npcId) {
-		// Variants with unique actions (most petvariants have special actions)
-		return npcId >= 10000 && npcId != 10001; // All except mini jad which only has "Examine"
+
+		return npcId >= 10000 && npcId != 10001;
 	}
 
 	private static void applySpecialActions(EntityDef npcDef, ItemDef itemDef, int npcId) {
-		// Copy special actions from NPC to item if needed
+
 		if (npcDef.actions != null && npcDef.actions[1] != null) {
-			itemDef.itemActions[2] = npcDef.actions[1]; // Add NPC action as item action
+			itemDef.itemActions[2] = npcDef.actions[1];
 			System.out.println("Added special action '" + npcDef.actions[1] + "' to item " + itemDef.id);
 		}
 	}
 
-	// Utility methods for runtime rotation adjustments
-
-	/**
-	 * Updates the rotation of an existing variant item
-	 */
 	public static void updateItemRotation(int itemId, int rotationX, int rotationY, int rotationZ, int zoom) {
 		if (!isVariantPetItem(itemId)) {
 			System.out.println("Item " + itemId + " is not a variant pet item");
@@ -368,9 +337,6 @@ public class PetItemCreator
 		System.out.println("Updated rotation for variant item " + itemId);
 	}
 
-	/**
-	 * Gets the current rotation settings for an item
-	 */
 	public static void printItemRotation(int itemId) {
 		ModelRotationData data = getRotationData(itemId);
 		if (data != null) {

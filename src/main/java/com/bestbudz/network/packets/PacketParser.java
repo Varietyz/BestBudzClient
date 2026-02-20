@@ -46,32 +46,28 @@ import javax.swing.SwingUtilities;
 
 public class PacketParser extends Client
 {
-	// Performance optimizations: Cache frequently accessed data
+
 	private static final ThreadLocal<StringBuilder> STRING_BUILDER_CACHE =
 		ThreadLocal.withInitial(() -> new StringBuilder(256));
 
-	// Cache static arrays to reduce field access overhead
 	private static final int[] PACKET_SIZES = SizeConstants.packetSizes;
 	private static final RSInterface[] INTERFACE_CACHE = RSInterface.interfaceCache;
 
-	// Pre-compiled string patterns for chat optimization
 	private static final String DEAL_SUFFIX = ":dealreq:";
 	private static final String CULT_SUFFIX = ":cult:";
 	private static final String DUEL_SUFFIX = ":duelreq:";
 	private static final String CHALLENGE_SUFFIX = ":chalreq:";
 	private static final String URL_SUFFIX = "#url#";
 
-	// Netty optimization: Expected packet size for buffer hinting
 	private static final int EXPECTED_PACKET_SIZE = 64;
 	private static final int MIN_PACKET_SIZE = 3;
 
-	// Performance monitoring
 	private static long packetCount = 0;
 	private static long lastOptimizationCheck = System.currentTimeMillis();
 
 	public static void handlePackets(Graphics2D g) throws IOException
 	{
-		// Dynamic batch sizing based on available data and load
+
 		final int available = socketStream != null ? socketStream.available() : 0;
 		final int batchSize = calculateOptimalBatchSize(available);
 
@@ -79,7 +75,6 @@ public class PacketParser extends Client
 			if (!parsePacket(g)) break;
 		}
 
-		// Periodic optimization check
 		if (++packetCount % 1000 == 0) {
 			checkPerformanceOptimization();
 		}
@@ -87,29 +82,26 @@ public class PacketParser extends Client
 
 	private static int calculateOptimalBatchSize(int available) {
 		if (available == 0) return 1;
-		if (available > 2000) return 15;  // High load - process more
-		if (available > 1000) return 10;  // Medium load
-		if (available > 500) return 8;    // Normal load
-		return 5;                         // Low load - original behavior
+		if (available > 2000) return 15;
+		if (available > 1000) return 10;
+		if (available > 500) return 8;
+		return 5;
 	}
 
 	private static void checkPerformanceOptimization() {
 		final long currentTime = System.currentTimeMillis();
-		if (currentTime - lastOptimizationCheck > 30000) { // Every 30 seconds
+		if (currentTime - lastOptimizationCheck > 30000) {
 			lastOptimizationCheck = currentTime;
-			// Performance monitoring hook
+
 		}
 	}
-	/**
-	 * Notifies dock panels when specific interfaces are updated
-	 */
+
 	private static void notifyDockPanelUpdates(int interfaceId) {
 		SwingUtilities.invokeLater(() -> {
 			try {
 				UIDockFrame instance = UIDockFrame.getInstance();
 				if (instance == null) return;
 
-				// Bank interface updates
 				if (interfaceId == 5382) {
 					UIPanel bankPanel = instance.getPanel("Bank");
 					if (bankPanel instanceof BankPanel) {
@@ -117,11 +109,8 @@ public class PacketParser extends Client
 					}
 				}
 
-				// Add other interface notifications here as needed
-				// if (interfaceId == XXXX) { ... }
-
 			} catch (Exception e) {
-				// Silent fail if dock is not available
+
 				System.err.println("Failed to notify dock panels: " + e.getMessage());
 			}
 		});
@@ -134,10 +123,9 @@ public class PacketParser extends Client
 		try
 		{
 			final int availableBytes = socketStream.available();
-			// Quick exit for insufficient data
+
 			if (availableBytes == 0) return false;
 
-			// Netty optimization: Check minimum packet size early
 			if (availableBytes < MIN_PACKET_SIZE && pktType == -1) return false;
 
 			if (pktType == -1)
@@ -146,12 +134,11 @@ public class PacketParser extends Client
 				pktType = inStream.buffer[0] & 0xff;
 				if (encryption != null)
 					pktType = pktType - encryption.getNextKey() & 0xff;
-				pktSize = PACKET_SIZES[pktType]; // Use cached array
+				pktSize = PACKET_SIZES[pktType];
 			}
 
-			// Optimized packet size handling with branch prediction optimization
 			if (pktSize >= 0) {
-				// Most common case first
+
 				if (availableBytes < pktSize) return false;
 			} else if (pktSize == -1) {
 				if (availableBytes > 0) {
@@ -172,9 +159,8 @@ public class PacketParser extends Client
 
 			if (availableBytes < pktSize) return false;
 
-			// Buffer size optimization hint for Netty
 			if (pktSize > EXPECTED_PACKET_SIZE * 2) {
-				//System.err.println("Large packet detected: " + pktSize + " bytes (type: " + pktType + ")");
+
 			}
 
 			inStream.position = 0;
@@ -184,357 +170,355 @@ public class PacketParser extends Client
 			regionX = regionUpdateCount;
 			regionUpdateCount = pktType;
 
-			// Reordered switch by packet frequency for better branch prediction
 			switch (pktType)
 			{
-				// HIGH FREQUENCY PACKETS FIRST
-				case 81: // updateStoners - very frequent in multiplayer
+
+				case 81:
 					updateStoners(pktSize, inStream);
 					friendsListVisible = false;
 					pktType = -1;
 					return true;
 
-				case 65: // updateNPCs - very frequent
+				case 65:
 					updateNPCs(inStream, pktSize);
 					pktType = -1;
 					return true;
 
-				case 126: // interface text - very frequent
+				case 126:
 					handleInterfaceTextOptimized();
 					pktType = -1;
 					return true;
 
-				case 134: // skill update - frequent
+				case 134:
 					handleSkillUpdateOptimized();
 					pktType = -1;
 					return true;
 
-				case 196: // private message - frequent
+				case 196:
 					handlePrivateMessageOptimized();
 					pktType = -1;
 					return true;
 
-				case 253: // chat message - frequent
+				case 253:
 					handleChatMessageOptimized();
 					pktType = -1;
 					return true;
 
-				// MEDIUM FREQUENCY PACKETS
-				case 176: // login response
+				case 176:
 					handleLoginResponseOptimized();
 					pktType = -1;
 					return true;
 
-				case 64: // ground array update
+				case 64:
 					handleGroundArrayUpdateOptimized();
 					pktType = -1;
 					return true;
 
-				case 185: // interface model
+				case 185:
 					handleInterfaceModelOptimized();
 					pktType = -1;
 					return true;
 
-				case 217: // clan message
+				case 217:
 					handleClanMessageOptimized();
 					pktType = -1;
 					return true;
 
-				case 107: // reset animations
+				case 107:
 					cutsceneActive = false;
 					Arrays.fill(cameraShakeEnabled, 0, 5, false);
 					StatusOrbs.xpCounter = 0;
 					pktType = -1;
 					return true;
 
-				case 72: // clear inventory
+				case 72:
 					handleClearInventoryOptimized();
 					pktType = -1;
 					return true;
 
-				case 214: // ignore list
+				case 214:
 					handleIgnoreListOptimized();
 					pktType = -1;
 					return true;
 
-				case 166: // camera shake
+				case 166:
 					handleCameraShakeOptimized();
 					pktType = -1;
 					return true;
 
-				case 71: // tab interface
+				case 71:
 					handleTabInterfaceOptimized();
 					pktType = -1;
 					return true;
 
-				case 74: // music change
+				case 74:
 					handleMusicChangeOptimized();
 					pktType = -1;
 					return true;
 
-				case 121: // music queue
+				case 121:
 					handleMusicQueueOptimized();
 					pktType = -1;
 					return true;
 
-				case 109: // logout - rare but critical
+				case 109:
 					resetLogout();
 					pktType = -1;
 					return false;
 
-				case 70: // interface scroll
+				case 70:
 					handleInterfaceScrollOptimized();
 					pktType = -1;
 					return true;
 
-				case 73: // region change
-				case 241: // region loader
+				case 73:
+				case 241:
 					handleRegionChangeOptimized();
 					pktType = -1;
 					return true;
 
-				case 208: // walkable interface
+				case 208:
 					handleWalkableInterfaceOptimized();
 					pktType = -1;
 					return true;
 
-				case 99: // camera reset
+				case 99:
 					lastActionTime = inStream.readUnsignedByte();
 					pktType = -1;
 					return true;
 
-				case 75: // interface NPC head
+				case 75:
 					handleInterfaceNPCHeadOptimized();
 					pktType = -1;
 					return true;
 
-				case 114: // system update
+				case 114:
 					systemMessageTimer = inStream.readWordLittleEndian() * 30;
 					pktType = -1;
 					return true;
 
-				case 60: // ground item update
+				case 60:
 					handleGroundItemUpdateOptimized();
 					pktType = -1;
 					return true;
 
-				case 35: // skill level
+				case 35:
 					handleSkillLevelOptimized();
 					pktType = -1;
 					return true;
 
-				case 174: // sound effect
+				case 174:
 					handleSoundEffectOptimized();
 					pktType = -1;
 					return false;
 
-				case 104: // player option
+				case 104:
 					handlePlayerOptionOptimized();
 					pktType = -1;
 					return true;
 
-				case 78: // reset destination
+				case 78:
 					destX = 0;
 					pktType = -1;
 					return true;
 
-				case 1: // reset animations all
+				case 1:
 					handleResetAnimationsAllOptimized();
 					pktType = -1;
 					return true;
 
-				case 50: // friends list
+				case 50:
 					handleFriendsListOptimized();
 					pktType = -1;
 					return true;
 
-				case 110: // energy update
+				case 110:
 					handleEnergyUpdateOptimized();
 					pktType = -1;
 					return true;
 
-				case 254: // minimap state
+				case 254:
 					handleMinimapStateOptimized();
 					pktType = -1;
 					return true;
 
-				case 248: // interface inventory
+				case 248:
 					handleInterfaceInventoryOptimized();
 					pktType = -1;
 					return true;
 
-				case 79: // interface scroll position
+				case 79:
 					handleInterfaceScrollPositionOptimized();
 					pktType = -1;
 					return true;
 
-				case 68: // config update
+				case 68:
 					handleConfigUpdateOptimized();
 					pktType = -1;
 					return true;
 
-				case 173: // kill feed
+				case 173:
 					handleKillFeedOptimized();
 					pktType = -1;
 					return true;
 
-				case 85: // coordinate update
+				case 85:
 					localRegionY = inStream.readByteNegated();
 					localRegionX = inStream.readByteNegated();
 					pktType = -1;
 					return true;
 
-				case 24: // force tab
+				case 24:
 					handleForceTabOptimized();
 					pktType = -1;
 					return true;
 
-				case 246: // interface item model
+				case 246:
 					handleInterfaceItemModelOptimized();
 					pktType = -1;
 					return true;
 
-				case 171: // interface hover
+				case 171:
 					handleInterfaceHoverOptimized();
 					pktType = -1;
 					return true;
 
-				case 142: // close interface
+				case 142:
 					handleCloseInterfaceOptimized();
 					pktType = -1;
 					return true;
 
-				case 124: // NPC display
+				case 124:
 					handleNPCDisplayOptimized();
 					pktType = -1;
 					return true;
 
-				case 127: // XP drop
+				case 127:
 					handleXPDropOptimized();
 					pktType = -1;
 					return true;
 
-				case 125: // FREE AND OPEN PROTOCOL
+				case 125:
 					pktType = -1;
 					return false;
 
-				case 202: // FREE AND OPEN PROTOCOL
+				case 202:
 					pktType = -1;
 					return false;
 
-				case 201: // player index
+				case 201:
 					handlePlayerIndexOptimized();
 					pktType = -1;
 					return true;
 
-				case 206: // chat settings
+				case 206:
 					handleChatSettingsOptimized();
 					pktType = -1;
 					return true;
 
-				case 240: // weight update
+				case 240:
 					handleWeightUpdateOptimized();
 					pktType = -1;
 					return true;
 
-				case 8: // interface animation
+				case 8:
 					handleInterfaceAnimationOptimized();
 					pktType = -1;
 					return true;
 
-				case 122: // interface color
+				case 122:
 					handleInterfaceColorOptimized();
 					pktType = -1;
 					return true;
 
-				case 53: // inventory update
+				case 53:
 					handleInventoryUpdateOptimized();
 					pktType = -1;
 					return true;
 
-				case 230: // interface model rotation
+				case 230:
 					handleInterfaceModelRotationOptimized();
 					pktType = -1;
 					return true;
 
-				case 221: // unknown 221
+				case 221:
 					friendsListAction = inStream.readUnsignedByte();
 					pktType = -1;
 					return true;
 
-				case 177: // camera angle
+				case 177:
 					handleCameraAngleOptimized();
 					pktType = -1;
 					return true;
 
-				case 249: // interface settings
+				case 249:
 					handleInterfaceSettingsOptimized();
 					pktType = -1;
 					return true;
 
-				case 27: // input amount
+				case 27:
 					handleInputAmountOptimized();
 					pktType = -1;
 					return true;
 
-				case 187: // input name
+				case 187:
 					handleInputNameOptimized();
 					pktType = -1;
 					return true;
 
-				case 97: // open interface
+				case 97:
 					handleOpenInterfaceOptimized();
 					pktType = -1;
 					return true;
 
-				case 218: // dialog window
+				case 218:
 					handleDialogWindowOptimized();
 					pktType = -1;
 					return true;
 
-				case 87: // config large
+				case 87:
 					handleConfigLargeOptimized();
 					pktType = -1;
 					return true;
 
-				case 36: // config byte
+				case 36:
 					handleConfigByteOptimized();
 					pktType = -1;
 					return true;
 
-				case 61: // unknown 61
+				case 61:
 					tabHoverTime = inStream.readUnsignedByte();
 					pktType = -1;
 					return true;
 
-				case 200: // interface offset
+				case 200:
 					handleInterfaceOffsetOptimized();
 					pktType = -1;
 					return true;
 
-				case 219: // close all interfaces
+				case 219:
 					handleCloseAllInterfacesOptimized();
 					pktType = -1;
 					return true;
 
-				case 34: // inventory item update
+				case 34:
 					handleInventoryItemUpdateOptimized();
 					pktType = -1;
 					return true;
 
 				case 4: case 44: case 84: case 101: case 105: case 117:
-				case 147: case 151: case 156: case 160: case 215: // ground items
+				case 147: case 151: case 156: case 160: case 215:
 				handleGroundItemUpdate(inStream, pktType);
 				pktType = -1;
 				return true;
 
-				case 106: // set tab
+				case 106:
 					tabID = inStream.readByteNegated();
 					tabAreaAltered = true;
 					pktType = -1;
 					return true;
 
-				case 164: // back dialog
+				case 164:
 					handleBackDialogOptimized();
 					pktType = -1;
 					return true;
@@ -547,7 +531,7 @@ public class PacketParser extends Client
 		}
 		catch (IOException _ex)
 		{
-			// Silent handling for IOException - connection issues
+
 			return false;
 		}
 		catch (Exception exception)
@@ -557,12 +541,10 @@ public class PacketParser extends Client
 		}
 	}
 
-	// Optimized handler methods with reduced overhead
 	private static void handleInterfaceTextOptimized() {
 		try {
 			final String text = inStream.readString();
 			final int frame = inStream.readWordMixed();
-			//System.out.println("🎭 RAW STRING PACKET: Frame " + frame + " = '" + text + "'");
 
 			final DockPanelMapping mapping = DockPanelMapping.fromFrame(frame);
 			if (mapping != null) {
@@ -575,9 +557,6 @@ public class PacketParser extends Client
 				});
 			}
 
-
-
-			// Bounds check optimization
 			if (frame >= 0 && frame < INTERFACE_CACHE.length) {
 				final RSInterface rsInterface = INTERFACE_CACHE[frame];
 				if (rsInterface != null) {
@@ -586,7 +565,6 @@ public class PacketParser extends Client
 				}
 			}
 
-			// Optimized range checks
 			if (frame >= 18144 && frame <= 18244) {
 				clanList[frame - 18144] = text;
 			} else if (frame == 8135 && INTERFACE_CACHE[8135] != null) {
@@ -603,13 +581,11 @@ public class PacketParser extends Client
 		final int pExp = inStream.readDWordMixed();
 		final int pGrade = inStream.readDWordMixed();
 
-		// Batch field assignments for better cache locality
 		currentExp[pid] = pExp;
 		currentStats[pid] = pGrade;
 		currentAdvances[pid] = pAdvance;
 		maxStats[pid] = calculateMaxLevelOptimized(pExp);
 
-		// Optimized UI update
 		updateSkillsPanelOptimized(pid);
 	}
 
@@ -617,7 +593,6 @@ public class PacketParser extends Client
 		final int[] expTable = Skills.EXP_FOR_LEVEL;
 		final int tableLength = expTable.length;
 
-		// Reverse iteration for better performance on high levels
 		for (int level = tableLength - 1; level >= 0; level--) {
 			if (experience >= expTable[level]) {
 				return level;
@@ -636,7 +611,6 @@ public class PacketParser extends Client
 	private static void handleChatMessageOptimized() {
 		final String s = inStream.readString();
 
-		// Optimized string matching using indexOf for better performance
 		if (s.indexOf(DEAL_SUFFIX) == s.length() - DEAL_SUFFIX.length() && s.contains(":")) {
 			final String s3 = s.substring(0, s.indexOf(":"));
 			final long l17 = TextClass.longForName(s3);
@@ -682,7 +656,6 @@ public class PacketParser extends Client
 		}
 	}
 
-	// Optimized ignore check with early exit
 	private static boolean isIgnoredUser(final long userHash) {
 		final long[] ignoreList = ignoreListAsLongs;
 		final int maxIgnore = ignoreCount;
@@ -732,7 +705,6 @@ public class PacketParser extends Client
 			reportAbuseInput = "";
 			canMute = false;
 
-			// Optimized interface search with early exit
 			for (final RSInterface rsInterface : INTERFACE_CACHE) {
 				if (rsInterface != null && rsInterface.contentType == c) {
 					openInterfaceID = rsInterface.parentID;
@@ -801,7 +773,7 @@ public class PacketParser extends Client
 	private static void handleClearInventoryOptimized() {
 		final int i1 = inStream.readWordLittleEndian();
 		final RSInterface rsInterface = INTERFACE_CACHE[i1];
-		// Keep original behavior - both assignments for compatibility
+
 		for (int k15 = 0; k15 < rsInterface.inv.length; k15++) {
 			rsInterface.inv[k15] = -1;
 			rsInterface.inv[k15] = 0;
@@ -879,7 +851,7 @@ public class PacketParser extends Client
 			musicPlaying = false;
 		}
 
-		if (pktType == 241) { // REGION LOADER
+		if (pktType == 241) {
 			i11 = inStream.readWordMixed();
 			inStream.initBitAccess();
 
@@ -899,19 +871,16 @@ public class PacketParser extends Client
 		int playerRegionX = l2;
 		int playerRegionY = i11;
 
-// Only reload if player has actually moved to a different region
 		if (inventoryOffsetX == playerRegionX && inventoryOffsetY == playerRegionY && loadingStage == 2) {
-			// Player is still in same region - no need to reload
+
 			return;
 		}
 
-// ✅ GOOD: Region loading triggered by player movement only
 		inventoryOffsetX = playerRegionX;
 		inventoryOffsetY = playerRegionY;
 		baseX = (playerRegionX - 6) * 8;
 		baseY = (playerRegionY - 6) * 8;
 
-// Calculate region boundaries for special areas
 		selectedSpell = (playerRegionX / 8 == 48 || playerRegionX / 8 == 49) && playerRegionY / 8 == 48;
 		if (playerRegionX / 8 == 48 && playerRegionY / 8 == 148) selectedSpell = true;
 
@@ -937,7 +906,6 @@ public class PacketParser extends Client
 			handleRegionType241Optimized();
 		}
 
-		// Update entity positions
 		final int deltaX = baseX - gameDrawingMode;
 		final int deltaY = baseY - gameDrawingFlags;
 
@@ -967,7 +935,6 @@ public class PacketParser extends Client
 
 		friendsListVisible = true;
 
-		// Update ground arrays
 		byte byte1 = 0, byte2 = 104, byte3 = 1;
 		if (deltaX < 0) {
 			byte1 = 103; byte2 = -1; byte3 = -1;
@@ -1013,9 +980,6 @@ public class PacketParser extends Client
 		cutsceneActive = false;
 	}
 
-	/**
-	 * FIXED: Type 73 region handler with embedded cache integration
-	 */
 	private static void handleRegionType73Optimized(final int l2, final int i11) {
 		System.out.println("🗺️ [RegionChange] Type 73 - Position: " + l2 + "," + i11);
 
@@ -1041,17 +1005,17 @@ public class PacketParser extends Client
 				mapRegionIds[k16] = (l23 << 8) + j26;
 
 				if (selectedSpell && (j26 == 49 || j26 == 149 || j26 == 147 || l23 == 50 || (l23 == 49 && j26 == 47))) {
-					// Special regions with no data
+
 					terrainIndices[k16] = -1;
 					objectIndices[k16] = -1;
 					System.out.println("✅ [RegionChange] Region " + mapRegionIds[k16] + " - special region (no data)");
 				} else {
-					// TRY EMBEDDED CACHE FIRST
+
 					if (loadRegionFromEmbeddedCache(k16, l23, j26)) {
 						embeddedLoaded++;
 						System.out.println("✅ [RegionChange] Region " + mapRegionIds[k16] + " loaded from EMBEDDED CACHE");
 					} else {
-						// FALLBACK TO ONDEMAND FETCHER (causes lag)
+
 						final int k28 = terrainIndices[k16] = cacheManager.getMapIndex(0, j26, l23);
 						if (k28 != -1) {
 							cacheManager.enqueueRequest(3, k28);
@@ -1082,9 +1046,6 @@ public class PacketParser extends Client
 		}
 	}
 
-	/**
-	 * FIXED: Type 241 region handler with embedded cache integration
-	 */
 	private static void handleRegionType241Optimized() {
 		System.out.println("🗺️ [RegionChange] Type 241 - Dynamic region loading");
 
@@ -1129,12 +1090,11 @@ public class PacketParser extends Client
 			final int l30 = i29 >> 8 & 0xff;
 			final int l31 = i29 & 0xff;
 
-			// TRY EMBEDDED CACHE FIRST
 			if (loadRegionFromEmbeddedCache(l26, l30, l31)) {
 				embeddedLoaded++;
 				System.out.println("✅ [RegionChange] Region " + i29 + " loaded from EMBEDDED CACHE");
 			} else {
-				// FALLBACK TO ONDEMAND FETCHER (causes lag)
+
 				final int j32 = terrainIndices[l26] = cacheManager.getMapIndex(0, l31, l30);
 				if (j32 != -1) {
 					cacheManager.enqueueRequest(3, j32);
@@ -1162,48 +1122,39 @@ public class PacketParser extends Client
 		}
 	}
 
-	/**
-	 * NEW: Try to load region from embedded cache
-	 * Returns true if successful, false if should use cacheManager
-	 */
 	private static boolean loadRegionFromEmbeddedCache(int arrayIndex, int regionX, int regionY) {
 		try {
-			// Calculate region ID
+
 			int regionId = (regionX << 8) + regionY;
 
-			// Try to get file IDs from cacheManager (but don't queue them)
 			int mapFileId = cacheManager.getMapIndex(0, regionY, regionX);
 			int landscapeFileId = cacheManager.getMapIndex(1, regionY, regionX);
 
-			// Set file IDs in arrays
 			terrainIndices[arrayIndex] = mapFileId;
 			objectIndices[arrayIndex] = landscapeFileId;
 
-			// Handle -1 file IDs (no data regions)
 			if (mapFileId == -1 && landscapeFileId == -1) {
-				// No data needed - mark as loaded
+
 				terrainData[arrayIndex] = null;
 				objectData[arrayIndex] = null;
 				return true;
 			}
 
 			if (mapFileId == -1 || landscapeFileId == -1) {
-				// Mixed -1 and valid IDs - let cacheManager handle
+
 				return false;
 			}
 
-			// Try to get data from embedded cache
 			byte[] mapData = com.bestbudz.cache.EmbeddedMapCache.getEmbeddedFileData(mapFileId);
 			byte[] landscapeData = com.bestbudz.cache.EmbeddedMapCache.getEmbeddedFileData(landscapeFileId);
 
 			if (mapData != null && landscapeData != null) {
-				// SUCCESS - set data directly
+
 				terrainData[arrayIndex] = mapData;
 				objectData[arrayIndex] = landscapeData;
 				return true;
 			}
 
-			// Embedded cache doesn't have this data
 			return false;
 
 		} catch (Exception e) {
@@ -1396,7 +1347,6 @@ public class PacketParser extends Client
 			stonersCount++;
 		}
 
-		// Friends list sorting
 		for (boolean flag6 = false; !flag6; ) {
 			flag6 = true;
 			for (int k29 = 0; k29 < stonersCount - 1; k29++) {
@@ -1423,7 +1373,7 @@ public class PacketParser extends Client
 
 	private static void handleEnergyUpdateOptimized() {
 		if (tabID == 12) {
-			// Empty block preserved from original
+
 		}
 		energy = inStream.readUnsignedByte();
 	}
@@ -1533,7 +1483,6 @@ public class PacketParser extends Client
 		final boolean enabled = inStream.readUnsignedByte() == 1;
 		final int interfaceId = inStream.readUnsignedWord();
 
-		// Add bounds and null checking
 		if (interfaceId >= 0 && interfaceId < INTERFACE_CACHE.length && INTERFACE_CACHE[interfaceId] != null) {
 			INTERFACE_CACHE[interfaceId].isMouseoverTriggered = enabled;
 		} else {
@@ -1544,7 +1493,6 @@ public class PacketParser extends Client
 	private static void handleCloseInterfaceOptimized() {
 		final int interfaceId = inStream.readWordLittleEndian();
 
-		// Only clear animations if interface exists
 		if (interfaceId >= 0 && interfaceId < INTERFACE_CACHE.length && INTERFACE_CACHE[interfaceId] != null) {
 			clearInterfaceAnimations(interfaceId);
 		} else {
@@ -1595,7 +1543,7 @@ public class PacketParser extends Client
 			StatusOrbs.xpCounter = inStream.readDWord();
 			addXP(skill, exp);
 		} catch (Exception e) {
-			// Silent catch as in original
+
 		}
 	}
 
@@ -1603,7 +1551,7 @@ public class PacketParser extends Client
 		try {
 			stonerIndex = inStream.readUnsignedWord();
 		} catch (Exception e) {
-			// Silent catch as in original
+
 		}
 	}
 
@@ -1616,7 +1564,7 @@ public class PacketParser extends Client
 
 	private static void handleWeightUpdateOptimized() {
 		if (tabID == 12) {
-			// Empty block preserved from original
+
 		}
 		weight = inStream.readSignedWord();
 	}
@@ -1645,7 +1593,6 @@ public class PacketParser extends Client
 		final int interfaceId = inStream.readUnsignedWord();
 		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
 
-		// Null check
 		if (rsInterface == null || rsInterface.inv == null) {
 			System.err.println("Invalid interface or inventory: " + interfaceId);
 			return;
@@ -1654,7 +1601,6 @@ public class PacketParser extends Client
 		final int itemCount = inStream.readUnsignedWord();
 		final int safeItemCount = Math.min(itemCount, rsInterface.inv.length);
 
-		// Standard inventory processing for ALL interfaces (including bank)
 		for (int i = 0; i < safeItemCount; i++) {
 			int stackSize = inStream.readUnsignedByte();
 			if (stackSize == 255) stackSize = inStream.readDWordMixed2();
@@ -1662,13 +1608,11 @@ public class PacketParser extends Client
 			rsInterface.invStackSizes[i] = stackSize;
 		}
 
-		// Clear remaining slots
 		for (int j25 = safeItemCount; j25 < rsInterface.inv.length; j25++) {
 			rsInterface.inv[j25] = 0;
 			rsInterface.invStackSizes[j25] = 0;
 		}
 
-		// Skip excess items if any
 		if (itemCount > rsInterface.inv.length) {
 			for (int i = rsInterface.inv.length; i < itemCount; i++) {
 				int stackSize = inStream.readUnsignedByte();
@@ -1677,19 +1621,14 @@ public class PacketParser extends Client
 			}
 		}
 
-		// SIMPLIFIED: Only read bank tab data but don't do special processing
 		if (rsInterface.contentType == 206) {
-			// Read tab amounts to keep protocol compatible but don't use them for special logic
+
 			for (int tab = 0; tab < 10; tab++) {
 				int amount = inStream.readSignedByte() << 8 | inStream.readUnsignedWord();
-				tabAmounts[tab] = amount; // Store but don't use for special bank behavior
+				tabAmounts[tab] = amount;
 			}
 
-			// Force bank to behave as box interface
 			rsInterface.isBoxInterface = true;
-
-			// Skip search functionality - treat all items as visible
-			// No special bankInvTemp processing
 
 			System.out.println("📦 Bank interface " + interfaceId + " updated with " +
 				safeItemCount + " items (treated as regular inventory)");
@@ -1831,7 +1770,6 @@ public class PacketParser extends Client
 		final int interfaceId = inStream.readUnsignedWord();
 		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
 
-		// Debug logging for bank updates
 		if (interfaceId == 5382) {
 			System.out.println("🏦 Bank item update - Interface: " + interfaceId);
 		}
@@ -1846,14 +1784,12 @@ public class PacketParser extends Client
 				rsInterface.inv[slot] = itemId;
 				rsInterface.invStackSizes[slot] = stackSize;
 
-				// Debug individual item updates for bank
 				if (interfaceId == 5382 && itemId > 0) {
 					System.out.println("🏦 Bank slot " + slot + " updated: Item " + (itemId - 1) + " x" + stackSize);
 				}
 			}
 		}
 
-		// Notify dock panels of the update
 		notifyDockPanelUpdates(interfaceId);
 	}
 
@@ -1873,7 +1809,6 @@ public class PacketParser extends Client
 		System.out.println("🎭 PACKET 164: Chat box interface " + interfaceId);
 	}
 
-	// Error handling optimized for performance
 	private static void handleUnknownPacket() {
 		final StringBuilder error = STRING_BUILDER_CACHE.get();
 		error.setLength(0);
@@ -1902,7 +1837,6 @@ public class PacketParser extends Client
 		resetLogout();
 	}
 
-	// Optimized sendPacket method
 	public static void sendPacket(final int packet) {
 		switch (packet) {
 			case 103:
@@ -1923,12 +1857,11 @@ public class PacketParser extends Client
 				break;
 
 			default:
-				// Handle other packet types if needed
+
 				break;
 		}
 	}
 
-	// Performance monitoring methods
 	public static long getPacketCount() {
 		return packetCount;
 	}

@@ -66,8 +66,6 @@ public final class ItemDef {
 		id = -1;
 	}
 
-
-
 	public static void nullLoader() {
 		mruNodes2 = null;
 		mruNodes1 = null;
@@ -159,8 +157,6 @@ public final class ItemDef {
 
 		return image;
 	}
-
-
 
 	public static Sprite getSprite(int i, int j, int k) {
 		if (k == 0) {
@@ -462,8 +458,6 @@ public final class ItemDef {
 		stackable = true;
 	}
 
-	// Add this method to your ItemDef class to ensure variant items render properly
-
 	public Model getStackedModel(int stackSize) {
 		if (stackIDs != null && stackSize > 1) {
 			int j = -1;
@@ -483,15 +477,13 @@ public final class ItemDef {
 		if (model == null)
 			return null;
 
-		// Scale the model if needed
 		if (anInt167 != 128 || anInt192 != 128 || anInt191 != 128)
 			model.modelScale(anInt167, anInt191, anInt192);
 
-		// CRITICAL: Apply color replacements for variant items
 		if (modifiedModelColors != null && originalModelColors != null) {
 			for (int l = 0; l < modifiedModelColors.length; l++) {
 				model.replaceColor(modifiedModelColors[l], originalModelColors[l]);
-				// Debug output to verify colors are being applied
+
 				if (PetItemCreator.isVariantPetItem(id)) {
 					System.out.println("Applying item color: " + modifiedModelColors[l] + " -> " + originalModelColors[l] + " for item " + id);
 				}
@@ -642,6 +634,4 @@ public final class ItemDef {
 		}
 	}
 
-
 }
-

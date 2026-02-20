@@ -8,9 +8,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static com.bestbudz.engine.core.loading.LoadingEnums.*;
 
-/**
- * Header panel containing logo, title, and elapsed time
- */
 public class HeaderPanel extends JPanel {
 	private final JLabel logoLabel;
 	private final JLabel titleLabel;
@@ -27,10 +24,8 @@ public class HeaderPanel extends JPanel {
 		setLayout(new BorderLayout(16, 0));
 		setOpaque(false);
 
-		// Create logo component
 		logoLabel = createLogoLabel();
 
-		// Create title and time labels
 		titleLabel = new JLabel("Arcade RSPS", JLabel.LEFT);
 		titleLabel.setFont(fontManager.titleFont);
 		titleLabel.setForeground(PRIMARY_TEXT);
@@ -94,7 +89,7 @@ public class HeaderPanel extends JPanel {
 	}
 
 	private void layoutComponents() {
-		// Title panel with title and time
+
 		JPanel titlePanel = new JPanel();
 		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
 		titlePanel.setOpaque(false);
@@ -111,9 +106,6 @@ public class HeaderPanel extends JPanel {
 		add(logoLabel, BorderLayout.EAST);
 	}
 
-	/**
-	 * Update the elapsed time display
-	 */
 	public void updateElapsedTime() {
 		SwingUtilities.invokeLater(() -> {
 			String formattedTime = LoadingUtilities.formatElapsedTime(startTime.get());
@@ -121,9 +113,6 @@ public class HeaderPanel extends JPanel {
 		});
 	}
 
-	/**
-	 * Update the title
-	 */
 	public void updateTitle(String title) {
 		SwingUtilities.invokeLater(() -> titleLabel.setText(title));
 	}

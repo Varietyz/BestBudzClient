@@ -4,9 +4,6 @@ import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
 import com.bestbudz.data.items.ItemDef;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Simple ItemDef cache - ONLY caches item definitions, nothing else
- */
 public class ItemDefCache {
 
 	private static final ConcurrentHashMap<Integer, CachedItemDef> cache = new ConcurrentHashMap<>();
@@ -24,9 +21,6 @@ public class ItemDefCache {
 		}
 	}
 
-	/**
-	 * Get cached item definition. Loads if not cached.
-	 */
 	public static CachedItemDef get(int itemId) {
 		return cache.computeIfAbsent(itemId, ItemDefCache::load);
 	}
@@ -42,7 +36,7 @@ public class ItemDefCache {
 				);
 			}
 		} catch (Exception e) {
-			// Ignore errors, return unknown
+
 		}
 		return UNKNOWN_ITEM;
 	}

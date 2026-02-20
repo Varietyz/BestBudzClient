@@ -52,9 +52,9 @@ public class TogglePreview {
 
 				@Override
 				public void mouseExited(MouseEvent e) {
-					// Check if mouse moved to preview window
+
 					if (previewWindow != null && previewWindow.isMouseOver(e.getLocationOnScreen())) {
-						return; // Don't hide if mouse moved to preview
+						return;
 					}
 
 					isHovered = false;
@@ -74,7 +74,7 @@ public class TogglePreview {
 			showTimer.setRepeats(false);
 
 			hideTimer = new Timer(500, e -> {
-				// Double-check mouse position before hiding
+
 				if (previewWindow != null) {
 					Point mousePos = MouseInfo.getPointerInfo().getLocation();
 					if (!isMouseOverTabOrPreview(mousePos)) {
@@ -86,13 +86,12 @@ public class TogglePreview {
 		}
 
 		private boolean isMouseOverTabOrPreview(Point mousePos) {
-			// Check if mouse is over this tab
+
 			Rectangle tabBounds = new Rectangle(getLocationOnScreen(), getSize());
 			if (tabBounds.contains(mousePos)) {
 				return true;
 			}
 
-			// Check if mouse is over preview window
 			if (previewWindow != null && previewWindow.isMouseOver(mousePos)) {
 				return true;
 			}
@@ -126,13 +125,10 @@ public class TogglePreview {
 				JScrollPane scrollPane = scrollPanes.get(i);
 				JPanel toggleBar = toggleBars.get(i);
 
-				// Get all buttons in this scroll pane
 				List<JToggleButton> allButtons = getAllButtonsFromContainer(toggleBar);
 
-				// Get currently visible buttons in viewport
 				List<JToggleButton> visibleButtons = getVisibleButtons(scrollPane);
 
-				// Hidden buttons are all buttons not currently visible
 				for (JToggleButton button : allButtons) {
 					if (!visibleButtons.contains(button)) {
 						hiddenButtons.add(button);
@@ -146,13 +142,12 @@ public class TogglePreview {
 		private List<JToggleButton> getAllButtonsFromContainer(JPanel toggleBar) {
 			List<JToggleButton> buttons = new ArrayList<>();
 
-			// Get all toggle buttons from UIDockFrame in sorted order
 			UIDockFrame.toggleButtons.entrySet().stream()
 				.sorted(Map.Entry.comparingByKey())
 				.forEach(entry -> {
 					JToggleButton button = entry.getValue();
 					Container parent = button.getParent();
-					// Null check to prevent NPE
+
 					if (parent != null && (parent == toggleBar || SwingUtilities.isDescendingFrom(parent, toggleBar))) {
 						buttons.add(button);
 					}
@@ -175,7 +170,6 @@ public class TogglePreview {
 					JToggleButton button = (JToggleButton) comp;
 					Rectangle buttonBounds = button.getBounds();
 
-					// Check if button is at least partially visible
 					if (viewRect.intersects(buttonBounds)) {
 						visibleButtons.add(button);
 					}
@@ -199,7 +193,6 @@ public class TogglePreview {
 
 			g2d.fillRoundRect(0, 0, width, height, 3, 3);
 
-			// Minimal dots
 			g2d.setColor(new Color(180, 180, 180, 120));
 			int centerX = width / 2;
 			int centerY = height / 2;
@@ -245,10 +238,9 @@ public class TogglePreview {
 			window.add(contentPanel);
 			window.pack();
 
-			// Add mouse wheel listener for buffer rotation
 			contentPanel.addMouseWheelListener(new MouseWheelListener() {
 				private long lastScrollTime = 0;
-				private final int SCROLL_DELAY = 150; // ms between scroll actions
+				private final int SCROLL_DELAY = 150;
 
 				@Override
 				public void mouseWheelMoved(MouseWheelEvent e) {
@@ -258,7 +250,6 @@ public class TogglePreview {
 
 					if (buttons.isEmpty()) return;
 
-					// Find currently selected button in the preview
 					JToggleButton currentSelected = null;
 					for (JToggleButton button : buttons) {
 						if (button.isSelected()) {
@@ -267,39 +258,33 @@ public class TogglePreview {
 						}
 					}
 
-					// If no selected button in preview, get the first one
 					if (currentSelected == null) {
 						currentSelected = buttons.get(0);
 					}
 
-					// Get all buttons in order for circular rotation
 					List<String> allButtonIds = new ArrayList<>();
 					UIDockFrame.toggleButtons.entrySet().stream()
 						.sorted(Map.Entry.comparingByKey())
 						.forEach(entry -> allButtonIds.add(entry.getKey()));
 
-					// Find current button's position in the full list
 					String currentId = getButtonId(currentSelected);
 					int currentIndex = allButtonIds.indexOf(currentId);
 					if (currentIndex == -1) return;
 
-					// Calculate next button based on scroll direction
 					int scrollDirection = e.getWheelRotation() > 0 ? 1 : -1;
 					int nextIndex = (currentIndex + scrollDirection + allButtonIds.size()) % allButtonIds.size();
 					String nextButtonId = allButtonIds.get(nextIndex);
 
-					// Center the next button
 					centerButtonInCircularView(nextButtonId);
 
 					e.consume();
 				}
 			});
 
-			// Add mouse listener to the content panel
 			contentPanel.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseExited(MouseEvent e) {
-					// Start hide timer when mouse leaves preview
+
 					Point mousePos = e.getLocationOnScreen();
 					if (!isMouseOver(mousePos) && !isTabUnder(mousePos)) {
 						parentTab.hideTimer.restart();
@@ -308,7 +293,7 @@ public class TogglePreview {
 
 				@Override
 				public void mouseEntered(MouseEvent e) {
-					// Stop hide timer when mouse enters preview
+
 					if (parentTab.hideTimer.isRunning()) {
 						parentTab.hideTimer.stop();
 					}
@@ -343,13 +328,12 @@ public class TogglePreview {
 			}
 
 			previewButton.addActionListener(e -> {
-				// Click the original button to trigger panel switch
+
 				originalButton.doClick();
 
-				// Center this button in its circular view
 				String buttonId = getButtonId(originalButton);
 				if (buttonId != null) {
-					// Use the circular centering method
+
 					centerButtonInCircularView(buttonId);
 				}
 
@@ -362,7 +346,7 @@ public class TogglePreview {
 					if (!originalButton.isSelected()) {
 						previewButton.setBackground(new Color(90, 90, 90));
 					}
-					// Stop hide timer when hovering over buttons
+
 					if (parentTab.hideTimer.isRunning()) {
 						parentTab.hideTimer.stop();
 					}
@@ -382,18 +366,17 @@ public class TogglePreview {
 		private String getButtonId(JToggleButton button) {
 			String text = button.getText();
 			if (text != null && text.length() > 2) {
-				// Remove the arrow prefix (e.g., "↑ ", "↓ ", "• ")
+
 				return text.substring(2);
 			}
 			return text != null ? text : "";
 		}
 
 		private void centerButtonInCircularView(String buttonId) {
-			// Find the target button and center it using circular view logic
+
 			JToggleButton targetButton = UIDockFrame.toggleButtons.get(buttonId);
 			if (targetButton == null) return;
 
-			// Use the main circular centering method
 			SwingUtilities.invokeLater(() -> {
 				UIDockHelper.centerToggleInCircularView(buttonId);
 			});
@@ -425,9 +408,6 @@ public class TogglePreview {
 		}
 	}
 
-	/**
-	 * Simple wrapper for individual scroll panes
-	 */
 	public static class ScrollPaneWithTabs extends JPanel {
 		private final JScrollPane scrollPane;
 
@@ -444,9 +424,6 @@ public class TogglePreview {
 		}
 	}
 
-	/**
-	 * Wrapper that adds ONE hover tab to existing toggle bar setup
-	 */
 	public static class ToggleBarWithSinglePreview extends JPanel {
 		private final SingleHoverTab hoverTab;
 

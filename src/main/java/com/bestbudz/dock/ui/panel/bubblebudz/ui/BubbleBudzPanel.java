@@ -28,38 +28,28 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * Bubble Budz - Interactive Loading Panel Mini-Game
- * Now supporting both classic bubbles and geometric shapes!
- * Press 'G' to toggle between modes
- */
 public class BubbleBudzPanel extends JPanel implements GameEventManager.GameEventListener {
 	private final Client client;
 
-	// Core Systems
 	private final GameStateManager stateManager = new GameStateManager();
 	private final GameEventManager eventManager = new GameEventManager();
-	private GameMode currentGameMode = new ClassicGameMode(); // Start with classic
+	private GameMode currentGameMode = new ClassicGameMode();
 	private final RenderManager renderManager = new RenderManager();
 	private final AssetManager assetManager = new AssetManager();
 	private final GameModeManager gameModeManager = new GameModeManager(this::onGameModeChanged);
 
-	// Game Components
 	private final BubbleBudzScoreManager highscoreManager = new BubbleBudzScoreManager();
 	private final EffectManager effectsManager = new EffectManager();
 	private final BubbleBudzGame gameLogic = new BubbleBudzGame();
 	private BubbleInputHandler inputHandler;
 
-	// Mode tracking
 	private boolean useGeometricMode = false;
 
-	// State
 	private int currentScore = 0;
 	private long roundStartTime = 0;
 	private boolean wasVisible = false;
 	private Timer gameTimer;
 
-	// Loading state (maintained for compatibility)
 	private boolean isLoading = false;
 	private String loadingMessage = "";
 	private long loadingStartTime = 0;
@@ -72,29 +62,24 @@ public class BubbleBudzPanel extends JPanel implements GameEventManager.GameEven
 	private void initialize() {
 		setOpaque(false);
 		setLayout(null);
-		setFocusable(true); // Allow keyboard input
+		setFocusable(true);
 
-		// Setup initial input handler
 		this.inputHandler = new BubbleInputHandler(gameLogic, eventManager, currentGameMode);
 
-		// Setup systems
 		EffectLoader.loadAllEffects(effectsManager);
 		setupEventHandlers();
 		setupRenderComponents();
 		setupEffectEventListener();
 		setupMouse();
 
-		// Connect game logic to game mode
 		gameLogic.setGameMode(currentGameMode);
 
-		// Setup timer
 		gameTimer = new Timer(16, e -> {
 			updateGame();
 			repaint();
 		});
 		gameTimer.start();
 
-		// Initial state
 		boolean initialVisible = !Client.loggedIn;
 		setVisible(initialVisible);
 		wasVisible = initialVisible;
@@ -113,14 +98,12 @@ public class BubbleBudzPanel extends JPanel implements GameEventManager.GameEven
 	}
 
 	private void updateRenderComponents() {
-		// Clear existing components
+
 		renderManager.clearComponents();
 
-		// Add base components
 		renderManager.addComponent(new BackgroundRenderer());
 		renderManager.addComponent(new HeaderRenderer());
 
-		// Add appropriate bubble renderer based on mode
 		if (useGeometricMode) {
 			renderManager.addComponent(new GeometricBubbleRenderer(gameLogic));
 		} else {
@@ -129,7 +112,6 @@ public class BubbleBudzPanel extends JPanel implements GameEventManager.GameEven
 
 		renderManager.addComponent(new EffectRenderer(effectsManager));
 
-		// Add game mode UI renderer
 		renderManager.addComponent(new GameModeUIRenderer(gameModeManager));
 
 		renderManager.addComponent(new FooterRenderer());
@@ -140,10 +122,9 @@ public class BubbleBudzPanel extends JPanel implements GameEventManager.GameEven
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				// Handle game mode UI first
+
 				gameModeManager.handleMousePressed(e);
 
-				// Only handle game clicks if overlay is not visible and not loading
 				if (!gameModeManager.isOverlayVisible() && !isLoading) {
 					inputHandler.setPanelHeight(getHeight());
 					inputHandler.handleClick(e.getX(), e.getY(), e);
@@ -171,17 +152,13 @@ public class BubbleBudzPanel extends JPanel implements GameEventManager.GameEven
 
 		System.out.println("Switched to " + modeName + " Mode!");
 
-		// Update game components
 		gameLogic.setGameMode(currentGameMode);
 		inputHandler = new BubbleInputHandler(gameLogic, eventManager, currentGameMode);
 
-		// Update renderer
 		updateRenderComponents();
 
-		// Update game mode manager's current mode
 		gameModeManager.setCurrentMode(modeName);
 
-		// Restart game with new mode (preserves current score)
 		long currentTime = System.currentTimeMillis();
 		roundStartTime = currentTime;
 		currentGameMode.setRoundStartTime(roundStartTime);
@@ -189,13 +166,9 @@ public class BubbleBudzPanel extends JPanel implements GameEventManager.GameEven
 		gameLogic.clearBubbles();
 		effectsManager.clearEffects();
 
-		// Focus back to panel for continued input
 		requestFocusInWindow();
 	}
 
-	/**
-	 * Get current game mode name for display
-	 */
 	public String getCurrentModeName() {
 		return useGeometricMode ? "Geometric" : "Classic";
 	}
@@ -213,30 +186,26 @@ public class BubbleBudzPanel extends JPanel implements GameEventManager.GameEven
 		if (Client.loggedIn) return;
 		long currentTime = System.currentTimeMillis();
 
-		// Check for round completion
 		if (currentGameMode.isRoundComplete(currentTime)) {
 			highscoreManager.updateIfBetter(currentScore);
 			eventManager.publish(new GameEventManager.RoundCompleteEvent(
 				currentScore, highscoreManager.isNewHighScore(currentScore)));
 
-			// Reset for new round
 			roundStartTime = currentTime;
 			currentScore = 0;
 			currentGameMode.setRoundStartTime(roundStartTime);
 			currentGameMode.setCurrentScore(currentScore);
 		}
 
-		// Update game elements
 		gameLogic.updateBubbles();
 		effectsManager.updateEffects();
 		gameLogic.spawnBubbleIfNeeded(BubbleBudzRenderer.calculateGameArea(getWidth(), getHeight()));
 	}
 
 	private void setupEffectEventListener() {
-		// Create effect event listener
+
 		EffectEventListener effectEventListener = new EffectEventListener(effectsManager);
 
-		// Subscribe to game events
 		effectEventListener.subscribeToEvents(eventManager);
 
 		System.out.println("Effect event listener registered for automatic effect creation");
@@ -280,7 +249,7 @@ public class BubbleBudzPanel extends JPanel implements GameEventManager.GameEven
 		if (nowVisible && !wasVisible) {
 			highscoreManager.loadBestScore();
 			startGame();
-			requestFocusInWindow(); // Ensure keyboard input works
+			requestFocusInWindow();
 		} else if (!nowVisible && wasVisible && currentScore > 0) {
 			highscoreManager.updateIfBetter(currentScore);
 		}

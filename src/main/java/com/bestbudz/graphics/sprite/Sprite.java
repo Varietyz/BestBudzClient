@@ -139,7 +139,7 @@ public final class Sprite extends DrawingArea
 	}
 
 	public Sprite(ArchiveLoader archiveLoader, String s, int i) {
-		// Validate inputs
+
 		if (archiveLoader == null || s == null || s.isEmpty()) {
 			System.err.println("Invalid sprite parameters: " + s);
 			createEmptySprite();
@@ -171,7 +171,6 @@ public final class Sprite extends DrawingArea
 			originalHeight = stream_1.readUnsignedWord();
 			int j = stream_1.readUnsignedByte();
 
-			// Validate palette size
 			if (j <= 0 || j > 256) {
 				System.err.println("Invalid palette size for sprite " + s + ": " + j);
 				createEmptySprite();
@@ -185,7 +184,6 @@ public final class Sprite extends DrawingArea
 					ai[k + 1] = 1;
 			}
 
-			// Skip to the correct sprite index
 			for (int l = 0; l < i; l++) {
 				if (stream_1.position + 5 >= stream_1.buffer.length) {
 					System.err.println("Stream overflow while seeking sprite index " + i + " in " + s);
@@ -196,7 +194,6 @@ public final class Sprite extends DrawingArea
 				int skipWidth = stream_1.readUnsignedWord();
 				int skipHeight = stream_1.readUnsignedWord();
 
-				// Validate skip dimensions
 				if (skipWidth < 0 || skipHeight < 0 || skipWidth > 2048 || skipHeight > 2048) {
 					System.err.println("Invalid skip dimensions for sprite " + s + " index " + l +
 						": " + skipWidth + "x" + skipHeight);
@@ -215,7 +212,6 @@ public final class Sprite extends DrawingArea
 				stream_1.position++;
 			}
 
-			// Validate we have enough data left
 			if (stream_1.position + 6 >= stream_1.buffer.length) {
 				System.err.println("Not enough index data for sprite " + s + " index " + i);
 				createEmptySprite();
@@ -228,7 +224,6 @@ public final class Sprite extends DrawingArea
 			myHeight = stream_1.readUnsignedWord();
 			int i1 = stream_1.readUnsignedByte();
 
-			// CRITICAL: Validate sprite dimensions before allocating memory
 			if (myWidth <= 0 || myHeight <= 0 || myWidth > 2048 || myHeight > 2048) {
 				System.err.println("Invalid sprite dimensions for " + s + " index " + i +
 					": " + myWidth + "x" + myHeight);
@@ -236,9 +231,8 @@ public final class Sprite extends DrawingArea
 				return;
 			}
 
-			// Check for potential overflow
 			long pixelCount = (long) myWidth * (long) myHeight;
-			if (pixelCount > 4194304) { // 2048x2048 max
+			if (pixelCount > 4194304) {
 				System.err.println("Sprite too large for " + s + " index " + i +
 					": " + myWidth + "x" + myHeight + " = " + pixelCount + " pixels");
 				createEmptySprite();
@@ -247,7 +241,6 @@ public final class Sprite extends DrawingArea
 
 			int j1 = (int) pixelCount;
 
-			// Validate we have enough stream data
 			if (stream.position + j1 > stream.buffer.length) {
 				System.err.println("Not enough pixel data for sprite " + s + " index " + i +
 					" (need " + j1 + " bytes, have " + (stream.buffer.length - stream.position) + ")");
@@ -262,7 +255,7 @@ public final class Sprite extends DrawingArea
 					int paletteIndex = stream.readUnsignedByte();
 					if (paletteIndex >= ai.length) {
 						System.err.println("Palette index out of bounds: " + paletteIndex + " >= " + ai.length);
-						myPixels[k1] = 0; // Use transparent/black
+						myPixels[k1] = 0;
 					} else {
 						myPixels[k1] = ai[paletteIndex];
 					}
@@ -293,13 +286,12 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-	// Static method for creating empty sprites when loading fails
 	public static Sprite createEmptySprite() {
 		return new Sprite();
 	}
 
 	public Sprite() {
-		// Default empty constructor
+
 		myWidth = 1;
 		myHeight = 1;
 		myPixels = new int[1];
@@ -440,9 +432,9 @@ public final class Sprite extends DrawingArea
 	}
 
 	public void adjustBrightness(int i, int j, int k) {
-		// Add null check for myPixels
+
 		if (myPixels == null) {
-			return; // Nothing to adjust
+			return;
 		}
 
 		for (int i1 = 0; i1 < myPixels.length; i1++) {
@@ -571,7 +563,7 @@ public final class Sprite extends DrawingArea
 			i2 += i3;
 		}
 		if (!(l1 <= 0 || k1 <= 0)) {
-			// Add null checks before calling copyPixelsTransparent
+
 			if (DrawingArea.pixels == null) {
 				return;
 			}
@@ -616,7 +608,7 @@ public final class Sprite extends DrawingArea
 			l1 += l2;
 		}
 		if (!(k1 <= 0 || j1 <= 0)) {
-			// Add null checks before calling copyPixelsTransparent
+
 			if (DrawingArea.pixels == null) {
 				return;
 			}
@@ -696,7 +688,7 @@ public final class Sprite extends DrawingArea
 			l1 += l2;
 		}
 		if (!(k1 <= 0 || j1 <= 0)) {
-			// Add null checks before calling copyPixelsTransparent
+
 			if (DrawingArea.pixels == null) {
 				return;
 			}
@@ -816,7 +808,6 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-
 	public void drawARGBSprite(int xPos, int yPos) {
 		drawARGBSprite(xPos, yPos, 256);
 	}
@@ -889,6 +880,5 @@ public final class Sprite extends DrawingArea
 			i += l;
 		}
 	}
-
 
 }

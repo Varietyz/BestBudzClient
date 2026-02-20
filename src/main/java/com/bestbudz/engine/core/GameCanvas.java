@@ -18,6 +18,4 @@ public class GameCanvas extends Canvas {
 		return new Dimension(1280, 758);
 	}
 
-
-
 }

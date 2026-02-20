@@ -16,14 +16,8 @@ import java.util.List;
 
 import static com.bestbudz.engine.core.error.ErrorEnums.*;
 
-/**
- * Utility methods for error screen components
- */
 public class ErrorUtilities {
 
-	/**
-	 * Font management for error screen
-	 */
 	public static class ErrorFontManager {
 		public Font titleFont;
 		public Font headerFont;
@@ -53,7 +47,7 @@ public class ErrorUtilities {
 				this.buttonFont = new Font(primaryFont, Font.BOLD, 12);
 
 			} catch (Exception e) {
-				// Fallback fonts
+
 				this.titleFont = new Font("Arial", Font.BOLD, 28);
 				this.headerFont = new Font("Arial", Font.BOLD, 18);
 				this.bodyFont = new Font("Arial", Font.PLAIN, 14);
@@ -64,9 +58,6 @@ public class ErrorUtilities {
 		}
 	}
 
-	/**
-	 * Layout calculator for responsive design
-	 */
 	public static class ErrorLayout {
 		public final int screenW, screenH, centerX, centerY;
 		public final Rect mainPanel, consolePanel, actionsPanel;
@@ -79,27 +70,21 @@ public class ErrorUtilities {
 			this.centerX = screenW / 2;
 			this.centerY = screenH / 2;
 
-			// Calculate responsive panel sizes
 			int panelW = Math.min(700, screenW - 100);
 			int panelH = Math.min(450, screenH - 150);
 
-			// Main error panel - centered
 			mainPanel = new Rect(centerX - panelW/2, centerY - panelH/2, panelW, panelH);
 
-			// Console panel - below main panel when visible
 			int consolePanelH = 180;
 			consolePanel = new Rect(mainPanel.x, mainPanel.y + mainPanel.h + 20,
 				mainPanel.w, consolePanelH);
 
-			// Actions panel - to the right of main panel
 			int actionsPanelW = 200;
 			actionsPanel = new Rect(mainPanel.x + mainPanel.w + 20, mainPanel.y,
 				actionsPanelW, mainPanel.h);
 
-			// Calculate button positions
 			actionButtons = calculateButtonPositions();
 
-			// Console scroll buttons
 			int scrollBtnSize = 18;
 			consoleScrollUp = new Rect(
 				consolePanel.x + consolePanel.w - scrollBtnSize - 10,
@@ -119,7 +104,7 @@ public class ErrorUtilities {
 			int btnSpacing = 10;
 			int currentY = actionsPanel.y + 20;
 
-			for (int i = 0; i < actions.length - 2; i++) { // Exclude scroll buttons
+			for (int i = 0; i < actions.length - 2; i++) {
 				buttons[i] = new Rect(actionsPanel.x + 10, currentY, btnW, btnH);
 				currentY += btnH + btnSpacing;
 			}
@@ -128,15 +113,11 @@ public class ErrorUtilities {
 		}
 	}
 
-	/**
-	 * Create styled button matching loading screen style
-	 */
 	public static void drawStyledButton(Graphics2D g, Rect rect, String text, Color color, boolean hover, Font font) {
-		// Create hover effect
+
 		Color buttonColor = hover ? brighter(color) : color;
 		Color borderColor = hover ? brighter(brighter(color)) : brighter(color);
 
-		// Button gradient background
 		GradientPaint gradient = new GradientPaint(
 			rect.x, rect.y, buttonColor,
 			rect.x, rect.y + rect.h, darker(buttonColor)
@@ -144,13 +125,11 @@ public class ErrorUtilities {
 		g.setPaint(gradient);
 		g.fillRoundRect(rect.x, rect.y, rect.w, rect.h, 8, 8);
 
-		// Border
 		g.setColor(borderColor);
 		g.setStroke(new BasicStroke(hover ? 2f : 1f));
 		g.drawRoundRect(rect.x, rect.y, rect.w, rect.h, 8, 8);
 		g.setStroke(new BasicStroke(1f));
 
-		// Text
 		g.setColor(PRIMARY_TEXT);
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
@@ -159,11 +138,8 @@ public class ErrorUtilities {
 		g.drawString(text, textX, textY);
 	}
 
-	/**
-	 * Draw panel with loading screen styling
-	 */
 	public static void drawStyledPanel(Graphics2D g, Rect rect, String title, Color accentColor, Font titleFont) {
-		// Panel background with gradient
+
 		GradientPaint gradient = new GradientPaint(
 			rect.x, rect.y, CARD_BACKGROUND,
 			rect.x, rect.y + rect.h, darker(CARD_BACKGROUND)
@@ -171,13 +147,11 @@ public class ErrorUtilities {
 		g.setPaint(gradient);
 		g.fillRoundRect(rect.x, rect.y, rect.w, rect.h, 12, 12);
 
-		// Border
 		g.setColor(new Color(40, 40, 44));
 		g.setStroke(new BasicStroke(2f));
 		g.drawRoundRect(rect.x, rect.y, rect.w, rect.h, 12, 12);
 		g.setStroke(new BasicStroke(1f));
 
-		// Title if provided
 		if (title != null && !title.isEmpty()) {
 			g.setColor(accentColor);
 			g.setFont(titleFont);
@@ -185,21 +159,16 @@ public class ErrorUtilities {
 		}
 	}
 
-	/**
-	 * Draw error icon matching the new style
-	 */
 	public static void drawErrorIcon(Graphics2D g, int x, int y, int size) {
-		// Error circle background
+
 		g.setColor(new Color(ERROR_COLOR.getRed(), ERROR_COLOR.getGreen(), ERROR_COLOR.getBlue(), 100));
 		g.fillOval(x, y, size, size);
 
-		// Error circle border
 		g.setColor(ERROR_COLOR);
 		g.setStroke(new BasicStroke(3f));
 		g.drawOval(x, y, size, size);
 		g.setStroke(new BasicStroke(1f));
 
-		// Error symbol (X)
 		g.setColor(PRIMARY_TEXT);
 		g.setStroke(new BasicStroke(4f));
 		int offset = size / 4;
@@ -208,16 +177,10 @@ public class ErrorUtilities {
 		g.setStroke(new BasicStroke(1f));
 	}
 
-	/**
-	 * Format timestamp for console entries
-	 */
 	public static String formatTimestamp(long timestamp) {
 		return new SimpleDateFormat("HH:mm:ss").format(new Date(timestamp));
 	}
 
-	/**
-	 * Style scroll pane to match loading screen
-	 */
 	public static void styleScrollPane(JScrollPane scrollPane) {
 		scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
 			@Override
@@ -244,9 +207,6 @@ public class ErrorUtilities {
 		});
 	}
 
-	/**
-	 * Color utility methods
-	 */
 	public static Color brighter(Color c) {
 		return new Color(
 			Math.min(255, c.getRed() + 40),
@@ -265,9 +225,6 @@ public class ErrorUtilities {
 		);
 	}
 
-	/**
-	 * System information gathering
-	 */
 	public static class SystemInfo {
 		public final String javaVersion;
 		public final String osName;
@@ -296,9 +253,6 @@ public class ErrorUtilities {
 		}
 	}
 
-	/**
-	 * Self-healing actions implementation
-	 */
 	public static class SelfHealingActions {
 
 		public static String clearCache() {
@@ -317,13 +271,11 @@ public class ErrorUtilities {
 				String cacheDir = Signlink.findCacheDir();
 				Path cachePath = Paths.get(cacheDir);
 
-				// Delete main cache files
 				deleteFileIfExists(cachePath.resolve("main_file_cache.dat"));
 				for (int i = 0; i < 6; i++) {
 					deleteFileIfExists(cachePath.resolve("main_file_cache.idx" + i));
 				}
 
-				// Delete sprite cache
 				deleteFileIfExists(cachePath.resolve("sprites.dat"));
 
 				return "Cache files deleted successfully";
@@ -352,7 +304,6 @@ public class ErrorUtilities {
 					logs.append(entry.level.prefix).append(": ").append(entry.message).append("\n");
 				}
 
-				// Copy to system clipboard
 				StringSelection stringSelection = new StringSelection(logs.toString());
 				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
 
@@ -369,37 +320,31 @@ public class ErrorUtilities {
 		}
 	}
 
-	/**
-	 * Cache error detection
-	 */
 	public static boolean isCacheRelatedError() {
 		try {
 			String cacheDir = Signlink.findCacheDir();
 			Path cachePath = Paths.get(cacheDir);
 
-			// Check if main cache files exist and are readable
 			if (!Files.exists(cachePath.resolve("main_file_cache.dat"))) {
 				return true;
 			}
 
-			// Check if any idx files are missing
 			for (int i = 0; i < 6; i++) {
 				if (!Files.exists(cachePath.resolve("main_file_cache.idx" + i))) {
 					return true;
 				}
 			}
 
-			// Check for corrupted files (basic check)
 			try {
 				if (Files.size(cachePath.resolve("main_file_cache.dat")) < 100) {
-					return true; // File too small, likely corrupted
+					return true;
 				}
 			} catch (IOException e) {
 				return true;
 			}
 
 		} catch (Exception e) {
-			return true; // If we can't check, assume cache issue
+			return true;
 		}
 
 		return false;

@@ -3,13 +3,8 @@ package com.bestbudz.data.items;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Enum containing all custom item definitions for easy maintenance and O(1) lookup performance.
- * Each item is defined with its properties in a structured, type-safe manner.
- */
 public enum ItemDefinitions {
 
-	// CannaCredits Vouchers
 	CANNA_1000(13190, "1,000 CannaCredits voucher", new String[]{"Redeem", null, null, null, null},
 		null, 29210, 2300, 512, null, 3, 1, null, null, null),
 	CANNA_3000(13191, "3,000 CannaCredits voucher", new String[]{"Redeem", null, null, null, null},
@@ -29,7 +24,6 @@ public enum ItemDefinitions {
 	CANNA_200000(13198, "200,000 CannaCredits voucher", new String[]{"Redeem", null, null, null, null},
 		null, 29210, 2300, 512, null, 3, 1, null, null, null),
 
-	// Special Equipment
 	TOOL_RING(6575, "Tool Ring", new String[]{null, "Wear", null, null, null},
 		"A ring that transforms into any tool when worn.", null, null, null, null, null, null, null, null, null),
 	FISHER_NECKLACE(6577, "Fisher Necklace", new String[]{null, "Wear", null, null, null},
@@ -41,7 +35,6 @@ public enum ItemDefinitions {
 	RAINBOW_SOCKS(9005, "Rainbow socks", new String[]{null, "Try on", null, null, null},
 		"Yep, robin's socks.", null, null, null, null, null, null, null, null, null),
 
-	// Master Capes
 	ASSAULT_MASTER_CAPE(13200, "Assault master cape", new String[]{null, "Wear", "Drop", null, null},
 		"It's a Assault master cape.", 65299, 2479, 479, 1024, 3, 12, 65298, 65298, false),
 	AEGIS_MASTER_CAPE(13201, "Aegis master cape", new String[]{null, "Wear", "Drop", null, null},
@@ -91,7 +84,6 @@ public enum ItemDefinitions {
 	PET_MASTER_CAPE(13223, "Pet master cape", new String[]{null, "Wear", null, null, "Drop"},
 		"It's a Pet master cape.", 65345, 2479, 479, 1024, 3, 12, 65344, 65344, false),
 
-	// Currency and Misc
 	MYSTERIOUS_BAG(11941, "Mysterious Bag", new String[]{null, null, null, null, "Throw-away"},
 		"It's a mysterious bag, magical powers can turn it to gold. But you dont have them..", null, null, null, null, null, null, null, null, null),
 	BESTBUCKS(995, "BestBucks", new String[]{null, null, null, "Add-to-debit-card", "Throw-away"},
@@ -99,13 +91,11 @@ public enum ItemDefinitions {
 	MERCENARY_GEM(4155, "Mercenary gem", new String[]{"Check-task", null, null, null, null},
 		null, null, null, null, null, null, null, null, null, null),
 
-	// Weapons
 	D_CLAWS(13188, "D claws", new String[]{null, "Wear", null, null, null},
 		"It's a pair of D-claws.", null, null, null, null, null, null, null, null, null),
 	DDS(5698, "DDS", new String[]{null, "Wear", null, null, null},
 		"It's a famous DDS.", null, null, null, null, null, null, null, null, null),
 
-	// Regular Capes
 	ASSAULT_CAPE(9747, "Assault cape", new String[]{null, "Wear", null, null, null},
 		"A professionist cape of Assault.", null, null, null, null, null, null, null, null, null),
 	ASSAULT_CAPE_S(9748, "Assault cape (s)", new String[]{null, "Wear", null, null, null},
@@ -249,7 +239,6 @@ public enum ItemDefinitions {
 	BEAR_GRILLS_HOOD(9950, "Bear grills hood", new String[]{null, "Wear", null, null, null},
 		"Bear grills cape.", null, null, null, null, null, null, null, null, null),
 
-	// Cannabis Products
 	UNTRIMMED_KUSH(199, "Untrimmed Kush", new String[]{"Trim", null, null, null, null},
 		"These are some wild looking buds.", null, null, null, null, null, null, null, null, null),
 	KUSH(249, "Kush", new String[]{"Smoke", null, null, null, null},
@@ -376,7 +365,6 @@ public enum ItemDefinitions {
 	KHALIFA_KUSH_SEED(5304, "Khalifa Kush seed", null,
 		"It's Khalifa Kush seed with 31% THC.", null, null, null, null, null, null, null, null, null),
 
-	// Cannabis Accessories
 	PK_13_14_A(6036, "PK 13-14", null,
 		"Powerful flowering nutritions.", null, null, null, null, null, null, null, null, null),
 	PK_13_14_B(6037, "PK 13-14", null,
@@ -384,7 +372,6 @@ public enum ItemDefinitions {
 	WEED_PIPE(1785, "Weed pipe", null,
 		"A pipe used to smoke cannabis.", null, null, null, null, null, null, null, null, null),
 
-	// Wood Materials
 	WOOD_NORMAL_BURNAB(1511, "Wood", new String[]{"Burn", "Hold", null, null, null},
 		"It's wood.", null, null, null, null, null, null, null, null, null),
 	WOOD_NORMAL(1512, "Wood", null,
@@ -408,13 +395,11 @@ public enum ItemDefinitions {
 	OAK_WOOD(1522, "Oak wood", null,
 		"It's Oak wood.", null, null, null, null, null, null, null, null, null),
 
-	// Amulets
 	AMULET_OF_VIGOUR_WEARAB(1725, "Amulet of vigour", new String[]{null, "Wear", null, null, null},
 		"It's an amulet of vigour.", null, null, null, null, null, null, null, null, null),
 	AMULET_OF_VIGOUR(1726, "Amulet of vigour", null,
 		"It's an amulet of vigour.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Power of the Aegis
 	POWER_AEGIS_1_DRINKAB(167, "Power of the aegis (1)", new String[]{"Gulp", null, null, null, null},
 		"A powerfull potion imbued by the Aegis.", null, null, null, null, null, null, null, null, null),
 	POWER_AEGIS_1_EMPTY(168, "Power of the aegis (1)", null,
@@ -432,7 +417,6 @@ public enum ItemDefinitions {
 	POWER_AEGIS_4_EMPTY(2443, "Power of the aegis (4)", null,
 		"A powerfull potion imbued by the Aegis.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Power of Vigour
 	POWER_VIGOUR_1_DRINKAB(161, "Power of vigour(1)", new String[]{"Gulp", null, null, null, null},
 		"A powerfull potion imbued to channel Vigour.", null, null, null, null, null, null, null, null, null),
 	POWER_VIGOUR_1_EMPTY(162, "Power of vigour(1)", null,
@@ -450,7 +434,6 @@ public enum ItemDefinitions {
 	POWER_VIGOUR_4_EMPTY(2441, "Power of vigour (4)", null,
 		"A powerfull potion imbued to channel Vigour.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Power of Assault
 	POWER_ASSAULT_1_DRINKAB(149, "Power of assault (1)", new String[]{"Gulp", null, null, null, null},
 		"A powerfull potion imbued to make u more Assaulting.", null, null, null, null, null, null, null, null, null),
 	POWER_ASSAULT_1_EMPTY(150, "Power of assault (1)", null,
@@ -468,7 +451,6 @@ public enum ItemDefinitions {
 	POWER_ASSAULT_4_EMPTY(2437, "Power of assault (4)", null,
 		"A powerfull potion imbued to make u more Assaulting.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Mages Elixir
 	MAGES_ELIXIR_1_DRINKAB(3046, "Mages elixir (1)", new String[]{"Gulp", null, null, null, null},
 		"Elixir to boost the magical powers in your veins.", null, null, null, null, null, null, null, null, null),
 	MAGES_ELIXIR_1_EMPTY(3047, "Mages elixir (1)", null,
@@ -486,7 +468,6 @@ public enum ItemDefinitions {
 	MAGES_ELIXIR_4_EMPTY(3041, "Mages elixir (4)", null,
 		"Elixir to boost the magical powers in your veins.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Power of Sagittarius
 	POWER_SAGITTARIUS_1_DRINKAB(173, "Power of the sagittarius (1)", new String[]{"Gulp", null, null, null, null},
 		"It's a potion made by the sagittarius.", null, null, null, null, null, null, null, null, null),
 	POWER_SAGITTARIUS_1_EMPTY(174, "Power of the sagittarius (1)", null,
@@ -504,7 +485,6 @@ public enum ItemDefinitions {
 	POWER_SAGITTARIUS_4_EMPTY(2445, "Power of the sagittarius (4)", null,
 		"It's a potion made by the sagittarius.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Power of Resonancer
 	POWER_RESONANCER_1_DRINKAB(143, "Power of the resonancer (1)", new String[]{"Gulp", null, null, null, null},
 		"It's a potion made by the resonancers.", null, null, null, null, null, null, null, null, null),
 	POWER_RESONANCER_1_EMPTY(144, "Power of the resonancer (1)", null,
@@ -522,7 +502,6 @@ public enum ItemDefinitions {
 	POWER_RESONANCER_4_EMPTY(2435, "Power of the resonancer (4)", null,
 		"It's a potion made by the resonancers.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Alternative Power of Assault (different IDs)
 	POWER_ASSAULT_ALT_1_DRINKAB(125, "Power of assault (1)", new String[]{"Gulp", null, null, null, null},
 		"It's a potion made by the resonancers.", null, null, null, null, null, null, null, null, null),
 	POWER_ASSAULT_ALT_1_EMPTY(126, "Power of assault (1)", null,
@@ -540,7 +519,6 @@ public enum ItemDefinitions {
 	POWER_ASSAULT_ALT_4_EMPTY(2429, "Power of assault (4)", null,
 		"It's a potion made by the resonancers.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Cannabidiol Concentrate
 	CANNABIDIOL_1_DRINKAB(179, "Cannabidiol Concentrate (1)", new String[]{"Cure with", null, null, null, null},
 		"it's an Cannabidiol Concentrate(1).", null, null, null, null, null, null, null, null, null),
 	CANNABIDIOL_1_EMPTY(180, "Cannabidiol Concentrate (1)", null,
@@ -558,7 +536,6 @@ public enum ItemDefinitions {
 	CANNABIDIOL_4_EMPTY(2447, "Cannabidiol Concentrate (4)", null,
 		"It's an Cannabidiol Concentrate(4).", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Vigour Potion
 	VIGOUR_POTION_1_DRINKAB(119, "Vigour potion (1)", new String[]{"Gulp", null, null, null, null},
 		"It's a potion to channel vigour.", null, null, null, null, null, null, null, null, null),
 	VIGOUR_POTION_1_EMPTY(120, "Vigour potion (1)", null,
@@ -576,7 +553,6 @@ public enum ItemDefinitions {
 	VIGOUR_POTION_4_EMPTY(114, "Vigour potion (4)", null,
 		"It's a potion to channel vigour.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Steroid
 	STEROID_1_DRINKAB(131, "Steroid (1)", new String[]{"Gulp", null, null, null, null},
 		"Fucking Frank White...", null, null, null, null, null, null, null, null, null),
 	STEROID_1_EMPTY(132, "Steroid (1)", null,
@@ -594,7 +570,6 @@ public enum ItemDefinitions {
 	STEROID_4_EMPTY(2431, "Steroid (4)", null,
 		"Fucking Frank White...", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Usain Bolt's Doping
 	USAIN_DOPING_1_DRINKAB(3014, "Usain Bolt's Doping (1)", new String[]{"Gulp", null, null, null, null},
 		"Run as long as Usain Bolt!.", null, null, null, null, null, null, null, null, null),
 	USAIN_DOPING_1_EMPTY(3015, "Usain Bolt's Doping (1)", null,
@@ -612,7 +587,6 @@ public enum ItemDefinitions {
 	USAIN_DOPING_4_EMPTY(3009, "Usain Bolt's Doping (4)", null,
 		"Run as long as Usain Bolt!.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Jah Powa
 	JAH_POWA_1_DRINKAB(12701, "Jah Powa (1)", new String[]{"Gulp", null, null, null, null},
 		"Inheret the King Selassie Jah Jah powers.", null, null, null, null, null, null, null, null, null),
 	JAH_POWA_1_EMPTY(12702, "Jah Powa (1)", null,
@@ -630,7 +604,6 @@ public enum ItemDefinitions {
 	JAH_POWA_4_EMPTY(12696, "Jah Powa (4)", null,
 		"Inheret the King Selassie Jah Jah powers.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Steroid v2
 	STEROID_V2_1_DRINKAB(3030, "Steroid v2 (1)", new String[]{"Gulp", null, null, null, null},
 		"Bloody Russia.", null, null, null, null, null, null, null, null, null),
 	STEROID_V2_1_EMPTY(3031, "Steroid v2 (1)", null,
@@ -648,7 +621,6 @@ public enum ItemDefinitions {
 	STEROID_V2_4_EMPTY(3025, "Steroid v2 (4)", null,
 		"Bloody Russia.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Fish Oil Extract
 	FISH_OIL_1_DRINKAB(155, "Fish oil extract (1)", new String[]{"Gulp", null, null, null, null},
 		"This extract buffs your fishing skills.", null, null, null, null, null, null, null, null, null),
 	FISH_OIL_1_EMPTY(156, "Fish oil extract (1)", null,
@@ -666,7 +638,6 @@ public enum ItemDefinitions {
 	FISH_OIL_4_EMPTY(2439, "Fish oil extract (4)", null,
 		"This extract buffs your fishing skills.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Resist Brisingr
 	RESIST_BRISINGR_1_DRINKAB(2458, "Resist Brisingr (1)", new String[]{"Gulp", null, null, null, null},
 		"This drink makes you brisingr resistant.", null, null, null, null, null, null, null, null, null),
 	RESIST_BRISINGR_1_EMPTY(2459, "Resist Brisingr (1)", null,
@@ -684,7 +655,6 @@ public enum ItemDefinitions {
 	RESIST_BRISINGR_4_EMPTY(2453, "Resist Brisingr (4)", null,
 		"This drink makes you brisingr resistant.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Aegis Call
 	AEGIS_CALL_1_DRINKAB(137, "Aegis call (1)", new String[]{"Gulp", null, null, null, null},
 		"It's a light potion made by the aegis.", null, null, null, null, null, null, null, null, null),
 	AEGIS_CALL_1_EMPTY(138, "Aegis call (1)", null,
@@ -702,7 +672,6 @@ public enum ItemDefinitions {
 	AEGIS_CALL_4_EMPTY(2433, "Aegis call (4)", null,
 		"It's a light potion made by the aegis.", null, null, null, null, null, null, null, null, null),
 
-	// Potions - Healing Ale of the Gods
 	HEALING_ALE_1_DRINKAB(6691, "Healing ale of the gods (1)", new String[]{"Gulp", null, null, null, null},
 		"Godlike ale made for healing.", null, null, null, null, null, null, null, null, null),
 	HEALING_ALE_1_EMPTY(6692, "Healing ale of the gods (1)", null,
@@ -720,7 +689,6 @@ public enum ItemDefinitions {
 	HEALING_ALE_4_EMPTY(6686, "Healing ale of the gods (4)", null,
 		"Godlike ale made for healing.", null, null, null, null, null, null, null, null, null);
 
-	// Enum fields
 	private final int id;
 	private final String name;
 	private final String[] actions;
@@ -735,7 +703,6 @@ public enum ItemDefinitions {
 	private final Integer anInt200;
 	private final Boolean stackable;
 
-	// Constructor
 	ItemDefinitions(int id, String name, String[] actions, String description, Integer modelID,
 					Integer modelZoom, Integer modelRotationY, Integer modelRotationX,
 					Integer modelOffset1, Integer modelOffset2, Integer anInt165, Integer anInt200, Boolean stackable) {
@@ -754,7 +721,6 @@ public enum ItemDefinitions {
 		this.stackable = stackable;
 	}
 
-	// Getters
 	public int getId() { return id; }
 	public String getName() { return name; }
 	public String[] getActions() { return actions; }
@@ -769,7 +735,6 @@ public enum ItemDefinitions {
 	public Integer getAnInt200() { return anInt200; }
 	public Boolean getStackable() { return stackable; }
 
-	// Static map for O(1) lookups
 	private static final Map<Integer, ItemDefinitions> ID_MAP = new HashMap<>();
 
 	static {
@@ -778,20 +743,10 @@ public enum ItemDefinitions {
 		}
 	}
 
-	/**
-	 * Get item definition by ID with O(1) lookup performance
-	 * @param id The item ID to look up
-	 * @return ItemDefinitions instance or null if not found
-	 */
 	public static ItemDefinitions getById(int id) {
 		return ID_MAP.get(id);
 	}
 
-	/**
-	 * Check if an item ID has a custom definition
-	 * @param id The item ID to check
-	 * @return true if custom definition exists
-	 */
 	public static boolean hasCustomDefinition(int id) {
 		return ID_MAP.containsKey(id);
 	}

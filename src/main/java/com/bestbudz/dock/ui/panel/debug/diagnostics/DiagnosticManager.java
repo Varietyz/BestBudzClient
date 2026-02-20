@@ -5,10 +5,6 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.SwingUtilities;
 
-/**
- * Manages all diagnostic modules
- * Handles registration, updates, and lifecycle of diagnostics
- */
 public class DiagnosticManager {
 
 	private final List<BaseDiagnostic> diagnostics;
@@ -24,9 +20,6 @@ public class DiagnosticManager {
 		this.diagnosticMap = new HashMap<>();
 	}
 
-	/**
-	 * Initialize with default diagnostics
-	 */
 	public void initializeDefaultDiagnostics() {
 		registerDiagnostic(new PerformanceDiagnostic());
 		registerDiagnostic(new SystemDiagnostic());
@@ -36,15 +29,11 @@ public class DiagnosticManager {
 		registerDiagnostic(new CacheDiagnostic());
 		registerDiagnostic(new GPUDiagnostic());
 
-		// Sort by priority
 		diagnostics.sort(Comparator.comparingInt(BaseDiagnostic::getPriority));
 
 		System.out.println("Initialized " + diagnostics.size() + " diagnostics");
 	}
 
-	/**
-	 * Register a new diagnostic
-	 */
 	public void registerDiagnostic(BaseDiagnostic diagnostic) {
 		if (diagnostic.isAvailable()) {
 			diagnostic.initialize();
@@ -56,9 +45,6 @@ public class DiagnosticManager {
 		}
 	}
 
-	/**
-	 * Unregister a diagnostic
-	 */
 	public void unregisterDiagnostic(String sectionTitle) {
 		BaseDiagnostic diagnostic = diagnosticMap.remove(sectionTitle);
 		if (diagnostic != null) {
@@ -68,9 +54,6 @@ public class DiagnosticManager {
 		}
 	}
 
-	/**
-	 * Get all diagnostic sections for display
-	 */
 	public List<DiagnosticSection> getAllSections() {
 		List<DiagnosticSection> sections = new ArrayList<>();
 		for (BaseDiagnostic diagnostic : diagnostics) {
@@ -81,9 +64,6 @@ public class DiagnosticManager {
 		return sections;
 	}
 
-	/**
-	 * Update all diagnostics
-	 */
 	public void updateAll() {
 		for (BaseDiagnostic diagnostic : diagnostics) {
 			if (diagnostic.isEnabled()) {
@@ -96,9 +76,6 @@ public class DiagnosticManager {
 		}
 	}
 
-	/**
-	 * Force update all diagnostics immediately
-	 */
 	public void forceUpdateAll() {
 		for (BaseDiagnostic diagnostic : diagnostics) {
 			if (diagnostic.isEnabled()) {
@@ -111,9 +88,6 @@ public class DiagnosticManager {
 		}
 	}
 
-	/**
-	 * Update fonts for all diagnostics
-	 */
 	public void updateFonts(int containerWidth) {
 		for (BaseDiagnostic diagnostic : diagnostics) {
 			DiagnosticSection section = diagnostic.getSection();
@@ -123,9 +97,6 @@ public class DiagnosticManager {
 		}
 	}
 
-	/**
-	 * Enable or disable a specific diagnostic
-	 */
 	public void setDiagnosticEnabled(String sectionTitle, boolean enabled) {
 		BaseDiagnostic diagnostic = diagnosticMap.get(sectionTitle);
 		if (diagnostic != null) {
@@ -134,24 +105,15 @@ public class DiagnosticManager {
 		}
 	}
 
-	/**
-	 * Check if a diagnostic is enabled
-	 */
 	public boolean isDiagnosticEnabled(String sectionTitle) {
 		BaseDiagnostic diagnostic = diagnosticMap.get(sectionTitle);
 		return diagnostic != null && diagnostic.isEnabled();
 	}
 
-	/**
-	 * Get diagnostic by section title
-	 */
 	public BaseDiagnostic getDiagnostic(String sectionTitle) {
 		return diagnosticMap.get(sectionTitle);
 	}
 
-	/**
-	 * Get diagnostics by category
-	 */
 	public List<BaseDiagnostic> getDiagnosticsByCategory(BaseDiagnostic.DiagnosticCategory category) {
 		List<BaseDiagnostic> result = new ArrayList<>();
 		for (BaseDiagnostic diagnostic : diagnostics) {
@@ -162,9 +124,6 @@ public class DiagnosticManager {
 		return result;
 	}
 
-	/**
-	 * Set update interval for performance-critical diagnostics
-	 */
 	public void setPerformanceUpdateInterval(int intervalMs) {
 		List<BaseDiagnostic> perfDiagnostics = getDiagnosticsByCategory(BaseDiagnostic.DiagnosticCategory.PERFORMANCE);
 		for (BaseDiagnostic diagnostic : perfDiagnostics) {
@@ -172,9 +131,6 @@ public class DiagnosticManager {
 		}
 	}
 
-	/**
-	 * Start automatic updates
-	 */
 	public void startAutoUpdate() {
 		if (updateTimer != null) {
 			updateTimer.cancel();
@@ -194,9 +150,6 @@ public class DiagnosticManager {
 		System.out.println("Started auto-update with interval: " + interval + "ms");
 	}
 
-	/**
-	 * Stop automatic updates
-	 */
 	public void stopAutoUpdate() {
 		if (updateTimer != null) {
 			updateTimer.cancel();
@@ -205,9 +158,6 @@ public class DiagnosticManager {
 		}
 	}
 
-	/**
-	 * Set auto refresh enabled/disabled
-	 */
 	public void setAutoRefresh(boolean enabled) {
 		this.autoRefresh = enabled;
 		if (enabled) {
@@ -217,58 +167,39 @@ public class DiagnosticManager {
 		}
 	}
 
-	/**
-	 * Check if auto refresh is enabled
-	 */
 	public boolean isAutoRefresh() {
 		return autoRefresh;
 	}
 
-	/**
-	 * Set panel active state (affects update frequency)
-	 */
 	public void setActive(boolean active) {
 		this.isActive = active;
 		if (autoRefresh) {
-			startAutoUpdate(); // Restart with new interval
+			startAutoUpdate();
 		}
 
-		// Update performance diagnostics interval
 		if (active) {
 			setPerformanceUpdateInterval(activeUpdateInterval);
 		} else {
-			//setPerformanceUpdateInterval(inactiveUpdateInterval);
+
 		}
 	}
 
-	/**
-	 * Check if panel is active
-	 */
 	public boolean isActive() {
 		return isActive;
 	}
 
-	/**
-	 * Set update intervals
-	 */
 	public void setUpdateIntervals(int activeMs, int inactiveMs) {
 		this.activeUpdateInterval = activeMs;
 		this.inactiveUpdateInterval = inactiveMs;
 		if (autoRefresh) {
-			startAutoUpdate(); // Restart with new interval
+			startAutoUpdate();
 		}
 	}
 
-	/**
-	 * Get current update interval
-	 */
 	public int getCurrentUpdateInterval() {
 		return isActive ? activeUpdateInterval : inactiveUpdateInterval;
 	}
 
-	/**
-	 * Get count of enabled diagnostics
-	 */
 	public int getEnabledDiagnosticCount() {
 		int count = 0;
 		for (BaseDiagnostic diagnostic : diagnostics) {
@@ -279,16 +210,10 @@ public class DiagnosticManager {
 		return count;
 	}
 
-	/**
-	 * Get total diagnostic count
-	 */
 	public int getTotalDiagnosticCount() {
 		return diagnostics.size();
 	}
 
-	/**
-	 * Clear all data in diagnostics
-	 */
 	public void clearAll() {
 		for (BaseDiagnostic diagnostic : diagnostics) {
 			DiagnosticSection section = diagnostic.getSection();
@@ -298,9 +223,6 @@ public class DiagnosticManager {
 		}
 	}
 
-	/**
-	 * Cleanup all diagnostics
-	 */
 	public void cleanup() {
 		stopAutoUpdate();
 		for (BaseDiagnostic diagnostic : diagnostics) {
@@ -311,9 +233,6 @@ public class DiagnosticManager {
 		System.out.println("DiagnosticManager cleaned up");
 	}
 
-	/**
-	 * Get diagnostic statistics
-	 */
 	public String getStatistics() {
 		return String.format("Diagnostics: %d enabled / %d total, Auto-refresh: %s, Update interval: %dms",
 			getEnabledDiagnosticCount(), getTotalDiagnosticCount(),

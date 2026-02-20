@@ -1,7 +1,6 @@
 package com.bestbudz.dock.frame;
 
 import com.bestbudz.dock.util.UIPanel;
-import com.bestbudz.ui.handling.SettingHandler;
 
 import com.bestbudz.engine.core.Client;
 import javax.swing.*;

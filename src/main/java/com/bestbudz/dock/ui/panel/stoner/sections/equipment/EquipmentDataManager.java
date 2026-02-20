@@ -5,9 +5,6 @@ import com.bestbudz.ui.RSInterface;
 
 import javax.swing.*;
 
-/**
- * Manages equipment data updates and change detection
- */
 public class EquipmentDataManager {
 
 	private long lastEquipmentHash = -1;
@@ -60,8 +57,6 @@ public class EquipmentDataManager {
 			return false;
 		}
 
-		// Compute hash from the interface data instead of Client.myStoner.equipment
-		// since the interface is what we're actually displaying
 		long currentHash = computeEquipmentHash(Client.myStoner.equipment);
 
 		if (lastEquipmentHash != currentHash) {
@@ -75,28 +70,25 @@ public class EquipmentDataManager {
 	private long computeEquipmentHash(int[] equipment) {
 		long hash = 0;
 
-		// Instead of using Client.myStoner.equipment, use the actual interface data
-		// that we're displaying, since that's what actually changes
 		try {
 			RSInterface equipmentInterface = RSInterface.interfaceCache[EquipmentConstants.EQUIPMENT_INTERFACE_ID];
 			if (equipmentInterface != null && equipmentInterface.inv != null) {
-				// Hash based on the interface inventory data we're actually displaying
+
 				for (int i = 0; i < Math.min(equipmentInterface.inv.length, 14); i++) {
 					hash = hash * 31 + equipmentInterface.inv[i];
 
-					// Also include stack sizes for items that can stack (like ammo)
 					if (equipmentInterface.invStackSizes != null && i < equipmentInterface.invStackSizes.length) {
 						hash = hash * 37 + equipmentInterface.invStackSizes[i];
 					}
 				}
 			} else {
-				// Fallback to original method if interface not available
+
 				for (int i = 0; i < Math.min(equipment.length, 14); i++) {
 					hash = hash * 31 + equipment[i];
 				}
 			}
 		} catch (Exception e) {
-			// Fallback to original method on error
+
 			for (int i = 0; i < Math.min(equipment.length, 14); i++) {
 				hash = hash * 31 + equipment[i];
 			}

@@ -449,5 +449,4 @@ public class WelcomeScreen extends Client
 		tabAreaAltered = true;
 	}
 
-
 }

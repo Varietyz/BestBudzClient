@@ -159,7 +159,6 @@ public class TabArea extends Client
 						tabAreaAltered = true;
 					}
 
-
 					if (MouseState.x >= frameWidth - 67 && MouseState.x <= frameWidth - 36)
 					{
 						if (tabID == 12)
@@ -187,7 +186,6 @@ public class TabArea extends Client
 						tabAreaAltered = true;
 					}
 				}
-
 
 	}
 

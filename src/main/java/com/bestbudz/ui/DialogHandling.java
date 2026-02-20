@@ -12,11 +12,7 @@ public class DialogHandling extends Client
 	public static void handleBackDialogOrChatbox() {
 		if (backDialogID == -1) {
 			defaultInterface.scrollPosition = anInt1211 - loadingProgress - 110;
-			/*if (MouseState.x >= 496 && MouseState.x <= 511 && MouseState.y > frameHeight - 158) {
-				drawInterfaceRecursive(494, 110, MouseState.x,
-					MouseState.y - (frameHeight - 158), aClass9_1059, 0,
-					false, anInt1211);
-			}*/
+
 			int idealScroll = anInt1211 - 110 - defaultInterface.scrollPosition;
 			idealScroll = Math.max(0, Math.min(idealScroll, anInt1211 - 110));
 			if (loadingProgress != idealScroll) {
@@ -41,7 +37,6 @@ public class DialogHandling extends Client
 	{
 		int j = class9.contentType;
 
-		// Enhanced logging - capture all relevant interaction data
 		System.out.println("=== DIALOG HANDLING DEBUG START ===");
 		System.out.println("[Dialog Handling] anInt900: " + friendsListAction);
 		System.out.println("[Dialog Handling] contentType (j): " + j);
@@ -78,13 +73,11 @@ public class DialogHandling extends Client
 			{
 			}
 
-			// Log if none of the contentType conditions were met
 			if (j != 51504 && j != 201 && j != 59800 && j != 202) {
 				System.out.println("[Dialog Handling] WARNING: No contentType match found for j=" + j + " in anInt900==2 branch");
 			}
 		}
 
-		// Continue with rest of contentType checks and add logging for each
 		if (j == 0xBABE)
 		{
 			System.out.println("[Dialog Handling] MATCHED: contentType 0xBABE (shop handling)");
@@ -127,7 +120,6 @@ public class DialogHandling extends Client
 
 		}
 
-		// Identity kit handling (300-313)
 		if (j >= 300 && j <= 313)
 		{
 			System.out.println("[Dialog Handling] MATCHED: Identity kit range (300-313), contentType: " + j);
@@ -152,7 +144,6 @@ public class DialogHandling extends Client
 			}
 		}
 
-		// Color handling (314-323)
 		if (j >= 314 && j <= 323)
 		{
 			System.out.println("[Dialog Handling] MATCHED: Color range (314-323), contentType: " + j);
@@ -215,7 +206,6 @@ public class DialogHandling extends Client
 		{
 		}
 
-		// Final state logging
 		System.out.println("[Dialog Handling] inputTaken after: " + inputTaken);
 		System.out.println("[Dialog Handling] messagePromptRaised after: " + messagePromptRaised);
 		System.out.println("[Dialog Handling] inputDialogState after: " + inputDialogState);

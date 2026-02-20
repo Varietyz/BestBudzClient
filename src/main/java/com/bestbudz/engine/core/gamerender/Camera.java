@@ -8,16 +8,13 @@ import static com.bestbudz.world.TerrainHeight.getTerrainHeight;
 
 public class Camera extends Client
 {
-	// ===== ADD THESE FIELDS TO THE Camera CLASS =====
-// Add these static fields at the top of the Camera class
+
 	private static int minValidXCameraPos = Integer.MIN_VALUE;
 	private static int maxValidXCameraPos = Integer.MAX_VALUE;
 	private static int minValidYCameraPos = Integer.MIN_VALUE;
 	private static int maxValidYCameraPos = Integer.MAX_VALUE;
 	private static boolean boundsLearned = false;
 
-	// ===== REPLACE THE calcCameraPos() METHOD =====
-// REPLACE the calcCameraPos() method in Camera class with this version
 	public static void calcCameraPos()
 	{
 		int i = cameraOffsetX * 128 + 64;
@@ -89,15 +86,12 @@ public class Camera extends Client
 				yCameraCurve = l1;
 		}
 
-		// FIXED: Improved angle wrapping that prevents coordinate system inversion
 		int targetAngle = i2;
 		int currentAngle = xCameraCurve;
 
-		// Normalize angles to 0-2047 range
 		targetAngle = targetAngle & 0x7ff;
 		currentAngle = currentAngle & 0x7ff;
 
-		// Calculate shortest angular distance
 		int angleDiff = targetAngle - currentAngle;
 		if (angleDiff > 1024) {
 			angleDiff -= 2048;
@@ -105,8 +99,6 @@ public class Camera extends Client
 			angleDiff += 2048;
 		}
 
-		// CRITICAL FIX: Prevent angles that cause coordinate system flipping
-		// These angle ranges (90°-270°) cause the transformation matrix to invert
 		int proposedAngle;
 		if (angleDiff > 0) {
 			proposedAngle = (currentAngle + scrollableAreaWidth + (angleDiff * scrollPosition) / 1000) & 0x7ff;
@@ -114,55 +106,28 @@ public class Camera extends Client
 			proposedAngle = (currentAngle - scrollableAreaWidth + ((-angleDiff) * scrollPosition) / 1000) & 0x7ff;
 		}
 
-		// Check if the proposed angle would cause coordinate system issues
-		// Angles around 90°-270° (512-1536 in our 0-2047 system) can cause problems
 		boolean wouldCauseFlip = (proposedAngle > 400 && proposedAngle < 1648);
 
 		if (wouldCauseFlip) {
-			// Constrain the angle to safe ranges that don't cause coordinate flips
+
 			if (proposedAngle > 1024) {
-				// If trying to go past 180°, clamp to just before problem zone
+
 				proposedAngle = 400;
 			} else {
-				// If trying to go past 90°, clamp to just after problem zone
+
 				proposedAngle = 1648;
 			}
 		}
 
 		xCameraCurve = proposedAngle;
 
-		// Alternative approach: Use modulo arithmetic to keep angles in safe ranges
-		// Uncomment this instead of the above if you prefer different behavior:
-	/*
-	if (angleDiff > 0) {
-		xCameraCurve += scrollableAreaWidth + (angleDiff * scrollPosition) / 1000;
-	} else {
-		xCameraCurve -= scrollableAreaWidth + ((-angleDiff) * scrollPosition) / 1000;
 	}
 
-	// Keep in 0-2047 range and avoid problem angles
-	xCameraCurve = xCameraCurve & 0x7ff;
-
-	// If we end up in the problem zone, skip to the safe side
-	if (xCameraCurve > 400 && xCameraCurve < 1648) {
-		if (xCameraCurve < 1024) {
-			xCameraCurve = 400;  // Stay in safe zone before 90°
-		} else {
-			xCameraCurve = 1648; // Jump to safe zone after 270°
-		}
-	}
-	*/
-	}
-
-// ===== REPLACE THE clampCameraToBounds() METHOD IN Camera CLASS =====
-	/**
-	 * Simple bounds clamping - elevation is now handled in checkAndApplyElevation()
-	 */
 	private static void clampCameraToBounds()
 	{
-		// This method is now simplified since elevation is handled elsewhere
+
 		if (boundsLearned) {
-			// Simple clamping without elevation logic
+
 			if (xCameraPos < minValidXCameraPos) {
 				xCameraPos = minValidXCameraPos;
 			} else if (xCameraPos > maxValidXCameraPos) {
@@ -186,14 +151,11 @@ public class Camera extends Client
 			double rotSpeed = 2;
 			screenGliding = 0;
 
-			// ✅ GOOD: Camera position updates for view matrix only
-			// This should NOT affect world loading or LOD decisions
 			if (cameraX - x < -500 || cameraX - x > 500 || cameraZ - y < -500 || cameraZ - y > 500) {
 				cameraX = x;
 				cameraZ = y;
 			}
 
-			// ✅ Camera smoothing for view only
 			if (cameraX != x) {
 				cameraX += (x - cameraX) / 16;
 			}

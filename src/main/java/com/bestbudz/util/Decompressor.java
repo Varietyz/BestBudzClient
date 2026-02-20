@@ -9,7 +9,6 @@ public final class Decompressor {
 	private final RandomAccessFile indexFile;
 	private final int fileId;
 
-	// Thread-local buffers to avoid synchronization
 	private static final ThreadLocal<byte[]> BUFFER = ThreadLocal.withInitial(() -> new byte[520]);
 
 	public Decompressor(RandomAccessFile dataFile, RandomAccessFile indexFile, int fileId) {
@@ -22,7 +21,7 @@ public final class Decompressor {
 		byte[] buffer = BUFFER.get();
 
 		try {
-			// Read index entry
+
 			indexFile.seek(entryId * 6);
 			if (indexFile.read(buffer, 0, 6) != 6) {
 				return null;
@@ -53,7 +52,6 @@ public final class Decompressor {
 					return null;
 				}
 
-				// Validate block header
 				int blockEntryId = ((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff);
 				int blockNumber = ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff);
 				int nextBlock = ((buffer[4] & 0xff) << 16) + ((buffer[5] & 0xff) << 8) + (buffer[6] & 0xff);
@@ -67,7 +65,6 @@ public final class Decompressor {
 					return null;
 				}
 
-				// Copy data
 				System.arraycopy(buffer, 8, result, bytesRead, chunkSize);
 				bytesRead += chunkSize;
 				currentBlock = nextBlock;
@@ -93,7 +90,7 @@ public final class Decompressor {
 			int currentBlock;
 
 			if (overwrite) {
-				// Try to reuse existing blocks
+
 				indexFile.seek(entryId * 6);
 				if (indexFile.read(buffer, 0, 6) != 6) {
 					return false;
@@ -104,14 +101,13 @@ public final class Decompressor {
 					return false;
 				}
 			} else {
-				// Allocate new blocks at end of file
+
 				currentBlock = (int) ((dataFile.length() + 519) / 520);
 				if (currentBlock == 0) {
 					currentBlock = 1;
 				}
 			}
 
-			// Write index entry
 			buffer[0] = (byte) (dataSize >> 16);
 			buffer[1] = (byte) (dataSize >> 8);
 			buffer[2] = (byte) dataSize;
@@ -129,7 +125,7 @@ public final class Decompressor {
 				int nextBlock = 0;
 
 				if (overwrite) {
-					// Try to read existing block header to get next block
+
 					dataFile.seek(currentBlock * 520);
 					if (dataFile.read(buffer, 0, 8) == 8) {
 						int blockEntryId = ((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff);
@@ -137,7 +133,6 @@ public final class Decompressor {
 						nextBlock = ((buffer[4] & 0xff) << 16) + ((buffer[5] & 0xff) << 8) + (buffer[6] & 0xff);
 						int blockFileId = buffer[7] & 0xff;
 
-						// Validate existing block
 						if (blockEntryId != entryId || blockNumber != blockIndex || blockFileId != fileId ||
 							nextBlock > dataFile.length() / 520) {
 							return false;
@@ -146,7 +141,7 @@ public final class Decompressor {
 				}
 
 				if (nextBlock == 0) {
-					// Need new block
+
 					overwrite = false;
 					nextBlock = (int) ((dataFile.length() + 519) / 520);
 					if (nextBlock == 0) {
@@ -157,12 +152,10 @@ public final class Decompressor {
 					}
 				}
 
-				// If this is the last block, no next block
 				if (dataSize - bytesWritten <= 512) {
 					nextBlock = 0;
 				}
 
-				// Write block header
 				buffer[0] = (byte) (entryId >> 8);
 				buffer[1] = (byte) entryId;
 				buffer[2] = (byte) (blockIndex >> 8);
@@ -175,7 +168,6 @@ public final class Decompressor {
 				dataFile.seek(currentBlock * 520);
 				dataFile.write(buffer, 0, 8);
 
-				// Write data
 				int chunkSize = Math.min(512, dataSize - bytesWritten);
 				dataFile.write(data, bytesWritten, chunkSize);
 

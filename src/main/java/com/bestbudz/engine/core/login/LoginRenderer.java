@@ -40,65 +40,56 @@ public class LoginRenderer {
 		Layout(int screenW, int screenH) {
 			w = screenW; h = screenH; cx = w/2; cy = h/2;
 
-			// TOP REGION - Login strip across top of screen with extra padding
-			int topMargin = 30; // Increased padding from top
+			int topMargin = 30;
 			int fieldH = 30;
 			int fieldW = 200;
 			int fieldGap = 20;
 			int btnW = 100;
-			int btnH = 26; // More compact login button height
+			int btnH = 26;
 			int checkboxSize = 13;
 
-			// Position login elements horizontally inline
-			int totalLoginWidth = fieldW + fieldGap + fieldW + fieldGap + btnW + 20; // Extra space for remember/login block
+			int totalLoginWidth = fieldW + fieldGap + fieldW + fieldGap + btnW + 20;
 			int loginStartX = (w - totalLoginWidth) / 2;
 
 			usernameField = new Rect(loginStartX, topMargin, fieldW, fieldH);
 			passwordField = new Rect(loginStartX + fieldW + fieldGap, topMargin, fieldW, fieldH);
 
-			// Remember checkbox and login button positioned to the right of password field, inline
 			int rightBlockX = loginStartX + fieldW + fieldGap + fieldW + fieldGap;
-			rememberBox = new Rect(rightBlockX, topMargin - 16, checkboxSize, checkboxSize); // Slightly below field top
-			loginBtn = new Rect(rightBlockX, topMargin + 4, btnW, btnH); // Below remember checkbox
+			rememberBox = new Rect(rightBlockX, topMargin - 16, checkboxSize, checkboxSize);
+			loginBtn = new Rect(rightBlockX, topMargin + 4, btnW, btnH);
 
-			// LEFT REGION - World selector panel centered on left side, touching left border
-			int worldPanelX = - 15; // Touch the left frame border
-			int worldPanelW = 200; // Slightly wider to accommodate border positioning
+			int worldPanelX = - 15;
+			int worldPanelW = 200;
 			int worldPanelH = 200;
-			int worldPanelY = cy - worldPanelH / 2; // Center vertically on left side
+			int worldPanelY = cy - worldPanelH / 2;
 			worldPanel = new Rect(worldPanelX, worldPanelY, worldPanelW, worldPanelH);
 
-			// World buttons positioned directly without panel container
 			worldBtns = new Rect[4];
 			int worldBtnY = worldPanelY + 15;
 			int worldBtnH = 35;
 			int worldBtnSpacing = 45;
 
 			for (int i = 0; i < 4; i++) {
-				worldBtns[i] = new Rect(worldPanelX + 10, worldBtnY + i * worldBtnSpacing, worldPanelW - 20, worldBtnH); // Maintain internal padding
+				worldBtns[i] = new Rect(worldPanelX + 10, worldBtnY + i * worldBtnSpacing, worldPanelW - 20, worldBtnH);
 			}
 
-			// BOTTOM REGION - Dynamic Account panel sizing
 			int bottomMargin = 20;
 			int cardW = 120;
 			int cardH = 50;
 			int cardSpacing = 20;
-			int accPanelW = w - 40; // Full width minus margins
+			int accPanelW = w - 40;
 			int accPanelX = 20;
 
-			// Calculate how many columns can fit
-			int availableWidth = accPanelW - 40; // Account for panel padding
+			int availableWidth = accPanelW - 40;
 			int columnsCount = Math.max(1, availableWidth / (cardW + cardSpacing));
 
-			// Calculate required rows based on actual account count
 			int accountCount = AccountManager.accounts != null ? AccountManager.getAccounts().size() : 0;
 			int rowsNeeded = accountCount > 0 ? (int) Math.ceil((double) accountCount / columnsCount) : 1;
 
-			// Dynamic panel height based on content
 			int headerHeight = 35;
 			int clearButtonHeight = 26;
 			int paddingBottom = 15;
-			int minPanelHeight = 60; // Minimum height when no accounts
+			int minPanelHeight = 60;
 
 			int accPanelH;
 			if (accountCount == 0) {
@@ -110,7 +101,6 @@ public class LoginRenderer {
 			int accPanelY = h - accPanelH - bottomMargin;
 			accountPanel = new Rect(accPanelX, accPanelY, accPanelW, accPanelH);
 
-			// Dynamic account cards array
 			if (accountCount > 0) {
 				accountCards = new Rect[accountCount];
 				int cardsStartX = accountPanel.x + 20;
@@ -127,14 +117,12 @@ public class LoginRenderer {
 					);
 				}
 			} else {
-				accountCards = new Rect[0]; // Empty array when no accounts
+				accountCards = new Rect[0];
 			}
 
-			// Clear button in top-right of account panel
 			clearBtn = new Rect(accountPanel.x + accountPanel.w - 90, accountPanel.y + 8, 78, 26);
 		}
 	}
-
 
 	public LoginRenderer(Client client) {
 		this.client = client;
@@ -176,33 +164,28 @@ public class LoginRenderer {
 	}
 
 	private void drawTopLoginStrip(Graphics2D g, Layout l) {
-		// Draw login fields without panel container - just the elements
 
-		// Username field
 		boolean userFocus = client.loginScreenCursorPos == 0;
 		boolean userHover = mouseIn(g, l.usernameField);
 		drawLabel(g, l.usernameField.x, l.usernameField.y - 8, "Stonername");
 		drawInputField(g, l.usernameField,
 			TextClass.capitalize(Client.myUsername) + getCursor(0), userFocus, userHover);
 
-		// Password field
 		boolean passFocus = client.loginScreenCursorPos == 1;
 		boolean passHover = mouseIn(g, l.passwordField);
 		drawLabel(g, l.passwordField.x, l.passwordField.y - 8, "Puff Puff Password");
 		drawInputField(g, l.passwordField,
 			getPasswordDisplay() + getCursor(1), passFocus, passHover);
 
-		// Remember checkbox
 		boolean checkboxHover = mouseIn(g, l.rememberBox);
 		drawCheckbox(g, l.rememberBox, "Early Dementia?", Client.rememberMe, checkboxHover);
 
-		// Login button
 		boolean loginHover = mouseIn(g, l.loginBtn);
 		drawButton(g, l.loginBtn, "GET HIGH", ACCENT_COLOR, loginHover);
 	}
 
 	private void drawLeftWorldSelector(Graphics2D g, Layout l) {
-		// Draw world buttons
+
 		for (int i = 0; i < worlds.length; i++) {
 			World w = worlds[i];
 			boolean selected = EngineConfig.worldSelected == w.id;
@@ -213,10 +196,9 @@ public class LoginRenderer {
 
 	private void drawBottomAccountPanel(Graphics2D g, Layout l) {
 		if (AccountManager.accounts == null || AccountManager.getAccounts().isEmpty()) {
-			// Draw the panel even when empty
+
 			drawPanel(g, l.accountPanel, "Demented Stoners", ACCENT_COLOR);
 
-			// Draw "No saved accounts" message
 			g.setColor(WHITE_DIM_COLOR);
 			g.setFont(new Font("Arial", Font.ITALIC, 12));
 			String noAccountsMsg = "No saved accounts";
@@ -227,20 +209,17 @@ public class LoginRenderer {
 			return;
 		}
 
-		// Draw full-width account panel at bottom
 		drawPanel(g, l.accountPanel, "Demented Stoners", ACCENT_COLOR);
 
-		// Draw all account cards (now dynamically sized)
 		java.util.List<AccountData> accounts = AccountManager.getAccounts();
 		int count = Math.min(accounts.size(), l.accountCards.length);
 
 		for (int i = 0; i < count; i++) {
-			if (i < l.accountCards.length) { // Safety check
+			if (i < l.accountCards.length) {
 				drawAccountCard(g, l.accountCards[i], accounts.get(i));
 			}
 		}
 
-		// Only show clear button if there are accounts
 		if (count > 0) {
 			boolean clearHover = mouseIn(g, l.clearBtn);
 			drawButton(g, l.clearBtn, "Clean", new Color(220, 80, 80), clearHover);
@@ -248,7 +227,7 @@ public class LoginRenderer {
 	}
 
 	private void drawPanel(Graphics2D g, Rect r, String title, Color accentColor) {
-		// Panel background with gradient
+
 		GradientPaint gradient = new GradientPaint(
 			r.x, r.y, PANEL_COLOR,
 			r.x, r.y + r.h, new Color(PANEL_COLOR.getRed() - 5, PANEL_COLOR.getGreen() - 5, PANEL_COLOR.getBlue() - 5, PANEL_COLOR.getAlpha())
@@ -256,13 +235,11 @@ public class LoginRenderer {
 		g.setPaint(gradient);
 		g.fillRoundRect(r.x, r.y, r.w, r.h, 8, 8);
 
-		// Border with accent color
 		g.setColor(accentColor);
 		g.setStroke(new BasicStroke(1.5f));
 		g.drawRoundRect(r.x, r.y, r.w, r.h, 8, 8);
 		g.setStroke(new BasicStroke(1f));
 
-		// Title
 		g.setColor(accentColor);
 		g.setFont(new Font("Arial", Font.BOLD, 14));
 		g.drawString(title, r.x + 20, r.y + 20);
@@ -275,15 +252,13 @@ public class LoginRenderer {
 	}
 
 	private void drawInputField(Graphics2D g, Rect r, String text, boolean focus, boolean hover) {
-		// Create hover effect with slight zoom
+
 		Rect drawRect = hover ? new Rect(r.x - 1, r.y - 1, r.w + 2, r.h + 2) : r;
 
-		// Field background
 		Color bgColor = hover ? INPUT_HOVER_COLOR : INPUT_BG_COLOR;
 		g.setColor(bgColor);
 		g.fillRoundRect(drawRect.x, drawRect.y, drawRect.w, drawRect.h, 4, 4);
 
-		// Field border with focus/hover highlight
 		if (focus) {
 			g.setColor(GOLD_ACCENT_COLOR);
 			g.setStroke(new BasicStroke(1.5f));
@@ -299,22 +274,19 @@ public class LoginRenderer {
 			g.drawRoundRect(drawRect.x, drawRect.y, drawRect.w, drawRect.h, 4, 4);
 		}
 
-		// Text
 		g.setColor(WHITE_UI_COLOR);
 		g.setFont(new Font("Arial", Font.PLAIN, 12));
 		g.drawString(text, drawRect.x + 8, drawRect.y + 20);
 	}
 
 	private void drawCheckbox(Graphics2D g, Rect r, String label, boolean checked, boolean hover) {
-		// Create hover effect with slight zoom
+
 		Rect drawRect = hover ? new Rect(r.x - 1, r.y - 1, r.w + 2, r.h + 2) : r;
 
-		// Checkbox background
 		Color bgColor = checked ? SELECTED_COLOR : (hover ? INPUT_HOVER_COLOR : INPUT_BG_COLOR);
 		g.setColor(bgColor);
 		g.fillRoundRect(drawRect.x, drawRect.y, drawRect.w, drawRect.h, 3, 3);
 
-		// Checkbox border
 		Color borderColor = checked ? GOLD_ACCENT_COLOR : (hover ? ACCENT_COLOR : BORDER_COLOR2);
 		g.setColor(borderColor);
 		if (hover) {
@@ -327,12 +299,10 @@ public class LoginRenderer {
 			g.setColor(GOLD_ACCENT_COLOR);
 			g.setStroke(new BasicStroke(1.5f));
 
-			// Create diamond shape - center based on drawRect
 			int centerX = drawRect.x + drawRect.w / 2 + 1;
 			int centerY = drawRect.y + drawRect.h / 2 + 1;
 			int size = 3;
 
-			// Diamond points: top, right, bottom, left
 			int[] xPoints = {centerX, centerX + size, centerX, centerX - size};
 			int[] yPoints = {centerY - size, centerY, centerY + size, centerY};
 
@@ -340,7 +310,6 @@ public class LoginRenderer {
 			g.setStroke(new BasicStroke(1f));
 		}
 
-		// Label with hover effect
 		Color textColor = hover ? WHITE_UI_COLOR : WHITE_DIM_COLOR;
 		g.setColor(textColor);
 		g.setFont(new Font("Arial", Font.PLAIN, 11));
@@ -348,11 +317,10 @@ public class LoginRenderer {
 	}
 
 	private void drawButton(Graphics2D g, Rect r, String text, Color color, boolean hover) {
-		// Create hover effect with slight zoom
+
 		Rect drawRect = hover ? new Rect(r.x - 1, r.y - 1, r.w + 2, r.h + 2) : r;
 		Color buttonColor = hover ? brighter(color) : color;
 
-		// Button gradient
 		GradientPaint gradient = new GradientPaint(
 			drawRect.x, drawRect.y, buttonColor,
 			drawRect.x, drawRect.y + drawRect.h, darker(buttonColor)
@@ -360,11 +328,9 @@ public class LoginRenderer {
 		g.setPaint(gradient);
 		g.fillRoundRect(drawRect.x, drawRect.y, drawRect.w, drawRect.h, 6, 6);
 
-		// Button border
 		g.setColor(brighter(buttonColor));
 		g.drawRoundRect(drawRect.x, drawRect.y, drawRect.w, drawRect.h, 6, 6);
 
-		// Button text
 		g.setColor(WHITE_UI_COLOR);
 		g.setFont(new Font("Arial", Font.BOLD, 12));
 		FontMetrics fm = g.getFontMetrics();
@@ -374,7 +340,7 @@ public class LoginRenderer {
 	}
 
 	private void drawWorldBtn(Graphics2D g, Rect r, World w, boolean selected, boolean hovered) {
-		// Create hover effect with slight zoom
+
 		Rect drawRect = hovered ? new Rect(r.x - 1, r.y - 1, r.w + 2, r.h + 2) : r;
 
 		Color bg = selected ? SELECTED_COLOR :
@@ -393,14 +359,12 @@ public class LoginRenderer {
 		g.drawRoundRect(drawRect.x, drawRect.y, drawRect.w, drawRect.h, 6, 6);
 		g.setStroke(new BasicStroke(1f));
 
-		// World icon with proper padding for extended layout
 		g.setColor(selected ? ACCENT_COLOR : hovered ? GOLD_ACCENT_COLOR : WHITE_DIM_COLOR);
 		g.fillOval(drawRect.x + 35, drawRect.y + 8, 18, 18);
 		g.setColor(WHITE_UI_COLOR);
 		g.setFont(new Font("Arial", Font.BOLD, 10));
 		g.drawString(String.valueOf(w.id), drawRect.x + 42, drawRect.y + 20);
 
-		// World info with proper padding for extended layout
 		g.setColor(WHITE_UI_COLOR);
 		g.setFont(new Font("Arial", Font.BOLD, 12));
 		g.drawString(w.name, drawRect.x + 58, drawRect.y + 16);
@@ -414,7 +378,6 @@ public class LoginRenderer {
 		int delSize = 12;
 		boolean delHover = mouseIn(g, new Rect(r.x + r.w - delSize - 3, r.y + 3, delSize, delSize));
 
-		// Create hover effect with slight zoom
 		Rect drawRect = hover ? new Rect(r.x - 1, r.y - 1, r.w + 2, r.h + 2) : r;
 
 		Color cardBg = hover ? HOVER_COLOR : new Color(35, 55, 45, 180);
@@ -423,14 +386,12 @@ public class LoginRenderer {
 		g.setColor(hover ? GOLD_ACCENT_COLOR : BORDER_COLOR2);
 		g.drawRoundRect(drawRect.x, drawRect.y, drawRect.w, drawRect.h, 6, 6);
 
-		// Delete button
 		g.setColor(delHover ? new Color(255, 100, 100) : new Color(220, 80, 80));
 		g.fillOval(drawRect.x + drawRect.w - delSize - 3, drawRect.y + 4, delSize, delSize);
 		g.setColor(WHITE_UI_COLOR);
 		g.setFont(new Font("Arial", Font.BOLD, 8));
 		g.drawString("×", drawRect.x + drawRect.w - delSize , drawRect.y + delSize +1 );
 
-		// Account info
 		g.setColor(WHITE_UI_COLOR);
 		g.setFont(new Font("Arial", Font.BOLD, 14));
 		g.drawString(TextClass.capitalize(acc.username), drawRect.x + 6, drawRect.y + 18);
@@ -445,7 +406,7 @@ public class LoginRenderer {
 			g.setFont(new Font("Arial", Font.PLAIN, 12));
 			String msg = !Client.loginMessage1.isEmpty() ? Client.loginMessage1 : Client.loginMessage2;
 			FontMetrics fm = g.getFontMetrics();
-			// Position message centered horizontally and aligned with accounts title level
+
 			g.drawString(msg, (l.w - fm.stringWidth(msg))/2, l.accountPanel.y + 25);
 		}
 	}
@@ -474,11 +435,10 @@ public class LoginRenderer {
 	}
 
 	private void handleInput(Layout l, Graphics2D g, GameCanvas canvas) {
-		// Input fields
+
 		if (clickIn(l.usernameField)) client.loginScreenCursorPos = 0;
 		else if (clickIn(l.passwordField)) client.loginScreenCursorPos = 1;
 
-			// Login button
 		else if (clickIn(l.loginBtn)) {
 			if (!Client.myUsername.isEmpty() && !Client.myPassword.isEmpty()) {
 				client.loginFailures = 0;
@@ -486,7 +446,6 @@ public class LoginRenderer {
 			}
 		}
 
-		// Remember checkbox
 		else if (clickIn(l.rememberBox)) {
 			Client.rememberMe = !Client.rememberMe;
 			if (!Client.rememberMe) {
@@ -496,7 +455,6 @@ public class LoginRenderer {
 			SettingHandler.save();
 		}
 
-		// World selection
 		else {
 			for (int i = 0; i < worlds.length; i++) {
 				if (clickIn(l.worldBtns[i])) {
@@ -506,47 +464,43 @@ public class LoginRenderer {
 				}
 			}
 
-			// Account handling with safe deletion
 			if (AccountManager.accounts != null && !AccountManager.getAccounts().isEmpty()) {
 				if (clickIn(l.clearBtn)) {
 					AccountManager.clearAccountList();
-					// Force UI refresh after clearing
+
 					canvas.repaint();
 				} else {
-					// Create a copy of the accounts list to avoid concurrent modification
+
 					java.util.List<AccountData> accountsCopy = new java.util.ArrayList<>(AccountManager.getAccounts());
 					int count = Math.min(accountsCopy.size(), l.accountCards.length);
 
-					// Track if any deletion occurred to trigger refresh
 					boolean deletionOccurred = false;
 
 					for (int i = 0; i < count; i++) {
-						if (i >= l.accountCards.length) break; // Safety check
+						if (i >= l.accountCards.length) break;
 
 						Rect card = l.accountCards[i];
 						AccountData acc = accountsCopy.get(i);
 
-						// Delete button - match the size used in drawAccountCard
 						int delSize = 12;
 						if (clickInRegion(card.x + card.w - delSize - 3, card.y + 3,
 							card.x + card.w - 3, card.y + 3 + delSize)) {
 							AccountManager.removeAccount(acc);
 							deletionOccurred = true;
-							break; // Exit loop after deletion to prevent issues
+							break;
 						}
-						// Account login
+
 						else if (clickIn(card)) {
 							if (!acc.username.isEmpty() && !acc.password.isEmpty()) {
 								Client.loginFailures = 0;
 								Client.myUsername = acc.username;
 								Client.myPassword = acc.password;
 								login(acc.username, acc.password, false, g, canvas, client);
-								break; // Exit after login attempt
+								break;
 							}
 						}
 					}
 
-					// Force UI refresh if deletion occurred
 					if (deletionOccurred) {
 						canvas.repaint();
 					}
@@ -570,13 +524,13 @@ public class LoginRenderer {
 						Client.myPassword = Client.myPassword.substring(0, 20);
 					}
 				}
-			} else if (key == 8) { // Backspace
+			} else if (key == 8) {
 				if (client.loginScreenCursorPos == 0 && !Client.myUsername.isEmpty()) {
 					Client.myUsername = Client.myUsername.substring(0, Client.myUsername.length() - 1);
 				} else if (client.loginScreenCursorPos == 1 && !Client.myPassword.isEmpty()) {
 					Client.myPassword = Client.myPassword.substring(0, Client.myPassword.length() - 1);
 				}
-			} else if (key == 9 || key == 10 || key == 13) { // Tab/Enter
+			} else if (key == 9 || key == 10 || key == 13) {
 				if (client.loginScreenCursorPos == 0) {
 					client.loginScreenCursorPos = 1;
 				} else {
@@ -586,7 +540,6 @@ public class LoginRenderer {
 		}
 	}
 
-	// Helper methods
 	private void setupRendering(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -630,7 +583,6 @@ public class LoginRenderer {
 			Math.max(0, c.getBlue() - 30));
 	}
 
-	// Helper classes
 	private static class Rect {
 		final int x, y, w, h;
 		Rect(int x, int y, int w, int h) { this.x = x; this.y = y; this.w = w; this.h = h; }

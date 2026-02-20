@@ -3,7 +3,6 @@ package com.bestbudz.ui;
 import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
 import com.bestbudz.data.items.ItemDef;
 import com.bestbudz.data.Skills;
-import com.bestbudz.dock.frame.UIDockFrame;
 import com.bestbudz.engine.core.Client;
 import static com.bestbudz.engine.core.login.logout.Reset.resetAllImageProducers;
 import static com.bestbudz.ui.handling.RightClickMenu.drawTooltip;
@@ -28,7 +27,7 @@ import static com.bestbudz.world.InLocation.inPvP;
 import static com.bestbudz.world.InLocation.inSafe;
 import static com.bestbudz.world.InLocation.inWGGame;
 import static com.bestbudz.world.InLocation.inWGLobby;
-//import static com.bestbudz.world.InLocation.inWilderness;
+
 import com.bestbudz.world.VarBit;
 import java.awt.Graphics2D;
 import java.util.Set;
@@ -36,11 +35,9 @@ import java.util.Set;
 public class InterfaceManagement extends Client
 {
 
-
 	public static void clearTopInterfaces() {
 		System.out.println("🎭 INTERFACE: clearTopInterfaces called");
 
-		// EXISTING: Your normal clear logic
 		stream.writeEncryptedOpcode(130);
 		if (invOverlayInterfaceID != -1) {
 			invOverlayInterfaceID = -1;
@@ -55,7 +52,6 @@ public class InterfaceManagement extends Client
 		openInterfaceID = -1;
 		fullscreenInterfaceID = -1;
 	}
-
 
 	public static void drawInterfaceRecursive(int i, int j, int k, int l, RSInterface class9, int i1, boolean flag, int j1)
 	{
@@ -202,7 +198,6 @@ public class InterfaceManagement extends Client
 		specialHoverInterfaceId = 0;
 	}
 
-
 	public static void handleOverlayInterfaces(Set<Integer> handled) {
 
 			int yOffset = 37;
@@ -215,7 +210,6 @@ public class InterfaceManagement extends Client
 				if (id != -1 && handled.add(id))
 					buildInterfaceMenu(frameWidth - 197, RSInterface.interfaceCache[id], frameHeight - yOffset - 267, 0);
 			}
-
 
 		if (hoveredInterfaceId != inputLength) {
 			tabAreaAltered = true;
@@ -290,7 +284,7 @@ public class InterfaceManagement extends Client
 				drawInterface(0, 0, rsi, -5);
 				break;
 			case 23300:
-				//drawInterface(0, frameWidth - rsi.width - 253, rsi, 0);
+
 				break;
 			case 2804:
 			case 11479:
@@ -338,17 +332,12 @@ public class InterfaceManagement extends Client
 	public static void drawOpenInterface() {
 		if (BLOCKED_INTERFACE_IDS.contains(openInterfaceID)) return;
 
-		// DEBUG: Log all interface opens
-		//System.out.println("🎭 INTERFACE: Drawing interface ID: " + openInterfaceID);
-
-		// EXISTING: Your normal interface drawing code continues as fallback...
 		updateInterfaceAnimations(gameTickCounter, openInterfaceID);
 
 		if (openInterfaceID == 5292) {
 			drawInterface(0, (frameWidth / 2) - 356, RSInterface.interfaceCache[openInterfaceID], (frameHeight / 2) - 230);
 			return;
 		}
-
 
 		RSInterface rsi = RSInterface.interfaceCache[openInterfaceID];
 		if (rsi == null) {
@@ -373,7 +362,6 @@ public class InterfaceManagement extends Client
 		if (tabHoverTime == 1) multiOverlay.drawSprite(frameWidth - 165, 160);
 	}
 
-
 	public static int getRegionInterface(int x, int y, int plane) {
 
 		if (inBarrows(x, y)) return 59000;
@@ -383,7 +371,7 @@ public class InterfaceManagement extends Client
 		if (inCyclops(x, y, plane)) return 51200;
 		if (inPcBoat(x, y)) return 21119;
 		if (inPcGame(x, y)) return 21100;
-		//if (inWilderness(x, y) && SettingsConfig.economyWorld) return 23300;
+
 		if (inPvP(x, y) && !SettingsConfig.economyWorld) return 60250;
 		if (inSafe(x, y) && !SettingsConfig.economyWorld) return 60350;
 		if (SettingsConfig.snow) return 11877;
@@ -392,9 +380,9 @@ public class InterfaceManagement extends Client
 
 	public static long extractInterfaceValues(RSInterface class9, int j)
 	{
-		// Add null check at the beginning
+
 		if (class9 == null) {
-			return -2; // Return early if interface is null
+			return -2;
 		}
 
 		if (class9.valueIndexArray == null || j >= class9.valueIndexArray.length)
@@ -421,10 +409,10 @@ public class InterfaceManagement extends Client
 				if (j1 == 4)
 				{
 					RSInterface class9_1 = RSInterface.interfaceCache[ai[l++]];
-					// Add null check for interface lookup
+
 					if (class9_1 == null) {
-						l++; // Skip the next parameter
-						k1 = 0; // Set to 0 and continue
+						l++;
+						k1 = 0;
 					} else {
 						int k2 = ai[l++];
 						if (k2 >= 0 && k2 < ItemDef.totalItems && (!getItemDefinition(k2).membersObject || isMembers))
@@ -457,10 +445,10 @@ public class InterfaceManagement extends Client
 				if (j1 == 10)
 				{
 					RSInterface class9_2 = RSInterface.interfaceCache[ai[l++]];
-					// Add null check for interface lookup
+
 					if (class9_2 == null) {
-						l++; // Skip the next parameter
-						k1 = 0; // Set to 0 and continue
+						l++;
+						k1 = 0;
 					} else {
 						int l2 = ai[l++] + 1;
 						if (l2 >= 0 && l2 < ItemDef.totalItems && isMembers)
@@ -512,9 +500,9 @@ public class InterfaceManagement extends Client
 				if (j1 == 22)
 				{
 					RSInterface class9_1 = RSInterface.interfaceCache[ai[l++]];
-					// Add null check for interface lookup
+
 					if (class9_1 == null) {
-						k1 = 0; // Set to 0 and continue
+						k1 = 0;
 					} else {
 						int initAmount = class9_1.inv.length;
 						for (int j3 = 0; j3 < class9_1.inv.length; j3++)
@@ -596,7 +584,6 @@ public class InterfaceManagement extends Client
 	{
 		boolean flag1 = false;
 
-		// Check if interface cache exists and index is valid
 		if (RSInterface.interfaceCache == null || j < 0 || j >= RSInterface.interfaceCache.length) {
 			return false;
 		}
@@ -612,14 +599,12 @@ public class InterfaceManagement extends Client
 			if (class9.children[k] == -1)
 				break;
 
-			// Check if child index is valid
 			if (class9.children[k] < 0 || class9.children[k] >= RSInterface.interfaceCache.length) {
 				continue;
 			}
 
 			RSInterface class9_1 = RSInterface.interfaceCache[class9.children[k]];
 
-			// Check if child interface is null
 			if (class9_1 == null) {
 				continue;
 			}
@@ -636,14 +621,13 @@ public class InterfaceManagement extends Client
 					l = class9_1.verticalOffset;
 				if (l != -1)
 				{
-					// Check if Animation.anims array exists and index is valid
+
 					if (Animation.anims == null || l < 0 || l >= Animation.anims.length) {
 						continue;
 					}
 
 					Animation animation = Animation.anims[l];
 
-					// Check if animation is null
 					if (animation == null) {
 						continue;
 					}
@@ -685,7 +669,5 @@ public class InterfaceManagement extends Client
 			class9_1.anInt208 = 0;
 		}
 	}
-
-
 
 }

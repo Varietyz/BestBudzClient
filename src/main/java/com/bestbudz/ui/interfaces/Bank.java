@@ -1,6 +1,5 @@
 package com.bestbudz.ui.interfaces;
 
-import com.bestbudz.engine.core.Client;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.graphics.text.TextDrawingArea;
 import com.bestbudz.ui.RSInterface;

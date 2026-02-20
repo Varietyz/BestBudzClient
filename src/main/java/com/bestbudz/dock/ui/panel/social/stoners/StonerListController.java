@@ -12,7 +12,6 @@ public class StonerListController {
 	private final JList<StonerEntry> stonerList;
 	private final MessageSender messageSender;
 
-	// Pattern to match "Pet" followed by space and numbers (e.g., "Pet 54213")
 	private static final Pattern PET_PATTERN = Pattern.compile("^Pet\\s+\\d+.*$", Pattern.CASE_INSENSITIVE);
 
 	public StonerListController(DefaultListModel<StonerEntry> listModel,
@@ -26,7 +25,7 @@ public class StonerListController {
 	}
 
 	private void setupEventHandlers() {
-		// Left-click -> Show message popup
+
 		stonerList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -34,7 +33,7 @@ public class StonerListController {
 					int index = stonerList.locationToIndex(e.getPoint());
 					if (index >= 0 && index < listModel.size()) {
 						StonerEntry selected = listModel.get(index);
-						if (selected != null && selected.isHigh) { // Only allow messaging if they're high
+						if (selected != null && selected.isHigh) {
 							MessageDialog.show(stonerList, selected.name, messageSender);
 						}
 					}
@@ -42,14 +41,12 @@ public class StonerListController {
 			}
 		});
 
-		// Hover highlight
 		stonerList.addMouseMotionListener(new MouseAdapter() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				int index = stonerList.locationToIndex(e.getPoint());
 				stonerList.setSelectedIndex(index);
 
-				// Update tooltip
 				if (index >= 0 && index < listModel.size()) {
 					StonerEntry entry = listModel.get(index);
 					if (entry.isHigh) {
@@ -57,7 +54,7 @@ public class StonerListController {
 							"<html><font color='#5FD17A'>Send message to " + entry.name + "</font></html>"
 						);
 					} else {
-						stonerList.setToolTipText(null); // no tooltip if asleep
+						stonerList.setToolTipText(null);
 					}
 				} else {
 					stonerList.setToolTipText(null);
@@ -73,9 +70,6 @@ public class StonerListController {
 		});
 	}
 
-	/**
-	 * Check if a username should be excluded from the list
-	 */
 	private boolean shouldExcludeUser(String username) {
 		if (username == null || username.trim().isEmpty()) {
 			return true;
@@ -83,19 +77,10 @@ public class StonerListController {
 
 		String trimmedName = username.trim();
 
-		// Exclude current user (assuming Client has a way to get current username)
-		// You might need to adjust this based on how you get the current user's name
 		if (Client.myStoner != null && trimmedName.equals(Client.myStoner.name)) {
 			return true;
 		}
 
-		// Alternative way to check current user if myStoner is not available
-		// Uncomment and adjust as needed based on your Client implementation
-		// if (trimmedName.equals(Client.localPlayer.name)) {
-		//     return true;
-		// }
-
-		// Exclude usernames starting with "Pet" followed by space and numbers
 		if (PET_PATTERN.matcher(trimmedName).matches()) {
 			return true;
 		}
@@ -111,7 +96,6 @@ public class StonerListController {
 		for (int i = 0; i < count; i++) {
 			String name = Client.stonersList[i];
 
-			// Skip excluded users
 			if (shouldExcludeUser(name)) {
 				continue;
 			}
@@ -119,7 +103,6 @@ public class StonerListController {
 			int node = Client.stonersNodeIDs[i];
 			boolean high = node == Client.nodeID;
 
-			// Get title information from the actual Stoner object
 			String title = UserTitleUtil.getTitleForUser(name);
 			String titleColor = UserTitleUtil.getTitleColorForUser(name);
 
@@ -130,14 +113,12 @@ public class StonerListController {
 	public void updateDockText(int index, String text) {
 		if (index < 0 || index >= listModel.size()) return;
 
-		// Skip excluded users
 		if (shouldExcludeUser(text)) {
 			return;
 		}
 
 		StonerEntry entry = listModel.get(index);
 
-		// Get updated title information from the actual Stoner object
 		String title = UserTitleUtil.getTitleForUser(text);
 		String titleColor = UserTitleUtil.getTitleColorForUser(text);
 

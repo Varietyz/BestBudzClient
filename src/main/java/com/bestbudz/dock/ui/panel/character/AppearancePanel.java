@@ -1,4 +1,3 @@
-// Updated AppearancePanel.java with persistence support
 
 package com.bestbudz.dock.ui.panel.character;
 
@@ -11,12 +10,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-/**
- * Main Appearance Panel with Persistence Support
- *
- * Now saves and loads appearance data from .bestbudz/appearance.dock file
- * to maintain character appearance across client restarts.
- */
 public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 	private JScrollPane scrollPane;
@@ -24,10 +17,8 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 	private JLabel statusLabel;
 	private AppearanceStorage storage;
 
-	// Current appearance state (loaded from storage or defaults)
 	private byte currentGender = AppearanceConfig.Defaults.GENDER;
 
-	// Identity kit values (loaded from storage or defaults)
 	private byte currentHead = AppearanceConfig.Defaults.MALE_HEAD;
 	private byte currentJaw = AppearanceConfig.Defaults.MALE_JAW;
 	private byte currentTorso = AppearanceConfig.Defaults.MALE_TORSO;
@@ -36,14 +27,12 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 	private byte currentLegs = AppearanceConfig.Defaults.MALE_LEGS;
 	private byte currentFeet = AppearanceConfig.Defaults.MALE_FEET;
 
-	// Color indices (loaded from storage or defaults)
 	private byte currentHairColor = AppearanceConfig.Defaults.HAIR_COLOR;
 	private byte currentTorsoColor = AppearanceConfig.Defaults.TORSO_COLOR;
 	private byte currentLegsColor = AppearanceConfig.Defaults.LEGS_COLOR;
 	private byte currentFeetColor = AppearanceConfig.Defaults.FEET_COLOR;
 	private byte currentSkinColor = AppearanceConfig.Defaults.SKIN_COLOR;
 
-	// Track if we've loaded data for current session
 	private boolean appearanceLoaded = false;
 	private String lastLoadedUser = "";
 
@@ -53,43 +42,37 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		setOpaque(true);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 
-		// Initialize storage system
 		storage = new AppearanceStorage();
 
 		initializeComponents();
 	}
 
 	private void initializeComponents() {
-		// Create status label first (needed for header)
+
 		statusLabel = new JLabel("Changes applied immediately");
 
-		// Create main content panel
 		contentPanel = AppearanceStyle.createContentPanel();
 		buildContent();
 
-		// Create scroll pane
 		scrollPane = new JScrollPane(contentPanel);
 		AppearanceStyle.styleScrollPane(scrollPane);
 
-		// Setup main layout
 		add(scrollPane, BorderLayout.CENTER);
 
 		ensureAppearanceLoaded();
 	}
 
 	private void buildContent() {
-		// Gender Section
+
 		contentPanel.add(AppearanceStyle.createGenderSection(
 			() -> changeGender((byte) 0),
 			() -> changeGender((byte) 1)
 		));
 		contentPanel.add(AppearanceStyle.createVerticalSpacing(10));
 
-		// Design Section
 		contentPanel.add(AppearanceStyle.createSectionHeader(AppearanceConfig.UI.DESIGN_SECTION));
 		contentPanel.add(AppearanceStyle.createVerticalSpacing(5));
 
-		// Add part controls using config for proper indexing
 		for (int i = 0; i < AppearanceConfig.UI.PART_NAMES.length; i++) {
 			final int partIndex = i;
 			contentPanel.add(AppearanceStyle.createPartRow(
@@ -101,11 +84,9 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 
 		contentPanel.add(AppearanceStyle.createVerticalSpacing(10));
 
-		// Color Section
 		contentPanel.add(AppearanceStyle.createSectionHeader(AppearanceConfig.UI.COLOR_SECTION));
 		contentPanel.add(AppearanceStyle.createVerticalSpacing(5));
 
-		// Add color controls using config for proper indexing
 		for (int i = 0; i < AppearanceConfig.UI.COLOR_NAMES.length; i++) {
 			final int colorIndex = i;
 			contentPanel.add(AppearanceStyle.createColorRow(
@@ -115,13 +96,9 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 			));
 		}
 
-		// Add flexible space at bottom
 		contentPanel.add(AppearanceStyle.createVerticalGlue());
 	}
 
-	/**
-	 * Loads appearance data from storage if not already loaded for this user
-	 */
 	private void ensureAppearanceLoaded() {
 		if (!Client.loggedIn) {
 			return;
@@ -132,7 +109,6 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 			return;
 		}
 
-		// Check if we need to load data (new user or first load)
 		if (!appearanceLoaded || !currentUser.equals(lastLoadedUser)) {
 			System.out.println("=== LOADING APPEARANCE DATA ===");
 			System.out.println("Current user: " + currentUser);
@@ -148,18 +124,13 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		}
 	}
 
-	/**
-	 * Loads appearance data from storage for the specified user
-	 */
 	private void loadAppearanceFromStorage(String username) {
 		try {
 			storage.setCurrentUser(username);
 			AppearanceStorage.AppearanceData data = storage.loadAppearance();
 
-			// Store the loaded values
 			byte oldGender = currentGender;
 
-			// Update current values from loaded data
 			currentGender = data.gender;
 			currentHead = data.head;
 			currentJaw = data.jaw;
@@ -183,7 +154,6 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 				System.out.println("No saved data found, using defaults");
 			}
 
-			// Log the change
 			if (oldGender != currentGender) {
 				System.out.println("Gender changed from " + oldGender + " to " + currentGender + " during load");
 			}
@@ -193,14 +163,10 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 			e.printStackTrace();
 			updateStatus("Failed to load appearance data, using defaults", true);
 
-			// Fall back to defaults on error
 			resetToDefaults();
 		}
 	}
 
-	/**
-	 * Resets all appearance values to safe defaults
-	 */
 	private void resetToDefaults() {
 		System.out.println("Resetting to default appearance values");
 		currentGender = AppearanceConfig.Defaults.GENDER;
@@ -218,9 +184,6 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		currentSkinColor = AppearanceConfig.Defaults.SKIN_COLOR;
 	}
 
-	/**
-	 * Saves current appearance data to storage
-	 */
 	private void saveAppearanceToStorage() {
 		if (!Client.loggedIn || Client.myUsername == null) {
 			System.out.println("Cannot save appearance: not logged in or no username");
@@ -254,14 +217,12 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		}
 	}
 
-	// Click throttling to prevent rapid-fire clicks
 	private long lastClickTime = 0;
 	private static final long CLICK_DELAY = 300;
 
-	// Appearance change methods
 	private void changeGender(byte newGender) {
 		if (!canClick()) return;
-		ensureAppearanceLoaded(); // Make sure we have current data
+		ensureAppearanceLoaded();
 
 		if (currentGender == newGender) {
 			updateStatus("Already " + (newGender == 0 ? "male" : "female"), false);
@@ -273,8 +234,7 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 
 		currentGender = newGender;
 
-		// Reset to safe defaults for new gender (but keep colors)
-		if (newGender == 0) { // Male
+		if (newGender == 0) {
 			currentHead = AppearanceConfig.Defaults.MALE_HEAD;
 			currentJaw = AppearanceConfig.Defaults.MALE_JAW;
 			currentTorso = AppearanceConfig.Defaults.MALE_TORSO;
@@ -282,7 +242,7 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 			currentHands = AppearanceConfig.Defaults.MALE_HANDS;
 			currentLegs = AppearanceConfig.Defaults.MALE_LEGS;
 			currentFeet = AppearanceConfig.Defaults.MALE_FEET;
-		} else { // Female
+		} else {
 			currentHead = AppearanceConfig.Defaults.FEMALE_HEAD;
 			currentJaw = AppearanceConfig.Defaults.FEMALE_JAW;
 			currentTorso = AppearanceConfig.Defaults.FEMALE_TORSO;
@@ -296,20 +256,17 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		System.out.println("  Head: " + currentHead + ", Jaw: " + currentJaw + ", Torso: " + currentTorso);
 		System.out.println("  Arms: " + currentArms + ", Hands: " + currentHands + ", Legs: " + currentLegs + ", Feet: " + currentFeet);
 
-		// Save immediately after gender change
 		saveAppearanceToStorage();
 
-		// Send gender change with special handling
 		sendGenderChangeUpdate("Changed to " + (newGender == 0 ? "Stoner" : "Stonerette"));
 	}
 
 	private void changeAppearancePart(int partIndex, int direction) {
 		if (!canClick()) return;
-		ensureAppearanceLoaded(); // Make sure we have current data
+		ensureAppearanceLoaded();
 
 		int[] range = AppearanceConfig.getPartRange(partIndex, currentGender);
 
-		// Skip if no options available (like female jaw)
 		if (range[0] == -1 && range[1] == -1) {
 			updateStatus("No " + AppearanceConfig.UI.PART_NAMES[partIndex].toLowerCase() + " options available", false);
 			return;
@@ -318,35 +275,32 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		byte oldValue = getCurrentPartValue(partIndex);
 		byte newValue = (byte) AppearanceConfig.cycleValue(oldValue, range[0], range[1], direction);
 
-		// Only proceed if value actually changed
 		if (newValue != oldValue) {
 			setCurrentPartValue(partIndex, newValue);
-			saveAppearanceToStorage(); // Save after each change
+			saveAppearanceToStorage();
 			sendAppearanceUpdate(AppearanceConfig.UI.PART_NAMES[partIndex] + " style changed");
 		}
 	}
 
 	private void changeColor(int colorIndex, int direction) {
 		if (!canClick()) return;
-		ensureAppearanceLoaded(); // Make sure we have current data
+		ensureAppearanceLoaded();
 
 		int[] range = AppearanceConfig.getColorRange(colorIndex);
 		byte oldValue = getCurrentColorValue(colorIndex);
 		byte newValue = (byte) AppearanceConfig.cycleValue(oldValue, range[0], range[1], direction);
 
-		// Only proceed if value actually changed
 		if (newValue != oldValue) {
 			setCurrentColorValue(colorIndex, newValue);
-			saveAppearanceToStorage(); // Save after each change
+			saveAppearanceToStorage();
 			sendAppearanceUpdate(AppearanceConfig.UI.COLOR_NAMES[colorIndex] + " color changed");
 		}
 	}
 
-	// Helper methods for cleaner code
 	private boolean canClick() {
 		long currentTime = System.currentTimeMillis();
 		if (currentTime - lastClickTime < CLICK_DELAY) {
-			return false; // Too soon, ignore click
+			return false;
 		}
 		lastClickTime = currentTime;
 		return true;
@@ -398,9 +352,6 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		}
 	}
 
-	/**
-	 * Special handling for gender changes - sends multiple packets to ensure proper refresh
-	 */
 	private void sendGenderChangeUpdate(String statusMessage) {
 		SwingUtilities.invokeLater(() -> {
 			try {
@@ -412,11 +363,9 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 				System.out.println("=== SENDING GENDER CHANGE PACKET ===");
 				printCurrentAppearance();
 
-				// Send initial gender change packet
 				sendAppearancePacket();
 				updateStatus(statusMessage, false);
 
-				// Send a follow-up packet after short delay to ensure refresh
 				Timer refreshTimer = new Timer(150, e -> {
 					try {
 						System.out.println("=== SENDING GENDER REFRESH PACKET ===");
@@ -438,9 +387,6 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		});
 	}
 
-	/**
-	 * Regular appearance update for non-gender changes
-	 */
 	private void sendAppearanceUpdate(String statusMessage) {
 		SwingUtilities.invokeLater(() -> {
 			try {
@@ -460,21 +406,17 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		});
 	}
 
-	/**
-	 * Core packet sending method - handles the actual protocol communication
-	 */
 	private void sendAppearancePacket() throws Exception {
-		// CRITICAL FIX: Handle female jaw validation properly
+
 		int jawToSend;
-		if (currentGender == 1) { // Female
-			jawToSend = -1; // Send -1 as that's what the validation expects
+		if (currentGender == 1) {
+			jawToSend = -1;
 		} else {
 			jawToSend = currentJaw;
 		}
 
 		System.out.println("Sending packet with jaw value: " + jawToSend + " (original: " + currentJaw + ")");
 
-		// Send packet 101 with complete appearance data
 		Client.stream.writeEncryptedOpcode(101);
 		Client.stream.writeByte(currentGender);
 		Client.stream.writeByte(currentHead);
@@ -485,7 +427,6 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		Client.stream.writeByte(currentLegs);
 		Client.stream.writeByte(currentFeet);
 
-		// Write colors in server-expected order
 		Client.stream.writeByte(currentHairColor);
 		Client.stream.writeByte(currentTorsoColor);
 		Client.stream.writeByte(currentLegsColor);
@@ -495,9 +436,6 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		printCurrentAppearance();
 	}
 
-	/**
-	 * Debug helper to print current appearance state
-	 */
 	private void printCurrentAppearance() {
 		System.out.println("Current appearance state:");
 		System.out.println("  Gender: " + currentGender + " (" + (currentGender == 0 ? "Male" : "Female") + ")");
@@ -519,7 +457,6 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		AppearanceStyle.updateStatusLabel(statusLabel, message, isError);
 	}
 
-	// UIPanel interface methods
 	@Override
 	public String getPanelID() {
 		return "Appearance";
@@ -537,9 +474,8 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 			return;
 		}
 
-		// Force reload of appearance data when panel is activated
 		System.out.println("=== PANEL ACTIVATED ===");
-		appearanceLoaded = false; // Force reload
+		appearanceLoaded = false;
 		ensureAppearanceLoaded();
 
 		SwingUtilities.invokeLater(() -> {
@@ -555,7 +491,7 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 
 	@Override
 	public void onDeactivate() {
-		// Save appearance data when panel is deactivated
+
 		if (Client.loggedIn) {
 			saveAppearanceToStorage();
 		}
@@ -580,25 +516,16 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 		return new int[] { 3559 };
 	}
 
-	/**
-	 * Get the panel icon path for the dock tab
-	 */
 	public String getPanelIconPath() {
 		return "sprites/appearance-tab.png";
 	}
 
-	/**
-	 * Public method to manually refresh appearance data (useful for external calls)
-	 */
 	public void refreshAppearanceData() {
 		appearanceLoaded = false;
 		lastLoadedUser = "";
 		ensureAppearanceLoaded();
 	}
 
-	/**
-	 * Public method to get current appearance summary for debugging
-	 */
 	public String getAppearanceSummary() {
 		return String.format("User: %s, Gender: %s, Head: %d, Colors: H%d/T%d/L%d/F%d/S%d",
 			Client.myUsername != null ? Client.myUsername : "Unknown",

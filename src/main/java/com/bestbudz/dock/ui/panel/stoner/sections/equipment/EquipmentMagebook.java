@@ -7,13 +7,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-/**
- * Handles magebook controls and spellbook functionality
- */
 public class EquipmentMagebook
 {
 
-	// Magebook interface IDs
 	private static final int FOCUSED_MAGEBOOK_ID = 115074;
 	private static final int AOE_MAGEBOOK_ID = 115075;
 
@@ -29,11 +25,9 @@ public class EquipmentMagebook
 		controlsPanel.setOpaque(true);
 		controlsPanel.setBorder(new EmptyBorder(4, 0, 0, 0));
 
-		// Focused Magebook button
 		JButton focusedButton = createMagebookButton("Focused", FOCUSED_MAGEBOOK_ID);
 		controlsPanel.add(focusedButton);
 
-		// AoE Magebook button
 		JButton aoeButton = createMagebookButton("AoE", AOE_MAGEBOOK_ID);
 		controlsPanel.add(aoeButton);
 	}
@@ -41,7 +35,6 @@ public class EquipmentMagebook
 	private JButton createMagebookButton(String text, int interfaceId) {
 		JButton button = new JButton(text + " Magebook");
 
-		// Style the button to match the design
 		button.setFont(new Font("Segoe UI", Font.PLAIN, 10));
 		button.setForeground(EquipmentConstants.TEXT_PRIMARY);
 		button.setBackground(EquipmentConstants.SLOT_BG);
@@ -52,7 +45,6 @@ public class EquipmentMagebook
 		button.setFocusPainted(false);
 		button.setOpaque(true);
 
-		// Hover effects
 		button.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
 			public void mouseEntered(java.awt.event.MouseEvent e) {
@@ -65,7 +57,6 @@ public class EquipmentMagebook
 			}
 		});
 
-		// Click action using proper ButtonHandler
 		button.addActionListener(e -> {
 			SwingUtilities.invokeLater(() -> {
 				try {
@@ -80,18 +71,10 @@ public class EquipmentMagebook
 		return button;
 	}
 
-	/**
-	 * Gets the controls panel containing the magebook buttons
-	 * @return JPanel containing the magebook controls
-	 */
 	public JPanel getControlsPanel() {
 		return controlsPanel;
 	}
 
-	/**
-	 * Enables or disables all magebook controls
-	 * @param enabled true to enable controls, false to disable
-	 */
 	public void setControlsEnabled(boolean enabled) {
 		SwingUtilities.invokeLater(() -> {
 			Component[] components = controlsPanel.getComponents();
@@ -103,9 +86,6 @@ public class EquipmentMagebook
 		});
 	}
 
-	/**
-	 * Updates the visual state of the controls based on client state
-	 */
 	public void updateControlsState() {
 		boolean isLoggedIn = Client.loggedIn && Client.myStoner != null;
 		setControlsEnabled(isLoggedIn);

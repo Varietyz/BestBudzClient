@@ -148,7 +148,6 @@ public final class Rasterizer extends DrawingArea
 		activeMipmaps[textureId] = null;
 	}
 
-	// COMPLETE METHOD TO REPLACE: getMipmapTexels
 	public static int[][] getMipmapTexels(int textureId) {
 		if (textureAccessCounter > 1000000) {
 			for (int index = 0; index < textureAmount; index++) {
@@ -252,8 +251,6 @@ public final class Rasterizer extends DrawingArea
 		return texels;
 	}
 
-
-
 	private static int texelPos(int defaultIndex) {
 		int x = (defaultIndex & 127) >> currentMipmapLevel;
 		int y = (defaultIndex >> 7) >> currentMipmapLevel;
@@ -300,7 +297,6 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
-	// NEW METHOD TO ADD: drawDepthTriangle
 	public static void drawDepthTriangle(int x_a, int x_b, int x_c, int y_a, int y_b, int y_c, float z_a, float z_b, float z_c) {
 		int a_to_b = 0;
 		if (y_b != y_a) {
@@ -653,7 +649,6 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
-	// NEW METHOD TO ADD: drawDepthTriangleScanline
 	private static void drawDepthTriangleScanline(int dest_off, int start_x, int end_x, float depth, float depth_slope) {
 		int dbl = DrawingArea.depthBuffer.length;
 		if (enableClipping) {
@@ -743,7 +738,6 @@ public final class Rasterizer extends DrawingArea
 			renderTriangle(vertexY1, vertexY2, vertexY3, vertexX1, vertexX2, vertexX3, color1, color2, color3, vertexZ1, vertexZ2, vertexZ3);
 		}
 	}
-
 
 	public static void renderTriangle(int vertexY1, int vertexY2, int vertexY3, int vertexX1, int vertexX2, int vertexX3, int color1, int color2, int color3, float vertexZ1,
 									  float vertexZ2, float vertexZ3) {
@@ -1376,7 +1370,6 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
-	// COMPLETE METHOD TO REPLACE: rasterizeScanline
 	public static void rasterizeScanline(int[] pixelBuffer, int offset, int vertexX1, int vertexX2, int r1, int g1, int b1, int r2, int g2, int b2,
 										 float depth, float depthSlopeX) {
 		int n = vertexX2 - vertexX1;
@@ -1400,24 +1393,7 @@ public final class Rasterizer extends DrawingArea
 				vertexX1 = 0;
 			}
 		}
-					/* // CAREFUL OPTIMIZING THIS BLOCK SCOPE, CHANGES HERE COULD BREAK ITEM RENDERING. HOWEVER IT DOES SOLVE OBJECTS AND ROOF DISTANCE DEPTH. BUT BREAKS ITEM DEPTH!
-			See an optimised version here:
-			* 			if (alphaBlendValue == 0) {
-				while (--n >= 0) {
-					if (enableDepthBuffer && depth >= DrawingArea.depthBuffer[offset]) {
-						depth += depthSlopeX;
-						r1 += r2;
-						g1 += g2;
-						b1 += b2;
-						offset++;
-						continue;
-					}
-					pixelBuffer[offset] = (r1 & 0xff0000) | (g1 >> 8 & 0xff00) | (b1 >> 16 & 0xff);
-					DrawingArea.depthBuffer[offset] = depth;
-					depth += depthSlopeX;
 
-					This could be a replacement for the code below, but remember, it fixes roof culling, it breaks item culling.
-			*/
 		if (vertexX1 < vertexX2) {
 			offset += vertexX1;
 			depth += depthSlopeX * (float) vertexX1;
@@ -1811,7 +1787,6 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
-	// COMPLETE METHOD TO REPLACE: rasterizeSolidScanline
 	private static void rasterizeSolidScanline(int[] pixelBuffer, int offset, int color, int start_x, int end_x, float depth,
 											   float depthSlopeX) {
 		int rgb;
@@ -1892,14 +1867,13 @@ public final class Rasterizer extends DrawingArea
 				return;
 			}
 
-// Skip triangles completely outside viewport
 			int minX = Math.min(Math.min(x_a, x_b), x_c);
 			int maxX = Math.max(Math.max(x_a, x_b), x_c);
 			int minY = Math.min(Math.min(y_a, y_b), y_c);
 			int maxY = Math.max(Math.max(y_a, y_b), y_c);
 
 			if (maxX < 0 || minX >= DrawingArea.width || maxY < 0 || minY >= DrawingArea.height) {
-				return; // Triangle completely outside screen
+				return;
 			}
 
 			shade2 = 0x7f - shade2 << 1;
@@ -2485,7 +2459,6 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
-	// COMPLETE METHOD TO REPLACE: rasterizeTexturedScanline
 	private static void rasterizeTexturedScanline(int[] pixelBuffer, int[] texture, int pixelBufferOffset, int start_x, int end_x, int shadeValue,
 												  int gradient, int a1, int i2, int j2, int k2, int a2, int i3, float depth, float depthSlopeX) {
 		int index = 0;

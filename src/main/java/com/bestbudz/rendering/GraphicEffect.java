@@ -3,12 +3,8 @@ package com.bestbudz.rendering;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 
-/**
- * Optimized GraphicEffect
- */
 public final class GraphicEffect extends Animable {
 
-	// Constants for better readability and performance
 	private static final int ROTATION_90 = 90;
 	private static final int ROTATION_180 = 180;
 	private static final int ROTATION_270 = 270;
@@ -46,11 +42,9 @@ public final class GraphicEffect extends Animable {
 			return null;
 		}
 
-		// Cache animation reference for better performance
 		final Animation animation = spotAnim.animation;
 		final int currentFrame = animation.frameIds[frameIndex];
 
-		// Create model copy
 		final Model model = new Model(true, SequenceFrame.isInvalidFrame(currentFrame), false, baseModel);
 
 		if (!finished) {
@@ -64,27 +58,21 @@ public final class GraphicEffect extends Animable {
 				model.applyTransformation(currentFrame);
 			}
 
-			// Clear unused arrays for better memory usage
 			model.anIntArrayArray1658 = null;
 			model.anIntArrayArray1657 = null;
 		}
 
-		// Apply transformations efficiently
 		applyModelTransformations(model);
 
 		return model;
 	}
 
-	/**
-	 * Applies scaling, rotation, and lighting transformations to the model.
-	 */
 	private void applyModelTransformations(Model model) {
-		// Apply scaling if needed
+
 		if (spotAnim.resizeX != DEFAULT_SCALE || spotAnim.resizeY != DEFAULT_SCALE) {
 			model.modelScale(spotAnim.resizeX, spotAnim.resizeX, spotAnim.resizeY);
 		}
 
-		// Apply rotation efficiently
 		final int rotation = spotAnim.rotation;
 		if (rotation != 0) {
 			final int rotationCount = rotation / ROTATION_90;
@@ -93,7 +81,6 @@ public final class GraphicEffect extends Animable {
 			}
 		}
 
-		// Apply lighting
 		model.applyLighting(
 			LIGHTING_AMBIENT_BASE + spotAnim.ambient,
 			LIGHTING_DIFFUSE_BASE + spotAnim.contrast,
@@ -106,7 +93,6 @@ public final class GraphicEffect extends Animable {
 
 		final Animation animation = spotAnim.animation;
 
-		// Process frame advancement
 		while (frameTimer > animation.getFrameDuration(frameIndex)) {
 			frameTimer -= animation.getFrameDuration(frameIndex) + 1;
 			frameIndex++;
@@ -120,9 +106,6 @@ public final class GraphicEffect extends Animable {
 		}
 	}
 
-	/**
-	 * Always calculates for consistent smooth animations.
-	 */
 	private void updateNextAnimFrame() {
 		nextFrameIndex = frameIndex + 1;
 

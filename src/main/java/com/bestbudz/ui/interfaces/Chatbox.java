@@ -78,7 +78,6 @@ public class Chatbox extends Client{
 			Client.inputTaken = true;
 		}
 
-		// 👇 Null safety
 		if (s1 == null)
 			s1 = "";
 		if (s == null)

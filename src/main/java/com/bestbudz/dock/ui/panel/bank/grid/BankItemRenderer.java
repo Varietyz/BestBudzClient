@@ -5,9 +5,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-/**
- * Handles all rendering logic for bank item panels
- */
 public class BankItemRenderer {
 
 	private final int itemSize;
@@ -24,31 +21,24 @@ public class BankItemRenderer {
 			backGraphics.dispose();
 		}
 
-		// Create back buffer that's WIDER to fill the full panel
 		backBuffer = new BufferedImage(itemSize + 4, itemSize, BufferedImage.TYPE_INT_ARGB);
 		backGraphics = backBuffer.createGraphics();
 
-		// High quality rendering
 		backGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		backGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		backGraphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		backGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 	}
 
-	/**
-	 * Renders a complete bank item to the back buffer
-	 */
 	public BufferedImage renderItem(int itemId, int amount, boolean isPlaceholder,
 									boolean isInventoryItem,
 									ImageIcon itemIcon, String amountText, Color amountColor) {
 
 		if (backGraphics == null) return null;
 
-		// CLEAR the background to TRANSPARENT - NO BACKGROUND IN CACHE!
 		backGraphics.setComposite(AlphaComposite.Clear);
 		backGraphics.fillRect(0, 0, itemSize + 4, itemSize);
 
-		// Set opacity for item content
 		float opacity = 1.0f;
 		if (isPlaceholder) {
 			opacity = 0.4f;
@@ -58,10 +48,8 @@ public class BankItemRenderer {
 
 		backGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
 
-		// Draw item icon CENTERED - NO BACKGROUND
 		drawItemIcon(itemId, itemIcon);
 
-		// Reset opacity for overlays
 		backGraphics.setComposite(AlphaComposite.SrcOver);
 
 		if (amount > 0 && !isPlaceholder) {
@@ -83,7 +71,7 @@ public class BankItemRenderer {
 
 	private void drawItemIcon(int itemId, ImageIcon itemIcon) {
 		if (itemIcon != null) {
-			// CENTER the fucking icon in the WIDER image
+
 			int x = ((itemSize + 4) - itemIcon.getIconWidth()) / 2;
 			int y = (itemSize - itemIcon.getIconHeight()) / 2;
 			itemIcon.paintIcon(null, backGraphics, x, y);
@@ -107,7 +95,7 @@ public class BankItemRenderer {
 		int textHeight = fm.getHeight();
 
 		int padding = 2;
-		int x = (itemSize + 4) - textWidth - padding; // Use wider width
+		int x = (itemSize + 4) - textWidth - padding;
 		int y = itemSize - padding;
 
 		backGraphics.setColor(new Color(0, 0, 0, 200));
@@ -133,14 +121,11 @@ public class BankItemRenderer {
 		backGraphics.setFont(new Font("Arial", Font.BOLD, Math.max(8, itemSize / 6)));
 		FontMetrics fm = backGraphics.getFontMetrics();
 		String text = "P";
-		int x = (itemSize + 4) - fm.stringWidth(text) - 2; // Use wider width
+		int x = (itemSize + 4) - fm.stringWidth(text) - 2;
 		int y = fm.getHeight();
 		backGraphics.drawString(text, x, y);
 	}
 
-	/**
-	 * Loads an icon for the specified item
-	 */
 	public static ImageIcon loadItemIcon(int itemId, int amount, int iconSize) {
 		try {
 			int spriteItemId = itemId;
@@ -150,7 +135,7 @@ public class BankItemRenderer {
 			}
 
 			String spritePath = "sprites/items/" + spriteItemId + ".png";
-			// Load icon without the -4 reduction to get proper size
+
 			ImageIcon icon = SpriteUtil.loadIconScaled(spritePath, iconSize - 8);
 
 			if (icon == null) {
@@ -163,9 +148,6 @@ public class BankItemRenderer {
 		}
 	}
 
-	/**
-	 * Gets the correct sprite ID for coin amounts (public for external access)
-	 */
 	public static int getCoinSpriteId(int amount) {
 		if (amount >= 10000) {
 			return 1004;
@@ -190,9 +172,6 @@ public class BankItemRenderer {
 		}
 	}
 
-	/**
-	 * Formats an amount for display
-	 */
 	public static String formatAmount(int amount) {
 		if (amount >= 1000000) {
 			return (amount / 1000000) + "M";
@@ -202,9 +181,6 @@ public class BankItemRenderer {
 		return String.valueOf(amount);
 	}
 
-	/**
-	 * Gets the color for an amount based on value
-	 */
 	public static Color getAmountColor(int amount) {
 		if (amount >= 10000000) {
 			return new Color(0, 255, 0);
@@ -219,9 +195,6 @@ public class BankItemRenderer {
 		}
 	}
 
-	/**
-	 * Cleans up renderer resources
-	 */
 	public void dispose() {
 		if (backGraphics != null) {
 			backGraphics.dispose();

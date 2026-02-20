@@ -186,7 +186,6 @@ public final class WorldController {
 						int i3_offset = i3 + 26;
 						boolean flag1 = false;
 
-						// Check 3x3 neighborhood
 						for (int l3 = -1; l3 <= 1 && !flag1; l3++) {
 							for (int j4 = -1; j4 <= 1; j4++) {
 								if (aflag[k1][i2][k2_offset + l3][i3_offset + j4] ||
@@ -212,13 +211,10 @@ public final class WorldController {
 		int j1 = i * sinVertical + i1 * cosVertical >> 16;
 		int k1 = i * cosVertical - i1 * sinVertical >> 16;
 
-		// CRITICAL: Check if point is behind camera FIRST
 		if (j1 < 50 || j1 > 3500)
 			return false;
 
-		// FIX: Use FIXED view distance to match rendering
-		// This prevents view frustum from flipping during camera rotation
-		final int PROJECTION_SHIFT = 10; // Must match the shift used in rendering!
+		final int PROJECTION_SHIFT = 10;
 
 		int l1 = viewportCenterX + (l << PROJECTION_SHIFT) / j1;
 		int i2 = viewportCenterY + (k1 << PROJECTION_SHIFT) / j1;
@@ -1045,7 +1041,6 @@ public void setMousePosition(int i, int j) {
 		mouseSelection = false;
 	}
 
-	// Add these fields to WorldController class
 	private Ground[] tileQueue = new Ground[2048];
 	private int queueHead = 0;
 	private int queueTail = 0;
@@ -1056,19 +1051,18 @@ public void setMousePosition(int i, int j) {
 
 	private void renderTile(Ground startTile, boolean flag) {
 		if (!flag) {
-			// Use parallel processing for large render jobs
-			if (visibleTileCount > 100) { // Only parallelize for substantial work
+
+			if (visibleTileCount > 100) {
 				renderTileParallel(startTile, flag);
 				return;
 			}
 		}
 
-		// Fall back to original for small jobs
 		renderTileOriginal(startTile, flag);
 	}
 
 	private void renderTileParallel(Ground startTile, boolean flag) {
-		// Split rendering into 4 spatial regions
+
 		int regionWidth = (maxTileX - minTileX) / 4;
 		List<Future<Void>> futures = new ArrayList<>();
 
@@ -1087,12 +1081,11 @@ public void setMousePosition(int i, int j) {
 			}));
 		}
 
-		// Wait for all regions with timeout
 		for (Future<Void> future : futures) {
 			try {
-				future.get(5, TimeUnit.MILLISECONDS); // 5ms max wait
+				future.get(5, TimeUnit.MILLISECONDS);
 			} catch (Exception e) {
-				// If threading fails, fall back immediately
+
 				renderTileOriginal(startTile, flag);
 				return;
 			}
@@ -1100,17 +1093,16 @@ public void setMousePosition(int i, int j) {
 	}
 
 	private void renderTileRegion(int startX, int endX, int startY, int endY) {
-		Ground[] localQueue = new Ground[512]; // Smaller local queue
+		Ground[] localQueue = new Ground[512];
 		int queueHead = 0, queueTail = 0;
 
-		// Process only tiles in this region
 		for (int k = currentLevel; k < levelCount; k++) {
 			Ground[][] aclass30_sub3 = tiles[k];
 			for (int i = startX; i < endX; i++) {
 				for (int j = startY; j < endY; j++) {
 					Ground tile = aclass30_sub3[i][j];
 					if (tile != null && tile.aBoolean1322) {
-						// Quick local tile processing - simplified from original
+
 						processLocalTile(tile, k, i, j);
 					}
 				}
@@ -1119,10 +1111,9 @@ public void setMousePosition(int i, int j) {
 	}
 
 	private void processLocalTile(Ground tile, int k, int i, int j) {
-		// Simplified tile rendering - core logic only
+
 		tile.aBoolean1322 = false;
 
-		// Render objects immediately without complex queuing
 		if (tile.aBoolean1324) {
 			for (int objIdx = 0; objIdx < tile.anInt1317; objIdx++) {
 				GameObject obj5 = tile.obj5Array[objIdx];
@@ -1137,16 +1128,13 @@ public void setMousePosition(int i, int j) {
 		}
 	}
 
-	// Keep original as fallback
 	private void renderTileOriginal(Ground startTile, boolean flag) {
-		// Reset queue
+
 		queueHead = queueTail = 0;
 
-		// Add starting tile to queue
 		tileQueue[queueTail] = startTile;
 		queueTail = (queueTail + 1) % tileQueue.length;
 
-		// Cache frequently accessed values
 		final Ground[][][] localGroundArray = tiles;
 		final int[] lookup478 = directionLookup;
 		final int[] lookup479 = visibilityMask;
@@ -1161,14 +1149,13 @@ public void setMousePosition(int i, int j) {
 		final int[] lookup466 = wallOffsetZ2;
 
 		while (queueHead != queueTail) {
-			// Dequeue tile
+
 			Ground currentTile = tileQueue[queueHead];
 			queueHead = (queueHead + 1) % tileQueue.length;
 
 			if (currentTile == null || !currentTile.aBoolean1323)
 				continue;
 
-			// Cache coordinates
 			final int i = currentTile.anInt1308;
 			final int j = currentTile.anInt1309;
 			final int k = currentTile.anInt1307;
@@ -1177,7 +1164,7 @@ public void setMousePosition(int i, int j) {
 
 			if (currentTile.aBoolean1322) {
 				if (flag) {
-					// Combined neighbor visibility check
+
 					boolean shouldContinue = false;
 					if (k > 0) {
 						Ground neighbor = localGroundArray[k - 1][i][j];
@@ -1220,7 +1207,6 @@ public void setMousePosition(int i, int j) {
 
 				currentTile.aBoolean1322 = false;
 
-				// Render lower level
 				if (currentTile.bridgeTile != null) {
 					Ground lowerTile = currentTile.bridgeTile;
 					if (lowerTile.simpleTile != null) {
@@ -1247,7 +1233,6 @@ public void setMousePosition(int i, int j) {
 					}
 				}
 
-				// Render current level
 				boolean flag1 = false;
 				if (currentTile.simpleTile != null) {
 					if (isTileVisible(l, i, j)) {
@@ -1259,7 +1244,6 @@ public void setMousePosition(int i, int j) {
 					renderComplexTile(i, sinVertical, sinHorizontal, currentTile.floorDecoration, cosVertical, j, cosHorizontal);
 				}
 
-				// Object rendering with cached direction calculation
 				int j1 = 0;
 				int j2 = 0;
 				Wall obj1 = currentTile.obj1;
@@ -1371,7 +1355,6 @@ public void setMousePosition(int i, int j) {
 					}
 				}
 
-				// Add connected neighbors to queue
 				int connectionMask = currentTile.anInt1320;
 				if (connectionMask != 0) {
 					if (i < cameraTileX && (connectionMask & 4) != 0) {
@@ -1405,7 +1388,6 @@ public void setMousePosition(int i, int j) {
 				}
 			}
 
-			// Wall occlusion check
 			if (currentTile.anInt1325 != 0) {
 				boolean shouldRenderWall = true;
 				for (int objIdx = 0; objIdx < currentTile.anInt1317; objIdx++) {
@@ -1428,14 +1410,12 @@ public void setMousePosition(int i, int j) {
 				}
 			}
 
-			// Object sorting and rendering
 			if (currentTile.aBoolean1324) {
 				try {
 					int objectCount = currentTile.anInt1317;
 					currentTile.aBoolean1324 = false;
 					int validObjects = 0;
 
-					// First pass: check visibility and collect valid objects
 					for (int objIdx = 0; objIdx < objectCount; objIdx++) {
 						GameObject obj5 = currentTile.obj5Array[objIdx];
 						if (obj5.lastRenderCycle == renderCycle) continue;
@@ -1463,14 +1443,13 @@ public void setMousePosition(int i, int j) {
 
 						if (!isOccluded) {
 							aClass28Array462[validObjects++] = obj5;
-							// Calculate distance for sorting
+
 							int distX = Math.max(Math.abs(cameraTileX - obj5.anInt523), Math.abs(obj5.anInt524 - cameraTileX));
 							int distY = Math.max(Math.abs(cameraTileY - obj5.anInt525), Math.abs(obj5.anInt526 - cameraTileY));
 							obj5.renderDistance = distX + distY;
 						}
 					}
 
-					// Render objects by distance (furthest first)
 					while (validObjects > 0) {
 						int maxDistance = -50;
 						int selectedIdx = -1;
@@ -1482,7 +1461,7 @@ public void setMousePosition(int i, int j) {
 									maxDistance = obj5.renderDistance;
 									selectedIdx = objIdx;
 								} else if (obj5.renderDistance == maxDistance) {
-									// Distance tie-breaker
+
 									int dist1 = (obj5.anInt519 - cameraX) * (obj5.anInt519 - cameraX) +
 										(obj5.anInt520 - cameraZ) * (obj5.anInt520 - cameraZ);
 									int dist2 = (aClass28Array462[selectedIdx].anInt519 - cameraX) *
@@ -1508,7 +1487,6 @@ public void setMousePosition(int i, int j) {
 								selectedObj.anInt520 - cameraZ, selectedObj.uid);
 						}
 
-						// Add affected tiles back to queue
 						for (int tileX = selectedObj.anInt523; tileX <= selectedObj.anInt524; tileX++) {
 							for (int tileY = selectedObj.anInt525; tileY <= selectedObj.anInt526; tileY++) {
 								Ground affectedTile = aclass30_sub3[tileX][tileY];
@@ -1529,7 +1507,6 @@ public void setMousePosition(int i, int j) {
 				}
 			}
 
-			// Final neighbor visibility check and cleanup
 			if (!currentTile.aBoolean1323 || currentTile.anInt1325 != 0) continue;
 
 			boolean hasVisibleNeighbor = false;
@@ -1555,7 +1532,6 @@ public void setMousePosition(int i, int j) {
 			currentTile.aBoolean1323 = false;
 			visibleTileCount--;
 
-			// Render elevated objects
 			RoofDecoration obj4 = currentTile.obj4;
 			if (obj4 != null && obj4.anInt52 != 0) {
 				if (obj4.aClass30_Sub2_Sub4_49 != null) {
@@ -1575,7 +1551,6 @@ public void setMousePosition(int i, int j) {
 				}
 			}
 
-			// Render walls based on visibility
 			if (currentTile.anInt1328 != 0) {
 				WallDecoration wallObj2 = currentTile.obj2;
 				if (wallObj2 != null && isDecorationVisible(l, i, j, wallObj2.model.modelHeight)) {
@@ -1624,7 +1599,6 @@ public void setMousePosition(int i, int j) {
 				}
 			}
 
-			// Add neighboring levels and tiles to queue
 			if (k < levelCount - 1) {
 				Ground upperLevel = localGroundArray[k + 1][i][j];
 				if (upperLevel != null && upperLevel.aBoolean1323) {
@@ -1677,7 +1651,6 @@ public void setMousePosition(int i, int j) {
 		int j4 = heightMap[i][j1 + 1][k1 + 1] - cameraY;
 		int k4 = heightMap[i][j1][k1 + 1] - cameraY;
 
-		// Transform first vertex
 		int l4 = k2 * l + i2 * i1 >> 16;
 		k2 = k2 * i1 - i2 * l >> 16;
 		i2 = l4;
@@ -1686,7 +1659,6 @@ public void setMousePosition(int i, int j) {
 		l3 = l4;
 		if (k2 < 50) return;
 
-		// Transform second vertex
 		l4 = j2 * l + i3 * i1 >> 16;
 		j2 = j2 * i1 - i3 * l >> 16;
 		i3 = l4;
@@ -1695,7 +1667,6 @@ public void setMousePosition(int i, int j) {
 		i4 = l4;
 		if (j2 < 50) return;
 
-		// Transform third vertex
 		l4 = k3 * l + l2 * i1 >> 16;
 		k3 = k3 * i1 - l2 * l >> 16;
 		l2 = l4;
@@ -1704,7 +1675,6 @@ public void setMousePosition(int i, int j) {
 		j4 = l4;
 		if (k3 < 50) return;
 
-		// Transform fourth vertex
 		l4 = j3 * l + l1 * i1 >> 16;
 		j3 = j3 * i1 - l1 * l >> 16;
 		l1 = l4;
@@ -1713,7 +1683,6 @@ public void setMousePosition(int i, int j) {
 		k4 = l4;
 		if (j3 < 50) return;
 
-		// Project to screen coordinates
 		int i5 = Rasterizer.viewportCenterX + (i2 << 10) / k2;
 		int j5 = Rasterizer.viewportCenterY + (l3 << 10) / k2;
 		int k5 = Rasterizer.viewportCenterX + (i3 << 10) / j2;
@@ -1725,7 +1694,6 @@ public void setMousePosition(int i, int j) {
 
 		Rasterizer.alphaBlendValue = 0;
 
-		// First triangle
 		if ((i6 - k6) * (l5 - l6) - (j6 - l6) * (k5 - k6) > 0) {
 			Rasterizer.enableClipping = i6 < 0 || k6 < 0 || k5 < 0 || i6 > DrawingArea.centerX || k6 > DrawingArea.centerX || k5 > DrawingArea.centerX;
 
@@ -1753,7 +1721,6 @@ public void setMousePosition(int i, int j) {
 			}
 		}
 
-		// Second triangle
 		if ((i5 - k5) * (l6 - l5) - (j5 - l5) * (k6 - k5) > 0) {
 			Rasterizer.enableClipping = i5 < 0 || k5 < 0 || k6 < 0 || i5 > DrawingArea.centerX || k5 > DrawingArea.centerX || k6 > DrawingArea.centerX;
 
@@ -1782,7 +1749,6 @@ public void setMousePosition(int i, int j) {
 	private void renderComplexTile(int i, int j, int k, FloorDecoration floorDecoration, int l, int i1, int j1) {
 		int k1 = floorDecoration.anIntArray673.length;
 
-		// Transform vertices - early exit if any vertex is behind near plane
 		for (int l1 = 0; l1 < k1; l1++) {
 			int i2 = floorDecoration.anIntArray673[l1] - cameraX;
 			int k2 = floorDecoration.anIntArray674[l1] - cameraY;
@@ -1804,7 +1770,6 @@ public void setMousePosition(int i, int j) {
 		Rasterizer.alphaBlendValue = 0;
 		k1 = floorDecoration.anIntArray679.length;
 
-		// Render triangles
 		for (int j2 = 0; j2 < k1; j2++) {
 			int l2 = floorDecoration.anIntArray679[j2];
 			int j3 = floorDecoration.anIntArray680[j2];
@@ -1816,7 +1781,6 @@ public void setMousePosition(int i, int j) {
 			int i5 = FloorDecoration.anIntArray689[j3];
 			int j5 = FloorDecoration.anIntArray689[l3];
 
-			// Backface culling
 			if ((i4 - j4) * (j5 - i5) - (l4 - i5) * (k4 - j4) > 0) {
 				Rasterizer.enableClipping = i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX
 					|| j4 > DrawingArea.centerX || k4 > DrawingArea.centerX;
@@ -1826,7 +1790,6 @@ public void setMousePosition(int i, int j) {
 					selectedTileY = i1;
 				}
 
-				// Texture/color rendering decision
 				if (floorDecoration.anIntArray682 == null || floorDecoration.anIntArray682[j2] == -1 || floorDecoration.anIntArray682[j2] > 50) {
 					if (floorDecoration.anIntArray676[j2] != 0xbc614e) {
 						Rasterizer.renderTriangle(l4, i5, j5, i4, j4, k4, floorDecoration.anIntArray676[j2],
@@ -2107,23 +2070,18 @@ public void setMousePosition(int i, int j) {
 
 	private boolean isDecorationVisible(int plane, int tileX, int tileY, int modelHeight) {
 		if (isTileVisible(plane, tileX, tileY))
-			return true;                                        // already unclipped
+			return true;
 
 		final int worldX = tileX << 7;
 		final int worldY = tileY << 7;
 
-    /* bring the sample heights on the *target* plane down into the same
-       reference frame as the occluder on plane-0 by cancelling the vertical
-       128-unit offset for every plane above 0                                */
 		final int planeOffset = plane * EngineConfig.PLANE_HEIGHT;
 
-		/* four corners of the tile (00, 10, 11, 01) */
 		int h00 = heightMap[plane][tileX    ][tileY    ] - planeOffset - modelHeight;
 		int h10 = heightMap[plane][tileX + 1][tileY    ] - planeOffset - modelHeight;
 		int h11 = heightMap[plane][tileX + 1][tileY + 1] - planeOffset - modelHeight;
 		int h01 = heightMap[plane][tileX    ][tileY + 1] - planeOffset - modelHeight;
 
-		/* if *all four* points fall inside the same occluder → tile is hidden   */
 		return !(  isOccluded(worldX + 1,          h00, worldY + 1)
 			|| isOccluded(worldX + 127,        h10, worldY + 1)
 			|| isOccluded(worldX + 127,        h11, worldY + 127)

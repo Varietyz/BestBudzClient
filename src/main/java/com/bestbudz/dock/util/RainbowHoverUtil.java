@@ -5,33 +5,21 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * Utility class for applying consistent rainbow hover effects to buttons and other components.
- * Provides a centralized way to add animated color-shifting hover effects across the UI.
- */
 public class RainbowHoverUtil {
 
-	// Global hue state for synchronized color progression
-	private static float globalHue = 0.6f; // Start with a nice blue-ish hue
-	private static final float HUE_SHIFT_AMOUNT = 0.08f; // Color shift per hover
-	private static final float SATURATION = 0.3f; // Color saturation
-	private static final float BRIGHTNESS = 0.4f; // Color brightness
+	private static float globalHue = 0.6f;
+	private static final float HUE_SHIFT_AMOUNT = 0.08f;
+	private static final float SATURATION = 0.3f;
+	private static final float BRIGHTNESS = 0.4f;
 
-	// Animation constants
-	private static final int FADE_OUT_DURATION = 500; // 0.5 seconds for fade out
+	private static final int FADE_OUT_DURATION = 500;
 	private static final int COLOR_ANIMATION_FPS = 60;
 
-	/**
-	 * Interface for components that want to handle their own hover overlay rendering
-	 */
 	public interface HoverOverlayRenderer {
 		void setHoverOverlay(Color overlayColor);
 		void repaintComponent();
 	}
 
-	/**
-	 * Simple data class to track hover state for a component
-	 */
 	private static class HoverState {
 		Color currentHoverOverlay = null;
 		Timer colorTimer = null;
@@ -44,28 +32,20 @@ public class RainbowHoverUtil {
 		}
 	}
 
-	/**
-	 * Generate the next hover color by shifting through the HSB color space
-	 */
 	public static synchronized Color getNextHoverColor() {
 		Color color = Color.getHSBColor(globalHue, SATURATION, BRIGHTNESS);
 
-		// Shift hue for next time
 		globalHue += HUE_SHIFT_AMOUNT;
 		if (globalHue >= 1.0f) {
-			globalHue -= 1.0f; // Wrap around the color wheel
+			globalHue -= 1.0f;
 		}
 
 		return color;
 	}
 
-	/**
-	 * Apply rainbow hover effect to any JComponent with custom overlay renderer
-	 */
 	public static void applyRainbowHover(JComponent component, HoverOverlayRenderer renderer) {
 		HoverState state = new HoverState();
 
-		// Store the state in the component's client properties for cleanup
 		component.putClientProperty("RainbowHoverState", state);
 
 		component.addMouseListener(new MouseAdapter() {
@@ -73,12 +53,10 @@ public class RainbowHoverUtil {
 			public void mouseEntered(MouseEvent e) {
 				state.isHovering = true;
 
-				// Stop any ongoing fade out
 				if (state.colorTimer != null && state.colorTimer.isRunning()) {
 					state.colorTimer.stop();
 				}
 
-				// Set hover overlay immediately
 				state.currentHoverOverlay = getNextHoverColor();
 				renderer.setHoverOverlay(state.currentHoverOverlay);
 				renderer.repaintComponent();
@@ -92,9 +70,6 @@ public class RainbowHoverUtil {
 		});
 	}
 
-	/**
-	 * Apply rainbow hover effect to standard JButton with background color change
-	 */
 	public static void applyRainbowHover(JButton button) {
 		Color originalBackground = button.getBackground();
 		HoverState state = new HoverState();
@@ -124,9 +99,6 @@ public class RainbowHoverUtil {
 		});
 	}
 
-	/**
-	 * Apply rainbow hover effect to any component with background color blending
-	 */
 	public static void applyRainbowHover(JComponent component, Color originalBackground) {
 		HoverState state = new HoverState();
 
@@ -155,9 +127,6 @@ public class RainbowHoverUtil {
 		});
 	}
 
-	/**
-	 * Apply rainbow hover effect to panels (like your tile panels)
-	 */
 	public static void applyRainbowHoverToPanel(JPanel panel, Color originalBackground, Color hoverBackground) {
 		HoverState state = new HoverState();
 
@@ -175,7 +144,7 @@ public class RainbowHoverUtil {
 				}
 
 				state.currentHoverOverlay = getNextHoverColor();
-				// Blend the hover background with rainbow overlay
+
 				Color blendedColor = blendColors(hoverBackground, state.currentHoverOverlay, 0.4f);
 				panel.setBackground(blendedColor);
 				panel.repaint();
@@ -189,16 +158,13 @@ public class RainbowHoverUtil {
 		});
 	}
 
-	/**
-	 * Animate fade out for custom overlay renderer
-	 */
 	private static void animateHoverFadeOut(HoverState state, HoverOverlayRenderer renderer) {
 		if (state.colorTimer != null && state.colorTimer.isRunning()) {
 			state.colorTimer.stop();
 		}
 
 		if (state.currentHoverOverlay == null) {
-			return; // Nothing to fade out
+			return;
 		}
 
 		Color startColor = state.currentHoverOverlay;
@@ -209,17 +175,15 @@ public class RainbowHoverUtil {
 			long elapsed = System.currentTimeMillis() - startTime;
 			float progress = Math.min(1.0f, (float) elapsed / FADE_OUT_DURATION);
 
-			// Smooth easing function (ease-out cubic)
 			progress = (float) (1 - Math.pow(1 - progress, 3));
 
-			// Fade out the overlay by reducing alpha
 			int alpha = (int) ((1.0f - progress) * 255);
 			if (alpha <= 0) {
 				state.currentHoverOverlay = null;
 				renderer.setHoverOverlay(null);
 				state.colorTimer.stop();
 			} else {
-				// Create new color with faded alpha
+
 				state.currentHoverOverlay = new Color(
 					startColor.getRed(),
 					startColor.getGreen(),
@@ -234,9 +198,6 @@ public class RainbowHoverUtil {
 		state.colorTimer.start();
 	}
 
-	/**
-	 * Animate fade out for standard buttons
-	 */
 	private static void animateButtonFadeOut(JButton button, HoverState state, Color originalBackground) {
 		if (state.colorTimer != null && state.colorTimer.isRunning()) {
 			state.colorTimer.stop();
@@ -255,14 +216,14 @@ public class RainbowHoverUtil {
 			long elapsed = System.currentTimeMillis() - startTime;
 			float progress = Math.min(1.0f, (float) elapsed / FADE_OUT_DURATION);
 
-			progress = (float) (1 - Math.pow(1 - progress, 3)); // Ease-out cubic
+			progress = (float) (1 - Math.pow(1 - progress, 3));
 
 			if (progress >= 1.0f) {
 				button.setBackground(originalBackground);
 				state.currentHoverOverlay = null;
 				state.colorTimer.stop();
 			} else {
-				// Interpolate between current blended color and original
+
 				Color interpolated = interpolateColors(startBlended, originalBackground, progress);
 				button.setBackground(interpolated);
 			}
@@ -272,9 +233,6 @@ public class RainbowHoverUtil {
 		state.colorTimer.start();
 	}
 
-	/**
-	 * Animate fade out for generic components
-	 */
 	private static void animateComponentFadeOut(JComponent component, HoverState state, Color originalBackground) {
 		if (state.colorTimer != null && state.colorTimer.isRunning()) {
 			state.colorTimer.stop();
@@ -293,7 +251,7 @@ public class RainbowHoverUtil {
 			long elapsed = System.currentTimeMillis() - startTime;
 			float progress = Math.min(1.0f, (float) elapsed / FADE_OUT_DURATION);
 
-			progress = (float) (1 - Math.pow(1 - progress, 3)); // Ease-out cubic
+			progress = (float) (1 - Math.pow(1 - progress, 3));
 
 			if (progress >= 1.0f) {
 				component.setBackground(originalBackground);
@@ -309,9 +267,6 @@ public class RainbowHoverUtil {
 		state.colorTimer.start();
 	}
 
-	/**
-	 * Animate fade out for panels with separate hover/original backgrounds
-	 */
 	private static void animatePanelFadeOut(JPanel panel, HoverState state, Color originalBackground, Color hoverBackground) {
 		if (state.colorTimer != null && state.colorTimer.isRunning()) {
 			state.colorTimer.stop();
@@ -330,7 +285,7 @@ public class RainbowHoverUtil {
 			long elapsed = System.currentTimeMillis() - startTime;
 			float progress = Math.min(1.0f, (float) elapsed / FADE_OUT_DURATION);
 
-			progress = (float) (1 - Math.pow(1 - progress, 3)); // Ease-out cubic
+			progress = (float) (1 - Math.pow(1 - progress, 3));
 
 			if (progress >= 1.0f) {
 				panel.setBackground(originalBackground);
@@ -346,9 +301,6 @@ public class RainbowHoverUtil {
 		state.colorTimer.start();
 	}
 
-	/**
-	 * Blend two colors together with specified ratio
-	 */
 	private static Color blendColors(Color base, Color overlay, float overlayRatio) {
 		float baseRatio = 1.0f - overlayRatio;
 
@@ -365,9 +317,6 @@ public class RainbowHoverUtil {
 		);
 	}
 
-	/**
-	 * Interpolate between two colors
-	 */
 	private static Color interpolateColors(Color start, Color end, float progress) {
 		int red = (int) (start.getRed() + (end.getRed() - start.getRed()) * progress);
 		int green = (int) (start.getGreen() + (end.getGreen() - start.getGreen()) * progress);
@@ -382,9 +331,6 @@ public class RainbowHoverUtil {
 		);
 	}
 
-	/**
-	 * Remove rainbow hover effect from a component (cleanup)
-	 */
 	public static void removeRainbowHover(JComponent component) {
 		HoverState state = (HoverState) component.getClientProperty("RainbowHoverState");
 		if (state != null) {
@@ -392,7 +338,6 @@ public class RainbowHoverUtil {
 			component.putClientProperty("RainbowHoverState", null);
 		}
 
-		// Restore original background if stored
 		Color originalBackground = (Color) component.getClientProperty("OriginalBackground");
 		if (originalBackground != null) {
 			component.setBackground(originalBackground);
@@ -400,9 +345,6 @@ public class RainbowHoverUtil {
 		}
 	}
 
-	/**
-	 * Check if a component has rainbow hover effect applied
-	 */
 	public static boolean hasRainbowHover(JComponent component) {
 		return component.getClientProperty("RainbowHoverState") != null;
 	}

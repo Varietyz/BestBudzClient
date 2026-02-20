@@ -13,10 +13,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * XML loader for ItemBonusDefinition data
- * Handles parsing of embedded XML resources with robust error handling
- */
 public class ItemBonusXMLLoader {
 
 	private static final String ROOT_ELEMENT = "ItemBonusDefinitions";
@@ -25,17 +21,10 @@ public class ItemBonusXMLLoader {
 	private static final String BONUSES_ELEMENT = "bonuses";
 	private static final String BONUS_ELEMENT = "short";
 
-	// Performance and safety limits
 	private static final int MAX_ITEMS_TO_LOAD = 50000;
 	private static final int MAX_BONUSES_PER_ITEM = 50;
 	private static final int MIN_EXPECTED_BONUSES = 1;
 
-	/**
-	 * Load item bonus definitions from an embedded resource
-	 *
-	 * @param resourcePath the path to the XML resource (e.g., "/definitions/items/ItemBonusDefinitions.xml")
-	 * @return ItemBonusLoadResult containing the loaded definitions or error information
-	 */
 	public ItemBonusLoadResult loadFromResource(String resourcePath) {
 		if (resourcePath == null || resourcePath.trim().isEmpty()) {
 			return ItemBonusLoadResult.failure("Resource path cannot be null or empty");
@@ -57,13 +46,6 @@ public class ItemBonusXMLLoader {
 		}
 	}
 
-	/**
-	 * Load item bonus definitions from an InputStream
-	 *
-	 * @param inputStream the input stream containing XML data
-	 * @param sourceName the name/path of the source for error reporting
-	 * @return ItemBonusLoadResult containing the loaded definitions or error information
-	 */
 	public ItemBonusLoadResult loadFromInputStream(InputStream inputStream, String sourceName) {
 		if (inputStream == null) {
 			return ItemBonusLoadResult.failure("InputStream cannot be null");
@@ -74,15 +56,13 @@ public class ItemBonusXMLLoader {
 		List<String> warnings = new ArrayList<>();
 
 		try {
-			// Configure XML parser for security and performance
+
 			DocumentBuilderFactory factory = createSecureDocumentBuilderFactory();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 
-			// Parse the XML document
 			Document document = builder.parse(inputStream);
 			document.getDocumentElement().normalize();
 
-			// Validate root element
 			Element root = document.getDocumentElement();
 			if (!isValidRootElement(root)) {
 				return ItemBonusLoadResult.failure(
@@ -91,7 +71,6 @@ public class ItemBonusXMLLoader {
 				);
 			}
 
-			// Parse definitions
 			NodeList definitionNodes = getDefinitionNodes(root);
 			int processedCount = parseDefinitions(definitionNodes, definitions, warnings);
 
@@ -120,13 +99,9 @@ public class ItemBonusXMLLoader {
 		}
 	}
 
-	/**
-	 * Create a secure DocumentBuilderFactory with appropriate security settings
-	 */
 	private DocumentBuilderFactory createSecureDocumentBuilderFactory() throws ParserConfigurationException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-		// Security settings to prevent XXE attacks
 		factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 		factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
 		factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
@@ -137,30 +112,21 @@ public class ItemBonusXMLLoader {
 		return factory;
 	}
 
-	/**
-	 * Check if the root element is valid
-	 */
 	private boolean isValidRootElement(Element root) {
 		String rootName = root.getNodeName();
 		return ROOT_ELEMENT.equals(rootName) || DEFINITION_ELEMENT.equals(rootName);
 	}
 
-	/**
-	 * Get definition nodes from the root element
-	 */
 	private NodeList getDefinitionNodes(Element root) {
 		if (DEFINITION_ELEMENT.equals(root.getNodeName())) {
-			// Single definition case - getPooledStream a NodeList with just the root
+
 			return new SingleNodeList(root);
 		} else {
-			// Multiple definitions case
+
 			return root.getElementsByTagName(DEFINITION_ELEMENT);
 		}
 	}
 
-	/**
-	 * Parse all definition nodes
-	 */
 	private int parseDefinitions(NodeList definitionNodes, List<ItemBonusDefinition> definitions, List<String> warnings) {
 		int processedCount = 0;
 		int maxItems = Math.min(definitionNodes.getLength(), MAX_ITEMS_TO_LOAD);
@@ -195,18 +161,14 @@ public class ItemBonusXMLLoader {
 		return processedCount;
 	}
 
-	/**
-	 * Parse a single ItemBonusDefinition from an XML element
-	 */
 	private ItemBonusDefinition parseDefinition(Element element) {
 		try {
-			// Parse item ID
+
 			int itemId = parseItemId(element);
 			if (itemId < 0) {
 				return null;
 			}
 
-			// Parse bonuses
 			short[] bonuses = parseBonuses(element);
 			if (bonuses == null || bonuses.length < MIN_EXPECTED_BONUSES) {
 				return null;
@@ -220,9 +182,6 @@ public class ItemBonusXMLLoader {
 		}
 	}
 
-	/**
-	 * Parse the item ID from a definition element
-	 */
 	private int parseItemId(Element element) {
 		try {
 			NodeList idNodes = element.getElementsByTagName(ID_ELEMENT);
@@ -240,9 +199,6 @@ public class ItemBonusXMLLoader {
 		}
 	}
 
-	/**
-	 * Parse the bonuses array from a definition element
-	 */
 	private short[] parseBonuses(Element element) {
 		try {
 			NodeList bonusesNodes = element.getElementsByTagName(BONUSES_ELEMENT);
@@ -271,7 +227,7 @@ public class ItemBonusXMLLoader {
 					bonuses[i] = Short.parseShort(bonusText);
 				} catch (NumberFormatException e) {
 					System.err.println("[ItemBonusXMLLoader] Invalid bonus value at index " + i + ": " + bonusText);
-					bonuses[i] = 0; // Default to 0 for invalid values
+					bonuses[i] = 0;
 				}
 			}
 
@@ -283,9 +239,6 @@ public class ItemBonusXMLLoader {
 		}
 	}
 
-	/**
-	 * Simple NodeList implementation for single-node cases
-	 */
 	private static class SingleNodeList implements NodeList {
 		private final Node node;
 

@@ -46,12 +46,10 @@ Client client;
     childIds = objectDef.childIds;
   }
 
-	/* InteractiveObject.java */
 	private ObjectDef getTransformedDef() {
-		int idx = -1;                               // result of the VarBit / config lookup
+		int idx = -1;
 		int[] settings = (client != null) ? client.variousSettings : null;
 
-		/* ---------- guarded VarBit lookup ---------- */
 		if (varbitId != -1
 			&& varbitId < VarBit.cache.length
 			&& VarBit.cache[varbitId] != null) {
@@ -67,21 +65,18 @@ Client client;
 			}
 		}
 
-		/* ---------- direct config lookup ----------- */
 		else if (configId != -1
 			&& settings != null
 			&& configId < settings.length) {
 			idx = settings[configId];
 		}
 
-		/* ---------- validity check ----------------- */
 		if (idx < 0 || idx >= childIds.length)
 			return null;
 
 		int objId = childIds[idx];
 		return objId == -1 ? null : ObjectDef.forID(objId);
 	}
-
 
   public Model getModel() {
     int j = -1;

@@ -14,7 +14,6 @@ import java.util.Objects;
 
 public class Model extends Animable {
 
-	// Static configuration - unchanged for compatibility
 	public static boolean[] newmodel;
 	public static int anInt1620;
 	public static final Model aModel_1621 = new Model();
@@ -30,10 +29,8 @@ public class Model extends Animable {
 	static int[] modelIntArray3;
 	static int[] modelIntArray4;
 
-	// Thread-local workspace to prevent sharing between instances
 	private static final ThreadLocal<WorkSpace> workspace = ThreadLocal.withInitial(WorkSpace::new);
 
-	// Static workspace class for thread-local arrays
 	private static class WorkSpace {
 		boolean[] aBooleanArray1663 = new boolean[8000];
 		boolean[] aBooleanArray1664 = new boolean[8000];
@@ -54,7 +51,6 @@ public class Model extends Animable {
 		final int[] anIntArray1679 = new int[10];
 		final int[] anIntArray1680 = new int[10];
 
-		// Reusable temporary arrays to reduce allocations
 		private int[] tempVertexBuffer = new int[2000];
 		private int[] tempTriangleBuffer = new int[2000];
 		private int[] tempColorBuffer = new int[2000];
@@ -72,7 +68,7 @@ public class Model extends Animable {
 		}
 
 		void clear() {
-			// Clear critical arrays to prevent data corruption
+
 			java.util.Arrays.fill(aBooleanArray1663, 0, Math.min(8000, aBooleanArray1663.length), false);
 			java.util.Arrays.fill(aBooleanArray1664, 0, Math.min(8000, aBooleanArray1664.length), false);
 			java.util.Arrays.fill(anIntArray1671, 0, Math.min(1500, anIntArray1671.length), 0);
@@ -92,7 +88,6 @@ public class Model extends Animable {
 		modelIntArray4 = Rasterizer.reciprocalTable;
 	}
 
-	// Instance variables - exact same names for compatibility
 	public int vertexCount;
 	public int[] verticesX;
 	public int[] verticesY;
@@ -496,7 +491,7 @@ public class Model extends Animable {
 		modelIntArray2 = null;
 		modelIntArray3 = null;
 		modelIntArray4 = null;
-		// Clear thread local storage
+
 		workspace.remove();
 	}
 
@@ -2162,8 +2157,7 @@ public class Model extends Animable {
 
 	public final void renderAtFixedPosition(int j, int k, int l, int i1, int j1, int k1) {
 		if (RS317GPUInterface.isActive()) {
-			// Convert parameters to match GPU renderer expectations
-			// j=rotX, k=rotY, l=rotZ, i1=worldX, j1=worldY, k1=worldZ
+
 			RS317GPUInterface.renderModel(this, i1, j1, k1, j, k, l, 64);
 			return;
 		}
@@ -2223,8 +2217,7 @@ public class Model extends Animable {
 
 	public final void render(int rotation, int sinVertical, int cosVertical, int sinHorizontal, int cosHorizontal, int worldX, int worldY, int worldZ, int id) {
 		if (RS317GPUInterface.isActive()) {
-			// Convert parameters to match GPU renderer expectations
-			// i = rotation, j1 = worldX, k1 = worldY, l1 = worldZ
+
 			RS317GPUInterface.renderModel(this, worldX, worldY, worldZ, rotation, 0, 0, 64);
 			return;
 		}
@@ -2359,12 +2352,10 @@ public class Model extends Animable {
 						ws.aBooleanArray1664[k] = false;
 						ws.aBooleanArray1663[k] = i3 < 0 || l3 < 0 || k4 < 0 || i3 > DrawingArea.centerX || l3 > DrawingArea.centerX || k4 > DrawingArea.centerX;
 
-						// IMPROVED DEPTH CALCULATION FOR BETTER SORTING
 						int avgDepth = (ws.anIntArray1667[l] + ws.anIntArray1667[k1] + ws.anIntArray1667[j2]) / 3 + boundingCylinderRadius;
 
-						// For large models (world geometry), use more precise depth sorting
-						if (vertexCount > 100) { // Large model = world geometry
-							// Use the furthest vertex for better sorting of world geometry
+						if (vertexCount > 100) {
+
 							int maxDepth = Math.max(ws.anIntArray1667[l], Math.max(ws.anIntArray1667[k1], ws.anIntArray1667[j2])) + boundingCylinderRadius;
 							avgDepth = maxDepth;
 						}
@@ -2374,7 +2365,6 @@ public class Model extends Animable {
 				}
 			}
 
-		// Rest of the method stays exactly the same...
 		if (trianglePriorities == null) {
 			for (int i1 = boundingRadius - 1; i1 >= 0; i1--) {
 				int l1 = ws.anIntArray1671[i1];

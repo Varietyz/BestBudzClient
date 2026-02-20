@@ -14,13 +14,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static com.bestbudz.engine.core.loading.LoadingEnums.*;
 
-/**
- * Refactored user-friendly loading screen with clean progress display
- * and helpful status information. Now properly separated into components.
- */
 public class LoadingVisual extends JFrame {
 
-	// Core components
 	private final LoadingUtilities.FontManager fontManager;
 	private HeaderPanel headerPanel;
 	private ProgressPanel progressPanel;
@@ -28,21 +23,17 @@ public class LoadingVisual extends JFrame {
 	private LogPanel logPanel;
 	private JPanel mainPanel;
 
-	// State management
 	private final AtomicInteger currentProgress = new AtomicInteger(0);
 	private final AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
 
-	// User-friendly metrics
 	private final Map<String, Integer> itemCounts = new ConcurrentHashMap<>();
 	private int totalItemsLoaded = 0;
 
-	// Animation and performance
 	private Timer updateTimer;
 	private Timer performanceTimer;
 	private double memoryUsage = 0.0;
 	private int frameCount = 0;
 
-	// Current loading state
 	private LoadingPhase currentPhase = LoadingPhase.INITIALIZING;
 
 	public LoadingVisual() {
@@ -53,7 +44,6 @@ public class LoadingVisual extends JFrame {
 		layoutComponents();
 		startTimers();
 
-		// Add initial log entry
 		logPanel.addLogEntry("🚀 Starting game initialization...", LogLevel.INFO);
 	}
 
@@ -70,7 +60,7 @@ public class LoadingVisual extends JFrame {
 	}
 
 	private void createComponents() {
-		// Create all panel components
+
 		headerPanel = new HeaderPanel(fontManager, startTime);
 		progressPanel = new ProgressPanel(fontManager, currentProgress);
 		metricsPanel = new MetricsPanel(fontManager);
@@ -88,7 +78,6 @@ public class LoadingVisual extends JFrame {
 			BorderFactory.createEmptyBorder(20, 24, 20, 24)
 		));
 
-		// Assembly
 		mainPanel.add(headerPanel);
 		mainPanel.add(progressPanel);
 		mainPanel.add(Box.createVerticalStrut(16));
@@ -100,27 +89,23 @@ public class LoadingVisual extends JFrame {
 	}
 
 	private void startTimers() {
-		// Main update timer
+
 		updateTimer = new Timer(50, e -> updateDisplay());
 		updateTimer.start();
 
-		// Performance monitoring timer
 		performanceTimer = new Timer(1000, e -> updatePerformanceMetrics());
 		performanceTimer.start();
 	}
 
 	private void updateDisplay() {
 		SwingUtilities.invokeLater(() -> {
-			// Update time in header
+
 			headerPanel.updateElapsedTime();
 
-			// Update progress
 			progressPanel.updateProgress(currentProgress.get());
 
-			// Process log queue
 			logPanel.processLogQueue();
 
-			// Update metrics
 			metricsPanel.updatePhase(currentPhase);
 			metricsPanel.updateMemoryUsage(memoryUsage);
 
@@ -135,7 +120,6 @@ public class LoadingVisual extends JFrame {
 		memoryUsage = ((double) usedMemory / maxMemory) * 100;
 	}
 
-	// Public API methods
 	public void updateProgress(int progress) {
 		currentProgress.set(Math.max(0, Math.min(100, progress)));
 	}
@@ -168,7 +152,6 @@ public class LoadingVisual extends JFrame {
 		logPanel.addLogEntry(message, level);
 	}
 
-	// Simple metrics tracking methods
 	public void updateItemCount(String itemType, int count) {
 		itemCounts.put(itemType, count);
 	}
@@ -178,30 +161,29 @@ public class LoadingVisual extends JFrame {
 		totalItemsLoaded++;
 	}
 
-	// Simplified methods (keeping interface compatibility)
 	public void updateBytesProcessed(long bytes) {
-		// For compatibility, but not displayed in user-friendly version
+
 	}
 
 	public void updateFilesProcessed(int files) {
-		// For compatibility, but not displayed in user-friendly version
+
 	}
 
 	public void updateCacheStats(int hits, int misses) {
-		// For compatibility, but not displayed in user-friendly version
+
 	}
 
 	public void incrementCacheHits() {
-		// For compatibility, but not displayed in user-friendly version
+
 	}
 
 	public void incrementCacheMisses() {
-		// For compatibility, but not displayed in user-friendly version
+
 	}
 
 	public void reportOperationTime(String operation, long timeMs) {
-		// Only show significant operations to users
-		if (timeMs > 100) { // Only show operations taking more than 100ms
+
+		if (timeMs > 100) {
 			logPanel.addLogEntry(String.format("%s completed (%.1fs)", operation, timeMs / 1000.0), LogLevel.INFO);
 		}
 	}
@@ -217,14 +199,13 @@ public class LoadingVisual extends JFrame {
 
 	public void closeLoader() {
 		SwingUtilities.invokeLater(() -> {
-			// Final friendly message
+
 			logPanel.addLogEntry("🎉 Game loaded successfully!", LogLevel.SUCCESS);
 			logPanel.addLogEntry(String.format("📦 Loaded %d items total", totalItemsLoaded), LogLevel.INFO);
 
 			if (updateTimer != null) updateTimer.stop();
 			if (performanceTimer != null) performanceTimer.stop();
 
-			// Fade out effect
 			Timer fadeTimer = new Timer(50, null);
 			fadeTimer.addActionListener(new ActionListener() {
 				float alpha = 1.0f;
@@ -245,7 +226,6 @@ public class LoadingVisual extends JFrame {
 		});
 	}
 
-	// Utility methods for GameLoader integration
 	public void reportError(String error) {
 		logPanel.addLogEntry(error, LogLevel.ERROR);
 		progressPanel.setErrorState("Something went wrong");
@@ -260,7 +240,7 @@ public class LoadingVisual extends JFrame {
 	}
 
 	public void reportMetric(String metric) {
-		// For compatibility, but metrics are simplified for users
+
 	}
 
 	public void reportTiming(String operation, long timeMs) {
@@ -271,7 +251,6 @@ public class LoadingVisual extends JFrame {
 		logPanel.addLogEntry(String.format("Error: %s failed", operation), LogLevel.ERROR);
 	}
 
-	// Getters for compatibility
 	public LoadingPhase getCurrentPhase() {
 		return currentPhase;
 	}
@@ -281,15 +260,15 @@ public class LoadingVisual extends JFrame {
 	}
 
 	public int getFPS() {
-		return 0; // Not displayed in user-friendly version
+		return 0;
 	}
 
 	public long getTotalBytesProcessed() {
-		return 0; // Not displayed in user-friendly version
+		return 0;
 	}
 
 	public long getTotalFilesProcessed() {
-		return 0; // Not displayed in user-friendly version
+		return 0;
 	}
 
 	public Map<String, Integer> getItemCounts() {
@@ -297,7 +276,7 @@ public class LoadingVisual extends JFrame {
 	}
 
 	public Map<String, Long> getPhaseTimes() {
-		return new HashMap<>(); // Simplified for user-friendly version
+		return new HashMap<>();
 	}
 
 	public String getDetailedMetricsReport() {

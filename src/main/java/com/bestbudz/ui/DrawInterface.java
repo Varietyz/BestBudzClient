@@ -28,7 +28,7 @@ public class DrawInterface extends Client
 {
 	public static void drawInterface(int j, int k, RSInterface class9, int l)
 	{
-		// Early safety checks to prevent NPE
+
 		if (class9 == null ||
 			RSInterface.interfaceCache == null ||
 			class9.children == null ||
@@ -36,7 +36,6 @@ public class DrawInterface extends Client
 			DockBlocker.isDocked(class9.parentID)) {
 			return;
 		}
-
 
 		if (class9.parentID == 197)
 		{
@@ -54,26 +53,25 @@ public class DrawInterface extends Client
 		int j1 = DrawingArea.topY;
 		int k1 = DrawingArea.bottomX;
 		int l1 = DrawingArea.bottomY;
-		if (class9.id == 5292) { // Your bank interface ID
-			// Force bank dimensions
+		if (class9.id == 5292) {
+
 			class9.width = 670;
 			class9.height = 340;
 
-			// Override drawing area bounds
 			DrawingArea.setDrawingArea(
-				Math.min(l + 340, frameHeight),     // Bottom boundary
-				Math.max(k, 0),                     // Left boundary
-				Math.min(k + 670, frameWidth),      // Right boundary
-				Math.max(l, 0)                      // Top boundary
+				Math.min(l + 340, frameHeight),
+				Math.max(k, 0),
+				Math.min(k + 670, frameWidth),
+				Math.max(l, 0)
 			);
 		} else {
-			// Original logic for other interfaces
+
 			DrawingArea.setDrawingArea(l + class9.height, k, k + class9.width, l);
 		}
 		int i2 = class9.children.length;
 		for (int j2 = 0; j2 < i2; j2++)
 		{
-			// Add simple bounds checking before accessing interface cache
+
 			if (class9.children[j2] == -1 ||
 				class9.children[j2] < 0 ||
 				class9.children[j2] >= RSInterface.interfaceCache.length) {
@@ -84,12 +82,10 @@ public class DrawInterface extends Client
 			int l2 = (class9.childY[j2] + l) - j;
 			RSInterface child = RSInterface.interfaceCache[class9.children[j2]];
 
-			// Skip if child is null
 			if (child == null) {
 				continue;
 			}
 
-			// Rest of the original code remains unchanged...
 			k2 += child.anInt263;
 			l2 += child.positionScroll;
 			if (child.contentType > 0)
@@ -151,7 +147,7 @@ public class DrawInterface extends Client
 				if (child.scrollMax > child.height)
 					drawScrollbar(child.height, child.scrollPosition, l2, k2 + child.width, child.scrollMax, false);
 			}
-			else if (child.type != 1) // Start of inventory block
+			else if (child.type != 1)
 				if (child.type == 2)
 				{
 					int slot = 0;
@@ -819,6 +815,5 @@ public class DrawInterface extends Client
 		DrawingArea.drawPixels(1, yPos + 69, xPos, 0x2E2B23, 175);
 		DrawingArea.drawAlphaRectangle(0, yPos, 174, 68, 220, xPos);
 	}
-
 
 }
