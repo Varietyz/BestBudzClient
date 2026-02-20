@@ -1650,6 +1650,20 @@ public class RSInterface {
 		return rsi;
 	}
 
+	public static RSInterface addTab(int id) {
+		RSInterface Tab = interfaceCache[id] = new RSInterface();
+		Tab.id = id;
+		Tab.parentID = id;
+		Tab.type = 0;
+		Tab.atActionType = 0;
+		Tab.contentType = 0;
+		Tab.width = 512;
+		Tab.height = 334;
+		Tab.opacity = (byte) 0;
+		Tab.textColor = 0;
+		return Tab;
+	}
+
 	public static RSInterface addTabInterface(int id) {
 		RSInterface tab = interfaceCache[id] = new RSInterface();
 		if (tab.id == 3917) id = -1;
