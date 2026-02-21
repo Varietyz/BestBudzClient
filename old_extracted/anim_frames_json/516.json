@@ -1,0 +1,34 @@
+{
+  "skinList": {
+    "boneCount": 6,
+    "transformTypes": [0,3,5,2,2,1],
+    "childIndices": [[0,1],[2,3,0,1],[0,1,2],[2],[3],[0,1]]
+  },
+  "frameCount": 24,
+  "frames": [
+    {"frameId":0,"transformCount":6,"transforms":[{"bone":0,"x":0,"y":2,"z":0},{"bone":1,"x":128,"y":0,"z":128},{"bone":2,"x":32,"y":0,"z":0},{"bone":5,"x":0,"y":2,"z":0}]},
+    {"frameId":1,"transformCount":5,"transforms":[{"bone":2,"x":0,"y":0,"z":128},{"bone":3,"x":42,"y":0,"z":0},{"bone":4,"x":-41,"y":0,"z":0}]},
+    {"frameId":2,"transformCount":5,"transforms":[{"bone":2,"x":0,"y":0,"z":128},{"bone":3,"x":42,"y":0,"z":0},{"bone":4,"x":-41,"y":0,"z":0}]},
+    {"frameId":3,"transformCount":5,"transforms":[{"bone":2,"x":0,"y":0,"z":128},{"bone":3,"x":42,"y":0,"z":0},{"bone":4,"x":-41,"y":0,"z":0}]},
+    {"frameId":4,"transformCount":5,"transforms":[{"bone":2,"x":0,"y":0,"z":128},{"bone":3,"x":42,"y":0,"z":0},{"bone":4,"x":-41,"y":0,"z":0}]},
+    {"frameId":5,"transformCount":5,"transforms":[{"bone":0,"x":0,"y":1,"z":0},{"bone":2,"x":0,"y":0,"z":128},{"bone":3,"x":31,"y":0,"z":0},{"bone":4,"x":-30,"y":0,"z":0}]},
+    {"frameId":6,"transformCount":5,"transforms":[{"bone":0,"x":0,"y":2,"z":0},{"bone":2,"x":0,"y":0,"z":128},{"bone":3,"x":21,"y":0,"z":0},{"bone":4,"x":-20,"y":0,"z":0}]},
+    {"frameId":7,"transformCount":5,"transforms":[{"bone":0,"x":0,"y":3,"z":0},{"bone":2,"x":0,"y":0,"z":128},{"bone":3,"x":10,"y":0,"z":0},{"bone":4,"x":-9,"y":0,"z":0}]},
+    {"frameId":8,"transformCount":3,"transforms":[{"bone":0,"x":0,"y":4,"z":0},{"bone":2,"x":0,"y":0,"z":128}]},
+    {"frameId":9,"transformCount":3,"transforms":[{"bone":0,"x":0,"y":3,"z":0},{"bone":1,"x":128,"y":96,"z":128},{"bone":2,"x":0,"y":0,"z":128}]},
+    {"frameId":10,"transformCount":6,"transforms":[{"bone":0,"x":0,"y":3,"z":0},{"bone":1,"x":128,"y":64,"z":128},{"bone":2,"x":0,"y":0,"z":128},{"bone":5,"x":0,"y":1,"z":0}]},
+    {"frameId":11,"transformCount":6,"transforms":[{"bone":0,"x":0,"y":2,"z":0},{"bone":1,"x":128,"y":0,"z":128},{"bone":2,"x":16,"y":0,"z":64},{"bone":5,"x":0,"y":2,"z":0}]},
+    {"frameId":12,"transformCount":6,"transforms":[{"bone":0,"x":0,"y":2,"z":0},{"bone":1,"x":128,"y":32,"z":128},{"bone":2,"x":0,"y":0,"z":128},{"bone":5,"x":0,"y":1,"z":0}]},
+    {"frameId":13,"transformCount":6,"transforms":[{"bone":0,"x":0,"y":2,"z":0},{"bone":1,"x":128,"y":0,"z":128},{"bone":2,"x":0,"y":0,"z":128},{"bone":5,"x":0,"y":2,"z":0}]},
+    {"frameId":14,"transformCount":6,"transforms":[{"bone":0,"x":0,"y":2,"z":0},{"bone":1,"x":128,"y":0,"z":128},{"bone":2,"x":16,"y":0,"z":64},{"bone":5,"x":0,"y":2,"z":0}]},
+    {"frameId":15,"transformCount":6,"transforms":[{"bone":0,"x":0,"y":2,"z":0},{"bone":1,"x":128,"y":0,"z":128},{"bone":2,"x":32,"y":0,"z":0},{"bone":5,"x":0,"y":2,"z":0}]},
+    {"frameId":16,"transformCount":6,"transforms":[{"bone":0,"x":0,"y":2,"z":0},{"bone":1,"x":128,"y":0,"z":128},{"bone":2,"x":32,"y":0,"z":0},{"bone":5,"x":0,"y":2,"z":0}]},
+    {"frameId":17,"transformCount":6,"transforms":[{"bone":0,"x":0,"y":2,"z":0},{"bone":1,"x":128,"y":0,"z":128},{"bone":2,"x":0,"y":0,"z":128},{"bone":5,"x":0,"y":2,"z":0}]},
+    {"frameId":18,"transformCount":6,"transforms":[{"bone":0,"x":0,"y":2,"z":0},{"bone":1,"x":128,"y":32,"z":128},{"bone":2,"x":0,"y":0,"z":128},{"bone":5,"x":0,"y":1,"z":0}]},
+    {"frameId":19,"transformCount":6,"transforms":[{"bone":0,"x":0,"y":3,"z":0},{"bone":1,"x":128,"y":64,"z":128},{"bone":2,"x":0,"y":0,"z":128},{"bone":5,"x":0,"y":1,"z":0}]},
+    {"frameId":20,"transformCount":3,"transforms":[{"bone":0,"x":0,"y":3,"z":0},{"bone":1,"x":128,"y":96,"z":128},{"bone":2,"x":0,"y":0,"z":128}]},
+    {"frameId":21,"transformCount":3,"transforms":[{"bone":0,"x":0,"y":4,"z":0},{"bone":2,"x":0,"y":0,"z":128}]},
+    {"frameId":22,"transformCount":5,"transforms":[{"bone":0,"x":0,"y":2,"z":0},{"bone":2,"x":0,"y":0,"z":128},{"bone":3,"x":21,"y":0,"z":0},{"bone":4,"x":-20,"y":0,"z":0}]},
+    {"frameId":23,"transformCount":5,"transforms":[{"bone":2,"x":0,"y":0,"z":128},{"bone":3,"x":42,"y":0,"z":0},{"bone":4,"x":-41,"y":0,"z":0}]}
+  ]
+}

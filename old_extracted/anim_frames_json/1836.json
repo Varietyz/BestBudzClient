@@ -1,0 +1,11 @@
+{
+  "skinList": {
+    "boneCount": 0,
+    "transformTypes": [],
+    "childIndices": []
+  },
+  "frameCount": 1,
+  "frames": [
+    {"frameId":0,"transformCount":0,"transforms":[]}
+  ]
+}

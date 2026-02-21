@@ -1,0 +1,37 @@
+{
+  "skinList": {
+    "boneCount": 0,
+    "transformTypes": [],
+    "childIndices": []
+  },
+  "frameCount": 27,
+  "frames": [
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":8,"transformCount":0,"transforms":[]},
+    {"frameId":0,"transformCount":1,"transforms":[{"bone":0,"x":0,"y":0,"z":0}]},
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":520,"transformCount":0,"transforms":[]},
+    {"frameId":0,"transformCount":3,"transforms":[]},
+    {"frameId":4,"transformCount":8,"transforms":[{"bone":3,"x":2048,"y":0,"z":0},{"bone":4,"x":0,"y":2048,"z":0},{"bone":5,"x":2048,"y":0,"z":2056}]},
+    {"frameId":9,"transformCount":8,"transforms":[{"bone":3,"x":0,"y":2048,"z":0},{"bone":6,"x":2048,"y":0,"z":0},{"bone":7,"x":0,"y":0,"z":2048}]},
+    {"frameId":0,"transformCount":13,"transforms":[{"bone":0,"x":0,"y":0,"z":0},{"bone":4,"x":0,"y":2048,"z":0},{"bone":5,"x":2048,"y":0,"z":4104},{"bone":9,"x":2048,"y":0,"z":0},{"bone":12,"x":0,"y":2048,"z":0}]},
+    {"frameId":0,"transformCount":19,"transforms":[{"bone":0,"x":0,"y":0,"z":20},{"bone":1,"x":0,"y":0,"z":0},{"bone":5,"x":2048,"y":0,"z":0},{"bone":6,"x":0,"y":2048,"z":0},{"bone":7,"x":2048,"y":0,"z":6152},{"bone":11,"x":2048,"y":0,"z":0},{"bone":14,"x":0,"y":2048,"z":0}]},
+    {"frameId":512,"transformCount":2,"transforms":[]},
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":512,"transformCount":2,"transforms":[]},
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":512,"transformCount":2,"transforms":[]},
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":512,"transformCount":2,"transforms":[]},
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":512,"transformCount":2,"transforms":[]},
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":512,"transformCount":2,"transforms":[]},
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":512,"transformCount":2,"transforms":[]},
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":512,"transformCount":2,"transforms":[]},
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":512,"transformCount":2,"transforms":[]}
+  ]
+}

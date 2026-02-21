@@ -1,7 +1,9 @@
 package com.bestbudz.dock.ui.panel.client;
 
+import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.engine.core.Client;
+import com.bestbudz.engine.gpu.GPUToggleHandler;
 import com.bestbudz.ui.handling.SettingHandler;
 
 import javax.swing.Timer;
@@ -113,6 +115,14 @@ public class SettingsPanelConfig {
 		addSetting("Attack Priority",
 			() -> SettingsConfig.entityAttackPriority,
 			value -> SettingsConfig.entityAttackPriority = value);
+
+		addSetting("GPU Rendering",
+			() -> SettingsConfig.enableGPU,
+			value -> {
+				SettingsConfig.enableGPU = value;
+				EngineConfig.ENABLE_GPU = value;
+			},
+			() -> GPUToggleHandler.onGPUToggled(SettingsConfig.enableGPU));
 	}
 
 	private void addSetting(String name, Supplier<Boolean> getter, Consumer<Boolean> setter) {

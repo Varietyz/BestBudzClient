@@ -2,9 +2,13 @@ package com.bestbudz.engine.core;
 
 import com.bestbudz.cache.Signlink;
 import static com.bestbudz.engine.core.login.logout.Reset.unlinkMRUNodes;
+import com.bestbudz.engine.gpu.GPUCameraSync;
 import com.bestbudz.engine.gpu.GPUContextManager;
+import com.bestbudz.engine.gpu.GPUModelRenderer;
 import com.bestbudz.engine.gpu.GPUMonitor;
 import com.bestbudz.engine.gpu.GPURenderingEngine;
+import com.bestbudz.engine.gpu.scene.GPUSceneUploader;
+import com.bestbudz.engine.gpu.scene.GPUStaticScene;
 import static com.bestbudz.engine.core.gamerender.Camera.calcCameraPos;
 import static com.bestbudz.engine.core.gamerender.Camera.updateCameraPosition;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
@@ -25,6 +29,9 @@ public class GameState extends Client {
 	private static final int MEMORY_GC_THRESHOLD = 320;
 
 	private static boolean gpuStateValid = false;
+	public static void setGPUStateValid(boolean valid) {
+		gpuStateValid = valid;
+	}
 	private static long lastGPUValidation = 0;
 	private static final long GPU_VALIDATION_INTERVAL = 5000;
 	private static int consecutiveGPUFailures = 0;
@@ -196,11 +203,84 @@ public class GameState extends Client {
 
 	private static void renderWorldWithGPU(int xCameraPos, int yCameraPos, int xCameraCurve,
 										   int zCameraPos, int j, int yCameraCurve) throws Exception {
-		if (worldController != null) {
-
-			worldController.render(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
-		} else {
+		if (worldController == null) {
 			throw new IllegalStateException("worldController is null");
+		}
+
+		int vpWidth = com.bestbudz.engine.core.gamerender.DrawingArea.width;
+		int vpHeight = com.bestbudz.engine.core.gamerender.DrawingArea.height;
+
+		// Sync camera: compute VP matrix from RS2 camera angles
+		GPUCameraSync.update(xCameraCurve, yCameraCurve, vpWidth, vpHeight);
+
+		// Bind FBO and clear
+		GPURenderingEngine.bindFramebuffer();
+		GPURenderingEngine.clear();
+
+		// Begin model rendering frame
+		GPUModelRenderer.beginFrame();
+
+		// Render GPU terrain first (if uploaded)
+		// Camera mapping: xCameraPos=X, zCameraPos=height(Y), yCameraPos=Z
+		if (GPUSceneUploader.isTerrainUploaded()) {
+			GPUSceneUploader.renderTerrain(xCameraPos, zCameraPos, yCameraPos);
+			com.bestbudz.engine.core.gamerender.WorldController.gpuTerrainActive = true;
+		}
+
+		// Render baked static objects (walls, decorations, game objects)
+		if (GPUStaticScene.isUploaded()) {
+			GPUStaticScene.renderStaticObjects(xCameraPos, zCameraPos, yCameraPos);
+		}
+
+		// Render world (models will call GPUModelRenderer via RS317GPUInterface)
+		// When gpuTerrainActive=true, WorldController skips CPU terrain rasterizing
+		// but still does mouse picking
+		worldController.render(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
+
+		// Reset terrain flag after render
+		com.bestbudz.engine.core.gamerender.WorldController.gpuTerrainActive = false;
+
+		// End frame
+		GPUModelRenderer.endFrame();
+
+		// Composite GPU-rendered content (terrain + models) onto CPU buffer
+		compositeFBOToCPU(vpWidth, vpHeight);
+
+		// Unbind FBO
+		GPURenderingEngine.unbindFramebuffer();
+	}
+
+	/**
+	 * Read GPU-rendered model pixels from the FBO and composite them onto
+	 * DrawingArea.pixels[] (which holds CPU-rendered terrain).
+	 * Only overwrites pixels where the FBO alpha > 0 (i.e., a model was drawn).
+	 */
+	private static void compositeFBOToCPU(int vpWidth, int vpHeight) {
+		int[] cpuPixels = com.bestbudz.engine.core.gamerender.DrawingArea.pixels;
+		if (cpuPixels == null || vpWidth <= 0 || vpHeight <= 0) {
+			return;
+		}
+
+		java.nio.ByteBuffer fboBuffer = org.lwjgl.BufferUtils.createByteBuffer(vpWidth * vpHeight * 4);
+		org.lwjgl.opengl.GL11.glReadPixels(0, 0, vpWidth, vpHeight,
+			org.lwjgl.opengl.GL11.GL_RGBA, org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE, fboBuffer);
+
+		for (int y = 0; y < vpHeight; y++) {
+			int flippedY = vpHeight - 1 - y;
+			int dstRowStart = flippedY * vpWidth;
+			int srcRowStart = y * vpWidth * 4;
+
+			for (int x = 0; x < vpWidth; x++) {
+				int srcIdx = srcRowStart + x * 4;
+				int a = fboBuffer.get(srcIdx + 3) & 0xFF;
+
+				if (a > 0) {
+					int r = fboBuffer.get(srcIdx) & 0xFF;
+					int g = fboBuffer.get(srcIdx + 1) & 0xFF;
+					int b = fboBuffer.get(srcIdx + 2) & 0xFF;
+					cpuPixels[dstRowStart + x] = (r << 16) | (g << 8) | b;
+				}
+			}
 		}
 	}
 
@@ -314,6 +394,10 @@ public class GameState extends Client {
 
 		try {
 
+			// Invalidate scene since region is being reloaded
+			GPUSceneUploader.invalidateTerrain();
+			GPUStaticScene.invalidate();
+
 			GPURenderingEngine.persistThroughGameLoad();
 
 			validateGPUStateIfNeeded();
@@ -340,6 +424,9 @@ public class GameState extends Client {
 				gpuStateValid = true;
 				consecutiveGPUFailures = 0;
 				logDebug("✅ GPU state restored - engine reports enabled");
+
+				// Upload terrain geometry to GPU after region load
+				uploadTerrainToGPU();
 			} else {
 				logError("GPU engine not properly enabled after restore");
 				gpuStateValid = false;
@@ -350,6 +437,28 @@ public class GameState extends Client {
 		} catch (Exception e) {
 			logError("GPU state restoration failed: " + e.getMessage());
 			gpuStateValid = false;
+		}
+	}
+
+	private static void uploadTerrainToGPU() {
+		if (worldController == null) {
+			logDebug("Cannot upload terrain: worldController is null");
+			return;
+		}
+
+		try (GPUContextManager.ContextToken context = GPURenderingEngine.acquireContext("Scene Upload")) {
+			if (context == null) {
+				logError("Failed to acquire GPU context for scene upload");
+				return;
+			}
+
+			GPUSceneUploader.uploadTerrain(worldController);
+			GPUStaticScene.uploadStaticObjects(worldController);
+			logInfo("GPU scene upload completed (terrain + static objects)");
+
+		} catch (Exception e) {
+			logError("Error uploading scene to GPU: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 

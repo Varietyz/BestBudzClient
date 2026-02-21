@@ -1,0 +1,18 @@
+{
+  "skinList": {
+    "boneCount": 2,
+    "transformTypes": [0,2],
+    "childIndices": [[0],[0]]
+  },
+  "frameCount": 8,
+  "frames": [
+    {"frameId":0,"transformCount":1,"transforms":[{"bone":0,"x":0,"y":-28,"z":0}]},
+    {"frameId":1,"transformCount":2,"transforms":[{"bone":0,"x":0,"y":-28,"z":0},{"bone":1,"x":0,"y":0,"z":4}]},
+    {"frameId":2,"transformCount":2,"transforms":[{"bone":0,"x":0,"y":-28,"z":0},{"bone":1,"x":0,"y":0,"z":9}]},
+    {"frameId":3,"transformCount":2,"transforms":[{"bone":0,"x":0,"y":-28,"z":0},{"bone":1,"x":0,"y":0,"z":4}]},
+    {"frameId":4,"transformCount":1,"transforms":[{"bone":0,"x":0,"y":-28,"z":0}]},
+    {"frameId":5,"transformCount":2,"transforms":[{"bone":0,"x":0,"y":-28,"z":0},{"bone":1,"x":0,"y":0,"z":-3}]},
+    {"frameId":6,"transformCount":2,"transforms":[{"bone":0,"x":0,"y":-28,"z":0},{"bone":1,"x":0,"y":0,"z":-8}]},
+    {"frameId":7,"transformCount":2,"transforms":[{"bone":0,"x":0,"y":-28,"z":0},{"bone":1,"x":0,"y":0,"z":-3}]}
+  ]
+}

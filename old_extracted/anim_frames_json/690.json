@@ -1,0 +1,23 @@
+{
+  "skinList": {
+    "boneCount": 4,
+    "transformTypes": [0,1,2,5],
+    "childIndices": [[0],[0],[0],[0]]
+  },
+  "frameCount": 13,
+  "frames": [
+    {"frameId":0,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-103,"z":30},{"bone":2,"x":10,"y":0,"z":0},{"bone":3,"x":32,"y":0,"z":0}]},
+    {"frameId":1,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-127,"z":-158},{"bone":2,"x":-41,"y":0,"z":0},{"bone":3,"x":21,"y":0,"z":0}]},
+    {"frameId":2,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-127,"z":-158},{"bone":2,"x":-41,"y":0,"z":0},{"bone":3,"x":32,"y":0,"z":0}]},
+    {"frameId":3,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-115,"z":-63},{"bone":2,"x":-15,"y":0,"z":0},{"bone":3,"x":32,"y":0,"z":0}]},
+    {"frameId":4,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-103,"z":30},{"bone":2,"x":10,"y":0,"z":0},{"bone":3,"x":32,"y":0,"z":0}]},
+    {"frameId":5,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-115,"z":-63},{"bone":2,"x":-15,"y":0,"z":0},{"bone":3,"x":32,"y":0,"z":0}]},
+    {"frameId":6,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-127,"z":-158},{"bone":2,"x":-41,"y":0,"z":0},{"bone":3,"x":32,"y":0,"z":0}]},
+    {"frameId":7,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-127,"z":-158},{"bone":2,"x":-41,"y":0,"z":0},{"bone":3,"x":26,"y":0,"z":0}]},
+    {"frameId":8,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-127,"z":-158},{"bone":2,"x":-41,"y":0,"z":0},{"bone":3,"x":21,"y":0,"z":0}]},
+    {"frameId":9,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-127,"z":-158},{"bone":2,"x":-41,"y":0,"z":0},{"bone":3,"x":15,"y":0,"z":0}]},
+    {"frameId":10,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-127,"z":-158},{"bone":2,"x":-41,"y":0,"z":0},{"bone":3,"x":10,"y":0,"z":0}]},
+    {"frameId":11,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-127,"z":-158},{"bone":2,"x":-41,"y":0,"z":0},{"bone":3,"x":12,"y":0,"z":0}]},
+    {"frameId":12,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-127,"z":-158},{"bone":2,"x":-41,"y":0,"z":0},{"bone":3,"x":15,"y":0,"z":0}]}
+  ]
+}

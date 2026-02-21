@@ -1361,6 +1361,9 @@ public class Model extends Animable {
 
 	private int mergeVertex(Model model, int i) {
 		int j = -1;
+		if (i < 0 || i >= model.vertexCount) {
+			return vertexCount > 0 ? 0 : -1;
+		}
 		int k = model.verticesX[i];
 		int l = model.verticesY[i];
 		int i1 = model.verticesZ[i];
@@ -2002,8 +2005,7 @@ public class Model extends Animable {
 
 	public final void renderAtFixedPosition(int j, int k, int l, int i1, int j1, int k1) {
 		if (RS317GPUInterface.isActive()) {
-
-			RS317GPUInterface.renderModel(this, i1, j1, k1, j, k, l, 64);
+			RS317GPUInterface.renderModel(this, i1, j1, k1, j);
 			return;
 		}
 		int i = 0;
@@ -2062,8 +2064,7 @@ public class Model extends Animable {
 
 	public final void render(int rotation, int sinVertical, int cosVertical, int sinHorizontal, int cosHorizontal, int worldX, int worldY, int worldZ, int id) {
 		if (RS317GPUInterface.isActive()) {
-
-			RS317GPUInterface.renderModel(this, worldX, worldY, worldZ, rotation, 0, 0, 64);
+			RS317GPUInterface.renderModel(this, worldX, worldY, worldZ, rotation);
 			return;
 		}
 		int j2 = worldZ * cosHorizontal - worldX * sinHorizontal >> 16;

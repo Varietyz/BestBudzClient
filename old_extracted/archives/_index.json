@@ -1,0 +1,10 @@
+{
+  "1": {"name":"title","file":"title.dat","size":372555},
+  "2": {"name":"config","file":"config.dat","size":2547661},
+  "3": {"name":"interface","file":"interface.dat","size":197033},
+  "4": {"name":"media","file":"media.dat","size":326557},
+  "5": {"name":"versionlist","file":"versionlist.dat","size":90457},
+  "6": {"name":"textures","file":"textures.dat","size":205578},
+  "7": {"name":"wordenc","file":"wordenc.dat","size":13776},
+  "8": {"name":"sounds","file":"sounds.dat","size":223704}
+}

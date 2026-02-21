@@ -1,5 +1,6 @@
 package com.bestbudz.engine.gpu;
 
+import com.bestbudz.engine.gpu.scene.GPUSceneUploader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
@@ -41,13 +42,28 @@ public class GPURenderingEngine {
 
 				setupInitialOpenGLState();
 				createInitialFramebuffer();
+
+				if (!GPUModelRenderer.initialize()) {
+					System.err.println("[GPU] GPUModelRenderer init failed, continuing without model rendering");
+				}
+
+				if (!GPUTextureManager.initialize()) {
+					System.err.println("[GPU] GPUTextureManager init failed, continuing without textures");
+				}
+
+				if (!GPUSceneUploader.initialize()) {
+					System.err.println("[GPU] GPUSceneUploader init failed, continuing without terrain upload");
+				}
+
+				if (!com.bestbudz.engine.gpu.scene.GPUStaticScene.initialize()) {
+					System.err.println("[GPU] GPUStaticScene init failed, continuing without static object upload");
+				}
 			}
 
 			gpuEnabled = true;
 			initialized = true;
 
-			System.out.println("✅ [GPU] GPU rendering enabled successfully!");
-			System.out.println("✅ [GPU] All DrawingArea calls are now GPU-accelerated");
+			System.out.println("[GPU] GPU rendering enabled successfully");
 
 		} catch (Exception e) {
 			gpuEnabled = false;
@@ -68,7 +84,8 @@ public class GPURenderingEngine {
 		System.out.println("[GPU] GPU Vendor: " + vendor);
 		System.out.println("[GPU] GPU Renderer: " + renderer);
 
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glDepthFunc(GL11.GL_LEQUAL);
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -196,8 +213,12 @@ public class GPURenderingEngine {
 			return;
 		}
 
-		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+	}
+
+	public static int getFramebufferId() {
+		return currentFramebuffer;
 	}
 
 	public static int getColorTexture() {
@@ -314,6 +335,10 @@ public class GPURenderingEngine {
 
 	private static void cleanupGPUResourcesInternal() {
 		try {
+			com.bestbudz.engine.gpu.scene.GPUStaticScene.cleanup();
+			GPUSceneUploader.cleanup();
+			GPUTextureManager.cleanup();
+			GPUModelRenderer.cleanup();
 
 			if (currentFramebuffer != 0) {
 				GL30.glDeleteFramebuffers(currentFramebuffer);

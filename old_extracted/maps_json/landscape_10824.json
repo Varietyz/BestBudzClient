@@ -1,0 +1,17 @@
+{
+  "regionId": 10824,
+  "planes": [
+    {"plane":0,"tiles":[
+{"x":0,"y":6,"underlayId":81,"flags":13},{"x":0,"y":21,"overlayId":77,"overlayRotation":4,"overlayShape":3,"underlayId":32,"flags":30}
+    ]},
+    {"plane":1,"tiles":[
+
+    ]},
+    {"plane":2,"tiles":[
+
+    ]},
+    {"plane":3,"tiles":[
+
+    ]}
+  ]
+}

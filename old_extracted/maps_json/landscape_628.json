@@ -1,0 +1,17 @@
+{
+  "regionId": 628,
+  "planes": [
+    {"plane":0,"tiles":[
+{"x":0,"y":0,"overlayId":90,"overlayRotation":10,"overlayShape":1,"underlayId":4,"flags":1},{"x":0,"y":1,"overlayId":54,"overlayRotation":2,"overlayShape":1,"flags":8},{"x":0,"y":2,"overlayId":-10,"overlayRotation":2,"overlayShape":0,"underlayId":153,"flags":4},{"x":0,"y":3,"height":212,"overlayId":107,"overlayRotation":9,"overlayShape":0,"underlayId":2,"flags":24},{"x":0,"y":4,"height":239,"overlayId":-71,"overlayRotation":9,"overlayShape":1,"underlayId":136,"flags":1},{"x":0,"y":5,"overlayId":-125,"overlayRotation":8,"overlayShape":2,"underlayId":154,"flags":6},{"x":0,"y":6,"height":173,"overlayId":-22,"overlayRotation":2,"overlayShape":0,"underlayId":153,"flags":6},{"x":0,"y":7,"height":110,"overlayId":36,"overlayRotation":0,"overlayShape":3,"underlayId":37,"flags":7},{"x":0,"y":8,"height":47,"overlayId":-37,"overlayRotation":10,"overlayShape":0,"underlayId":86,"flags":23},{"x":0,"y":9,"overlayId":-117,"overlayRotation":6,"overlayShape":3,"underlayId":127,"flags":19},{"x":0,"y":10,"overlayId":94,"overlayRotation":5,"overlayShape":1,"underlayId":53,"flags":10},{"x":0,"y":11,"height":215,"overlayId":19,"overlayRotation":4,"overlayShape":3,"underlayId":106,"flags":26},{"x":0,"y":12,"underlayId":169,"flags":21}
+    ]},
+    {"plane":1,"tiles":[
+
+    ]},
+    {"plane":2,"tiles":[
+
+    ]},
+    {"plane":3,"tiles":[
+
+    ]}
+  ]
+}

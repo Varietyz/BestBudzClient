@@ -10,6 +10,7 @@ import static com.bestbudz.engine.core.GameState.validateGPUStateIfNeeded;
 import static com.bestbudz.engine.core.login.logout.Reset.nullLoader;
 import com.bestbudz.engine.gpu.GPUContextManager;
 import com.bestbudz.engine.gpu.GPURenderingEngine;
+import com.bestbudz.engine.gpu.GPUToggleHandler;
 import static com.bestbudz.engine.gpu.GPURenderingEngine.initialized;
 import com.bestbudz.engine.gpu.RS317GPUInterface;
 import com.bestbudz.graphics.text.TextController;
@@ -937,6 +938,8 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		handleInputClearOnClick(leftClick, rightClick);
 		processMenuClick(leftClick, rightClick);
 		handleInputTick(leftClick, rightClick);
+
+		GPUToggleHandler.processPendingToggle();
 
 		if (EngineConfig.ENABLE_GPU){
 			if (!initialized) {

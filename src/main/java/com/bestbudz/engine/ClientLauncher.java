@@ -10,6 +10,7 @@ import com.bestbudz.engine.gpu.GPURenderingEngine;
 import com.bestbudz.engine.gpu.RS317GPUInterface;
 import com.bestbudz.ui.handling.SettingHandler;
 import com.bestbudz.engine.config.EngineConfig;
+import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.engine.core.GameCanvas;
 import com.bestbudz.engine.core.GameEngine;
 import com.bestbudz.engine.core.GameLoader;
@@ -125,6 +126,7 @@ public final class ClientLauncher {
 	private static void initializeCoreSystems() throws Exception {
 		System.out.println("[ClientLauncher] Initializing settings handler...");
 		SettingHandler.load();
+		EngineConfig.ENABLE_GPU = SettingsConfig.enableGPU;
 
 		System.out.println("[ClientLauncher] Configuring client settings...");
 		Client.nodeID = CLIENT_NODE_ID;

@@ -1,0 +1,31 @@
+{
+  "skinList": {
+    "boneCount": 5,
+    "transformTypes": [0,1,2,5,3],
+    "childIndices": [[0],[0],[0],[0],[0]]
+  },
+  "frameCount": 21,
+  "frames": [
+    {"frameId":0,"transformCount":4,"transforms":[{"bone":3,"x":32,"y":0,"z":0}]},
+    {"frameId":1,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":-43,"z":0},{"bone":4,"x":128,"y":104,"z":128}]},
+    {"frameId":2,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":-48,"z":-1},{"bone":4,"x":128,"y":118,"z":128}]},
+    {"frameId":3,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":-60,"z":0},{"bone":4,"x":128,"y":123,"z":128}]},
+    {"frameId":4,"transformCount":2,"transforms":[{"bone":1,"x":0,"y":-72,"z":2}]},
+    {"frameId":5,"transformCount":2,"transforms":[{"bone":1,"x":0,"y":-97,"z":1}]},
+    {"frameId":6,"transformCount":2,"transforms":[{"bone":1,"x":0,"y":-122,"z":1}]},
+    {"frameId":7,"transformCount":2,"transforms":[{"bone":1,"x":0,"y":-147,"z":3}]},
+    {"frameId":8,"transformCount":2,"transforms":[{"bone":1,"x":0,"y":-172,"z":5}]},
+    {"frameId":9,"transformCount":2,"transforms":[{"bone":1,"x":0,"y":-197,"z":2}]},
+    {"frameId":10,"transformCount":2,"transforms":[{"bone":1,"x":0,"y":-222,"z":0}]},
+    {"frameId":11,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":-1,"z":0},{"bone":3,"x":23,"y":0,"z":0},{"bone":4,"x":128,"y":172,"z":128}]},
+    {"frameId":12,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-245,"z":2},{"bone":3,"x":16,"y":0,"z":0}]},
+    {"frameId":13,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-268,"z":6},{"bone":3,"x":32,"y":0,"z":0}]},
+    {"frameId":14,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":-3,"z":0},{"bone":3,"x":15,"y":0,"z":0},{"bone":4,"x":128,"y":217,"z":128}]},
+    {"frameId":15,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":-13,"z":0},{"bone":3,"x":7,"y":0,"z":0},{"bone":4,"x":128,"y":150,"z":128}]},
+    {"frameId":16,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":-23,"z":0},{"bone":4,"x":128,"y":84,"z":128}]},
+    {"frameId":17,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":-21,"z":0},{"bone":4,"x":128,"y":112,"z":128}]},
+    {"frameId":18,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":-20,"z":0},{"bone":4,"x":128,"y":140,"z":128}]},
+    {"frameId":19,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":-29,"z":0},{"bone":4,"x":128,"y":115,"z":128}]},
+    {"frameId":20,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":-39,"z":0},{"bone":4,"x":128,"y":90,"z":128}]}
+  ]
+}

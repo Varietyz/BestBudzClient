@@ -139,7 +139,7 @@ public final class ImageProducer {
 
 	private void readGPUFramebufferOptimized() {
 
-		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, GPURenderingEngine.getColorTexture());
+		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, GPURenderingEngine.getFramebufferId());
 
 		gpuPixelBuffer.clear();
 

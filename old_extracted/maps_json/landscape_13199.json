@@ -1,0 +1,17 @@
+{
+  "regionId": 13199,
+  "planes": [
+    {"plane":0,"tiles":[
+{"x":0,"y":6,"height":119,"overlayId":-93,"overlayRotation":0,"overlayShape":1,"underlayId":57,"flags":21},{"x":0,"y":7,"height":243,"overlayId":-45,"overlayRotation":0,"overlayShape":0,"underlayId":55,"flags":26},{"x":0,"y":8,"overlayId":117,"overlayRotation":2,"overlayShape":3,"underlayId":92,"flags":7},{"x":0,"y":9,"height":181,"overlayId":94,"overlayRotation":8,"overlayShape":0,"underlayId":168,"flags":23},{"x":0,"y":10,"height":70,"overlayId":-91,"overlayRotation":3,"overlayShape":2,"underlayId":101,"flags":13},{"x":0,"y":11,"height":151,"overlayId":-58,"overlayRotation":5,"overlayShape":0,"underlayId":140,"flags":8},{"x":0,"y":12,"overlayId":94,"overlayRotation":11,"overlayShape":2,"underlayId":111,"flags":28},{"x":0,"y":14,"overlayId":101,"overlayRotation":10,"overlayShape":0,"underlayId":125}
+    ]},
+    {"plane":1,"tiles":[
+
+    ]},
+    {"plane":2,"tiles":[
+
+    ]},
+    {"plane":3,"tiles":[
+
+    ]}
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "regionId": 1515,
+  "objects": [
+    {"objectId":30,"localX":44,"localY":7,"plane":0,"type":2,"rotation":0},
+    {"objectId":30,"localX":44,"localY":56,"plane":0,"type":10,"rotation":3},
+    {"objectId":30,"localX":46,"localY":17,"plane":0,"type":21,"rotation":1},
+    {"objectId":41,"localX":0,"localY":48,"plane":0,"type":13,"rotation":1},
+    {"objectId":41,"localX":1,"localY":32,"plane":0,"type":13,"rotation":2},
+    {"objectId":28141,"localX":0,"localY":32,"plane":0,"type":0,"rotation":1},
+    {"objectId":28189,"localX":0,"localY":7,"plane":0,"type":0,"rotation":0},
+    {"objectId":28189,"localX":2,"localY":9,"plane":3,"type":8,"rotation":0},
+    {"objectId":28189,"localX":2,"localY":24,"plane":3,"type":3,"rotation":1},
+    {"objectId":28189,"localX":4,"localY":0,"plane":3,"type":63,"rotation":2},
+    {"objectId":28189,"localX":4,"localY":15,"plane":3,"type":6,"rotation":0},
+    {"objectId":28189,"localX":20,"localY":52,"plane":7,"type":37,"rotation":2},
+    {"objectId":28189,"localX":41,"localY":6,"plane":12,"type":36,"rotation":1},
+    {"objectId":28189,"localX":2,"localY":50,"plane":16,"type":54,"rotation":3},
+    {"objectId":28189,"localX":28,"localY":30,"plane":19,"type":54,"rotation":3},
+    {"objectId":28189,"localX":54,"localY":10,"plane":22,"type":54,"rotation":3},
+    {"objectId":28189,"localX":15,"localY":54,"plane":26,"type":54,"rotation":3},
+    {"objectId":28189,"localX":41,"localY":34,"plane":29,"type":54,"rotation":3},
+    {"objectId":28189,"localX":3,"localY":14,"plane":33,"type":54,"rotation":3},
+    {"objectId":28189,"localX":28,"localY":58,"plane":36,"type":54,"rotation":3},
+    {"objectId":28189,"localX":54,"localY":38,"plane":39,"type":54,"rotation":3},
+    {"objectId":28189,"localX":16,"localY":18,"plane":43,"type":54,"rotation":3},
+    {"objectId":28189,"localX":41,"localY":62,"plane":46,"type":54,"rotation":3},
+    {"objectId":28189,"localX":3,"localY":42,"plane":50,"type":54,"rotation":3},
+    {"objectId":28189,"localX":29,"localY":22,"plane":53,"type":30,"rotation":3},
+    {"objectId":28189,"localX":33,"localY":24,"plane":60,"type":0,"rotation":0}
+  ]
+}

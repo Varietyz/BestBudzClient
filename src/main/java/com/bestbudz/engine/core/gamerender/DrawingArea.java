@@ -668,8 +668,33 @@ public class DrawingArea {
 	}
 
 	private static void syncGPUToCPUInternal() {
+		if (pixels == null || width <= 0 || height <= 0) {
+			return;
+		}
 
-		System.out.println("[GPU DrawingArea] GPU to CPU sync completed");
+		org.lwjgl.opengl.GL30.glBindFramebuffer(org.lwjgl.opengl.GL30.GL_READ_FRAMEBUFFER,
+			GPURenderingEngine.getFramebufferId());
+
+		java.nio.ByteBuffer gpuBuffer = org.lwjgl.BufferUtils.createByteBuffer(width * height * 4);
+		org.lwjgl.opengl.GL11.glReadPixels(0, 0, width, height,
+			org.lwjgl.opengl.GL11.GL_RGBA, org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE, gpuBuffer);
+
+		org.lwjgl.opengl.GL30.glBindFramebuffer(org.lwjgl.opengl.GL30.GL_READ_FRAMEBUFFER, 0);
+
+		// Convert RGBA to RGB int array with Y-flip (OpenGL origin is bottom-left)
+		for (int y = 0; y < height; y++) {
+			int flippedY = height - 1 - y;
+			int dstRowStart = flippedY * width;
+			int srcRowStart = y * width * 4;
+
+			for (int x = 0; x < width; x++) {
+				int srcIdx = srcRowStart + x * 4;
+				int r = gpuBuffer.get(srcIdx) & 0xFF;
+				int g = gpuBuffer.get(srcIdx + 1) & 0xFF;
+				int b = gpuBuffer.get(srcIdx + 2) & 0xFF;
+				pixels[dstRowStart + x] = (r << 16) | (g << 8) | b;
+			}
+		}
 	}
 
 	public static void setCurrentImageProducer(ImageProducer imageProducer) {

@@ -1,0 +1,14 @@
+{
+  "format": "rs525",
+  "vertexCount": 24,
+  "triangleCount": 24,
+  "textureTriangleCount": 0,
+  "hasTriangleInfo": false,
+  "isExtendedFormat": false,
+  "priorityFlag": 0,
+  "hasAlpha": true,
+  "hasTriangleLabels": false,
+  "hasVertexLabels": false,
+  "rawSize": 229,
+  "rawBase64": "BwEEAQYEBQQHAQQBBgQFBAcBBAEGBAUEAQICAwIDAgMBAgIDAgMCAwECAgMCAwIDfX19fX19fX19fX19fX19fX19fX19fX19QEFBQUFBQUE6QUZBQUFBQUFBOkFGQUFBQUFBQTpBAH8AfwB/AH8AfwB/AH8AfwB/AH8AfwB/AH8AfwB/AH8AfwB/AH8AfwB/AH8AfwB/H0Y6RjpGOkY6RjpGv3A6djp2OsBAv4DAgL+AwIC/gMCAv4DAgL+AwIC/gMCAv4DAgL+AwIC/gAAAGAAYAAAAAQAAAAAMAAcAJAAeAAD//w=="
+}

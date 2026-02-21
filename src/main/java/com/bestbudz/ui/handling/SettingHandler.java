@@ -18,7 +18,8 @@ public class SettingHandler
 		"Fog", "Mip Mapping", "Moving Textures", "Status Orbs",
 		"Roofs", "Debit Card", "Kill Feed", "Hover Menus", "Entity Feed", "HP Bars",
 		"Hitmarkers",
-		"x10 Damage", "Attack Priority", "Time Stamps", "Ground Decorations", "Flat Shading"
+		"x10 Damage", "Attack Priority", "Time Stamps", "Ground Decorations", "Flat Shading",
+		"GPU Rendering"
 	};
 	private final static String DIR = Signlink.findCacheDir();
 	private final static String PATH = DIR + "settings.json";
@@ -42,6 +43,7 @@ public class SettingHandler
 		SettingsConfig.enableTimeStamps = false;
 		SettingsConfig.enableGroundDecorations = true;
 		SettingsConfig.enableFlatShading = true;
+		SettingsConfig.enableGPU = false;
 		Client.loadingStage = 1;
 	}
 
@@ -71,6 +73,7 @@ public class SettingHandler
 			toggles.addProperty("timeStamps", SettingsConfig.enableTimeStamps);
 			toggles.addProperty("groundDecorations", SettingsConfig.enableGroundDecorations);
 			toggles.addProperty("flatShading", SettingsConfig.enableFlatShading);
+			toggles.addProperty("gpuRendering", SettingsConfig.enableGPU);
 			root.add("toggles", toggles);
 
 			JsonObject dock = new JsonObject();
@@ -125,6 +128,7 @@ public class SettingHandler
 				SettingsConfig.enableTimeStamps = getBool(t, "timeStamps", false);
 				SettingsConfig.enableGroundDecorations = getBool(t, "groundDecorations", true);
 				SettingsConfig.enableFlatShading = getBool(t, "flatShading", true);
+				SettingsConfig.enableGPU = getBool(t, "gpuRendering", false);
 			}
 
 			if (root.has("dock"))

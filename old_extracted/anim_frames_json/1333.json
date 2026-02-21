@@ -1,0 +1,43 @@
+{
+  "skinList": {
+    "boneCount": 19,
+    "transformTypes": [0,2,1,3,0,2,1,3,0,2,1,3,0,2,1,3,0,2,1],
+    "childIndices": [[0],[1,0,2,3,4,5,6,7],[1,0,2,3,4,5,6,7],[1,0,2,3,4,5,6,7],[2],[2,3,4,5,6,7],[2,3,4,5,6,7],[2,3,4,5,6,7],[4],[4,5,6,7],[4,5,6,7],[4,5,6,7],[6],[6,7],[6,7],[6,7],[7],[6,7],[7]]
+  },
+  "frameCount": 33,
+  "frames": [
+    {"frameId":0,"transformCount":2,"transforms":[{"bone":1,"x":0,"y":0,"z":0}]},
+    {"frameId":1,"transformCount":18,"transforms":[{"bone":1,"x":-10,"y":0,"z":0},{"bone":5,"x":-4,"y":-1,"z":0},{"bone":9,"x":-13,"y":-1,"z":3},{"bone":13,"x":-16,"y":0,"z":-4},{"bone":17,"x":0,"y":0,"z":4}]},
+    {"frameId":2,"transformCount":18,"transforms":[{"bone":1,"x":-8,"y":0,"z":0},{"bone":5,"x":-3,"y":0,"z":0},{"bone":9,"x":-11,"y":-1,"z":3},{"bone":13,"x":-13,"y":0,"z":-3},{"bone":17,"x":0,"y":0,"z":3}]},
+    {"frameId":3,"transformCount":18,"transforms":[{"bone":1,"x":-6,"y":0,"z":0},{"bone":5,"x":-2,"y":0,"z":0},{"bone":9,"x":-8,"y":0,"z":2},{"bone":13,"x":-10,"y":0,"z":-2},{"bone":17,"x":0,"y":0,"z":2}]},
+    {"frameId":4,"transformCount":18,"transforms":[{"bone":1,"x":-5,"y":1,"z":0},{"bone":5,"x":-1,"y":0,"z":0},{"bone":9,"x":-6,"y":0,"z":2},{"bone":13,"x":-7,"y":0,"z":-2},{"bone":17,"x":0,"y":0,"z":2}]},
+    {"frameId":5,"transformCount":18,"transforms":[{"bone":1,"x":-3,"y":1,"z":0},{"bone":5,"x":0,"y":0,"z":0},{"bone":9,"x":-3,"y":0,"z":1},{"bone":13,"x":-4,"y":0,"z":-1},{"bone":17,"x":0,"y":0,"z":1}]},
+    {"frameId":6,"transformCount":18,"transforms":[{"bone":1,"x":-2,"y":1,"z":0},{"bone":5,"x":0,"y":1,"z":0},{"bone":9,"x":-1,"y":0,"z":1},{"bone":13,"x":-1,"y":1,"z":0},{"bone":17,"x":0,"y":0,"z":1}]},
+    {"frameId":7,"transformCount":14,"transforms":[{"bone":1,"x":0,"y":1,"z":0},{"bone":5,"x":0,"y":1,"z":0},{"bone":13,"x":0,"y":1,"z":0}]},
+    {"frameId":8,"transformCount":14,"transforms":[{"bone":1,"x":0,"y":1,"z":0},{"bone":5,"x":0,"y":2,"z":0},{"bone":9,"x":1,"y":0,"z":0},{"bone":13,"x":2,"y":1,"z":0}]},
+    {"frameId":9,"transformCount":14,"transforms":[{"bone":1,"x":0,"y":2,"z":0},{"bone":5,"x":1,"y":3,"z":0},{"bone":9,"x":2,"y":1,"z":0},{"bone":13,"x":4,"y":2,"z":0}]},
+    {"frameId":10,"transformCount":14,"transforms":[{"bone":1,"x":0,"y":1,"z":0},{"bone":5,"x":0,"y":2,"z":0},{"bone":9,"x":1,"y":0,"z":0},{"bone":13,"x":1,"y":1,"z":0}]},
+    {"frameId":11,"transformCount":14,"transforms":[{"bone":1,"x":-2,"y":0,"z":0},{"bone":5,"x":0,"y":0,"z":0},{"bone":9,"x":-1,"y":0,"z":0},{"bone":13,"x":-1,"y":0,"z":0}]},
+    {"frameId":12,"transformCount":14,"transforms":[{"bone":1,"x":-2,"y":1,"z":0},{"bone":5,"x":0,"y":2,"z":0},{"bone":9,"x":0,"y":0,"z":0},{"bone":13,"x":0,"y":0,"z":0}]},
+    {"frameId":13,"transformCount":14,"transforms":[{"bone":1,"x":-3,"y":1,"z":0},{"bone":5,"x":-1,"y":1,"z":0},{"bone":9,"x":0,"y":-1,"z":0},{"bone":13,"x":-3,"y":0,"z":0}]},
+    {"frameId":14,"transformCount":14,"transforms":[{"bone":1,"x":-5,"y":1,"z":0},{"bone":5,"x":-2,"y":1,"z":0},{"bone":9,"x":-2,"y":-2,"z":0},{"bone":13,"x":-6,"y":-2,"z":0}]},
+    {"frameId":15,"transformCount":14,"transforms":[{"bone":1,"x":-5,"y":1,"z":0},{"bone":5,"x":-2,"y":1,"z":0},{"bone":9,"x":-2,"y":0,"z":0},{"bone":13,"x":-8,"y":0,"z":0}]},
+    {"frameId":16,"transformCount":14,"transforms":[{"bone":1,"x":-5,"y":1,"z":0},{"bone":5,"x":-2,"y":1,"z":0},{"bone":9,"x":-2,"y":0,"z":0},{"bone":13,"x":-9,"y":0,"z":0}]},
+    {"frameId":17,"transformCount":14,"transforms":[{"bone":1,"x":-5,"y":1,"z":0},{"bone":5,"x":-2,"y":1,"z":0},{"bone":9,"x":-2,"y":1,"z":0},{"bone":13,"x":-10,"y":0,"z":0}]},
+    {"frameId":18,"transformCount":14,"transforms":[{"bone":1,"x":-3,"y":0,"z":0},{"bone":5,"x":-1,"y":0,"z":0},{"bone":9,"x":-1,"y":0,"z":0},{"bone":13,"x":-7,"y":0,"z":0}]},
+    {"frameId":19,"transformCount":14,"transforms":[{"bone":1,"x":-2,"y":0,"z":0},{"bone":5,"x":0,"y":0,"z":0},{"bone":9,"x":0,"y":0,"z":0},{"bone":13,"x":-4,"y":0,"z":0}]},
+    {"frameId":20,"transformCount":14,"transforms":[{"bone":1,"x":0,"y":0,"z":0},{"bone":13,"x":-1,"y":0,"z":0}]},
+    {"frameId":21,"transformCount":14,"transforms":[{"bone":5,"x":1,"y":0,"z":0},{"bone":13,"x":0,"y":0,"z":0}]},
+    {"frameId":22,"transformCount":14,"transforms":[{"bone":1,"x":-5,"y":0,"z":0},{"bone":5,"x":-1,"y":0,"z":0},{"bone":9,"x":-4,"y":0,"z":0},{"bone":13,"x":-3,"y":0,"z":0}]},
+    {"frameId":23,"transformCount":10,"transforms":[{"bone":1,"x":2,"y":0,"z":0},{"bone":5,"x":2,"y":0,"z":0},{"bone":9,"x":1,"y":0,"z":0}]},
+    {"frameId":24,"transformCount":14,"transforms":[{"bone":1,"x":2,"y":0,"z":0},{"bone":5,"x":3,"y":0,"z":0},{"bone":9,"x":2,"y":0,"z":0},{"bone":13,"x":2,"y":0,"z":0}]},
+    {"frameId":25,"transformCount":14,"transforms":[{"bone":1,"x":1,"y":0,"z":0},{"bone":5,"x":2,"y":0,"z":0},{"bone":9,"x":1,"y":0,"z":0},{"bone":13,"x":1,"y":0,"z":0}]},
+    {"frameId":26,"transformCount":6,"transforms":[{"bone":5,"x":1,"y":0,"z":0}]},
+    {"frameId":27,"transformCount":14,"transforms":[{"bone":1,"x":-8,"y":0,"z":0},{"bone":5,"x":-2,"y":-1,"z":0},{"bone":9,"x":-7,"y":-1,"z":0},{"bone":13,"x":-5,"y":0,"z":0}]},
+    {"frameId":28,"transformCount":14,"transforms":[{"bone":1,"x":-12,"y":0,"z":0},{"bone":5,"x":-3,"y":-2,"z":2},{"bone":9,"x":-10,"y":-2,"z":0},{"bone":13,"x":-7,"y":-1,"z":0}]},
+    {"frameId":29,"transformCount":18,"transforms":[{"bone":1,"x":-12,"y":0,"z":0},{"bone":5,"x":-3,"y":-2,"z":1},{"bone":9,"x":-12,"y":-2,"z":2},{"bone":13,"x":-11,"y":-1,"z":2},{"bone":17,"x":0,"y":0,"z":2}]},
+    {"frameId":30,"transformCount":18,"transforms":[{"bone":1,"x":-12,"y":0,"z":0},{"bone":5,"x":-5,"y":-2,"z":0},{"bone":9,"x":-14,"y":-2,"z":4},{"bone":13,"x":-16,"y":-1,"z":4},{"bone":17,"x":0,"y":0,"z":5}]},
+    {"frameId":31,"transformCount":18,"transforms":[{"bone":1,"x":-12,"y":0,"z":0},{"bone":5,"x":-3,"y":-2,"z":0},{"bone":9,"x":-14,"y":-2,"z":4},{"bone":13,"x":-17,"y":-1,"z":0},{"bone":17,"x":0,"y":0,"z":5}]},
+    {"frameId":32,"transformCount":18,"transforms":[{"bone":1,"x":-12,"y":0,"z":0},{"bone":5,"x":-5,"y":-2,"z":0},{"bone":9,"x":-16,"y":-2,"z":4},{"bone":13,"x":-19,"y":-1,"z":-5},{"bone":17,"x":0,"y":0,"z":5}]}
+  ]
+}

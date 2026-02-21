@@ -1,0 +1,19 @@
+{
+  "skinList": {
+    "boneCount": 6,
+    "transformTypes": [0,3,3,3,3,3],
+    "childIndices": [[0,1],[0],[1],[2],[3],[4]]
+  },
+  "frameCount": 9,
+  "frames": [
+    {"frameId":0,"transformCount":6,"transforms":[{"bone":5,"x":128,"y":174,"z":128}]},
+    {"frameId":1,"transformCount":6,"transforms":[{"bone":1,"x":128,"y":116,"z":157},{"bone":2,"x":128,"y":119,"z":140},{"bone":3,"x":128,"y":142,"z":128},{"bone":4,"x":128,"y":109,"z":128},{"bone":5,"x":128,"y":147,"z":128}]},
+    {"frameId":2,"transformCount":6,"transforms":[{"bone":1,"x":128,"y":120,"z":182},{"bone":2,"x":128,"y":138,"z":128},{"bone":3,"x":128,"y":183,"z":128},{"bone":4,"x":128,"y":117,"z":128},{"bone":5,"x":128,"y":120,"z":128}]},
+    {"frameId":3,"transformCount":6,"transforms":[{"bone":1,"x":128,"y":107,"z":181},{"bone":2,"x":128,"y":141,"z":128},{"bone":3,"x":128,"y":150,"z":128},{"bone":4,"x":128,"y":114,"z":128},{"bone":5,"x":128,"y":110,"z":128}]},
+    {"frameId":4,"transformCount":6,"transforms":[{"bone":1,"x":128,"y":122,"z":159},{"bone":2,"x":128,"y":125,"z":168},{"bone":3,"x":128,"y":111,"z":128},{"bone":4,"x":128,"y":143,"z":128},{"bone":5,"x":128,"y":120,"z":128}]},
+    {"frameId":5,"transformCount":6,"transforms":[{"bone":1,"x":128,"y":133,"z":128},{"bone":2,"x":128,"y":147,"z":151},{"bone":3,"x":128,"y":123,"z":128},{"bone":4,"x":128,"y":182,"z":128},{"bone":5,"x":128,"y":137,"z":128}]},
+    {"frameId":6,"transformCount":6,"transforms":[{"bone":1,"x":128,"y":124,"z":150},{"bone":2,"x":128,"y":136,"z":128},{"bone":3,"x":128,"y":109,"z":128},{"bone":4,"x":128,"y":150,"z":128},{"bone":5,"x":128,"y":136,"z":128}]},
+    {"frameId":7,"transformCount":6,"transforms":[{"bone":1,"x":128,"y":147,"z":163},{"bone":2,"x":128,"y":120,"z":143},{"bone":3,"x":128,"y":149,"z":128},{"bone":4,"x":128,"y":133,"z":128},{"bone":5,"x":128,"y":174,"z":128}]},
+    {"frameId":8,"transformCount":6,"transforms":[{"bone":1,"x":128,"y":134,"z":128},{"bone":2,"x":128,"y":111,"z":163},{"bone":3,"x":128,"y":134,"z":128},{"bone":4,"x":128,"y":86,"z":128},{"bone":5,"x":128,"y":175,"z":128}]}
+  ]
+}

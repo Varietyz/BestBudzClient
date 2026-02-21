@@ -1,0 +1,27 @@
+{
+  "skinList": {
+    "boneCount": 5,
+    "transformTypes": [0,1,2,0,1],
+    "childIndices": [[0],[0,1],[0],[2],[2]]
+  },
+  "frameCount": 17,
+  "frames": [
+    {"frameId":0,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":220,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":1,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":96,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":2,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":82,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":3,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":68,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":4,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":55,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":5,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":41,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":6,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":27,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":7,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":13,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":8,"transformCount":5,"transforms":[{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":9,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":206,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":10,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":192,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":11,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":178,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":12,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":165,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":13,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":151,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":14,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":137,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":15,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":123,"z":0},{"bone":4,"x":0,"y":192,"z":0}]},
+    {"frameId":16,"transformCount":5,"transforms":[{"bone":1,"x":0,"y":110,"z":0},{"bone":4,"x":0,"y":192,"z":0}]}
+  ]
+}

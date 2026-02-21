@@ -1,5 +1,6 @@
 package com.bestbudz.engine.core.gamerender;
 
+import com.bestbudz.engine.gpu.GPUModelRenderer;
 import static com.bestbudz.engine.core.gamerender.Rasterizer.backgroundTextures;
 import static com.bestbudz.engine.core.gamerender.Rasterizer.colorPalette;
 import static com.bestbudz.engine.core.gamerender.Rasterizer.textureColorArrays;
@@ -59,6 +60,11 @@ public class ColorPalette {
 
 		for (int textureId = 0; textureId < textureAmount; textureId++) {
 			applyTexture(textureId);
+		}
+
+		// Re-upload palette to GPU if the model renderer is active
+		if (GPUModelRenderer.isInitialized()) {
+			GPUModelRenderer.uploadColorPalette();
 		}
 	}
 

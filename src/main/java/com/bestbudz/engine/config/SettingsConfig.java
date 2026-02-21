@@ -44,4 +44,6 @@ public class SettingsConfig
   public static boolean enableGroundDecorations;
 
 	public static boolean enableFlatShading;
+
+	public static boolean enableGPU;
 }

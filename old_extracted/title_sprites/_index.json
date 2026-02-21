@@ -1,0 +1,21 @@
+{
+  "archiveId": 1,
+  "logo_0": {"name":"logo","subIndex":0,"width":444,"height":142,"file":"logo_0.png"},
+  "runes_0": {"name":"runes","subIndex":0,"width":74,"height":74,"file":"runes_0.png"},
+  "runes_1": {"name":"runes","subIndex":1,"width":38,"height":61,"file":"runes_1.png"},
+  "runes_2": {"name":"runes","subIndex":2,"width":83,"height":56,"file":"runes_2.png"},
+  "runes_3": {"name":"runes","subIndex":3,"width":73,"height":79,"file":"runes_3.png"},
+  "runes_4": {"name":"runes","subIndex":4,"width":90,"height":89,"file":"runes_4.png"},
+  "runes_5": {"name":"runes","subIndex":5,"width":90,"height":89,"file":"runes_5.png"},
+  "runes_6": {"name":"runes","subIndex":6,"width":61,"height":68,"file":"runes_6.png"},
+  "runes_7": {"name":"runes","subIndex":7,"width":80,"height":73,"file":"runes_7.png"},
+  "runes_8": {"name":"runes","subIndex":8,"width":67,"height":79,"file":"runes_8.png"},
+  "runes_9": {"name":"runes","subIndex":9,"width":80,"height":67,"file":"runes_9.png"},
+  "runes_10": {"name":"runes","subIndex":10,"width":67,"height":84,"file":"runes_10.png"},
+  "runes_11": {"name":"runes","subIndex":11,"width":86,"height":61,"file":"runes_11.png"},
+  "runes_12": {"name":"runes","subIndex":12,"width":96,"height":96,"file":"runes_12.png"},
+  "runes_13": {"name":"runes","subIndex":13,"width":96,"height":96,"file":"runes_13.png"},
+  "runes_14": {"name":"runes","subIndex":14,"width":96,"height":96,"file":"runes_14.png"},
+  "runes_15": {"name":"runes","subIndex":15,"width":96,"height":96,"file":"runes_15.png"},
+  "fontFiles": 4
+}

@@ -1,0 +1,17 @@
+{
+  "regionId": 8506,
+  "planes": [
+    {"plane":0,"tiles":[
+{"x":0,"y":0,"overlayId":43,"overlayRotation":11,"overlayShape":3,"underlayId":4},{"x":0,"y":1,"overlayId":1,"overlayRotation":7,"overlayShape":3,"underlayId":115,"flags":4},{"x":0,"y":2,"overlayId":8,"overlayRotation":11,"overlayShape":2},{"x":0,"y":3,"underlayId":160},{"x":0,"y":13,"overlayId":1,"overlayRotation":4,"overlayShape":2,"underlayId":86},{"x":0,"y":14,"underlayId":63}
+    ]},
+    {"plane":1,"tiles":[
+
+    ]},
+    {"plane":2,"tiles":[
+
+    ]},
+    {"plane":3,"tiles":[
+
+    ]}
+  ]
+}

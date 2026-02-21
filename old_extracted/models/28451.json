@@ -1,0 +1,14 @@
+{
+  "format": "rs525",
+  "vertexCount": 40,
+  "triangleCount": 72,
+  "textureTriangleCount": 0,
+  "hasTriangleInfo": false,
+  "isExtendedFormat": false,
+  "priorityFlag": 1,
+  "hasAlpha": false,
+  "hasTriangleLabels": true,
+  "hasVertexLabels": false,
+  "rawSize": 579,
+  "rawBase64": "BwcHAQQGAQcHBwcDAwcBAQcHBQcGBQcGBwEHBQcHBwcHAQcHBwcHBwECAgICAgMCAgMDAwMCAgIDAgMCAgIBAwMCAgIDAgICAgMDAgIBAgICAgIBAgMDAwICAQQDAQICAgICAQIDAwMCAgMCAgMCARERERERERYWERERERYWFhYWFhYWFhYWFhgYGBgYFxcXFxcXFxcVFRQUFRUVFRUVFBQUFBQUEhITExISEhISEhMTExgYExMTGB4dHh4eHR0pHSkqJygoJyoiIiIjIyMjJSYmJSUmJSYfICAfIh8gHyBAQUFBQUFBO0ZBOkFBQURBQTtGO0ZBOz9GQTpBRkFBOUNFQUE3QUk9O0lBQUE8RUE8RD9CQTtBOj9DRTlJOEFJQUFBQUFBO0U/QkE6QS8/UytEUi1VKEI/l6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erl6uXq5erUz5CGGg9HTw/WFY8Li4+QlBEUEI4OjtROjVFOTs6OFJBOzRGv45EPERJN0o/Qz1LXj5CPkJOWyVcJFwkWyUyTlwkXDRYPCw6ZDpGHGI+Jj5cJEJaPjpGKEg4SFA6RkImSDhIAAAoAEgAAAEAAQABACQAHwAgAFgAAP//"
+}

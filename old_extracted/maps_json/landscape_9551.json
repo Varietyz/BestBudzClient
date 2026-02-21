@@ -1,0 +1,17 @@
+{
+  "regionId": 9551,
+  "planes": [
+    {"plane":0,"tiles":[
+{"x":0,"y":0,"overlayId":43,"overlayRotation":11,"overlayShape":3,"underlayId":4},{"x":0,"y":1,"height":126,"overlayId":116,"overlayRotation":9,"overlayShape":3,"underlayId":91,"flags":24},{"x":0,"y":2,"height":197,"underlayId":11},{"x":0,"y":3,"height":47,"overlayId":103,"overlayRotation":7,"overlayShape":0,"underlayId":142,"flags":17},{"x":0,"y":4,"height":225,"overlayId":-106,"overlayRotation":11,"overlayShape":1,"underlayId":130,"flags":29},{"x":0,"y":5,"height":136,"overlayId":-60,"overlayRotation":10,"overlayShape":0,"underlayId":127,"flags":3},{"x":0,"y":6,"height":187,"overlayId":-54,"overlayRotation":2,"overlayShape":1,"underlayId":59,"flags":4},{"x":0,"y":7,"height":104,"overlayId":-42,"overlayRotation":11,"overlayShape":0,"underlayId":30,"flags":9},{"x":0,"y":8,"height":164,"overlayId":84,"overlayRotation":2,"overlayShape":1,"underlayId":70},{"x":0,"y":9,"overlayId":44,"overlayRotation":2,"overlayShape":3,"underlayId":43,"flags":6},{"x":0,"y":10,"height":66,"overlayId":111,"overlayRotation":11,"overlayShape":2,"underlayId":150,"flags":15},{"x":0,"y":11,"height":11,"overlayId":116,"overlayRotation":6,"overlayShape":0,"underlayId":56,"flags":28},{"x":0,"y":12,"overlayId":122,"overlayRotation":8,"overlayShape":1,"underlayId":4,"flags":17},{"x":0,"y":13,"height":239,"overlayId":-31,"overlayRotation":9,"overlayShape":1,"underlayId":49,"flags":24},{"x":0,"y":14,"height":211,"overlayId":-26,"overlayRotation":7,"overlayShape":1,"underlayId":157},{"x":0,"y":15,"height":193,"overlayId":-109,"overlayRotation":8,"overlayShape":3,"underlayId":45,"flags":31},{"x":0,"y":16,"overlayId":-102,"overlayRotation":11,"overlayShape":3,"underlayId":123,"flags":31},{"x":0,"y":17,"height":61,"overlayId":-100,"overlayRotation":6,"overlayShape":2,"underlayId":156,"flags":2},{"x":0,"y":18,"overlayId":-8,"overlayRotation":2,"overlayShape":3,"underlayId":26,"flags":29},{"x":0,"y":19,"overlayId":53,"overlayRotation":3,"overlayShape":1,"underlayId":25,"flags":25}
+    ]},
+    {"plane":1,"tiles":[
+
+    ]},
+    {"plane":2,"tiles":[
+
+    ]},
+    {"plane":3,"tiles":[
+
+    ]}
+  ]
+}

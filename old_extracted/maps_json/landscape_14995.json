@@ -1,0 +1,17 @@
+{
+  "regionId": 14995,
+  "planes": [
+    {"plane":0,"tiles":[
+{"x":0,"y":0,"overlayId":90,"overlayRotation":10,"overlayShape":1,"underlayId":4,"flags":1},{"x":0,"y":1,"overlayId":51,"overlayRotation":2,"overlayShape":1,"flags":3},{"x":0,"y":2,"overlayId":16,"overlayRotation":1,"overlayShape":2,"underlayId":43,"flags":3},{"x":0,"y":3,"height":141,"overlayId":43,"overlayRotation":7,"overlayShape":2,"underlayId":44,"flags":30},{"x":0,"y":4,"overlayId":-44,"overlayRotation":11,"overlayShape":1,"underlayId":21},{"x":0,"y":5,"overlayId":88,"overlayRotation":5,"overlayShape":3,"underlayId":17,"flags":6},{"x":0,"y":6,"overlayId":28,"overlayRotation":9,"overlayShape":3,"underlayId":166,"flags":15},{"x":0,"y":7,"underlayId":140},{"x":0,"y":8,"overlayId":63,"overlayRotation":11,"overlayShape":3,"underlayId":140,"flags":7},{"x":0,"y":9,"height":65,"overlayId":-13,"overlayRotation":7,"overlayShape":0,"underlayId":132,"flags":19},{"x":0,"y":10,"height":165,"overlayId":-34,"overlayRotation":3,"overlayShape":1,"underlayId":76,"flags":15},{"x":0,"y":11,"height":21,"overlayId":-39,"overlayRotation":2,"overlayShape":1,"underlayId":133,"flags":8},{"x":0,"y":12,"height":185,"overlayId":-68,"overlayRotation":10,"overlayShape":2,"underlayId":24,"flags":31},{"x":0,"y":13,"overlayId":-16,"overlayRotation":7,"overlayShape":2,"underlayId":156,"flags":19},{"x":0,"y":14,"height":59,"overlayId":85,"overlayRotation":10,"overlayShape":3,"underlayId":99,"flags":13},{"x":0,"y":15,"overlayId":-13,"overlayRotation":8,"overlayShape":1,"underlayId":139,"flags":12},{"x":0,"y":16,"overlayId":-123,"overlayRotation":8,"overlayShape":2,"underlayId":76,"flags":7},{"x":0,"y":17,"height":217,"overlayId":115,"overlayRotation":10,"overlayShape":2,"underlayId":36,"flags":8},{"x":0,"y":18,"height":238,"underlayId":64,"flags":15},{"x":0,"y":19,"underlayId":131},{"x":0,"y":20,"overlayId":11,"overlayRotation":11,"overlayShape":1,"underlayId":24,"flags":1}
+    ]},
+    {"plane":1,"tiles":[
+
+    ]},
+    {"plane":2,"tiles":[
+
+    ]},
+    {"plane":3,"tiles":[
+
+    ]}
+  ]
+}

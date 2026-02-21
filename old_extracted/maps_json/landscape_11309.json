@@ -1,0 +1,17 @@
+{
+  "regionId": 11309,
+  "planes": [
+    {"plane":0,"tiles":[
+{"x":0,"y":0,"overlayId":90,"overlayRotation":10,"overlayShape":1,"underlayId":4,"flags":1},{"x":0,"y":1,"overlayId":50,"overlayRotation":2,"overlayShape":1,"flags":1},{"x":0,"y":2,"overlayId":115,"overlayRotation":7,"overlayShape":1,"underlayId":13,"flags":27},{"x":0,"y":3,"height":123,"underlayId":43,"flags":27},{"x":0,"y":4,"height":75,"overlayId":72,"overlayRotation":5,"overlayShape":2,"underlayId":28,"flags":20},{"x":0,"y":5,"height":181,"overlayId":31,"overlayRotation":1,"overlayShape":3,"underlayId":165,"flags":1},{"x":0,"y":6,"height":139,"overlayId":-116,"overlayRotation":8,"overlayShape":1,"underlayId":64,"flags":3},{"x":0,"y":7,"overlayId":123,"overlayRotation":8,"overlayShape":1,"underlayId":19,"flags":22},{"x":0,"y":8,"height":200,"overlayId":28,"overlayRotation":3,"overlayShape":1,"underlayId":36,"flags":28},{"x":0,"y":9,"overlayId":111,"overlayRotation":1,"overlayShape":2,"underlayId":93,"flags":30},{"x":0,"y":10,"height":190,"overlayId":-7,"overlayRotation":11,"overlayShape":2,"underlayId":64,"flags":22},{"x":0,"y":11,"height":223,"overlayId":-31,"overlayRotation":8,"overlayShape":2,"underlayId":50,"flags":20},{"x":0,"y":12,"overlayId":90,"overlayRotation":8,"overlayShape":0,"underlayId":109,"flags":8},{"x":0,"y":13,"overlayId":96,"overlayRotation":4,"overlayShape":1,"underlayId":44,"flags":17},{"x":0,"y":14,"overlayId":57,"overlayRotation":4,"overlayShape":2,"underlayId":123,"flags":10},{"x":0,"y":15,"overlayId":117,"overlayRotation":2,"overlayShape":3,"underlayId":121,"flags":7},{"x":0,"y":16,"height":163,"overlayId":86,"overlayRotation":4,"overlayShape":1,"underlayId":30,"flags":15},{"x":0,"y":17,"height":227,"overlayId":-30,"overlayRotation":9,"overlayShape":3,"underlayId":41,"flags":10},{"x":0,"y":18,"height":227,"overlayId":59,"overlayRotation":2,"overlayShape":0,"underlayId":174,"flags":20},{"x":0,"y":19,"height":73,"overlayId":33,"overlayRotation":5,"overlayShape":0,"underlayId":133,"flags":25},{"x":0,"y":20,"overlayId":-26,"overlayRotation":0,"overlayShape":1,"underlayId":21,"flags":14}
+    ]},
+    {"plane":1,"tiles":[
+
+    ]},
+    {"plane":2,"tiles":[
+
+    ]},
+    {"plane":3,"tiles":[
+
+    ]}
+  ]
+}

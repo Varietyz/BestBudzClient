@@ -1,0 +1,17 @@
+{
+  "regionId": 7508,
+  "planes": [
+    {"plane":0,"tiles":[
+{"x":0,"y":0,"overlayId":43,"overlayRotation":11,"overlayShape":3,"underlayId":4},{"x":0,"y":1,"overlayId":49,"overlayRotation":2,"overlayShape":1,"flags":3},{"x":0,"y":2,"height":33,"overlayId":-78,"overlayRotation":10,"overlayShape":2,"underlayId":17,"flags":9},{"x":0,"y":3,"overlayId":-113,"overlayRotation":8,"overlayShape":1,"underlayId":159,"flags":22},{"x":0,"y":4,"height":78,"overlayId":91,"overlayRotation":8,"overlayShape":2,"underlayId":150,"flags":8},{"x":0,"y":5,"height":55,"overlayId":1,"overlayRotation":10,"overlayShape":2,"underlayId":95,"flags":2},{"x":0,"y":6,"overlayId":-52,"overlayRotation":4,"overlayShape":1,"underlayId":90,"flags":3},{"x":0,"y":7,"height":203,"overlayId":10,"overlayRotation":8,"overlayShape":3,"underlayId":109,"flags":3},{"x":0,"y":8,"overlayId":-59,"overlayRotation":5,"overlayShape":1,"underlayId":43,"flags":11},{"x":0,"y":9,"height":38,"overlayId":-37,"overlayRotation":10,"overlayShape":3,"underlayId":24},{"x":0,"y":10,"height":56,"overlayId":124,"overlayRotation":10,"overlayShape":2,"underlayId":74,"flags":16},{"x":0,"y":11,"overlayId":127,"overlayRotation":8,"overlayShape":1,"underlayId":50,"flags":7},{"x":0,"y":12,"height":90,"overlayId":24,"overlayRotation":8,"overlayShape":0,"underlayId":59,"flags":18},{"x":0,"y":13,"overlayId":23,"overlayRotation":0,"overlayShape":3,"underlayId":75,"flags":30},{"x":0,"y":14,"height":162,"overlayId":84,"overlayRotation":2,"overlayShape":3,"underlayId":162,"flags":26},{"x":0,"y":15,"overlayId":39,"overlayRotation":1,"overlayShape":3,"underlayId":106,"flags":15},{"x":0,"y":16,"height":222,"overlayId":-98,"overlayRotation":10,"overlayShape":1,"underlayId":143,"flags":23},{"x":0,"y":17,"overlayId":118,"overlayRotation":5,"overlayShape":3,"underlayId":146,"flags":17},{"x":0,"y":18,"overlayId":-83,"overlayRotation":1,"overlayShape":3,"underlayId":54,"flags":24},{"x":0,"y":19,"overlayId":-54,"overlayRotation":5,"overlayShape":3,"underlayId":63,"flags":23}
+    ]},
+    {"plane":1,"tiles":[
+
+    ]},
+    {"plane":2,"tiles":[
+
+    ]},
+    {"plane":3,"tiles":[
+
+    ]}
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "regionId": 10792,
+  "objects": [
+    {"objectId":30,"localX":44,"localY":7,"plane":0,"type":2,"rotation":0},
+    {"objectId":30,"localX":44,"localY":55,"plane":0,"type":10,"rotation":3},
+    {"objectId":30,"localX":46,"localY":16,"plane":0,"type":21,"rotation":1},
+    {"objectId":41,"localX":0,"localY":48,"plane":0,"type":13,"rotation":0},
+    {"objectId":41,"localX":1,"localY":38,"plane":0,"type":13,"rotation":1}
+  ]
+}

@@ -112,6 +112,20 @@ public final class WorldController {
 		initToNull();
 	}
 
+	public int[][][] getHeightMap() {
+		return heightMap;
+	}
+
+	public int getMapWidth() {
+		return mapWidth;
+	}
+
+	public int getMapHeight() {
+		return mapHeight;
+	}
+
+	public static boolean gpuTerrainActive = false;
+
 	public static void nullLoader() {
 		aClass28Array462 = null;
 		anIntArray473 = null;
@@ -1701,6 +1715,7 @@ public void setMousePosition(int i, int j) {
 				selectedTileY = k1;
 			}
 
+			if (!gpuTerrainActive) {
 			if (simpleTile.anInt720 == -1 || simpleTile.anInt720 > 50) {
 				if (simpleTile.anInt718 != 0xbc614e) {
 					Rasterizer.renderTriangle(j6, l6, l5, i6, k6, k5, simpleTile.anInt718, simpleTile.anInt719, simpleTile.anInt717, k3, j3, j2);
@@ -1718,6 +1733,7 @@ public void setMousePosition(int i, int j) {
 				Rasterizer.renderTriangle(j6, l6, l5, i6, k6, k5, adjustBrightness(i7, simpleTile.anInt718),
 					adjustBrightness(i7, simpleTile.anInt719), adjustBrightness(i7, simpleTile.anInt717), k3, j3, j2);
 			}
+			}
 		}
 
 		if ((i5 - k5) * (l6 - l5) - (j5 - l5) * (k6 - k5) > 0) {
@@ -1728,6 +1744,7 @@ public void setMousePosition(int i, int j) {
 				selectedTileY = k1;
 			}
 
+			if (!gpuTerrainActive) {
 			if (simpleTile.anInt720 == -1 || simpleTile.anInt720 > 50) {
 				if (simpleTile.anInt716 != 0xbc614e) {
 					Rasterizer.renderTriangle(j5, l5, l6, i5, k5, k6, simpleTile.anInt716, simpleTile.anInt717, simpleTile.anInt719, k2, j2, j3);
@@ -1741,6 +1758,7 @@ public void setMousePosition(int i, int j) {
 				int j7 = textureBrightness[simpleTile.anInt720];
 				Rasterizer.renderTriangle(j5, l5, l6, i5, k5, k6, adjustBrightness(j7, simpleTile.anInt716),
 					adjustBrightness(j7, simpleTile.anInt717), adjustBrightness(j7, simpleTile.anInt719), k2, j2, j3);
+			}
 			}
 		}
 	}
@@ -1789,6 +1807,7 @@ public void setMousePosition(int i, int j) {
 					selectedTileY = i1;
 				}
 
+				if (!gpuTerrainActive) {
 				if (floorDecoration.anIntArray682 == null || floorDecoration.anIntArray682[j2] == -1 || floorDecoration.anIntArray682[j2] > 50) {
 					if (floorDecoration.anIntArray676[j2] != 0xbc614e) {
 						Rasterizer.renderTriangle(l4, i5, j5, i4, j4, k4, floorDecoration.anIntArray676[j2],
@@ -1816,6 +1835,7 @@ public void setMousePosition(int i, int j) {
 					Rasterizer.renderTriangle(l4, i5, j5, i4, j4, k4, adjustBrightness(k5, floorDecoration.anIntArray676[j2]),
 						adjustBrightness(k5, floorDecoration.anIntArray677[j2]), adjustBrightness(k5, floorDecoration.anIntArray678[j2]),
 						FloorDecoration.depthPoint[l2], FloorDecoration.depthPoint[j3], FloorDecoration.depthPoint[l3]);
+				}
 				}
 			}
 		}

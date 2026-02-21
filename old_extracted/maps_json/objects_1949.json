@@ -1,0 +1,27 @@
+{
+  "regionId": 1949,
+  "objects": [
+    {"objectId":30,"localX":44,"localY":7,"plane":0,"type":2,"rotation":0},
+    {"objectId":30,"localX":44,"localY":55,"plane":0,"type":10,"rotation":3},
+    {"objectId":30,"localX":46,"localY":16,"plane":0,"type":21,"rotation":1},
+    {"objectId":41,"localX":0,"localY":48,"plane":0,"type":14,"rotation":1},
+    {"objectId":41,"localX":1,"localY":34,"plane":0,"type":13,"rotation":0},
+    {"objectId":28141,"localX":4,"localY":12,"plane":3,"type":0,"rotation":0},
+    {"objectId":28193,"localX":0,"localY":11,"plane":0,"type":3,"rotation":2},
+    {"objectId":28193,"localX":12,"localY":9,"plane":7,"type":28,"rotation":1},
+    {"objectId":28193,"localX":6,"localY":24,"plane":10,"type":6,"rotation":0},
+    {"objectId":28193,"localX":48,"localY":56,"plane":15,"type":53,"rotation":1},
+    {"objectId":28193,"localX":62,"localY":16,"plane":16,"type":36,"rotation":2},
+    {"objectId":28193,"localX":62,"localY":51,"plane":16,"type":18,"rotation":1},
+    {"objectId":28193,"localX":7,"localY":22,"plane":18,"type":18,"rotation":1},
+    {"objectId":28193,"localX":15,"localY":57,"plane":19,"type":18,"rotation":1},
+    {"objectId":28193,"localX":24,"localY":28,"plane":20,"type":18,"rotation":1},
+    {"objectId":28193,"localX":32,"localY":63,"plane":21,"type":18,"rotation":1},
+    {"objectId":28193,"localX":41,"localY":34,"plane":22,"type":18,"rotation":1},
+    {"objectId":28193,"localX":50,"localY":5,"plane":23,"type":18,"rotation":1},
+    {"objectId":28193,"localX":58,"localY":40,"plane":24,"type":18,"rotation":1},
+    {"objectId":28193,"localX":3,"localY":11,"plane":26,"type":18,"rotation":1},
+    {"objectId":28193,"localX":11,"localY":46,"plane":27,"type":58,"rotation":1},
+    {"objectId":28193,"localX":19,"localY":45,"plane":30,"type":0,"rotation":0}
+  ]
+}

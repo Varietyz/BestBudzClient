@@ -1,0 +1,14 @@
+{
+  "skinList": {
+    "boneCount": 4,
+    "transformTypes": [0,2,0,3],
+    "childIndices": [[0],[1],[1],[1]]
+  },
+  "frameCount": 4,
+  "frames": [
+    {"frameId":0,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-63,"z":0},{"bone":3,"x":128,"y":130,"z":128}]},
+    {"frameId":1,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-47,"z":0},{"bone":3,"x":128,"y":130,"z":128}]},
+    {"frameId":2,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-31,"z":0},{"bone":3,"x":128,"y":130,"z":128}]},
+    {"frameId":3,"transformCount":4,"transforms":[{"bone":1,"x":0,"y":-15,"z":0},{"bone":3,"x":128,"y":130,"z":128}]}
+  ]
+}

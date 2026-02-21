@@ -1,0 +1,12 @@
+{
+  "skinList": {
+    "boneCount": 5,
+    "transformTypes": [0,1,2,3,5],
+    "childIndices": [[0],[0],[0],[0],[0]]
+  },
+  "frameCount": 2,
+  "frames": [
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":1,"transformCount":5,"transforms":[{"bone":3,"x":120,"y":120,"z":120},{"bone":4,"x":0,"y":0,"z":128}]}
+  ]
+}

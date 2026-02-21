@@ -1,0 +1,14 @@
+{
+  "format": "rs525",
+  "vertexCount": 44,
+  "triangleCount": 60,
+  "textureTriangleCount": 0,
+  "hasTriangleInfo": true,
+  "isExtendedFormat": false,
+  "priorityFlag": 10,
+  "hasAlpha": false,
+  "hasTriangleLabels": true,
+  "hasVertexLabels": false,
+  "rawSize": 603,
+  "rawBase64": "BwcHBwcHBwcHBwcHBQUGBwUFBwUFBQMFBQcHBAUHBQUFBwcHBwcHBwcHBwcAAQEAAAAAAQEBAQEBAQEAAQEAAAAAAQEBAQEBAQEAAQEAAAAAAQEBAQEBAQEAAAEBAQEBAQAAAAEBAQEBAgICAwICAwICAQIDAgMBAgICAwICAwICAQIDAgMBAgICAwICAwICAQIDAgMBAgICAgMCAgIDAgMCAQT//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////0BBQUFBPURBPEVBO0E/RjxFPEFEQUFBQT1EQTxFQTtBP0Y8RTxBREFBQUE9REE8RUE7QT9GPEU8QURBQUFBQTxFQUE6RzpHOkRCPz4zuyuUK5QzwDO7M687FDsUQRBBECuUK6EroSuhOxRz2IOEg4RzUnfAc7mDoYOhg5iDmIOEg46DjoOIg6EXxA0SDRILwAO9A7cAXgBeAEIAQg0SBSsFKwUpAF4zuzPAK5QrlCuUQRBBEDsUOxQzrzO7K6EroSuhOxQuTj4tTlQ/RSw4Xig2TiZCTkFPGkRqSzI+WzI/MGQ/FkxCODw3UlQ7QUUxQT1GQT48RD5LPTpFO0U7RTtFNj9DQ0c3PkQ8REYwOU09KEhOREgYTHA1PVQ6Kj07UFQgSkQsRFZERjEqYEM6TU5GIjZIRE5CAAAsADwAAQoAAQABACoAHgArAEwAAP//"
+}

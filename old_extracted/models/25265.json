@@ -1,0 +1,14 @@
+{
+  "format": "old_317",
+  "vertexCount": 8,
+  "triangleCount": 6,
+  "textureTriangleCount": 0,
+  "verticesX": [64,64,-64,-64,0,0,64,-64],
+  "verticesY": [-172,-136,-136,-172,-172,-172,-136,-136],
+  "verticesZ": [0,64,64,0,0,-64,-64,-64],
+  "triangleA": [0,0,4,4,3,4],
+  "triangleB": [1,2,5,6,7,7],
+  "triangleC": [2,3,6,0,4,5],
+  "triangleColors": [11144,11144,11144,11144,11144,11144],
+  "globalPriority": 0
+}

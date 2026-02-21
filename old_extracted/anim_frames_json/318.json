@@ -1,0 +1,33 @@
+{
+  "skinList": {
+    "boneCount": 3,
+    "transformTypes": [0,1,2],
+    "childIndices": [[0],[0],[0]]
+  },
+  "frameCount": 23,
+  "frames": [
+    {"frameId":0,"transformCount":3,"transforms":[{"bone":2,"x":-195,"y":0,"z":0}]},
+    {"frameId":1,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":144,"z":-143}]},
+    {"frameId":2,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":0,"z":-63}]},
+    {"frameId":3,"transformCount":0,"transforms":[]},
+    {"frameId":4,"transformCount":0,"transforms":[]},
+    {"frameId":5,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":160,"z":-159}]},
+    {"frameId":6,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":176,"z":-175}]},
+    {"frameId":7,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":192,"z":-191}]},
+    {"frameId":8,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":208,"z":-207}]},
+    {"frameId":9,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":224,"z":-223}]},
+    {"frameId":10,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":240,"z":-239}]},
+    {"frameId":11,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":256,"z":-255}]},
+    {"frameId":12,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":16,"z":-15}]},
+    {"frameId":13,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":32,"z":-31}]},
+    {"frameId":14,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":48,"z":-47}]},
+    {"frameId":15,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":64,"z":-63}]},
+    {"frameId":16,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":80,"z":-79}]},
+    {"frameId":17,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":96,"z":-95}]},
+    {"frameId":18,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":112,"z":-111}]},
+    {"frameId":19,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":128,"z":-127}]},
+    {"frameId":20,"transformCount":3,"transforms":[{"bone":2,"x":-127,"y":0,"z":0}]},
+    {"frameId":21,"transformCount":3,"transforms":[{"bone":2,"x":0,"y":0,"z":64}]},
+    {"frameId":22,"transformCount":3,"transforms":[{"bone":2,"x":-67,"y":0,"z":0}]}
+  ]
+}

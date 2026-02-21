@@ -26,10 +26,7 @@ public class Animable {
 			modelHeight = model.modelHeight;
 
 			if (RS317GPUInterface.isActive()) {
-
-				System.out.println("[GPU DEBUG] Rendering model via GPU: " + worldX + "," + worldY + "," + worldZ);
-
-				RS317GPUInterface.renderModel(model, worldX, worldY, worldZ, rotation, 0, 0, 64);
+				RS317GPUInterface.renderModel(model, worldX, worldY, worldZ, rotation);
 				return;
 			}
 

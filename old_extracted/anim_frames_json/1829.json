@@ -1,0 +1,24 @@
+{
+  "skinList": {
+    "boneCount": 0,
+    "transformTypes": [],
+    "childIndices": []
+  },
+  "frameCount": 14,
+  "frames": [
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":118,"transformCount":0,"transforms":[]},
+    {"frameId":0,"transformCount":1,"transforms":[{"bone":0,"x":0,"y":0,"z":0}]},
+    {"frameId":0,"transformCount":0,"transforms":[]},
+    {"frameId":634,"transformCount":0,"transforms":[]},
+    {"frameId":0,"transformCount":3,"transforms":[{"bone":0,"x":0,"y":0,"z":0}]},
+    {"frameId":4,"transformCount":120,"transforms":[{"bone":3,"x":30208,"y":0,"z":0},{"bone":4,"x":0,"y":30720,"z":0},{"bone":5,"x":30208,"y":0,"z":2168},{"bone":9,"x":30720,"y":0,"z":0},{"bone":12,"x":0,"y":30208,"z":0},{"bone":15,"x":30208,"y":0,"z":0},{"bone":16,"x":0,"y":0,"z":30208},{"bone":19,"x":30720,"y":0,"z":7},{"bone":24,"x":0,"y":0,"z":1792},{"bone":28,"x":0,"y":0,"z":1792},{"bone":32,"x":0,"y":0,"z":1280},{"bone":36,"x":0,"y":0,"z":0},{"bone":37,"x":0,"y":0,"z":1024},{"bone":41,"x":0,"y":0,"z":0},{"bone":42,"x":0,"y":0,"z":1024},{"bone":46,"x":0,"y":0,"z":256},{"bone":50,"x":0,"y":0,"z":0},{"bone":53,"x":0,"y":0,"z":1792},{"bone":57,"x":0,"y":0,"z":0},{"bone":60,"x":0,"y":0,"z":0},{"bone":63,"x":0,"y":0,"z":0},{"bone":66,"x":0,"y":0,"z":0},{"bone":67,"x":0,"y":0,"z":0},{"bone":68,"x":0,"y":0,"z":0},{"bone":69,"x":0,"y":0,"z":0},{"bone":72,"x":0,"y":0,"z":1792},{"bone":76,"x":0,"y":0,"z":1792},{"bone":80,"x":0,"y":0,"z":0},{"bone":81,"x":0,"y":0,"z":0},{"bone":82,"x":769,"y":0,"z":0},{"bone":83,"x":0,"y":0,"z":1280},{"bone":87,"x":0,"y":0,"z":0},{"bone":88,"x":0,"y":0,"z":0},{"bone":89,"x":0,"y":0,"z":0},{"bone":90,"x":0,"y":0,"z":0},{"bone":94,"x":1537,"y":0,"z":0},{"bone":97,"x":0,"y":0,"z":0},{"bone":98,"x":0,"y":0,"z":0},{"bone":99,"x":0,"y":0,"z":0},{"bone":102,"x":0,"y":0,"z":0},{"bone":105,"x":0,"y":0,"z":0},{"bone":108,"x":0,"y":0,"z":1024},{"bone":112,"x":1537,"y":0,"z":0},{"bone":115,"x":0,"y":0,"z":0},{"bone":118,"x":0,"y":0,"z":1}]},
+    {"frameId":4,"transformCount":0,"transforms":[]},
+    {"frameId":256,"transformCount":0,"transforms":[]},
+    {"frameId":1280,"transformCount":1,"transforms":[]},
+    {"frameId":7,"transformCount":0,"transforms":[]},
+    {"frameId":256,"transformCount":0,"transforms":[]},
+    {"frameId":1280,"transformCount":1,"transforms":[]},
+    {"frameId":7,"transformCount":0,"transforms":[]}
+  ]
+}
