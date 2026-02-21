@@ -256,11 +256,6 @@ public class LoadingErrorScreen extends Client {
 		} else {
 			currentErrorType = ErrorType.UNKNOWN;
 		}
-
-		if (isCacheRelatedError()) {
-			currentErrorType = ErrorType.CACHE_ERROR;
-			showSelfHealOptions = true;
-		}
 	}
 
 	private static void renderErrorScreen(Graphics2D g, Graphics2D originalG, int screenW, int screenH) {
@@ -424,13 +419,7 @@ public class LoadingErrorScreen extends Client {
 		g.drawString("Memory: " + memoryUsed + "MB / " + memoryMax + "MB", r.x + 30, startY + 15);
 		g.drawString("OS: " + System.getProperty("os.name"), r.x + 30, startY + 30);
 
-		try {
-			String cacheStats = Signlink.getCacheStatistics();
-			g.drawString("Cache: " + cacheStats.substring(0, Math.min(60, cacheStats.length())),
-				r.x + 30, startY + 45);
-		} catch (Exception e) {
-			g.drawString("Cache: Stats unavailable", r.x + 30, startY + 45);
-		}
+		g.drawString("Data: JSON (internal)", r.x + 30, startY + 45);
 	}
 
 	private static void drawActionButtons(Graphics2D g, ErrorLayout layout) {
@@ -615,18 +604,13 @@ public class LoadingErrorScreen extends Client {
 
 	private static void performClearCache() {
 		try {
-			addConsoleMessage("Clearing cache...");
-			Signlink.forceCleanup();
-			Signlink.clearCacheDir();
-
+			addConsoleMessage("Clearing caches...");
 			GameLoader.cleanupCaches();
-
-			lastHealingAction = "Cache cleared successfully";
+			lastHealingAction = "Caches cleared successfully";
 			lastHealingTime = System.currentTimeMillis();
-			addConsoleMessage("Cache cleared successfully");
-
+			addConsoleMessage("Caches cleared successfully");
 		} catch (Exception e) {
-			addConsoleMessage("Failed to clear cache: " + e.getMessage());
+			addConsoleMessage("Failed to clear caches: " + e.getMessage());
 		}
 	}
 
@@ -666,11 +650,7 @@ public class LoadingErrorScreen extends Client {
 			logs.append("Memory: ").append((runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024)
 				.append("MB / ").append(runtime.maxMemory() / 1024 / 1024).append("MB\n");
 
-			try {
-				logs.append("Cache Stats: ").append(Signlink.getCacheStatistics()).append("\n");
-			} catch (Exception e) {
-				logs.append("Cache Stats: Unavailable\n");
-			}
+			logs.append("Data Source: JSON (internal)\n");
 
 			logs.append("\n=== Console Output ===\n");
 			for (String line : consoleOutput) {
@@ -699,17 +679,6 @@ public class LoadingErrorScreen extends Client {
 			}
 		} catch (IOException e) {
 			addConsoleMessage("Failed to delete: " + file.getFileName() + " - " + e.getMessage());
-		}
-	}
-
-	private static boolean isCacheRelatedError() {
-		// All game data is now loaded from JSON — no binary cache files to check
-		try {
-			String cacheDir = Signlink.findCacheDir();
-			Path cachePath = Paths.get(cacheDir);
-			return !Files.exists(cachePath);
-		} catch (Exception e) {
-			return true;
 		}
 	}
 

@@ -2,7 +2,6 @@ package com.bestbudz.world;
 
 import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.network.CacheManager;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
@@ -561,12 +560,6 @@ public final class ObjectDef {
 		varbitId = -1;
 		configId = -1;
 		childIds = null;
-	}
-
-	public void loadRequiredModels(CacheManager class42_sub1) {
-		if (anIntArray773 == null)
-			return;
-		for (int i : anIntArray773) class42_sub1.requestFile(i & 0xffff, 0);
 	}
 
 	public boolean hasType(int i) {

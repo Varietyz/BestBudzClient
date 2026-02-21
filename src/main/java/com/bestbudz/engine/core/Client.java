@@ -443,7 +443,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static int minimapInt3;
 	public static int reportAbuseInterfaceID;
 	public static NodeList spotAnimationQueue;
-	public static byte[][] terrainData;
 	public static int minimapRotation;
 	public static int invOverlayInterfaceID;
 	public static int[] anIntArray1190;
@@ -465,14 +464,11 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static boolean songChanging;
 	public static CollisionMap[] collisionMaps;
 	public static int[] mapRegionIds;
-	public static int[] terrainIndices;
-	public static int[] objectIndices;
 	public static boolean messageWaiting;
 	public static int atBoxLoopCycle;
 	public static int atBoxInterface;
 	public static int atBoxIndex;
 	public static int atBoxInterfaceType;
-	public static byte[][] objectData;
 	public static int tradeMode;
 	public static int chatDisplayMode;
 	public static int publicChatFilter;
@@ -1107,17 +1103,12 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		}
 		socketStream = null;
 		stopMidi();
-		cacheManager.disable();
 		cacheManager = null;
 		incomingPacketBuffer = null;
 		stream = null;
 		networkBuffer = null;
 		inStream = null;
 		mapRegionIds = null;
-		terrainData = null;
-		objectData = null;
-		terrainIndices = null;
-		objectIndices = null;
 		intGroundArray = null;
 		byteGroundArray = null;
 		worldController = null;

@@ -4,13 +4,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.lang.ref.SoftReference;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public final class JsonModelLoader {
 
-	private static final SoftReference<?>[] cache = new SoftReference[80000];
+	private static final Map<Integer, SoftReference<JsonObject>> cache = new HashMap<>();
 	private static final Set<Integer> knownIds = new HashSet<>();
+	private static int maxModelId = 0;
 	private static boolean initialized = false;
 
 	public static void initialize() {
@@ -19,12 +22,22 @@ public final class JsonModelLoader {
 		if (index != null) {
 			for (String key : index.keySet()) {
 				try {
-					knownIds.add(Integer.parseInt(key));
+					int id = Integer.parseInt(key);
+					knownIds.add(id);
+					if (id > maxModelId) maxModelId = id;
 				} catch (NumberFormatException ignored) {}
 			}
 		}
 		initialized = true;
-		System.out.println("[JsonModelLoader] Initialized with " + knownIds.size() + " model IDs");
+		System.out.println("[JsonModelLoader] Initialized with " + knownIds.size() + " model IDs (max ID: " + maxModelId + ")");
+	}
+
+	public static int getModelCount() {
+		return maxModelId + 1;
+	}
+
+	public static int getKnownModelCount() {
+		return knownIds.size();
 	}
 
 	public static boolean exists(int modelId) {
@@ -33,20 +46,18 @@ public final class JsonModelLoader {
 
 	public static JsonObject loadModelJson(int modelId) {
 		// Check soft cache
-		if (modelId >= 0 && modelId < cache.length) {
-			SoftReference<?> ref = cache[modelId];
-			if (ref != null) {
-				Object obj = ref.get();
-				if (obj instanceof JsonObject) {
-					return (JsonObject) obj;
-				}
+		SoftReference<JsonObject> ref = cache.get(modelId);
+		if (ref != null) {
+			JsonObject obj = ref.get();
+			if (obj != null) {
+				return obj;
 			}
 		}
 
 		// Load from file
 		JsonObject json = JsonCacheLoader.loadJsonObject("models/" + modelId + ".json");
-		if (json != null && modelId >= 0 && modelId < cache.length) {
-			cache[modelId] = new SoftReference<>(json);
+		if (json != null) {
+			cache.put(modelId, new SoftReference<>(json));
 		}
 		return json;
 	}
@@ -69,8 +80,6 @@ public final class JsonModelLoader {
 	}
 
 	public static void evict(int modelId) {
-		if (modelId >= 0 && modelId < cache.length) {
-			cache[modelId] = null;
-		}
+		cache.remove(modelId);
 	}
 }

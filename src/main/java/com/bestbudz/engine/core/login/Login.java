@@ -47,7 +47,7 @@ public class Login extends Client
 			{
 				Signlink.reporterror(
 					myUsername + " glcfb " + lastInventoryTime + "," + j + "," + lowMem + ","
-						+ cacheManager.getNodeCount() + "," + plane + "," + inventoryOffsetX + "," + inventoryOffsetY);
+						+ 0 + "," + plane + "," + inventoryOffsetX + "," + inventoryOffsetY);
 				lastConnectionTime = System.currentTimeMillis();
 			}
 		}

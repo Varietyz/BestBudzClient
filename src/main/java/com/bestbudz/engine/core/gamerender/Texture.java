@@ -35,9 +35,6 @@ public final class Texture {
 			cacheLock.readLock().unlock();
 		}
 
-		if (Client.cacheManager != null) {
-			Client.cacheManager.enqueueRequest(4, index);
-		}
 		return null;
 	}
 

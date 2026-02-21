@@ -1,6 +1,5 @@
 package com.bestbudz.engine.core;
 
-import com.bestbudz.cache.EmbeddedMapCache;
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.data.AccountManager;
 import com.bestbudz.data.items.ItemDef;
@@ -372,13 +371,12 @@ public class GameLoader extends Client {
 			loadingScreen.addLogEntry(String.format("🌍 World controller initialized (%dms, ~%.1fMB allocated)",
 				worldTime, worldControllerSize / (1024.0 * 1024.0)), LogLevel.SUCCESS);
 
-			metrics.startOperation("ondemand_fetcher");
+			metrics.startOperation("midi_index");
 			cacheManager = new CacheManager();
-			cacheManager.start(client);
-			EmbeddedMapCache.initialize();
-			metrics.endOperation("ondemand_fetcher");
-			long ondemandTime = metrics.operationTimes.get("ondemand_fetcher_duration");
-			loadingScreen.addLogEntry(String.format("📡 On-demand fetcher started (%dms)", ondemandTime), LogLevel.SUCCESS);
+			cacheManager.start();
+			metrics.endOperation("midi_index");
+			long midiTime = metrics.operationTimes.get("midi_index_duration");
+			loadingScreen.addLogEntry(String.format("🎵 MIDI index loaded (%dms)", midiTime), LogLevel.SUCCESS);
 
 			metrics.startOperation("animation_setup");
 			SequenceFrame.animationlist = new SequenceFrame[2500][0];

@@ -2,7 +2,6 @@ package com.bestbudz.engine.core.gamerender;
 
 import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.config.SettingsConfig;
-import com.bestbudz.network.CacheManager;
 import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.Animable;
 import com.bestbudz.rendering.InteractiveObject;
@@ -83,25 +82,6 @@ public final class ObjectManager {
 		return k;
 	}
 
-	public static void loadObjectRequirements(Stream stream, CacheManager class42_sub1) {
-		label0: {
-			int i = -1;
-			do {
-				int j = stream.readLargeSmart();
-				if (j == 0)
-					break label0;
-				i += j;
-				ObjectDef objectDef = ObjectDef.forID(i);
-				objectDef.loadRequiredModels(class42_sub1);
-				do {
-					int k = stream.readSmartUnsigned();
-					if (k == 0)
-						break;
-					stream.readUnsignedByte();
-				} while (true);
-			} while (true);
-		}
-	}
 
 	private static int interpolateNoise(int i, int j, int k) {
 		int l = i / k;
@@ -1642,102 +1622,7 @@ public final class ObjectManager {
 		return (i / 4 << 10) + (j / 32 << 7) + k / 2;
 	}
 
-	public void loadMapChunk(int i, int j, CollisionMap[] aclass11, int l, int i1, byte[] abyte0, int j1, int k1, int l1) {
-		for (int i2 = 0; i2 < 8; i2++) {
-			for (int j2 = 0; j2 < 8; j2++)
-				if (l + i2 > 0 && l + i2 < 103 && l1 + j2 > 0 && l1 + j2 < 103)
-					aclass11[k1].collisionFlags[l + i2][l1 + j2] &= 0xfeffffff;
 
-		}
-		Stream stream = new Stream(abyte0);
-		for (int l2 = 0; l2 < 4; l2++) {
-			for (int i3 = 0; i3 < 64; i3++) {
-				for (int j3 = 0; j3 < 64; j3++)
-					if (l2 == i && i3 >= i1 && i3 < i1 + 8 && j3 >= j1 && j3 < j1 + 8)
-						parseMapTile(l1 + CoordinateTransform.transformY(j3 & 7, j, i3 & 7), 0, stream, l + CoordinateTransform.transformX(j, j3 & 7, i3 & 7), k1, j, 0);
-					else
-						parseMapTile(-1, 0, stream, -1, 0, 0, 0);
-
-			}
-
-		}
-
-	}
-
-	public void loadMapRegion(byte[] abyte0, int i, int j, int k, int l, CollisionMap[] aclass11) {
-		for (int i1 = 0; i1 < 4; i1++) {
-			for (int j1 = 0; j1 < 64; j1++) {
-				for (int k1 = 0; k1 < 64; k1++)
-					if (j + j1 > 0 && j + j1 < 103 && i + k1 > 0 && i + k1 < 103)
-						aclass11[i1].collisionFlags[j + j1][i + k1] &= 0xfeffffff;
-
-			}
-
-		}
-
-		Stream stream = new Stream(abyte0);
-		for (int l1 = 0; l1 < 4; l1++) {
-			for (int i2 = 0; i2 < 64; i2++) {
-				for (int j2 = 0; j2 < 64; j2++)
-					parseMapTile(j2 + i, l, stream, i2 + j, l1, 0, k);
-
-			}
-
-		}
-	}
-
-	private void parseMapTile(int i, int j, Stream stream, int k, int l, int i1, int k1) {
-		try {
-			if (k >= 0 && k < 104 && i >= 0 && i < 104) {
-				tileFlags[l][k][i] = 0;
-				do {
-					int l1 = stream.readUnsignedByte();
-					if (l1 == 0)
-						if (l == 0) {
-							heightMap[0][k][i] = -calculateTerrainHeight(0xe3b7b + k + k1, 0x87cce + i + j) * 8;
-							return;
-						} else {
-							heightMap[l][k][i] = heightMap[l - 1][k][i] - 240;
-							return;
-						}
-					if (l1 == 1) {
-						int j2 = stream.readUnsignedByte();
-						if (j2 == 1)
-							j2 = 0;
-						if (l == 0) {
-							heightMap[0][k][i] = -j2 * 8;
-							return;
-						} else {
-							heightMap[l][k][i] = heightMap[l - 1][k][i] - j2 * 8;
-							return;
-						}
-					}
-					if (l1 <= 49) {
-						overlayIds[l][k][i] = stream.readSignedByte();
-						overlayRotations[l][k][i] = (byte) ((l1 - 2) / 4);
-						overlayShapes[l][k][i] = (byte) ((l1 - 2) + i1 & 3);
-					} else if (l1 <= 81)
-						tileFlags[l][k][i] = (byte) (l1 - 49);
-					else
-						underlay[l][k][i] = (byte) (l1 - 81);
-				} while (true);
-			}
-			do {
-				int i2 = stream.readUnsignedByte();
-				if (i2 == 0)
-					break;
-				if (i2 == 1) {
-					stream.readUnsignedByte();
-					return;
-				}
-				if (i2 <= 49)
-					stream.readUnsignedByte();
-			} while (true);
-		} catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
 
 	private int getEffectiveLevel(int i, int j, int k) {
 		if ((tileFlags[j][k][i] & 8) != 0)
@@ -1748,45 +1633,6 @@ public final class ObjectManager {
 			return j;
 	}
 
-	public void loadObjectChunk(CollisionMap[] aclass11, WorldController worldController, int i, int j, int k, int l, byte[] abyte0, int i1, int j1, int k1) {
-		label0: {
-			Stream stream = new Stream(abyte0);
-			int l1 = -1;
-			do {
-				int i2 = stream.readLargeSmart();
-				if (i2 == 0)
-					break label0;
-				l1 += i2;
-				int j2 = 0;
-				do {
-					int k2 = stream.readSmartUnsigned();
-					if (k2 == 0)
-						break;
-					j2 += k2 - 1;
-					int l2 = j2 & 0x3f;
-					int i3 = j2 >> 6 & 0x3f;
-					int j3 = j2 >> 12;
-					int k3 = stream.readUnsignedByte();
-					int l3 = k3 >> 2;
-					int i4 = k3 & 3;
-					if (j3 == i && i3 >= i1 && i3 < i1 + 8 && l2 >= k && l2 < k + 8) {
-						ObjectDef objectDef = ObjectDef.forID(l1);
-						int j4 = j + CoordinateTransform.transformObjectX(j1, objectDef.sizeY, i3 & 7, l2 & 7, objectDef.sizeX);
-						int k4 = k1 + CoordinateTransform.transformObjectY(l2 & 7, objectDef.sizeY, j1, objectDef.sizeX, i3 & 7);
-						if (j4 > 0 && k4 > 0 && j4 < 103 && k4 < 103) {
-							int l4 = j3;
-							if ((tileFlags[1][j4][k4] & 2) == 2)
-								l4--;
-							CollisionMap collisionMap = null;
-							if (l4 >= 0)
-								collisionMap = aclass11[l4];
-							placeObject(k4, worldController, collisionMap, l3, l, j4, l1, i4 + j1 & 3);
-						}
-					}
-				} while (true);
-			} while (true);
-		}
-	}
 
 	private int adjustColor(int i, int j) {
 		if (i == -2)
@@ -1805,43 +1651,6 @@ public final class ObjectManager {
 		else if (j > 126)
 			j = 126;
 		return (i & 0xff80) + j;
-	}
-
-	public void loadObjectRegion(int i, CollisionMap[] aclass11, int j, WorldController worldController, byte[] abyte0) {
-		label0: {
-			Stream stream = new Stream(abyte0);
-			int l = -1;
-			do {
-				int i1 = stream.readSmartUnsigned();
-				if (i1 == 0)
-					break label0;
-				l += i1;
-				int j1 = 0;
-				do {
-					int k1 = stream.readSmartUnsigned();
-					if (k1 == 0)
-						break;
-					j1 += k1 - 1;
-					int l1 = j1 & 0x3f;
-					int i2 = j1 >> 6 & 0x3f;
-					int j2 = j1 >> 12;
-					int k2 = stream.readUnsignedByte();
-					int l2 = k2 >> 2;
-					int i3 = k2 & 3;
-					int j3 = i2 + i;
-					int k3 = l1 + j;
-					if (j3 > 0 && k3 > 0 && j3 < 103 && k3 < 103 && j2 >= 0 && j2 < 4) {
-						int l3 = j2;
-						if ((tileFlags[1][j3][k3] & 2) == 2)
-							l3--;
-						CollisionMap collisionMap = null;
-						if (l3 >= 0)
-							collisionMap = aclass11[l3];
-						placeObject(k3, worldController, collisionMap, l2, j2, j3, l, i3);
-					}
-				} while (true);
-			} while (true);
-		}
 	}
 
 	// --- JSON-based map loading methods ---
@@ -1965,5 +1774,141 @@ public final class ObjectManager {
 
 	public static boolean isJsonObjectsAvailable(int fileId) {
 		return JsonCacheLoader.isAvailable("maps_json/objects_" + fileId + ".json");
+	}
+
+	/**
+	 * JSON-based chunk terrain loader for dynamic regions (type 241).
+	 * Loads an 8x8 chunk from a region JSON and applies it at the target position with rotation.
+	 *
+	 * @param sourcePlane  source plane in the region
+	 * @param rotation     chunk rotation (0-3)
+	 * @param collisionMaps collision maps
+	 * @param targetX      target X position in the 104x104 viewport
+	 * @param sourceY      source Y offset within the 64x64 region (multiple of 8)
+	 * @param fileId       terrain file ID for JSON lookup
+	 * @param sourceX      source X offset within the 64x64 region (multiple of 8)
+	 * @param targetPlane  target plane
+	 * @param targetY      target Y position in the 104x104 viewport
+	 */
+	public void loadMapChunkJson(int sourcePlane, int rotation, CollisionMap[] collisionMaps,
+								 int targetX, int sourceY, int fileId, int sourceX, int targetPlane, int targetY) {
+		JsonObject json = JsonCacheLoader.loadMapJson("landscape_" + fileId + ".json");
+		if (json == null) return;
+
+		// Clear collision flags for the 8x8 target area
+		for (int dx = 0; dx < 8; dx++) {
+			for (int dy = 0; dy < 8; dy++) {
+				int tx = targetX + dx;
+				int ty = targetY + dy;
+				if (tx > 0 && tx < 103 && ty > 0 && ty < 103)
+					collisionMaps[targetPlane].collisionFlags[tx][ty] &= 0xfeffffff;
+			}
+		}
+
+		// Set default heights for target tiles
+		for (int dx = 0; dx < 8; dx++) {
+			for (int dy = 0; dy < 8; dy++) {
+				int tx = targetX + CoordinateTransform.transformX(rotation, dy, dx);
+				int ty = targetY + CoordinateTransform.transformY(dx, rotation, dy);
+				if (tx >= 0 && tx < 104 && ty >= 0 && ty < 104) {
+					tileFlags[targetPlane][tx][ty] = 0;
+					if (targetPlane == 0) {
+						heightMap[0][tx][ty] = -calculateTerrainHeight(0xe3b7b + tx, 0x87cce + ty) * 8;
+					} else {
+						heightMap[targetPlane][tx][ty] = heightMap[targetPlane - 1][tx][ty] - 240;
+					}
+				}
+			}
+		}
+
+		// Apply tile data from the JSON for the specific 8x8 chunk
+		JsonArray planes = json.getAsJsonArray("planes");
+		for (int p = 0; p < planes.size(); p++) {
+			JsonObject planeObj = planes.get(p).getAsJsonObject();
+			int plane = planeObj.get("plane").getAsInt();
+			if (plane != sourcePlane) continue;
+
+			JsonArray tiles = planeObj.getAsJsonArray("tiles");
+			for (int t = 0; t < tiles.size(); t++) {
+				JsonObject tile = tiles.get(t).getAsJsonObject();
+				int lx = tile.get("x").getAsInt();
+				int ly = tile.get("y").getAsInt();
+
+				// Only process tiles within the 8x8 source chunk
+				if (lx < sourceX || lx >= sourceX + 8 || ly < sourceY || ly >= sourceY + 8) continue;
+
+				int localDx = lx - sourceX;
+				int localDy = ly - sourceY;
+				int tx = targetX + CoordinateTransform.transformX(rotation, localDy, localDx);
+				int ty = targetY + CoordinateTransform.transformY(localDx, rotation, localDy);
+
+				if (tx < 0 || tx >= 104 || ty < 0 || ty >= 104) continue;
+
+				if (tile.has("height")) {
+					int h = tile.get("height").getAsInt();
+					if (h == 1) h = 0;
+					if (targetPlane == 0) {
+						heightMap[0][tx][ty] = -h * 8;
+					} else {
+						heightMap[targetPlane][tx][ty] = heightMap[targetPlane - 1][tx][ty] - h * 8;
+					}
+				}
+				if (tile.has("overlayId")) {
+					overlayIds[targetPlane][tx][ty] = (byte) tile.get("overlayId").getAsInt();
+				}
+				if (tile.has("overlayRotation")) {
+					overlayRotations[targetPlane][tx][ty] = (byte) ((tile.get("overlayRotation").getAsInt() + rotation) & 3);
+				}
+				if (tile.has("overlayShape")) {
+					overlayShapes[targetPlane][tx][ty] = (byte) tile.get("overlayShape").getAsInt();
+				}
+				if (tile.has("underlayId")) {
+					underlay[targetPlane][tx][ty] = (byte) tile.get("underlayId").getAsInt();
+				}
+				if (tile.has("flags")) {
+					tileFlags[targetPlane][tx][ty] = (byte) tile.get("flags").getAsInt();
+				}
+			}
+		}
+	}
+
+	/**
+	 * JSON-based chunk object loader for dynamic regions (type 241).
+	 * Loads objects from an 8x8 chunk of a region JSON and places them at the target position with rotation.
+	 */
+	public void loadObjectChunkJson(CollisionMap[] collisionMaps, WorldController worldController,
+									int sourcePlane, int targetX, int sourceY, int targetPlane,
+									int fileId, int sourceX, int rotation, int targetY) {
+		JsonObject json = JsonCacheLoader.loadMapJson("objects_" + fileId + ".json");
+		if (json == null) return;
+
+		JsonArray objects = json.getAsJsonArray("objects");
+		for (int i = 0; i < objects.size(); i++) {
+			JsonObject obj = objects.get(i).getAsJsonObject();
+			int objectId = obj.get("objectId").getAsInt();
+			int localX = obj.get("localX").getAsInt();
+			int localY = obj.get("localY").getAsInt();
+			int plane = obj.get("plane").getAsInt();
+			int type = obj.get("type").getAsInt();
+			int objRotation = obj.get("rotation").getAsInt();
+
+			// Only process objects within the source chunk
+			if (plane != sourcePlane || localX < sourceX || localX >= sourceX + 8 ||
+				localY < sourceY || localY >= sourceY + 8) continue;
+
+			ObjectDef objectDef = ObjectDef.forID(objectId);
+			int tx = targetX + CoordinateTransform.transformObjectX(rotation, objectDef.sizeY, localX & 7, localY & 7, objectDef.sizeX);
+			int ty = targetY + CoordinateTransform.transformObjectY(localY & 7, objectDef.sizeY, rotation, objectDef.sizeX, localX & 7);
+
+			if (tx > 0 && ty > 0 && tx < 103 && ty < 103) {
+				int effectivePlane = targetPlane;
+				if ((tileFlags[1][tx][ty] & 2) == 2)
+					effectivePlane--;
+				CollisionMap collisionMap = null;
+				if (effectivePlane >= 0)
+					collisionMap = collisionMaps[effectivePlane];
+				placeObject(ty, worldController, collisionMap, type, targetPlane, tx, objectId, (objRotation + rotation) & 3);
+			}
+		}
 	}
 }

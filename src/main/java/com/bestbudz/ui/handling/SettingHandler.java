@@ -22,7 +22,6 @@ public class SettingHandler
 	};
 	private final static String DIR = Signlink.findCacheDir();
 	private final static String PATH = DIR + "settings.json";
-	private final static String OLD_PATH = DIR + "settings.dat";
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	public static void defaultSettings()
@@ -94,14 +93,6 @@ public class SettingHandler
 		try
 		{
 			File jsonFile = new File(PATH);
-			File oldFile = new File(OLD_PATH);
-
-			// Migrate old binary settings.dat if JSON doesn't exist yet
-			if (!jsonFile.exists() && oldFile.exists())
-			{
-				migrateFromBinary();
-				return;
-			}
 
 			if (!jsonFile.exists())
 			{
@@ -152,46 +143,6 @@ public class SettingHandler
 		}
 	}
 
-	private static void migrateFromBinary()
-	{
-		try
-		{
-			java.io.DataInputStream in = new java.io.DataInputStream(Files.newInputStream(Paths.get(OLD_PATH)));
-			Client.myUsername = in.readUTF();
-			in.readUTF(); // skip password — no longer stored
-			Client.chatColorHex = in.readUTF();
-			Client.rememberMe = in.readBoolean();
-			SettingsConfig.enableDistanceFog = in.readBoolean();
-			SettingsConfig.enableMipMapping = in.readBoolean();
-			SettingsConfig.enableMovingTextures = in.readBoolean();
-			SettingsConfig.enableStatusOrbs = in.readBoolean();
-			SettingsConfig.enableRoofs = in.readBoolean();
-			SettingsConfig.enablePouch = in.readBoolean();
-			SettingsConfig.showKillFeed = in.readBoolean();
-			SettingsConfig.menuHovers = in.readBoolean();
-			SettingsConfig.drawEntityFeed = in.readBoolean();
-			SettingsConfig.enableNewHpBars = in.readBoolean();
-			SettingsConfig.enableNewHitmarks = in.readBoolean();
-			SettingsConfig.enable10xDamage = in.readBoolean();
-			SettingsConfig.entityAttackPriority = in.readBoolean();
-			SettingsConfig.enableTimeStamps = in.readBoolean();
-			SettingsConfig.enableGroundDecorations = in.readBoolean();
-			SettingsConfig.enableFlatShading = in.readBoolean();
-			try { SettingsConfig.uiDockPanels = in.readUTF(); } catch (Exception ignored) { SettingsConfig.uiDockPanels = ""; }
-			try { SettingsConfig.uiDockDividerRatio = in.readFloat(); } catch (Exception ignored) { SettingsConfig.uiDockDividerRatio = 0.5f; }
-			try { SettingsConfig.uiDockLastActive = in.readUTF(); } catch (Exception ignored) { SettingsConfig.uiDockLastActive = ""; }
-			in.close();
-
-			// Re-save as JSON and delete old binary
-			save();
-			new File(OLD_PATH).delete();
-			System.out.println("Migrated settings.dat -> settings.json");
-		}
-		catch (Exception e)
-		{
-			System.err.println("Failed to migrate settings.dat: " + e.getMessage());
-		}
-	}
 
 	private static String getStr(JsonObject obj, String key, String def)
 	{

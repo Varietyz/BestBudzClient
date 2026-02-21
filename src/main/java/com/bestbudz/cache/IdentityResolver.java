@@ -2,7 +2,6 @@ package com.bestbudz.cache;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -66,8 +65,6 @@ public final class IdentityResolver {
 
   public static long resolve() {
     List<File> files = listAvailableStores();
-    migrateOldBinaryFiles();
-
     long key;
     File oldest = null;
 
@@ -119,33 +116,4 @@ public final class IdentityResolver {
     return key;
   }
 
-  private static void migrateOldBinaryFiles() {
-    String[][] oldNewPairs = {
-      {Signlink.findCacheDir() + "venran.dat", Signlink.findCacheDir() + "venran.json"},
-      {System.getProperty("user.home") + File.separator + "venkey.dat", System.getProperty("user.home") + File.separator + "venkey.json"},
-    };
-    String os = System.getProperty("os.name");
-    if (os != null && os.toLowerCase().contains("win")) {
-      oldNewPairs = new String[][] {
-        {Signlink.findCacheDir() + "venran.dat", Signlink.findCacheDir() + "venran.json"},
-        {System.getProperty("user.home") + File.separator + "venkey.dat", System.getProperty("user.home") + File.separator + "venkey.json"},
-        {System.getenv("APPDATA") + "/BestBudzCache/venran.dat", System.getenv("APPDATA") + "/BestBudzCache/venran.json"},
-      };
-    }
-
-    for (String[] pair : oldNewPairs) {
-      File oldFile = new File(pair[0]);
-      File newFile = new File(pair[1]);
-      if (oldFile.exists() && !newFile.exists() && oldFile.length() == 8) {
-        try (DataInputStream in = new DataInputStream(Files.newInputStream(oldFile.toPath()))) {
-          long oldKey = in.readLong();
-          writeKey(newFile, oldKey);
-          oldFile.delete();
-          System.out.println("Migrated " + oldFile.getName() + " -> " + newFile.getName());
-        } catch (Exception e) {
-          System.err.println("Failed to migrate " + oldFile.getName() + ": " + e.getMessage());
-        }
-      }
-    }
-  }
 }

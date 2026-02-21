@@ -1,41 +1,24 @@
 
 package com.bestbudz.dock.ui.panel.character;
 
+import com.bestbudz.cache.Signlink;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.Map;
-import java.util.Properties;
 
 public class AppearanceStorage {
 
-	private static final String BESTBUDZ_FOLDER = ".BestBudzCache";
 	private static final String APPEARANCE_FILE = "appearance.json";
-	private static final String OLD_APPEARANCE_FILE = "appearance.dock";
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	private final Path appearanceFilePath;
-	private final Path oldAppearanceFilePath;
 	private String currentUsername;
 
 	public AppearanceStorage() {
-
-		Path homeDir = Paths.get(System.getProperty("user.home"));
-		Path bestbudzDir = homeDir.resolve(BESTBUDZ_FOLDER);
-
-		try {
-			Files.createDirectories(bestbudzDir);
-			appearanceFilePath = bestbudzDir.resolve(APPEARANCE_FILE);
-			oldAppearanceFilePath = bestbudzDir.resolve(OLD_APPEARANCE_FILE);
-		} catch (IOException e) {
-			throw new RuntimeException("Failed to create .bestbudz directory", e);
-		}
-
-		migrateFromProperties();
+		appearanceFilePath = Paths.get(Signlink.findCacheDir(), APPEARANCE_FILE);
 	}
 
 	public void setCurrentUser(String username) {
@@ -162,66 +145,6 @@ public class AppearanceStorage {
 		Files.write(appearanceFilePath, GSON.toJson(root).getBytes(StandardCharsets.UTF_8));
 	}
 
-	private void migrateFromProperties() {
-		if (Files.exists(appearanceFilePath) || !Files.exists(oldAppearanceFilePath)) {
-			return;
-		}
-
-		try {
-			Properties props = new Properties();
-			try (InputStream input = Files.newInputStream(oldAppearanceFilePath)) {
-				props.load(input);
-			}
-
-			JsonObject root = new JsonObject();
-			String currentUser = props.getProperty("current.user", "");
-			root.addProperty("currentUser", currentUser);
-
-			// Collect all unique usernames from property keys
-			java.util.Set<String> usernames = new java.util.HashSet<>();
-			for (String key : props.stringPropertyNames()) {
-				if (key.contains(".") && !key.equals("current.user")) {
-					usernames.add(key.substring(0, key.indexOf('.')));
-				}
-			}
-
-			JsonObject users = new JsonObject();
-			for (String user : usernames) {
-				JsonObject userData = new JsonObject();
-				String prefix = user + ".";
-				putByteIfPresent(userData, "gender", props, prefix + "gender");
-				putByteIfPresent(userData, "head", props, prefix + "head");
-				putByteIfPresent(userData, "jaw", props, prefix + "jaw");
-				putByteIfPresent(userData, "torso", props, prefix + "torso");
-				putByteIfPresent(userData, "arms", props, prefix + "arms");
-				putByteIfPresent(userData, "hands", props, prefix + "hands");
-				putByteIfPresent(userData, "legs", props, prefix + "legs");
-				putByteIfPresent(userData, "feet", props, prefix + "feet");
-				putByteIfPresent(userData, "hairColor", props, prefix + "hair.color");
-				putByteIfPresent(userData, "torsoColor", props, prefix + "torso.color");
-				putByteIfPresent(userData, "legsColor", props, prefix + "legs.color");
-				putByteIfPresent(userData, "feetColor", props, prefix + "feet.color");
-				putByteIfPresent(userData, "skinColor", props, prefix + "skin.color");
-				users.add(user, userData);
-			}
-			root.add("users", users);
-
-			saveJson(root);
-			Files.delete(oldAppearanceFilePath);
-			System.out.println("Migrated appearance.dock -> appearance.json");
-		} catch (Exception e) {
-			System.err.println("Failed to migrate appearance.dock: " + e.getMessage());
-		}
-	}
-
-	private void putByteIfPresent(JsonObject obj, String jsonKey, Properties props, String propKey) {
-		String val = props.getProperty(propKey);
-		if (val != null) {
-			try {
-				obj.addProperty(jsonKey, Byte.parseByte(val));
-			} catch (NumberFormatException ignored) {}
-		}
-	}
 
 	private byte getByte(JsonObject obj, String key, byte defaultValue) {
 		if (obj.has(key)) {

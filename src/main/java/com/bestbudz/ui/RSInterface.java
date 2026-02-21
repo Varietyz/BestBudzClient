@@ -395,13 +395,7 @@ public class RSInterface {
 		Sprite sprite = (Sprite) aMRUNodes_238.insertFromCache(l);
 		if (sprite != null)
 			return sprite;
-		try {
-			sprite = new Sprite(s + " " + i);
-			aMRUNodes_238.removeFromCache(sprite, l);
-		} catch (Exception exception) {
-			return null;
-		}
-		return sprite;
+		return null;
 	}
 
 	public static void homeTeleport(TextDrawingArea[] TDA) {

@@ -1,14 +1,16 @@
 package com.bestbudz.engine.core.gamerender;
 
+import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.config.SettingsConfig;
 import static com.bestbudz.engine.core.gamerender.ColorPalette.adjustColorBrightness;
 import com.bestbudz.graphics.Background;
+import com.google.gson.JsonObject;
 
 public final class Rasterizer extends DrawingArea
 {
 
 	public static final int[] reciprocalTable;
-	public static final int textureAmount = 51;
+	public static int textureAmount = 0;
 	public static boolean lowMemoryMode = true;
 	public static boolean enableClipping;
 	public static boolean enableDepthBuffer = true;
@@ -18,20 +20,20 @@ public final class Rasterizer extends DrawingArea
 	public static int[] sinTable;
 	public static int[] cosTable;
 	public static int[] scanlineOffsets;
-	public static Background[] backgroundTextures = new Background[textureAmount];
-	public static int[] textureLastUsed = new int[textureAmount];
+	public static Background[] backgroundTextures = new Background[0];
+	public static int[] textureLastUsed = new int[0];
 	public static int textureAccessCounter;
 	public static int[] colorPalette = new int[0x10000];
 	private static int currentMipmapLevel;
 	private static boolean isOpaque;
 	private static final int[] DIVISION_TABLE;
 	private static int loadedTextureCount;
-	private static boolean[] textureHasTransparency = new boolean[textureAmount];
-	private static int[] textureAverageColors = new int[textureAmount];
+	private static boolean[] textureHasTransparency = new boolean[0];
+	private static int[] textureAverageColors = new int[0];
 	private static int poolIndex;
 	private static int[][][] texturePool;
-	private static int[][][] activeMipmaps = new int[textureAmount][][];
-	public static int[][] textureColorArrays = new int[textureAmount][];
+	private static int[][][] activeMipmaps = new int[0][][];
+	public static int[][] textureColorArrays = new int[0][];
 	public static boolean isRenderingItem = false;
 	static {
 		DIVISION_TABLE = new int[512];
@@ -84,9 +86,10 @@ public final class Rasterizer extends DrawingArea
 
 	public static void clearMipmapCache() {
 		texturePool = null;
-		for (int x = 0; x < textureAmount; x++)
-			activeMipmaps[x] = null;
-
+		if (activeMipmaps != null) {
+			for (int x = 0; x < textureAmount; x++)
+				activeMipmaps[x] = null;
+		}
 	}
 
 	public static void initializeTexturePool() {
@@ -97,12 +100,39 @@ public final class Rasterizer extends DrawingArea
 				texturePool[index] = new int[][] { new int[16384], new int[4096], new int[1024], new int[256],
 						new int[64], new int[16], new int[4], new int[1] };
 			}
-			for (int y = 0; y < textureAmount; y++)
-				activeMipmaps[y] = null;
+			if (activeMipmaps != null) {
+				for (int y = 0; y < textureAmount; y++)
+					activeMipmaps[y] = null;
+			}
 		}
 	}
 
+	private static void initTextureArrays(int count) {
+		textureAmount = count;
+		backgroundTextures = new Background[count];
+		textureLastUsed = new int[count];
+		textureHasTransparency = new boolean[count];
+		textureAverageColors = new int[count];
+		activeMipmaps = new int[count][][];
+		textureColorArrays = new int[count][];
+	}
+
 	public static void loadTextures() {
+		// Determine texture count dynamically from extracted cache index
+		int count = 0;
+		JsonObject index = JsonCacheLoader.loadJsonObject("textures/_index.json");
+		if (index != null) {
+			for (String key : index.keySet()) {
+				try {
+					int id = Integer.parseInt(key);
+					if (id >= count) count = id + 1;
+				} catch (NumberFormatException ignored) {}
+			}
+		}
+		if (count == 0) count = 51; // fallback for missing index
+		initTextureArrays(count);
+		System.out.println("[Rasterizer] Loading " + count + " textures from extracted cache");
+
 		loadedTextureCount = 0;
 		for (int x = 0; x < textureAmount; x++)
 			try {

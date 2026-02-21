@@ -1,6 +1,5 @@
 package com.bestbudz.graphics.sprite;
 
-import com.bestbudz.cache.Signlink;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.network.Stream;
 import java.awt.Component;
@@ -22,7 +21,6 @@ import javax.swing.ImageIcon;
 public final class Sprite extends DrawingArea
 {
 
-	public final String location = Signlink.findCacheDir() + "Sprites/";
 	public int[] myPixels;
 	public int myWidth;
 	public int myHeight;
@@ -75,25 +73,6 @@ public final class Sprite extends DrawingArea
 			pixelgrabber.grabPixels();
 		} catch (Exception exception) {
 			System.out.println(exception);
-		}
-	}
-
-	public Sprite(String img) {
-		try {
-			Image image = Toolkit.getDefaultToolkit().getImage(location + img + ".png");
-			ImageIcon sprite = new ImageIcon(image);
-			myWidth = sprite.getIconWidth();
-			myHeight = sprite.getIconHeight();
-			originalWidth = myWidth;
-			originalHeight = myHeight;
-			drawOffsetX = 0;
-			drawOffsetY = 0;
-			myPixels = new int[myWidth * myHeight];
-			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
-			pixelgrabber.grabPixels();
-			setTransparency(255, 0, 255);
-		} catch (Exception _ex) {
-			System.out.println(_ex);
 		}
 	}
 

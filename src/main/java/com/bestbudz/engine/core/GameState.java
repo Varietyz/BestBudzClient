@@ -1,6 +1,5 @@
 package com.bestbudz.engine.core;
 
-import com.bestbudz.cache.EmbeddedMapCache;
 import com.bestbudz.cache.Signlink;
 import static com.bestbudz.engine.core.login.logout.Reset.unlinkMRUNodes;
 import com.bestbudz.engine.gpu.GPUContextManager;
@@ -433,12 +432,6 @@ public class GameState extends Client {
 			logError("aClass11Array1230 is null");
 		}
 
-		if (terrainData != null) {
-			logDebug("aByteArrayArray1183 length: " + terrainData.length);
-		} else {
-			logError("aByteArrayArray1183 is null");
-		}
-
 		if (mapRegionIds != null) {
 			logDebug("anIntArray1234 length: " + mapRegionIds.length);
 		} else {
@@ -645,43 +638,20 @@ public class GameState extends Client {
 	}
 
 	private static int loadEmbeddedMapsIfAvailable() {
-		logDebug("Phase 5: Loading embedded maps");
-
-		if (!EmbeddedMapCache.isReady()) {
-			logDebug("Embedded map cache not ready, using cacheManager only");
-			return 0;
-		}
-
-		try {
-			long embeddedStartTime = System.currentTimeMillis();
-
-			int embeddedCount = EmbeddedMapCache.loadAllEmbeddedRegions();
-
-			long embeddedLoadTime = System.currentTimeMillis() - embeddedStartTime;
-
-			if (embeddedCount > 0) {
-				logInfo("🚀 Loaded " + embeddedCount + " regions instantly from embedded cache in " +
-					embeddedLoadTime + "ms (avg: " + (embeddedLoadTime / embeddedCount) + "ms/region)");
-			}
-
-			return embeddedCount;
-
-		} catch (Exception e) {
-			logError("Error loading embedded maps: " + e.getMessage());
-			return 0;
-		}
+		// All map data loaded from JSON at render time — no binary cache needed
+		return 0;
 	}
 
 	private static void performMainProcessingSafeWithEmbedded(ObjectManager objectManager, int embeddedRegionsLoaded) {
 		logDebug("Phase 6: Main processing (with " + embeddedRegionsLoaded + " embedded regions)");
 
 		try {
-			if (terrainData == null) {
-				logError("aByteArrayArray1183 is null, skipping main processing");
+			if (mapRegionIds == null) {
+				logError("mapRegionIds is null, skipping main processing");
 				return;
 			}
 
-			int k2 = terrainData.length;
+			int k2 = mapRegionIds.length;
 			logDebug("Processing " + k2 + " regions (" + embeddedRegionsLoaded + " from embedded cache)");
 
 			stream.writeEncryptedOpcode(0);
@@ -706,9 +676,10 @@ public class GameState extends Client {
 
 		try {
 
-			// Pass 1: Load terrain data (JSON preferred, byte[] fallback)
+			// Pass 1: Load terrain data from JSON by region ID
+			int terrainLoaded = 0, terrainSkipped = 0;
 			for (int i3 = 0; i3 < k2; i3++) {
-				if (i3 >= terrainData.length || i3 >= mapRegionIds.length) {
+				if (i3 >= mapRegionIds.length) {
 					logError("Index " + i3 + " exceeds array bounds in normal mode pass 1");
 					break;
 				}
@@ -721,15 +692,14 @@ public class GameState extends Client {
 					continue;
 				}
 
-				// Load terrain JSON by file ID (not region ID)
-				boolean loaded = false;
-				int terrainFileId = i3 < terrainIndices.length ? terrainIndices[i3] : -1;
-				if (terrainFileId > 0) {
+				// Load terrain JSON by region ID
+				int regionId = mapRegionIds[i3];
+				if (regionId > 0) {
 					try {
-						loaded = objectManager.loadMapRegionJson(terrainFileId, k5, i4,
+						objectManager.loadMapRegionJson(regionId, k5, i4,
 							(inventoryOffsetX - 6) * 8, (inventoryOffsetY - 6) * 8, collisionMaps);
 					} catch (Exception e) {
-						logError("JSON loadMapRegion error for file " + terrainFileId + " (region " + mapRegionIds[i3] + "): " + e.getMessage());
+						logError("JSON loadMapRegion error for region " + regionId + ": " + e.getMessage());
 					}
 				}
 
@@ -744,8 +714,8 @@ public class GameState extends Client {
 						break;
 					}
 
-					int terrainFileId = j4 < terrainIndices.length ? terrainIndices[j4] : -1;
-					boolean hasTerrain = terrainFileId > 0 && ObjectManager.isJsonMapAvailable(terrainFileId);
+					int regionId4 = mapRegionIds[j4];
+					boolean hasTerrain = regionId4 > 0 && ObjectManager.isJsonMapAvailable(regionId4);
 
 					if (!hasTerrain) {
 						nullRegionsProcessed++;
@@ -763,7 +733,7 @@ public class GameState extends Client {
 				}
 
 				if (nullRegionsProcessed > 0) {
-					logDebug("Processed " + nullRegionsProcessed + " null regions (pending cacheManager)");
+					logDebug("Processed " + nullRegionsProcessed + " null regions (water/empty)");
 				}
 			}
 
@@ -776,7 +746,7 @@ public class GameState extends Client {
 
 			stream.writeEncryptedOpcode(0);
 
-			// Pass 3: Load object data by file ID (not region ID)
+			// Pass 3: Load object data by region ID
 			for (int i6 = 0; i6 < k2; i6++) {
 				if (i6 >= mapRegionIds.length) {
 					logError("Index " + i6 + " exceeds array bounds in normal mode pass 3");
@@ -788,15 +758,13 @@ public class GameState extends Client {
 
 				if (!isValidMapCoordinate(l8, k9, i6)) continue;
 
-				// Load objects JSON by file ID
-				int objectFileId = i6 < objectIndices.length ? objectIndices[i6] : -1;
-				boolean loaded = false;
-				if (objectFileId > 0) {
+				int regionId6 = mapRegionIds[i6];
+				if (regionId6 > 0) {
 					try {
-						loaded = objectManager.loadObjectRegionJson(objectFileId, l8, collisionMaps,
+						objectManager.loadObjectRegionJson(regionId6, l8, collisionMaps,
 							k9, worldController);
 					} catch (Exception e) {
-						logError("JSON loadObjectRegion error for file " + objectFileId + " (region " + mapRegionIds[i6] + "): " + e.getMessage());
+						logError("JSON loadObjectRegion error for region " + regionId6 + ": " + e.getMessage());
 					}
 				}
 
@@ -887,12 +855,12 @@ public class GameState extends Client {
 	}
 
 	private static void processNormalModeSafe(ObjectManager objectManager, int k2) {
-		logDebug("Processing normal mode with " + k2 + " arrays");
+		logDebug("Processing normal mode with " + k2 + " regions");
 
 		try {
-			// Pass 1: Load terrain data (JSON preferred, byte[] fallback)
+			// Pass 1: Load terrain data from JSON by region ID
 			for (int i3 = 0; i3 < k2; i3++) {
-				if (i3 >= terrainData.length || i3 >= mapRegionIds.length) {
+				if (i3 >= mapRegionIds.length) {
 					logError("Index " + i3 + " exceeds array bounds in normal mode pass 1");
 					break;
 				}
@@ -906,15 +874,13 @@ public class GameState extends Client {
 					continue;
 				}
 
-				// Load terrain JSON by file ID (not region ID)
-				boolean loaded = false;
-				int terrainFileId = i3 < terrainIndices.length ? terrainIndices[i3] : -1;
-				if (terrainFileId > 0) {
+				int regionId = mapRegionIds[i3];
+				if (regionId > 0) {
 					try {
-						loaded = objectManager.loadMapRegionJson(terrainFileId, k5, i4,
+						objectManager.loadMapRegionJson(regionId, k5, i4,
 							(inventoryOffsetX - 6) * 8, (inventoryOffsetY - 6) * 8, collisionMaps);
 					} catch (Exception e) {
-						logError("JSON loadMapRegion error for file " + terrainFileId + " (region " + mapRegionIds[i3] + "): " + e.getMessage());
+						logError("JSON loadMapRegion error for region " + regionId + ": " + e.getMessage());
 					}
 				}
 
@@ -928,8 +894,8 @@ public class GameState extends Client {
 						break;
 					}
 
-					int terrainFileId = j4 < terrainIndices.length ? terrainIndices[j4] : -1;
-					boolean hasTerrain = terrainFileId > 0 && ObjectManager.isJsonMapAvailable(terrainFileId);
+					int regionId4 = mapRegionIds[j4];
+					boolean hasTerrain = regionId4 > 0 && ObjectManager.isJsonMapAvailable(regionId4);
 
 					if (!hasTerrain) {
 						int l5 = (mapRegionIds[j4] >> 8) * 64 - baseX;
@@ -956,7 +922,7 @@ public class GameState extends Client {
 
 			stream.writeEncryptedOpcode(0);
 
-			// Pass 3: Load object data by file ID (not region ID)
+			// Pass 3: Load object data by region ID
 			for (int i6 = 0; i6 < k2; i6++) {
 				if (i6 >= mapRegionIds.length) {
 					logError("Index " + i6 + " exceeds array bounds in normal mode pass 3");
@@ -968,15 +934,13 @@ public class GameState extends Client {
 
 				if (!isValidMapCoordinate(l8, k9, i6)) continue;
 
-				// Load objects JSON by file ID
-				int objectFileId = i6 < objectIndices.length ? objectIndices[i6] : -1;
-				boolean loaded = false;
-				if (objectFileId > 0) {
+				int regionId6 = mapRegionIds[i6];
+				if (regionId6 > 0) {
 					try {
-						loaded = objectManager.loadObjectRegionJson(objectFileId, l8, collisionMaps,
+						objectManager.loadObjectRegionJson(regionId6, l8, collisionMaps,
 							k9, worldController);
 					} catch (Exception e) {
-						logError("JSON loadObjectRegion error for file " + objectFileId + " (region " + mapRegionIds[i6] + "): " + e.getMessage());
+						logError("JSON loadObjectRegion error for region " + regionId6 + ": " + e.getMessage());
 					}
 				}
 
@@ -1048,17 +1012,18 @@ public class GameState extends Client {
 
 	private static void processSpecialModeCellSafe(ObjectManager objectManager, int cellValue, int j3, int k4, int j6) {
 		try {
-			int i9 = cellValue >> 24 & 3;
-			int l9 = cellValue >> 1 & 3;
-			int j10 = cellValue >> 14 & 0x3ff;
-			int l10 = cellValue >> 3 & 0x7ff;
-			int j11 = (j10 / 8 << 8) + l10 / 8;
+			int sourcePlane = cellValue >> 24 & 3;
+			int rotation = cellValue >> 1 & 3;
+			int sourceRegionX = cellValue >> 14 & 0x3ff;
+			int sourceRegionY = cellValue >> 3 & 0x7ff;
+			int regionId = (sourceRegionX / 8 << 8) + sourceRegionY / 8;
 
-			if (mapRegionIds != null && terrainData != null) {
-				for (int l11 = 0; l11 < Math.min(mapRegionIds.length, terrainData.length); l11++) {
-					if (mapRegionIds[l11] == j11 && terrainData[l11] != null) {
-						objectManager.loadMapChunk(i9, l9, collisionMaps, k4 * 8, (j10 & 7) * 8,
-							terrainData[l11], (l10 & 7) * 8, j3, j6 * 8);
+			if (mapRegionIds != null) {
+				for (int idx = 0; idx < mapRegionIds.length; idx++) {
+					if (mapRegionIds[idx] == regionId) {
+						objectManager.loadMapChunkJson(sourcePlane, rotation, collisionMaps,
+							k4 * 8, (sourceRegionX & 7) * 8, regionId,
+							(sourceRegionY & 7) * 8, j3, j6 * 8);
 						break;
 					}
 				}
@@ -1070,18 +1035,18 @@ public class GameState extends Client {
 
 	private static void processSpecialModeCell2Safe(ObjectManager objectManager, int cellValue, int l6, int j8, int j9) {
 		try {
-			int k10 = cellValue >> 24 & 3;
-			int i11 = cellValue >> 1 & 3;
-			int k11 = cellValue >> 14 & 0x3ff;
-			int i12 = cellValue >> 3 & 0x7ff;
-			int j12 = (k11 / 8 << 8) + i12 / 8;
+			int sourcePlane = cellValue >> 24 & 3;
+			int rotation = cellValue >> 1 & 3;
+			int sourceRegionX = cellValue >> 14 & 0x3ff;
+			int sourceRegionY = cellValue >> 3 & 0x7ff;
+			int regionId = (sourceRegionX / 8 << 8) + sourceRegionY / 8;
 
-			if (mapRegionIds != null && objectData != null) {
-				for (int k12 = 0; k12 < Math.min(mapRegionIds.length, objectData.length); k12++) {
-					if (mapRegionIds[k12] == j12 && objectData[k12] != null) {
-						objectManager.loadObjectChunk(collisionMaps, worldController, k10, j8 * 8,
-							(i12 & 7) * 8, l6, objectData[k12],
-							(k11 & 7) * 8, i11, j9 * 8);
+			if (mapRegionIds != null) {
+				for (int idx = 0; idx < mapRegionIds.length; idx++) {
+					if (mapRegionIds[idx] == regionId) {
+						objectManager.loadObjectChunkJson(collisionMaps, worldController, sourcePlane,
+							j8 * 8, (sourceRegionY & 7) * 8, l6,
+							regionId, (sourceRegionX & 7) * 8, rotation, j9 * 8);
 						break;
 					}
 				}
@@ -1099,37 +1064,6 @@ public class GameState extends Client {
 				ObjectDef.mruNodes1.unlinkAll();
 			} else {
 				logError("ObjectDef.mruNodes1 is null");
-			}
-
-			if (lowMem && cacheManager != null) {
-				int versionCount = cacheManager.getVersionCount(0);
-				int batchSize = Math.min(50, versionCount);
-
-				logDebug("Cleaning " + versionCount + " models in batches of " + batchSize);
-
-				for (int startIdx = 0; startIdx < versionCount; startIdx += batchSize) {
-					int endIdx = Math.min(startIdx + batchSize, versionCount);
-
-					for (int i1 = startIdx; i1 < endIdx; i1++) {
-						try {
-							int l1 = cacheManager.getModelIndex(i1);
-							if ((l1 & 0x79) == 0) {
-								Model.removeFromCache(i1);
-							}
-						} catch (Exception e) {
-							logError("Error cleaning model " + i1 + ": " + e.getMessage());
-						}
-					}
-
-					if (endIdx < versionCount) {
-						try {
-							Thread.sleep(1);
-						} catch (InterruptedException e) {
-							Thread.currentThread().interrupt();
-							break;
-						}
-					}
-				}
 			}
 
 			logDebug("Model cleanup completed");
@@ -1151,12 +1085,6 @@ public class GameState extends Client {
 			}
 
 			Rasterizer.initializeTexturePool();
-
-			if (cacheManager != null) {
-				cacheManager.clearPriority();
-			} else {
-				logError("cacheManager is null");
-			}
 
 			calculateAndProcessBoundaries();
 			logDebug("Final operations completed");

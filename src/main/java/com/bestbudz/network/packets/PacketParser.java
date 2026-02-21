@@ -819,7 +819,6 @@ public class PacketParser extends Client
 		if (i2 != currentSong && musicEnabled && !lowMem && prevSong == 0) {
 			nextSong = i2;
 			songChanging = true;
-			cacheManager.enqueueRequest(2, nextSong);
 		}
 		currentSong = i2;
 	}
@@ -831,7 +830,6 @@ public class PacketParser extends Client
 		if (musicEnabled && !lowMem) {
 			nextSong = j2;
 			songChanging = false;
-			cacheManager.enqueueRequest(2, nextSong);
 			prevSong = k10;
 		}
 	}
@@ -869,32 +867,15 @@ public class PacketParser extends Client
 			musicPlaying = true;
 		}
 
-		int playerRegionX = l2;
-		int playerRegionY = i11;
-
-		if (inventoryOffsetX == playerRegionX && inventoryOffsetY == playerRegionY && loadingStage == 2) {
-
+		if (inventoryOffsetX == l2 && inventoryOffsetY == i11 && loadingStage == 2) {
 			return;
 		}
-
-		inventoryOffsetX = playerRegionX;
-		inventoryOffsetY = playerRegionY;
-		baseX = (playerRegionX - 6) * 8;
-		baseY = (playerRegionY - 6) * 8;
-
-		selectedSpell = (playerRegionX / 8 == 48 || playerRegionX / 8 == 49) && playerRegionY / 8 == 48;
-		if (playerRegionX / 8 == 48 && playerRegionY / 8 == 148) selectedSpell = true;
-
-		loadingStage = 1;
-		lastConnectionTime = System.currentTimeMillis();
-
-		System.out.println("🗺️ [RegionChange] Player moved to region: " + playerRegionX + "," + playerRegionY +
-			" (camera position does NOT affect this)");
 
 		inventoryOffsetX = l2;
 		inventoryOffsetY = i11;
 		baseX = (l2 - 6) * 8;
 		baseY = (i11 - 6) * 8;
+
 		selectedSpell = (l2 / 8 == 48 || l2 / 8 == 49) && i11 / 8 == 48;
 		if (l2 / 8 == 48 && i11 / 8 == 148) selectedSpell = true;
 
@@ -982,8 +963,6 @@ public class PacketParser extends Client
 	}
 
 	private static void handleRegionType73Optimized(final int l2, final int i11) {
-		System.out.println("[RegionChange] Type 73 - Position: " + l2 + "," + i11);
-
 		int k16 = 0;
 		for (int i21 = (l2 - 6) / 8; i21 <= (l2 + 6) / 8; i21++) {
 			for (int k23 = (i11 - 6) / 8; k23 <= (i11 + 6) / 8; k23++) {
@@ -991,36 +970,22 @@ public class PacketParser extends Client
 			}
 		}
 
-		// Pure JSON mode — allocate arrays but no binary data needed
-		terrainData = new byte[k16][];
-		objectData = new byte[k16][];
 		mapRegionIds = new int[k16];
-		terrainIndices = new int[k16];
-		objectIndices = new int[k16];
 
 		k16 = 0;
-		int jsonAvailable = 0;
-
 		for (int l23 = (l2 - 6) / 8; l23 <= (l2 + 6) / 8; l23++) {
 			for (int j26 = (i11 - 6) / 8; j26 <= (i11 + 6) / 8; j26++) {
-				mapRegionIds[k16] = (l23 << 8) + j26;
-				terrainIndices[k16] = -1;
-				objectIndices[k16] = -1;
-
-				if (ObjectManager.isJsonMapAvailable(mapRegionIds[k16])) {
-					jsonAvailable++;
+				if (selectedSpell && (j26 == 49 || j26 == 149 || j26 == 147 || l23 == 50 || (l23 == 49 && j26 == 47))) {
+					mapRegionIds[k16] = 0;
+				} else {
+					mapRegionIds[k16] = (l23 << 8) + j26;
 				}
-
 				k16++;
 			}
 		}
-
-		System.out.println("[RegionChange] " + k16 + " regions, " + jsonAvailable + " have JSON maps");
 	}
 
 	private static void handleRegionType241Optimized() {
-		System.out.println("🗺️ [RegionChange] Type 241 - Dynamic region loading");
-
 		int l16 = 0;
 		final int[] ai = new int[676];
 
@@ -1048,148 +1013,12 @@ public class PacketParser extends Client
 			}
 		}
 
-		// Pure JSON mode — allocate arrays but no binary data needed
-		terrainData = new byte[l16][];
-		objectData = new byte[l16][];
 		mapRegionIds = new int[l16];
-		terrainIndices = new int[l16];
-		objectIndices = new int[l16];
-
-		int jsonAvailable = 0;
 		for (int l26 = 0; l26 < l16; l26++) {
 			mapRegionIds[l26] = ai[l26];
-			terrainIndices[l26] = -1;
-			objectIndices[l26] = -1;
-
-			if (ObjectManager.isJsonMapAvailable(mapRegionIds[l26])) {
-				jsonAvailable++;
-			}
-		}
-
-		System.out.println("[RegionChange] Type 241: " + l16 + " regions, " + jsonAvailable + " have JSON maps");
-	}
-
-	private static boolean loadRegionFromEmbeddedCache(int arrayIndex, int regionX, int regionY) {
-		try {
-
-			int regionId = (regionX << 8) + regionY;
-
-			int mapFileId = cacheManager.getMapIndex(0, regionY, regionX);
-			int landscapeFileId = cacheManager.getMapIndex(1, regionY, regionX);
-
-			terrainIndices[arrayIndex] = mapFileId;
-			objectIndices[arrayIndex] = landscapeFileId;
-
-			if (mapFileId == -1 && landscapeFileId == -1) {
-
-				terrainData[arrayIndex] = null;
-				objectData[arrayIndex] = null;
-				return true;
-			}
-
-			if (mapFileId == -1 || landscapeFileId == -1) {
-
-				return false;
-			}
-
-			byte[] mapData = com.bestbudz.cache.EmbeddedMapCache.getEmbeddedFileData(mapFileId);
-			byte[] landscapeData = com.bestbudz.cache.EmbeddedMapCache.getEmbeddedFileData(landscapeFileId);
-
-			if (mapData != null && landscapeData != null) {
-
-				terrainData[arrayIndex] = mapData;
-				objectData[arrayIndex] = landscapeData;
-				return true;
-			}
-
-			return false;
-
-		} catch (Exception e) {
-			System.err.println("⚠️ [RegionChange] Error loading from embedded cache: " + e.getMessage());
-			return false;
 		}
 	}
 
-	private static void handleRegionType73(final int l2, final int i11) {
-		int k16 = 0;
-		for (int i21 = (l2 - 6) / 8; i21 <= (l2 + 6) / 8; i21++) {
-			for (int k23 = (i11 - 6) / 8; k23 <= (i11 + 6) / 8; k23++) {
-				k16++;
-			}
-		}
-
-		terrainData = new byte[k16][];
-		objectData = new byte[k16][];
-		mapRegionIds = new int[k16];
-		terrainIndices = new int[k16];
-		objectIndices = new int[k16];
-
-		k16 = 0;
-		for (int l23 = (l2 - 6) / 8; l23 <= (l2 + 6) / 8; l23++) {
-			for (int j26 = (i11 - 6) / 8; j26 <= (i11 + 6) / 8; j26++) {
-				mapRegionIds[k16] = (l23 << 8) + j26;
-
-				if (selectedSpell && (j26 == 49 || j26 == 149 || j26 == 147 || l23 == 50 || (l23 == 49 && j26 == 47))) {
-					terrainIndices[k16] = -1;
-					objectIndices[k16] = -1;
-				} else {
-					final int k28 = terrainIndices[k16] = cacheManager.getMapIndex(0, j26, l23);
-					if (k28 != -1) cacheManager.enqueueRequest(3, k28);
-
-					final int j30 = objectIndices[k16] = cacheManager.getMapIndex(1, j26, l23);
-					if (j30 != -1) cacheManager.enqueueRequest(3, j30);
-				}
-				k16++;
-			}
-		}
-	}
-
-	private static void handleRegionType241() {
-		int l16 = 0;
-		final int[] ai = new int[676];
-
-		for (int i24 = 0; i24 < 4; i24++) {
-			for (int k26 = 0; k26 < 13; k26++) {
-				for (int l28 = 0; l28 < 13; l28++) {
-					final int k30 = dynamicRegionData[i24][k26][l28];
-					if (k30 != -1) {
-						final int k31 = k30 >> 14 & 0x3ff;
-						final int i32 = k30 >> 3 & 0x7ff;
-						final int k32 = (k31 / 8 << 8) + i32 / 8;
-
-						boolean found = false;
-						for (int j33 = 0; j33 < l16; j33++) {
-							if (ai[j33] == k32) {
-								found = true;
-								break;
-							}
-						}
-						if (!found) {
-							ai[l16++] = k32;
-						}
-					}
-				}
-			}
-		}
-
-		terrainData = new byte[l16][];
-		objectData = new byte[l16][];
-		mapRegionIds = new int[l16];
-		terrainIndices = new int[l16];
-		objectIndices = new int[l16];
-
-		for (int l26 = 0; l26 < l16; l26++) {
-			final int i29 = mapRegionIds[l26] = ai[l26];
-			final int l30 = i29 >> 8 & 0xff;
-			final int l31 = i29 & 0xff;
-
-			final int j32 = terrainIndices[l26] = cacheManager.getMapIndex(0, l31, l30);
-			if (j32 != -1) cacheManager.enqueueRequest(3, j32);
-
-			final int i33 = objectIndices[l26] = cacheManager.getMapIndex(1, l31, l30);
-			if (i33 != -1) cacheManager.enqueueRequest(3, i33);
-		}
-	}
 
 	private static void handleWalkableInterfaceOptimized() {
 		final int i3 = inStream.readSignedWordLE();
@@ -1205,8 +1034,6 @@ public class PacketParser extends Client
 	private static void handleInterfaceNPCHeadOptimized() {
 		final int j3 = inStream.readWordMixedLE();
 		final int j11 = inStream.readWordMixedLE();
-
-		System.out.println("🎭 RAW STRING PACKET: j3 & j11 = " + j3 + " ' " + j11 + " '");
 
 		final RSInterface rsInterface = INTERFACE_CACHE[j11];
 		rsInterface.modelType = 2;

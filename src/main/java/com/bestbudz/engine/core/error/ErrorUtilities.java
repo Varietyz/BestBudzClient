@@ -1,7 +1,6 @@
 package com.bestbudz.engine.core.error;
 
 import com.bestbudz.cache.Signlink;
-import com.bestbudz.engine.core.GameLoader;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
@@ -229,7 +228,6 @@ public class ErrorUtilities {
 		public final String javaVersion;
 		public final String osName;
 		public final String memoryInfo;
-		public final String cacheStats;
 
 		public SystemInfo() {
 			this.javaVersion = System.getProperty("java.version");
@@ -239,32 +237,10 @@ public class ErrorUtilities {
 			long memoryUsed = (runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024;
 			long memoryMax = runtime.maxMemory() / 1024 / 1024;
 			this.memoryInfo = memoryUsed + "MB / " + memoryMax + "MB";
-
-			String cacheStatsTemp;
-			try {
-				cacheStatsTemp = Signlink.getCacheStatistics();
-				if (cacheStatsTemp.length() > 60) {
-					cacheStatsTemp = cacheStatsTemp.substring(0, 57) + "...";
-				}
-			} catch (Exception e) {
-				cacheStatsTemp = "Stats unavailable";
-			}
-			this.cacheStats = cacheStatsTemp;
 		}
 	}
 
 	public static class SelfHealingActions {
-
-		public static String clearCache() {
-			try {
-				Signlink.forceCleanup();
-				Signlink.clearCacheDir();
-				GameLoader.cleanupCaches();
-				return "Cache cleared successfully";
-			} catch (Exception e) {
-				return "Failed to clear cache: " + e.getMessage();
-			}
-		}
 
 		public static String deleteCacheFiles() {
 			try {
@@ -295,7 +271,6 @@ public class ErrorUtilities {
 				logs.append("Java Version: ").append(sysInfo.javaVersion).append("\n");
 				logs.append("OS: ").append(sysInfo.osName).append("\n");
 				logs.append("Memory: ").append(sysInfo.memoryInfo).append("\n");
-				logs.append("Cache Stats: ").append(sysInfo.cacheStats).append("\n");
 
 				logs.append("\n=== Console Output ===\n");
 				for (ConsoleEntry entry : consoleOutput) {
@@ -316,17 +291,6 @@ public class ErrorUtilities {
 			if (Files.exists(file)) {
 				Files.delete(file);
 			}
-		}
-	}
-
-	public static boolean isCacheRelatedError() {
-		// All game data is now loaded from JSON — no binary cache files to check
-		try {
-			String cacheDir = Signlink.findCacheDir();
-			Path cachePath = Paths.get(cacheDir);
-			return !Files.exists(cachePath);
-		} catch (Exception e) {
-			return true;
 		}
 	}
 }

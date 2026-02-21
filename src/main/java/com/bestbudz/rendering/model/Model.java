@@ -552,9 +552,10 @@ public class Model extends Animable {
 	}
 
 	public static void initializeCache(int i) {
-		modelLoaded = new boolean[80000];
-		newmodel = new boolean[100000];
 		JsonModelLoader.initialize();
+		int capacity = JsonModelLoader.getModelCount();
+		modelLoaded = new boolean[capacity];
+		newmodel = new boolean[capacity];
 	}
 
 	public static void removeFromCache(int j) {
@@ -971,7 +972,7 @@ public class Model extends Animable {
 		nc1.position -= 7;
 		newformat = nc1.readUnsignedByte();
 		nc1.position += 6;
-		if (newformat == 15)
+		if (newformat == 15 && modelID >= 0 && modelID < newmodel.length)
 			newmodel[modelID] = true;
 		int i2 = nc1.readUnsignedByte();
 		int j2 = nc1.readUnsignedByte();

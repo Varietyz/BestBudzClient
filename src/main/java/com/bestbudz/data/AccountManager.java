@@ -16,7 +16,6 @@ public class AccountManager {
 
   private static final String DIR = Signlink.findCacheDir();
   private static final String PATH = DIR + "accounts.json";
-  private static final String OLD_PATH = DIR + "accounts.dat";
   private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
   public static final List<AccountData> accounts = new LinkedList<>();
@@ -88,13 +87,6 @@ public class AccountManager {
 
   public static void loadAccount() {
     File jsonFile = new File(PATH);
-    File oldFile = new File(OLD_PATH);
-
-    // Migrate old binary accounts.dat if JSON doesn't exist yet
-    if (!jsonFile.exists() && oldFile.exists()) {
-      migrateFromBinary();
-      return;
-    }
 
     if (!jsonFile.exists()) {
       return;
@@ -116,26 +108,4 @@ public class AccountManager {
     }
   }
 
-  private static void migrateFromBinary() {
-    try {
-      DataInputStream input = new DataInputStream(Files.newInputStream(Paths.get(OLD_PATH)));
-      int fileSize = input.readByte();
-      for (int index = 0; index < fileSize; index++) {
-        int rank = input.readInt();
-        int uses = input.readInt();
-        String username = input.readUTF();
-        input.readUTF(); // skip password — no longer stored
-        AccountData account = new AccountData(rank, uses, username);
-        accounts.add(account);
-      }
-      input.close();
-
-      // Re-save as JSON and delete old binary
-      saveAccount();
-      new File(OLD_PATH).delete();
-      System.out.println("Migrated accounts.dat -> accounts.json");
-    } catch (Exception e) {
-      System.err.println("Failed to migrate accounts.dat: " + e.getMessage());
-    }
-  }
 }
