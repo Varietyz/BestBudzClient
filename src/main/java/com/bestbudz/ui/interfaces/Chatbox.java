@@ -3,7 +3,6 @@ package com.bestbudz.ui.interfaces;
 import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.config.SettingsConfig;
-import com.bestbudz.network.ArchiveLoader;
 import static com.bestbudz.network.packets.PacketParser.sendPacket;
 import com.bestbudz.ui.handling.input.Keyboard;
 import static com.bestbudz.ui.handling.input.Keyboard.console;
@@ -498,21 +497,13 @@ public class Chatbox extends Client{
 						if (inputString.equals("::reint") || inputString.equals("::Reint"))
 						{
 							SpriteLoader.loadSprites();
-							TextDrawingArea aTextDrawingArea_1273 = new TextDrawingArea(true, "q8_full",
-								titleArchiveLoader);
-							TextDrawingArea[] aclass30_sub2_sub1_sub4s = {smallText, regularText, boldText,
-								aTextDrawingArea_1273};
-							ArchiveLoader archiveLoader_1 = loadArchive(3, "interface", "interface",
-								expectedCRCs[3], 35,g);
-							ArchiveLoader archiveLoader_2 = loadArchive(4, "2d graphics", "media",
-								expectedCRCs[4], 40,g);
-							RSInterface.unpack(archiveLoader_1, aclass30_sub2_sub1_sub4s, archiveLoader_2);
+							TextDrawingArea[] fonts = {smallText, regularText, boldText, smallText};
+							RSInterface.unpack(fonts);
 							setInterfaceText("0", 8135);
-
 						}
 						if (inputString.equals("::objs"))
 						{
-							for (int i = 0; i < ObjectDef.streamIndices.length; i++)
+							for (int i = 0; i < ObjectDef.totalObjects; i++)
 							{
 								ObjectDef def = ObjectDef.forID(i);
 

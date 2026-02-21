@@ -17,7 +17,11 @@
       "WebFetch(domain:github-readme-stats.vercel.app)",
       "Bash(grep:*)",
       "Bash(ls:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(BASE=\"https://raw.githubusercontent.com/117HD/RLHD/master/src/main/resources/rs117/hd/utils\")",
+      "Bash(DEST=\"/c/RSPS/Experimentation/BestBudz/Workspace/Git/bestbudz-assets/reference/rlhd/shaders/utils\")",
+      "Bash(curl:*)",
+      "Bash(python3:*)"
     ]
   }
 }

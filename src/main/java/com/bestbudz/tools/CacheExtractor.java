@@ -1659,6 +1659,24 @@ public class CacheExtractor {
                 triAlpha[i] = alphaStream.readUnsignedByte();
         }
 
+        // Decode vertex labels (bone assignments for animation)
+        int[] vertLabels = null;
+        if (hasVertLabels == 1) {
+            vertLabels = new int[vertexCount];
+            Stream vlStream = new Stream(data); vlStream.position = vertLabelsOff;
+            for (int i = 0; i < vertexCount; i++)
+                vertLabels[i] = vlStream.readUnsignedByte();
+        }
+
+        // Decode triangle labels (bone assignments for animation)
+        int[] triLabels = null;
+        if (hasTriLabels == 1) {
+            triLabels = new int[triangleCount];
+            Stream tlStream = new Stream(data); tlStream.position = triLabelsOff;
+            for (int i = 0; i < triangleCount; i++)
+                triLabels[i] = tlStream.readUnsignedByte();
+        }
+
         // Decode triangle vertex indices
         Stream triStream = new Stream(data); triStream.position = triVertOff;
         Stream typeStream = new Stream(data); typeStream.position = triTypesOff;
@@ -1717,6 +1735,8 @@ public class CacheExtractor {
         if (triPriorities != null) sb.append(",\n  \"trianglePriorities\": ").append(jsonArray(triPriorities));
         else sb.append(",\n  \"globalPriority\": ").append(globalPriority);
         if (triAlpha != null) sb.append(",\n  \"triangleAlpha\": ").append(jsonArray(triAlpha));
+        if (vertLabels != null) sb.append(",\n  \"vertexLabels\": ").append(jsonArray(vertLabels));
+        if (triLabels != null) sb.append(",\n  \"triangleLabels\": ").append(jsonArray(triLabels));
         if (texA != null) {
             sb.append(",\n  \"textureTriangleA\": ").append(jsonArray(texA));
             sb.append(",\n  \"textureTriangleB\": ").append(jsonArray(texB));
@@ -1753,7 +1773,8 @@ public class CacheExtractor {
         sb.append("  \"hasAlpha\": ").append(hasAlpha != 0).append(",\n");
         sb.append("  \"hasTriangleLabels\": ").append(hasTriLabels != 0).append(",\n");
         sb.append("  \"hasVertexLabels\": ").append(hasVertLabels != 0).append(",\n");
-        sb.append("  \"rawSize\": ").append(data.length).append("\n");
+        sb.append("  \"rawSize\": ").append(data.length).append(",\n");
+        sb.append("  \"rawBase64\": \"").append(Base64.getEncoder().encodeToString(data)).append("\"\n");
         sb.append("}\n");
         return sb.toString();
     }
@@ -1828,10 +1849,25 @@ public class CacheExtractor {
         StringBuilder indexJson = new StringBuilder();
         indexJson.append("{\n");
         int extracted = 0;
+        int lenientRecovered = 0;
 
         // Animation frames are in idx2 (decompressors[2])
-        for (int frameId = 0; frameId < 50000; frameId++) {
+        // Get raw file handles for lenient fallback
+        RandomAccessFile idxFileRef = new RandomAccessFile(cachePath + "/main_file_cache.idx2", "r");
+        long idxLength = idxFileRef.length();
+        int maxEntryId = (int) (idxLength / 6);
+
+        for (int frameId = 0; frameId < maxEntryId; frameId++) {
             byte[] rawData = decompressors[2].decompress(frameId);
+
+            // Lenient fallback for entries with mismatched sector metadata
+            if (rawData == null || rawData.length == 0) {
+                rawData = decompressLenient(dataFile, idxFileRef, 3, frameId);
+                if (rawData != null && rawData.length > 0) {
+                    lenientRecovered++;
+                }
+            }
+
             if (rawData == null || rawData.length == 0) continue;
 
             // Try GZIP decompression (cache data may be compressed)
@@ -1851,10 +1887,11 @@ public class CacheExtractor {
             extracted++;
         }
 
+        idxFileRef.close();
         indexJson.append("\n}\n");
         writeFile(frameDir + "/_index.json", indexJson.toString());
         animFrameCount = extracted;
-        System.out.println("  Animation frames: " + extracted + " extracted");
+        System.out.println("  Animation frames: " + extracted + " extracted (" + lenientRecovered + " recovered via lenient read)");
     }
 
     // ═════════════════════════════════════════════════════════════════
@@ -2248,6 +2285,7 @@ public class CacheExtractor {
             writeFile(fontDir + "/index.dat", indexDat);
         }
 
+        if (extracted > 0) indexJson.append(",\n");
         indexJson.append("  \"fontFiles\": ").append(fontCount).append("\n}\n");
         writeFile(titleDir + "/_index.json", indexJson.toString());
         titleSpriteCount = extracted;
@@ -2403,7 +2441,7 @@ public class CacheExtractor {
 
                 // Parse SkinList header
                 int skinCount = stream.readUnsignedWord();
-                if (skinCount <= 0 || skinCount > 5000) continue;
+                if (skinCount > 5000) continue;
 
                 int[] transformTypes = new int[skinCount];
                 int[][] childIndices = new int[skinCount][];
@@ -3239,5 +3277,50 @@ public class CacheExtractor {
             }
         }
         return baos.toByteArray();
+    }
+
+    /**
+     * Lenient decompression that relaxes block metadata validation.
+     * Standard Decompressor.decompress() rejects entries where the sector chain
+     * has mismatched entryId/fileId (common with on-demand fetched data).
+     * This method reads the data anyway, trusting the idx pointer and size.
+     */
+    private static byte[] decompressLenient(RandomAccessFile dataFileRef, RandomAccessFile idxFileRef, int idxId, int entryId) {
+        try {
+            byte[] buf = new byte[520];
+
+            idxFileRef.seek((long) entryId * 6);
+            if (idxFileRef.read(buf, 0, 6) != 6) return null;
+
+            int dataSize = ((buf[0] & 0xff) << 16) + ((buf[1] & 0xff) << 8) + (buf[2] & 0xff);
+            int firstBlock = ((buf[3] & 0xff) << 16) + ((buf[4] & 0xff) << 8) + (buf[5] & 0xff);
+
+            if (dataSize <= 0 || firstBlock <= 0 || firstBlock > dataFileRef.length() / 520) return null;
+
+            byte[] result = new byte[dataSize];
+            int bytesRead = 0;
+            int currentBlock = firstBlock;
+
+            while (bytesRead < dataSize) {
+                if (currentBlock == 0 || currentBlock > dataFileRef.length() / 520) break;
+
+                dataFileRef.seek((long) currentBlock * 520);
+                int chunkSize = Math.min(512, dataSize - bytesRead);
+                int totalToRead = chunkSize + 8;
+
+                if (dataFileRef.read(buf, 0, totalToRead) != totalToRead) break;
+
+                // Read next block pointer but skip entryId/fileId validation
+                int nextBlock = ((buf[4] & 0xff) << 16) + ((buf[5] & 0xff) << 8) + (buf[6] & 0xff);
+
+                System.arraycopy(buf, 8, result, bytesRead, chunkSize);
+                bytesRead += chunkSize;
+                currentBlock = nextBlock;
+            }
+
+            return bytesRead == dataSize ? result : null;
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

@@ -1,8 +1,9 @@
 package com.bestbudz.rendering;
 
-import com.bestbudz.engine.core.Client;
+import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.rendering.animation.SkinList;
-import com.bestbudz.network.Stream;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,182 +47,119 @@ public final class SequenceFrame {
 	}
 
 	public static void load(int fileId, byte[] data) {
-		if (data == null || data.length == 0) {
-			LOGGER.warning("Cannot load sequence frame: empty or null data for file " + fileId);
-			return;
-		}
+		loadFromJson(fileId);
+	}
+
+	private static boolean loadFromJson(int fileId) {
+		JsonObject json = JsonCacheLoader.loadAnimFrameJson(fileId + ".json");
+		if (json == null) return false;
 
 		try {
-			Stream stream = new Stream(data);
-			SkinList skinList = new SkinList(stream);
+			JsonObject skinJson = json.getAsJsonObject("skinList");
+			SkinList skinList = new SkinList(skinJson);
 
-			if (stream.position + 2 > data.length) {
-				LOGGER.warning("Insufficient data to read frame count for file " + fileId);
-				return;
-			}
-
-			int frameCount = stream.readUnsignedWord();
-
+			int frameCount = json.get("frameCount").getAsInt();
 			if (frameCount < 0 || frameCount > 10000) {
-				LOGGER.warning("Invalid frame count " + frameCount + " for file " + fileId);
-				return;
+				LOGGER.warning("Invalid JSON frame count " + frameCount + " for file " + fileId);
+				return false;
 			}
 
 			animationlist[fileId] = new SequenceFrame[frameCount * FRAME_MULTIPLIER];
 
-			int successfulFrames = 0;
-			for (int frameIndex = 0; frameIndex < frameCount; frameIndex++) {
+			int rawTransformCount = json.has("transformCount") ? json.get("transformCount").getAsInt() : 0;
+
+			JsonArray frames = json.getAsJsonArray("frames");
+			int loaded = 0;
+			for (int i = 0; i < frames.size(); i++) {
 				try {
+					JsonObject frame = frames.get(i).getAsJsonObject();
+					int fid = frame.get("frameId").getAsInt();
+					if (fid < 0 || fid >= animationlist[fileId].length) continue;
 
-					if (stream.position >= data.length) {
-						LOGGER.warning("Reached end of data at frame " + frameIndex + " of " + frameCount +
-							" for file " + fileId + ". Successfully loaded " + successfulFrames + " frames.");
-						break;
-					}
+					JsonArray transforms = frame.getAsJsonArray("transforms");
+					int jsonTransformCount = frame.has("transformCount") ? frame.get("transformCount").getAsInt() : transforms.size();
 
-					loadSingleFrame(stream, skinList, animationlist[fileId]);
-					successfulFrames++;
-				} catch (Exception e) {
-					LOGGER.log(Level.WARNING,
-						"Skipping corrupt sequence frame in file " + fileId +
-							" at index " + frameIndex + ": " + e.getMessage(), e);
+					// Build a lookup of bone -> transform data from JSON
+					// Max possible entries = json transforms + gap fills
+					int maxEntries = jsonTransformCount + transforms.size();
+					int[] indices = new int[maxEntries];
+					int[] xValues = new int[maxEntries];
+					int[] yValues = new int[maxEntries];
+					int[] zValues = new int[maxEntries];
+					int actualCount = 0;
 
-					if (e instanceof ArrayIndexOutOfBoundsException) {
-						LOGGER.warning("Buffer overflow detected, stopping frame loading for file " + fileId);
-						break;
-					}
-				}
-			}
-
-			LOGGER.info("Loaded " + successfulFrames + " of " + frameCount + " frames for file " + fileId);
-
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Failed to load sequence file " + fileId, e);
-			if (animationlist[fileId] != null) {
-				animationlist[fileId] = new SequenceFrame[0];
-			}
-		}
-	}
-
-	private static void loadSingleFrame(Stream stream, SkinList skinList, SequenceFrame[] frameArray) {
-
-		if (stream.position + 3 > stream.buffer.length) {
-			throw new ArrayIndexOutOfBoundsException("Not enough data to read frame header");
-		}
-
-		int frameId = stream.readUnsignedWord();
-		int transformCount = stream.readUnsignedByte();
-
-		if (frameId < 0 || frameId >= frameArray.length) {
-			LOGGER.warning("Invalid frame ID " + frameId + ", skipping frame");
-			return;
-		}
-
-		if (transformCount < 0 || transformCount > 1000) {
-			LOGGER.warning("Invalid transform count " + transformCount + " for frame " + frameId + ", skipping frame");
-			return;
-		}
-
-		int[] indices = new int[transformCount];
-		int[] xValues = new int[transformCount];
-		int[] yValues = new int[transformCount];
-		int[] zValues = new int[transformCount];
-		int actualCount = 0;
-
-		int lastProcessedIndex = -1;
-
-		for (int i = 0; i < transformCount; i++) {
-
-			if (stream.position >= stream.buffer.length) {
-				LOGGER.warning("Reached end of buffer at transform " + i + " of " + transformCount);
-				break;
-			}
-
-			int transformFlags = stream.readUnsignedByte();
-
-			if (transformFlags < 0 || transformFlags > 7) {
-				LOGGER.warning("Invalid transform flags " + transformFlags + " at index " + i + ", skipping");
-				continue;
-			}
-
-			if (transformFlags > 0) {
-
-				if (i >= skinList.transformTypes.length) {
-					LOGGER.warning("Transform index " + i + " exceeds skinList bounds, skipping");
-					continue;
-				}
-
-				if (skinList.transformTypes[i] != 0) {
-					for (int gapIndex = i - 1; gapIndex > lastProcessedIndex; gapIndex--) {
-						if (gapIndex >= 0 && gapIndex < skinList.transformTypes.length &&
-							skinList.transformTypes[gapIndex] == 0) {
-							if (actualCount < transformCount) {
-								indices[actualCount] = gapIndex;
-								xValues[actualCount] = POSITION_DEFAULT;
-								yValues[actualCount] = POSITION_DEFAULT;
-								zValues[actualCount] = POSITION_DEFAULT;
-								actualCount++;
-							}
-							break;
+					// Index the JSON transforms by bone for quick lookup
+					int[][] boneData = new int[jsonTransformCount][];
+					boolean[] hasBone = new boolean[jsonTransformCount];
+					for (int j = 0; j < transforms.size(); j++) {
+						JsonObject t = transforms.get(j).getAsJsonObject();
+						int bone = t.get("bone").getAsInt();
+						if (bone >= 0 && bone < jsonTransformCount) {
+							hasBone[bone] = true;
+							boneData[bone] = new int[] { t.get("x").getAsInt(), t.get("y").getAsInt(), t.get("z").getAsInt() };
 						}
 					}
+
+					// Replay the gap-filling logic from binary loadSingleFrame
+					int lastProcessedIndex = -1;
+					for (int boneIdx = 0; boneIdx < jsonTransformCount; boneIdx++) {
+						if (!hasBone[boneIdx]) continue;
+
+						// Gap-fill: if this bone is NOT type 0, insert a default position
+						// for the nearest preceding type-0 bone that hasn't been processed
+						if (boneIdx < skinList.transformTypes.length && skinList.transformTypes[boneIdx] != 0) {
+							for (int gapIndex = boneIdx - 1; gapIndex > lastProcessedIndex; gapIndex--) {
+								if (gapIndex >= 0 && gapIndex < skinList.transformTypes.length
+									&& skinList.transformTypes[gapIndex] == 0) {
+									if (actualCount < maxEntries) {
+										indices[actualCount] = gapIndex;
+										xValues[actualCount] = POSITION_DEFAULT;
+										yValues[actualCount] = POSITION_DEFAULT;
+										zValues[actualCount] = POSITION_DEFAULT;
+										actualCount++;
+									}
+									break;
+								}
+							}
+						}
+
+						if (actualCount < maxEntries) {
+							indices[actualCount] = boneIdx;
+							xValues[actualCount] = boneData[boneIdx][0];
+							yValues[actualCount] = boneData[boneIdx][1];
+							zValues[actualCount] = boneData[boneIdx][2];
+							actualCount++;
+						}
+						lastProcessedIndex = boneIdx;
+					}
+
+					if (actualCount == 0) continue;
+
+					// Trim arrays to actual size
+					int[] finalIndices = new int[actualCount];
+					int[] finalX = new int[actualCount];
+					int[] finalY = new int[actualCount];
+					int[] finalZ = new int[actualCount];
+					System.arraycopy(indices, 0, finalIndices, 0, actualCount);
+					System.arraycopy(xValues, 0, finalX, 0, actualCount);
+					System.arraycopy(yValues, 0, finalY, 0, actualCount);
+					System.arraycopy(zValues, 0, finalZ, 0, actualCount);
+
+					animationlist[fileId][fid] = new SequenceFrame(skinList, actualCount, finalIndices,
+						finalX, finalY, finalZ);
+					loaded++;
+				} catch (Exception e) {
+					LOGGER.warning("Error loading JSON frame " + i + " in file " + fileId + ": " + e.getMessage());
 				}
-
-				int defaultValue = (skinList.transformTypes[i] == 3) ? ROTATION_DEFAULT : POSITION_DEFAULT;
-
-				int bytesNeeded = 0;
-				if ((transformFlags & 0x1) != 0) bytesNeeded += 2;
-				if ((transformFlags & 0x2) != 0) bytesNeeded += 2;
-				if ((transformFlags & 0x4) != 0) bytesNeeded += 2;
-
-				if (stream.position + bytesNeeded > stream.buffer.length) {
-					LOGGER.warning("Not enough data to read transformation values");
-					break;
-				}
-
-				int xValue = (transformFlags & 0x1) != 0 ? stream.readSignedWordBE() : defaultValue;
-				int yValue = (transformFlags & 0x2) != 0 ? stream.readSignedWordBE() : defaultValue;
-				int zValue = (transformFlags & 0x4) != 0 ? stream.readSignedWordBE() : defaultValue;
-
-				xValue = cleanTransformValue(xValue, "X", frameId, i);
-				yValue = cleanTransformValue(yValue, "Y", frameId, i);
-				zValue = cleanTransformValue(zValue, "Z", frameId, i);
-
-				if (actualCount < transformCount) {
-					indices[actualCount] = i;
-					xValues[actualCount] = xValue;
-					yValues[actualCount] = yValue;
-					zValues[actualCount] = zValue;
-					actualCount++;
-				}
-
-				lastProcessedIndex = i;
 			}
+
+			return true;
+		} catch (Exception e) {
+			LOGGER.log(Level.WARNING, "Failed to load JSON anim frames for file " + fileId, e);
+			return false;
 		}
-
-		if (actualCount == 0) {
-			LOGGER.warning("No valid transformations found for frame " + frameId + ", skipping");
-			return;
-		}
-
-		int[] finalIndices = new int[actualCount];
-		int[] finalXValues = new int[actualCount];
-		int[] finalYValues = new int[actualCount];
-		int[] finalZValues = new int[actualCount];
-
-		System.arraycopy(indices, 0, finalIndices, 0, actualCount);
-		System.arraycopy(xValues, 0, finalXValues, 0, actualCount);
-		System.arraycopy(yValues, 0, finalYValues, 0, actualCount);
-		System.arraycopy(zValues, 0, finalZValues, 0, actualCount);
-
-		if (isFrameDataCorrupted(finalIndices, finalXValues, finalYValues, finalZValues, actualCount)) {
-			LOGGER.warning("Frame " + frameId + " appears to contain corrupted data, skipping");
-			return;
-		}
-
-		frameArray[frameId] = new SequenceFrame(skinList, actualCount, finalIndices,
-			finalXValues, finalYValues, finalZValues);
 	}
+
 
 	public static void loader(int file, byte[] data) {
 		load(file, data);
@@ -251,9 +189,12 @@ public final class SequenceFrame {
 
 			SequenceFrame[] frameArray = animationlist[fileIndex];
 			if (frameArray == null || frameArray.length == 0) {
-
-				Client.instance.cacheManager.enqueueRequest(1, fileIndex);
-				return null;
+				if (loadFromJson(fileIndex)) {
+					frameArray = animationlist[fileIndex];
+				}
+				if (frameArray == null || frameArray.length == 0) {
+					return null;
+				}
 			}
 
 			if (frameIndex >= frameArray.length) {
@@ -272,55 +213,4 @@ public final class SequenceFrame {
 		return frameId == -1;
 	}
 
-	private static int cleanTransformValue(int value, String axis, int frameId, int transformIndex) {
-
-		if (value < -32768 || value > 32767) {
-			LOGGER.warning("Extreme " + axis + " value " + value + " in frame " + frameId +
-				" transform " + transformIndex + ", clamping to valid range");
-			return Math.max(-32768, Math.min(32767, value));
-		}
-
-		if (value == 0xFFFF || value == -1) {
-			LOGGER.fine("Suspicious " + axis + " value " + value + " in frame " + frameId +
-				" transform " + transformIndex + ", replacing with default");
-			return axis.equals("X") || axis.equals("Y") || axis.equals("Z") ?
-				POSITION_DEFAULT : ROTATION_DEFAULT;
-		}
-
-		if (axis.equals("Rotation") && (value < 0 || value > 255)) {
-			LOGGER.fine("Invalid rotation value " + value + " in frame " + frameId +
-				" transform " + transformIndex + ", wrapping to valid range");
-			return ((value % 256) + 256) % 256;
-		}
-
-		return value;
-	}
-
-	private static boolean isFrameDataCorrupted(int[] indices, int[] xValues, int[] yValues, int[] zValues, int count) {
-		if (count == 0) return true;
-
-		int zeroCount = 0;
-		int extremeCount = 0;
-
-		for (int i = 0; i < count; i++) {
-
-			if (xValues[i] == 0 && yValues[i] == 0 && zValues[i] == 0) {
-				zeroCount++;
-			}
-
-			if (Math.abs(xValues[i]) > 10000 || Math.abs(yValues[i]) > 10000 || Math.abs(zValues[i]) > 10000) {
-				extremeCount++;
-			}
-		}
-
-		if ((double)zeroCount / count > 0.8) {
-			return true;
-		}
-
-		if ((double)extremeCount / count > 0.5) {
-			return true;
-		}
-
-		return false;
-	}
 }

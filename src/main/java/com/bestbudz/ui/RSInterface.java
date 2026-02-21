@@ -1,23 +1,24 @@
 package com.bestbudz.ui;
 
 import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
+import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.entity.EntityDef;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.graphics.text.TextDrawingArea;
-import com.bestbudz.network.ArchiveLoader;
-import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.ui.interfaces.CustomInterfaces;
 import com.bestbudz.util.MRUNodes;
 import com.bestbudz.graphics.text.TextClass;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 public class RSInterface {
 
 	private static final MRUNodes aMRUNodes_264 = new MRUNodes(30);
-	public static ArchiveLoader aClass44;
 	public static RSInterface[] interfaceCache;
 	public static RSInterface currentInputField = null;
 	public static MRUNodes aMRUNodes_238;
@@ -92,285 +93,273 @@ public class RSInterface {
 
 	}
 
-	public static void unpack(ArchiveLoader archiveLoader, TextDrawingArea[] textDrawingAreas,
-							  ArchiveLoader archiveLoader_1) {
+	public static void unpack(TextDrawingArea[] textDrawingAreas) {
 		aMRUNodes_238 = new MRUNodes(50000);
-
-		if (archiveLoader == null) {
-			System.err.println("ArchiveLoader is null - cannot load interfaces");
-			return;
-		}
-
-		Stream stream = null;
-		try {
-			stream = new Stream(archiveLoader.extractFile("data"));
-			if (stream == null || stream.buffer == null) {
-				System.err.println("Interface data stream is null");
-				return;
-			}
-		} catch (Exception e) {
-			System.err.println("Failed to load interface data: " + e.getMessage());
-			return;
-		}
-
-		int i = -1;
-		stream.readUnsignedWord();
 		interfaceCache = new RSInterface[70_000];
 
-		while (stream.position < stream.buffer.length) {
-			try {
-				int k = stream.readUnsignedWord();
-				if (k == 65535) {
-					i = stream.readUnsignedWord();
-					k = stream.readUnsignedWord();
-				}
+		JsonObject allWidgets = JsonCacheLoader.loadJsonObject("interfaces.json");
+		if (allWidgets == null) {
+			System.err.println("[RSInterface] Failed to load interfaces.json");
+			return;
+		}
 
+		int loaded = 0;
+		for (java.util.Map.Entry<String, JsonElement> entry : allWidgets.entrySet()) {
+			try {
+				int k = Integer.parseInt(entry.getKey());
 				if (k < 0 || k >= interfaceCache.length) {
 					System.err.println("Interface ID out of bounds: " + k);
 					continue;
 				}
 
+				JsonObject json = entry.getValue().getAsJsonObject();
 				RSInterface rsInterface = interfaceCache[k] = new RSInterface();
 				rsInterface.id = k;
-				rsInterface.parentID = i;
+				rsInterface.parentID = json.has("parentID") ? json.get("parentID").getAsInt() : -1;
+				rsInterface.type = json.has("type") ? json.get("type").getAsInt() : 0;
+				rsInterface.atActionType = json.has("atActionType") ? json.get("atActionType").getAsInt() : 0;
+				rsInterface.contentType = json.has("contentType") ? json.get("contentType").getAsInt() : 0;
+				rsInterface.width = json.has("width") ? json.get("width").getAsInt() : 0;
+				rsInterface.height = json.has("height") ? json.get("height").getAsInt() : 0;
+				rsInterface.opacity = json.has("opacity") ? (byte) json.get("opacity").getAsInt() : 0;
 
-				rsInterface.type = stream.readUnsignedByte();
-				rsInterface.atActionType = stream.readUnsignedByte();
-				rsInterface.contentType = stream.readUnsignedWord();
-				rsInterface.width = stream.readUnsignedWord();
-				rsInterface.height = stream.readUnsignedWord();
-				rsInterface.opacity = (byte) stream.readUnsignedByte();
-				rsInterface.hoverType = stream.readUnsignedByte();
-				if (rsInterface.hoverType != 0)
-					rsInterface.hoverType = (rsInterface.hoverType - 1 << 8) + stream.readUnsignedByte();
-				else
+				if (json.has("hoverType") && json.get("hoverType").getAsInt() > 0) {
+					rsInterface.hoverType = json.get("hoverType").getAsInt();
+				} else {
 					rsInterface.hoverType = -1;
+				}
 
-				int i1 = stream.readUnsignedByte();
-				if (i1 > 0 && i1 < 1000) {
-					rsInterface.anIntArray245 = new int[i1];
-					rsInterface.anIntArray212 = new int[i1];
-					for (int j1 = 0; j1 < i1; j1++) {
-						rsInterface.anIntArray245[j1] = stream.readUnsignedByte();
-						rsInterface.anIntArray212[j1] = stream.readUnsignedWord();
+				// Comparator ops + values
+				if (json.has("comparatorOps") && json.get("comparatorOps").isJsonArray()) {
+					JsonArray opsArr = json.getAsJsonArray("comparatorOps");
+					JsonArray valsArr = json.has("comparatorValues") && json.get("comparatorValues").isJsonArray() ? json.getAsJsonArray("comparatorValues") : null;
+					int count = opsArr.size();
+					rsInterface.anIntArray245 = new int[count];
+					rsInterface.anIntArray212 = new int[count];
+					for (int j = 0; j < count; j++) {
+						rsInterface.anIntArray245[j] = opsArr.get(j).getAsInt();
+						rsInterface.anIntArray212[j] = (valsArr != null && j < valsArr.size()) ? valsArr.get(j).getAsInt() : 0;
 					}
 				}
 
-				int k1 = stream.readUnsignedByte();
-				if (k1 > 0 && k1 < 1000) {
-					rsInterface.valueIndexArray = new int[k1][];
-					for (int l1 = 0; l1 < k1; l1++) {
-						int i3 = stream.readUnsignedWord();
-						if (i3 > 0 && i3 < 10000) {
-							rsInterface.valueIndexArray[l1] = new int[i3];
-							for (int l4 = 0; l4 < i3; l4++)
-								rsInterface.valueIndexArray[l1][l4] = stream.readUnsignedWord();
+				// Value index arrays
+				if (json.has("valueIndexes") && json.get("valueIndexes").isJsonArray()) {
+					JsonArray outerArr = json.getAsJsonArray("valueIndexes");
+					rsInterface.valueIndexArray = new int[outerArr.size()][];
+					for (int j = 0; j < outerArr.size(); j++) {
+						JsonArray innerArr = outerArr.get(j).getAsJsonArray();
+						rsInterface.valueIndexArray[j] = new int[innerArr.size()];
+						for (int m = 0; m < innerArr.size(); m++) {
+							rsInterface.valueIndexArray[j][m] = innerArr.get(m).getAsInt();
 						}
 					}
 				}
 
+				// Type 0: Container
 				if (rsInterface.type == 0) {
 					rsInterface.drawsTransparent = false;
-					rsInterface.scrollMax = stream.readUnsignedWord();
-					rsInterface.isMouseoverTriggered = stream.readUnsignedByte() == 1;
-					int i2 = stream.readUnsignedWord();
-					if (i2 > 0 && i2 < 10000) {
-						rsInterface.children = new int[i2];
-						rsInterface.childX = new int[i2];
-						rsInterface.childY = new int[i2];
-						for (int j3 = 0; j3 < i2; j3++) {
-							rsInterface.children[j3] = stream.readUnsignedWord();
-							rsInterface.childX[j3] = stream.readSignedWord();
-							rsInterface.childY[j3] = stream.readSignedWord();
+					rsInterface.scrollMax = json.has("scrollMax") ? json.get("scrollMax").getAsInt() : 0;
+					rsInterface.isMouseoverTriggered = json.has("mouseoverTriggered") && json.get("mouseoverTriggered").getAsBoolean();
+					if (json.has("children") && json.get("children").isJsonArray()) {
+						JsonArray childArr = json.getAsJsonArray("children");
+						JsonArray cxArr = json.has("childX") && json.get("childX").isJsonArray() ? json.getAsJsonArray("childX") : null;
+						JsonArray cyArr = json.has("childY") && json.get("childY").isJsonArray() ? json.getAsJsonArray("childY") : null;
+						int childCount = childArr.size();
+						rsInterface.children = new int[childCount];
+						rsInterface.childX = new int[childCount];
+						rsInterface.childY = new int[childCount];
+						for (int j = 0; j < childCount; j++) {
+							rsInterface.children[j] = childArr.get(j).getAsInt();
+							rsInterface.childX[j] = (cxArr != null && j < cxArr.size()) ? cxArr.get(j).getAsInt() : 0;
+							rsInterface.childY[j] = (cyArr != null && j < cyArr.size()) ? cyArr.get(j).getAsInt() : 0;
 						}
 					}
 				}
-				if (rsInterface.type == 1) {
-					stream.readUnsignedWord();
-					stream.readUnsignedByte();
-				}
+
+				// Type 2: Inventory
 				if (rsInterface.type == 2) {
 					int slotCount = rsInterface.width * rsInterface.height;
 					if (slotCount > 0 && slotCount < 10000) {
 						rsInterface.inv = new int[slotCount];
 						rsInterface.invStackSizes = new int[slotCount];
 					}
-					rsInterface.aBoolean259 = stream.readUnsignedByte() == 1;
-					rsInterface.isBoxInterface = stream.readUnsignedByte() == 1;
-					rsInterface.usableItemInterface = stream.readUnsignedByte() == 1;
-					rsInterface.aBoolean235 = stream.readUnsignedByte() == 1;
-					rsInterface.invSpritePadX = stream.readUnsignedByte();
-					rsInterface.invSpritePadY = stream.readUnsignedByte();
+					rsInterface.aBoolean259 = json.has("replaceItems") && json.get("replaceItems").getAsBoolean();
+					rsInterface.isBoxInterface = json.has("isBank") && json.get("isBank").getAsBoolean();
+					rsInterface.usableItemInterface = json.has("usableItems") && json.get("usableItems").getAsBoolean();
+					rsInterface.aBoolean235 = json.has("aBoolean235") && json.get("aBoolean235").getAsBoolean();
+					rsInterface.invSpritePadX = json.has("invSpritePadX") ? json.get("invSpritePadX").getAsInt() : 0;
+					rsInterface.invSpritePadY = json.has("invSpritePadY") ? json.get("invSpritePadY").getAsInt() : 0;
+
+					// Sprite slots
 					rsInterface.spritesX = new int[20];
 					rsInterface.spritesY = new int[20];
 					rsInterface.sprites = new Sprite[20];
-					for (int j2 = 0; j2 < 20; j2++) {
-						int k3 = stream.readUnsignedByte();
-						if (k3 == 1) {
-							rsInterface.spritesX[j2] = stream.readSignedWord();
-							rsInterface.spritesY[j2] = stream.readSignedWord();
-							String s1 = stream.readString();
-							if (archiveLoader_1 != null && !s1.isEmpty()) {
-								try {
-									int i5 = s1.lastIndexOf(",");
-									if (i5 > 0 && i5 < s1.length() - 1) {
-										rsInterface.sprites[j2] = method207(Integer.parseInt(s1.substring(i5 + 1)),
-											archiveLoader_1, s1.substring(0, i5));
-									}
-								} catch (Exception e) {
-									System.err.println("Error loading sprite: " + s1);
+					if (json.has("spriteSlots") && json.get("spriteSlots").isJsonArray()) {
+						JsonArray slots = json.getAsJsonArray("spriteSlots");
+						for (int j = 0; j < slots.size(); j++) {
+							JsonObject slot = slots.get(j).getAsJsonObject();
+							int slotIdx = slot.get("slot").getAsInt();
+							if (slotIdx >= 0 && slotIdx < 20) {
+								rsInterface.spritesX[slotIdx] = slot.has("x") ? slot.get("x").getAsInt() : 0;
+								rsInterface.spritesY[slotIdx] = slot.has("y") ? slot.get("y").getAsInt() : 0;
+								String spriteRef = slot.has("sprite") ? slot.get("sprite").getAsString() : "";
+								if (!spriteRef.isEmpty()) {
+									rsInterface.sprites[slotIdx] = loadSpriteFromRef(spriteRef);
 								}
 							}
 						}
 					}
-					rsInterface.actions = new String[5];
-					for (int l3 = 0; l3 < 5; l3++) {
-						rsInterface.actions[l3] = stream.readString();
-						if (rsInterface.actions[l3].isEmpty()) {
-							rsInterface.actions[l3] = null;
-						}
 
-						if (rsInterface.actions.length > 4) {
-							if (rsInterface.parentID == 3824) {
-								rsInterface.actions[4] = "Buy X";
-							}
-							if (rsInterface.parentID == 3822) {
-								rsInterface.actions[4] = "Sell X";
-							}
-						}
-						if (rsInterface.actions.length > 2) {
-							if (rsInterface.parentID == 1644) {
-								rsInterface.actions[2] = "Operate";
+					// Actions
+					rsInterface.actions = new String[5];
+					if (json.has("actions") && json.get("actions").isJsonArray()) {
+						JsonArray actArr = json.getAsJsonArray("actions");
+						for (int j = 0; j < 5 && j < actArr.size(); j++) {
+							if (!actArr.get(j).isJsonNull()) {
+								String act = actArr.get(j).getAsString();
+								rsInterface.actions[j] = act.isEmpty() ? null : act;
 							}
 						}
 					}
+					// Shop/equip overrides
+					if (rsInterface.parentID == 3824 && rsInterface.actions.length > 4)
+						rsInterface.actions[4] = "Buy X";
+					if (rsInterface.parentID == 3822 && rsInterface.actions.length > 4)
+						rsInterface.actions[4] = "Sell X";
+					if (rsInterface.parentID == 1644 && rsInterface.actions.length > 2)
+						rsInterface.actions[2] = "Operate";
 				}
-				if (rsInterface.type == 3)
-					rsInterface.aBoolean227 = stream.readUnsignedByte() == 1;
+
+				// Type 3: Rectangle
+				if (rsInterface.type == 3) {
+					rsInterface.aBoolean227 = json.has("filled") && json.get("filled").getAsBoolean();
+				}
+
+				// Type 4 / Type 1: Text properties
 				if (rsInterface.type == 4 || rsInterface.type == 1) {
-					rsInterface.centerText = stream.readUnsignedByte() == 1;
-					int k2 = stream.readUnsignedByte();
-					if (textDrawingAreas != null && k2 >= 0 && k2 < textDrawingAreas.length)
-						rsInterface.textDrawingAreas = textDrawingAreas[k2];
-					rsInterface.textShadow = stream.readUnsignedByte() == 1;
+					rsInterface.centerText = json.has("centerText") && json.get("centerText").getAsBoolean();
+					if (json.has("fontId")) {
+						int fontIdx = json.get("fontId").getAsInt();
+						if (textDrawingAreas != null && fontIdx >= 0 && fontIdx < textDrawingAreas.length)
+							rsInterface.textDrawingAreas = textDrawingAreas[fontIdx];
+					}
+					rsInterface.textShadow = json.has("textShadow") && json.get("textShadow").getAsBoolean();
 				}
+
+				// Type 4: Text messages
 				if (rsInterface.type == 4) {
-					rsInterface.disabledMessage = stream.readString().replaceAll("RuneScape", EngineConfig.TITLE);
-					rsInterface.enabledMessage = stream.readString();
+					rsInterface.disabledMessage = json.has("disabledMessage")
+						? json.get("disabledMessage").getAsString().replaceAll("RuneScape", EngineConfig.TITLE) : "";
+					rsInterface.enabledMessage = json.has("enabledMessage") ? json.get("enabledMessage").getAsString() : "";
 				}
-				if (rsInterface.type == 1 || rsInterface.type == 3 || rsInterface.type == 4)
-					rsInterface.textColor = stream.readDWord();
+
+				// Types 1, 3, 4: textColor
+				if (rsInterface.type == 1 || rsInterface.type == 3 || rsInterface.type == 4) {
+					rsInterface.textColor = json.has("textColor") ? json.get("textColor").getAsInt() : 0;
+				}
+
+				// Types 3, 4: color variants
 				if (rsInterface.type == 3 || rsInterface.type == 4) {
-					rsInterface.anInt219 = stream.readDWord();
-					rsInterface.textHoverColor = stream.readDWord();
-					rsInterface.anInt239 = stream.readDWord();
+					rsInterface.anInt219 = json.has("enabledColor") ? json.get("enabledColor").getAsInt() : 0;
+					rsInterface.textHoverColor = json.has("textHoverColor") ? json.get("textHoverColor").getAsInt() : 0;
+					rsInterface.anInt239 = json.has("enabledHoverColor") ? json.get("enabledHoverColor").getAsInt() : 0;
 				}
+
+				// Type 5: Sprite
 				if (rsInterface.type == 5) {
 					rsInterface.drawsTransparent = false;
-					String s = stream.readString();
-					if (archiveLoader_1 != null && !s.isEmpty()) {
-						try {
-							int i4 = s.lastIndexOf(",");
-							if (i4 > 0) {
-								rsInterface.disabledSprite = method207(Integer.parseInt(s.substring(i4 + 1)),
-									archiveLoader_1, s.substring(0, i4));
-							}
-						} catch (Exception e) {
-							System.err.println("Error loading disabled sprite: " + s);
+					if (json.has("disabledSprite")) {
+						String ref = json.get("disabledSprite").getAsString();
+						if (!ref.isEmpty()) {
+							rsInterface.disabledSprite = loadSpriteFromRef(ref);
 						}
 					}
-					s = stream.readString();
-					if (archiveLoader_1 != null && !s.isEmpty()) {
-						try {
-							int j4 = s.lastIndexOf(",");
-							if (j4 > 0) {
-								rsInterface.enabledSprite = method207(Integer.parseInt(s.substring(j4 + 1)),
-									archiveLoader_1, s.substring(0, j4));
-							}
-						} catch (Exception e) {
-							System.err.println("Error loading enabled sprite: " + s);
+					if (json.has("enabledSprite")) {
+						String ref = json.get("enabledSprite").getAsString();
+						if (!ref.isEmpty()) {
+							rsInterface.enabledSprite = loadSpriteFromRef(ref);
 						}
 					}
 				}
+
+				// Type 6: Model
 				if (rsInterface.type == 6) {
-					int l = stream.readUnsignedByte();
-					if (l != 0) {
-						rsInterface.modelType = 1;
-						rsInterface.mediaID = (l - 1 << 8) + stream.readUnsignedByte();
+					if (json.has("modelType")) {
+						rsInterface.modelType = json.get("modelType").getAsInt();
+						rsInterface.mediaID = json.has("mediaID") ? json.get("mediaID").getAsInt() : 0;
 					}
-					l = stream.readUnsignedByte();
-					if (l != 0) {
-						rsInterface.anInt255 = 1;
-						rsInterface.anInt256 = (l - 1 << 8) + stream.readUnsignedByte();
+					if (json.has("enabledModelType")) {
+						rsInterface.anInt255 = json.get("enabledModelType").getAsInt();
+						rsInterface.anInt256 = json.has("enabledMediaID") ? json.get("enabledMediaID").getAsInt() : 0;
 					}
-					l = stream.readUnsignedByte();
-					if (l != 0)
-						rsInterface.verticalOffset = (l - 1 << 8) + stream.readUnsignedByte();
-					else
-						rsInterface.verticalOffset = -1;
-					l = stream.readUnsignedByte();
-					if (l != 0)
-						rsInterface.anInt258 = (l - 1 << 8) + stream.readUnsignedByte();
-					else
-						rsInterface.anInt258 = -1;
-					rsInterface.modelZoom = stream.readUnsignedWord();
-					rsInterface.modelRotation1 = stream.readUnsignedWord();
-					rsInterface.modelRotation2 = stream.readUnsignedWord();
+					rsInterface.verticalOffset = json.has("verticalOffset") ? json.get("verticalOffset").getAsInt() : -1;
+					rsInterface.anInt258 = json.has("enabledVerticalOffset") ? json.get("enabledVerticalOffset").getAsInt() : -1;
+					rsInterface.modelZoom = json.has("modelZoom") ? json.get("modelZoom").getAsInt() : 0;
+					rsInterface.modelRotation1 = json.has("modelRotation1") ? json.get("modelRotation1").getAsInt() : 0;
+					rsInterface.modelRotation2 = json.has("modelRotation2") ? json.get("modelRotation2").getAsInt() : 0;
 				}
+
+				// Type 7: Inventory text
 				if (rsInterface.type == 7) {
 					int slotCount = rsInterface.width * rsInterface.height;
 					if (slotCount > 0 && slotCount < 10000) {
 						rsInterface.inv = new int[slotCount];
 						rsInterface.invStackSizes = new int[slotCount];
 					}
-					rsInterface.centerText = stream.readUnsignedByte() == 1;
-					int l2 = stream.readUnsignedByte();
-					if (textDrawingAreas != null && l2 >= 0 && l2 < textDrawingAreas.length)
-						rsInterface.textDrawingAreas = textDrawingAreas[l2];
-					rsInterface.textShadow = stream.readUnsignedByte() == 1;
-					rsInterface.textColor = stream.readDWord();
-					rsInterface.invSpritePadX = stream.readSignedWord();
-					rsInterface.invSpritePadY = stream.readSignedWord();
-					rsInterface.isBoxInterface = stream.readUnsignedByte() == 1;
+					rsInterface.centerText = json.has("centerText") && json.get("centerText").getAsBoolean();
+					if (json.has("fontId")) {
+						int fontIdx = json.get("fontId").getAsInt();
+						if (textDrawingAreas != null && fontIdx >= 0 && fontIdx < textDrawingAreas.length)
+							rsInterface.textDrawingAreas = textDrawingAreas[fontIdx];
+					}
+					rsInterface.textShadow = json.has("textShadow") && json.get("textShadow").getAsBoolean();
+					rsInterface.textColor = json.has("textColor") ? json.get("textColor").getAsInt() : 0;
+					rsInterface.invSpritePadX = json.has("invSpritePadX") ? json.get("invSpritePadX").getAsInt() : 0;
+					rsInterface.invSpritePadY = json.has("invSpritePadY") ? json.get("invSpritePadY").getAsInt() : 0;
+					rsInterface.isBoxInterface = json.has("isBank") && json.get("isBank").getAsBoolean();
 					rsInterface.actions = new String[5];
-					for (int k4 = 0; k4 < 5; k4++) {
-						rsInterface.actions[k4] = stream.readString();
-						if (rsInterface.actions[k4].isEmpty())
-							rsInterface.actions[k4] = null;
+					if (json.has("actions") && json.get("actions").isJsonArray()) {
+						JsonArray actArr = json.getAsJsonArray("actions");
+						for (int j = 0; j < 5 && j < actArr.size(); j++) {
+							if (!actArr.get(j).isJsonNull()) {
+								String act = actArr.get(j).getAsString();
+								rsInterface.actions[j] = act.isEmpty() ? null : act;
+							}
+						}
 					}
 				}
+
+				// Spell / usable on (atActionType == 2 || type == 2)
 				if (rsInterface.atActionType == 2 || rsInterface.type == 2) {
-					rsInterface.selectedActionName = stream.readString();
-					rsInterface.spellName = stream.readString();
-					rsInterface.spellUsableOn = stream.readUnsignedWord();
+					rsInterface.selectedActionName = json.has("selectedActionName") ? json.get("selectedActionName").getAsString() : "";
+					rsInterface.spellName = json.has("spellName") ? json.get("spellName").getAsString() : "";
+					rsInterface.spellUsableOn = json.has("spellUsableOn") ? json.get("spellUsableOn").getAsInt() : 0;
 				}
 
-				if (rsInterface.type == 8)
-					rsInterface.disabledMessage = stream.readString();
+				// Type 8: Tooltip text
+				if (rsInterface.type == 8) {
+					rsInterface.disabledMessage = json.has("disabledMessage") ? json.get("disabledMessage").getAsString() : "";
+				}
 
-				if (rsInterface.atActionType == 1 || rsInterface.atActionType == 4 || rsInterface.atActionType == 5
-					|| rsInterface.atActionType == 6) {
-					rsInterface.tooltip = stream.readString();
-
+				// Tooltip for action types 1, 4, 5, 6
+				if (rsInterface.atActionType == 1 || rsInterface.atActionType == 4
+					|| rsInterface.atActionType == 5 || rsInterface.atActionType == 6) {
+					rsInterface.tooltip = json.has("tooltip") ? json.get("tooltip").getAsString() : "";
 					if (rsInterface.tooltip.isEmpty()) {
-						if (rsInterface.atActionType == 1)
-							rsInterface.tooltip = "Ok";
-						if (rsInterface.atActionType == 4)
-							rsInterface.tooltip = "Select";
-						if (rsInterface.atActionType == 5)
-							rsInterface.tooltip = "Select";
-						if (rsInterface.atActionType == 6)
-							rsInterface.tooltip = "Continue";
+						if (rsInterface.atActionType == 1) rsInterface.tooltip = "Ok";
+						if (rsInterface.atActionType == 4) rsInterface.tooltip = "Select";
+						if (rsInterface.atActionType == 5) rsInterface.tooltip = "Select";
+						if (rsInterface.atActionType == 6) rsInterface.tooltip = "Continue";
 					}
 				}
 
+				loaded++;
 			} catch (Exception e) {
-				System.err.println("Error loading interface at position " + stream.position + ": " + e.getMessage());
-
+				System.err.println("Error loading interface " + entry.getKey() + ": " + e.getMessage());
 			}
 		}
 
-		aClass44 = archiveLoader;
+		System.out.println("[RSInterface] Loaded " + loaded + " widgets from JSON");
 
 		try { constructLunar(); } catch (Exception e) { System.err.println("Error in constructLunar: " + e.getMessage()); }
 		try { configureLunar(textDrawingAreas); } catch (Exception e) { System.err.println("Error in configureLunar: " + e.getMessage()); }
@@ -379,6 +368,20 @@ public class RSInterface {
 		try { CustomInterfaces.unpackInterfaces(textDrawingAreas); } catch (Exception e) { System.err.println("Error in CustomInterfaces: " + e.getMessage()); }
 
 		aMRUNodes_238 = null;
+	}
+
+	private static Sprite loadSpriteFromRef(String ref) {
+		try {
+			int commaIdx = ref.lastIndexOf(",");
+			if (commaIdx > 0 && commaIdx < ref.length() - 1) {
+				int spriteIndex = Integer.parseInt(ref.substring(commaIdx + 1));
+				String spriteName = ref.substring(0, commaIdx);
+				return method207(spriteIndex, spriteName);
+			}
+		} catch (Exception e) {
+			System.err.println("Error loading sprite from ref: " + ref);
+		}
+		return null;
 	}
 
 	public static void setChildren(int total, RSInterface i) {
@@ -623,17 +626,46 @@ public class RSInterface {
 		tab.enabledSprite = Client.cacheSprite[k];
 	}
 
-	protected static Sprite method207(int i, ArchiveLoader archiveLoader, String s) {
+	protected static Sprite method207(int i, String s) {
 		long l = (TextClass.method585(s) << 8) + (long) i;
 		Sprite sprite = (Sprite) aMRUNodes_238.insertFromCache(l);
 		if (sprite != null)
 			return sprite;
 		try {
-			sprite = new Sprite(archiveLoader, s, i);
+			String key = s + "_" + i;
+			JsonObject mediaSpriteIndex = JsonCacheLoader.loadJsonObject("media_sprites/_index.json");
+			if (mediaSpriteIndex != null && mediaSpriteIndex.has(key)) {
+				JsonObject meta = mediaSpriteIndex.getAsJsonObject(key);
+				String file = meta.get("file").getAsString();
+				int width = meta.get("width").getAsInt();
+				int height = meta.get("height").getAsInt();
+				int offsetX = meta.has("offsetX") ? meta.get("offsetX").getAsInt() : 0;
+				int offsetY = meta.has("offsetY") ? meta.get("offsetY").getAsInt() : 0;
+				int fullWidth = meta.has("fullWidth") ? meta.get("fullWidth").getAsInt() : width;
+				int fullHeight = meta.has("fullHeight") ? meta.get("fullHeight").getAsInt() : height;
+
+				byte[] pngData = JsonCacheLoader.loadFileBytes("media_sprites/" + file);
+				if (pngData != null) {
+					java.awt.Image image = java.awt.Toolkit.getDefaultToolkit().createImage(pngData);
+					javax.swing.ImageIcon icon = new javax.swing.ImageIcon(image);
+					sprite = new Sprite(icon.getIconWidth(), icon.getIconHeight());
+					sprite.drawOffsetX = offsetX;
+					sprite.drawOffsetY = offsetY;
+					sprite.originalWidth = fullWidth;
+					sprite.originalHeight = fullHeight;
+					java.awt.image.PixelGrabber pg = new java.awt.image.PixelGrabber(
+						image, 0, 0, sprite.myWidth, sprite.myHeight, sprite.myPixels, 0, sprite.myWidth);
+					pg.grabPixels();
+					sprite.setTransparency(255, 0, 255);
+				} else {
+					sprite = createEmptySprite();
+				}
+			} else {
+				sprite = createEmptySprite();
+			}
 			aMRUNodes_238.removeFromCache(sprite, l);
 		} catch (Exception _ex) {
 			System.err.println("Failed to load sprite " + s + " index " + i + ": " + _ex.getMessage());
-
 			sprite = createEmptySprite();
 		}
 		return sprite;

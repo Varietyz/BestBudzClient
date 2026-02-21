@@ -1,8 +1,10 @@
 package com.bestbudz.rendering;
 
-import com.bestbudz.network.ArchiveLoader;
-import java.nio.ByteBuffer;
-import java.util.Objects;
+import com.bestbudz.cache.JsonCacheLoader;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.Map;
 
 public class OverlayFloor
 {
@@ -29,114 +31,77 @@ public class OverlayFloor
 	public int anInt398;
 	public int anInt399;
 
-	public static void unpackConfig(ArchiveLoader archiveLoader)
+	public static void unpackConfig()
 	{
-		ByteBuffer bb = ByteBuffer.wrap(Objects.requireNonNull(archiveLoader.extractFile("flo2.dat")));
-		int count = bb.getShort();
-		overlayFloor = new OverlayFloor[count];
-		for (int i = 0; i < count; i++)
-		{
-			if (overlayFloor[i] == null)
-			{
-				overlayFloor[i] = new OverlayFloor();
-			}
-			overlayFloor[i].parse(bb);
+		JsonObject json = JsonCacheLoader.loadJsonObject("floors_overlay.json");
+		if (json == null) {
+			System.err.println("Failed to load floors_overlay.json");
+			return;
 		}
+
+		int maxId = 0;
+		for (String key : json.keySet()) {
+			int id = Integer.parseInt(key);
+			if (id > maxId) maxId = id;
+		}
+
+		int count = maxId + 1;
+		overlayFloor = new OverlayFloor[count];
+
+		int loaded = 0;
+		for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+			int id = Integer.parseInt(entry.getKey());
+			JsonObject def = entry.getValue().getAsJsonObject();
+
+			if (overlayFloor[id] == null) {
+				overlayFloor[id] = new OverlayFloor();
+			}
+			overlayFloor[id].readFromJson(def);
+			loaded++;
+		}
+
+		System.out.println("Overlays Loaded (JSON): " + loaded);
 	}
 
-	private void parse(ByteBuffer byteBuffer)
-	{
-		for (; ; )
-		{
-			int attributeId = byteBuffer.get();
-			if (attributeId == 0)
-			{
-				break;
-			}
-			else if (attributeId == 1)
-			{
-				rgb = ((byteBuffer.get() & 0xff) << 16)
-					+ ((byteBuffer.get() & 0xff) << 8)
-					+ (byteBuffer.get() & 0xff);
-				method262(rgb);
-			}
-			else if (attributeId == 2)
-			{
-				textureId = byteBuffer.get() & 0xff;
-			}
-			else if (attributeId == 3)
-			{
-				textureId = byteBuffer.getShort() & 0xffff;
-				if (textureId == 65535)
-				{
-					textureId = -1;
-				}
-			}
-			else if (attributeId == 4)
-			{
-
-			}
-			else if (attributeId == 5)
-			{
-				boolean_5 = false;
-			}
-			else if (attributeId == 6)
-			{
-
-			}
-			else if (attributeId == 7)
-			{
-				int_7 = ((byteBuffer.get() & 0xff) << 16)
-					+ ((byteBuffer.get() & 0xff) << 8)
-					+ (byteBuffer.get() & 0xff);
-			}
-			else if (attributeId == 8)
-			{
-
-			}
-			else if (attributeId == 9)
-			{
-				int_9 = byteBuffer.getShort() & 0xffff;
-			}
-			else if (attributeId == 10)
-			{
-				boolean_10 = false;
-			}
-			else if (attributeId == 11)
-			{
-				int_11 = byteBuffer.get() & 0xff;
-			}
-			else if (attributeId == 12)
-			{
-				boolean_12 = true;
-			}
-			else if (attributeId == 13)
-			{
-				int_13 = ((byteBuffer.get() & 0xff) << 16)
-					+ ((byteBuffer.get() & 0xff) << 8)
-					+ (byteBuffer.get() & 0xff);
-			}
-			else if (attributeId == 14)
-			{
-				int_14 = byteBuffer.get() & 0xff;
-			}
-			else if (attributeId == 15)
-			{
-				int_15 = byteBuffer.getShort() & 0xffff;
-				if (int_15 == 65535)
-				{
-					int_15 = -1;
-				}
-			}
-			else if (attributeId == 16)
-			{
-				int_16 = byteBuffer.get() & 0xff;
-			}
-			else
-			{
-				System.err.println("[OverlayFloor] Missing AttributeId: "
-					+ attributeId);
-			}
+	private void readFromJson(JsonObject json) {
+		if (json.has("rgb")) {
+			rgb = json.get("rgb").getAsInt();
+			method262(rgb);
+		}
+		if (json.has("textureId")) {
+			textureId = json.get("textureId").getAsInt();
+			if (textureId == 65535) textureId = -1;
+		}
+		if (json.has("hideUnderlay")) {
+			boolean_5 = false;
+		}
+		if (json.has("secondaryRgb")) {
+			int_7 = json.get("secondaryRgb").getAsInt();
+		}
+		if (json.has("blendMode")) {
+			int_9 = json.get("blendMode").getAsInt();
+		}
+		if (json.has("boolean_10") && !json.get("boolean_10").getAsBoolean()) {
+			boolean_10 = false;
+		}
+		if (json.has("int_11")) {
+			int_11 = json.get("int_11").getAsInt();
+		}
+		if (json.has("boolean_12")) {
+			boolean_12 = json.get("boolean_12").getAsBoolean();
+		}
+		if (json.has("tertiaryRgb")) {
+			int_13 = json.get("tertiaryRgb").getAsInt();
+		}
+		if (json.has("int_14")) {
+			int_14 = json.get("int_14").getAsInt();
+		}
+		if (json.has("int_15")) {
+			int_15 = json.get("int_15").getAsInt();
+			if (int_15 == 65535) int_15 = -1;
+		}
+		if (json.has("int_16")) {
+			int_16 = json.get("int_16").getAsInt();
 		}
 	}
 

@@ -25,3 +25,6 @@ gradle-app.setting
 /src/main/runtime
 *.bak
 *.zip
+
+# Cache extraction output
+extracted_cache/

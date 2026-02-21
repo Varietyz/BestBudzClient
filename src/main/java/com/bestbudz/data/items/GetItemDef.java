@@ -65,10 +65,11 @@ public class GetItemDef
 
 		ItemDef.cacheIndex = (ItemDef.cacheIndex + 1) % 10;
 		ItemDef itemDef = ItemDef.cache[ItemDef.cacheIndex];
-		ItemDef.stream.position = ItemDef.streamIndices[id];
 		itemDef.id = id;
 		itemDef.setDefaults();
-		itemDef.readValues(ItemDef.stream);
+		if (ItemDef.jsonDefs != null && id >= 0 && id < ItemDef.jsonDefs.length && ItemDef.jsonDefs[id] != null) {
+			itemDef.readFromJson(ItemDef.jsonDefs[id]);
+		}
 
 		if (!ItemDef.isMembers && itemDef.membersObject) {
 			itemDef.name = "BestBudz Members Bug";

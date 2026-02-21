@@ -1,7 +1,6 @@
 package com.bestbudz.graphics;
 
 import com.bestbudz.engine.core.gamerender.DrawingArea;
-import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.network.Stream;
 
 public final class Background extends DrawingArea
@@ -16,119 +15,126 @@ public final class Background extends DrawingArea
   public int anInt1456;
   private int anInt1457;
 
-	public Background(ArchiveLoader archiveLoader, String s, int i) {
-		byte[] data = archiveLoader.extractFile(s + ".dat");
-		if (data == null || data.length == 0) {
+	public static Background loadFromExtracted(String name, int index) {
+		Background bg = new Background();
+		try {
+			String key = name + "_" + index;
+			com.google.gson.JsonObject mediaSpriteIndex = com.bestbudz.cache.JsonCacheLoader.loadJsonObject("media_sprites/_index.json");
+			if (mediaSpriteIndex != null && mediaSpriteIndex.has(key)) {
+				com.google.gson.JsonObject meta = mediaSpriteIndex.getAsJsonObject(key);
+				String file = meta.get("file").getAsString();
+				int width = meta.get("width").getAsInt();
+				int height = meta.get("height").getAsInt();
+				int offsetX = meta.has("offsetX") ? meta.get("offsetX").getAsInt() : 0;
+				int offsetY = meta.has("offsetY") ? meta.get("offsetY").getAsInt() : 0;
+				int fullWidth = meta.has("fullWidth") ? meta.get("fullWidth").getAsInt() : width;
+				int fullHeight = meta.has("fullHeight") ? meta.get("fullHeight").getAsInt() : height;
 
-			textureData = new byte[0];
-			backgroundWidth = 0;
-			backgroundHeight = 0;
-			return;
-		}
-		Stream stream = new Stream(data);
+				byte[] pngData = com.bestbudz.cache.JsonCacheLoader.loadFileBytes("media_sprites/" + file);
+				if (pngData != null) {
+					java.awt.Image image = java.awt.Toolkit.getDefaultToolkit().createImage(pngData);
+					javax.swing.ImageIcon icon = new javax.swing.ImageIcon(image);
+					int imgW = icon.getIconWidth();
+					int imgH = icon.getIconHeight();
+					int[] pixels = new int[imgW * imgH];
+					java.awt.image.PixelGrabber pg = new java.awt.image.PixelGrabber(
+						image, 0, 0, imgW, imgH, pixels, 0, imgW);
+					pg.grabPixels();
 
-		byte[] indexData = archiveLoader.extractFile("index.dat");
-		if (indexData == null || indexData.length == 0) {
+					// Build palette from unique colors
+					java.util.LinkedHashMap<Integer, Integer> colorToIndex = new java.util.LinkedHashMap<>();
+					colorToIndex.put(0, 0); // index 0 = transparent
+					for (int p : pixels) {
+						int rgb = p & 0xFFFFFF;
+						if (!colorToIndex.containsKey(rgb)) {
+							colorToIndex.put(rgb, colorToIndex.size());
+						}
+					}
 
-			textureData = new byte[0];
-			backgroundWidth = 0;
-			backgroundHeight = 0;
-			return;
-		}
-		Stream stream_1 = new Stream(indexData);
+					bg.pixelData = new int[colorToIndex.size()];
+					for (java.util.Map.Entry<Integer, Integer> e : colorToIndex.entrySet()) {
+						bg.pixelData[e.getValue()] = e.getKey();
+					}
 
-		if (stream.position + 2 > stream.buffer.length) {
+					bg.textureData = new byte[imgW * imgH];
+					for (int i2 = 0; i2 < pixels.length; i2++) {
+						int rgb = pixels[i2] & 0xFFFFFF;
+						Integer idx = colorToIndex.get(rgb);
+						bg.textureData[i2] = (byte) (idx != null ? idx : 0);
+					}
 
-			textureData = new byte[0];
-			backgroundWidth = 0;
-			backgroundHeight = 0;
-			return;
-		}
-		stream_1.position = stream.readUnsignedWord();
-
-		if (stream_1.position + 6 > stream_1.buffer.length) {
-
-			textureData = new byte[0];
-			backgroundWidth = 0;
-			backgroundHeight = 0;
-			return;
-		}
-
-		anInt1456 = stream_1.readUnsignedWord();
-		anInt1457 = stream_1.readUnsignedWord();
-
-		int j = stream_1.readUnsignedByte();
-		pixelData = new int[j];
-		for (int k = 0; k < j - 1; k++) {
-			if (stream_1.position + 3 > stream_1.buffer.length) {
-
-				textureData = new byte[0];
-				backgroundWidth = 0;
-				backgroundHeight = 0;
-				return;
-			}
-			pixelData[k + 1] = stream_1.read3Bytes();
-		}
-
-		for (int l = 0; l < i; l++) {
-			if (stream_1.position + 5 > stream_1.buffer.length) {
-
-				textureData = new byte[0];
-				backgroundWidth = 0;
-				backgroundHeight = 0;
-				return;
-			}
-			stream_1.position += 2;
-			int width = stream_1.readUnsignedWord();
-			int height = stream_1.readUnsignedWord();
-			if (width < 0 || height < 0 || stream_1.position + (width * height) > stream_1.buffer.length) {
-
-				textureData = new byte[0];
-				backgroundWidth = 0;
-				backgroundHeight = 0;
-				return;
-			}
-			stream.position += width * height;
-			stream_1.position++;
-		}
-
-		if (stream_1.position + 6 > stream_1.buffer.length) {
-
-			textureData = new byte[0];
-			backgroundWidth = 0;
-			backgroundHeight = 0;
-			return;
-		}
-
-		anInt1454 = stream_1.readUnsignedByte();
-		anInt1455 = stream_1.readUnsignedByte();
-		backgroundWidth = stream_1.readUnsignedWord();
-		backgroundHeight = stream_1.readUnsignedWord();
-		int i1 = stream_1.readUnsignedByte();
-
-		int j1 = backgroundWidth * backgroundHeight;
-		if (j1 < 0 || stream.position + j1 > stream.buffer.length) {
-
-			textureData = new byte[0];
-			return;
-		}
-
-		textureData = new byte[j1];
-
-		if (i1 == 0) {
-			for (int k1 = 0; k1 < j1; k1++) {
-				textureData[k1] = stream.readSignedByte();
-			}
-		} else if (i1 == 1) {
-			for (int l1 = 0; l1 < backgroundWidth; l1++) {
-				for (int i2 = 0; i2 < backgroundHeight; i2++) {
-					textureData[l1 + i2 * backgroundWidth] = stream.readSignedByte();
+					bg.backgroundWidth = imgW;
+					bg.backgroundHeight = imgH;
+					bg.anInt1454 = offsetX;
+					bg.anInt1455 = offsetY;
+					bg.anInt1456 = fullWidth;
+					bg.anInt1457 = fullHeight;
+					return bg;
 				}
 			}
-		} else {
 
-			textureData = new byte[0];
+			// Try textures directory (for numbered textures)
+			com.google.gson.JsonObject texIndex = com.bestbudz.cache.JsonCacheLoader.loadJsonObject("textures/_index.json");
+			if (texIndex != null && texIndex.has(name)) {
+				com.google.gson.JsonObject meta = texIndex.getAsJsonObject(name);
+				String file = meta.get("file").getAsString();
+				int width = meta.get("width").getAsInt();
+				int height = meta.get("height").getAsInt();
+
+				byte[] pngData = com.bestbudz.cache.JsonCacheLoader.loadFileBytes("textures/" + file);
+				if (pngData != null) {
+					java.awt.Image image = java.awt.Toolkit.getDefaultToolkit().createImage(pngData);
+					javax.swing.ImageIcon icon = new javax.swing.ImageIcon(image);
+					int imgW = icon.getIconWidth();
+					int imgH = icon.getIconHeight();
+					int[] pixels = new int[imgW * imgH];
+					java.awt.image.PixelGrabber pg = new java.awt.image.PixelGrabber(
+						image, 0, 0, imgW, imgH, pixels, 0, imgW);
+					pg.grabPixels();
+
+					java.util.LinkedHashMap<Integer, Integer> colorToIndex = new java.util.LinkedHashMap<>();
+					colorToIndex.put(0, 0);
+					for (int p : pixels) {
+						int rgb = p & 0xFFFFFF;
+						if (!colorToIndex.containsKey(rgb)) {
+							colorToIndex.put(rgb, colorToIndex.size());
+						}
+					}
+
+					bg.pixelData = new int[colorToIndex.size()];
+					for (java.util.Map.Entry<Integer, Integer> e : colorToIndex.entrySet()) {
+						bg.pixelData[e.getValue()] = e.getKey();
+					}
+
+					bg.textureData = new byte[imgW * imgH];
+					for (int i2 = 0; i2 < pixels.length; i2++) {
+						int rgb = pixels[i2] & 0xFFFFFF;
+						Integer idx = colorToIndex.get(rgb);
+						bg.textureData[i2] = (byte) (idx != null ? idx : 0);
+					}
+
+					bg.backgroundWidth = imgW;
+					bg.backgroundHeight = imgH;
+					bg.anInt1454 = 0;
+					bg.anInt1455 = 0;
+					// Rasterizer expects textures at 128x128 (or 64x64)
+					bg.anInt1456 = imgW <= 64 ? 64 : 128;
+					bg.anInt1457 = imgH <= 64 ? 64 : 128;
+					return bg;
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("[Background] Failed to load from extracted: " + name + "_" + index + ": " + e.getMessage());
 		}
+
+		bg.textureData = new byte[0];
+		bg.backgroundWidth = 0;
+		bg.backgroundHeight = 0;
+		bg.pixelData = new int[0];
+		return bg;
+	}
+
+	private Background() {
 	}
 
 	public void method356() {

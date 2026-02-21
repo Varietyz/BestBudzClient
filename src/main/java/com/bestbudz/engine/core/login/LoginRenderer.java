@@ -491,11 +491,10 @@ public class LoginRenderer {
 						}
 
 						else if (clickIn(card)) {
-							if (!acc.username.isEmpty() && !acc.password.isEmpty()) {
-								Client.loginFailures = 0;
+							if (!acc.username.isEmpty()) {
 								Client.myUsername = acc.username;
-								Client.myPassword = acc.password;
-								login(acc.username, acc.password, false, g, canvas, client);
+								Client.myPassword = "";
+								client.loginScreenCursorPos = 1;
 								break;
 							}
 						}

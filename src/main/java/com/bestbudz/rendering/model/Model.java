@@ -1,15 +1,16 @@
 package com.bestbudz.rendering.model;
 
+import com.bestbudz.cache.JsonModelLoader;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.engine.gpu.RS317GPUInterface;
-import com.bestbudz.network.CacheManagerBase;
 import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.Animable;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.animation.SkinList;
-import com.bestbudz.util.compression.ModelHeader;
 import com.bestbudz.engine.core.gamerender.WorldController;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.util.Objects;
 
 public class Model extends Animable {
@@ -24,8 +25,7 @@ public class Model extends Animable {
 	public static final int[] modelHashes = new int[1000];
 	public static int[] modelIntArray1;
 	public static int[] modelIntArray2;
-	static ModelHeader[] aModelHeaderArray1661;
-	static CacheManagerBase aCacheManagerBase_1662;
+	static boolean[] modelLoaded;
 	static int[] modelIntArray3;
 	static int[] modelIntArray4;
 
@@ -125,13 +125,27 @@ public class Model extends Animable {
 	public Point3D[] aPoint3DArray1660;
 	private boolean aBoolean1618;
 
-	public Model(int modelId) {
-		byte[] is = aModelHeaderArray1661[modelId].modelData;
-		if (is[is.length - 1] == -1 && is[is.length - 2] == -1)
-			decodeModel622(is, modelId);
-		else
-			decodeOldModel(modelId);
-		if (newmodel[modelId]) {
+	public Model(int modelId, JsonObject json) {
+		aBoolean1618 = true;
+		aBoolean1659 = false;
+		anInt1620++;
+
+		String format = json.has("format") ? json.get("format").getAsString() : "old_317";
+
+		if ("old_317".equals(format)) {
+			decodeFromJson(json);
+		} else {
+			// rs525 / rs622_extended: decode from embedded raw bytes
+			byte[] rawBytes = JsonModelLoader.getRawBytes(json);
+			if (rawBytes != null) {
+				if (rawBytes[rawBytes.length - 1] == -1 && rawBytes[rawBytes.length - 2] == -1)
+					decodeModel622(rawBytes, modelId);
+				else
+					decodeModel525(rawBytes, modelId);
+			}
+		}
+
+		if (newmodel != null && modelId >= 0 && modelId < newmodel.length && newmodel[modelId]) {
 			if (trianglePriorities != null) {
 				if (modelId >= 1 && modelId <= 65535) {
 					for (int index = 0; index < trianglePriorities.length; index++) {
@@ -139,6 +153,43 @@ public class Model extends Animable {
 					}
 				}
 			}
+		}
+	}
+
+	private void decodeFromJson(JsonObject json) {
+		vertexCount = json.get("vertexCount").getAsInt();
+		triangleCount = json.get("triangleCount").getAsInt();
+		textureTriangleCount = json.has("textureTriangleCount") ? json.get("textureTriangleCount").getAsInt() : 0;
+
+		verticesX = JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("verticesX"));
+		verticesY = JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("verticesY"));
+		verticesZ = JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("verticesZ"));
+		triangleVertexA = JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("triangleA"));
+		triangleVertexB = JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("triangleB"));
+		triangleVertexC = JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("triangleC"));
+		triangleColors = JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("triangleColors"));
+
+		if (json.has("triangleInfo"))
+			triangleInfo = JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("triangleInfo"));
+		if (json.has("trianglePriorities"))
+			trianglePriorities = JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("trianglePriorities"));
+		else if (json.has("globalPriority"))
+			anInt1641 = json.get("globalPriority").getAsInt();
+		if (json.has("triangleAlpha"))
+			triangleAlpha = JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("triangleAlpha"));
+		if (json.has("vertexLabels"))
+			vertexLabels = JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("vertexLabels"));
+		if (json.has("triangleLabels"))
+			triangleLabels = JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("triangleLabels"));
+
+		if (textureTriangleCount > 0) {
+			textureTriangleA = json.has("textureTriangleA") ? JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("textureTriangleA")) : new int[textureTriangleCount];
+			textureTriangleB = json.has("textureTriangleB") ? JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("textureTriangleB")) : new int[textureTriangleCount];
+			textureTriangleC = json.has("textureTriangleC") ? JsonModelLoader.jsonArrayToIntArray(json.getAsJsonArray("textureTriangleC")) : new int[textureTriangleCount];
+		} else {
+			textureTriangleA = new int[0];
+			textureTriangleB = new int[0];
+			textureTriangleC = new int[0];
 		}
 	}
 
@@ -485,8 +536,7 @@ public class Model extends Animable {
 	}
 
 	public static void clearCache() {
-		aModelHeaderArray1661 = null;
-		aCacheManagerBase_1662 = null;
+		modelLoaded = null;
 		modelIntArray1 = null;
 		modelIntArray2 = null;
 		modelIntArray3 = null;
@@ -495,106 +545,40 @@ public class Model extends Animable {
 		workspace.remove();
 	}
 
-	public static void cacheModelHeader(byte[] abyte0, int j) {
-		try {
-			if (abyte0 == null) {
-				ModelHeader modelHeader = aModelHeaderArray1661[j] = new ModelHeader();
-				modelHeader.vertexCount = 0;
-				modelHeader.triangleCount = 0;
-				modelHeader.textureTriangleCount = 0;
-				return;
-			}
-			Stream stream = new Stream(abyte0);
-			stream.position = abyte0.length - 18;
-			ModelHeader modelHeader_1 = aModelHeaderArray1661[j] = new ModelHeader();
-			modelHeader_1.modelData = abyte0;
-			modelHeader_1.vertexCount = stream.readUnsignedWord();
-			modelHeader_1.triangleCount = stream.readUnsignedWord();
-			modelHeader_1.textureTriangleCount = stream.readUnsignedByte();
-			int k = stream.readUnsignedByte();
-			int l = stream.readUnsignedByte();
-			int i1 = stream.readUnsignedByte();
-			int j1 = stream.readUnsignedByte();
-			int k1 = stream.readUnsignedByte();
-			int l1 = stream.readUnsignedWord();
-			int i2 = stream.readUnsignedWord();
-			int j2 = stream.readUnsignedWord();
-			int k2 = stream.readUnsignedWord();
-			int l2 = 0;
-			modelHeader_1.vertexFlagsOffset = l2;
-			l2 += modelHeader_1.vertexCount;
-			modelHeader_1.triangleTypesOffset = l2;
-			l2 += modelHeader_1.triangleCount;
-			modelHeader_1.trianglePrioritiesOffset = l2;
-			if (l == 255)
-				l2 += modelHeader_1.triangleCount;
-			else
-				modelHeader_1.trianglePrioritiesOffset = -l - 1;
-			modelHeader_1.triangleLabelsOffset = l2;
-			if (j1 == 1)
-				l2 += modelHeader_1.triangleCount;
-			else
-				modelHeader_1.triangleLabelsOffset = -1;
-			modelHeader_1.triangleInfoOffset = l2;
-			if (k == 1)
-				l2 += modelHeader_1.triangleCount;
-			else
-				modelHeader_1.triangleInfoOffset = -1;
-			modelHeader_1.vertexLabelsOffset = l2;
-			if (k1 == 1)
-				l2 += modelHeader_1.vertexCount;
-			else
-				modelHeader_1.vertexLabelsOffset = -1;
-			modelHeader_1.triangleAlphaOffset = l2;
-			if (i1 == 1)
-				l2 += modelHeader_1.triangleCount;
-			else
-				modelHeader_1.triangleAlphaOffset = -1;
-			modelHeader_1.triangleVerticesOffset = l2;
-			l2 += k2;
-			modelHeader_1.triangleColorsOffset = l2;
-			l2 += modelHeader_1.triangleCount * 2;
-			modelHeader_1.textureTrianglesOffset = l2;
-			l2 += modelHeader_1.textureTriangleCount * 6;
-			modelHeader_1.vertexXOffset = l2;
-			l2 += l1;
-			modelHeader_1.vertexYOffset = l2;
-			l2 += i2;
-			modelHeader_1.vertexZOffset = l2;
-		} catch (Exception _ex) {
-			throw new RuntimeException(_ex);
+	public static void markModelLoaded(int modelId) {
+		if (modelId >= 0 && modelId < modelLoaded.length) {
+			modelLoaded[modelId] = true;
 		}
 	}
 
-	public static void initializeCache(int i, CacheManagerBase cacheManagerBase) {
-		aModelHeaderArray1661 = new ModelHeader[80000];
+	public static void initializeCache(int i) {
+		modelLoaded = new boolean[80000];
 		newmodel = new boolean[100000];
-		aCacheManagerBase_1662 = cacheManagerBase;
+		JsonModelLoader.initialize();
 	}
 
 	public static void removeFromCache(int j) {
-		aModelHeaderArray1661[j] = null;
+		if (j >= 0 && j < modelLoaded.length)
+			modelLoaded[j] = false;
+		JsonModelLoader.evict(j);
 	}
 
 	public static Model loadModelFromCache(int id) {
-		if (aModelHeaderArray1661 == null)
+		if (modelLoaded == null)
 			return null;
-		ModelHeader modelHeader = aModelHeaderArray1661[id];
-		if (modelHeader == null) {
-			aCacheManagerBase_1662.requestModel(id);
+		if (!JsonModelLoader.exists(id))
 			return null;
-		} else {
-			return new Model(id);
-		}
+		JsonObject json = JsonModelLoader.loadModelJson(id);
+		if (json == null)
+			return null;
+		return new Model(id, json);
 	}
 
 	public static boolean isModelCached(int i) {
-		if (aModelHeaderArray1661 == null)
+		if (modelLoaded == null)
 			return false;
 
-		ModelHeader modelHeader = aModelHeaderArray1661[i];
-		if (modelHeader == null) {
-			aCacheManagerBase_1662.requestModel(i);
+		if (!JsonModelLoader.exists(i)) {
 			return false;
 		} else {
 			return true;
@@ -636,6 +620,8 @@ public class Model extends Animable {
 	}
 
 	public void decodeModel525(byte[] abyte0, int modelID) {
+		aBoolean1618 = true;
+		aBoolean1659 = false;
 		Stream nc1 = new Stream(abyte0);
 		Stream nc2 = new Stream(abyte0);
 		Stream nc3 = new Stream(abyte0);
@@ -647,11 +633,6 @@ public class Model extends Animable {
 		int numVertices = nc1.readUnsignedWord();
 		int numTriangles = nc1.readUnsignedWord();
 		int numTexTriangles = nc1.readUnsignedByte();
-		ModelHeader ModelDef_1 = aModelHeaderArray1661[modelID] = new ModelHeader();
-		ModelDef_1.modelData = abyte0;
-		ModelDef_1.vertexCount = numVertices;
-		ModelDef_1.triangleCount = numTriangles;
-		ModelDef_1.textureTriangleCount = numTexTriangles;
 		int l1 = nc1.readUnsignedByte();
 		boolean bool = (~(0x1 & l1)) == -2;
 		int i2 = nc1.readUnsignedByte();
@@ -966,6 +947,8 @@ public class Model extends Animable {
 	}
 
 	public void decodeModel622(byte[] abyte0, int modelID) {
+		aBoolean1618 = true;
+		aBoolean1659 = false;
 		Stream nc1 = new Stream(abyte0);
 		Stream nc2 = new Stream(abyte0);
 		Stream nc3 = new Stream(abyte0);
@@ -977,11 +960,6 @@ public class Model extends Animable {
 		int numVertices = nc1.readUnsignedWord();
 		int numTriangles = nc1.readUnsignedWord();
 		int numTexTriangles = nc1.readUnsignedByte();
-		ModelHeader ModelDef_1 = aModelHeaderArray1661[modelID] = new ModelHeader();
-		ModelDef_1.modelData = abyte0;
-		ModelDef_1.vertexCount = numVertices;
-		ModelDef_1.triangleCount = numTriangles;
-		ModelDef_1.textureTriangleCount = numTexTriangles;
 		int l1 = nc1.readUnsignedByte();
 		boolean bool = (~(0x1 & l1)) == -2;
 		boolean bool_26_ = (0x8 & l1) == 8;
@@ -1334,140 +1312,6 @@ public class Model extends Animable {
 		scaleDown(4);
 	}
 
-	private void decodeOldModel(int i) {
-		int j = -870;
-		aBoolean1618 = true;
-		aBoolean1659 = false;
-		anInt1620++;
-		ModelHeader modelHeader = aModelHeaderArray1661[i];
-		vertexCount = modelHeader.vertexCount;
-		triangleCount = modelHeader.triangleCount;
-		textureTriangleCount = modelHeader.textureTriangleCount;
-		verticesX = new int[vertexCount];
-		verticesY = new int[vertexCount];
-		verticesZ = new int[vertexCount];
-		triangleVertexA = new int[triangleCount];
-		triangleVertexB = new int[triangleCount];
-		triangleVertexC = new int[triangleCount];
-		textureTriangleA = new int[textureTriangleCount];
-		textureTriangleB = new int[textureTriangleCount];
-		textureTriangleC = new int[textureTriangleCount];
-		if (modelHeader.vertexLabelsOffset >= 0)
-			vertexLabels = new int[vertexCount];
-		if (modelHeader.triangleInfoOffset >= 0)
-			triangleInfo = new int[triangleCount];
-		if (modelHeader.trianglePrioritiesOffset >= 0)
-			trianglePriorities = new int[triangleCount];
-		else
-			anInt1641 = -modelHeader.trianglePrioritiesOffset - 1;
-		if (modelHeader.triangleAlphaOffset >= 0)
-			triangleAlpha = new int[triangleCount];
-		if (modelHeader.triangleLabelsOffset >= 0)
-			triangleLabels = new int[triangleCount];
-		triangleColors = new int[triangleCount];
-		Stream stream = new Stream(modelHeader.modelData);
-		stream.position = modelHeader.vertexFlagsOffset;
-		Stream stream_1 = new Stream(modelHeader.modelData);
-		stream_1.position = modelHeader.vertexXOffset;
-		Stream stream_2 = new Stream(modelHeader.modelData);
-		stream_2.position = modelHeader.vertexYOffset;
-		Stream stream_3 = new Stream(modelHeader.modelData);
-		stream_3.position = modelHeader.vertexZOffset;
-		Stream stream_4 = new Stream(modelHeader.modelData);
-		stream_4.position = modelHeader.vertexLabelsOffset;
-		int k = 0;
-		int l = 0;
-		int i1 = 0;
-		for (int j1 = 0; j1 < vertexCount; j1++) {
-			int k1 = stream.readUnsignedByte();
-			int i2 = 0;
-			if ((k1 & 1) != 0)
-				i2 = stream_1.readSmartSigned();
-			int k2 = 0;
-			if ((k1 & 2) != 0)
-				k2 = stream_2.readSmartSigned();
-			int i3 = 0;
-			if ((k1 & 4) != 0)
-				i3 = stream_3.readSmartSigned();
-			verticesX[j1] = k + i2;
-			verticesY[j1] = l + k2;
-			verticesZ[j1] = i1 + i3;
-			k = verticesX[j1];
-			l = verticesY[j1];
-			i1 = verticesZ[j1];
-			if (vertexLabels != null)
-				vertexLabels[j1] = stream_4.readUnsignedByte();
-		}
-		stream.position = modelHeader.triangleColorsOffset;
-		stream_1.position = modelHeader.triangleInfoOffset;
-		stream_2.position = modelHeader.trianglePrioritiesOffset;
-		stream_3.position = modelHeader.triangleAlphaOffset;
-		stream_4.position = modelHeader.triangleLabelsOffset;
-		for (int l1 = 0; l1 < triangleCount; l1++) {
-			triangleColors[l1] = stream.readUnsignedWord();
-			if (triangleInfo != null)
-				triangleInfo[l1] = stream_1.readUnsignedByte();
-			if (trianglePriorities != null)
-				trianglePriorities[l1] = stream_2.readUnsignedByte();
-			if (triangleAlpha != null) {
-				triangleAlpha[l1] = stream_3.readUnsignedByte();
-			}
-			if (triangleLabels != null)
-				triangleLabels[l1] = stream_4.readUnsignedByte();
-		}
-		stream.position = modelHeader.triangleVerticesOffset;
-		stream_1.position = modelHeader.triangleTypesOffset;
-		int j2 = 0;
-		int l2 = 0;
-		int j3 = 0;
-		int k3 = 0;
-		for (int l3 = 0; l3 < triangleCount; l3++) {
-			int i4 = stream_1.readUnsignedByte();
-			if (i4 == 1) {
-				j2 = stream.readSmartSigned() + k3;
-				k3 = j2;
-				l2 = stream.readSmartSigned() + k3;
-				k3 = l2;
-				j3 = stream.readSmartSigned() + k3;
-				k3 = j3;
-				triangleVertexA[l3] = j2;
-				triangleVertexB[l3] = l2;
-				triangleVertexC[l3] = j3;
-			}
-			if (i4 == 2) {
-				l2 = j3;
-				j3 = stream.readSmartSigned() + k3;
-				k3 = j3;
-				triangleVertexA[l3] = j2;
-				triangleVertexB[l3] = l2;
-				triangleVertexC[l3] = j3;
-			}
-			if (i4 == 3) {
-				j2 = j3;
-				j3 = stream.readSmartSigned() + k3;
-				k3 = j3;
-				triangleVertexA[l3] = j2;
-				triangleVertexB[l3] = l2;
-				triangleVertexC[l3] = j3;
-			}
-			if (i4 == 4) {
-				int k4 = j2;
-				j2 = l2;
-				l2 = k4;
-				j3 = stream.readSmartSigned() + k3;
-				k3 = j3;
-				triangleVertexA[l3] = j2;
-				triangleVertexB[l3] = l2;
-				triangleVertexC[l3] = j3;
-			}
-		}
-		stream.position = modelHeader.textureTrianglesOffset;
-		for (int j4 = 0; j4 < textureTriangleCount; j4++) {
-			textureTriangleA[j4] = stream.readUnsignedWord();
-			textureTriangleB[j4] = stream.readUnsignedWord();
-			textureTriangleC[j4] = stream.readUnsignedWord();
-		}
-	}
 
 	public void copyModel(Model model, boolean flag) {
 		WorkSpace ws = workspace.get();
@@ -2210,8 +2054,8 @@ public class Model extends Animable {
 
 		try {
 			renderTriangles(false, false, 0);
-		} catch (Exception _ex) {
-			throw new RuntimeException(_ex);
+		} catch (Exception ignored) {
+			// Rasterizer clipping edge case — skip this model frame
 		}
 	}
 

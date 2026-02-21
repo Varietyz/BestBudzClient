@@ -55,10 +55,8 @@ import com.bestbudz.engine.core.gamerender.Texture;
 import com.bestbudz.graphics.buffer.ImageProducer;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.graphics.text.TextDrawingArea;
-import com.bestbudz.network.OnDemandData;
 import com.bestbudz.network.Socket;
 import com.bestbudz.network.Stream;
-import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.rendering.OverlayFloor;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.rendering.SequenceFrame;
@@ -67,7 +65,6 @@ import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.ui.RSInterface;
 import com.bestbudz.ui.interfaces.StatusOrbs;
-import com.bestbudz.util.Decompressor;
 import com.bestbudz.util.ISAACRandomGen;
 import com.bestbudz.util.NodeList;
 import com.bestbudz.world.Floor;
@@ -77,7 +74,6 @@ import com.bestbudz.world.Varp;
 import com.bestbudz.engine.core.gamerender.WorldController;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -99,7 +95,6 @@ public class Client extends ClientEngine
 	public static final String validUserPassChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"\243$%^&*()-_=+[{]};:'@#~,<.>/?\\| ";
 	public static final int[] chatSystemColors = {9104, 10275, 7595, 3610, 7975, 8526, 918, 38802, 24466, 10145, 58654, 5027, 1457, 16565, 34991, 25486};
 	public static final int MENU_Y_SHIFT = 15;
-	public static final Decompressor[] decompressors = new Decompressor[6];
 	public static final RSInterface defaultInterface = new RSInterface();
 	public static final int currencies = 11;
 	public static final Sprite[] currencyImage = new Sprite[currencies];
@@ -386,7 +381,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static boolean welcomeScreenVisible;
 	public static int inputLength;
 	public static String inputBuffer;
-	public static ArchiveLoader titleArchiveLoader;
 	public static int selectedTabIndex;
 	public static int tabHoverTime;
 	public static NodeList queueSpotAnimation;
@@ -746,129 +740,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		return new java.net.Socket(InetAddress.getByName(NetworkConfig.LOCALHOST ? "localhost" : server), port);
 	}
 
-	public static ArchiveLoader loadArchive(int i, String s, String s1, int j, int k, Graphics2D g)
-	{
-		byte[] abyte0 = null;
-		int l = 5;
-		try
-		{
-			if (decompressors[0] != null)
-				abyte0 = decompressors[0].decompress(i);
-		}
-		catch (Exception _ex)
-		{
-		}
-		if (abyte0 != null)
-		{
-		}
-		if (abyte0 != null)
-		{
-			ArchiveLoader archiveLoader = new ArchiveLoader(abyte0);
-			return archiveLoader;
-		}
-		int j1 = 0;
-		while (abyte0 == null)
-		{
-			String s2 = "Unknown error";
-			try
-			{
-				int k1 = 0;
-				DataInputStream datainputstream = openJagGrabInputStream(s1 + j);
-				byte[] abyte1 = new byte[6];
-				datainputstream.readFully(abyte1, 0, 6);
-				Stream stream = new Stream(abyte1);
-				stream.position = 3;
-				int i2 = stream.read3Bytes() + 6;
-				int j2 = 6;
-				abyte0 = new byte[i2];
-				System.arraycopy(abyte1, 0, abyte0, 0, 6);
-
-				while (j2 < i2)
-				{
-					int l2 = i2 - j2;
-					if (l2 > 1000)
-						l2 = 1000;
-					int j3 = datainputstream.read(abyte0, j2, l2);
-					if (j3 < 0)
-					{
-						s2 = "Length error: " + j2 + "/" + i2;
-						throw new IOException("EOF");
-					}
-					j2 += j3;
-					int k3 = (j2 * 100) / i2;
-					if (k3 != k1)
-					k1 = k3;
-				}
-				datainputstream.close();
-				try
-				{
-					if (decompressors[0] != null)
-						decompressors[0].method234(abyte0.length, abyte0, i);
-				}
-				catch (Exception _ex)
-				{
-					decompressors[0] = null;
-				}
-			}
-			catch (IOException ioexception)
-			{
-				if (s2.equals("Unknown error"))
-					s2 = "Connection error";
-				abyte0 = null;
-			}
-			catch (NullPointerException _ex)
-			{
-				s2 = "Null error";
-				abyte0 = null;
-				if (!Signlink.reporterror)
-					return null;
-			}
-			catch (ArrayIndexOutOfBoundsException _ex)
-			{
-				s2 = "Bounds error";
-				abyte0 = null;
-				if (!Signlink.reporterror)
-					return null;
-			}
-			catch (Exception _ex)
-			{
-				s2 = "Unexpected error";
-				abyte0 = null;
-				if (!Signlink.reporterror)
-					return null;
-			}
-			if (abyte0 == null)
-			{
-				for (int l1 = l; l1 > 0; l1--)
-				{
-					if (j1 >= 3)
-					{
-						l1 = 10;
-					}
-					else
-					{
-					}
-					try
-					{
-						Thread.sleep(1000L);
-					}
-					catch (Exception _ex)
-					{
-					}
-				}
-
-				l *= 2;
-				if (l > 60)
-					l = 60;
-				connectionError = !connectionError;
-			}
-
-		}
-
-		ArchiveLoader archiveLoader_1 = new ArchiveLoader(abyte0);
-		return archiveLoader_1;
-	}
-
 	public static boolean inBounds(int mx, int my, int x, int y, int w, int h) {
 		return mx >= x && mx <= x + w && my >= y && my <= y + h;
 	}
@@ -992,23 +863,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		}
 	}
 
-	private static DataInputStream openJagGrabInputStream(String s) throws IOException
-	{
-		if (aSocket832 != null) {
-			try {
-				aSocket832.close();
-			} catch (Exception _ex) {
-			}
-			aSocket832 = null;
-		}
-		aSocket832 = openSocket(NetworkConfig.CLIENT_PORT);
-		aSocket832.setSoTimeout(10000);
-		InputStream inputstream = aSocket832.getInputStream();
-		OutputStream outputstream = aSocket832.getOutputStream();
-		outputstream.write(("JAGGRAB /" + s + "\n\n").getBytes());
-		return new DataInputStream(inputstream);
-	}
-
 	public void processDrawing(Graphics2D g, GameCanvas canvas) {
 
 		int expected = screenAreaWidth * screenAreaHeight;
@@ -1055,66 +909,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		else
 
 			mainGameProcessor(g, canvas);
-		processOnDemandQueue();
-	}
-
-	private void saveMidi(boolean flag, byte[] abyte0)
-	{
-		Signlink.midifade = flag ? 1 : 0;
-		Signlink.midisave(abyte0, abyte0.length);
-	}
-
-	private void processOnDemandQueue()
-	{
-		do
-		{
-			OnDemandData onDemandData;
-			do
-			{
-				onDemandData = cacheManager.getCompletedFile();
-				if (onDemandData == null)
-					return;
-				if (onDemandData.dataType == 0)
-				{
-					Model.cacheModelHeader(onDemandData.buffer, onDemandData.ID);
-					if (backDialogID != -1)
-						inputTaken = true;
-				}
-				if (onDemandData.dataType == 1)
-				{
-					SequenceFrame.load(onDemandData.ID, onDemandData.buffer);
-				}
-				if (onDemandData.dataType == 2 && onDemandData.ID == nextSong && onDemandData.buffer != null)
-					saveMidi(songChanging, onDemandData.buffer);
-
-				if (onDemandData.dataType == 4)
-				{
-					Texture.decode(onDemandData.ID, onDemandData.buffer);
-				}
-
-				if (onDemandData.dataType == 3 && loadingStage == 1)
-				{
-					for (int i = 0; i < terrainData.length; i++)
-					{
-						if (terrainIndices[i] == onDemandData.ID)
-						{
-							terrainData[i] = onDemandData.buffer;
-							if (onDemandData.buffer == null)
-								terrainIndices[i] = -1;
-							break;
-						}
-						if (objectIndices[i] != onDemandData.ID)
-							continue;
-						objectData[i] = onDemandData.buffer;
-						if (onDemandData.buffer == null)
-							objectIndices[i] = -1;
-						break;
-					}
-
-				}
-			} while (onDemandData.dataType != 93 || !cacheManager.hasObjectData(onDemandData.ID));
-			ObjectManager.loadObjectRequirements(new Stream(onDemandData.buffer), cacheManager);
-		} while (true);
 	}
 
 	private void mainGameProcessor(Graphics2D g, GameCanvas canvas) throws IOException
@@ -1419,7 +1213,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		WorldController.nullLoader();
 		Model.clearCache();
 		SequenceFrame.nullLoader();
-		Texture.reset();
+		Texture.clearCache();
 		System.gc();
 	}
 

@@ -46,7 +46,7 @@ public class Login extends Client
 			if (j != 0 && System.currentTimeMillis() - lastConnectionTime > 0x57e40L)
 			{
 				Signlink.reporterror(
-					myUsername + " glcfb " + lastInventoryTime + "," + j + "," + lowMem + "," + decompressors[0] + ","
+					myUsername + " glcfb " + lastInventoryTime + "," + j + "," + lowMem + ","
 						+ cacheManager.getNodeCount() + "," + plane + "," + inventoryOffsetX + "," + inventoryOffsetY);
 				lastConnectionTime = System.currentTimeMillis();
 			}
@@ -148,7 +148,7 @@ public class Login extends Client
 				myUsername = username;
 				myPassword = password;
 				myPrivilege = socketStream.read();
-				final AccountData account = new AccountData(myPrivilege, username, password);
+				final AccountData account = new AccountData(myPrivilege, username);
 
 				if (rememberMe) {
 					AccountManager.addAccount(account);
@@ -496,31 +496,16 @@ public class Login extends Client
 
 	public static int validateMapData()
 	{
-		for (int i = 0; i < terrainData.length; i++)
+		// Pure JSON mode — no binary terrain/object data needed.
+		// Just verify JSON maps exist for all regions.
+		for (int i = 0; i < mapRegionIds.length; i++)
 		{
-			if (terrainData[i] == null && terrainIndices[i] != -1)
-				return -1;
-			if (objectData[i] == null && objectIndices[i] != -1)
-				return -2;
-		}
-		boolean flag = true;
-		for (int j = 0; j < terrainData.length; j++)
-		{
-			byte[] abyte0 = objectData[j];
-			if (abyte0 != null)
-			{
-				int k = (mapRegionIds[j] >> 8) * 64 - baseX;
-				int l = (mapRegionIds[j] & 0xff) * 64 - baseY;
-				if (musicPlaying)
-				{
-					k = 10;
-					l = 10;
-				}
-				flag &= ObjectManager.validateObjectRequirements(k, abyte0, l);
+			if (!ObjectManager.isJsonMapAvailable(mapRegionIds[i])
+				&& !ObjectManager.isJsonObjectsAvailable(mapRegionIds[i])) {
+				// Region has no JSON data at all — treat as water, don't block loading
 			}
 		}
-		if (!flag)
-			return -3;
+
 		if (friendsListVisible)
 		{
 			return -4;

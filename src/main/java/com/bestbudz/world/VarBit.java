@@ -1,7 +1,10 @@
 package com.bestbudz.world;
 
-import com.bestbudz.network.Stream;
-import com.bestbudz.network.ArchiveLoader;
+import com.bestbudz.cache.JsonCacheLoader;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.Map;
 
 public final class VarBit
 {
@@ -12,31 +15,40 @@ public final class VarBit
 	public int endBit;
 	private VarBit()
 	{
-		boolean aBoolean651 = false;
 	}
 
-	public static void unpackConfig(ArchiveLoader archiveLoader)
+	public static void unpackConfig()
 	{
-		Stream stream = new Stream(archiveLoader.extractFile("varbit.dat"));
-		int cacheSize = stream.readUnsignedWord();
-		if (cache == null)
-			cache = new VarBit[cacheSize];
-		for (int j = 0; j < cacheSize; j++)
-		{
-			if (cache[j] == null)
-				cache[j] = new VarBit();
-			cache[j].readValues(stream);
+		JsonObject json = JsonCacheLoader.loadJsonObject("varbits.json");
+		if (json == null) {
+			System.err.println("Failed to load varbits.json");
+			return;
 		}
 
-		if (stream.position != stream.buffer.length)
-			System.out.println("varbit load mismatch");
-	}
+		int maxId = 0;
+		for (String key : json.keySet()) {
+			int id = Integer.parseInt(key);
+			if (id > maxId) maxId = id;
+		}
 
-	private void readValues(Stream stream)
-	{
-		baseVar = stream.readUnsignedWord();
-		startBit = stream.readUnsignedByte();
-		endBit = stream.readUnsignedByte();
+		int cacheSize = maxId + 1;
+		if (cache == null)
+			cache = new VarBit[cacheSize];
 
+		int loaded = 0;
+		for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+			int id = Integer.parseInt(entry.getKey());
+			JsonObject def = entry.getValue().getAsJsonObject();
+
+			if (cache[id] == null)
+				cache[id] = new VarBit();
+
+			cache[id].baseVar = def.has("baseVar") ? def.get("baseVar").getAsInt() : 0;
+			cache[id].startBit = def.has("startBit") ? def.get("startBit").getAsInt() : 0;
+			cache[id].endBit = def.has("endBit") ? def.get("endBit").getAsInt() : 0;
+			loaded++;
+		}
+
+		System.out.println("VarBits Loaded (JSON): " + loaded);
 	}
 }

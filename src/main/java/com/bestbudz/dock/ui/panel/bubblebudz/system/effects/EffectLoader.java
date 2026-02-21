@@ -9,7 +9,7 @@ import java.util.jar.JarFile;
 public class EffectLoader
 {
 	private static final String EFFECTS_PACKAGE = "com.bestbudz.dock.ui.panel.bubblebudz.system.effects.types";
-	private static final String EFFECTS_PATH = "com/bestbudz/dock/ui/panel/client/bubblebudz/system/effects/types";
+	private static final String EFFECTS_PATH = "com/bestbudz/dock/ui/panel/bubblebudz/system/effects/types";
 
 	public static void loadAllEffects(EffectManager effectManager) {
 		System.out.println("Starting effect loading...");

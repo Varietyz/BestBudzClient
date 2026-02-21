@@ -706,38 +706,48 @@ public class GameState extends Client {
 
 		try {
 
+			// Pass 1: Load terrain data (JSON preferred, byte[] fallback)
 			for (int i3 = 0; i3 < k2; i3++) {
 				if (i3 >= terrainData.length || i3 >= mapRegionIds.length) {
 					logError("Index " + i3 + " exceeds array bounds in normal mode pass 1");
 					break;
 				}
 
-				if (terrainData[i3] != null) {
-					int i4 = (mapRegionIds[i3] >> 8) * 64 - baseX;
-					int k5 = (mapRegionIds[i3] & 0xff) * 64 - baseY;
+				int i4 = (mapRegionIds[i3] >> 8) * 64 - baseX;
+				int k5 = (mapRegionIds[i3] & 0xff) * 64 - baseY;
 
-					if (isValidMapCoordinate(i4, k5, i3)) {
-						try {
-							objectManager.loadMapRegion(terrainData[i3], k5, i4,
-								(inventoryOffsetX - 6) * 8, (inventoryOffsetY - 6) * 8, collisionMaps);
-						} catch (ArrayIndexOutOfBoundsException e) {
-							logError("ObjectManager.loadMapRegion bounds error at (" + i4 + "," + k5 + ") for index " + i3 + ": " + e.getMessage());
-						}
-					} else {
-						logError("Invalid coordinates for loadMapRegion: i4=" + i4 + ", k5=" + k5 + " (index=" + i3 + ")");
+				if (!isValidMapCoordinate(i4, k5, i3)) {
+					logError("Invalid coordinates for loadMapRegion: i4=" + i4 + ", k5=" + k5 + " (index=" + i3 + ")");
+					continue;
+				}
+
+				// Load terrain JSON by file ID (not region ID)
+				boolean loaded = false;
+				int terrainFileId = i3 < terrainIndices.length ? terrainIndices[i3] : -1;
+				if (terrainFileId > 0) {
+					try {
+						loaded = objectManager.loadMapRegionJson(terrainFileId, k5, i4,
+							(inventoryOffsetX - 6) * 8, (inventoryOffsetY - 6) * 8, collisionMaps);
+					} catch (Exception e) {
+						logError("JSON loadMapRegion error for file " + terrainFileId + " (region " + mapRegionIds[i3] + "): " + e.getMessage());
 					}
 				}
+
 			}
 
+			// Pass 2: Mark water for regions with no data
 			if (inventoryOffsetY < 800) {
 				int nullRegionsProcessed = 0;
 				for (int j4 = 0; j4 < k2; j4++) {
-					if (j4 >= terrainData.length || j4 >= mapRegionIds.length) {
+					if (j4 >= mapRegionIds.length) {
 						logError("Index " + j4 + " exceeds array bounds in normal mode pass 2");
 						break;
 					}
 
-					if (terrainData[j4] == null) {
+					int terrainFileId = j4 < terrainIndices.length ? terrainIndices[j4] : -1;
+					boolean hasTerrain = terrainFileId > 0 && ObjectManager.isJsonMapAvailable(terrainFileId);
+
+					if (!hasTerrain) {
 						nullRegionsProcessed++;
 						int l5 = (mapRegionIds[j4] >> 8) * 64 - baseX;
 						int k7 = (mapRegionIds[j4] & 0xff) * 64 - baseY;
@@ -766,28 +776,30 @@ public class GameState extends Client {
 
 			stream.writeEncryptedOpcode(0);
 
-			if (objectData != null) {
-				for (int i6 = 0; i6 < k2; i6++) {
-					if (i6 >= objectData.length || i6 >= mapRegionIds.length) {
-						logError("Index " + i6 + " exceeds array bounds in normal mode pass 3");
-						break;
-					}
+			// Pass 3: Load object data by file ID (not region ID)
+			for (int i6 = 0; i6 < k2; i6++) {
+				if (i6 >= mapRegionIds.length) {
+					logError("Index " + i6 + " exceeds array bounds in normal mode pass 3");
+					break;
+				}
 
-					if (objectData[i6] != null) {
-						int l8 = (mapRegionIds[i6] >> 8) * 64 - baseX;
-						int k9 = (mapRegionIds[i6] & 0xff) * 64 - baseY;
+				int l8 = (mapRegionIds[i6] >> 8) * 64 - baseX;
+				int k9 = (mapRegionIds[i6] & 0xff) * 64 - baseY;
 
-						if (isValidMapCoordinate(l8, k9, i6)) {
-							try {
-								objectManager.loadObjectRegion(l8, collisionMaps, k9, worldController, objectData[i6]);
-							} catch (ArrayIndexOutOfBoundsException e) {
-								logError("ObjectManager.loadObjectRegion bounds error at (" + l8 + "," + k9 + ") for index " + i6 + ": " + e.getMessage());
-							}
-						}
+				if (!isValidMapCoordinate(l8, k9, i6)) continue;
+
+				// Load objects JSON by file ID
+				int objectFileId = i6 < objectIndices.length ? objectIndices[i6] : -1;
+				boolean loaded = false;
+				if (objectFileId > 0) {
+					try {
+						loaded = objectManager.loadObjectRegionJson(objectFileId, l8, collisionMaps,
+							k9, worldController);
+					} catch (Exception e) {
+						logError("JSON loadObjectRegion error for file " + objectFileId + " (region " + mapRegionIds[i6] + "): " + e.getMessage());
 					}
 				}
-			} else {
-				logError("aByteArrayArray1247 is null, skipping loadObjectRegion calls");
+
 			}
 
 		} catch (Exception e) {
@@ -878,39 +890,48 @@ public class GameState extends Client {
 		logDebug("Processing normal mode with " + k2 + " arrays");
 
 		try {
+			// Pass 1: Load terrain data (JSON preferred, byte[] fallback)
 			for (int i3 = 0; i3 < k2; i3++) {
 				if (i3 >= terrainData.length || i3 >= mapRegionIds.length) {
 					logError("Index " + i3 + " exceeds array bounds in normal mode pass 1");
 					break;
 				}
 
-				if (terrainData[i3] != null) {
-					int i4 = (mapRegionIds[i3] >> 8) * 64 - baseX;
-					int k5 = (mapRegionIds[i3] & 0xff) * 64 - baseY;
+				int i4 = (mapRegionIds[i3] >> 8) * 64 - baseX;
+				int k5 = (mapRegionIds[i3] & 0xff) * 64 - baseY;
 
-					if (isValidMapCoordinate(i4, k5, i3)) {
-						try {
-							objectManager.loadMapRegion(terrainData[i3], k5, i4,
-								(inventoryOffsetX - 6) * 8, (inventoryOffsetY - 6) * 8, collisionMaps);
-						} catch (ArrayIndexOutOfBoundsException e) {
-							logError("ObjectManager.loadMapRegion bounds error at (" + i4 + "," + k5 + ") for index " + i3 +
-								": " + e.getMessage());
-						}
-					} else {
-						logError("Invalid coordinates for loadMapRegion: i4=" + i4 + ", k5=" + k5 +
-							" (index=" + i3 + ", baseX=" + baseX + ", baseY=" + baseY + ")");
+				if (!isValidMapCoordinate(i4, k5, i3)) {
+					logError("Invalid coordinates for loadMapRegion: i4=" + i4 + ", k5=" + k5 +
+						" (index=" + i3 + ", baseX=" + baseX + ", baseY=" + baseY + ")");
+					continue;
+				}
+
+				// Load terrain JSON by file ID (not region ID)
+				boolean loaded = false;
+				int terrainFileId = i3 < terrainIndices.length ? terrainIndices[i3] : -1;
+				if (terrainFileId > 0) {
+					try {
+						loaded = objectManager.loadMapRegionJson(terrainFileId, k5, i4,
+							(inventoryOffsetX - 6) * 8, (inventoryOffsetY - 6) * 8, collisionMaps);
+					} catch (Exception e) {
+						logError("JSON loadMapRegion error for file " + terrainFileId + " (region " + mapRegionIds[i3] + "): " + e.getMessage());
 					}
 				}
+
 			}
 
+			// Pass 2: Mark water for missing regions
 			if (inventoryOffsetY < 800) {
 				for (int j4 = 0; j4 < k2; j4++) {
-					if (j4 >= terrainData.length || j4 >= mapRegionIds.length) {
+					if (j4 >= mapRegionIds.length) {
 						logError("Index " + j4 + " exceeds array bounds in normal mode pass 2");
 						break;
 					}
 
-					if (terrainData[j4] == null) {
+					int terrainFileId = j4 < terrainIndices.length ? terrainIndices[j4] : -1;
+					boolean hasTerrain = terrainFileId > 0 && ObjectManager.isJsonMapAvailable(terrainFileId);
+
+					if (!hasTerrain) {
 						int l5 = (mapRegionIds[j4] >> 8) * 64 - baseX;
 						int k7 = (mapRegionIds[j4] & 0xff) * 64 - baseY;
 
@@ -921,9 +942,6 @@ public class GameState extends Client {
 								logError("ObjectManager.markWaterArea bounds error at (" + l5 + "," + k7 + ") for index " + j4 +
 									": " + e.getMessage());
 							}
-						} else {
-							logError("Invalid coordinates for markWaterArea: l5=" + l5 + ", k7=" + k7 +
-								" (index=" + j4 + ", baseX=" + baseX + ", baseY=" + baseY + ")");
 						}
 					}
 				}
@@ -937,34 +955,31 @@ public class GameState extends Client {
 			}
 
 			stream.writeEncryptedOpcode(0);
-			if (objectData != null) {
-				for (int i6 = 0; i6 < k2; i6++) {
-					if (i6 >= objectData.length || i6 >= mapRegionIds.length) {
-						logError("Index " + i6 + " exceeds array bounds in normal mode pass 3");
-						break;
-					}
 
-					if (objectData[i6] != null) {
-						int l8 = (mapRegionIds[i6] >> 8) * 64 - baseX;
-						int k9 = (mapRegionIds[i6] & 0xff) * 64 - baseY;
+			// Pass 3: Load object data by file ID (not region ID)
+			for (int i6 = 0; i6 < k2; i6++) {
+				if (i6 >= mapRegionIds.length) {
+					logError("Index " + i6 + " exceeds array bounds in normal mode pass 3");
+					break;
+				}
 
-						if (isValidMapCoordinate(l8, k9, i6)) {
-							try {
-								objectManager.loadObjectRegion(l8, collisionMaps, k9, worldController, objectData[i6]);
-							} catch (ArrayIndexOutOfBoundsException e) {
-								logError("ObjectManager.loadObjectRegion bounds error at (" + l8 + "," + k9 + ") for index " + i6 +
-									": " + e.getMessage());
-								logError("Raw coordinates: anIntArray1234[" + i6 + "] = " + mapRegionIds[i6] +
-									", baseX=" + baseX + ", baseY=" + baseY);
-							}
-						} else {
-							logError("Invalid coordinates for loadObjectRegion: l8=" + l8 + ", k9=" + k9 +
-								" (index=" + i6 + ", baseX=" + baseX + ", baseY=" + baseY + ")");
-						}
+				int l8 = (mapRegionIds[i6] >> 8) * 64 - baseX;
+				int k9 = (mapRegionIds[i6] & 0xff) * 64 - baseY;
+
+				if (!isValidMapCoordinate(l8, k9, i6)) continue;
+
+				// Load objects JSON by file ID
+				int objectFileId = i6 < objectIndices.length ? objectIndices[i6] : -1;
+				boolean loaded = false;
+				if (objectFileId > 0) {
+					try {
+						loaded = objectManager.loadObjectRegionJson(objectFileId, l8, collisionMaps,
+							k9, worldController);
+					} catch (Exception e) {
+						logError("JSON loadObjectRegion error for file " + objectFileId + " (region " + mapRegionIds[i6] + "): " + e.getMessage());
 					}
 				}
-			} else {
-				logError("aByteArrayArray1247 is null, skipping loadObjectRegion calls");
+
 			}
 
 		} catch (Exception e) {
@@ -1086,7 +1101,7 @@ public class GameState extends Client {
 				logError("ObjectDef.mruNodes1 is null");
 			}
 
-			if (lowMem && Signlink.cache_dat != null && cacheManager != null) {
+			if (lowMem && cacheManager != null) {
 				int versionCount = cacheManager.getVersionCount(0);
 				int batchSize = Math.min(50, versionCount);
 
@@ -1190,25 +1205,7 @@ public class GameState extends Client {
 	}
 
 	private static void processBoundaryCellSafe(int x, int y) {
-		try {
-			if (cacheManager == null) {
-				logError("cacheManager is null in processBoundaryCellSafe");
-				return;
-			}
-
-			int id1 = cacheManager.getMapIndex(0, y, x);
-			if (id1 != -1) {
-				cacheManager.requestFile(id1, 3);
-			}
-
-			int id2 = cacheManager.getMapIndex(1, y, x);
-			if (id2 != -1) {
-				cacheManager.requestFile(id2, 3);
-			}
-
-		} catch (Exception e) {
-			logError("Error processing boundary cell (" + x + "," + y + "): " + e.getMessage());
-		}
+		// Maps are now loaded from embedded JSON cache — no server download needed
 	}
 
 	private static void handleResetError(Exception exception) {

@@ -632,24 +632,23 @@ public class LoadingErrorScreen extends Client {
 
 	private static void performDeleteCacheFiles() {
 		try {
-			addConsoleMessage("Deleting cache files...");
+			addConsoleMessage("Deleting user data files...");
 
 			String cacheDir = Signlink.findCacheDir();
 			Path cachePath = Paths.get(cacheDir);
 
-			deleteFileIfExists(cachePath.resolve("main_file_cache.dat"));
-			for (int i = 0; i < 6; i++) {
-				deleteFileIfExists(cachePath.resolve("main_file_cache.idx" + i));
-			}
+			deleteFileIfExists(cachePath.resolve("settings.json"));
+			deleteFileIfExists(cachePath.resolve("accounts.json"));
+			deleteFileIfExists(cachePath.resolve("uid.json"));
+			deleteFileIfExists(cachePath.resolve("appearance.json"));
+			deleteFileIfExists(cachePath.resolve("bubblebudz.json"));
 
-			deleteFileIfExists(cachePath.resolve("sprites.dat"));
-
-			lastHealingAction = "Cache files deleted";
+			lastHealingAction = "User data files deleted";
 			lastHealingTime = System.currentTimeMillis();
-			addConsoleMessage("Cache files deleted successfully");
+			addConsoleMessage("User data files deleted successfully");
 
 		} catch (Exception e) {
-			addConsoleMessage("Failed to delete cache files: " + e.getMessage());
+			addConsoleMessage("Failed to delete user data files: " + e.getMessage());
 		}
 	}
 
@@ -704,34 +703,14 @@ public class LoadingErrorScreen extends Client {
 	}
 
 	private static boolean isCacheRelatedError() {
-
+		// All game data is now loaded from JSON — no binary cache files to check
 		try {
 			String cacheDir = Signlink.findCacheDir();
 			Path cachePath = Paths.get(cacheDir);
-
-			if (!Files.exists(cachePath.resolve("main_file_cache.dat"))) {
-				return true;
-			}
-
-			for (int i = 0; i < 6; i++) {
-				if (!Files.exists(cachePath.resolve("main_file_cache.idx" + i))) {
-					return true;
-				}
-			}
-
-			try {
-				if (Files.size(cachePath.resolve("main_file_cache.dat")) < 100) {
-					return true;
-				}
-			} catch (IOException e) {
-				return true;
-			}
-
+			return !Files.exists(cachePath);
 		} catch (Exception e) {
 			return true;
 		}
-
-		return false;
 	}
 
 	public static void addConsoleMessage(String message) {

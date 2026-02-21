@@ -3,10 +3,13 @@ package com.bestbudz.ui.handling;
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.engine.core.Client;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class SettingHandler
 {
@@ -17,7 +20,10 @@ public class SettingHandler
 		"Hitmarkers",
 		"x10 Damage", "Attack Priority", "Time Stamps", "Ground Decorations", "Flat Shading"
 	};
-	private final static String PATH = Signlink.findCacheDir() + "/settings.dat";
+	private final static String DIR = Signlink.findCacheDir();
+	private final static String PATH = DIR + "settings.json";
+	private final static String OLD_PATH = DIR + "settings.dat";
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	public static void defaultSettings()
 	{
@@ -44,32 +50,37 @@ public class SettingHandler
 	{
 		try
 		{
-			File file = new File(PATH);
-			DataOutputStream out = new DataOutputStream(Files.newOutputStream(file.toPath()));
-			out.writeUTF(Client.myUsername);
-			out.writeUTF(Client.myPassword);
-			out.writeUTF(Client.chatColorHex);
-			out.writeBoolean(Client.rememberMe);
-			out.writeBoolean(SettingsConfig.enableDistanceFog);
-			out.writeBoolean(SettingsConfig.enableMipMapping);
-			out.writeBoolean(SettingsConfig.enableMovingTextures);
-			out.writeBoolean(SettingsConfig.enableStatusOrbs);
-			out.writeBoolean(SettingsConfig.enableRoofs);
-			out.writeBoolean(SettingsConfig.enablePouch);
-			out.writeBoolean(SettingsConfig.showKillFeed);
-			out.writeBoolean(SettingsConfig.menuHovers);
-			out.writeBoolean(SettingsConfig.drawEntityFeed);
-			out.writeBoolean(SettingsConfig.enableNewHpBars);
-			out.writeBoolean(SettingsConfig.enableNewHitmarks);
-			out.writeBoolean(SettingsConfig.enable10xDamage);
-			out.writeBoolean(SettingsConfig.entityAttackPriority);
-			out.writeBoolean(SettingsConfig.enableTimeStamps);
-			out.writeBoolean(SettingsConfig.enableGroundDecorations);
-			out.writeBoolean(SettingsConfig.enableFlatShading);
-			out.writeUTF(SettingsConfig.uiDockPanels);
-			out.writeFloat(SettingsConfig.uiDockDividerRatio); // ✅ persist ratio
-			out.writeUTF(SettingsConfig.uiDockLastActive);
-			out.close();
+			JsonObject root = new JsonObject();
+			root.addProperty("username", Client.myUsername);
+			root.addProperty("chatColorHex", Client.chatColorHex);
+			root.addProperty("rememberMe", Client.rememberMe);
+
+			JsonObject toggles = new JsonObject();
+			toggles.addProperty("fog", SettingsConfig.enableDistanceFog);
+			toggles.addProperty("mipMapping", SettingsConfig.enableMipMapping);
+			toggles.addProperty("movingTextures", SettingsConfig.enableMovingTextures);
+			toggles.addProperty("statusOrbs", SettingsConfig.enableStatusOrbs);
+			toggles.addProperty("roofs", SettingsConfig.enableRoofs);
+			toggles.addProperty("pouch", SettingsConfig.enablePouch);
+			toggles.addProperty("killFeed", SettingsConfig.showKillFeed);
+			toggles.addProperty("hoverMenus", SettingsConfig.menuHovers);
+			toggles.addProperty("entityFeed", SettingsConfig.drawEntityFeed);
+			toggles.addProperty("hpBars", SettingsConfig.enableNewHpBars);
+			toggles.addProperty("hitmarkers", SettingsConfig.enableNewHitmarks);
+			toggles.addProperty("x10Damage", SettingsConfig.enable10xDamage);
+			toggles.addProperty("attackPriority", SettingsConfig.entityAttackPriority);
+			toggles.addProperty("timeStamps", SettingsConfig.enableTimeStamps);
+			toggles.addProperty("groundDecorations", SettingsConfig.enableGroundDecorations);
+			toggles.addProperty("flatShading", SettingsConfig.enableFlatShading);
+			root.add("toggles", toggles);
+
+			JsonObject dock = new JsonObject();
+			dock.addProperty("panels", SettingsConfig.uiDockPanels);
+			dock.addProperty("dividerRatio", SettingsConfig.uiDockDividerRatio);
+			dock.addProperty("lastActive", SettingsConfig.uiDockLastActive);
+			root.add("dock", dock);
+
+			Files.write(Paths.get(PATH), GSON.toJson(root).getBytes(StandardCharsets.UTF_8));
 			System.out.println("Successfully saved " + strings.length + " settings.");
 		}
 		catch (Exception e)
@@ -82,14 +93,72 @@ public class SettingHandler
 	{
 		try
 		{
-			File file = new File(PATH);
-			if (!file.exists())
+			File jsonFile = new File(PATH);
+			File oldFile = new File(OLD_PATH);
+
+			// Migrate old binary settings.dat if JSON doesn't exist yet
+			if (!jsonFile.exists() && oldFile.exists())
+			{
+				migrateFromBinary();
+				return;
+			}
+
+			if (!jsonFile.exists())
 			{
 				return;
 			}
-			DataInputStream in = new DataInputStream(Files.newInputStream(file.toPath()));
+
+			String content = new String(Files.readAllBytes(Paths.get(PATH)), StandardCharsets.UTF_8);
+			JsonObject root = GSON.fromJson(content, JsonObject.class);
+
+			Client.myUsername = getStr(root, "username", "");
+			Client.chatColorHex = getStr(root, "chatColorHex", "");
+			Client.rememberMe = getBool(root, "rememberMe", false);
+
+			if (root.has("toggles"))
+			{
+				JsonObject t = root.getAsJsonObject("toggles");
+				SettingsConfig.enableDistanceFog = getBool(t, "fog", true);
+				SettingsConfig.enableMipMapping = getBool(t, "mipMapping", true);
+				SettingsConfig.enableMovingTextures = getBool(t, "movingTextures", true);
+				SettingsConfig.enableStatusOrbs = getBool(t, "statusOrbs", true);
+				SettingsConfig.enableRoofs = getBool(t, "roofs", false);
+				SettingsConfig.enablePouch = getBool(t, "pouch", true);
+				SettingsConfig.showKillFeed = getBool(t, "killFeed", false);
+				SettingsConfig.menuHovers = getBool(t, "hoverMenus", true);
+				SettingsConfig.drawEntityFeed = getBool(t, "entityFeed", false);
+				SettingsConfig.enableNewHpBars = getBool(t, "hpBars", false);
+				SettingsConfig.enableNewHitmarks = getBool(t, "hitmarkers", false);
+				SettingsConfig.enable10xDamage = getBool(t, "x10Damage", false);
+				SettingsConfig.entityAttackPriority = getBool(t, "attackPriority", false);
+				SettingsConfig.enableTimeStamps = getBool(t, "timeStamps", false);
+				SettingsConfig.enableGroundDecorations = getBool(t, "groundDecorations", true);
+				SettingsConfig.enableFlatShading = getBool(t, "flatShading", true);
+			}
+
+			if (root.has("dock"))
+			{
+				JsonObject d = root.getAsJsonObject("dock");
+				SettingsConfig.uiDockPanels = getStr(d, "panels", "");
+				SettingsConfig.uiDockDividerRatio = d.has("dividerRatio") ? d.get("dividerRatio").getAsFloat() : 0.5f;
+				SettingsConfig.uiDockLastActive = getStr(d, "lastActive", "");
+			}
+
+			System.out.println("Settings loaded: " + strings.length);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private static void migrateFromBinary()
+	{
+		try
+		{
+			java.io.DataInputStream in = new java.io.DataInputStream(Files.newInputStream(Paths.get(OLD_PATH)));
 			Client.myUsername = in.readUTF();
-			Client.myPassword = in.readUTF();
+			in.readUTF(); // skip password — no longer stored
 			Client.chatColorHex = in.readUTF();
 			Client.rememberMe = in.readBoolean();
 			SettingsConfig.enableDistanceFog = in.readBoolean();
@@ -108,31 +177,30 @@ public class SettingHandler
 			SettingsConfig.enableTimeStamps = in.readBoolean();
 			SettingsConfig.enableGroundDecorations = in.readBoolean();
 			SettingsConfig.enableFlatShading = in.readBoolean();
-			try {
-				SettingsConfig.uiDockPanels = in.readUTF();
-			} catch (Exception ignored) {
-				SettingsConfig.uiDockPanels = "";
-			}
-
-			try {
-				SettingsConfig.uiDockDividerRatio = in.readFloat();
-			} catch (Exception ignored) {
-				SettingsConfig.uiDockDividerRatio = 0.5f; // sensible fallback
-			}
-
-			try {
-				SettingsConfig.uiDockLastActive = in.readUTF();
-			} catch (Exception ignored) {
-				SettingsConfig.uiDockLastActive = "";
-			}
-
+			try { SettingsConfig.uiDockPanels = in.readUTF(); } catch (Exception ignored) { SettingsConfig.uiDockPanels = ""; }
+			try { SettingsConfig.uiDockDividerRatio = in.readFloat(); } catch (Exception ignored) { SettingsConfig.uiDockDividerRatio = 0.5f; }
+			try { SettingsConfig.uiDockLastActive = in.readUTF(); } catch (Exception ignored) { SettingsConfig.uiDockLastActive = ""; }
 			in.close();
-			System.out.println("Settings loaded: " + strings.length);
+
+			// Re-save as JSON and delete old binary
+			save();
+			new File(OLD_PATH).delete();
+			System.out.println("Migrated settings.dat -> settings.json");
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			System.err.println("Failed to migrate settings.dat: " + e.getMessage());
 		}
+	}
+
+	private static String getStr(JsonObject obj, String key, String def)
+	{
+		return obj.has(key) ? obj.get(key).getAsString() : def;
+	}
+
+	private static boolean getBool(JsonObject obj, String key, boolean def)
+	{
+		return obj.has(key) ? obj.get(key).getAsBoolean() : def;
 	}
 
 }

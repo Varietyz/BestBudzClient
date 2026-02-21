@@ -1,31 +1,25 @@
 
 package com.bestbudz.dock.ui.panel.character;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.util.Map;
 import java.util.Properties;
 
 public class AppearanceStorage {
 
 	private static final String BESTBUDZ_FOLDER = ".BestBudzCache";
-	private static final String APPEARANCE_FILE = "appearance.dock";
-	private static final String CURRENT_USER_KEY = "current.user";
-
-	private static final String GENDER_KEY = "gender";
-	private static final String HEAD_KEY = "head";
-	private static final String JAW_KEY = "jaw";
-	private static final String TORSO_KEY = "torso";
-	private static final String ARMS_KEY = "arms";
-	private static final String HANDS_KEY = "hands";
-	private static final String LEGS_KEY = "legs";
-	private static final String FEET_KEY = "feet";
-	private static final String HAIR_COLOR_KEY = "hair.color";
-	private static final String TORSO_COLOR_KEY = "torso.color";
-	private static final String LEGS_COLOR_KEY = "legs.color";
-	private static final String FEET_COLOR_KEY = "feet.color";
-	private static final String SKIN_COLOR_KEY = "skin.color";
+	private static final String APPEARANCE_FILE = "appearance.json";
+	private static final String OLD_APPEARANCE_FILE = "appearance.dock";
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	private final Path appearanceFilePath;
+	private final Path oldAppearanceFilePath;
 	private String currentUsername;
 
 	public AppearanceStorage() {
@@ -36,9 +30,12 @@ public class AppearanceStorage {
 		try {
 			Files.createDirectories(bestbudzDir);
 			appearanceFilePath = bestbudzDir.resolve(APPEARANCE_FILE);
+			oldAppearanceFilePath = bestbudzDir.resolve(OLD_APPEARANCE_FILE);
 		} catch (IOException e) {
-			throw new RuntimeException("Failed to getPooledStream .bestbudz directory", e);
+			throw new RuntimeException("Failed to create .bestbudz directory", e);
 		}
+
+		migrateFromProperties();
 	}
 
 	public void setCurrentUser(String username) {
@@ -52,26 +49,28 @@ public class AppearanceStorage {
 		}
 
 		try {
-			Properties props = loadProperties();
+			JsonObject root = loadJson();
+			root.addProperty("currentUser", currentUsername);
 
-			props.setProperty(CURRENT_USER_KEY, currentUsername);
+			JsonObject users = root.has("users") ? root.getAsJsonObject("users") : new JsonObject();
+			JsonObject userData = new JsonObject();
+			userData.addProperty("gender", appearance.gender);
+			userData.addProperty("head", appearance.head);
+			userData.addProperty("jaw", appearance.jaw);
+			userData.addProperty("torso", appearance.torso);
+			userData.addProperty("arms", appearance.arms);
+			userData.addProperty("hands", appearance.hands);
+			userData.addProperty("legs", appearance.legs);
+			userData.addProperty("feet", appearance.feet);
+			userData.addProperty("hairColor", appearance.hairColor);
+			userData.addProperty("torsoColor", appearance.torsoColor);
+			userData.addProperty("legsColor", appearance.legsColor);
+			userData.addProperty("feetColor", appearance.feetColor);
+			userData.addProperty("skinColor", appearance.skinColor);
+			users.add(currentUsername, userData);
+			root.add("users", users);
 
-			String userPrefix = currentUsername + ".";
-			props.setProperty(userPrefix + GENDER_KEY, String.valueOf(appearance.gender));
-			props.setProperty(userPrefix + HEAD_KEY, String.valueOf(appearance.head));
-			props.setProperty(userPrefix + JAW_KEY, String.valueOf(appearance.jaw));
-			props.setProperty(userPrefix + TORSO_KEY, String.valueOf(appearance.torso));
-			props.setProperty(userPrefix + ARMS_KEY, String.valueOf(appearance.arms));
-			props.setProperty(userPrefix + HANDS_KEY, String.valueOf(appearance.hands));
-			props.setProperty(userPrefix + LEGS_KEY, String.valueOf(appearance.legs));
-			props.setProperty(userPrefix + FEET_KEY, String.valueOf(appearance.feet));
-			props.setProperty(userPrefix + HAIR_COLOR_KEY, String.valueOf(appearance.hairColor));
-			props.setProperty(userPrefix + TORSO_COLOR_KEY, String.valueOf(appearance.torsoColor));
-			props.setProperty(userPrefix + LEGS_COLOR_KEY, String.valueOf(appearance.legsColor));
-			props.setProperty(userPrefix + FEET_COLOR_KEY, String.valueOf(appearance.feetColor));
-			props.setProperty(userPrefix + SKIN_COLOR_KEY, String.valueOf(appearance.skinColor));
-
-			saveProperties(props);
+			saveJson(root);
 			System.out.println("Saved appearance for user: " + currentUsername);
 			System.out.println("Saved data: " + appearance);
 
@@ -88,31 +87,31 @@ public class AppearanceStorage {
 		}
 
 		try {
-			Properties props = loadProperties();
-			String userPrefix = currentUsername + ".";
+			JsonObject root = loadJson();
+			if (!root.has("users")) return getDefaultAppearance();
 
-			if (!props.containsKey(userPrefix + GENDER_KEY)) {
+			JsonObject users = root.getAsJsonObject("users");
+			if (!users.has(currentUsername)) {
 				System.out.println("No saved appearance for user: " + currentUsername + ", using defaults");
 				return getDefaultAppearance();
 			}
 
+			JsonObject u = users.getAsJsonObject(currentUsername);
 			AppearanceData appearance = new AppearanceData();
 
-			appearance.gender = getByte(props, userPrefix + GENDER_KEY, AppearanceConfig.Defaults.GENDER);
-
-			appearance.head = getByte(props, userPrefix + HEAD_KEY, getDefaultForGender(appearance.gender, "head"));
-			appearance.jaw = getByte(props, userPrefix + JAW_KEY, getDefaultForGender(appearance.gender, "jaw"));
-			appearance.torso = getByte(props, userPrefix + TORSO_KEY, getDefaultForGender(appearance.gender, "torso"));
-			appearance.arms = getByte(props, userPrefix + ARMS_KEY, getDefaultForGender(appearance.gender, "arms"));
-			appearance.hands = getByte(props, userPrefix + HANDS_KEY, getDefaultForGender(appearance.gender, "hands"));
-			appearance.legs = getByte(props, userPrefix + LEGS_KEY, getDefaultForGender(appearance.gender, "legs"));
-			appearance.feet = getByte(props, userPrefix + FEET_KEY, getDefaultForGender(appearance.gender, "feet"));
-
-			appearance.hairColor = getByte(props, userPrefix + HAIR_COLOR_KEY, AppearanceConfig.Defaults.HAIR_COLOR);
-			appearance.torsoColor = getByte(props, userPrefix + TORSO_COLOR_KEY, AppearanceConfig.Defaults.TORSO_COLOR);
-			appearance.legsColor = getByte(props, userPrefix + LEGS_COLOR_KEY, AppearanceConfig.Defaults.LEGS_COLOR);
-			appearance.feetColor = getByte(props, userPrefix + FEET_COLOR_KEY, AppearanceConfig.Defaults.FEET_COLOR);
-			appearance.skinColor = getByte(props, userPrefix + SKIN_COLOR_KEY, AppearanceConfig.Defaults.SKIN_COLOR);
+			appearance.gender = getByte(u, "gender", AppearanceConfig.Defaults.GENDER);
+			appearance.head = getByte(u, "head", getDefaultForGender(appearance.gender, "head"));
+			appearance.jaw = getByte(u, "jaw", getDefaultForGender(appearance.gender, "jaw"));
+			appearance.torso = getByte(u, "torso", getDefaultForGender(appearance.gender, "torso"));
+			appearance.arms = getByte(u, "arms", getDefaultForGender(appearance.gender, "arms"));
+			appearance.hands = getByte(u, "hands", getDefaultForGender(appearance.gender, "hands"));
+			appearance.legs = getByte(u, "legs", getDefaultForGender(appearance.gender, "legs"));
+			appearance.feet = getByte(u, "feet", getDefaultForGender(appearance.gender, "feet"));
+			appearance.hairColor = getByte(u, "hairColor", AppearanceConfig.Defaults.HAIR_COLOR);
+			appearance.torsoColor = getByte(u, "torsoColor", AppearanceConfig.Defaults.TORSO_COLOR);
+			appearance.legsColor = getByte(u, "legsColor", AppearanceConfig.Defaults.LEGS_COLOR);
+			appearance.feetColor = getByte(u, "feetColor", AppearanceConfig.Defaults.FEET_COLOR);
+			appearance.skinColor = getByte(u, "skinColor", AppearanceConfig.Defaults.SKIN_COLOR);
 
 			System.out.println("Loaded appearance for user: " + currentUsername);
 			System.out.println("Loaded data: " + appearance);
@@ -127,8 +126,8 @@ public class AppearanceStorage {
 
 	public String getLastUser() {
 		try {
-			Properties props = loadProperties();
-			return props.getProperty(CURRENT_USER_KEY, "");
+			JsonObject root = loadJson();
+			return root.has("currentUser") ? root.get("currentUser").getAsString() : "";
 		} catch (Exception e) {
 			return "";
 		}
@@ -140,8 +139,9 @@ public class AppearanceStorage {
 		}
 
 		try {
-			Properties props = loadProperties();
-			boolean hasData = props.containsKey(username + "." + GENDER_KEY);
+			JsonObject root = loadJson();
+			if (!root.has("users")) return false;
+			boolean hasData = root.getAsJsonObject("users").has(username);
 			System.out.println("User " + username + " has saved appearance data: " + hasData);
 			return hasData;
 		} catch (Exception e) {
@@ -150,41 +150,88 @@ public class AppearanceStorage {
 		}
 	}
 
-	private Properties loadProperties() throws IOException {
-		Properties props = new Properties();
+	private JsonObject loadJson() throws IOException {
 		if (Files.exists(appearanceFilePath)) {
-			try (InputStream input = Files.newInputStream(appearanceFilePath)) {
-				props.load(input);
-				System.out.println("Loaded properties from: " + appearanceFilePath);
-			}
-		} else {
-			System.out.println("No appearance file found at: " + appearanceFilePath);
+			String content = new String(Files.readAllBytes(appearanceFilePath), StandardCharsets.UTF_8);
+			return GSON.fromJson(content, JsonObject.class);
 		}
-		return props;
+		return new JsonObject();
 	}
 
-	private void saveProperties(Properties props) throws IOException {
-		try (OutputStream output = Files.newOutputStream(appearanceFilePath)) {
-			props.store(output, "BestBudz Dock Appearance Data");
-			System.out.println("Saved properties to: " + appearanceFilePath);
-		}
+	private void saveJson(JsonObject root) throws IOException {
+		Files.write(appearanceFilePath, GSON.toJson(root).getBytes(StandardCharsets.UTF_8));
 	}
 
-	private byte getByte(Properties props, String key, byte defaultValue) {
+	private void migrateFromProperties() {
+		if (Files.exists(appearanceFilePath) || !Files.exists(oldAppearanceFilePath)) {
+			return;
+		}
+
 		try {
-			String value = props.getProperty(key);
-			if (value != null) {
-				byte result = Byte.parseByte(value);
-				System.out.println("Loaded " + key + " = " + result);
-				return result;
-			} else {
-				System.out.println("Key " + key + " not found, using default: " + defaultValue);
+			Properties props = new Properties();
+			try (InputStream input = Files.newInputStream(oldAppearanceFilePath)) {
+				props.load(input);
+			}
+
+			JsonObject root = new JsonObject();
+			String currentUser = props.getProperty("current.user", "");
+			root.addProperty("currentUser", currentUser);
+
+			// Collect all unique usernames from property keys
+			java.util.Set<String> usernames = new java.util.HashSet<>();
+			for (String key : props.stringPropertyNames()) {
+				if (key.contains(".") && !key.equals("current.user")) {
+					usernames.add(key.substring(0, key.indexOf('.')));
+				}
+			}
+
+			JsonObject users = new JsonObject();
+			for (String user : usernames) {
+				JsonObject userData = new JsonObject();
+				String prefix = user + ".";
+				putByteIfPresent(userData, "gender", props, prefix + "gender");
+				putByteIfPresent(userData, "head", props, prefix + "head");
+				putByteIfPresent(userData, "jaw", props, prefix + "jaw");
+				putByteIfPresent(userData, "torso", props, prefix + "torso");
+				putByteIfPresent(userData, "arms", props, prefix + "arms");
+				putByteIfPresent(userData, "hands", props, prefix + "hands");
+				putByteIfPresent(userData, "legs", props, prefix + "legs");
+				putByteIfPresent(userData, "feet", props, prefix + "feet");
+				putByteIfPresent(userData, "hairColor", props, prefix + "hair.color");
+				putByteIfPresent(userData, "torsoColor", props, prefix + "torso.color");
+				putByteIfPresent(userData, "legsColor", props, prefix + "legs.color");
+				putByteIfPresent(userData, "feetColor", props, prefix + "feet.color");
+				putByteIfPresent(userData, "skinColor", props, prefix + "skin.color");
+				users.add(user, userData);
+			}
+			root.add("users", users);
+
+			saveJson(root);
+			Files.delete(oldAppearanceFilePath);
+			System.out.println("Migrated appearance.dock -> appearance.json");
+		} catch (Exception e) {
+			System.err.println("Failed to migrate appearance.dock: " + e.getMessage());
+		}
+	}
+
+	private void putByteIfPresent(JsonObject obj, String jsonKey, Properties props, String propKey) {
+		String val = props.getProperty(propKey);
+		if (val != null) {
+			try {
+				obj.addProperty(jsonKey, Byte.parseByte(val));
+			} catch (NumberFormatException ignored) {}
+		}
+	}
+
+	private byte getByte(JsonObject obj, String key, byte defaultValue) {
+		if (obj.has(key)) {
+			try {
+				return obj.get(key).getAsByte();
+			} catch (Exception e) {
 				return defaultValue;
 			}
-		} catch (NumberFormatException e) {
-			System.err.println("Invalid value for " + key + ", using default: " + defaultValue);
-			return defaultValue;
 		}
+		return defaultValue;
 	}
 
 	private byte getDefaultForGender(byte gender, String part) {

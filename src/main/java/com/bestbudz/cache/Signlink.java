@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.io.UncheckedIOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -32,10 +31,8 @@ import java.util.Map;
 public final class Signlink implements Runnable {
 
 	public static final int clientversion = 317;
-	public static final RandomAccessFile[] cache_idx = new RandomAccessFile[6];
 	public static int uid;
 	public static int storeid = 32;
-	public static RandomAccessFile cache_dat = null;
 	public static boolean sunjava;
 	public static String dns = null;
 	public static String midi = null;
@@ -392,17 +389,8 @@ public final class Signlink implements Runnable {
 
 	public void run() {
 		active = true;
-		addConsoleMessage("[CACHE] (signlink) active – opening cache files");
+		addConsoleMessage("[CACHE] (signlink) active");
 		uid = getuid(findCacheDir());
-
-		try {
-			cache_dat = new RandomAccessFile(findCacheDir() + "main_file_cache.dat", "rw");
-			for (int i = 0; i < cache_idx.length; i++) {
-				cache_idx[i] = new RandomAccessFile(findCacheDir() + "main_file_cache.idx" + i, "rw");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		int cleanupCounter = 0;
 
@@ -462,21 +450,40 @@ public final class Signlink implements Runnable {
 	}
 
 	private static int getuid(String s) {
-		try {
-			File file = new File(s + "uid.dat");
-			if (!file.exists() || file.length() < 4L) {
-				DataOutputStream dataoutputstream = new DataOutputStream(Files.newOutputStream(Paths.get(s + "uid.dat")));
-				dataoutputstream.writeInt((int) (Math.random() * 99999999D));
-				dataoutputstream.close();
+		String jsonPath = s + "uid.json";
+		String oldPath = s + "uid.dat";
+
+		// Migrate old binary uid.dat → uid.json
+		File oldFile = new File(oldPath);
+		File jsonFile = new File(jsonPath);
+		if (!jsonFile.exists() && oldFile.exists() && oldFile.length() >= 4L) {
+			try {
+				DataInputStream din = new DataInputStream(Files.newInputStream(oldFile.toPath()));
+				int oldUid = din.readInt();
+				din.close();
+				Files.write(Paths.get(jsonPath), ("{\"uid\":" + oldUid + "}").getBytes(java.nio.charset.StandardCharsets.UTF_8));
+				oldFile.delete();
+				addConsoleMessage("[CACHE] Migrated uid.dat -> uid.json");
+			} catch (Exception e) {
+				// fall through to generate new
 			}
-		} catch (Exception _ex) {
-			throw new RuntimeException(_ex);
 		}
+
+		// Generate new uid.json if missing
+		if (!jsonFile.exists()) {
+			try {
+				int newUid = (int) (Math.random() * 99999999D);
+				Files.write(Paths.get(jsonPath), ("{\"uid\":" + newUid + "}").getBytes(java.nio.charset.StandardCharsets.UTF_8));
+			} catch (Exception _ex) {
+				throw new RuntimeException(_ex);
+			}
+		}
+
+		// Read uid.json
 		try {
-			DataInputStream datainputstream = new DataInputStream(Files.newInputStream(Paths.get(s + "uid.dat")));
-			int i = datainputstream.readInt();
-			datainputstream.close();
-			return i + 1;
+			String content = new String(Files.readAllBytes(Paths.get(jsonPath)), java.nio.charset.StandardCharsets.UTF_8);
+			com.google.gson.JsonObject obj = new com.google.gson.Gson().fromJson(content, com.google.gson.JsonObject.class);
+			return obj.get("uid").getAsInt() + 1;
 		} catch (Exception _ex) {
 			return 0;
 		}

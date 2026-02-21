@@ -31,18 +31,7 @@ public class CacheDiagnostic extends BaseDiagnostic {
 		addRow("UID", String.valueOf(Signlink.uid), DiagnosticStyle.TEXT_MUTED);
 		addRow("Store ID", String.valueOf(Signlink.storeid), DiagnosticStyle.TEXT_MUTED);
 
-		boolean cacheActive = Signlink.cache_dat != null;
-		addRow("Cache DAT", cacheActive ? "Active" : "Inactive",
-			cacheActive ? DiagnosticStyle.STATUS_GOOD : DiagnosticStyle.STATUS_CRITICAL);
-
-		if (Signlink.cache_idx != null) {
-			int activeIndexes = 0;
-			for (int i = 0; i < Signlink.cache_idx.length; i++) {
-				if (Signlink.cache_idx[i] != null) activeIndexes++;
-			}
-			addRow("Index Files", activeIndexes + "/6",
-				activeIndexes == 6 ? DiagnosticStyle.STATUS_GOOD : DiagnosticStyle.STATUS_WARNING);
-		}
+		addRow("Data Source", "JSON", DiagnosticStyle.STATUS_GOOD);
 
 		if (Client.cacheManager != null) {
 			String status = Client.cacheManager.statusString;

@@ -1,9 +1,12 @@
 package com.bestbudz.cache;
 
-import com.bestbudz.network.Stream;
-import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.rendering.model.Model;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -32,53 +35,73 @@ public final class IdentityKit
 		aBoolean662 = false;
 	}
 
-	public static void unpackConfig(ArchiveLoader archiveLoader)
+	public static void unpackConfig()
 	{
-		Stream stream = new Stream(archiveLoader.extractFile("idk.dat"));
-		length = stream.readUnsignedWord();
-		if (cache == null)
-			cache = new IdentityKit[length];
-		for (int j = 0; j < length; j++)
-		{
-			if (cache[j] == null)
-				cache[j] = new IdentityKit();
-			cache[j].readValues(stream);
+		JsonObject json = JsonCacheLoader.loadJsonObject("identity_kits.json");
+		if (json == null) {
+			System.err.println("Failed to load identity_kits.json");
+			return;
 		}
 
+		int maxId = 0;
+		for (String key : json.keySet()) {
+			int id = Integer.parseInt(key);
+			if (id > maxId) maxId = id;
+		}
+
+		length = maxId + 1;
+		if (cache == null)
+			cache = new IdentityKit[length];
+
+		int loaded = 0;
+		for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+			int id = Integer.parseInt(entry.getKey());
+			JsonObject def = entry.getValue().getAsJsonObject();
+
+			if (cache[id] == null)
+				cache[id] = new IdentityKit();
+
+			cache[id].readFromJson(def);
+			loaded++;
+		}
+
+		System.out.println("IdentityKits Loaded (JSON): " + loaded);
 	}
 
-	private void readValues(Stream stream)
-	{
-		do
-		{
-			int i = stream.readUnsignedByte();
-			if (i == 0)
-			{
-
-				collectColors();
-				return;
+	private void readFromJson(JsonObject json) {
+		if (json.has("bodyPart")) {
+			anInt657 = json.get("bodyPart").getAsInt();
+		}
+		if (json.has("models")) {
+			JsonArray arr = json.getAsJsonArray("models");
+			anIntArray658 = new int[arr.size()];
+			for (int i = 0; i < arr.size(); i++) {
+				anIntArray658[i] = arr.get(i).getAsInt();
 			}
-			if (i == 1)
-				anInt657 = stream.readUnsignedByte();
-			else if (i == 2)
-			{
-				int j = stream.readUnsignedByte();
-				anIntArray658 = new int[j];
-				for (int k = 0; k < j; k++)
-					anIntArray658[k] = stream.readUnsignedWord();
-
+		}
+		if (json.has("nonSelectable")) {
+			aBoolean662 = json.get("nonSelectable").getAsBoolean();
+		}
+		if (json.has("originalColors")) {
+			JsonArray arr = json.getAsJsonArray("originalColors");
+			for (int i = 0; i < Math.min(arr.size(), 6); i++) {
+				anIntArray659[i] = arr.get(i).getAsInt();
 			}
-			else if (i == 3)
-				aBoolean662 = true;
-			else if (i >= 40 && i < 50)
-				anIntArray659[i - 40] = stream.readUnsignedWord();
-			else if (i >= 50 && i < 60)
-				anIntArray660[i - 50] = stream.readUnsignedWord();
-			else if (i >= 60 && i < 70)
-				anIntArray661[i - 60] = stream.readUnsignedWord();
-			else
-				System.out.println("Error unrecognised config code: " + i);
-		} while (true);
+		}
+		if (json.has("replacementColors")) {
+			JsonArray arr = json.getAsJsonArray("replacementColors");
+			for (int i = 0; i < Math.min(arr.size(), 6); i++) {
+				anIntArray660[i] = arr.get(i).getAsInt();
+			}
+		}
+		if (json.has("headModels")) {
+			JsonArray arr = json.getAsJsonArray("headModels");
+			for (int i = 0; i < Math.min(arr.size(), 5); i++) {
+				anIntArray661[i] = arr.get(i).getAsInt();
+			}
+		}
+
+		collectColors();
 	}
 
 	private void collectColors()

@@ -3,7 +3,6 @@ package com.bestbudz.engine.core.gamerender;
 import com.bestbudz.engine.config.SettingsConfig;
 import static com.bestbudz.engine.core.gamerender.ColorPalette.adjustColorBrightness;
 import com.bestbudz.graphics.Background;
-import com.bestbudz.network.ArchiveLoader;
 
 public final class Rasterizer extends DrawingArea
 {
@@ -103,11 +102,11 @@ public final class Rasterizer extends DrawingArea
 		}
 	}
 
-	public static void loadTextures(ArchiveLoader archiveLoader) {
+	public static void loadTextures() {
 		loadedTextureCount = 0;
 		for (int x = 0; x < textureAmount; x++)
 			try {
-				backgroundTextures[x] = new Background(archiveLoader, String.valueOf(x), 0);
+				backgroundTextures[x] = Background.loadFromExtracted(String.valueOf(x), 0);
 				if (lowMemoryMode && backgroundTextures[x].anInt1456 == 128)
 					backgroundTextures[x].method356();
 				else
@@ -197,11 +196,11 @@ public final class Rasterizer extends DrawingArea
 		if (background.backgroundWidth == 64) {
 			for (int j1 = 0; j1 < 128; j1++) {
 				for (int j2 = 0; j2 < 128; j2++)
-					texels[0][j2 + (j1 << 7)] = texturePalette[background.textureData[(j2 >> 1) + ((j1 >> 1) << 6)]];
+					texels[0][j2 + (j1 << 7)] = texturePalette[background.textureData[(j2 >> 1) + ((j1 >> 1) << 6)] & 0xFF];
 			}
 		} else {
 			for (int shade1 = 0; shade1 < 16384; shade1++)
-				texels[0][shade1] = texturePalette[background.textureData[shade1]];
+				texels[0][shade1] = texturePalette[background.textureData[shade1] & 0xFF];
 		}
 
 		textureHasTransparency[textureId] = false;

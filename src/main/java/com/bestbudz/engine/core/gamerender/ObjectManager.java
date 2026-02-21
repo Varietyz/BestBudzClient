@@ -1,5 +1,6 @@
 package com.bestbudz.engine.core.gamerender;
 
+import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.network.CacheManager;
 import com.bestbudz.network.Stream;
@@ -11,6 +12,9 @@ import com.bestbudz.world.CollisionMap;
 import com.bestbudz.world.CoordinateTransform;
 import com.bestbudz.world.Floor;
 import com.bestbudz.world.ObjectDef;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.util.ArrayList;
 
 public final class ObjectManager {
@@ -1838,5 +1842,128 @@ public final class ObjectManager {
 				} while (true);
 			} while (true);
 		}
+	}
+
+	// --- JSON-based map loading methods ---
+
+	public boolean loadMapRegionJson(int fileId, int offsetY, int offsetX, int originX, int originY, CollisionMap[] collisionMaps) {
+		JsonObject json = JsonCacheLoader.loadMapJson("landscape_" + fileId + ".json");
+		if (json == null) return false;
+
+		// Clear collision flags for this region
+		for (int plane = 0; plane < 4; plane++) {
+			for (int x = 0; x < 64; x++) {
+				for (int y = 0; y < 64; y++) {
+					if (offsetX + x > 0 && offsetX + x < 103 && offsetY + y > 0 && offsetY + y < 103)
+						collisionMaps[plane].collisionFlags[offsetX + x][offsetY + y] &= 0xfeffffff;
+				}
+			}
+		}
+
+		// Set defaults for all tiles (noise height, no overlay/underlay/flags)
+		for (int plane = 0; plane < 4; plane++) {
+			for (int lx = 0; lx < 64; lx++) {
+				for (int ly = 0; ly < 64; ly++) {
+					int absX = lx + offsetX;
+					int absY = ly + offsetY;
+					if (absX >= 0 && absX < 104 && absY >= 0 && absY < 104) {
+						tileFlags[plane][absX][absY] = 0;
+						if (plane == 0) {
+							heightMap[0][absX][absY] = -calculateTerrainHeight(
+								0xe3b7b + absX + originX, 0x87cce + absY + originY) * 8;
+						} else {
+							heightMap[plane][absX][absY] = heightMap[plane - 1][absX][absY] - 240;
+						}
+					}
+				}
+			}
+		}
+
+		// Apply JSON tile data (sparse - only non-default tiles stored)
+		JsonArray planes = json.getAsJsonArray("planes");
+		for (int p = 0; p < planes.size(); p++) {
+			JsonObject planeObj = planes.get(p).getAsJsonObject();
+			int plane = planeObj.get("plane").getAsInt();
+			if (plane < 0 || plane >= 4) continue;
+
+			JsonArray tiles = planeObj.getAsJsonArray("tiles");
+			for (int t = 0; t < tiles.size(); t++) {
+				JsonObject tile = tiles.get(t).getAsJsonObject();
+				int lx = tile.get("x").getAsInt();
+				int ly = tile.get("y").getAsInt();
+				int absX = lx + offsetX;
+				int absY = ly + offsetY;
+
+				if (absX < 0 || absX >= 104 || absY < 0 || absY >= 104) continue;
+
+				if (tile.has("height")) {
+					int h = tile.get("height").getAsInt();
+					if (h == 1) h = 0;
+					if (plane == 0) {
+						heightMap[0][absX][absY] = -h * 8;
+					} else {
+						heightMap[plane][absX][absY] = heightMap[plane - 1][absX][absY] - h * 8;
+					}
+				}
+
+				if (tile.has("overlayId")) {
+					overlayIds[plane][absX][absY] = (byte) tile.get("overlayId").getAsInt();
+				}
+				if (tile.has("overlayRotation")) {
+					overlayRotations[plane][absX][absY] = (byte) tile.get("overlayRotation").getAsInt();
+				}
+				if (tile.has("overlayShape")) {
+					overlayShapes[plane][absX][absY] = (byte) tile.get("overlayShape").getAsInt();
+				}
+				if (tile.has("underlayId")) {
+					underlay[plane][absX][absY] = (byte) tile.get("underlayId").getAsInt();
+				}
+				if (tile.has("flags")) {
+					tileFlags[plane][absX][absY] = (byte) tile.get("flags").getAsInt();
+				}
+			}
+		}
+
+		return true;
+	}
+
+	public boolean loadObjectRegionJson(int fileId, int offsetX, CollisionMap[] collisionMaps,
+										int offsetY, WorldController worldController) {
+		JsonObject json = JsonCacheLoader.loadMapJson("objects_" + fileId + ".json");
+		if (json == null) return false;
+
+		JsonArray objects = json.getAsJsonArray("objects");
+		for (int i = 0; i < objects.size(); i++) {
+			JsonObject obj = objects.get(i).getAsJsonObject();
+			int objectId = obj.get("objectId").getAsInt();
+			int localX = obj.get("localX").getAsInt();
+			int localY = obj.get("localY").getAsInt();
+			int plane = obj.get("plane").getAsInt();
+			int type = obj.get("type").getAsInt();
+			int rotation = obj.get("rotation").getAsInt();
+
+			int absX = localX + offsetX;
+			int absY = localY + offsetY;
+
+			if (absX > 0 && absY > 0 && absX < 103 && absY < 103 && plane >= 0 && plane < 4) {
+				int effectivePlane = plane;
+				if ((tileFlags[1][absX][absY] & 2) == 2)
+					effectivePlane--;
+				CollisionMap collisionMap = null;
+				if (effectivePlane >= 0)
+					collisionMap = collisionMaps[effectivePlane];
+				placeObject(absY, worldController, collisionMap, type, plane, absX, objectId, rotation);
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean isJsonMapAvailable(int fileId) {
+		return JsonCacheLoader.isAvailable("maps_json/landscape_" + fileId + ".json");
+	}
+
+	public static boolean isJsonObjectsAvailable(int fileId) {
+		return JsonCacheLoader.isAvailable("maps_json/objects_" + fileId + ".json");
 	}
 }

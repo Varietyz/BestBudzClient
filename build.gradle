@@ -20,6 +20,7 @@ dependencies {
     implementation 'org.jcodec:jcodec:0.2.5'
     implementation 'org.jcodec:jcodec-javase:0.2.5'
     implementation 'com.formdev:flatlaf:3.2'
+    implementation 'com.google.code.gson:gson:2.10.1'
     implementation "org.lwjgl:lwjgl:3.3.3"
     implementation "org.lwjgl:lwjgl-opengl:3.3.3"
     implementation "org.lwjgl:lwjgl-glfw:3.3.3"
@@ -43,6 +44,7 @@ application {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.incremental = true
+    options.compilerArgs << '-Xlint:deprecation'
 }
 
 jar {
@@ -86,5 +88,16 @@ launch4j {
 // Ensure launch4j waits for fat JAR
 tasks.named("createExe").configure {
     dependsOn tasks.named("shadowJar")
+}
+
+// Cache extraction tool
+tasks.register('extractCache', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.bestbudz.tools.CacheExtractor'
+    jvmArgs = ['-Xms512m', '-Xmx4096m']
+    // Pass --args="--cache=path --output=path" to override defaults
+    if (project.hasProperty('args')) {
+        args project.args.split('\\s+')
+    }
 }
 

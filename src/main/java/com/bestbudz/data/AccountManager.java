@@ -1,13 +1,23 @@
 package com.bestbudz.data;
 
 import com.bestbudz.cache.Signlink;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class AccountManager {
 
-  private static final File saveAccountFile = new File(Signlink.findCacheDir() + "/accounts.dat");
+  private static final String DIR = Signlink.findCacheDir();
+  private static final String PATH = DIR + "accounts.json";
+  private static final String OLD_PATH = DIR + "accounts.dat";
+  private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
   public static final List<AccountData> accounts = new LinkedList<>();
 
@@ -36,8 +46,7 @@ public class AccountManager {
 			}
 		}
     }
-    if (account.username == null && account.username.length() == 0
-        || account.password == null && account.password.length() == 0) {
+    if (account.username == null || account.username.length() == 0) {
       return;
     }
     accounts.add(account);
@@ -62,39 +71,71 @@ public class AccountManager {
       return;
     }
     try {
-      DataOutputStream output = new DataOutputStream(Files.newOutputStream(saveAccountFile.toPath()));
-      output.writeByte(accounts.size());
-		for (AccountData account : accounts)
-		{
-			output.writeInt(account.rank);
-			output.writeInt(account.uses);
-			output.writeUTF(account.username);
-			output.writeUTF(account.password);
-		}
-      output.close();
+      JsonArray arr = new JsonArray();
+      for (AccountData account : accounts)
+      {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("rank", account.rank);
+        obj.addProperty("uses", account.uses);
+        obj.addProperty("username", account.username);
+        arr.add(obj);
+      }
+      Files.write(Paths.get(PATH), GSON.toJson(arr).getBytes(StandardCharsets.UTF_8));
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
   public static void loadAccount() {
-    if (!saveAccountFile.exists()) {
+    File jsonFile = new File(PATH);
+    File oldFile = new File(OLD_PATH);
+
+    // Migrate old binary accounts.dat if JSON doesn't exist yet
+    if (!jsonFile.exists() && oldFile.exists()) {
+      migrateFromBinary();
       return;
     }
+
+    if (!jsonFile.exists()) {
+      return;
+    }
+
     try {
-      DataInputStream input = new DataInputStream(Files.newInputStream(saveAccountFile.toPath()));
+      String content = new String(Files.readAllBytes(Paths.get(PATH)), StandardCharsets.UTF_8);
+      JsonArray arr = GSON.fromJson(content, JsonArray.class);
+      for (JsonElement el : arr) {
+        JsonObject obj = el.getAsJsonObject();
+        int rank = obj.has("rank") ? obj.get("rank").getAsInt() : 0;
+        int uses = obj.has("uses") ? obj.get("uses").getAsInt() : 0;
+        String username = obj.has("username") ? obj.get("username").getAsString() : "";
+        AccountData account = new AccountData(rank, uses, username);
+        accounts.add(account);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static void migrateFromBinary() {
+    try {
+      DataInputStream input = new DataInputStream(Files.newInputStream(Paths.get(OLD_PATH)));
       int fileSize = input.readByte();
       for (int index = 0; index < fileSize; index++) {
         int rank = input.readInt();
         int uses = input.readInt();
         String username = input.readUTF();
-        String password = input.readUTF();
-        AccountData account = new AccountData(rank, uses, username, password);
+        input.readUTF(); // skip password — no longer stored
+        AccountData account = new AccountData(rank, uses, username);
         accounts.add(account);
       }
       input.close();
+
+      // Re-save as JSON and delete old binary
+      saveAccount();
+      new File(OLD_PATH).delete();
+      System.out.println("Migrated accounts.dat -> accounts.json");
     } catch (Exception e) {
-      e.printStackTrace();
+      System.err.println("Failed to migrate accounts.dat: " + e.getMessage());
     }
   }
 }

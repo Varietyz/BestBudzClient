@@ -1,9 +1,13 @@
 package com.bestbudz.rendering;
 
-import com.bestbudz.network.ArchiveLoader;
-import com.bestbudz.network.Stream;
+import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.Map;
 
 public final class SpotAnim {
 
@@ -28,62 +32,75 @@ public final class SpotAnim {
 		resizeY = 128;
 	}
 
-	public static void loadConfigurations(ArchiveLoader archiveLoader) {
-		Stream stream = new Stream(archiveLoader.extractFile("spotanim.dat"));
-		int length = stream.readUnsignedWord();
-		System.out.println("Graphics Loaded: " + length);
+	public static void loadConfigurations() {
+		JsonObject json = JsonCacheLoader.loadJsonObject("graphics.json");
+		if (json == null) {
+			System.err.println("Failed to load graphics.json");
+			return;
+		}
 
+		int maxId = 0;
+		for (String key : json.keySet()) {
+			int id = Integer.parseInt(key);
+			if (id > maxId) maxId = id;
+		}
+
+		int length = maxId + 1;
 		if (cache == null) {
 			cache = new SpotAnim[length + 50000];
 		}
 
-		for (int j = 0; j < length; j++) {
-			if (cache[j] == null) {
-				cache[j] = new SpotAnim();
+		int loaded = 0;
+		for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+			int id = Integer.parseInt(entry.getKey());
+			JsonObject def = entry.getValue().getAsJsonObject();
+
+			if (cache[id] == null) {
+				cache[id] = new SpotAnim();
 			}
-			cache[j].id = j;
-			cache[j].decode(stream);
+			cache[id].id = id;
+			cache[id].readFromJson(def);
+			loaded++;
 		}
+
+		System.out.println("Graphics Loaded (JSON): " + loaded);
 	}
 
-	public void decode(Stream stream) {
-		int opcode;
-		while ((opcode = stream.readUnsignedByte()) != 0) {
-			switch (opcode) {
-				case 1:
-					modelId = stream.readUnsignedWord();
-					break;
-				case 2:
-					animationId = stream.readUnsignedWord();
-					if (Animation.anims != null) {
-						animation = Animation.anims[animationId];
-					}
-					break;
-				case 4:
-					resizeX = stream.readUnsignedWord();
-					break;
-				case 5:
-					resizeY = stream.readUnsignedWord();
-					break;
-				case 6:
-					rotation = stream.readUnsignedWord();
-					break;
-				case 7:
-					ambient = stream.readUnsignedWord();
-					break;
-				case 8:
-					contrast = stream.readUnsignedWord();
-					break;
-				case 40:
-					int colorCount = stream.readUnsignedByte();
-					for (int i = 0; i < colorCount; i++) {
-						originalColors[i] = stream.readUnsignedWord();
-						replacementColors[i] = stream.readUnsignedWord();
-					}
-					break;
-				default:
-					System.out.println("Error unrecognised spotanim config code: " + opcode);
-					break;
+	private void readFromJson(JsonObject json) {
+		if (json.has("modelId")) {
+			modelId = json.get("modelId").getAsInt();
+		}
+		if (json.has("animationId")) {
+			animationId = json.get("animationId").getAsInt();
+			if (Animation.anims != null && animationId >= 0 && animationId < Animation.anims.length) {
+				animation = Animation.anims[animationId];
+			}
+		}
+		if (json.has("resizeX")) {
+			resizeX = json.get("resizeX").getAsInt();
+		}
+		if (json.has("resizeY")) {
+			resizeY = json.get("resizeY").getAsInt();
+		}
+		if (json.has("rotation")) {
+			rotation = json.get("rotation").getAsInt();
+		}
+		if (json.has("ambient")) {
+			ambient = json.get("ambient").getAsInt();
+		}
+		if (json.has("contrast")) {
+			contrast = json.get("contrast").getAsInt();
+		}
+		if (json.has("originalColors")) {
+			JsonArray arr = json.getAsJsonArray("originalColors");
+			for (int i = 0; i < Math.min(arr.size(), 6); i++) {
+				originalColors[i] = arr.get(i).getAsInt();
+			}
+		}
+		if (json.has("replacementColors")) {
+			JsonArray arr = json.getAsJsonArray("replacementColors");
+			for (int i = 0; i < Math.min(arr.size(), 6); i++) {
+				replacementColors[i] = arr.get(i).getAsInt();
 			}
 		}
 	}
@@ -94,7 +111,6 @@ public final class SpotAnim {
 			return null;
 		}
 
-		// Apply color replacements
 		for (int i = 0; i < 6; i++) {
 			if (originalColors[i] != 0) {
 				model.replaceColor(originalColors[i], replacementColors[i]);

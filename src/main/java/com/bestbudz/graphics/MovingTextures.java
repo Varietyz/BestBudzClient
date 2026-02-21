@@ -6,6 +6,12 @@ import com.bestbudz.engine.core.gamerender.Rasterizer;
 
 public class MovingTextures extends Client
 {
+	private static void ensureBufferSize(int required) {
+		if (aByteArray912 == null || aByteArray912.length < required) {
+			aByteArray912 = new byte[required];
+		}
+	}
+
 	public static void updateMovingTextures(int j)
 	{
 		if (SettingsConfig.enableMovingTextures)
@@ -16,6 +22,7 @@ public class MovingTextures extends Client
 				int k = background.backgroundWidth * background.backgroundHeight - 1;
 				int j1 = background.backgroundWidth * gameTickCounter * 2;
 				byte[] abyte0 = background.textureData;
+				ensureBufferSize(k + 1);
 				byte[] abyte3 = aByteArray912;
 				for (int i2 = 0; i2 <= k; i2++)
 					abyte3[i2] = abyte0[i2 - j1 & k];
@@ -50,6 +57,7 @@ public class MovingTextures extends Client
 				int l = background_1.backgroundWidth * background_1.backgroundHeight - 1;
 				int k1 = background_1.backgroundWidth * gameTickCounter * 2;
 				byte[] abyte1 = background_1.textureData;
+				ensureBufferSize(l + 1);
 				byte[] abyte4 = aByteArray912;
 				for (int j2 = 0; j2 <= l; j2++)
 					abyte4[j2] = abyte1[j2 - k1 & l];
@@ -64,6 +72,7 @@ public class MovingTextures extends Client
 				int i1 = background_2.backgroundWidth * background_2.backgroundHeight - 1;
 				int l1 = background_2.backgroundWidth * gameTickCounter * 2;
 				byte[] abyte2 = background_2.textureData;
+				ensureBufferSize(i1 + 1);
 				byte[] abyte5 = aByteArray912;
 				for (int k2 = 0; k2 <= i1; k2++)
 					abyte5[k2] = abyte2[k2 - l1 & i1];
@@ -78,6 +87,7 @@ public class MovingTextures extends Client
 				int i1 = background_2.backgroundWidth * background_2.backgroundHeight - 1;
 				int l1 = background_2.backgroundWidth * gameTickCounter * 2;
 				byte[] abyte2 = background_2.textureData;
+				ensureBufferSize(i1 + 1);
 				byte[] abyte5 = aByteArray912;
 				for (int k2 = 0; k2 <= i1; k2++)
 					abyte5[k2] = abyte2[k2 - l1 & i1];

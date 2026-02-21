@@ -3,8 +3,6 @@ package com.bestbudz.graphics.sprite;
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.network.Stream;
-import com.bestbudz.network.ArchiveLoader;
-import com.bestbudz.util.FileUtility;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -31,7 +29,7 @@ public final class Sprite extends DrawingArea
 	public int drawOffsetX;
 	public int originalWidth;
 	public int originalHeight;
-	int drawOffsetY;
+	public int drawOffsetY;
 
 	public Sprite(int i, int j) {
 		myPixels = new int[i * j];
@@ -80,23 +78,6 @@ public final class Sprite extends DrawingArea
 		}
 	}
 
-	public Sprite(String img, int width, int height) {
-		try {
-			Image image = Toolkit.getDefaultToolkit().createImage(FileUtility.readFile(img));
-			myWidth = width;
-			myHeight = height;
-			originalWidth = myWidth;
-			originalHeight = myHeight;
-			drawOffsetX = 0;
-			drawOffsetY = 0;
-			myPixels = new int[myWidth * myHeight];
-			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
-			pixelgrabber.grabPixels();
-		} catch (Exception _ex) {
-			System.out.println(_ex);
-		}
-	}
-
 	public Sprite(String img) {
 		try {
 			Image image = Toolkit.getDefaultToolkit().getImage(location + img + ".png");
@@ -135,154 +116,6 @@ public final class Sprite extends DrawingArea
 			setTransparency(0, 0, 0);
 		} catch (Exception _ex) {
 			System.out.println(_ex);
-		}
-	}
-
-	public Sprite(ArchiveLoader archiveLoader, String s, int i) {
-
-		if (archiveLoader == null || s == null || s.isEmpty()) {
-			System.err.println("Invalid sprite parameters: " + s);
-			createEmptySprite();
-			return;
-		}
-
-		Stream stream = null;
-		Stream stream_1 = null;
-
-		try {
-			stream = new Stream(archiveLoader.extractFile(s + ".dat"));
-			stream_1 = new Stream(archiveLoader.extractFile("index.dat"));
-
-			if (stream == null || stream_1 == null || stream.buffer == null || stream_1.buffer == null) {
-				System.err.println("Failed to load sprite data for: " + s);
-				createEmptySprite();
-				return;
-			}
-
-		} catch (Exception e) {
-			System.err.println("Error loading sprite streams for " + s + ": " + e.getMessage());
-			createEmptySprite();
-			return;
-		}
-
-		try {
-			stream_1.position = stream.readUnsignedWord();
-			originalWidth = stream_1.readUnsignedWord();
-			originalHeight = stream_1.readUnsignedWord();
-			int j = stream_1.readUnsignedByte();
-
-			if (j <= 0 || j > 256) {
-				System.err.println("Invalid palette size for sprite " + s + ": " + j);
-				createEmptySprite();
-				return;
-			}
-
-			int[] ai = new int[j];
-			for (int k = 0; k < j - 1; k++) {
-				ai[k + 1] = stream_1.read3Bytes();
-				if (ai[k + 1] == 0)
-					ai[k + 1] = 1;
-			}
-
-			for (int l = 0; l < i; l++) {
-				if (stream_1.position + 5 >= stream_1.buffer.length) {
-					System.err.println("Stream overflow while seeking sprite index " + i + " in " + s);
-					createEmptySprite();
-					return;
-				}
-				stream_1.position += 2;
-				int skipWidth = stream_1.readUnsignedWord();
-				int skipHeight = stream_1.readUnsignedWord();
-
-				if (skipWidth < 0 || skipHeight < 0 || skipWidth > 2048 || skipHeight > 2048) {
-					System.err.println("Invalid skip dimensions for sprite " + s + " index " + l +
-						": " + skipWidth + "x" + skipHeight);
-					createEmptySprite();
-					return;
-				}
-
-				int skipBytes = skipWidth * skipHeight;
-				if (stream.position + skipBytes > stream.buffer.length) {
-					System.err.println("Not enough data to skip sprite " + l + " in " + s);
-					createEmptySprite();
-					return;
-				}
-
-				stream.position += skipBytes;
-				stream_1.position++;
-			}
-
-			if (stream_1.position + 6 >= stream_1.buffer.length) {
-				System.err.println("Not enough index data for sprite " + s + " index " + i);
-				createEmptySprite();
-				return;
-			}
-
-			drawOffsetX = stream_1.readUnsignedByte();
-			drawOffsetY = stream_1.readUnsignedByte();
-			myWidth = stream_1.readUnsignedWord();
-			myHeight = stream_1.readUnsignedWord();
-			int i1 = stream_1.readUnsignedByte();
-
-			if (myWidth <= 0 || myHeight <= 0 || myWidth > 2048 || myHeight > 2048) {
-				System.err.println("Invalid sprite dimensions for " + s + " index " + i +
-					": " + myWidth + "x" + myHeight);
-				createEmptySprite();
-				return;
-			}
-
-			long pixelCount = (long) myWidth * (long) myHeight;
-			if (pixelCount > 4194304) {
-				System.err.println("Sprite too large for " + s + " index " + i +
-					": " + myWidth + "x" + myHeight + " = " + pixelCount + " pixels");
-				createEmptySprite();
-				return;
-			}
-
-			int j1 = (int) pixelCount;
-
-			if (stream.position + j1 > stream.buffer.length) {
-				System.err.println("Not enough pixel data for sprite " + s + " index " + i +
-					" (need " + j1 + " bytes, have " + (stream.buffer.length - stream.position) + ")");
-				createEmptySprite();
-				return;
-			}
-
-			myPixels = new int[j1];
-
-			if (i1 == 0) {
-				for (int k1 = 0; k1 < j1; k1++) {
-					int paletteIndex = stream.readUnsignedByte();
-					if (paletteIndex >= ai.length) {
-						System.err.println("Palette index out of bounds: " + paletteIndex + " >= " + ai.length);
-						myPixels[k1] = 0;
-					} else {
-						myPixels[k1] = ai[paletteIndex];
-					}
-				}
-			} else if (i1 == 1) {
-				for (int l1 = 0; l1 < myWidth; l1++) {
-					for (int i2 = 0; i2 < myHeight; i2++) {
-						int paletteIndex = stream.readUnsignedByte();
-						if (paletteIndex >= ai.length) {
-							System.err.println("Palette index out of bounds: " + paletteIndex + " >= " + ai.length);
-							myPixels[l1 + i2 * myWidth] = 0;
-						} else {
-							myPixels[l1 + i2 * myWidth] = ai[paletteIndex];
-						}
-					}
-				}
-			} else {
-				System.err.println("Unknown sprite format " + i1 + " for " + s + " index " + i);
-				createEmptySprite();
-				return;
-			}
-
-			setTransparency(255, 0, 255);
-
-		} catch (Exception e) {
-			System.err.println("Error processing sprite " + s + " index " + i + ": " + e.getMessage());
-			createEmptySprite();
 		}
 	}
 

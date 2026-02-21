@@ -1,8 +1,12 @@
 package com.bestbudz.rendering.animation;
 
-import com.bestbudz.network.ArchiveLoader;
-import com.bestbudz.network.Stream;
+import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.rendering.SequenceFrame;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.Map;
 
 public final class Animation {
 
@@ -33,19 +37,37 @@ public final class Animation {
         anInt365 = 1;
     }
 
-    public static void unpackConfig(ArchiveLoader archiveLoader)
+    public static void unpackConfig()
     {
-		Stream stream = new Stream(archiveLoader.extractFile("seq.dat"));
-        int length = stream.readUnsignedWord();
-        System.out.println("Animations Loaded: "+length);
-        if(anims == null)
-            anims = new Animation[length + 5000];
-        for(int j = 0; j < length; j++) {
-            if(anims[j] == null)
-                anims[j] = new Animation();
-            anims[j].readValues(stream);
-
+        JsonObject json = JsonCacheLoader.loadJsonObject("animations.json");
+        if (json == null) {
+            System.err.println("Failed to load animations.json");
+            return;
         }
+
+        int maxId = 0;
+        for (String key : json.keySet()) {
+            int id = Integer.parseInt(key);
+            if (id > maxId) maxId = id;
+        }
+
+        int length = maxId + 1;
+        if (anims == null)
+            anims = new Animation[length + 5000];
+
+        int loaded = 0;
+        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+            int id = Integer.parseInt(entry.getKey());
+            JsonObject def = entry.getValue().getAsJsonObject();
+
+            if (anims[id] == null)
+                anims[id] = new Animation();
+
+            anims[id].readFromJson(def);
+            loaded++;
+        }
+
+        System.out.println("Animations Loaded (JSON): " + loaded);
     }
 
     public int getFrameDuration(int i) {
@@ -61,72 +83,87 @@ public final class Animation {
         return j;
     }
 
-private void readValues(Stream stream) {
-			int i;
-			while ((i = stream.readUnsignedByte()) != 0){
+    private void readFromJson(JsonObject json) {
+        if (json.has("frameCount")) {
+            frameCount = json.get("frameCount").getAsInt();
+        }
+        if (json.has("frameIds")) {
+            JsonArray arr = json.getAsJsonArray("frameIds");
+            frameIds = new int[arr.size()];
+            anIntArray354 = new int[arr.size()];
+            anIntArray355 = new int[arr.size()];
+            for (int i = 0; i < arr.size(); i++) {
+                frameIds[i] = arr.get(i).getAsInt();
+                anIntArray354[i] = -1;
+            }
+            frameCount = arr.size();
+        }
+        if (json.has("frameDurations")) {
+            JsonArray arr = json.getAsJsonArray("frameDurations");
+            if (anIntArray355 == null) {
+                anIntArray355 = new int[arr.size()];
+            }
+            for (int i = 0; i < Math.min(arr.size(), anIntArray355.length); i++) {
+                anIntArray355[i] = arr.get(i).getAsInt();
+            }
+        }
+        if (json.has("loopOffset")) {
+            loopOffset = json.get("loopOffset").getAsInt();
+        }
+        if (json.has("interleaveOrder")) {
+            JsonArray arr = json.getAsJsonArray("interleaveOrder");
+            anIntArray357 = new int[arr.size() + 1];
+            for (int i = 0; i < arr.size(); i++) {
+                anIntArray357[i] = arr.get(i).getAsInt();
+            }
+            anIntArray357[arr.size()] = 9999999;
+        }
+        if (json.has("resetOnMove")) {
+            resetOnMove = json.get("resetOnMove").getAsBoolean();
+        }
+        if (json.has("priority")) {
+            anInt359 = json.get("priority").getAsInt();
+        }
+        if (json.has("playerOffhand")) {
+            anInt360 = json.get("playerOffhand").getAsInt();
+        }
+        if (json.has("playerMainhand")) {
+            anInt361 = json.get("playerMainhand").getAsInt();
+        }
+        if (json.has("maxLoops")) {
+            maxLoops = json.get("maxLoops").getAsInt();
+        }
+        if (json.has("animatingPrecedence")) {
+            priority = json.get("animatingPrecedence").getAsInt();
+        }
+        if (json.has("walkingPrecedence")) {
+            anInt364 = json.get("walkingPrecedence").getAsInt();
+        }
+        if (json.has("replayMode")) {
+            anInt365 = json.get("replayMode").getAsInt();
+        }
 
-			if (i == 1) {
-				frameCount = stream.readUnsignedWord();
-				frameIds = new int[frameCount];
-				anIntArray354 = new int[frameCount];
-				anIntArray355 = new int[frameCount];
-				for (int j = 0; j < frameCount; j++) {
-						frameIds[j] = stream.readDWord();
-						anIntArray354[j] = -1;
-					}
-
-					for (int j = 0; j < frameCount; j++)
-						anIntArray355[j] = stream.readUnsignedByte();
-
-			} else if (i == 2)
-				loopOffset = stream.readUnsignedWord();
-			else if (i == 3) {
-				int k = stream.readUnsignedByte();
-				anIntArray357 = new int[k + 1];
-				for (int l = 0; l < k; l++)
-					anIntArray357[l] = stream.readUnsignedByte();
-				anIntArray357[k] = 9999999;
-			} else if (i == 4)
-				resetOnMove = true;
-			else if (i == 5)
-				anInt359 = stream.readUnsignedByte();
-			else if (i == 6)
-				anInt360 = stream.readUnsignedWord();
-			else if (i == 7)
-				anInt361 = stream.readUnsignedWord();
-			else if (i == 8)
-				maxLoops = stream.readUnsignedByte();
-			else if (i == 9)
-				priority = stream.readUnsignedByte();
-			else if (i == 10)
-				anInt364 = stream.readUnsignedByte();
-			else if (i == 11)
-				anInt365 = stream.readUnsignedByte();
-			else if (i == 12)
-				stream.readDWord();
-			else
-				System.out.println("Error unrecognised seq config code: " + i);
-			}
-			if (frameCount == 0) {
-			frameCount = 1;
-			frameIds = new int[1];
-			frameIds[0] = -1;
-			anIntArray354 = new int[1];
-			anIntArray354[0] = -1;
-			anIntArray355 = new int[1];
-			anIntArray355[0] = -1;
-		}
-		if (priority == -1)
-			if (anIntArray357 != null)
-				priority = 2;
-			else
-				priority = 0;
-		if (anInt364 == -1) {
-			if (anIntArray357 != null) {
-				anInt364 = 2;
-				return;
-			}
-			anInt364 = 0;
-		}
-	}
+        // Apply defaults same as binary readValues
+        if (frameCount == 0) {
+            frameCount = 1;
+            frameIds = new int[1];
+            frameIds[0] = -1;
+            anIntArray354 = new int[1];
+            anIntArray354[0] = -1;
+            anIntArray355 = new int[1];
+            anIntArray355[0] = -1;
+        }
+        if (priority == -1)
+            if (anIntArray357 != null)
+                priority = 2;
+            else
+                priority = 0;
+        if (anInt364 == -1) {
+            if (anIntArray357 != null) {
+                anInt364 = 2;
+                return;
+            }
+            anInt364 = 0;
+        }
+    }
 }

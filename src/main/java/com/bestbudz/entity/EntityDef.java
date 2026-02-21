@@ -1,17 +1,23 @@
 package com.bestbudz.entity;
 
+import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.entity.pets.PetVariantManager;
-import com.bestbudz.network.Stream;
-import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
 import com.bestbudz.world.VarBit;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.Map;
 import java.util.Objects;
 
 public final class EntityDef {
 	Client client;
+
+	public static JsonObject[] jsonDefs;
 
   public static EntityDef forID(int i, boolean cached) {
 
@@ -48,9 +54,10 @@ public final class EntityDef {
 		  cache[cacheIndex] = entityDef;
 	  }
 
-	  stream.position = streamIndices[i];
 	  entityDef.interfaceType = i;
-	  entityDef.readValues(stream);
+	  if (jsonDefs != null && i >= 0 && i < jsonDefs.length && jsonDefs[i] != null) {
+		  entityDef.readFromJson(jsonDefs[i]);
+	  }
     switch (i) {
       case 6144:
         entityDef.name = "Portal";
@@ -380,17 +387,30 @@ public final class EntityDef {
     return forID(i, true);
   }
 
-  public static void unpackConfig(ArchiveLoader archiveLoader) {
-    stream = new Stream(archiveLoader.extractFile("npc.dat"));
-    Stream stream2 = new Stream(archiveLoader.extractFile("npc.idx"));
-    int totalNPCs = stream2.readUnsignedWord();
-    System.out.println("Npcs Loaded: " + totalNPCs);
-    streamIndices = new int[totalNPCs + 50000];
-    int i = 2;
-    for (int j = 0; j < totalNPCs; j++) {
-      streamIndices[j] = i;
-      i += stream2.readUnsignedWord();
+  public static void unpackConfig() {
+    JsonObject json = JsonCacheLoader.loadJsonObject("npcs.json");
+    if (json == null) {
+      System.err.println("Failed to load npcs.json");
+      return;
     }
+
+    int maxId = 0;
+    for (String key : json.keySet()) {
+      int id = Integer.parseInt(key);
+      if (id > maxId) maxId = id;
+    }
+
+    int totalNPCs = maxId + 1;
+    jsonDefs = new JsonObject[totalNPCs + 50000];
+
+    int loaded = 0;
+    for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+      int id = Integer.parseInt(entry.getKey());
+      jsonDefs[id] = entry.getValue().getAsJsonObject();
+      loaded++;
+    }
+
+    System.out.println("Npcs Loaded (JSON): " + loaded);
 
     cache = new EntityDef[20];
     for (int k = 0; k < 20; k++) cache[k] = new EntityDef();
@@ -401,14 +421,95 @@ public final class EntityDef {
 	  {
 	  }
     }
-    boolean dump = false;
   }
 
   public static void nullLoader() {
     mruNodes = null;
-    streamIndices = null;
+    jsonDefs = null;
     cache = null;
-    stream = null;
+  }
+
+  public void readFromJson(JsonObject json) {
+    if (json.has("models")) {
+      JsonArray arr = json.getAsJsonArray("models");
+      models = new int[arr.size()];
+      for (int i = 0; i < arr.size(); i++) models[i] = arr.get(i).getAsInt();
+    }
+    if (json.has("name")) {
+      if (json.get("name").isJsonNull()) name = null;
+      else name = json.get("name").getAsString();
+    }
+    if (json.has("description")) {
+      if (json.get("description").isJsonNull()) description = null;
+      else description = json.get("description").getAsString().getBytes();
+    }
+    if (json.has("size")) size = (byte) json.get("size").getAsInt();
+    if (json.has("standAnim")) standAnim = json.get("standAnim").getAsInt();
+    if (json.has("walkAnim")) walkAnim = json.get("walkAnim").getAsInt();
+    if (json.has("turnRightAnim")) {
+      int v = json.get("turnRightAnim").getAsInt();
+      turnRightAnim = (v == 65535) ? -1 : v;
+    }
+    if (json.has("turnAroundAnim")) {
+      int v = json.get("turnAroundAnim").getAsInt();
+      turnAroundAnim = (v == 65535) ? -1 : v;
+    }
+    if (json.has("turnLeftAnim")) {
+      int v = json.get("turnLeftAnim").getAsInt();
+      turnLeftAnim = (v == 65535) ? -1 : v;
+    }
+    if (json.has("actions")) {
+      JsonArray arr = json.getAsJsonArray("actions");
+      actions = new String[arr.size()];
+      for (int i = 0; i < arr.size(); i++) {
+        if (arr.get(i).isJsonNull()) actions[i] = null;
+        else {
+          String s = arr.get(i).getAsString();
+          actions[i] = s.equalsIgnoreCase("hidden") ? null : s;
+        }
+      }
+    }
+    if (json.has("originalColors")) {
+      JsonArray arr = json.getAsJsonArray("originalColors");
+      originalColors = new int[arr.size()];
+      for (int i = 0; i < arr.size(); i++) originalColors[i] = arr.get(i).getAsInt();
+    }
+    if (json.has("newColors")) {
+      JsonArray arr = json.getAsJsonArray("newColors");
+      newColors = new int[arr.size()];
+      for (int i = 0; i < arr.size(); i++) newColors[i] = arr.get(i).getAsInt();
+    }
+    if (json.has("chatHeadModels")) {
+      JsonArray arr = json.getAsJsonArray("chatHeadModels");
+      chatHeadModels = new int[arr.size()];
+      for (int i = 0; i < arr.size(); i++) chatHeadModels[i] = arr.get(i).getAsInt();
+    }
+    if (json.has("visibleOnMinimap")) visibleOnMinimap = json.get("visibleOnMinimap").getAsBoolean();
+    if (json.has("combatLevel")) combatGrade = json.get("combatLevel").getAsInt();
+    if (json.has("modelHeight")) modelHeight = json.get("modelHeight").getAsInt();
+    if (json.has("modelWidth")) modelWidth = json.get("modelWidth").getAsInt();
+    if (json.has("renderPriority")) renderPriority = json.get("renderPriority").getAsBoolean();
+    if (json.has("lightModifier")) lightModifier = json.get("lightModifier").getAsInt();
+    if (json.has("shadowModifier")) shadowModifier = json.get("shadowModifier").getAsInt();
+    if (json.has("mapIconId")) mapIconId = json.get("mapIconId").getAsInt();
+    if (json.has("mapIconScale")) mapIconScale = json.get("mapIconScale").getAsInt();
+    if (json.has("varbitId")) {
+      int v = json.get("varbitId").getAsInt();
+      varbitId = (v == 65535) ? -1 : v;
+    }
+    if (json.has("configId")) {
+      int v = json.get("configId").getAsInt();
+      configId = (v == 65535) ? -1 : v;
+    }
+    if (json.has("childrenIDs")) {
+      JsonArray arr = json.getAsJsonArray("childrenIDs");
+      childrenIDs = new int[arr.size()];
+      for (int i = 0; i < arr.size(); i++) {
+        childrenIDs[i] = arr.get(i).getAsInt();
+        if (childrenIDs[i] == 65535) childrenIDs[i] = -1;
+      }
+    }
+    if (json.has("clickable")) clickable = json.get("clickable").getAsBoolean();
   }
 
   public Model getModelForInterface() {
@@ -545,71 +646,6 @@ public final class EntityDef {
     return model_1;
   }
 
-  public void readValues(Stream stream) {
-    do {
-      int i = stream.readUnsignedByte();
-      if (i == 0) return;
-      if (i == 1) {
-        int j = stream.readUnsignedByte();
-        models = new int[j];
-        for (int j1 = 0; j1 < j; j1++) models[j1] = stream.readUnsignedWord();
-
-      } else if (i == 2) name = stream.readString();
-      else if (i == 3) description = stream.readBytes();
-      else if (i == 12) size = stream.readSignedByte();
-      else if (i == 13) standAnim = stream.readUnsignedWord();
-      else if (i == 14) walkAnim = stream.readUnsignedWord();
-      else if (i == 17) {
-        walkAnim = stream.readUnsignedWord();
-        turnRightAnim = stream.readUnsignedWord();
-        turnAroundAnim = stream.readUnsignedWord();
-        turnLeftAnim = stream.readUnsignedWord();
-      } else if (i >= 30 && i < 40) {
-        if (actions == null) actions = new String[5];
-        actions[i - 30] = stream.readString();
-        if (actions[i - 30].equalsIgnoreCase("hidden")) actions[i - 30] = null;
-      } else if (i == 40) {
-        int k = stream.readUnsignedByte();
-        originalColors = new int[k];
-        newColors = new int[k];
-        for (int k1 = 0; k1 < k; k1++) {
-          originalColors[k1] = stream.readUnsignedWord();
-          newColors[k1] = stream.readUnsignedWord();
-        }
-
-      } else if (i == 60) {
-        int l = stream.readUnsignedByte();
-        chatHeadModels = new int[l];
-        for (int l1 = 0; l1 < l; l1++) chatHeadModels[l1] = stream.readUnsignedWord();
-
-      } else if (i == 90) stream.readUnsignedWord();
-      else if (i == 91) stream.readUnsignedWord();
-      else if (i == 92) stream.readUnsignedWord();
-      else if (i == 93) visibleOnMinimap = false;
-      else if (i == 95) combatGrade = stream.readUnsignedWord();
-      else if (i == 97) modelHeight = stream.readUnsignedWord();
-      else if (i == 98) modelWidth = stream.readUnsignedWord();
-      else if (i == 99) renderPriority = true;
-      else if (i == 100) lightModifier = stream.readSignedByte();
-      else if (i == 101) shadowModifier = stream.readSignedByte() * 5;
-      else if (i == 102) mapIconId = stream.readUnsignedWord();
-      else if (i == 103) mapIconScale = stream.readUnsignedWord();
-      else if (i == 106) {
-        varbitId = stream.readUnsignedWord();
-        if (varbitId == 65535) varbitId = -1;
-        configId = stream.readUnsignedWord();
-        if (configId == 65535) configId = -1;
-        int i1 = stream.readUnsignedByte();
-        childrenIDs = new int[i1 + 1];
-        for (int i2 = 0; i2 <= i1; i2++) {
-          childrenIDs[i2] = stream.readUnsignedWord();
-          if (childrenIDs[i2] == 65535) childrenIDs[i2] = -1;
-        }
-
-      } else if (i == 107) clickable = false;
-    } while (true);
-  }
-
   public EntityDef() {turnLeftAnim = -1;
     varbitId = -1;
     turnRightAnim = -1;
@@ -635,7 +671,6 @@ public final class EntityDef {
   public int varbitId;
   public int turnRightAnim;
   public int configId;
-  public static Stream stream;
   public int combatGrade;
   public final int defaultValue;
   public String name;
@@ -643,7 +678,6 @@ public final class EntityDef {
   public int walkAnim;
   public byte size;
   public int[] newColors;
-  public static int[] streamIndices;
   public int[] chatHeadModels;
   public int mapIconId;
   public int[] originalColors;

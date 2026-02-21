@@ -1,15 +1,18 @@
 package com.bestbudz.data.items;
 
 import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
+import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.entity.pets.PetItemCreator;
 import com.bestbudz.graphics.sprite.Sprite;
-import com.bestbudz.network.Stream;
-import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import java.util.Map;
 import java.util.Objects;
 
 public final class ItemDef {
@@ -20,8 +23,7 @@ public final class ItemDef {
 	public static int totalItems;
 	public static ItemDef[] cache;
 	public static int cacheIndex;
-	public static Stream stream;
-	public static int[] streamIndices;
+	public static JsonObject[] jsonDefs;
 	public int value;
 	public int[] modifiedModelColors;
 	public int id;
@@ -69,26 +71,133 @@ public final class ItemDef {
 	public static void nullLoader() {
 		mruNodes2 = null;
 		mruNodes1 = null;
-		streamIndices = null;
+		jsonDefs = null;
 		cache = null;
-		stream = null;
 	}
 
-	public static void unpackConfig(ArchiveLoader archive) {
-		stream = new Stream(archive.extractFile("obj.dat"));
-		Stream stream = new Stream(archive.extractFile("obj.idx"));
-		totalItems = stream.readUnsignedWord() + 21;
-		System.out.println("Items Loaded: " + totalItems);
-		streamIndices = new int[totalItems + 50000];
-		int i = 2;
-		for (int j = 0; j < totalItems - 21; j++) {
-			streamIndices[j] = i;
-			i += stream.readUnsignedWord();
+	public static void unpackConfig() {
+		JsonObject json = JsonCacheLoader.loadJsonObject("items.json");
+		if (json == null) {
+			System.err.println("Failed to load items.json");
+			return;
 		}
+
+		int maxId = 0;
+		for (String key : json.keySet()) {
+			int id = Integer.parseInt(key);
+			if (id > maxId) maxId = id;
+		}
+
+		totalItems = maxId + 21;
+		jsonDefs = new JsonObject[totalItems + 50000];
+
+		int loaded = 0;
+		for (Map.Entry<String, com.google.gson.JsonElement> entry : json.entrySet()) {
+			int id = Integer.parseInt(entry.getKey());
+			jsonDefs[id] = entry.getValue().getAsJsonObject();
+			loaded++;
+		}
+
+		System.out.println("Items Loaded (JSON): " + loaded);
 
 		cache = new ItemDef[10];
 		for (int k = 0; k < 10; k++)
 			cache[k] = new ItemDef();
+	}
+
+	public void readFromJson(JsonObject json) {
+		if (json.has("modelID")) modelID = json.get("modelID").getAsInt();
+		if (json.has("name")) {
+			if (json.get("name").isJsonNull()) name = null;
+			else name = json.get("name").getAsString();
+		}
+		if (json.has("description")) {
+			if (json.get("description").isJsonNull()) description = null;
+			else description = json.get("description").getAsString().getBytes();
+		}
+		if (json.has("modelZoom")) modelZoom = json.get("modelZoom").getAsInt();
+		if (json.has("modelRotationY")) modelRotationY = json.get("modelRotationY").getAsInt();
+		if (json.has("modelRotationX")) modelRotationX = json.get("modelRotationX").getAsInt();
+		if (json.has("modelOffset1")) modelOffset1 = json.get("modelOffset1").getAsInt();
+		if (json.has("modelOffset2")) modelOffset2 = json.get("modelOffset2").getAsInt();
+		if (json.has("stackable")) stackable = json.get("stackable").getAsBoolean();
+		if (json.has("value")) value = json.get("value").getAsInt();
+		if (json.has("members")) membersObject = json.get("members").getAsBoolean();
+		if (json.has("maleWearModel1")) anInt165 = json.get("maleWearModel1").getAsInt();
+		if (json.has("maleWearModel2")) anInt188 = json.get("maleWearModel2").getAsInt();
+		if (json.has("maleWearModel3")) anInt185 = json.get("maleWearModel3").getAsInt();
+		if (json.has("femaleWearModel1")) anInt200 = json.get("femaleWearModel1").getAsInt();
+		if (json.has("femaleWearModel2")) anInt164 = json.get("femaleWearModel2").getAsInt();
+		if (json.has("femaleWearModel3")) anInt162 = json.get("femaleWearModel3").getAsInt();
+		if (json.has("maleHeadModel1")) anInt175 = json.get("maleHeadModel1").getAsInt();
+		if (json.has("maleHeadModel2")) anInt166 = json.get("maleHeadModel2").getAsInt();
+		if (json.has("femaleHeadModel1")) anInt197 = json.get("femaleHeadModel1").getAsInt();
+		if (json.has("femaleHeadModel2")) anInt173 = json.get("femaleHeadModel2").getAsInt();
+		if (json.has("modelRotation2")) anInt204 = json.get("modelRotation2").getAsInt();
+		if (json.has("certID")) certID = json.get("certID").getAsInt();
+		if (json.has("certTemplateID")) certTemplateID = json.get("certTemplateID").getAsInt();
+		if (json.has("scaleX")) anInt167 = json.get("scaleX").getAsInt();
+		if (json.has("scaleY")) anInt192 = json.get("scaleY").getAsInt();
+		if (json.has("scaleZ")) anInt191 = json.get("scaleZ").getAsInt();
+		if (json.has("lightModifier")) anInt196 = json.get("lightModifier").getAsInt();
+		if (json.has("shadowModifier")) anInt184 = json.get("shadowModifier").getAsInt();
+		if (json.has("team")) team = json.get("team").getAsInt();
+
+		if (json.has("groundActions")) {
+			JsonArray arr = json.getAsJsonArray("groundActions");
+			groundActions = new String[arr.size()];
+			for (int i = 0; i < arr.size(); i++) {
+				if (arr.get(i).isJsonNull()) groundActions[i] = null;
+				else {
+					String s = arr.get(i).getAsString();
+					groundActions[i] = s.equalsIgnoreCase("hidden") ? null : s;
+				}
+			}
+		}
+		if (json.has("itemActions")) {
+			JsonArray arr = json.getAsJsonArray("itemActions");
+			itemActions = new String[arr.size()];
+			for (int i = 0; i < arr.size(); i++) {
+				if (arr.get(i).isJsonNull()) itemActions[i] = null;
+				else itemActions[i] = arr.get(i).getAsString();
+			}
+		}
+		if (json.has("equipActions")) {
+			JsonArray arr = json.getAsJsonArray("equipActions");
+			equipActions = new String[arr.size()];
+			for (int i = 0; i < arr.size(); i++) {
+				if (arr.get(i).isJsonNull()) equipActions[i] = null;
+				else equipActions[i] = arr.get(i).getAsString();
+			}
+		}
+		if (json.has("originalColors")) {
+			JsonArray arr = json.getAsJsonArray("originalColors");
+			originalModelColors = new int[arr.size()];
+			for (int i = 0; i < arr.size(); i++) {
+				originalModelColors[i] = arr.get(i).getAsInt();
+			}
+		}
+		if (json.has("modifiedColors")) {
+			JsonArray arr = json.getAsJsonArray("modifiedColors");
+			modifiedModelColors = new int[arr.size()];
+			for (int i = 0; i < arr.size(); i++) {
+				modifiedModelColors[i] = arr.get(i).getAsInt();
+			}
+		}
+		if (json.has("stackIDs")) {
+			JsonArray arr = json.getAsJsonArray("stackIDs");
+			stackIDs = new int[arr.size()];
+			for (int i = 0; i < arr.size(); i++) {
+				stackIDs[i] = arr.get(i).getAsInt();
+			}
+		}
+		if (json.has("stackAmounts")) {
+			JsonArray arr = json.getAsJsonArray("stackAmounts");
+			stackAmounts = new int[arr.size()];
+			for (int i = 0; i < arr.size(); i++) {
+				stackAmounts[i] = arr.get(i).getAsInt();
+			}
+		}
 	}
 
 	public static Sprite getSprite(int id, int size, int color, int zoom) {
@@ -515,109 +624,6 @@ public final class ItemDef {
 
 		}
 		return model;
-	}
-
-	public void readValues(Stream stream) {
-		do {
-			int i = stream.readUnsignedByte();
-			if (i == 0)
-				return;
-			if (i == 1)
-				modelID = stream.readUnsignedWord();
-			else if (i == 2)
-				name = stream.readString();
-			else if (i == 3)
-				description = stream.readBytes();
-			else if (i == 4)
-				modelZoom = stream.readUnsignedWord();
-			else if (i == 5)
-				modelRotationY = stream.readUnsignedWord();
-			else if (i == 6)
-				modelRotationX = stream.readUnsignedWord();
-			else if (i == 7) {
-				modelOffset1 = stream.readUnsignedWord();
-				if (modelOffset1 > 32767)
-					modelOffset1 -= 0x10000;
-			} else if (i == 8) {
-				modelOffset2 = stream.readUnsignedWord();
-				if (modelOffset2 > 32767)
-					modelOffset2 -= 0x10000;
-			} else if (i == 10)
-				stream.readUnsignedWord();
-			else if (i == 11)
-				stackable = true;
-			else if (i == 12)
-				value = stream.readDWord();
-			else if (i == 16)
-				membersObject = true;
-			else if (i == 23) {
-				anInt165 = stream.readUnsignedWord();
-				aByte205 = stream.readSignedByte();
-			} else if (i == 24)
-				anInt188 = stream.readUnsignedWord();
-			else if (i == 25) {
-				anInt200 = stream.readUnsignedWord();
-				aByte154 = stream.readSignedByte();
-			} else if (i == 26)
-				anInt164 = stream.readUnsignedWord();
-			else if (i >= 30 && i < 35) {
-				if (groundActions == null)
-					groundActions = new String[5];
-				groundActions[i - 30] = stream.readString();
-				if (groundActions[i - 30].equalsIgnoreCase("hidden"))
-					groundActions[i - 30] = null;
-			} else if (i >= 35 && i < 40) {
-				if (itemActions == null)
-					itemActions = new String[5];
-				itemActions[i - 35] = stream.readString();
-			} else if (i == 40) {
-				int j = stream.readUnsignedByte();
-				originalModelColors = new int[j];
-				modifiedModelColors = new int[j];
-				for (int k = 0; k < j; k++) {
-					originalModelColors[k] = stream.readUnsignedWord();
-					modifiedModelColors[k] = stream.readUnsignedWord();
-				}
-
-			} else if (i == 78)
-				anInt185 = stream.readUnsignedWord();
-			else if (i == 79)
-				anInt162 = stream.readUnsignedWord();
-			else if (i == 90)
-				anInt175 = stream.readUnsignedWord();
-			else if (i == 91)
-				anInt197 = stream.readUnsignedWord();
-			else if (i == 92)
-				anInt166 = stream.readUnsignedWord();
-			else if (i == 93)
-				anInt173 = stream.readUnsignedWord();
-			else if (i == 95)
-				anInt204 = stream.readUnsignedWord();
-			else if (i == 97)
-				certID = stream.readUnsignedWord();
-			else if (i == 98)
-				certTemplateID = stream.readUnsignedWord();
-			else if (i == 100) {
-				int length = stream.readUnsignedByte();
-				stackIDs = new int[length];
-				stackAmounts = new int[length];
-				for (int i2 = 0; i2 < length; i2++) {
-					stackIDs[i2] = stream.readUnsignedWord();
-					stackAmounts[i2] = stream.readUnsignedWord();
-				}
-			} else if (i == 110)
-				anInt167 = stream.readUnsignedWord();
-			else if (i == 111)
-				anInt192 = stream.readUnsignedWord();
-			else if (i == 112)
-				anInt191 = stream.readUnsignedWord();
-			else if (i == 113)
-				anInt196 = stream.readSignedByte();
-			else if (i == 114)
-				anInt184 = stream.readSignedByte() * 5;
-			else if (i == 115)
-				team = stream.readUnsignedByte();
-		} while (true);
 	}
 
 	public static boolean isValid(int id) {

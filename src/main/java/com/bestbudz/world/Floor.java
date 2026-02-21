@@ -1,8 +1,11 @@
 package com.bestbudz.world;
 
+import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.config.SettingsConfig;
-import com.bestbudz.network.ArchiveLoader;
-import com.bestbudz.network.Stream;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.Map;
 
 public final class Floor {
 
@@ -22,58 +25,66 @@ public final class Floor {
 		aBoolean393 = true;
 	}
 
-	public static void unpackConfig(ArchiveLoader archiveLoader) {
-		Stream stream = new Stream(archiveLoader.extractFile("flo.dat"));
-		int cacheSize = stream.readUnsignedWord();
-		System.out.println("Underlays Loaded: " + cacheSize);
+	public static void unpackConfig() {
+		JsonObject json = JsonCacheLoader.loadJsonObject("floors_underlay.json");
+		if (json == null) {
+			System.err.println("Failed to load floors_underlay.json");
+			return;
+		}
+
+		int maxId = 0;
+		for (String key : json.keySet()) {
+			int id = Integer.parseInt(key);
+			if (id > maxId) maxId = id;
+		}
+
+		int cacheSize = maxId + 1;
 		if (cache == null) {
 			cache = new Floor[cacheSize];
 		}
-		for (int j = 0; j < cacheSize; j++) {
-			if (cache[j] == null) {
-				cache[j] = new Floor();
+
+		int loaded = 0;
+		for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+			int id = Integer.parseInt(entry.getKey());
+			JsonObject def = entry.getValue().getAsJsonObject();
+
+			if (cache[id] == null) {
+				cache[id] = new Floor();
 			}
-			cache[j].readValues(stream);
+
+			cache[id].readFromJson(def);
+			loaded++;
 		}
 
+		System.out.println("Underlays Loaded (JSON): " + loaded);
 	}
 
-	private void readValues(Stream stream) {
-		do {
-			int i = stream.readUnsignedByte();
-			if (i == 0) {
-				return;
-			} else if(i == 1) {
-				anInt390 = stream.read3Bytes();
-				if (SettingsConfig.snow) {
-					anInt390 = 0xffffff;
-				}
-				method262(anInt390);
-			} else if(i == 2)
-				anInt391 = stream.readUnsignedByte();
-			else if (i == 3) {
-
-			} else if(i == 5)
-			 aBoolean393 = false;
-			else if (i == 6)
-				stream.readString();
-			else if(i == 7) {
-				int j = anInt394;
-				int k = anInt395;
-				int l = anInt396;
-				int i1 = anInt397;
-				int j1 = stream.read3Bytes();
-				method262(j1);
-				anInt394 = j;
-				anInt395 = k;
-				anInt396 = l;
-				anInt397 = i1;
-				anInt398 = i1;
-			} else
-			{
-				System.out.println("Error unrecognised config code: " + i);
+	private void readFromJson(JsonObject json) {
+		if (json.has("rgb")) {
+			anInt390 = json.get("rgb").getAsInt();
+			if (SettingsConfig.snow) {
+				anInt390 = 0xffffff;
 			}
-		} while(true);
+			method262(anInt390);
+		}
+		if (json.has("textureId")) {
+			anInt391 = json.get("textureId").getAsInt();
+		}
+		if (json.has("occlude")) {
+			aBoolean393 = json.get("occlude").getAsBoolean();
+		}
+		if (json.has("secondaryRgb")) {
+			int j = anInt394;
+			int k = anInt395;
+			int l = anInt396;
+			int i1 = anInt397;
+			method262(json.get("secondaryRgb").getAsInt());
+			anInt394 = j;
+			anInt395 = k;
+			anInt396 = l;
+			anInt397 = i1;
+			anInt398 = i1;
+		}
 	}
 
 	private void method262(int i)

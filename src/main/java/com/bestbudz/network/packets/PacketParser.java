@@ -11,6 +11,7 @@ import com.bestbudz.dock.util.UIPanel;
 import com.bestbudz.dock.ui.panel.DockPanelMapping;
 import com.bestbudz.dock.util.DockTextUpdatable;
 import com.bestbudz.engine.core.Client;
+import com.bestbudz.engine.core.gamerender.ObjectManager;
 import static com.bestbudz.engine.core.gamerender.GroundItems.handleGroundItemUpdate;
 import com.bestbudz.ui.handling.SettingHandler;
 import com.bestbudz.data.items.ItemDef;
@@ -981,7 +982,7 @@ public class PacketParser extends Client
 	}
 
 	private static void handleRegionType73Optimized(final int l2, final int i11) {
-		System.out.println("🗺️ [RegionChange] Type 73 - Position: " + l2 + "," + i11);
+		System.out.println("[RegionChange] Type 73 - Position: " + l2 + "," + i11);
 
 		int k16 = 0;
 		for (int i21 = (l2 - 6) / 8; i21 <= (l2 + 6) / 8; i21++) {
@@ -990,6 +991,7 @@ public class PacketParser extends Client
 			}
 		}
 
+		// Pure JSON mode — allocate arrays but no binary data needed
 		terrainData = new byte[k16][];
 		objectData = new byte[k16][];
 		mapRegionIds = new int[k16];
@@ -997,53 +999,23 @@ public class PacketParser extends Client
 		objectIndices = new int[k16];
 
 		k16 = 0;
-		int embeddedLoaded = 0;
-		int onDemandQueued = 0;
+		int jsonAvailable = 0;
 
 		for (int l23 = (l2 - 6) / 8; l23 <= (l2 + 6) / 8; l23++) {
 			for (int j26 = (i11 - 6) / 8; j26 <= (i11 + 6) / 8; j26++) {
 				mapRegionIds[k16] = (l23 << 8) + j26;
+				terrainIndices[k16] = -1;
+				objectIndices[k16] = -1;
 
-				if (selectedSpell && (j26 == 49 || j26 == 149 || j26 == 147 || l23 == 50 || (l23 == 49 && j26 == 47))) {
-
-					terrainIndices[k16] = -1;
-					objectIndices[k16] = -1;
-					System.out.println("✅ [RegionChange] Region " + mapRegionIds[k16] + " - special region (no data)");
-				} else {
-
-					if (loadRegionFromEmbeddedCache(k16, l23, j26)) {
-						embeddedLoaded++;
-						System.out.println("✅ [RegionChange] Region " + mapRegionIds[k16] + " loaded from EMBEDDED CACHE");
-					} else {
-
-						final int k28 = terrainIndices[k16] = cacheManager.getMapIndex(0, j26, l23);
-						if (k28 != -1) {
-							cacheManager.enqueueRequest(3, k28);
-							onDemandQueued++;
-						}
-
-						final int j30 = objectIndices[k16] = cacheManager.getMapIndex(1, j26, l23);
-						if (j30 != -1) {
-							cacheManager.enqueueRequest(3, j30);
-							onDemandQueued++;
-						}
-
-						System.err.println("⚠️ [RegionChange] Region " + mapRegionIds[k16] +
-							" using cacheManager (files: " + k28 + "/" + j30 + ") - WILL CAUSE LAG");
-					}
+				if (ObjectManager.isJsonMapAvailable(mapRegionIds[k16])) {
+					jsonAvailable++;
 				}
+
 				k16++;
 			}
 		}
 
-		System.out.println("📊 [RegionChange] Summary: " + embeddedLoaded + " embedded, " +
-			onDemandQueued + " onDemand requests");
-
-		if (onDemandQueued == 0) {
-			System.out.println("🎉 [RegionChange] ALL REGIONS FROM EMBEDDED CACHE - NO LAG!");
-		} else {
-			System.err.println("❌ [RegionChange] " + onDemandQueued + " files still use cacheManager - LAG EXPECTED");
-		}
+		System.out.println("[RegionChange] " + k16 + " regions, " + jsonAvailable + " have JSON maps");
 	}
 
 	private static void handleRegionType241Optimized() {
@@ -1076,50 +1048,25 @@ public class PacketParser extends Client
 			}
 		}
 
+		// Pure JSON mode — allocate arrays but no binary data needed
 		terrainData = new byte[l16][];
 		objectData = new byte[l16][];
 		mapRegionIds = new int[l16];
 		terrainIndices = new int[l16];
 		objectIndices = new int[l16];
 
-		int embeddedLoaded = 0;
-		int onDemandQueued = 0;
-
+		int jsonAvailable = 0;
 		for (int l26 = 0; l26 < l16; l26++) {
-			final int i29 = mapRegionIds[l26] = ai[l26];
-			final int l30 = i29 >> 8 & 0xff;
-			final int l31 = i29 & 0xff;
+			mapRegionIds[l26] = ai[l26];
+			terrainIndices[l26] = -1;
+			objectIndices[l26] = -1;
 
-			if (loadRegionFromEmbeddedCache(l26, l30, l31)) {
-				embeddedLoaded++;
-				System.out.println("✅ [RegionChange] Region " + i29 + " loaded from EMBEDDED CACHE");
-			} else {
-
-				final int j32 = terrainIndices[l26] = cacheManager.getMapIndex(0, l31, l30);
-				if (j32 != -1) {
-					cacheManager.enqueueRequest(3, j32);
-					onDemandQueued++;
-				}
-
-				final int i33 = objectIndices[l26] = cacheManager.getMapIndex(1, l31, l30);
-				if (i33 != -1) {
-					cacheManager.enqueueRequest(3, i33);
-					onDemandQueued++;
-				}
-
-				System.err.println("⚠️ [RegionChange] Region " + i29 +
-					" using cacheManager (files: " + j32 + "/" + i33 + ") - WILL CAUSE LAG");
+			if (ObjectManager.isJsonMapAvailable(mapRegionIds[l26])) {
+				jsonAvailable++;
 			}
 		}
 
-		System.out.println("📊 [RegionChange] Summary: " + embeddedLoaded + " embedded, " +
-			onDemandQueued + " onDemand requests");
-
-		if (onDemandQueued == 0) {
-			System.out.println("🎉 [RegionChange] ALL REGIONS FROM EMBEDDED CACHE - NO LAG!");
-		} else {
-			System.err.println("❌ [RegionChange] " + onDemandQueued + " files still use cacheManager - LAG EXPECTED");
-		}
+		System.out.println("[RegionChange] Type 241: " + l16 + " regions, " + jsonAvailable + " have JSON maps");
 	}
 
 	private static boolean loadRegionFromEmbeddedCache(int arrayIndex, int regionX, int regionY) {

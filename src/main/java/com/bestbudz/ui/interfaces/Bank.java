@@ -12,8 +12,8 @@ public class Bank extends RSInterface {
 
     int id = 50_000;
 
-    Sprite button1 = method207(0, aClass44, "miscgraphics");
-    Sprite button2 = method207(9, aClass44, "miscgraphics");
+    Sprite button1 = method207(0, "miscgraphics");
+    Sprite button2 = method207(9, "miscgraphics");
 
 	  RSInterface background = addInterface(id);
 	  background.type = 3; // filled rectangle
@@ -24,8 +24,8 @@ public class Bank extends RSInterface {
 	  background.opacity = (byte) 50;
 
 	  addHoverButton(
-        id + 1, method207(2, aClass44, "miscgraphics2"), 21, 21, "Close", 250, id + 2, 3);
-    addHoveredButton(id + 2, method207(3, aClass44, "miscgraphics2"), 21, 21, id + 3);
+        id + 1, method207(2, "miscgraphics2"), 21, 21, "Close", 250, id + 2, 3);
+    addHoveredButton(id + 2, method207(3, "miscgraphics2"), 21, 21, id + 3);
     addContainer(
         5382,
         109,

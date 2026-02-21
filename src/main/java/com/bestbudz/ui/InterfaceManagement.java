@@ -359,7 +359,7 @@ public class InterfaceManagement extends Client
 	}
 
 	public static void drawMiscOverlays() {
-		if (tabHoverTime == 1) multiOverlay.drawSprite(frameWidth - 165, 160);
+		if (tabHoverTime == 1 && multiOverlay != null) multiOverlay.drawSprite(frameWidth - 165, 160);
 	}
 
 	public static int getRegionInterface(int x, int y, int plane) {

@@ -1,20 +1,24 @@
 package com.bestbudz.world;
 
+import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.network.ArchiveLoader;
 import com.bestbudz.network.CacheManager;
-import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.util.MRUNodes;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.Map;
 import java.util.Objects;
 
 public final class ObjectDef {
 	Client client;
 	public static final Model[] tempModels = new Model[4];
 	public static boolean lowMem;
-	public static Stream stream;
-	public static int[] streamIndices;
+	public static JsonObject[] jsonDefs;
+	public static int totalObjects;
 	public static Client clientInstance;
 	public static int cacheIndex;
 	public static MRUNodes mruNodes2 = new MRUNodes(64);
@@ -64,17 +68,18 @@ public final class ObjectDef {
 	}
 
 	public static ObjectDef forID(int i) {
-		if (i > streamIndices.length)
-			i = streamIndices.length - 1;
+		if (i > totalObjects - 1)
+			i = totalObjects - 1;
 		for (int j = 0; j < 20; j++)
 			if (cache[j].type == i)
 				return cache[j];
 		cacheIndex = (cacheIndex + 1) % 20;
 		ObjectDef objectDef = cache[cacheIndex];
-		stream.position = streamIndices[i];
 		objectDef.type = i;
 		objectDef.setDefaults();
-		objectDef.readValues(stream);
+		if (jsonDefs != null && i >= 0 && i < jsonDefs.length && jsonDefs[i] != null) {
+			objectDef.readFromJson(jsonDefs[i]);
+		}
 
 		if (i == 11407 || i == 11408) {
 			objectDef = forID(11404);
@@ -381,24 +386,142 @@ public final class ObjectDef {
 	public static void nullLoader() {
 		mruNodes1 = null;
 		mruNodes2 = null;
-		streamIndices = null;
+		jsonDefs = null;
 		cache = null;
-		stream = null;
 	}
 
-	public static void unpackConfig(ArchiveLoader archiveLoader) {
-		stream = new Stream(archiveLoader.extractFile("loc.dat"));
-		Stream stream = new Stream(archiveLoader.extractFile("loc.idx"));
-		int totalObjects = stream.readUnsignedWord();
-		streamIndices = new int[totalObjects];
-		int i = 2;
-		for (int j = 0; j < totalObjects; j++) {
-			streamIndices[j] = i;
-			i += stream.readUnsignedWord();
+	public static void unpackConfig() {
+		JsonObject json = JsonCacheLoader.loadJsonObject("objects.json");
+		if (json == null) {
+			System.err.println("Failed to load objects.json");
+			return;
 		}
+
+		int maxId = 0;
+		for (String key : json.keySet()) {
+			int id = Integer.parseInt(key);
+			if (id > maxId) maxId = id;
+		}
+
+		totalObjects = maxId + 1;
+		jsonDefs = new JsonObject[totalObjects];
+
+		int loaded = 0;
+		for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+			int id = Integer.parseInt(entry.getKey());
+			jsonDefs[id] = entry.getValue().getAsJsonObject();
+			loaded++;
+		}
+
+		System.out.println("Objects Loaded (JSON): " + loaded);
+
 		cache = new ObjectDef[20];
 		for (int k = 0; k < 20; k++)
 			cache[k] = new ObjectDef();
+	}
+
+	public void readFromJson(JsonObject json) {
+		if (json.has("modelIds")) {
+			JsonArray arr = json.getAsJsonArray("modelIds");
+			anIntArray773 = new int[arr.size()];
+			for (int i = 0; i < arr.size(); i++) {
+				anIntArray773[i] = arr.get(i).getAsInt();
+			}
+		}
+		if (json.has("modelTypes")) {
+			JsonArray arr = json.getAsJsonArray("modelTypes");
+			anIntArray776 = new int[arr.size()];
+			for (int i = 0; i < arr.size(); i++) {
+				anIntArray776[i] = arr.get(i).getAsInt();
+			}
+		}
+		if (json.has("name")) {
+			if (json.get("name").isJsonNull()) name = null;
+			else name = json.get("name").getAsString();
+		}
+		if (json.has("description")) {
+			if (json.get("description").isJsonNull()) description = null;
+			else description = json.get("description").getAsString().getBytes();
+		}
+		if (json.has("sizeX")) sizeX = json.get("sizeX").getAsInt();
+		if (json.has("sizeY")) sizeY = json.get("sizeY").getAsInt();
+		if (json.has("clipFlag")) clipFlag = json.get("clipFlag").getAsBoolean();
+		if (json.has("blocksProjectiles")) blocksProjectiles = json.get("blocksProjectiles").getAsBoolean();
+		if (json.has("hasActions")) hasActions = json.get("hasActions").getAsBoolean();
+		if (json.has("rotateHeights")) rotateHeights = json.get("rotateHeights").getAsBoolean();
+		if (json.has("nonFlatShading")) aBoolean769 = json.get("nonFlatShading").getAsBoolean();
+		if (json.has("blocksMovement")) blocksMovement = json.get("blocksMovement").getAsBoolean();
+		if (json.has("animationId")) {
+			animationId = json.get("animationId").getAsInt();
+			if (animationId == 65535) animationId = -1;
+		}
+		if (json.has("wallThickness")) wallThickness = json.get("wallThickness").getAsInt();
+		if (json.has("ambient")) aByte737 = (byte) json.get("ambient").getAsInt();
+		if (json.has("contrast")) aByte742 = (byte) json.get("contrast").getAsInt();
+		if (json.has("actions")) {
+			JsonArray arr = json.getAsJsonArray("actions");
+			actions = new String[arr.size()];
+			for (int i = 0; i < arr.size(); i++) {
+				if (arr.get(i).isJsonNull()) actions[i] = null;
+				else {
+					String s = arr.get(i).getAsString();
+					actions[i] = s.equalsIgnoreCase("hidden") ? null : s;
+				}
+			}
+		}
+		if (json.has("originalColors")) {
+			JsonArray arr = json.getAsJsonArray("originalColors");
+			originalModelColors = new int[arr.size()];
+			for (int i = 0; i < arr.size(); i++) originalModelColors[i] = arr.get(i).getAsInt();
+		}
+		if (json.has("modifiedColors")) {
+			JsonArray arr = json.getAsJsonArray("modifiedColors");
+			modifiedModelColors = new int[arr.size()];
+			for (int i = 0; i < arr.size(); i++) modifiedModelColors[i] = arr.get(i).getAsInt();
+		}
+		if (json.has("mapScene")) anInt746 = json.get("mapScene").getAsInt();
+		if (json.has("mirrored")) aBoolean751 = json.get("mirrored").getAsBoolean();
+		if (json.has("castsShadow")) castsShadow = json.get("castsShadow").getAsBoolean();
+		if (json.has("scaleX")) anInt748 = json.get("scaleX").getAsInt();
+		if (json.has("scaleY")) anInt772 = json.get("scaleY").getAsInt();
+		if (json.has("scaleZ")) anInt740 = json.get("scaleZ").getAsInt();
+		if (json.has("mapFunction")) anInt758 = json.get("mapFunction").getAsInt();
+		if (json.has("surroundings")) anInt768 = json.get("surroundings").getAsInt();
+		if (json.has("translateX")) anInt738 = json.get("translateX").getAsInt();
+		if (json.has("translateY")) anInt745 = json.get("translateY").getAsInt();
+		if (json.has("translateZ")) anInt783 = json.get("translateZ").getAsInt();
+		if (json.has("obstructsGround")) aBoolean736 = json.get("obstructsGround").getAsBoolean();
+		if (json.has("removeClipping")) aBoolean766 = json.get("removeClipping").getAsBoolean();
+		if (json.has("supportItems")) anInt760 = json.get("supportItems").getAsInt();
+		if (json.has("varbitId")) {
+			varbitId = json.get("varbitId").getAsInt();
+			if (varbitId == 65535) varbitId = -1;
+		}
+		if (json.has("configId")) {
+			configId = json.get("configId").getAsInt();
+			if (configId == 65535) configId = -1;
+		}
+		if (json.has("childIds")) {
+			JsonArray arr = json.getAsJsonArray("childIds");
+			childIds = new int[arr.size()];
+			for (int i = 0; i < arr.size(); i++) {
+				childIds[i] = arr.get(i).getAsInt();
+				if (childIds[i] == 65535) childIds[i] = -1;
+			}
+		}
+
+		// Post-processing (same as binary readValues)
+		if (!Objects.equals(name, "null") && name != null) {
+			hasActions = anIntArray773 != null && (anIntArray776 == null || anIntArray776[0] == 10);
+			if (actions != null)
+				hasActions = true;
+		}
+		if (aBoolean766) {
+			clipFlag = false;
+			blocksProjectiles = false;
+		}
+		if (anInt760 == -1)
+			anInt760 = clipFlag ? 1 : 0;
 	}
 
 	public void setDefaults() {
@@ -603,137 +726,5 @@ public final class ObjectDef {
 			model_3.anInt1654 = model_3.modelHeight;
 		mruNodes2.removeFromCache(model_3, l1);
 		return model_3;
-	}
-
-	public void readValues(Stream stream) {
-		do {
-			int type = stream.readUnsignedByte();
-			if (type == 0)
-				break;
-			if (type == 1) {
-				int len = stream.readUnsignedByte();
-				if (len > 0) {
-					if (anIntArray773 == null || lowMem) {
-						anIntArray776 = new int[len];
-						anIntArray773 = new int[len];
-						for (int k1 = 0; k1 < len; k1++) {
-							anIntArray773[k1] = stream.readUnsignedWord();
-							anIntArray776[k1] = stream.readUnsignedByte();
-						}
-					} else {
-						stream.position += len * 3;
-					}
-				}
-			} else if (type == 2)
-				name = stream.readString();
-			else if (type == 3)
-				description = stream.readBytes();
-			else if (type == 5) {
-				int len = stream.readUnsignedByte();
-				if (len > 0) {
-					if (anIntArray773 == null || lowMem) {
-						anIntArray776 = null;
-						anIntArray773 = new int[len];
-						for (int l1 = 0; l1 < len; l1++)
-							anIntArray773[l1] = stream.readUnsignedWord();
-					} else {
-						stream.position += len * 2;
-					}
-				}
-			} else if (type == 14)
-				sizeX = stream.readUnsignedByte();
-			else if (type == 15)
-				sizeY = stream.readUnsignedByte();
-			else if (type == 17)
-				clipFlag = false;
-			else if (type == 18)
-				blocksProjectiles = false;
-			else if (type == 19)
-				hasActions = (stream.readUnsignedByte() == 1);
-			else if (type == 21)
-				rotateHeights = true;
-			else if (type == 22)
-				aBoolean769 = false;
-			else if (type == 23)
-				blocksMovement = true;
-			else if (type == 24) {
-				animationId = stream.readUnsignedWord();
-				if (animationId == 65535)
-					animationId = -1;
-			} else if (type == 28)
-				wallThickness = stream.readUnsignedByte();
-			else if (type == 29)
-				aByte737 = stream.readSignedByte();
-			else if (type == 39)
-				aByte742 = stream.readSignedByte();
-			else if (type >= 30 && type < 39) {
-				if (actions == null)
-					actions = new String[5];
-				actions[type - 30] = stream.readString();
-				if (actions[type - 30].equalsIgnoreCase("hidden"))
-					actions[type - 30] = null;
-			} else if (type == 40) {
-				int i1 = stream.readUnsignedByte();
-				modifiedModelColors = new int[i1];
-				originalModelColors = new int[i1];
-				for (int i2 = 0; i2 < i1; i2++) {
-					modifiedModelColors[i2] = stream.readUnsignedWord();
-					originalModelColors[i2] = stream.readUnsignedWord();
-				}
-			} else if (type == 60)
-				anInt746 = stream.readUnsignedWord();
-			else if (type == 62)
-				aBoolean751 = true;
-			else if (type == 64)
-				castsShadow = false;
-			else if (type == 65)
-				anInt748 = stream.readUnsignedWord();
-			else if (type == 66)
-				anInt772 = stream.readUnsignedWord();
-			else if (type == 67)
-				anInt740 = stream.readUnsignedWord();
-			else if (type == 68)
-				anInt758 = stream.readUnsignedWord();
-			else if (type == 69)
-				anInt768 = stream.readUnsignedByte();
-			else if (type == 70)
-				anInt738 = stream.readSignedWord();
-			else if (type == 71)
-				anInt745 = stream.readSignedWord();
-			else if (type == 72)
-				anInt783 = stream.readSignedWord();
-			else if (type == 73)
-				aBoolean736 = true;
-			else if (type == 74)
-				aBoolean766 = true;
-			else if (type == 75)
-				anInt760 = stream.readUnsignedByte();
-			else if (type == 77) {
-				varbitId = stream.readUnsignedWord();
-				if (varbitId == 65535)
-					varbitId = -1;
-				configId = stream.readUnsignedWord();
-				if (configId == 65535)
-					configId = -1;
-				int j1 = stream.readUnsignedByte();
-				childIds = new int[j1 + 1];
-				for (int j2 = 0; j2 <= j1; j2++) {
-					childIds[j2] = stream.readUnsignedWord();
-					if (childIds[j2] == 65535)
-						childIds[j2] = -1;
-				}
-			}
-		} while (true);
-		if (!Objects.equals(name, "null") && name != null) {
-			hasActions = anIntArray773 != null && (anIntArray776 == null || anIntArray776[0] == 10);
-			if (actions != null)
-				hasActions = true;
-		}
-		if (aBoolean766) {
-			clipFlag = false;
-			blocksProjectiles = false;
-		}
-		if (anInt760 == -1)
-			anInt760 = clipFlag ? 1 : 0;
 	}
 }
