@@ -12,13 +12,12 @@ public class Reset extends Client
 {
 	public static void unlinkMRUNodes()
 	{
-		ObjectDef.mruNodes1.unlinkAll();
-		ObjectDef.mruNodes2.unlinkAll();
-		EntityDef.mruNodes.unlinkAll();
-		ItemDef.mruNodes2.unlinkAll();
-		ItemDef.mruNodes1.unlinkAll();
-		Stoner.mruNodes.unlinkAll();
-		//SpotAnim.aMRUNodes_415.unlinkAll();
+		ObjectDef.mruNodes1.clear();
+		ObjectDef.mruNodes2.clear();
+		EntityDef.mruNodes.clear();
+		ItemDef.mruNodes2.clear();
+		ItemDef.mruNodes1.clear();
+		Stoner.mruNodes.clear();
 	}
 
 	public static void resetImageProducers2()

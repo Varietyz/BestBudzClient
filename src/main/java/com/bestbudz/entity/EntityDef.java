@@ -5,7 +5,7 @@ import com.bestbudz.engine.core.Client;
 import com.bestbudz.entity.pets.PetVariantManager;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.model.Model;
-import com.bestbudz.util.MRUNodes;
+import com.bestbudz.util.LRUCache;
 import com.bestbudz.world.VarBit;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -424,7 +424,7 @@ public final class EntityDef {
   }
 
   public static void nullLoader() {
-    mruNodes = null;
+    if (mruNodes != null) mruNodes.clear();
     jsonDefs = null;
     cache = null;
   }
@@ -561,16 +561,11 @@ public final class EntityDef {
         return type.getAnimatedModel(j, currAnim, ai);
       }
     }
-    Model model = (Model) mruNodes.insertFromCache(interfaceType);
+    Model model = mruNodes.get(interfaceType);
     if (model == null) {
       boolean flag = false;
-		for (int i : models)
-		{
-			if (!Model.isModelCached(i))
-			{
-				flag = true;
-			}
-		}
+		for (int i : models) if (!Model.isModelCached(i)) flag = true;
+
       if (flag) {
         return null;
       }
@@ -589,7 +584,7 @@ public final class EntityDef {
       }
       Objects.requireNonNull(model).calculateNormals();
       model.applyLighting(64 + lightModifier, 1500 + shadowModifier, -30, -50, -30, true);
-      mruNodes.removeFromCache(model, interfaceType);
+      mruNodes.put(interfaceType, model);
     }
     final Model model_1 = Model.aModel_1621;
     model_1.copyModel(model, SequenceFrame.isInvalidFrame(currAnim) & SequenceFrame.isInvalidFrame(j));
@@ -614,7 +609,7 @@ public final class EntityDef {
       if (entityDef == null) return null;
       else return entityDef.getAnimatedModel(j, k, ai);
     }
-    Model model = (Model) mruNodes.insertFromCache(interfaceType);
+    Model model = mruNodes.get(interfaceType);
     if (model == null) {
       boolean flag = false;
 		for (int i : models) if (!Model.isModelCached(i)) flag = true;
@@ -632,7 +627,7 @@ public final class EntityDef {
       }
       Objects.requireNonNull(model).calculateNormals();
       model.applyLighting(64 + lightModifier, 1500 + shadowModifier, -30, -50, -30, true);
-      mruNodes.removeFromCache(model, interfaceType);
+      mruNodes.put(interfaceType, model);
     }
     Model model_1 = Model.aModel_1621;
     model_1.copyModel(model, SequenceFrame.isInvalidFrame(k) & SequenceFrame.isInvalidFrame(j));
@@ -697,5 +692,5 @@ public final class EntityDef {
   public int shadowModifier;
   public boolean renderPriority;
   public int[] models;
-  public static MRUNodes mruNodes = new MRUNodes(30);
+  public static LRUCache<Model> mruNodes = new LRUCache<>(30);
 }

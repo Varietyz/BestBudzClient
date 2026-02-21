@@ -6,7 +6,6 @@ import com.bestbudz.rendering.animation.FloorDecoration;
 import com.bestbudz.rendering.model.Point3D;
 import com.bestbudz.rendering.model.SimpleTile;
 import com.bestbudz.rendering.model.Model;
-import com.bestbudz.util.NodeList;
 import com.bestbudz.world.Ground;
 import com.bestbudz.world.Wall;
 import com.bestbudz.world.WallDecoration;
@@ -67,7 +66,7 @@ public final class WorldController {
 	private static int[] anIntArray473;
 	private static Occluder[][] aOccluderArrayArray474;
 	private static int occluderCount;
-	private static NodeList aClass19_477 = new NodeList();
+	// Dead field removed: was NodeList aClass19_477 (allocated but never populated or iterated)
 	private static boolean[][][][] aBooleanArrayArrayArrayArray491 = new boolean[8][32][51][51];
 	private static boolean[][] aBooleanArrayArray492;
 	private static int viewportCenterX;
@@ -117,7 +116,7 @@ public final class WorldController {
 		aClass28Array462 = null;
 		anIntArray473 = null;
 		aOccluderArrayArray474 = null;
-		aClass19_477 = null;
+		// aClass19_477 removed
 		aBooleanArrayArrayArrayArray491 = null;
 		aBooleanArrayArray492 = null;
 	}

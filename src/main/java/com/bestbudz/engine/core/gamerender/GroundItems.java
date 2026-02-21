@@ -9,7 +9,6 @@ import com.bestbudz.rendering.InteractiveObject;
 import com.bestbudz.rendering.Projectile;
 import static com.bestbudz.rendering.AnimationManager.createSpotAnimation;
 import com.bestbudz.rendering.model.Model;
-import com.bestbudz.util.NodeList;
 import static com.bestbudz.world.GroundItem.spawnGroundItem;
 import com.bestbudz.world.Wall;
 import com.bestbudz.world.WallDecoration;
@@ -17,6 +16,9 @@ import com.bestbudz.world.GroundDecoration;
 import com.bestbudz.world.GameObject;
 import com.bestbudz.world.ObjectDef;
 import static com.bestbudz.world.TerrainHeight.getTerrainHeight;
+
+import java.util.ArrayDeque;
+import java.util.Iterator;
 
 public class GroundItems extends Client
 {
@@ -32,12 +34,10 @@ public class GroundItems extends Client
 			int l13 = stream.readUnsignedWord();
 			if (j3 >= 0 && i6 >= 0 && j3 < 104 && i6 < 104)
 			{
-				NodeList groundItemList = groundArray[plane][j3][i6];
+				ArrayDeque<Item> groundItemList = groundArray[plane][j3][i6];
 				if (groundItemList != null)
 				{
-					for (Item groundItem = (Item) groundItemList
-						.reverseGetFirst(); groundItem != null; groundItem = (Item) groundItemList
-						.reverseGetNext())
+					for (Item groundItem : groundItemList)
 					{
 						if (groundItem.ID != (l8 & 0x7fff) || groundItem.stackSize != k11)
 							continue;
@@ -82,8 +82,8 @@ public class GroundItems extends Client
 				groundItem.ID = i1;
 				groundItem.stackSize = j14;
 				if (groundArray[plane][k6][j9] == null)
-					groundArray[plane][k6][j9] = new NodeList();
-				groundArray[plane][k6][j9].insertHead(groundItem);
+					groundArray[plane][k6][j9] = new ArrayDeque<>();
+				groundArray[plane][k6][j9].addFirst(groundItem);
 				spawnGroundItem(k6, j9);
 			}
 			return;
@@ -96,19 +96,20 @@ public class GroundItems extends Client
 			int k9 = stream.readUnsignedWord();
 			if (i4 >= 0 && l6 >= 0 && i4 < 104 && l6 < 104)
 			{
-				NodeList groundItemList = groundArray[plane][i4][l6];
+				ArrayDeque<Item> groundItemList = groundArray[plane][i4][l6];
 				if (groundItemList != null)
 				{
-					for (Item item = (Item) groundItemList.reverseGetFirst(); item != null; item = (Item) groundItemList
-						.reverseGetNext())
+					Iterator<Item> it = groundItemList.iterator();
+					while (it.hasNext())
 					{
+						Item item = it.next();
 						if (item.ID != (k9 & 0x7fff))
 							continue;
-						item.unlink();
+						it.remove();
 						break;
 					}
 
-					if (groundItemList.reverseGetFirst() == null)
+					if (groundItemList.isEmpty())
 						groundArray[plane][i4][l6] = null;
 					spawnGroundItem(i4, l6);
 				}
@@ -270,7 +271,7 @@ public class GroundItems extends Client
 				l7 = l7 * 128 + 64;
 				GraphicEffect graphicEffect = new GraphicEffect(plane, loopCycle, j15, k10,
 					getTerrainHeight(plane, l7, i5) - l12, l7, i5);
-				queueSpotAnimation.insertHead(graphicEffect);
+				queueSpotAnimation.addFirst(graphicEffect);
 			}
 			return;
 		}
@@ -287,8 +288,8 @@ public class GroundItems extends Client
 				groundItem.ID = k2;
 				groundItem.stackSize = j5;
 				if (groundArray[plane][l10][i13] == null)
-					groundArray[plane][l10][i13] = new NodeList();
-				groundArray[plane][l10][i13].insertHead(groundItem);
+					groundArray[plane][l10][i13] = new ArrayDeque<>();
+				groundArray[plane][l10][i13].addFirst(groundItem);
 				spawnGroundItem(l10, i13);
 			}
 			return;
@@ -331,7 +332,7 @@ public class GroundItems extends Client
 				Projectile projectile = new Projectile(i21, l18, k19 + loopCycle, j20 + loopCycle,
 					j21, plane, getTerrainHeight(plane, k8, l5) - i18, k8, l5, l15, i17);
 				projectile.calculateTrajectory(k19 + loopCycle, k13, getTerrainHeight(plane, k13, j11) - l18, j11);
-				nodeList.insertHead(projectile);
+				nodeList.addFirst(projectile);
 			}
 		}
 	}

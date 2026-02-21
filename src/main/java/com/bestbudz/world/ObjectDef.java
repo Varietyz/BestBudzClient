@@ -4,7 +4,7 @@ import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.model.Model;
-import com.bestbudz.util.MRUNodes;
+import com.bestbudz.util.LRUCache;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,9 +20,9 @@ public final class ObjectDef {
 	public static int totalObjects;
 	public static Client clientInstance;
 	public static int cacheIndex;
-	public static MRUNodes mruNodes2 = new MRUNodes(64);
+	public static LRUCache<Model> mruNodes2 = new LRUCache<>(64);
 	public static ObjectDef[] cache;
-	public static MRUNodes mruNodes1 = new MRUNodes(1024);
+	public static LRUCache<Model> mruNodes1 = new LRUCache<>(1024);
 
 	public boolean aBoolean736;
 	public byte aByte737;
@@ -383,8 +383,8 @@ public final class ObjectDef {
 	}
 
 	public static void nullLoader() {
-		mruNodes1 = null;
-		mruNodes2 = null;
+		if (mruNodes1 != null) mruNodes1.clear();
+		if (mruNodes2 != null) mruNodes2.clear();
 		jsonDefs = null;
 		cache = null;
 	}
@@ -635,7 +635,7 @@ public final class ObjectDef {
 			if (j != 10)
 				return null;
 			l1 = ((long) type << 8) + l + ((long) (k + 1) << 32);
-			Model model_1 = (Model) mruNodes2.insertFromCache(l1);
+			Model model_1 = mruNodes2.get(l1);
 			if (model_1 != null)
 				return model_1;
 			if (anIntArray773 == null)
@@ -646,14 +646,14 @@ public final class ObjectDef {
 				int l2 = anIntArray773[i2];
 				if (flag1)
 					l2 += 0x10000;
-				model = (Model) mruNodes1.insertFromCache(l2);
+				model = mruNodes1.get(l2);
 				if (model == null) {
 					model = Model.loadModelFromCache(l2 & 0xffff);
 					if (model == null)
 						return null;
 					if (flag1)
 						model.mirrorZ();
-					mruNodes1.removeFromCache(model, l2);
+					mruNodes1.put(l2, model);
 				}
 				if (k1 > 1)
 					tempModels[i2] = model;
@@ -673,21 +673,21 @@ public final class ObjectDef {
 			if (i1 == -1)
 				return null;
 			l1 = ((long) type << 8) + ((long) i1 << 3) + l + ((long) (k + 1) << 32);
-			Model model_2 = (Model) mruNodes2.insertFromCache(l1);
+			Model model_2 = mruNodes2.get(l1);
 			if (model_2 != null)
 				return model_2;
 			int j2 = anIntArray773[i1];
 			boolean flag3 = aBoolean751 ^ (l > 3);
 			if (flag3)
 				j2 += 0x10000;
-			model = (Model) mruNodes1.insertFromCache(j2);
+			model = mruNodes1.get(j2);
 			if (model == null) {
 				model = Model.loadModelFromCache(j2 & 0xffff);
 				if (model == null)
 					return null;
 				if (flag3)
 					model.mirrorZ();
-				mruNodes1.removeFromCache(model, j2);
+				mruNodes1.put(j2, model);
 			}
 		}
 
@@ -717,7 +717,7 @@ public final class ObjectDef {
 		model_3.applyLighting(74, 1000, -90, -580, -90, !aBoolean769);
 		if (anInt760 == 1)
 			model_3.anInt1654 = model_3.modelHeight;
-		mruNodes2.removeFromCache(model_3, l1);
+		mruNodes2.put(l1, model_3);
 		return model_3;
 	}
 }

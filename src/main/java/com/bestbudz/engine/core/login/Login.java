@@ -23,7 +23,6 @@ import com.bestbudz.network.Socket;
 import static com.bestbudz.ui.DialogHandling.sendFrame36;
 import static com.bestbudz.ui.interfaces.Chatbox.splitPrivateChat;
 import com.bestbudz.util.ISAACRandomGen;
-import com.bestbudz.util.NodeList;
 import com.bestbudz.graphics.text.TextClass;
 import com.bestbudz.engine.core.gamerender.ObjectManager;
 import com.bestbudz.world.Varp;
@@ -209,15 +208,15 @@ public class Login extends Client
 				for (int k2 = 0; k2 < 16384; k2++) npcArray[k2] = null;
 
 				myStoner = stonerArray[myStonerIndex] = new Stoner();
-				nodeList.removeAll();
-				queueSpotAnimation.removeAll();
+				nodeList.clear();
+				queueSpotAnimation.clear();
 
 				for (int l2 = 0; l2 < 4; l2++)
 					for (int i3 = 0; i3 < 104; i3++)
 						for (int k3 = 0; k3 < 104; k3++)
 							groundArray[l2][i3][k3] = null;
 
-				spotAnimationQueue = new NodeList();
+				spotAnimationQueue = new java.util.LinkedList<>();
 				fullscreenInterfaceID = -1;
 				friendsListAction = 0;
 				stonersCount = 0;
@@ -436,7 +435,7 @@ public class Login extends Client
 					ColorPalette.generateColorPalette(0.69999999999999996D);
 				if (k == 4)
 					ColorPalette.generateColorPalette(0.59999999999999998D);
-				ItemDef.mruNodes1.unlinkAll();
+				ItemDef.mruNodes1.clear();
 				welcomeScreenRaised = true;
 			}
 			if (j == 3)

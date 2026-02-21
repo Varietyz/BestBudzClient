@@ -730,10 +730,7 @@ public class PacketParser extends Client
 			}
 		}
 
-		for (SpotAnimationNode item = (SpotAnimationNode) spotAnimationQueue.reverseGetFirst();
-			 item != null;
-			 item = (SpotAnimationNode) spotAnimationQueue.reverseGetNext()) {
-
+		for (SpotAnimationNode item : spotAnimationQueue) {
 			if (item.x >= startX && item.x < endX &&
 				item.y >= startY && item.y < endY &&
 				item.plane == plane) {
@@ -940,15 +937,14 @@ public class PacketParser extends Client
 			}
 		}
 
-		for (SpotAnimationNode class30_sub1_1 = (SpotAnimationNode) spotAnimationQueue.reverseGetFirst();
-			 class30_sub1_1 != null;
-			 class30_sub1_1 = (SpotAnimationNode) spotAnimationQueue.reverseGetNext()) {
-
+		java.util.Iterator<SpotAnimationNode> spotIt = spotAnimationQueue.iterator();
+		while (spotIt.hasNext()) {
+			SpotAnimationNode class30_sub1_1 = spotIt.next();
 			class30_sub1_1.x -= deltaX;
 			class30_sub1_1.y -= deltaY;
 			if (class30_sub1_1.x < 0 || class30_sub1_1.y < 0 ||
 				class30_sub1_1.x >= 208 || class30_sub1_1.y >= 208) {
-				class30_sub1_1.unlink();
+				spotIt.remove();
 			}
 		}
 

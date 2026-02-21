@@ -27,38 +27,35 @@ public class WalkTo extends Client
 	{
 		int byte0 = 104;
 		int byte1 = 104;
-		for (int l2 = 0; l2 < byte0; l2++)
-		{
-			for (int i3 = 0; i3 < byte1; i3++)
-			{
-				anIntArrayArray901[l2][i3] = 0;
-				anIntArrayArray825[l2][i3] = 0x5f5e0ff;
-			}
-		}
+
+		// Generation counter: increment instead of clearing 21,632 array cells
+		walkGeneration++;
+
 		int j3 = j2;
 		int k3 = j1;
 		if (j2 < 0 || k3 < 0
-			|| j2 >= anIntArrayArray901.length
-			|| k3 >= anIntArrayArray901[j2].length) {
+			|| j2 >= walkDirection.length
+			|| k3 >= walkDirection[j2].length) {
 			return false;
 		}
 
 		k2 = Math.max(0, Math.min(103, k2));
 		i2 = Math.max(0, Math.min(103, i2));
 
-		anIntArrayArray901[j2][j1] = 99;
-		anIntArrayArray825[j2][j1] = 0;
+		walkDirection[j2][j1] = 99;
+		walkDistance[j2][j1] = 0;
+		walkVisitGen[j2][j1] = walkGeneration;
 		int l3 = 0;
 		int i4 = 0;
-		bigX[l3] = j2;
-		bigY[l3++] = j1;
+		walkQueueX[l3] = j2;
+		walkQueueY[l3++] = j1;
 		boolean flag1 = false;
-		int j4 = bigX.length;
+		int j4 = walkQueueX.length;
 		int[][] ai = collisionMaps[plane].collisionFlags;
 		while (i4 != l3)
 		{
-			j3 = bigX[i4];
-			k3 = bigY[i4];
+			j3 = walkQueueX[i4];
+			k3 = walkQueueY[i4];
 			i4 = (i4 + 1) % j4;
 			if (j3 == k2 && k3 == i2)
 			{
@@ -83,77 +80,85 @@ public class WalkTo extends Client
 				flag1 = true;
 				break;
 			}
-			int l4 = anIntArrayArray825[j3][k3] + 1;
-			if (j3 > 0 && anIntArrayArray901[j3 - 1][k3] == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0)
+			int l4 = walkDistance[j3][k3] + 1;
+			if (j3 > 0 && walkVisitGen[j3 - 1][k3] != walkGeneration && (ai[j3 - 1][k3] & 0x1280108) == 0)
 			{
-				bigX[l3] = j3 - 1;
-				bigY[l3] = k3;
+				walkQueueX[l3] = j3 - 1;
+				walkQueueY[l3] = k3;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 - 1][k3] = 2;
-				anIntArrayArray825[j3 - 1][k3] = l4;
+				walkDirection[j3 - 1][k3] = 2;
+				walkDistance[j3 - 1][k3] = l4;
+				walkVisitGen[j3 - 1][k3] = walkGeneration;
 			}
-			if (j3 < byte0 - 1 && anIntArrayArray901[j3 + 1][k3] == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0)
+			if (j3 < byte0 - 1 && walkVisitGen[j3 + 1][k3] != walkGeneration && (ai[j3 + 1][k3] & 0x1280180) == 0)
 			{
-				bigX[l3] = j3 + 1;
-				bigY[l3] = k3;
+				walkQueueX[l3] = j3 + 1;
+				walkQueueY[l3] = k3;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 + 1][k3] = 8;
-				anIntArrayArray825[j3 + 1][k3] = l4;
+				walkDirection[j3 + 1][k3] = 8;
+				walkDistance[j3 + 1][k3] = l4;
+				walkVisitGen[j3 + 1][k3] = walkGeneration;
 			}
-			if (k3 > 0 && anIntArrayArray901[j3][k3 - 1] == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0)
+			if (k3 > 0 && walkVisitGen[j3][k3 - 1] != walkGeneration && (ai[j3][k3 - 1] & 0x1280102) == 0)
 			{
-				bigX[l3] = j3;
-				bigY[l3] = k3 - 1;
+				walkQueueX[l3] = j3;
+				walkQueueY[l3] = k3 - 1;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3][k3 - 1] = 1;
-				anIntArrayArray825[j3][k3 - 1] = l4;
+				walkDirection[j3][k3 - 1] = 1;
+				walkDistance[j3][k3 - 1] = l4;
+				walkVisitGen[j3][k3 - 1] = walkGeneration;
 			}
-			if (k3 < byte1 - 1 && anIntArrayArray901[j3][k3 + 1] == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0)
+			if (k3 < byte1 - 1 && walkVisitGen[j3][k3 + 1] != walkGeneration && (ai[j3][k3 + 1] & 0x1280120) == 0)
 			{
-				bigX[l3] = j3;
-				bigY[l3] = k3 + 1;
+				walkQueueX[l3] = j3;
+				walkQueueY[l3] = k3 + 1;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3][k3 + 1] = 4;
-				anIntArrayArray825[j3][k3 + 1] = l4;
+				walkDirection[j3][k3 + 1] = 4;
+				walkDistance[j3][k3 + 1] = l4;
+				walkVisitGen[j3][k3 + 1] = walkGeneration;
 			}
-			if (j3 > 0 && k3 > 0 && anIntArrayArray901[j3 - 1][k3 - 1] == 0 && (ai[j3 - 1][k3 - 1] & 0x128010e) == 0
+			if (j3 > 0 && k3 > 0 && walkVisitGen[j3 - 1][k3 - 1] != walkGeneration && (ai[j3 - 1][k3 - 1] & 0x128010e) == 0
 				&& (ai[j3 - 1][k3] & 0x1280108) == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0)
 			{
-				bigX[l3] = j3 - 1;
-				bigY[l3] = k3 - 1;
+				walkQueueX[l3] = j3 - 1;
+				walkQueueY[l3] = k3 - 1;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 - 1][k3 - 1] = 3;
-				anIntArrayArray825[j3 - 1][k3 - 1] = l4;
+				walkDirection[j3 - 1][k3 - 1] = 3;
+				walkDistance[j3 - 1][k3 - 1] = l4;
+				walkVisitGen[j3 - 1][k3 - 1] = walkGeneration;
 			}
-			if (j3 < byte0 - 1 && k3 > 0 && anIntArrayArray901[j3 + 1][k3 - 1] == 0
+			if (j3 < byte0 - 1 && k3 > 0 && walkVisitGen[j3 + 1][k3 - 1] != walkGeneration
 				&& (ai[j3 + 1][k3 - 1] & 0x1280183) == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0
 				&& (ai[j3][k3 - 1] & 0x1280102) == 0)
 			{
-				bigX[l3] = j3 + 1;
-				bigY[l3] = k3 - 1;
+				walkQueueX[l3] = j3 + 1;
+				walkQueueY[l3] = k3 - 1;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 + 1][k3 - 1] = 9;
-				anIntArrayArray825[j3 + 1][k3 - 1] = l4;
+				walkDirection[j3 + 1][k3 - 1] = 9;
+				walkDistance[j3 + 1][k3 - 1] = l4;
+				walkVisitGen[j3 + 1][k3 - 1] = walkGeneration;
 			}
-			if (j3 > 0 && k3 < byte1 - 1 && anIntArrayArray901[j3 - 1][k3 + 1] == 0
+			if (j3 > 0 && k3 < byte1 - 1 && walkVisitGen[j3 - 1][k3 + 1] != walkGeneration
 				&& (ai[j3 - 1][k3 + 1] & 0x1280138) == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0
 				&& (ai[j3][k3 + 1] & 0x1280120) == 0)
 			{
-				bigX[l3] = j3 - 1;
-				bigY[l3] = k3 + 1;
+				walkQueueX[l3] = j3 - 1;
+				walkQueueY[l3] = k3 + 1;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 - 1][k3 + 1] = 6;
-				anIntArrayArray825[j3 - 1][k3 + 1] = l4;
+				walkDirection[j3 - 1][k3 + 1] = 6;
+				walkDistance[j3 - 1][k3 + 1] = l4;
+				walkVisitGen[j3 - 1][k3 + 1] = walkGeneration;
 			}
-			if (j3 < byte0 - 1 && k3 < byte1 - 1 && anIntArrayArray901[j3 + 1][k3 + 1] == 0
+			if (j3 < byte0 - 1 && k3 < byte1 - 1 && walkVisitGen[j3 + 1][k3 + 1] != walkGeneration
 				&& (ai[j3 + 1][k3 + 1] & 0x12801e0) == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0
 				&& (ai[j3][k3 + 1] & 0x1280120) == 0)
 			{
-				bigX[l3] = j3 + 1;
-				bigY[l3] = k3 + 1;
+				walkQueueX[l3] = j3 + 1;
+				walkQueueY[l3] = k3 + 1;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 + 1][k3 + 1] = 12;
-				anIntArrayArray825[j3 + 1][k3 + 1] = l4;
+				walkDirection[j3 + 1][k3 + 1] = 12;
+				walkDistance[j3 + 1][k3 + 1] = l4;
+				walkVisitGen[j3 + 1][k3 + 1] = walkGeneration;
 			}
 		}
 		lastTickCount = 0;
@@ -168,9 +173,10 @@ public class WalkTo extends Client
 					{
 						for (int l6 = i2 - k5; l6 <= i2 + k5; l6++)
 						{
-							if (i6 >= 0 && l6 >= 0 && i6 < 104 && l6 < 104 && anIntArrayArray825[i6][l6] < i5)
+							if (i6 >= 0 && l6 >= 0 && i6 < 104 && l6 < 104
+								&& walkVisitGen[i6][l6] == walkGeneration && walkDistance[i6][l6] < i5)
 							{
-								i5 = anIntArrayArray825[i6][l6];
+								i5 = walkDistance[i6][l6];
 								j3 = i6;
 								k3 = l6;
 								lastTickCount = 1;
@@ -186,16 +192,16 @@ public class WalkTo extends Client
 				return false;
 		}
 		i4 = 0;
-		bigX[i4] = j3;
-		bigY[i4++] = k3;
+		walkQueueX[i4] = j3;
+		walkQueueY[i4++] = k3;
 		int l5;
-		for (int j5 = l5 = anIntArrayArray901[j3][k3]; j3 != j2 || k3 != j1; j5 = anIntArrayArray901[j3][k3])
+		for (int j5 = l5 = walkDirection[j3][k3]; j3 != j2 || k3 != j1; j5 = walkDirection[j3][k3])
 		{
 			if (j5 != l5)
 			{
 				l5 = j5;
-				bigX[i4] = j3;
-				bigY[i4++] = k3;
+				walkQueueX[i4] = j3;
+				walkQueueY[i4++] = k3;
 			}
 			if ((j5 & 2) != 0)
 				j3++;
@@ -212,8 +218,8 @@ public class WalkTo extends Client
 			if (k4 > 25)
 				k4 = 25;
 			i4--;
-			int k6 = bigX[i4];
-			int i7 = bigY[i4];
+			int k6 = walkQueueX[i4];
+			int i7 = walkQueueY[i4];
 			lastMouseY += k4;
 			if (lastMouseY >= 92)
 			{
@@ -237,13 +243,13 @@ public class WalkTo extends Client
 				stream.writeByte(k4 + k4 + 3);
 			}
 			stream.writeWordMixedLE(k6 + baseX);
-			destX = bigX[0];
-			destY = bigY[0];
+			destX = walkQueueX[0];
+			destY = walkQueueY[0];
 			for (int j7 = 1; j7 < k4; j7++)
 			{
 				i4--;
-				stream.writeByte(bigX[i4] - k6);
-				stream.writeByte(bigY[i4] - i7);
+				stream.writeByte(walkQueueX[i4] - k6);
+				stream.writeByte(walkQueueY[i4] - i7);
 			}
 			stream.writeWordLittleEndian(i7 + baseY);
 			stream.writeByteNegated(keyArray[5] != 1 ? 0 : 1);

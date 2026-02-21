@@ -8,7 +8,7 @@ import com.bestbudz.entity.pets.PetItemCreator;
 import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
 import com.bestbudz.rendering.model.Model;
-import com.bestbudz.util.MRUNodes;
+import com.bestbudz.util.LRUCache;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -17,8 +17,8 @@ import java.util.Objects;
 
 public final class ItemDef {
 
-	public static MRUNodes mruNodes1 = new MRUNodes(100);
-	public static MRUNodes mruNodes2 = new MRUNodes(50);
+	public static LRUCache<Sprite> mruNodes1 = new LRUCache<>(100);
+	public static LRUCache<Model> mruNodes2 = new LRUCache<>(50);
 	public static boolean isMembers = true;
 	public static int totalItems;
 	public static ItemDef[] cache;
@@ -69,8 +69,8 @@ public final class ItemDef {
 	}
 
 	public static void nullLoader() {
-		mruNodes2 = null;
-		mruNodes1 = null;
+		if (mruNodes2 != null) mruNodes2.clear();
+		if (mruNodes1 != null) mruNodes1.clear();
 		jsonDefs = null;
 		cache = null;
 	}
@@ -269,10 +269,9 @@ public final class ItemDef {
 
 	public static Sprite getSprite(int i, int j, int k) {
 		if (k == 0) {
-			Sprite sprite = (Sprite) mruNodes1.insertFromCache(i);
+			Sprite sprite = mruNodes1.get(i);
 			if (sprite != null && sprite.originalHeight != j && sprite.originalHeight != -1) {
-
-				sprite.unlink();
+				mruNodes1.remove(i);
 				sprite = null;
 			}
 			if (sprite != null) {
@@ -393,7 +392,7 @@ public final class ItemDef {
 			sprite.originalHeight = j6;
 		}
 		if (k == 0)
-			mruNodes1.removeFromCache(enabledSprite, i);
+			mruNodes1.put(i, enabledSprite);
 		DrawingArea.initDrawingArea(j2, i2, ai1, depthBuffer);
 		DrawingArea.setDrawingArea(j3, k2, l2, i3);
 		Rasterizer.viewportCenterX = k1;
@@ -578,7 +577,7 @@ public final class ItemDef {
 				return getItemDefinition(j).getStackedModel(1);
 		}
 
-		Model model = (Model) mruNodes2.insertFromCache(id);
+		Model model = mruNodes2.get(id);
 		if (model != null)
 			return model;
 
@@ -601,7 +600,7 @@ public final class ItemDef {
 
 		model.applyLighting(64 + anInt196, 768 + anInt184, -50, -10, -50, true);
 		model.aBoolean1659 = true;
-		mruNodes2.removeFromCache(model, id);
+		mruNodes2.put(id, model);
 		return model;
 	}
 

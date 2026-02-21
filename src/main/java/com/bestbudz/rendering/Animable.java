@@ -8,9 +8,10 @@ import static com.bestbudz.engine.core.Client.worldController;
 import com.bestbudz.engine.gpu.RS317GPUInterface;
 import com.bestbudz.rendering.model.Point3D;
 import com.bestbudz.rendering.model.Model;
-import com.bestbudz.util.NodeSub;
 
-public class Animable extends NodeSub {
+import java.util.Iterator;
+
+public class Animable {
 
 	public int modelHeight;
 	public Point3D[] vertices;
@@ -42,20 +43,22 @@ public class Animable extends NodeSub {
 
 	public static void processGraphicEffects()
 	{
-		GraphicEffect class30_sub2_sub4_sub3 = (GraphicEffect) queueSpotAnimation.reverseGetFirst();
-		for (; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (GraphicEffect) queueSpotAnimation.reverseGetNext())
+		Iterator<GraphicEffect> it = queueSpotAnimation.descendingIterator();
+		while (it.hasNext())
+		{
+			GraphicEffect class30_sub2_sub4_sub3 = it.next();
 			if (class30_sub2_sub4_sub3.plane != plane || class30_sub2_sub4_sub3.finished)
-				class30_sub2_sub4_sub3.unlink();
+				it.remove();
 			else if (loopCycle >= class30_sub2_sub4_sub3.endCycle)
 			{
 				class30_sub2_sub4_sub3.update(gameTickCounter);
 				if (class30_sub2_sub4_sub3.finished)
-					class30_sub2_sub4_sub3.unlink();
+					it.remove();
 				else
 					worldController.addLargeObject(class30_sub2_sub4_sub3.plane, 0, class30_sub2_sub4_sub3.z, -1,
 						class30_sub2_sub4_sub3.y, 60, class30_sub2_sub4_sub3.x,
 						class30_sub2_sub4_sub3, false);
 			}
-
+		}
 	}
 }

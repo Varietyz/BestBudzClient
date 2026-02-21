@@ -11,7 +11,7 @@ import static com.bestbudz.ui.handling.RightClickMenu.buildAtStonerMenu;
 import com.bestbudz.entity.Npc;
 import com.bestbudz.entity.Stoner;
 import com.bestbudz.rendering.model.Model;
-import com.bestbudz.util.NodeList;
+import java.util.ArrayDeque;
 import com.bestbudz.world.ObjectDef;
 
 public class BuildScreenMenu extends Client
@@ -167,10 +167,10 @@ public class BuildScreenMenu extends Client
 			}
 			if (k1 == 3)
 			{
-				NodeList groundItemList = groundArray[plane][i1][j1];
+				ArrayDeque<Item> groundItemList = groundArray[plane][i1][j1];
 				if (groundItemList != null)
 				{
-					for (Item item = (Item) groundItemList.getFirst(); item != null; item = (Item) groundItemList.getNext())
+					for (Item item : groundItemList)
 					{
 						ItemDef itemDef = getItemDefinition(item.ID);
 						if (itemSelected == 1)

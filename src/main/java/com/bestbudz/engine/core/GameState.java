@@ -458,13 +458,13 @@ public class GameState extends Client {
 			draggedInterfaceId = -1;
 
 			if (queueSpotAnimation != null) {
-				queueSpotAnimation.removeAll();
+				queueSpotAnimation.clear();
 			} else {
 				logError("aClass19_1056 is null during cleanup");
 			}
 
 			if (nodeList != null) {
-				nodeList.removeAll();
+				nodeList.clear();
 			} else {
 				logError("aClass19_1013 is null during cleanup");
 			}
@@ -1061,7 +1061,7 @@ public class GameState extends Client {
 
 		try {
 			if (ObjectDef.mruNodes1 != null) {
-				ObjectDef.mruNodes1.unlinkAll();
+				ObjectDef.mruNodes1.clear();
 			} else {
 				logError("ObjectDef.mruNodes1 is null");
 			}
@@ -1164,11 +1164,11 @@ public class GameState extends Client {
 
 		try {
 			if (queueSpotAnimation != null) {
-				queueSpotAnimation.removeAll();
+				queueSpotAnimation.clear();
 			}
 
 			if (nodeList != null) {
-				nodeList.removeAll();
+				nodeList.clear();
 			}
 
 			try {

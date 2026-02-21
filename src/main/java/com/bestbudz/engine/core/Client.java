@@ -66,7 +66,10 @@ import com.bestbudz.rendering.model.Model;
 import com.bestbudz.ui.RSInterface;
 import com.bestbudz.ui.interfaces.StatusOrbs;
 import com.bestbudz.util.ISAACRandomGen;
-import com.bestbudz.util.NodeList;
+import com.bestbudz.rendering.Projectile;
+import com.bestbudz.rendering.GraphicEffect;
+import com.bestbudz.world.SpotAnimationNode;
+import java.util.LinkedList;
 import com.bestbudz.world.Floor;
 import com.bestbudz.world.ObjectDef;
 import com.bestbudz.engine.core.gamerender.ObjectManager;
@@ -283,7 +286,8 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static int ignoreCount;
 	public static long lastConnectionTime;
 	public static int[] stonersNodeIDs;
-	public static NodeList[][][] groundArray;
+	@SuppressWarnings("unchecked")
+	public static java.util.ArrayDeque<com.bestbudz.data.items.Item>[][][] groundArray;
 	public static volatile boolean regionLoaded;
 	public static Stream incomingPacketBuffer;
 	public static Npc[] npcArray;
@@ -362,7 +366,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static int pktType;
 	public static int idleTimeout;
 	public static int connectionTimeout;
-	public static NodeList nodeList;
+	public static LinkedList<Projectile> nodeList;
 	public static int mouseClickState;
 	public static int lastActionTime;
 	public static int mouseDragTime;
@@ -383,7 +387,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static String inputBuffer;
 	public static int selectedTabIndex;
 	public static int tabHoverTime;
-	public static NodeList queueSpotAnimation;
+	public static LinkedList<GraphicEffect> queueSpotAnimation;
 	public static Background[] mapScenes;
 	public static int soundEffectCount;
 	public static int stonersListAction;
@@ -442,7 +446,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static int friendsListCount;
 	public static int minimapInt3;
 	public static int reportAbuseInterfaceID;
-	public static NodeList spotAnimationQueue;
+	public static LinkedList<SpotAnimationNode> spotAnimationQueue;
 	public static int minimapRotation;
 	public static int invOverlayInterfaceID;
 	public static int[] anIntArray1190;
@@ -496,12 +500,12 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static int anInt1051;
 	public static int anInt1097;
 	public static boolean fpsOn = true;
-	public static int[][] anIntArrayArray825;
+	public static int[][] walkDistance;
 	public static int removedNpcCount;
 	public static int[] removedNpcIndices;
 	public static int updatedNpcCount;
 	public static int[] updatedNpcIndices;
-	public static int[][] anIntArrayArray901;
+	public static int[][] walkDirection;
 	public static byte[] aByteArray912;
 	public static int anInt913;
 	public static int[][] renderGrid;
@@ -510,8 +514,10 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static int cameraZ;
 	public static int minCameraHeight;
 	public static int legacyClickInt;
-	public static int[] bigX;
-	public static int[] bigY;
+	public static int[] walkQueueX;
+	public static int[] walkQueueY;
+	public static int[][] walkVisitGen;
+	public static int walkGeneration;
 	public static int cameraYawVelocity;
 	public static int cameraPitchVelocity;
 	public static ImageProducer minimapImageProducer;
@@ -559,9 +565,9 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		chatTypeView = 0;
 		clanChatMode = 0;
 		server = NetworkConfig.SERVER_IPS[EngineConfig.worldSelected - 1];
-		anIntArrayArray825 = new int[104][104];
+		walkDistance = new int[104][104];
 		stonersNodeIDs = new int[200];
-		groundArray = new NodeList[4][104][104];
+		groundArray = new java.util.ArrayDeque[4][104][104];
 		regionLoaded = false;
 		incomingPacketBuffer = new Stream(new byte[5000]);
 		npcArray = new Npc[16384];
@@ -578,7 +584,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		stonerIndices = new int[maxStoners];
 		updatedNpcIndices = new int[maxStoners];
 		playerUpdateBuffers = new Stream[maxStoners];
-		anIntArrayArray901 = new int[104][104];
+		walkDirection = new int[104][104];
 		aByteArray912 = new byte[16384];
 		loadingError = false;
 		renderGrid = new int[104][104];
@@ -596,7 +602,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		draggedInterfaceId = -1;
 		hitMarks = new Sprite[20];
 		amountOrNameInput = "";
-		nodeList = new NodeList();
+		nodeList = new LinkedList<>();
 		aBoolean1017 = false;
 		mouseClickState = -1;
 		dragModeActive = false;
@@ -604,7 +610,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		dialogID = -1;
 		welcomeScreenVisible = true;
 		selectedTabIndex = -1;
-		queueSpotAnimation = new NodeList();
+		queueSpotAnimation = new LinkedList<>();
 
 		mapScenes = new Background[100];
 		renderQueueX = new int[1000];
@@ -633,7 +639,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		myUsername = "";
 		myPassword = "";
 		reportAbuseInterfaceID = -1;
-		spotAnimationQueue = new NodeList();
+		spotAnimationQueue = new LinkedList<>();
 		minCameraHeight = 128;
 		invOverlayInterfaceID = -1;
 		stream = Stream.getPooledStream();
@@ -650,8 +656,9 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		loginMessage1 = "Best Budz - Where weed is legal.";
 		loginMessage2 = "The weed flows, where the tree grows!";
 		backDialogID = -1;
-		bigX = new int[4000];
-		bigY = new int[4000];
+		walkQueueX = new int[4000];
+		walkQueueY = new int[4000];
+		walkVisitGen = new int[104][104];
 	}
 
 	public static void setCanvas(GameCanvas canvas) {
@@ -1113,10 +1120,11 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		byteGroundArray = null;
 		worldController = null;
 		collisionMaps = null;
-		anIntArrayArray901 = null;
-		anIntArrayArray825 = null;
-		bigX = null;
-		bigY = null;
+		walkDirection = null;
+		walkDistance = null;
+		walkQueueX = null;
+		walkQueueY = null;
+		walkVisitGen = null;
 		aByteArray912 = null;
 		gameAreaImageProducer = null;
 		leftFrame = null;

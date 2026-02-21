@@ -8,14 +8,16 @@ import com.bestbudz.engine.core.gamerender.ObjectManager;
 
 import static com.bestbudz.rendering.GameObject.addGameObjectToScene;
 
+import java.util.Iterator;
+
 public final class AnimationManager extends Client {
 
 	public static void updateSpotAnimations() {
 		if (loadingStage != 2) return;
 
-		for (SpotAnimationNode spotAnim = (SpotAnimationNode) spotAnimationQueue.reverseGetFirst();
-			 spotAnim != null;
-			 spotAnim = (SpotAnimationNode) spotAnimationQueue.reverseGetNext()) {
+		Iterator<SpotAnimationNode> it = spotAnimationQueue.descendingIterator();
+		while (it.hasNext()) {
+			SpotAnimationNode spotAnim = it.next();
 
 			if (spotAnim.delay > 0) {
 				spotAnim.delay--;
@@ -25,7 +27,7 @@ public final class AnimationManager extends Client {
 				if (spotAnim.previousObjectId < 0 || ObjectManager.isValidObject(spotAnim.previousObjectId, spotAnim.previousObjectRotation)) {
 					addGameObjectToScene(spotAnim.y, spotAnim.plane, spotAnim.previousObjectType,
 						spotAnim.previousObjectRotation, spotAnim.x, spotAnim.type, spotAnim.previousObjectId);
-					spotAnim.unlink();
+					it.remove();
 				}
 			} else {
 				if (spotAnim.timer > 0) {
@@ -45,7 +47,7 @@ public final class AnimationManager extends Client {
 						(spotAnim.objectId == spotAnim.previousObjectId &&
 							spotAnim.objectType == spotAnim.previousObjectType &&
 							spotAnim.objectRotation == spotAnim.previousObjectRotation)) {
-						spotAnim.unlink();
+						it.remove();
 					}
 				}
 			}
@@ -166,48 +168,46 @@ public final class AnimationManager extends Client {
 	}
 
 	public static void processPendingAnimations() {
-		for (SpotAnimationNode current = (SpotAnimationNode) spotAnimationQueue.reverseGetFirst();
-			 current != null;
-			 current = (SpotAnimationNode) spotAnimationQueue.reverseGetNext()) {
+		Iterator<SpotAnimationNode> it = spotAnimationQueue.descendingIterator();
+		while (it.hasNext()) {
+			SpotAnimationNode current = it.next();
 
 			if (current.delay == -1) {
 				current.timer = 0;
 				loadSpotAnimationData(current);
 			} else {
-				current.unlink();
+				it.remove();
 			}
 		}
 	}
 
 	public static void createSpotAnimation(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2)
 	{
-		SpotAnimationNode SpotAnimationNode = null;
-		for (SpotAnimationNode existingNode = (SpotAnimationNode) spotAnimationQueue
-			.reverseGetFirst(); existingNode != null; existingNode = (SpotAnimationNode) spotAnimationQueue
-			.reverseGetNext())
+		SpotAnimationNode spotAnimationNode = null;
+		for (SpotAnimationNode existingNode : spotAnimationQueue)
 		{
 			if (existingNode.plane != l1 || existingNode.x != i2 || existingNode.y != j1
 				|| existingNode.type != i1)
 				continue;
-			SpotAnimationNode = existingNode;
+			spotAnimationNode = existingNode;
 			break;
 		}
 
-		if (SpotAnimationNode == null)
+		if (spotAnimationNode == null)
 		{
-			SpotAnimationNode = new SpotAnimationNode();
-			SpotAnimationNode.plane = l1;
-			SpotAnimationNode.type = i1;
-			SpotAnimationNode.x = i2;
-			SpotAnimationNode.y = j1;
-			loadSpotAnimationData(SpotAnimationNode);
-			spotAnimationQueue.insertHead(SpotAnimationNode);
+			spotAnimationNode = new SpotAnimationNode();
+			spotAnimationNode.plane = l1;
+			spotAnimationNode.type = i1;
+			spotAnimationNode.x = i2;
+			spotAnimationNode.y = j1;
+			loadSpotAnimationData(spotAnimationNode);
+			spotAnimationQueue.addFirst(spotAnimationNode);
 		}
-		SpotAnimationNode.objectId = k;
-		SpotAnimationNode.objectRotation = k1;
-		SpotAnimationNode.objectType = l;
-		SpotAnimationNode.timer = j2;
-		SpotAnimationNode.delay = j;
+		spotAnimationNode.objectId = k;
+		spotAnimationNode.objectRotation = k1;
+		spotAnimationNode.objectType = l;
+		spotAnimationNode.timer = j2;
+		spotAnimationNode.delay = j;
 	}
 
 	public static void loadSpotAnimationData(SpotAnimationNode spotAnimationNode)

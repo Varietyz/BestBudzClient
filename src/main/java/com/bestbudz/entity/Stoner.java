@@ -9,12 +9,12 @@ import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.SpotAnim;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
-import com.bestbudz.util.MRUNodes;
+import com.bestbudz.util.LRUCache;
 import com.bestbudz.graphics.text.TextClass;
 
 public final class Stoner extends Entity
 {
-	public static MRUNodes mruNodes = new MRUNodes(260);
+	public static LRUCache<Model> mruNodes = new LRUCache<>(260);
 	public final int[] bodyColors;
 	public final int[] equipment;
 	public int privelage;
@@ -268,7 +268,7 @@ public final class Stoner extends Entity
 			}
 		}
 
-		Model model_1 = (Model) mruNodes.insertFromCache(l);
+		Model model_1 = mruNodes.get(l);
 		if (model_1 == null) {
 			boolean flag = false;
 			for (int i2 = 0; i2 < 12; i2++) {
@@ -285,7 +285,7 @@ public final class Stoner extends Entity
 
 			if (flag) {
 				if (lastModelKey != -1L)
-					model_1 = (Model) mruNodes.insertFromCache(lastModelKey);
+					model_1 = mruNodes.get(lastModelKey);
 				if (model_1 == null)
 					return null;
 			}
@@ -324,7 +324,7 @@ public final class Stoner extends Entity
 			model_1.calculateNormals();
 			model_1.modelScale(132, 132, 132);
 			model_1.applyLighting(84, 1000, -90, -580, -90, true);
-			mruNodes.removeFromCache(model_1, l);
+			mruNodes.put(l, model_1);
 			lastModelKey = l;
 		}
 

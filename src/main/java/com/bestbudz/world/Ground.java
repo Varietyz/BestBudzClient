@@ -2,9 +2,7 @@ package com.bestbudz.world;
 
 import com.bestbudz.rendering.animation.FloorDecoration;
 import com.bestbudz.rendering.model.SimpleTile;
-import com.bestbudz.util.Node;
-
-public final class Ground extends Node {
+public final class Ground {
 
   public final GameObject[] obj5Array;
   public final int anInt1308;

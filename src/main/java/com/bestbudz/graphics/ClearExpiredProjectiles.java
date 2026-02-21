@@ -6,15 +6,18 @@ import com.bestbudz.entity.Stoner;
 import com.bestbudz.rendering.Projectile;
 import static com.bestbudz.world.TerrainHeight.getTerrainHeight;
 
+import java.util.Iterator;
+
 public class ClearExpiredProjectiles extends Client
 {
 	public static void clearExpiredProjectiles()
 	{
-		for (Projectile class30_sub2_sub4_sub4 = (Projectile) nodeList
-			.reverseGetFirst(); class30_sub2_sub4_sub4 != null; class30_sub2_sub4_sub4 = (Projectile) nodeList
-			.reverseGetNext())
+		Iterator<Projectile> it = nodeList.descendingIterator();
+		while (it.hasNext())
+		{
+			Projectile class30_sub2_sub4_sub4 = it.next();
 			if (class30_sub2_sub4_sub4.targetX != plane || loopCycle > class30_sub2_sub4_sub4.endTime)
-				class30_sub2_sub4_sub4.unlink();
+				it.remove();
 			else if (loopCycle >= class30_sub2_sub4_sub4.startX)
 			{
 				if (class30_sub2_sub4_sub4.targetId > 0)
@@ -45,6 +48,6 @@ public class ClearExpiredProjectiles extends Client
 					(int) class30_sub2_sub4_sub4.currentHeight, -1, (int) class30_sub2_sub4_sub4.currentY, 60,
 					(int) class30_sub2_sub4_sub4.currentX, class30_sub2_sub4_sub4, false);
 			}
-
+		}
 	}
 }

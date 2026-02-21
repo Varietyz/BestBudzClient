@@ -32,7 +32,7 @@ public final class ObjectManager {
 	private final int[] saturationAccumulator;
 	private final int[] colorCount;
 	private final int[][][] heightMap;
-	private final byte[][][] overlayIds;
+	private final short[][][] overlayIds;
 	private final byte[][][] shadowMap;
 	private final int[][][] occlusionFlags;
 	private final byte[][][] overlayRotations;
@@ -52,7 +52,7 @@ public final class ObjectManager {
 		heightMap = ai;
 		tileFlags = abyte0;
 		underlay = new byte[4][mapWidth][mapHeight];
-		overlayIds = new byte[4][mapWidth][mapHeight];
+		overlayIds = new short[4][mapWidth][mapHeight];
 		overlayRotations = new byte[4][mapWidth][mapHeight];
 		overlayShapes = new byte[4][mapWidth][mapHeight];
 		occlusionFlags = new int[4][mapWidth + 1][mapHeight + 1];
@@ -930,7 +930,7 @@ public final class ObjectManager {
 		}
 
 		int l18 = underlay[l][l6][k17] & 0xff;
-		int i19 = overlayIds[l][l6][k17] & 0xff;
+		int i19 = overlayIds[l][l6][k17] & 0xffff;
 
 		if (l18 > 0 || i19 > 0) {
 
@@ -1669,8 +1669,22 @@ public final class ObjectManager {
 			}
 		}
 
-		// Set defaults for all tiles (noise height, no overlay/underlay/flags)
+		// Index JSON tile data by plane for sequential processing
+		JsonArray jsonPlanes = json.getAsJsonArray("planes");
+		JsonArray[] planeTiles = new JsonArray[4];
+		for (int p = 0; p < jsonPlanes.size(); p++) {
+			JsonObject planeObj = jsonPlanes.get(p).getAsJsonObject();
+			int planeNum = planeObj.get("plane").getAsInt();
+			if (planeNum >= 0 && planeNum < 4) {
+				planeTiles[planeNum] = planeObj.getAsJsonArray("tiles");
+			}
+		}
+
+		// Process plane-by-plane: set defaults, then apply JSON data for each plane
+		// before moving to the next. This ensures upper plane defaults use the correct
+		// heights from the plane below (including any explicit JSON heights).
 		for (int plane = 0; plane < 4; plane++) {
+			// 1. Set default heights and clear flags for this plane
 			for (int lx = 0; lx < 64; lx++) {
 				for (int ly = 0; ly < 64; ly++) {
 					int absX = lx + offsetX;
@@ -1686,49 +1700,44 @@ public final class ObjectManager {
 					}
 				}
 			}
-		}
 
-		// Apply JSON tile data (sparse - only non-default tiles stored)
-		JsonArray planes = json.getAsJsonArray("planes");
-		for (int p = 0; p < planes.size(); p++) {
-			JsonObject planeObj = planes.get(p).getAsJsonObject();
-			int plane = planeObj.get("plane").getAsInt();
-			if (plane < 0 || plane >= 4) continue;
+			// 2. Apply JSON tile data for this plane (sparse - only non-default tiles)
+			if (planeTiles[plane] != null) {
+				JsonArray tiles = planeTiles[plane];
+				for (int t = 0; t < tiles.size(); t++) {
+					JsonObject tile = tiles.get(t).getAsJsonObject();
+					int lx = tile.get("x").getAsInt();
+					int ly = tile.get("y").getAsInt();
+					int absX = lx + offsetX;
+					int absY = ly + offsetY;
 
-			JsonArray tiles = planeObj.getAsJsonArray("tiles");
-			for (int t = 0; t < tiles.size(); t++) {
-				JsonObject tile = tiles.get(t).getAsJsonObject();
-				int lx = tile.get("x").getAsInt();
-				int ly = tile.get("y").getAsInt();
-				int absX = lx + offsetX;
-				int absY = ly + offsetY;
+					if (absX < 0 || absX >= 104 || absY < 0 || absY >= 104) continue;
 
-				if (absX < 0 || absX >= 104 || absY < 0 || absY >= 104) continue;
-
-				if (tile.has("height")) {
-					int h = tile.get("height").getAsInt();
-					if (h == 1) h = 0;
-					if (plane == 0) {
-						heightMap[0][absX][absY] = -h * 8;
-					} else {
-						heightMap[plane][absX][absY] = heightMap[plane - 1][absX][absY] - h * 8;
+					if (tile.has("height")) {
+						int h = tile.get("height").getAsInt();
+						if (h == 1) h = 0;
+						if (plane == 0) {
+							heightMap[0][absX][absY] = -h * 8;
+						} else {
+							heightMap[plane][absX][absY] = heightMap[plane - 1][absX][absY] - h * 8;
+						}
 					}
-				}
 
-				if (tile.has("overlayId")) {
-					overlayIds[plane][absX][absY] = (byte) tile.get("overlayId").getAsInt();
-				}
-				if (tile.has("overlayRotation")) {
-					overlayRotations[plane][absX][absY] = (byte) tile.get("overlayRotation").getAsInt();
-				}
-				if (tile.has("overlayShape")) {
-					overlayShapes[plane][absX][absY] = (byte) tile.get("overlayShape").getAsInt();
-				}
-				if (tile.has("underlayId")) {
-					underlay[plane][absX][absY] = (byte) tile.get("underlayId").getAsInt();
-				}
-				if (tile.has("flags")) {
-					tileFlags[plane][absX][absY] = (byte) tile.get("flags").getAsInt();
+					if (tile.has("overlayId")) {
+						overlayIds[plane][absX][absY] = (short) tile.get("overlayId").getAsInt();
+					}
+					if (tile.has("overlayRotation")) {
+						overlayRotations[plane][absX][absY] = (byte) tile.get("overlayRotation").getAsInt();
+					}
+					if (tile.has("overlayShape")) {
+						overlayShapes[plane][absX][absY] = (byte) tile.get("overlayShape").getAsInt();
+					}
+					if (tile.has("underlayId")) {
+						underlay[plane][absX][absY] = (byte) tile.get("underlayId").getAsInt();
+					}
+					if (tile.has("flags")) {
+						tileFlags[plane][absX][absY] = (byte) tile.get("flags").getAsInt();
+					}
 				}
 			}
 		}
@@ -1854,7 +1863,7 @@ public final class ObjectManager {
 					}
 				}
 				if (tile.has("overlayId")) {
-					overlayIds[targetPlane][tx][ty] = (byte) tile.get("overlayId").getAsInt();
+					overlayIds[targetPlane][tx][ty] = (short) tile.get("overlayId").getAsInt();
 				}
 				if (tile.has("overlayRotation")) {
 					overlayRotations[targetPlane][tx][ty] = (byte) ((tile.get("overlayRotation").getAsInt() + rotation) & 3);

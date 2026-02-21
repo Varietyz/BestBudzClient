@@ -2,16 +2,12 @@ package com.bestbudz.network;
 
 import com.bestbudz.cache.Signlink;
 import com.bestbudz.util.ISAACRandomGen;
-import com.bestbudz.util.NodeList;
-import com.bestbudz.util.NodeSub;
 import java.math.BigInteger;
 
-public final class Stream extends NodeSub
+public final class Stream
 {
 
 	private static final int[] BIT_MASKS = { 0, 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535, 0x1ffff, 0x3ffff, 0x7ffff, 0xfffff, 0x1fffff, 0x3fffff, 0x7fffff, 0xffffff, 0x1ffffff, 0x3ffffff, 0x7ffffff, 0xfffffff, 0x1fffffff, 0x3fffffff, 0x7fffffff, -1 };
-	private static final NodeList streamPool = new NodeList();
-	private static int poolSize;
 	public byte[] buffer;
 	public int position;
 	public int bitOffset;
@@ -26,21 +22,10 @@ public final class Stream extends NodeSub
 	}
 
 	public static Stream getPooledStream() {
-		synchronized (streamPool) {
-			Stream stream = null;
-			if (poolSize > 0) {
-				poolSize--;
-				stream = (Stream) streamPool.popHead();
-			}
-			if (stream != null) {
-				stream.position = 0;
-				return stream;
-			}
-		}
-		Stream stream_1 = new Stream();
-		stream_1.position = 0;
-		stream_1.buffer = new byte[5000];
-		return stream_1;
+		Stream stream = new Stream();
+		stream.position = 0;
+		stream.buffer = new byte[5000];
+		return stream;
 	}
 
 	public int readSignedWordBE() {
@@ -144,7 +129,7 @@ public final class Stream extends NodeSub
 	public int readUnsignedWord() {
 		if (position + 1 >= buffer.length) {
 			System.err.println("Warning: readUnsignedWord overflow at offset=" + position + ", buffer length=" + buffer.length);
-			return 0; // safe default — acts like a null/zero opcode or ID
+			return 0;
 		}
 		int value = ((buffer[position] & 0xff) << 8) + (buffer[position + 1] & 0xff);
 		position += 2;
@@ -154,7 +139,7 @@ public final class Stream extends NodeSub
 	public int readSignedWord() {
 		if (position + 1 >= buffer.length) {
 			System.err.println("Warning: readSignedWord overflow at offset=" + position + ", buffer length=" + buffer.length);
-			return -1; // common sentinel value for invalid index or value
+			return -1;
 		}
 		int i = ((buffer[position] & 0xff) << 8) + (buffer[position + 1] & 0xff);
 		position += 2;
@@ -164,10 +149,9 @@ public final class Stream extends NodeSub
 	}
 
 	public int read3Bytes() {
-		// Check if we have enough bytes to read
 		if (position + 2 >= buffer.length) {
 			System.err.println("Warning: read3Bytes overflow at offset=" + position + ", buffer length=" + buffer.length);
-			return 0; // Safe default for missing data
+			return 0;
 		}
 
 		position += 3;

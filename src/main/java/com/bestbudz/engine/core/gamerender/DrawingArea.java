@@ -3,7 +3,6 @@ package com.bestbudz.engine.core.gamerender;
 import com.bestbudz.engine.gpu.GPUContextManager;
 import com.bestbudz.engine.gpu.GPURenderingEngine;
 import com.bestbudz.graphics.buffer.ImageProducer;
-import com.bestbudz.util.NodeSub;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
@@ -12,7 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-public class DrawingArea extends NodeSub {
+public class DrawingArea {
 
 	public static float[] depthBuffer;
 	public static int[] pixels;

@@ -1,8 +1,6 @@
 package com.bestbudz.world;
 
-import com.bestbudz.util.Node;
-
-public final class SpotAnimationNode extends Node {
+public final class SpotAnimationNode {
 
   public int objectId;
   public int objectType;

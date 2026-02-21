@@ -10,7 +10,7 @@ import com.bestbudz.graphics.text.TextDrawingArea;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.ui.interfaces.CustomInterfaces;
-import com.bestbudz.util.MRUNodes;
+import com.bestbudz.util.LRUCache;
 import com.bestbudz.graphics.text.TextClass;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -18,10 +18,10 @@ import com.google.gson.JsonObject;
 
 public class RSInterface {
 
-	private static final MRUNodes aMRUNodes_264 = new MRUNodes(30);
+	private static final LRUCache<Model> aMRUNodes_264 = new LRUCache<>(30);
 	public static RSInterface[] interfaceCache;
 	public static RSInterface currentInputField = null;
-	public static MRUNodes aMRUNodes_238;
+	public static LRUCache<Sprite> aMRUNodes_238;
 	public boolean drawsTransparent;
 	public Sprite disabledSprite;
 	public int anInt208;
@@ -94,7 +94,7 @@ public class RSInterface {
 	}
 
 	public static void unpack(TextDrawingArea[] textDrawingAreas) {
-		aMRUNodes_238 = new MRUNodes(50000);
+		aMRUNodes_238 = new LRUCache<>(50000);
 		interfaceCache = new RSInterface[70_000];
 
 		JsonObject allWidgets = JsonCacheLoader.loadJsonObject("interfaces.json");
@@ -392,7 +392,7 @@ public class RSInterface {
 
 	public static Sprite imageLoader(int i, String s) {
 		long l = (TextClass.method585(s) << 8) + (long) i;
-		Sprite sprite = (Sprite) aMRUNodes_238.insertFromCache(l);
+		Sprite sprite = aMRUNodes_238.get(l);
 		if (sprite != null)
 			return sprite;
 		return null;
@@ -622,7 +622,7 @@ public class RSInterface {
 
 	protected static Sprite method207(int i, String s) {
 		long l = (TextClass.method585(s) << 8) + (long) i;
-		Sprite sprite = (Sprite) aMRUNodes_238.insertFromCache(l);
+		Sprite sprite = aMRUNodes_238.get(l);
 		if (sprite != null)
 			return sprite;
 		try {
@@ -657,7 +657,7 @@ public class RSInterface {
 			} else {
 				sprite = createEmptySprite();
 			}
-			aMRUNodes_238.removeFromCache(sprite, l);
+			aMRUNodes_238.put(l, sprite);
 		} catch (Exception _ex) {
 			System.err.println("Failed to load sprite " + s + " index " + i + ": " + _ex.getMessage());
 			sprite = createEmptySprite();
@@ -674,9 +674,9 @@ public class RSInterface {
 		int j = 5;
 		if (flag)
 			return;
-		aMRUNodes_264.unlinkAll();
+		aMRUNodes_264.clear();
 		if (model != null)
-			aMRUNodes_264.removeFromCache(model, (j << 16) + i);
+			aMRUNodes_264.put(((long) j << 16) + i, model);
 	}
 
 	public static void addLunarSprite(int i, int j) {
@@ -1817,7 +1817,8 @@ public class RSInterface {
 	}
 
 	private Model method206(int i, int j) {
-		Model model = (Model) aMRUNodes_264.insertFromCache(((long) i << 16) + j);
+		long cacheKey = ((long) i << 16) + j;
+		Model model = aMRUNodes_264.get(cacheKey);
 		if (model != null)
 			return model;
 		if (i == 1)
@@ -1832,7 +1833,7 @@ public class RSInterface {
 		{
 		}
 		if (model != null)
-			aMRUNodes_264.removeFromCache(model, (i << 16) + j);
+			aMRUNodes_264.put(cacheKey, model);
 		return model;
 	}
 
