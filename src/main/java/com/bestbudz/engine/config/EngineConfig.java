@@ -16,8 +16,6 @@ public final class EngineConfig
 	public static final int CAMERA_ZOOM = 600;
 	public static final int PLANE_HEIGHT = 128;
 
-	public static boolean ENABLE_GPU = false;
-
 	public static final int TARGET_FPS = 90;
 	public static final int BUFFERS = 3;
 	public static final long LOGIC_TICK_MS = 18;

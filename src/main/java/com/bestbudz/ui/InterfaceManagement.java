@@ -31,6 +31,8 @@ import static com.bestbudz.world.InLocation.inWGLobby;
 import com.bestbudz.world.VarBit;
 import java.awt.Graphics2D;
 import java.util.Set;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.InterfaceProto.*;
 
 public class InterfaceManagement extends Client
 {
@@ -38,7 +40,7 @@ public class InterfaceManagement extends Client
 	public static void clearTopInterfaces() {
 		System.out.println("🎭 INTERFACE: clearTopInterfaces called");
 
-		stream.writeEncryptedOpcode(130);
+		sendProto(GamePacket.newBuilder().setCloseInterfaceRequest(CloseInterfaceRequest.getDefaultInstance()).build());
 		if (invOverlayInterfaceID != -1) {
 			invOverlayInterfaceID = -1;
 			isPlayerBusy = false;
@@ -138,14 +140,10 @@ public class InterfaceManagement extends Client
 			} catch (Exception ignored) {}
 
 			if (amount > 0) {
-				stream.writeEncryptedOpcode(208);
-				stream.writeDWord((int) amount);
+				sendProto(GamePacket.newBuilder().setChatInterfaceAction(ChatInterfaceAction.newBuilder().setInterfaceId((int) amount).setOpcode(208)).build());
 			}
 		} else {
-			stream.writeEncryptedOpcode(150);
-			stream.writeByte(RSInterface.currentInputField.disabledMessage.length() + 3);
-			stream.writeWord(RSInterface.currentInputField.id);
-			stream.writeString(RSInterface.currentInputField.disabledMessage);
+			sendProto(GamePacket.newBuilder().setInputFieldAction(InputFieldAction.newBuilder().setText(RSInterface.currentInputField.disabledMessage).setId(RSInterface.currentInputField.id)).build());
 		}
 
 		RSInterface.currentInputField.disabledMessage = "";

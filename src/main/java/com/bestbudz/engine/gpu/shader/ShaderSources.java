@@ -103,6 +103,10 @@ public final class ShaderSources {
 		"uniform float uFogStart;\n" +
 		"uniform float uFogEnd;\n" +
 		"\n" +
+		"// Animated texture uniforms\n" +
+		"uniform float uTime;\n" +
+		"uniform bool uAnimateTextures;\n" +
+		"\n" +
 		"flat in int vColorHSL;\n" +
 		"flat in int vAlpha;\n" +
 		"flat in int vTextureId;\n" +
@@ -121,7 +125,12 @@ public final class ShaderSources {
 		"\n" +
 		"    vec3 baseColor;\n" +
 		"    if (vTextureId >= 0) {\n" +
-		"        vec4 texColor = texture(uTextureArray, vec3(vTexCoord, float(vTextureId)));\n" +
+		"        vec2 uv = vTexCoord;\n" +
+		"        // Animated texture UV scrolling (water=17, lava=24, fire=34, smoke=40)\n" +
+		"        if (uAnimateTextures && (vTextureId == 17 || vTextureId == 24 || vTextureId == 34 || vTextureId == 40)) {\n" +
+		"            uv.y += uTime * 2.0;\n" +
+		"        }\n" +
+		"        vec4 texColor = texture(uTextureArray, vec3(uv, float(vTextureId)));\n" +
 		"        if (texColor.a < 0.01) discard;\n" +
 		"        baseColor = texColor.rgb;\n" +
 		"    } else {\n" +

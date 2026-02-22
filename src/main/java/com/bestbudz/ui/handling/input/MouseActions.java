@@ -88,13 +88,8 @@ public class MouseActions extends Client
 		lastChatTime = System.currentTimeMillis();
 
 		int payload = (int)((delta << 20) | (rightClickFlag << 19) | packed);
-		stream.writeEncryptedOpcode(241);
-		stream.writeDWord(payload);
 
 		if (flagged) {
-			stream.writeEncryptedOpcode(45);
-			stream.writeByte(0);
-			stream.writeWord(packed);
 		}
 	}
 
@@ -291,28 +286,6 @@ public class MouseActions extends Client
 					stream.writeByte(63);
 				}
 
-				interfaceDrawX++;
-				if (interfaceDrawX > 1151)
-				{
-					interfaceDrawX = 0;
-					stream.writeEncryptedOpcode(246);
-					stream.writeByte(0);
-					int l = stream.position;
-					if ((int) (Math.random() * 2D) == 0)
-						stream.writeByte(101);
-					stream.writeByte(197);
-					stream.writeWord((int) (Math.random() * 65536D));
-					stream.writeByte((int) (Math.random() * 256D));
-					stream.writeByte(67);
-					stream.writeWord(14214);
-					if ((int) (Math.random() * 2D) == 0)
-						stream.writeWord(29487);
-					stream.writeWord((int) (Math.random() * 65536D));
-					if ((int) (Math.random() * 2D) == 0)
-						stream.writeByte(220);
-					stream.writeByte(180);
-					stream.writePacketLength(stream.position - l);
-				}
 			}
 		}
 	}

@@ -80,6 +80,12 @@ public class GPUSettingsPanel implements UIPanel {
 
 		content.add(Box.createVerticalStrut(GPUSettingsStyle.SECTION_GAP));
 
+		// ---- Rendering section ----
+		content.add(createSectionHeader("Rendering"));
+		content.add(createToggleRow("Animated Textures", () -> EnvironmentConfig.enableAnimatedTextures, v -> EnvironmentConfig.enableAnimatedTextures = v));
+
+		content.add(Box.createVerticalStrut(GPUSettingsStyle.SECTION_GAP));
+
 		// ---- Post-Processing section ----
 		content.add(createSectionHeader(GPUSettingsConfig.SECTION_POST_PROCESSING));
 		content.add(createToggleRow("Bloom", () -> EnvironmentConfig.bloomEnabled, v -> EnvironmentConfig.bloomEnabled = v));

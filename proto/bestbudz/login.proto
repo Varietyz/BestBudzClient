@@ -1,0 +1,43 @@
+syntax = "proto3";
+package bestbudz;
+option java_package = "com.bestbudz.net.proto";
+option java_outer_classname = "LoginProto";
+
+message LoginRequest {
+  int32 version = 1;
+  string username = 2;
+  string password = 3;
+  string uid = 4;
+  bool reconnecting = 5;
+}
+
+message LoginResponse {
+  enum Result {
+    SUCCESS = 0;
+    RETRY = 1;
+    INVALID_CREDENTIALS = 2;
+    BANNED = 3;
+    ALREADY_LOGGED_IN = 4;
+    UPDATED = 5;
+    WORLD_FULL = 6;
+    SERVER_OFFLINE = 7;
+    LOGIN_LIMIT = 8;
+    BAD_SESSION = 9;
+    REJECTED = 10;
+    MEMBERS_ONLY = 11;
+    COULD_NOT_COMPLETE = 12;
+    SERVER_UPDATING = 13;
+    RECONNECT = 14;
+    TOO_MANY_ATTEMPTS = 15;
+    MEMBERS_AREA = 16;
+    INVALID_SERVER = 17;
+    TRANSFER_WAIT = 18;
+    INVALID_USERNAME = 19;
+    NO_PERMISSION = 20;
+    STAFF_ONLY = 21;
+  }
+  Result result = 1;
+  int32 rights = 2;
+  int32 player_index = 3;
+  bool flagged = 4;
+}

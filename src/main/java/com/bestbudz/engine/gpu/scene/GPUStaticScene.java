@@ -14,8 +14,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 
 import java.nio.IntBuffer;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Bakes all static scene objects (walls, decorations, game objects) into a
@@ -45,7 +43,6 @@ public class GPUStaticScene {
 	private static int wallsProcessed;
 	private static int wallDecorationsProcessed;
 	private static int groundDecorationsProcessed;
-	private static int gameObjectsProcessed;
 	private static int totalTriangles;
 
 	public static boolean initialize() {
@@ -116,7 +113,6 @@ public class GPUStaticScene {
 		wallsProcessed = 0;
 		wallDecorationsProcessed = 0;
 		groundDecorationsProcessed = 0;
-		gameObjectsProcessed = 0;
 		totalTriangles = 0;
 
 		// First pass: count triangles
@@ -130,9 +126,6 @@ public class GPUStaticScene {
 
 		int intsNeeded = triCount * 3 * INTS_PER_VERTEX;
 		IntBuffer vertexData = BufferUtils.createIntBuffer(intsNeeded);
-
-		// Track processed GameObjects (multi-tile objects appear on multiple tiles)
-		Set<GameObject> processedObjects = new HashSet<>();
 
 		// Second pass: emit vertices
 		int planes = Math.min(4, tiles.length);
@@ -169,17 +162,9 @@ public class GPUStaticScene {
 						emitRoofDecoration(vertexData, ground.obj4, plane);
 					}
 
-					// Game objects (skip duplicates for multi-tile objects)
-					for (int i = 0; i < ground.anInt1317; i++) {
-						GameObject obj = ground.obj5Array[i];
-						if (obj != null && !processedObjects.contains(obj)) {
-							processedObjects.add(obj);
-							emitAnimableModel(vertexData, obj.model,
-								obj.anInt519, obj.anInt518,
-								obj.anInt520, obj.anInt522, plane);
-							gameObjectsProcessed++;
-						}
-					}
+					// Game objects (obj5Array) are NOT baked — they contain a mix of
+					// static map objects and dynamic per-frame entities (players, NPCs,
+					// InteractiveObjects). WorldController renders them per-frame.
 				}
 			}
 		}
@@ -198,15 +183,12 @@ public class GPUStaticScene {
 			wallsProcessed + " walls, " +
 			wallDecorationsProcessed + " wall decs, " +
 			groundDecorationsProcessed + " ground decs, " +
-			gameObjectsProcessed + " objects, " +
 			totalTriangles + " tris, " +
 			vertexCount + " verts (" + elapsed + "ms)");
 	}
 
 	private static int countObjectTriangles(Ground[][][] tiles, int mapWidth, int mapHeight) {
 		int count = 0;
-		Set<GameObject> counted = new HashSet<>();
-
 		int planes = Math.min(4, tiles.length);
 		for (int plane = 0; plane < planes; plane++) {
 			if (tiles[plane] == null) continue;
@@ -233,13 +215,7 @@ public class GPUStaticScene {
 						count += countAnimableTriangles(g.obj4.aClass30_Sub2_Sub4_49);
 						count += countAnimableTriangles(g.obj4.aClass30_Sub2_Sub4_50);
 					}
-					for (int i = 0; i < g.anInt1317; i++) {
-						GameObject obj = g.obj5Array[i];
-						if (obj != null && !counted.contains(obj)) {
-							counted.add(obj);
-							count += countAnimableTriangles(obj.model);
-						}
-					}
+					// obj5Array (game objects) excluded — rendered per-frame by WorldController
 				}
 			}
 		}

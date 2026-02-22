@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.InterfaceProto.*;
 
 public class ButtonHandler {
 
@@ -12,8 +14,7 @@ public class ButtonHandler {
 		try {
 			interfaceId = interfaceId - 85560;
 			if (Client.stream != null) {
-				Client.stream.writeEncryptedOpcode(185);
-				Client.stream.writeWord(interfaceId);
+				Client.sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(interfaceId)).build());
 				System.out.println("Sent click for interface ID: " + interfaceId);
 			} else {
 				System.err.println("Client stream is null - cannot send click");

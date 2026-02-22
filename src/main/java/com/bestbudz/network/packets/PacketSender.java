@@ -4,6 +4,10 @@ import com.bestbudz.engine.core.Client;
 import com.bestbudz.ui.handling.input.MouseState;
 import com.bestbudz.ui.RSInterface;
 import com.bestbudz.graphics.text.TextClass;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.InterfaceProto.*;
+import com.bestbudz.net.proto.PlayerProto.*;
+import com.bestbudz.net.proto.ChatProto.*;
 
 public class PacketSender extends Client
 {
@@ -61,15 +65,12 @@ public class PacketSender extends Client
 	public static void sendStringToServer(int identifier, String text)
 	{
 		text = identifier + "," + text;
-		stream.writeEncryptedOpcode(127);
-		stream.writeByte(text.length() + 1);
-		stream.writeString(text);
+		sendProto(GamePacket.newBuilder().setReceiveStringAction(ReceiveStringAction.newBuilder().setText(text)).build());
 	}
 
 	public static void sendStonerNameAsLong(String string)
 	{
-		stream.writeEncryptedOpcode(60);
-		stream.writeQWord(TextClass.longForName(string));
+		sendProto(GamePacket.newBuilder().setStringInput(StringInput.newBuilder().setText(string)).build());
 	}
 
 	public static void handleBankSlotSwap() {
@@ -85,11 +86,7 @@ public class PacketSender extends Client
 		for (int i = 0; i < 10; i++) {
 			if (MouseState.x >= slots[i] && MouseState.x <= (slots[i] + 41) &&
 				MouseState.y >= yTop && MouseState.y <= yBottom) {
-				stream.writeEncryptedOpcode(214);
-				stream.writeWordMixedLE(focusedDragWidget);
-				stream.writeByteNegated(2);
-				stream.writeWordMixedLE(dragFromSlot);
-				stream.writeWordLittleEndian(i);
+				sendProto(GamePacket.newBuilder().setInventorySwap(InventorySwap.newBuilder().setInterfaceId(focusedDragWidget).setMode(2).setFromSlot(dragFromSlot).setToSlot(i)).build());
 				return;
 			}
 		}
@@ -112,11 +109,7 @@ public class PacketSender extends Client
 			rsi.swapBoxItems(dragFromSlot, mouseInvInterfaceIndex);
 		}
 
-		stream.writeEncryptedOpcode(214);
-		stream.writeWordMixedLE(focusedDragWidget);
-		stream.writeByteNegated(0);
-		stream.writeWordMixedLE(dragFromSlot);
-		stream.writeWordLittleEndian(mouseInvInterfaceIndex);
+		sendProto(GamePacket.newBuilder().setInventorySwap(InventorySwap.newBuilder().setInterfaceId(focusedDragWidget).setMode(0).setFromSlot(dragFromSlot).setToSlot(mouseInvInterfaceIndex)).build());
 	}
 
 }

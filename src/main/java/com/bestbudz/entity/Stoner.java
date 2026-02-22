@@ -4,7 +4,6 @@ import com.bestbudz.cache.IdentityKit;
 import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.data.items.ItemDef;
-import com.bestbudz.network.Stream;
 import com.bestbudz.rendering.SequenceFrame;
 import com.bestbudz.rendering.SpotAnim;
 import com.bestbudz.rendering.animation.Animation;
@@ -43,7 +42,7 @@ public final class Stoner extends Entity
 	public int skill;
 	int gender;
 	private long lastModelKey;
-	private long modelCacheKey;
+	long modelCacheKey;
 	public Stoner() {
 		lastModelKey = -1L;
 		lowDetailMode = false;
@@ -114,97 +113,6 @@ public final class Stoner extends Entity
 		}
 		model.aBoolean1659 = true;
 		return model;
-	}
-
-	public void updateStoner(Stream stream)
-	{
-		stream.position = 0;
-		gender = stream.readUnsignedByte();
-		headIcon = stream.readUnsignedByte();
-		skullIcon = stream.readUnsignedByte();
-		hintIcon = stream.readUnsignedByte();
-		desc = null;
-		team = 0;
-		for (int j = 0; j < 12; j++)
-		{
-			int k = stream.readUnsignedByte();
-			if (k == 0)
-			{
-				equipment[j] = 0;
-				continue;
-			}
-			int i1 = stream.readUnsignedByte();
-			equipment[j] = (k << 8) + i1;
-			if (j == 0 && equipment[0] == 65535)
-			{
-				desc = EntityDef.forID(stream.readUnsignedWord());
-				break;
-			}
-			if (equipment[j] >= 512 && equipment[j] - 512 < ItemDef.totalItems)
-			{
-				int l1 = getItemDefinition(equipment[j] - 512).team;
-				if (l1 != 0)
-					team = l1;
-			}
-		}
-
-		for (int l = 0; l < 5; l++)
-		{
-			int j1 = stream.readUnsignedByte();
-			if (j1 < 0 || j1 >= Client.validInterfaceRegions[l].length)
-				j1 = 0;
-			bodyColors[l] = j1;
-		}
-
-		super.standAnimation = stream.readUnsignedWord();
-		if (super.standAnimation == 65535)
-			super.standAnimation = -1;
-		super.anInt1512 = stream.readUnsignedWord();
-		if (super.anInt1512 == 65535)
-			super.anInt1512 = -1;
-		super.walkAnimation = stream.readUnsignedWord();
-		if (super.walkAnimation == 65535)
-			super.walkAnimation = -1;
-		super.turnRightAnimation = stream.readUnsignedWord();
-		if (super.turnRightAnimation == 65535)
-			super.turnRightAnimation = -1;
-		super.turnAroundAnimation = stream.readUnsignedWord();
-		if (super.turnAroundAnimation == 65535)
-			super.turnAroundAnimation = -1;
-		super.turnLeftAnimation = stream.readUnsignedWord();
-		if (super.turnLeftAnimation == 65535)
-			super.turnLeftAnimation = -1;
-		super.anInt1505 = stream.readUnsignedWord();
-		if (super.anInt1505 == 65535)
-			super.anInt1505 = -1;
-		name = TextClass.fixName(stream.readString());
-
-		titleColor = stream.readString();
-		title = TextClass.fixName(stream.readString());
-		titlePrefix = stream.readUnsignedByte() == 1;
-
-		combatLevel = stream.readDWord();
-		visible = true;
-		modelCacheKey = 0L;
-		for (int k1 = 0; k1 < 12; k1++)
-		{
-			modelCacheKey <<= 4;
-			if (equipment[k1] >= 256)
-				modelCacheKey += equipment[k1] - 256;
-		}
-
-		if (equipment[0] >= 256)
-			modelCacheKey += equipment[0] - 256 >> 4;
-		if (equipment[1] >= 256)
-			modelCacheKey += equipment[1] - 256 >> 8;
-		for (int i2 = 0; i2 < 5; i2++)
-		{
-			modelCacheKey <<= 3;
-			modelCacheKey += bodyColors[i2];
-		}
-
-		modelCacheKey <<= 1;
-		modelCacheKey += gender;
 	}
 
 	public Model buildPlayerModel() {

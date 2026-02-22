@@ -125,6 +125,7 @@ public final class WorldController {
 	}
 
 	public static boolean gpuTerrainActive = false;
+	public static boolean gpuStaticObjectsActive = false;
 
 	public static void nullLoader() {
 		aClass28Array462 = null;
@@ -1229,11 +1230,13 @@ public void setMousePosition(int i, int j) {
 						renderComplexTile(i, sinVertical, sinHorizontal, lowerTile.floorDecoration, cosVertical, j, cosHorizontal);
 					}
 
-					Wall lowerObj1 = lowerTile.obj1;
-					if (lowerObj1 != null) {
-						lowerObj1.primaryModel.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
-							lowerObj1.anInt274 - cameraX, lowerObj1.anInt273 - cameraY,
-							lowerObj1.anInt275 - cameraZ, lowerObj1.uid);
+					if (!gpuStaticObjectsActive) {
+						Wall lowerObj1 = lowerTile.obj1;
+						if (lowerObj1 != null) {
+							lowerObj1.primaryModel.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
+								lowerObj1.anInt274 - cameraX, lowerObj1.anInt273 - cameraY,
+								lowerObj1.anInt275 - cameraZ, lowerObj1.uid);
+						}
 					}
 
 					for (int i2 = 0; i2 < lowerTile.anInt1317; i2++) {
@@ -1299,19 +1302,21 @@ public void setMousePosition(int i, int j) {
 						currentTile.anInt1325 = 0;
 					}
 
-					if ((obj1.rotation & j2) != 0 && isWallVisible(l, i, j, obj1.rotation)) {
-						obj1.primaryModel.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
-							obj1.anInt274 - cameraX, obj1.anInt273 - cameraY,
-							obj1.anInt275 - cameraZ, obj1.uid);
-					}
-					if ((obj1.secondaryRotation & j2) != 0 && isWallVisible(l, i, j, obj1.secondaryRotation)) {
-						obj1.secondaryModel.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
-							obj1.anInt274 - cameraX, obj1.anInt273 - cameraY,
-							obj1.anInt275 - cameraZ, obj1.uid);
+					if (!gpuStaticObjectsActive) {
+						if ((obj1.rotation & j2) != 0 && isWallVisible(l, i, j, obj1.rotation)) {
+							obj1.primaryModel.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
+								obj1.anInt274 - cameraX, obj1.anInt273 - cameraY,
+								obj1.anInt275 - cameraZ, obj1.uid);
+						}
+						if ((obj1.secondaryRotation & j2) != 0 && isWallVisible(l, i, j, obj1.secondaryRotation)) {
+							obj1.secondaryModel.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
+								obj1.anInt274 - cameraX, obj1.anInt273 - cameraY,
+								obj1.anInt275 - cameraZ, obj1.uid);
+						}
 					}
 				}
 
-				if (obj2 != null && isDecorationVisible(l, i, j, obj2.model.modelHeight)) {
+				if (!gpuStaticObjectsActive && obj2 != null && isDecorationVisible(l, i, j, obj2.model.modelHeight)) {
 					if ((obj2.anInt502 & j2) != 0) {
 						obj2.model.render(obj2.anInt503, sinVertical, cosVertical, sinHorizontal,
 							cosHorizontal, obj2.anInt500 - cameraX, obj2.anInt499 - cameraY,
@@ -1340,7 +1345,7 @@ public void setMousePosition(int i, int j) {
 					}
 				}
 
-				if (flag1) {
+				if (flag1 && !gpuStaticObjectsActive) {
 					GroundDecoration obj3 = currentTile.obj3;
 					if (obj3 != null) {
 						obj3.model.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
@@ -1413,11 +1418,13 @@ public void setMousePosition(int i, int j) {
 				}
 
 				if (shouldRenderWall) {
-					Wall wallObj = currentTile.obj1;
-					if (isWallVisible(l, i, j, wallObj.rotation)) {
-						wallObj.primaryModel.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
-							wallObj.anInt274 - cameraX, wallObj.anInt273 - cameraY,
-							wallObj.anInt275 - cameraZ, wallObj.uid);
+					if (!gpuStaticObjectsActive) {
+						Wall wallObj = currentTile.obj1;
+						if (isWallVisible(l, i, j, wallObj.rotation)) {
+							wallObj.primaryModel.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
+								wallObj.anInt274 - cameraX, wallObj.anInt273 - cameraY,
+								wallObj.anInt275 - cameraZ, wallObj.uid);
+						}
 					}
 					currentTile.anInt1325 = 0;
 				}
@@ -1545,69 +1552,71 @@ public void setMousePosition(int i, int j) {
 			currentTile.aBoolean1323 = false;
 			visibleTileCount--;
 
-			RoofDecoration obj4 = currentTile.obj4;
-			if (obj4 != null && obj4.anInt52 != 0) {
-				if (obj4.aClass30_Sub2_Sub4_49 != null) {
-					obj4.aClass30_Sub2_Sub4_49.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
-						obj4.anInt46 - cameraX, obj4.anInt45 - cameraY - obj4.anInt52,
-						obj4.anInt47 - cameraZ, obj4.uid);
-				}
-				if (obj4.aClass30_Sub2_Sub4_50 != null) {
-					obj4.aClass30_Sub2_Sub4_50.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
-						obj4.anInt46 - cameraX, obj4.anInt45 - cameraY - obj4.anInt52,
-						obj4.anInt47 - cameraZ, obj4.uid);
-				}
-				if (obj4.aClass30_Sub2_Sub4_48 != null) {
-					obj4.aClass30_Sub2_Sub4_48.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
-						obj4.anInt46 - cameraX, obj4.anInt45 - cameraY - obj4.anInt52,
-						obj4.anInt47 - cameraZ, obj4.uid);
-				}
-			}
-
-			if (currentTile.anInt1328 != 0) {
-				WallDecoration wallObj2 = currentTile.obj2;
-				if (wallObj2 != null && isDecorationVisible(l, i, j, wallObj2.model.modelHeight)) {
-					if ((wallObj2.anInt502 & currentTile.anInt1328) != 0) {
-						wallObj2.model.render(wallObj2.anInt503, sinVertical, cosVertical, sinHorizontal,
-							cosHorizontal, wallObj2.anInt500 - cameraX, wallObj2.anInt499 - cameraY,
-							wallObj2.anInt501 - cameraZ, wallObj2.uid);
-					} else if ((wallObj2.anInt502 & 0x300) != 0) {
-						int deltaX = wallObj2.anInt500 - cameraX;
-						int deltaY = wallObj2.anInt499 - cameraY;
-						int deltaZ = wallObj2.anInt501 - cameraZ;
-						int orientation = wallObj2.anInt503;
-
-						int xSign = (orientation == 1 || orientation == 2) ? -deltaX : deltaX;
-						int zSign = (orientation == 2 || orientation == 3) ? -deltaZ : deltaZ;
-
-						if ((wallObj2.anInt502 & 0x100) != 0 && zSign >= xSign) {
-							int renderX = deltaX + lookup463[orientation];
-							int renderZ = deltaZ + lookup464[orientation];
-							wallObj2.model.render(orientation * 512 + 256, sinVertical, cosVertical,
-								sinHorizontal, cosHorizontal, renderX, deltaY, renderZ, wallObj2.uid);
-						}
-						if ((wallObj2.anInt502 & 0x200) != 0 && zSign <= xSign) {
-							int renderX = deltaX + lookup465[orientation];
-							int renderZ = deltaZ + lookup466[orientation];
-							wallObj2.model.render(orientation * 512 + 1280 & 0x7ff, sinVertical,
-								cosVertical, sinHorizontal, cosHorizontal, renderX, deltaY, renderZ, wallObj2.uid);
-						}
+			if (!gpuStaticObjectsActive) {
+				RoofDecoration obj4 = currentTile.obj4;
+				if (obj4 != null && obj4.anInt52 != 0) {
+					if (obj4.aClass30_Sub2_Sub4_49 != null) {
+						obj4.aClass30_Sub2_Sub4_49.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
+							obj4.anInt46 - cameraX, obj4.anInt45 - cameraY - obj4.anInt52,
+							obj4.anInt47 - cameraZ, obj4.uid);
+					}
+					if (obj4.aClass30_Sub2_Sub4_50 != null) {
+						obj4.aClass30_Sub2_Sub4_50.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
+							obj4.anInt46 - cameraX, obj4.anInt45 - cameraY - obj4.anInt52,
+							obj4.anInt47 - cameraZ, obj4.uid);
+					}
+					if (obj4.aClass30_Sub2_Sub4_48 != null) {
+						obj4.aClass30_Sub2_Sub4_48.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
+							obj4.anInt46 - cameraX, obj4.anInt45 - cameraY - obj4.anInt52,
+							obj4.anInt47 - cameraZ, obj4.uid);
 					}
 				}
 
-				Wall wallObj1 = currentTile.obj1;
-				if (wallObj1 != null) {
-					if ((wallObj1.secondaryRotation & currentTile.anInt1328) != 0 &&
-						isWallVisible(l, i, j, wallObj1.secondaryRotation)) {
-						wallObj1.secondaryModel.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
-							wallObj1.anInt274 - cameraX, wallObj1.anInt273 - cameraY,
-							wallObj1.anInt275 - cameraZ, wallObj1.uid);
+				if (currentTile.anInt1328 != 0) {
+					WallDecoration wallObj2 = currentTile.obj2;
+					if (wallObj2 != null && isDecorationVisible(l, i, j, wallObj2.model.modelHeight)) {
+						if ((wallObj2.anInt502 & currentTile.anInt1328) != 0) {
+							wallObj2.model.render(wallObj2.anInt503, sinVertical, cosVertical, sinHorizontal,
+								cosHorizontal, wallObj2.anInt500 - cameraX, wallObj2.anInt499 - cameraY,
+								wallObj2.anInt501 - cameraZ, wallObj2.uid);
+						} else if ((wallObj2.anInt502 & 0x300) != 0) {
+							int deltaX = wallObj2.anInt500 - cameraX;
+							int deltaY = wallObj2.anInt499 - cameraY;
+							int deltaZ = wallObj2.anInt501 - cameraZ;
+							int orientation = wallObj2.anInt503;
+
+							int xSign = (orientation == 1 || orientation == 2) ? -deltaX : deltaX;
+							int zSign = (orientation == 2 || orientation == 3) ? -deltaZ : deltaZ;
+
+							if ((wallObj2.anInt502 & 0x100) != 0 && zSign >= xSign) {
+								int renderX = deltaX + lookup463[orientation];
+								int renderZ = deltaZ + lookup464[orientation];
+								wallObj2.model.render(orientation * 512 + 256, sinVertical, cosVertical,
+									sinHorizontal, cosHorizontal, renderX, deltaY, renderZ, wallObj2.uid);
+							}
+							if ((wallObj2.anInt502 & 0x200) != 0 && zSign <= xSign) {
+								int renderX = deltaX + lookup465[orientation];
+								int renderZ = deltaZ + lookup466[orientation];
+								wallObj2.model.render(orientation * 512 + 1280 & 0x7ff, sinVertical,
+									cosVertical, sinHorizontal, cosHorizontal, renderX, deltaY, renderZ, wallObj2.uid);
+							}
+						}
 					}
-					if ((wallObj1.rotation & currentTile.anInt1328) != 0 &&
-						isWallVisible(l, i, j, wallObj1.rotation)) {
-						wallObj1.primaryModel.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
-							wallObj1.anInt274 - cameraX, wallObj1.anInt273 - cameraY,
-							wallObj1.anInt275 - cameraZ, wallObj1.uid);
+
+					Wall wallObj1 = currentTile.obj1;
+					if (wallObj1 != null) {
+						if ((wallObj1.secondaryRotation & currentTile.anInt1328) != 0 &&
+							isWallVisible(l, i, j, wallObj1.secondaryRotation)) {
+							wallObj1.secondaryModel.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
+								wallObj1.anInt274 - cameraX, wallObj1.anInt273 - cameraY,
+								wallObj1.anInt275 - cameraZ, wallObj1.uid);
+						}
+						if ((wallObj1.rotation & currentTile.anInt1328) != 0 &&
+							isWallVisible(l, i, j, wallObj1.rotation)) {
+							wallObj1.primaryModel.render(0, sinVertical, cosVertical, sinHorizontal, cosHorizontal,
+								wallObj1.anInt274 - cameraX, wallObj1.anInt273 - cameraY,
+								wallObj1.anInt275 - cameraZ, wallObj1.uid);
+						}
 					}
 				}
 			}
@@ -1705,60 +1714,18 @@ public void setMousePosition(int i, int j) {
 		int k6 = Rasterizer.viewportCenterX + (l1 << 10) / j3;
 		int l6 = Rasterizer.viewportCenterY + (k4 << 10) / j3;
 
-		Rasterizer.alphaBlendValue = 0;
-
 		if ((i6 - k6) * (l5 - l6) - (j6 - l6) * (k5 - k6) > 0) {
-			Rasterizer.enableClipping = i6 < 0 || k6 < 0 || k5 < 0 || i6 > DrawingArea.centerX || k6 > DrawingArea.centerX || k5 > DrawingArea.centerX;
-
 			if (mouseSelection && isPointInTriangle(mouseX, mouseY, j6, l6, l5, i6, k6, k5)) {
 				selectedTileX = j1;
 				selectedTileY = k1;
 			}
 
-			if (!gpuTerrainActive) {
-			if (simpleTile.anInt720 == -1 || simpleTile.anInt720 > 50) {
-				if (simpleTile.anInt718 != 0xbc614e) {
-					Rasterizer.renderTriangle(j6, l6, l5, i6, k6, k5, simpleTile.anInt718, simpleTile.anInt719, simpleTile.anInt717, k3, j3, j2);
-				}
-			} else if (!lowMemoryMode) {
-				if (simpleTile.aBoolean721) {
-					Rasterizer.renderTexturedTriangle(j6, l6, l5, i6, k6, k5, simpleTile.anInt718, simpleTile.anInt719, simpleTile.anInt717,
-						i2, i3, l1, l3, i4, k4, k2, j2, j3, simpleTile.anInt720, k3, j3, j2);
-				} else {
-					Rasterizer.renderTexturedTriangle(j6, l6, l5, i6, k6, k5, simpleTile.anInt718, simpleTile.anInt719, simpleTile.anInt717,
-						l2, l1, i3, j4, k4, i4, k3, j3, j2, simpleTile.anInt720, k3, j3, j2);
-				}
-			} else {
-				int i7 = textureBrightness[simpleTile.anInt720];
-				Rasterizer.renderTriangle(j6, l6, l5, i6, k6, k5, adjustBrightness(i7, simpleTile.anInt718),
-					adjustBrightness(i7, simpleTile.anInt719), adjustBrightness(i7, simpleTile.anInt717), k3, j3, j2);
-			}
-			}
 		}
 
 		if ((i5 - k5) * (l6 - l5) - (j5 - l5) * (k6 - k5) > 0) {
-			Rasterizer.enableClipping = i5 < 0 || k5 < 0 || k6 < 0 || i5 > DrawingArea.centerX || k5 > DrawingArea.centerX || k6 > DrawingArea.centerX;
-
 			if (mouseSelection && isPointInTriangle(mouseX, mouseY, j5, l5, l6, i5, k5, k6)) {
 				selectedTileX = j1;
 				selectedTileY = k1;
-			}
-
-			if (!gpuTerrainActive) {
-			if (simpleTile.anInt720 == -1 || simpleTile.anInt720 > 50) {
-				if (simpleTile.anInt716 != 0xbc614e) {
-					Rasterizer.renderTriangle(j5, l5, l6, i5, k5, k6, simpleTile.anInt716, simpleTile.anInt717, simpleTile.anInt719, k2, j2, j3);
-				}
-			} else {
-				if (!lowMemoryMode) {
-					Rasterizer.renderTexturedTriangle(j5, l5, l6, i5, k5, k6, simpleTile.anInt716, simpleTile.anInt717, simpleTile.anInt719,
-						i2, i3, l1, l3, i4, k4, k2, j2, j3, simpleTile.anInt720, k2, j2, j3);
-					return;
-				}
-				int j7 = textureBrightness[simpleTile.anInt720];
-				Rasterizer.renderTriangle(j5, l5, l6, i5, k5, k6, adjustBrightness(j7, simpleTile.anInt716),
-					adjustBrightness(j7, simpleTile.anInt717), adjustBrightness(j7, simpleTile.anInt719), k2, j2, j3);
-			}
 			}
 		}
 	}
@@ -1784,7 +1751,6 @@ public void setMousePosition(int i, int j) {
 			FloorDecoration.depthPoint[l1] = i3;
 		}
 
-		Rasterizer.alphaBlendValue = 0;
 		k1 = floorDecoration.anIntArray679.length;
 
 		for (int j2 = 0; j2 < k1; j2++) {
@@ -1799,44 +1765,11 @@ public void setMousePosition(int i, int j) {
 			int j5 = FloorDecoration.anIntArray689[l3];
 
 			if ((i4 - j4) * (j5 - i5) - (l4 - i5) * (k4 - j4) > 0) {
-				Rasterizer.enableClipping = i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX
-					|| j4 > DrawingArea.centerX || k4 > DrawingArea.centerX;
-
 				if (mouseSelection && isPointInTriangle(mouseX, mouseY, l4, i5, j5, i4, j4, k4)) {
 					selectedTileX = i;
 					selectedTileY = i1;
 				}
 
-				if (!gpuTerrainActive) {
-				if (floorDecoration.anIntArray682 == null || floorDecoration.anIntArray682[j2] == -1 || floorDecoration.anIntArray682[j2] > 50) {
-					if (floorDecoration.anIntArray676[j2] != 0xbc614e) {
-						Rasterizer.renderTriangle(l4, i5, j5, i4, j4, k4, floorDecoration.anIntArray676[j2],
-							floorDecoration.anIntArray677[j2], floorDecoration.anIntArray678[j2], FloorDecoration.depthPoint[l2],
-							FloorDecoration.depthPoint[j3], FloorDecoration.depthPoint[l3]);
-					}
-				} else if (!lowMemoryMode) {
-					if (floorDecoration.aBoolean683) {
-						Rasterizer.renderTexturedTriangle(l4, i5, j5, i4, j4, k4, floorDecoration.anIntArray676[j2],
-							floorDecoration.anIntArray677[j2], floorDecoration.anIntArray678[j2], FloorDecoration.anIntArray690[0],
-							FloorDecoration.anIntArray690[1], FloorDecoration.anIntArray690[3], FloorDecoration.anIntArray691[0],
-							FloorDecoration.anIntArray691[1], FloorDecoration.anIntArray691[3], FloorDecoration.anIntArray692[0],
-							FloorDecoration.anIntArray692[1], FloorDecoration.anIntArray692[3], floorDecoration.anIntArray682[j2],
-							FloorDecoration.depthPoint[l2], FloorDecoration.depthPoint[j3], FloorDecoration.depthPoint[l3]);
-					} else {
-						Rasterizer.renderTexturedTriangle(l4, i5, j5, i4, j4, k4, floorDecoration.anIntArray676[j2],
-							floorDecoration.anIntArray677[j2], floorDecoration.anIntArray678[j2], FloorDecoration.anIntArray690[l2],
-							FloorDecoration.anIntArray690[j3], FloorDecoration.anIntArray690[l3], FloorDecoration.anIntArray691[l2],
-							FloorDecoration.anIntArray691[j3], FloorDecoration.anIntArray691[l3], FloorDecoration.anIntArray692[l2],
-							FloorDecoration.anIntArray692[j3], FloorDecoration.anIntArray692[l3], floorDecoration.anIntArray682[j2],
-							FloorDecoration.depthPoint[l2], FloorDecoration.depthPoint[j3], FloorDecoration.depthPoint[l3]);
-					}
-				} else {
-					int k5 = textureBrightness[floorDecoration.anIntArray682[j2]];
-					Rasterizer.renderTriangle(l4, i5, j5, i4, j4, k4, adjustBrightness(k5, floorDecoration.anIntArray676[j2]),
-						adjustBrightness(k5, floorDecoration.anIntArray677[j2]), adjustBrightness(k5, floorDecoration.anIntArray678[j2]),
-						FloorDecoration.depthPoint[l2], FloorDecoration.depthPoint[j3], FloorDecoration.depthPoint[l3]);
-				}
-				}
 			}
 		}
 	}

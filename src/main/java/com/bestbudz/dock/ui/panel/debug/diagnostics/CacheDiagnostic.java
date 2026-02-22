@@ -34,7 +34,7 @@ public class CacheDiagnostic extends BaseDiagnostic {
 		addRow("UID", String.valueOf(Signlink.uid), DiagnosticStyle.TEXT_MUTED);
 		addRow("Store ID", String.valueOf(Signlink.storeid), DiagnosticStyle.TEXT_MUTED);
 
-		addRow("Data Source", "JSON (internal)", DiagnosticStyle.STATUS_GOOD);
+		addRow("Data Source", "FlatBuffer (internal)", DiagnosticStyle.STATUS_GOOD);
 
 		// LRU Cache Stats
 		addRow("── LRU Caches ──", "", DiagnosticStyle.CATEGORY_CACHE);

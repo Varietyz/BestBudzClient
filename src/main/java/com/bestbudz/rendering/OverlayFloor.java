@@ -1,9 +1,13 @@
 package com.bestbudz.rendering;
 
+import bestbudz.config.OverlayConfig;
+import bestbudz.config.OverlayEntry;
+import com.bestbudz.cache.FlatBufferConfigLoader;
 import com.bestbudz.cache.JsonCacheLoader;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.nio.ByteBuffer;
 import java.util.Map;
 
 public class OverlayFloor
@@ -33,6 +37,42 @@ public class OverlayFloor
 
 	public static void unpackConfig()
 	{
+		// Try FlatBuffer first
+		ByteBuffer buf = FlatBufferConfigLoader.load("floors_overlay.fb");
+		if (buf != null) {
+			OverlayConfig config = OverlayConfig.getRootAsOverlayConfig(buf);
+			int maxId = 0;
+			for (int i = 0; i < config.entriesLength(); i++) {
+				int id = config.entries(i).id();
+				if (id > maxId) maxId = id;
+			}
+			overlayFloor = new OverlayFloor[maxId + 1];
+			for (int i = 0; i < config.entriesLength(); i++) {
+				OverlayEntry fb = config.entries(i);
+				int id = fb.id();
+				if (overlayFloor[id] == null)
+					overlayFloor[id] = new OverlayFloor();
+				OverlayFloor f = overlayFloor[id];
+				if (fb.rgb() != 0) {
+					f.rgb = fb.rgb();
+					f.method262(fb.rgb());
+				}
+				if (fb.textureId() != -1) f.textureId = fb.textureId();
+				if (fb.hasHideUnderlay()) f.boolean_5 = false;
+				f.int_7 = fb.secondaryRgb();
+				f.int_9 = fb.blendMode();
+				if (fb.hasBoolean10()) f.boolean_10 = fb.boolean10();
+				f.int_11 = fb.int11();
+				f.boolean_12 = fb.boolean12();
+				f.int_13 = fb.tertiaryRgb();
+				f.int_14 = fb.int14();
+				f.int_15 = fb.int15();
+				f.int_16 = fb.int16();
+			}
+			System.out.println("Overlays Loaded (FlatBuffer): " + config.entriesLength());
+			return;
+		}
+
 		JsonObject json = JsonCacheLoader.loadJsonObject("floors_overlay.json");
 		if (json == null) {
 			System.err.println("Failed to load floors_overlay.json");

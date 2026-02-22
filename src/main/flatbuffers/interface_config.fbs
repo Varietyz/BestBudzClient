@@ -1,0 +1,67 @@
+namespace bestbudz.config;
+
+table SpriteSlot {
+  slot:int;
+  x:int;
+  y:int;
+  sprite:string;
+}
+
+table InterfaceEntry {
+  id:int (key);
+  parent_id:int = -1;
+  type:int;
+  at_action_type:int;
+  content_type:int;
+  width:int;
+  height:int;
+  opacity:int;
+  hover_type:int = -1;
+  scroll_max:int;
+  mouseover_triggered:bool;
+  children:[int];
+  child_x:[int];
+  child_y:[int];
+  comparator_ops:[int];
+  comparator_values:[int];
+  value_indexes:[string];
+  replace_items:bool;
+  is_bank:bool;
+  usable_items:bool;
+  a_boolean_235:bool;
+  inv_sprite_pad_x:int;
+  inv_sprite_pad_y:int;
+  sprite_slots:[SpriteSlot];
+  actions:[string];
+  filled:bool;
+  center_text:bool;
+  font_id:int = -1;
+  text_shadow:bool;
+  disabled_message:string;
+  enabled_message:string;
+  text_color:int;
+  enabled_color:int;
+  text_hover_color:int;
+  enabled_hover_color:int;
+  disabled_sprite:string;
+  enabled_sprite:string;
+  model_type:int;
+  media_id:int;
+  enabled_model_type:int;
+  enabled_media_id:int;
+  vertical_offset:int = -1;
+  enabled_vertical_offset:int = -1;
+  model_zoom:int;
+  model_rotation_1:int;
+  model_rotation_2:int;
+  selected_action_name:string;
+  spell_name:string;
+  spell_usable_on:int;
+  tooltip:string;
+}
+
+table InterfaceConfig {
+  entries:[InterfaceEntry];
+}
+
+root_type InterfaceConfig;

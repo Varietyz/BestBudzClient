@@ -25,6 +25,8 @@ import com.bestbudz.graphics.sprite.Sprite;
 import com.bestbudz.ui.RSInterface;
 import static com.bestbudz.util.FormatHelpers.formatBestBucks;
 import java.util.LinkedList;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.InterfaceProto.*;
 
 public class StatusOrbs {
 
@@ -95,7 +97,6 @@ public class StatusOrbs {
 			crosses[crossIndex / 100].drawSprite(crossX - 8, crossY - 8);
 			if (++anInt1142 > 67) {
 				anInt1142 = 0;
-				stream.writeEncryptedOpcode(78);
 			}
 		} else if (crossType == 2) {
 			crosses[4 + crossIndex / 100].drawSprite(crossX - 8, crossY - 8);
@@ -157,8 +158,7 @@ public class StatusOrbs {
 
 		if (leftClick && SettingsConfig.enableStatusOrbs) {
 			if (pouchHover && SettingsConfig.enablePouch) {
-				stream.writeEncryptedOpcode(185);
-				stream.writeWord(713);
+				Client.sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(713)).build());
 			}
 
 		}

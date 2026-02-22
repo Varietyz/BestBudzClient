@@ -22,6 +22,7 @@ import com.bestbudz.util.ColorUtility;
 import com.bestbudz.world.ObjectDef;
 import com.bestbudz.engine.core.gamerender.ObjectManager;
 import java.awt.Graphics2D;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
 
 public class GameState extends Client {
 
@@ -34,11 +35,6 @@ public class GameState extends Client {
 	public static void setGPUStateValid(boolean valid) {
 		gpuStateValid = valid;
 	}
-	private static long lastGPUValidation = 0;
-	private static final long GPU_VALIDATION_INTERVAL = 5000;
-	private static int consecutiveGPUFailures = 0;
-	private static final int MAX_GPU_FAILURES = 3;
-
 	private static long lastResetTime = 0;
 	private static int resetCount = 0;
 	private static long peakMemoryUsage = 0;
@@ -90,98 +86,22 @@ public class GameState extends Client {
 		}
 	}
 
-	public static void validateGPUStateIfNeeded() {
-		long currentTime = System.currentTimeMillis();
-		if (currentTime - lastGPUValidation < GPU_VALIDATION_INTERVAL) {
-			return;
-		}
-
-		lastGPUValidation = currentTime;
-
-		if (!GPURenderingEngine.isEnabled()) {
-			gpuStateValid = false;
-			return;
-		}
-
-		try {
-
-			boolean basicGPUCheck = GPURenderingEngine.isEnabled() &&
-				GPURenderingEngine.initialized &&
-				GPUContextManager.getInstance().isContextCurrent();
-
-			if (basicGPUCheck) {
-				consecutiveGPUFailures = 0;
-				gpuStateValid = true;
-				logDebug("GPU validation passed - basic checks OK");
-			} else {
-				consecutiveGPUFailures++;
-				logError("Basic GPU validation failed (failure " + consecutiveGPUFailures + "/" + MAX_GPU_FAILURES + ")");
-
-				if (consecutiveGPUFailures >= MAX_GPU_FAILURES) {
-					logError("Maximum GPU failures reached, attempting recovery...");
-					attemptGPURecovery();
-				} else {
-
-					gpuStateValid = false;
-				}
-			}
-
-		} catch (Exception e) {
-			consecutiveGPUFailures++;
-			logError("GPU validation exception: " + e.getMessage());
-			gpuStateValid = false;
-
-			if (consecutiveGPUFailures >= MAX_GPU_FAILURES) {
-				attemptGPURecovery();
-			}
-		}
-	}
-
-	private static void attemptGPURecovery() {
-		logInfo("Attempting GPU system recovery...");
-
-		try {
-			boolean recovered = GPURenderingEngine.emergencyReset();
-			if (recovered) {
-				logInfo("✅ GPU recovery successful");
-				consecutiveGPUFailures = 0;
-				gpuStateValid = true;
-			} else {
-				logError("❌ GPU recovery failed");
-				gpuStateValid = false;
-			}
-
-		} catch (Exception e) {
-			logError("GPU recovery exception: " + e.getMessage());
-			gpuStateValid = false;
-		}
-	}
-
 	public static void safeRenderWorld(int xCameraPos, int yCameraPos, int xCameraCurve,
 									   int zCameraPos, int j, int yCameraCurve) {
 		totalRenderCalls++;
 		long renderStart = System.currentTimeMillis();
 
 		try {
+			try (GPUContextManager.ContextToken context = GPURenderingEngine.acquireContext("World Rendering")) {
+				if (context != null) {
+					renderWorldWithGPU(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 
-			boolean gpuEnabled = GPURenderingEngine.isEnabled() && gpuStateValid;
+					long duration = System.currentTimeMillis() - renderStart;
+					GPUMonitor.getInstance().recordGPUOperation("World Rendering", true, duration);
 
-			if (gpuEnabled) {
-
-				try (GPUContextManager.ContextToken context = GPURenderingEngine.acquireContext("World Rendering")) {
-					if (context != null) {
-						renderWorldWithGPU(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
-
-						long duration = System.currentTimeMillis() - renderStart;
-						GPUMonitor.getInstance().recordGPUOperation("World Rendering", true, duration);
-
-						cacheValidCameraPosition(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
-						return;
-					}
+					cacheValidCameraPosition(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 				}
 			}
-
-			renderWorldFallback(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 
 		} catch (ArrayIndexOutOfBoundsException e) {
 			renderingErrors++;
@@ -191,15 +111,6 @@ public class GameState extends Client {
 			renderingErrors++;
 			logError("Rendering error: " + e.getMessage());
 			GPUMonitor.getInstance().recordError("World Rendering", e.getMessage(), Thread.currentThread().getName());
-
-			if (hasValidPosition && worldController != null) {
-				try {
-					worldController.render(lastValidXCameraPos, lastValidYCameraPos, lastValidXCameraCurve,
-						lastValidZCameraPos, lastValidJ, lastValidYCameraCurve);
-				} catch (Exception e2) {
-					logError("Even cached position failed: " + e2.getMessage());
-				}
-			}
 		}
 	}
 
@@ -235,18 +146,22 @@ public class GameState extends Client {
 			com.bestbudz.engine.core.gamerender.WorldController.gpuTerrainActive = true;
 		}
 
-		// Render baked static objects (walls, decorations, game objects)
+		// Render baked static objects (walls, wall/ground/roof decorations — NOT game objects)
 		if (GPUStaticScene.isUploaded()) {
 			GPUStaticScene.renderStaticObjects(xCameraPos, zCameraPos, yCameraPos, j);
+			com.bestbudz.engine.core.gamerender.WorldController.gpuStaticObjectsActive = true;
 		}
 
-		// Render world (models will call GPUModelRenderer via RS317GPUInterface)
+		// Render world (dynamic entities call GPUModelRenderer directly)
 		// When gpuTerrainActive=true, WorldController skips CPU terrain rasterizing
-		// but still does mouse picking
+		// When gpuStaticObjectsActive=true, WorldController skips wall/decoration rendering
+		// but still renders obj5Array (game objects, players, NPCs) per-frame
+		// Mouse picking still runs regardless
 		worldController.render(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 
-		// Reset terrain flag after render
+		// Reset flags after render
 		com.bestbudz.engine.core.gamerender.WorldController.gpuTerrainActive = false;
+		com.bestbudz.engine.core.gamerender.WorldController.gpuStaticObjectsActive = false;
 
 		// End frame
 		GPUModelRenderer.endFrame();
@@ -314,20 +229,6 @@ public class GameState extends Client {
 		}
 	}
 
-	private static void renderWorldFallback(int xCameraPos, int yCameraPos, int xCameraCurve,
-											int zCameraPos, int j, int yCameraCurve) {
-		try {
-			if (worldController != null) {
-				worldController.render(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
-				cacheValidCameraPosition(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
-			} else if (hasValidPosition) {
-				worldController.render(lastValidXCameraPos, lastValidYCameraPos, lastValidXCameraCurve,
-					lastValidZCameraPos, lastValidJ, lastValidYCameraCurve);
-			}
-		} catch (Exception e) {
-			logError("Fallback rendering failed: " + e.getMessage());
-		}
-	}
 
 	private static void cacheValidCameraPosition(int xCameraPos, int yCameraPos, int xCameraCurve,
 												 int zCameraPos, int j, int yCameraCurve) {
@@ -366,8 +267,6 @@ public class GameState extends Client {
 		}
 
 		GPUMonitor.getInstance().recordError("Bounds Error", e.getMessage(), Thread.currentThread().getName());
-
-		renderWorldFallback(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 	}
 
 	public static void resetGameState() {
@@ -430,8 +329,6 @@ public class GameState extends Client {
 
 			GPURenderingEngine.persistThroughGameLoad();
 
-			validateGPUStateIfNeeded();
-
 			logDebug("✅ GPU state preserved");
 
 		} catch (Exception e) {
@@ -450,19 +347,11 @@ public class GameState extends Client {
 
 		try {
 
-			if (GPURenderingEngine.isEnabled() && GPURenderingEngine.initialized) {
-				gpuStateValid = true;
-				consecutiveGPUFailures = 0;
-				logDebug("✅ GPU state restored - engine reports enabled");
+			gpuStateValid = true;
+			logDebug("✅ GPU state restored - engine reports enabled");
 
-				// Upload terrain geometry to GPU after region load
-				uploadTerrainToGPU();
-			} else {
-				logError("GPU engine not properly enabled after restore");
-				gpuStateValid = false;
-			}
-
-			lastGPUValidation = System.currentTimeMillis() - (GPU_VALIDATION_INTERVAL - 1000);
+			// Upload terrain geometry to GPU after region load
+			uploadTerrainToGPU();
 
 		} catch (Exception e) {
 			logError("GPU state restoration failed: " + e.getMessage());
@@ -496,21 +385,8 @@ public class GameState extends Client {
 		logInfo("Handling game load with GPU persistence...");
 
 		try {
-			if (GPURenderingEngine.isEnabled()) {
-
-				com.bestbudz.engine.ClientLauncher.handleGameLoad();
-
-				validateGPUStateIfNeeded();
-
-				if (gpuStateValid) {
-					logInfo("✅ Game load handled with GPU persistence");
-				} else {
-					logError("GPU state invalid after game load, attempting recovery...");
-					attemptGPURecovery();
-				}
-			} else {
-				logInfo("GPU disabled, handling game load without GPU persistence");
-			}
+			com.bestbudz.engine.ClientLauncher.handleGameLoad();
+			logInfo("✅ Game load handled with GPU persistence");
 
 		} catch (Exception e) {
 			logError("Error handling game load: " + e.getMessage());
@@ -521,10 +397,7 @@ public class GameState extends Client {
 	private static void validateEnvironmentAndCacheDimensions() {
 		logDebug("=== ENVIRONMENT VALIDATION WITH GPU ===");
 
-		if (GPURenderingEngine.isEnabled()) {
-			validateGPUStateIfNeeded();
-			logDebug("GPU State Valid: " + gpuStateValid);
-		}
+		logDebug("GPU State Valid: " + gpuStateValid);
 
 		try {
 			if (byteGroundArray != null) {
@@ -793,7 +666,6 @@ public class GameState extends Client {
 			int k2 = mapRegionIds.length;
 			logDebug("Processing " + k2 + " regions (" + embeddedRegionsLoaded + " from embedded cache)");
 
-			stream.writeEncryptedOpcode(0);
 
 			if (!musicPlaying) {
 				processNormalModeWithEmbedded(objectManager, k2, embeddedRegionsLoaded);
@@ -879,11 +751,8 @@ public class GameState extends Client {
 			anInt1097++;
 			if (anInt1097 > 160) {
 				anInt1097 = 0;
-				stream.writeEncryptedOpcode(238);
-				stream.writeByte(96);
 			}
 
-			stream.writeEncryptedOpcode(0);
 
 			// Pass 3: Load object data by region ID
 			for (int i6 = 0; i6 < k2; i6++) {
@@ -917,7 +786,6 @@ public class GameState extends Client {
 
 	private static void finalizeObjectManager(ObjectManager objectManager) {
 		try {
-			stream.writeEncryptedOpcode(0);
 
 			if (collisionMaps != null && worldController != null) {
 				objectManager.renderScene(collisionMaps, worldController);
@@ -931,7 +799,6 @@ public class GameState extends Client {
 				logDebug("objectManager.colors is null or empty");
 			}
 
-			stream.writeEncryptedOpcode(0);
 
 			int targetPlane = Math.max(Math.min(ObjectManager.minPlane, plane), plane - 1);
 
@@ -1055,11 +922,8 @@ public class GameState extends Client {
 			anInt1097++;
 			if (anInt1097 > 160) {
 				anInt1097 = 0;
-				stream.writeEncryptedOpcode(238);
-				stream.writeByte(96);
 			}
 
-			stream.writeEncryptedOpcode(0);
 
 			// Pass 3: Load object data by region ID
 			for (int i6 = 0; i6 < k2; i6++) {
@@ -1127,7 +991,6 @@ public class GameState extends Client {
 				}
 			}
 
-			stream.writeEncryptedOpcode(0);
 			for (int l6 = 0; l6 < Math.min(4, dynamicRegionData.length); l6++) {
 				if (dynamicRegionData[l6] == null) continue;
 
@@ -1435,11 +1298,9 @@ public class GameState extends Client {
 	}
 
 	public static String getGPUStatus() {
-		return String.format("GPU Status - Enabled: %s, Valid: %s, Failures: %d/%d, Health: %s",
+		return String.format("GPU Status - Enabled: %s, Valid: %s, Health: %s",
 			GPURenderingEngine.isEnabled(),
 			gpuStateValid,
-			consecutiveGPUFailures,
-			MAX_GPU_FAILURES,
 			GPUMonitor.getInstance().getHealthStatus());
 	}
 

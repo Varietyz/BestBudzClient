@@ -1,0 +1,51 @@
+syntax = "proto3";
+package bestbudz;
+option java_package = "com.bestbudz.net.proto";
+option java_outer_classname = "ChatProto";
+
+// Server -> Client
+message ChatMessage {
+  string text = 1;
+}
+
+message PrivateMessageOut {
+  int64 sender_name_hash = 1;
+  int32 message_id = 2;
+  int32 rights = 3;
+  bytes message = 4;
+}
+
+message ClanMessage {
+  string username = 1;
+  string message = 2;
+  string title = 3;
+  int32 rights = 4;
+}
+
+message ChatSettings {
+  int32 public_mode = 1;
+  int32 private_mode = 2;
+  int32 trade_mode = 3;
+}
+
+// Client -> Server
+message PublicChatOut {
+  int32 color = 1;
+  int32 effects = 2;
+  bytes text = 3;
+}
+
+message CommandMessage {
+  string command = 1;
+}
+
+message PrivateMessageSend {
+  int64 recipient_hash = 1;
+  bytes message = 2;
+}
+
+message ChatModeUpdate {
+  int32 public_mode = 1;
+  int32 private_mode = 2;
+  int32 trade_mode = 3;
+}

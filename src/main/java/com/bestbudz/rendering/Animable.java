@@ -5,7 +5,6 @@ import static com.bestbudz.engine.core.Client.loopCycle;
 import static com.bestbudz.engine.core.Client.plane;
 import static com.bestbudz.engine.core.Client.gameTickCounter;
 import static com.bestbudz.engine.core.Client.worldController;
-import com.bestbudz.engine.gpu.RS317GPUInterface;
 import com.bestbudz.rendering.model.Point3D;
 import com.bestbudz.rendering.model.Model;
 
@@ -24,12 +23,6 @@ public class Animable {
 		Model model = getModel();
 		if (model != null) {
 			modelHeight = model.modelHeight;
-
-			if (RS317GPUInterface.isActive()) {
-				RS317GPUInterface.renderModel(model, worldX, worldY, worldZ, rotation);
-				return;
-			}
-
 			model.render(rotation, sinVertical, cosVertical, sinHorizontal, cosHorizontal, worldX, worldY, worldZ, id);
 		}
 	}

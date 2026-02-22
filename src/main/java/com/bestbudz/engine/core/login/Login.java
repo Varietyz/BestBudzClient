@@ -19,10 +19,12 @@ import com.bestbudz.ui.handling.input.MouseState;
 import com.bestbudz.cache.IdentityResolver;
 import com.bestbudz.entity.Npc;
 import com.bestbudz.entity.Stoner;
+import com.bestbudz.net.proto.LoginProto.LoginRequest;
+import com.bestbudz.net.proto.LoginProto.LoginResponse;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
 import com.bestbudz.network.Socket;
 import static com.bestbudz.ui.DialogHandling.sendFrame36;
 import static com.bestbudz.ui.interfaces.Chatbox.splitPrivateChat;
-import com.bestbudz.util.ISAACRandomGen;
 import com.bestbudz.graphics.text.TextClass;
 import com.bestbudz.engine.core.gamerender.ObjectManager;
 import com.bestbudz.world.Varp;
@@ -78,75 +80,34 @@ public class Login extends Client
 			server = NetworkConfig.SERVER_IPS[worldSelected - 1];
 			socketStream = new Socket(client, openSocket(NetworkConfig.SERVER_PORT + portOff));
 
-			long l = TextClass.longForName(username);
-			int i = (int) (l >> 16 & 31L);
-			stream.position = 0;
-			stream.writeByte(14);
-			stream.writeByte(i);
-			socketStream.queueBytes(2, stream.buffer);
+			// Protobuf login handshake
+			int engineVersion = (worldSelected == 3)
+				? EngineConfig.DEV_ENGINE_VERSION : EngineConfig.ENGINE_VERSION;
+			socketStream.writeProto(GamePacket.newBuilder()
+				.setLoginRequest(LoginRequest.newBuilder()
+					.setVersion(engineVersion)
+					.setUsername(username)
+					.setPassword(password)
+					.setUid(String.valueOf(IdentityResolver.resolve()))
+					.setReconnecting(flag))
+				.build());
 
-			for (int j = 0; j < 8; j++) socketStream.read();
-			int k = socketStream.read();
-			int i1 = k;
+			GamePacket resp = socketStream.readProto();
+			LoginResponse login = resp.getLoginResponse();
+			int k = login.getResultValue();
 
-			if (k == 0) {
-				socketStream.flushInputStream(inStream.buffer, 8);
-				inStream.position = 0;
-				lastInventoryTime = inStream.readQWord();
-
-				int[] ai = new int[4];
-				ai[0] = (int) (Math.random() * 99999999D);
-				ai[1] = (int) (Math.random() * 99999999D);
-				ai[2] = (int) (lastInventoryTime >> 32);
-				ai[3] = (int) lastInventoryTime;
-
-				stream.position = 0;
-				stream.writeByte(100);
-				stream.writeDWord(ai[0]);
-				stream.writeDWord(ai[1]);
-				stream.writeDWord(ai[2]);
-				stream.writeDWord(ai[3]);
-				stream.writeString(String.valueOf(IdentityResolver.resolve()));
-				stream.writeString(username);
-				stream.writeString(password);
-				stream.applyRSAEncryption();
-
-				networkBuffer.position = 0;
-				networkBuffer.writeByte(flag ? 18 : 16);
-				networkBuffer.writeByte(stream.position + 36 + 1 + 1 + 2);
-				networkBuffer.writeByte(255);
-				if (worldSelected == 3){
-					networkBuffer.writeWord(EngineConfig.DEV_ENGINE_VERSION);
-				}else{
-					networkBuffer.writeWord(EngineConfig.ENGINE_VERSION);
-				}
-				networkBuffer.writeByte(lowMem ? 1 : 0);
-
-				for (int l1 = 0; l1 < 9; l1++)
-					networkBuffer.writeDWord(expectedCRCs[l1]);
-
-				networkBuffer.writePacketLength(stream.buffer, stream.position, 0);
-				stream.encryption = new ISAACRandomGen(ai);
-
-				for (int j2 = 0; j2 < 4; j2++) ai[j2] += 50;
-				encryption = new ISAACRandomGen(ai);
-
-				socketStream.queueBytes(networkBuffer.position, networkBuffer.buffer);
-				k = socketStream.read();
-			}
-
-			if (k == 1) {
+			if (k == LoginResponse.Result.RETRY_VALUE) {
 				Thread.sleep(2000L);
 				loginInProgress = false;
 				login(username, password, flag, g, canvas, client);
 				return;
 			}
 
-			if (k == 2) {
+			if (k == LoginResponse.Result.SUCCESS_VALUE) {
 
 				myUsername = username;
 				myPassword = password;
-				myPrivilege = socketStream.read();
+				myPrivilege = login.getRights();
 				final AccountData account = new AccountData(myPrivilege, username);
 
 				if (rememberMe) {
@@ -156,7 +117,7 @@ public class Login extends Client
 				currentAccount = AccountManager.getAccount(username);
 				if (currentAccount == null) currentAccount = account;
 
-				flagged = socketStream.read() == 1;
+				flagged = login.getFlagged();
 				lastChatTime = 0L;
 				mouseDragTime = 0;
 				awtFocus = true;
@@ -202,9 +163,8 @@ public class Login extends Client
 
 				for (int i2 = 0; i2 < maxStoners; i2++) {
 					stonerArray[i2] = null;
-					playerUpdateBuffers[i2] = null;
 				}
-				for (i = 0; i < 17; i++) console.inputConsoleMessages[i] = "";
+				for (int i = 0; i < 17; i++) console.inputConsoleMessages[i] = "";
 				for (int k2 = 0; k2 < 16384; k2++) npcArray[k2] = null;
 
 				myStoner = stonerArray[myStonerIndex] = new Stoner();
@@ -260,125 +220,91 @@ public class Login extends Client
 
 			loginInProgress = false;
 
-			switch (k) {
-				case 3:
+			switch (login.getResult()) {
+				case INVALID_CREDENTIALS:
 					loginMessage1 = "How high are you?!";
 					loginMessage2 = "Think man, think!.";
 					break;
-
-				case 4:
+				case BANNED:
 					loginMessage1 = "You were naughty.";
 					loginMessage2 = "You have been banned, shithead.";
 					break;
-
-				case 5:
+				case ALREADY_LOGGED_IN:
 					loginMessage1 = "All hell loose, you have been hacked!";
 					loginMessage2 = "Or you too fuckd up and forgot you are logged in already.";
 					break;
-
-				case 6:
+				case UPDATED:
 					loginMessage1 = "Best Budz has gotten a new addition!";
 					loginMessage2 = "Please download the newest dock.";
 					break;
-
-				case 7:
+				case WORLD_FULL:
 					loginMessage1 = "BestBudz is so popular, theres no room for you..";
 					loginMessage2 = "Please hold your horses!.";
 					break;
-
-				case 8:
+				case SERVER_OFFLINE:
 					loginMessage1 = "Jay might be in bed.";
 					loginMessage2 = "Check discord to be certain.";
 					break;
-
-				case 9:
+				case LOGIN_LIMIT:
 					loginMessage1 = "Sure 9 dock's are enough!?";
 					loginMessage2 = "You aint a real stoner bro!.";
 					break;
-
-				case 10:
+				case BAD_SESSION:
 					loginMessage1 = "Unable to connect.";
 					loginMessage2 = "Bad session id.";
 					break;
-
-				case 11:
+				case REJECTED:
 					loginMessage1 = "Login server rejected session.";
 					loginMessage2 = "Please try again.";
 					break;
-
-				case 12:
+				case MEMBERS_ONLY:
 					loginMessage1 = "You need a members account to login to this world.";
 					loginMessage2 = "Please subscribe, or use a different world.";
 					break;
-
-				case 13:
+				case COULD_NOT_COMPLETE:
 					loginMessage1 = "Could not complete login.";
 					loginMessage2 = "Please try using a different world.";
 					break;
-
-				case 14:
+				case SERVER_UPDATING:
 					loginMessage1 = "The server is being updated.";
 					loginMessage2 = "Please wait 1 minute and try again.";
 					break;
-
-				case 15:
+				case RECONNECT:
 					loggedIn = true;
 					loginComplete = true;
 					loginInProgress = false;
 					lastConnectionTime = System.currentTimeMillis();
 					break;
-
-				case 16:
+				case TOO_MANY_ATTEMPTS:
 					loginMessage1 = "You need to chill, so I am forcing you.";
 					loginMessage2 = "Roll a joint and try again.";
 					break;
-
-				case 17:
+				case MEMBERS_AREA:
 					loginMessage1 = "You are standing in a members-only area.";
 					loginMessage2 = "To play on this world move to a free area first";
 					break;
-
-				case 20:
+				case INVALID_SERVER:
 					loginMessage1 = "Invalid loginserver requested";
 					loginMessage2 = "Please try using a different world.";
 					break;
-
-				case 21:
-					for (int t = socketStream.read(); t >= 0; t--) {
-						loginMessage1 = "You have only just left another world";
-						loginMessage2 = "Your profile will be transferred in: " + t + " seconds";
-						loginRenderer.displayLoginScreen(g, canvas);
-						Thread.sleep(1000L);
-					}
-					loginInProgress = false;
-					login(username, password, flag, g, canvas, client);
-					return;
-
-				case 22:
+				case TRANSFER_WAIT:
+					loginMessage1 = "You have only just left another world";
+					loginMessage2 = "Your profile will be transferred shortly.";
+					break;
+				case INVALID_USERNAME:
 					loginMessage1 = "Cannot pick '" + TextClass.capitalize(myUsername) + "'!";
 					loginMessage2 = "Take something else.";
 					break;
-
-				case 23:
+				case NO_PERMISSION:
 					loginMessage1 = "You do not have permission to do this!";
 					loginMessage2 = "Please try a different world.";
 					break;
-
-				case -1:
-					if (i1 == 0 && loginFailures < 2) {
-						Thread.sleep(2000L);
-						loginFailures++;
-						loginInProgress = false;
-						login(username, password, flag, g, canvas, client);
-						return;
-					} else {
-						loginMessage1 = "No response from loginserver";
-						loginMessage2 = "Please wait 1 minute and try again.";
-					}
+				case STAFF_ONLY:
+					loginMessage1 = "This world is for staff only.";
+					loginMessage2 = "Please try a different world.";
 					break;
-
 				default:
-					System.out.println("response:" + k);
+					System.out.println("response:" + login.getResult());
 					loginMessage1 = "Unexpected server response";
 					loginMessage2 = "Please try using a different world.";
 					break;
@@ -514,7 +440,11 @@ public class Login extends Client
 			loadingStage = 2;
 			ObjectManager.baseLevel = plane;
 			resetGameState();
-			stream.writeEncryptedOpcode(121);
+			try {
+				socketStream.writeProto(GamePacket.newBuilder()
+					.setChangeRegion(com.bestbudz.net.proto.PlayerProto.ChangeRegion.getDefaultInstance())
+					.build());
+			} catch (IOException ignored) {}
 			return 0;
 		}
 	}

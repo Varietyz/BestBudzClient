@@ -1,5 +1,6 @@
 package com.bestbudz.data.items;
 
+import bestbudz.config.ItemEntry;
 import com.bestbudz.entity.pets.PetItemCreator;
 import java.util.Set;
 import java.util.HashSet;
@@ -69,7 +70,12 @@ public class GetItemDef
 		ItemDef itemDef = ItemDef.cache[ItemDef.cacheIndex];
 		itemDef.id = id;
 		itemDef.setDefaults();
-		if (ItemDef.jsonDefs != null && id >= 0 && id < ItemDef.jsonDefs.length && ItemDef.jsonDefs[id] != null) {
+		if (ItemDef.fbConfig != null) {
+			ItemEntry fb = ItemDef.fbConfig.entriesByKey(id);
+			if (fb != null) {
+				itemDef.loadFromFlatBuffer(fb);
+			}
+		} else if (ItemDef.jsonDefs != null && id >= 0 && id < ItemDef.jsonDefs.length && ItemDef.jsonDefs[id] != null) {
 			itemDef.readFromJson(ItemDef.jsonDefs[id]);
 		}
 

@@ -1,0 +1,55 @@
+syntax = "proto3";
+package bestbudz;
+option java_package = "com.bestbudz.net.proto";
+option java_outer_classname = "CommonProto";
+
+message Location {
+  int32 x = 1;
+  int32 y = 2;
+  int32 z = 3;
+}
+
+message Item {
+  int32 id = 1;
+  int32 amount = 2;
+}
+
+message SlottedItem {
+  int32 slot = 1;
+  int32 id = 2;
+  int32 amount = 3;
+}
+
+message HitData {
+  int32 damage = 1;
+  int32 hit_type = 2;
+  int32 hit_update_type = 3;
+  int64 hp = 4;
+  int64 max_hp = 5;
+}
+
+message GraphicData {
+  int32 id = 1;
+  int32 delay = 2;
+  int32 height = 3;
+}
+
+message AnimationData {
+  int32 id = 1;
+  int32 delay = 2;
+}
+
+message FaceDirection {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+message ForceMovementData {
+  int32 start_x = 1;
+  int32 start_y = 2;
+  int32 end_x = 3;
+  int32 end_y = 4;
+  int32 speed1 = 5;
+  int32 speed2 = 6;
+  int32 direction = 7;
+}

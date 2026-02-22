@@ -61,6 +61,10 @@ public class GPURenderingEngine {
 					System.err.println("[GPU] GPUStaticScene init failed, continuing without static object upload");
 				}
 
+				if (!GPUIconRenderer.initialize()) {
+					System.err.println("[GPU] GPUIconRenderer init failed, continuing without icon rendering");
+				}
+
 				if (!SkyRenderer.initialize()) {
 					System.err.println("[GPU] SkyRenderer init failed, continuing without sky");
 				}
@@ -353,6 +357,7 @@ public class GPURenderingEngine {
 		try {
 			PostProcessPipeline.cleanup();
 			SkyRenderer.cleanup();
+			GPUIconRenderer.cleanup();
 			com.bestbudz.engine.gpu.scene.GPUStaticScene.cleanup();
 			GPUSceneUploader.cleanup();
 			GPUTextureManager.cleanup();

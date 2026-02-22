@@ -16,6 +16,9 @@ import java.awt.event.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.ChatProto.*;
+import com.google.protobuf.ByteString;
 
 public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
@@ -478,18 +481,7 @@ public class ChatPanel extends JPanel implements UIPanel, DockTextUpdatable {
 
 		try {
 			if (Client.stream != null) {
-				Client.stream.writeEncryptedOpcode(4);
-				Client.stream.writeByte(0);
-				int blockStart = Client.stream.position;
-
-				Client.stream.writeByte128Minus(0);
-				Client.stream.writeByte128Minus(0);
-
-				Client.incomingPacketBuffer.position = 0;
-				TextInput.method526(message, Client.incomingPacketBuffer);
-				Client.stream.writeBytesReversed128(0, Client.incomingPacketBuffer.buffer, Client.incomingPacketBuffer.position);
-
-				Client.stream.writePacketLength(Client.stream.position - blockStart);
+				Client.sendProto(GamePacket.newBuilder().setPublicChatOut(PublicChatOut.newBuilder().setColor(0).setEffects(0).setText(ByteString.copyFrom(message.getBytes()))).build());
 
 				String processedText = TextInput.processText(message);
 				Client.myStoner.textSpoken = processedText;

@@ -13,7 +13,7 @@ import static com.bestbudz.entity.ParseAndUpdateEntities.renderNPCs;
 import static com.bestbudz.entity.UpdateEntities.updateEntities;
 import static com.bestbudz.graphics.ClearExpiredProjectiles.clearExpiredProjectiles;
 import static com.bestbudz.graphics.HeadIcon.drawHeadIcon;
-import static com.bestbudz.graphics.MovingTextures.updateMovingTextures;
+
 import static com.bestbudz.rendering.Animable.processGraphicEffects;
 import static com.bestbudz.rendering.Roofing.getRoofPlane;
 import static com.bestbudz.rendering.Roofing.selectRoofPlane;
@@ -32,7 +32,6 @@ import static com.bestbudz.ui.handling.input.Keyboard.console;
 import com.bestbudz.ui.handling.input.MouseState;
 import static com.bestbudz.ui.interfaces.StatusOrbs.drawGameOverlays;
 import static com.bestbudz.ui.interfaces.StatusOrbs.drawGameUIorbs;
-import com.bestbudz.util.ColorUtility;
 import static com.bestbudz.world.TerrainHeight.getTerrainHeight;
 import java.awt.Graphics2D;
 
@@ -108,20 +107,11 @@ public class GameFrame extends Client{
 		Model.anInt1685 = MouseState.x;
 		Model.anInt1686 = MouseState.y;
 		DrawingArea.setAllPixelsToZero();
-		if (SettingsConfig.enableDistanceFog)
-		{
-			DrawingArea.drawPixels(frameHeight, 0, 0, ColorUtility.fadingToColor, frameWidth);
-		}
 		GameState.safeRenderWorld(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 		worldController.clearObj5Cache();
-		if (SettingsConfig.enableDistanceFog && !com.bestbudz.engine.gpu.GPURenderingEngine.isEnabled()) {
-			fogHandler.renderFog(mainGameRendering.canvasRaster, mainGameRendering.depthBuffer);
-		}
 
 		updateEntities();
 		drawHeadIcon();
-		updateMovingTextures(k2);
-
 		if (SettingsConfig.showKillFeed)
 		{
 			displayKillFeed();

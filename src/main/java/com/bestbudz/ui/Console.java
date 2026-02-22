@@ -4,6 +4,8 @@ import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.util.ColorUtility;
 import java.util.Objects;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.ChatProto.*;
 
 public class Console
 {
@@ -60,9 +62,7 @@ public class Console
 		switch (getCommands)
 		{
 			default:
-				Client.stream.writeEncryptedOpcode(103);
-				Client.stream.writeByte(consoleCommand.length() + 1);
-				Client.stream.writeString(consoleCommand);
+				Client.sendProto(GamePacket.newBuilder().setCommandMessage(CommandMessage.newBuilder().setCommand(consoleCommand)).build());
 				break;
 		}
 	}

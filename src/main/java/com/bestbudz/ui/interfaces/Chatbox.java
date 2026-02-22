@@ -21,6 +21,10 @@ import java.awt.Graphics2D;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.InterfaceProto.*;
+import com.bestbudz.net.proto.ChatProto.*;
+import com.google.protobuf.ByteString;
 
 public class Chatbox extends Client{
 	public static final String[] chatNames= new String[500];
@@ -179,16 +183,12 @@ public class Chatbox extends Client{
 
 						if (amount > 0)
 						{
-							stream.writeEncryptedOpcode(208);
-							stream.writeDWord((int) amount);
+							sendProto(GamePacket.newBuilder().setChatInterfaceAction(ChatInterfaceAction.newBuilder().setInterfaceId((int) amount).setOpcode(208)).build());
 						}
 					}
 					else
 					{
-						stream.writeEncryptedOpcode(150);
-						stream.writeByte(RSInterface.currentInputField.disabledMessage.length() + 3);
-						stream.writeWord(RSInterface.currentInputField.id);
-						stream.writeString(RSInterface.currentInputField.disabledMessage);
+						sendProto(GamePacket.newBuilder().setInputFieldAction(InputFieldAction.newBuilder().setText(RSInterface.currentInputField.disabledMessage).setId(RSInterface.currentInputField.id)).build());
 					}
 					RSInterface.currentInputField.disabledMessage = "";
 					RSInterface.currentInputField = null;
@@ -268,21 +268,13 @@ public class Chatbox extends Client{
 					}
 					if (stonersListAction == 3 && promptInput.length() > 0)
 					{
-						stream.writeEncryptedOpcode(126);
-						stream.writeByte(0);
-						int k = stream.position;
-						stream.writeQWord(menuOpenTime);
-						TextInput.method526(promptInput, stream);
-						stream.writePacketLength(stream.position - k);
+						sendProto(GamePacket.newBuilder().setPrivateMessageSend(PrivateMessageSend.newBuilder().setRecipientHash(menuOpenTime).setMessage(ByteString.copyFrom(promptInput.getBytes()))).build());
 						promptInput = TextInput.processText(promptInput);
 						pushMessage(promptInput, 6, TextClass.fixName(TextClass.nameForLong(menuOpenTime)));
 						if (privateChatMode == 2)
 						{
 							privateChatMode = 1;
-							stream.writeEncryptedOpcode(95);
-							stream.writeByte(publicChatMode);
-							stream.writeByte(privateChatMode);
-							stream.writeByte(tradeMode);
+							sendProto(GamePacket.newBuilder().setChatModeUpdate(ChatModeUpdate.newBuilder().setPublicMode(publicChatMode).setPrivateMode(privateChatMode).setTradeMode(tradeMode)).build());
 						}
 					}
 					if (stonersListAction == 4 && ignoreCount < 100)
@@ -369,8 +361,7 @@ public class Chatbox extends Client{
 
 						if (amount > 0)
 						{
-							stream.writeEncryptedOpcode(208);
-							stream.writeDWord((int) amount);
+							sendProto(GamePacket.newBuilder().setChatInterfaceAction(ChatInterfaceAction.newBuilder().setInterfaceId((int) amount).setOpcode(208)).build());
 							if (openInterfaceID == 5292)
 							{
 								modifiableXValue = (int) amount;
@@ -434,8 +425,7 @@ public class Chatbox extends Client{
 				{
 					if (amountOrNameInput.length() > 0)
 					{
-						stream.writeEncryptedOpcode(60);
-						stream.writeQWord(TextClass.longForName(amountOrNameInput));
+						sendProto(GamePacket.newBuilder().setStringInput(StringInput.newBuilder().setText(amountOrNameInput)).build());
 					}
 					if (openInterfaceID == 5292 && variousSettings[1012] == 1)
 					{
@@ -546,9 +536,7 @@ public class Chatbox extends Client{
 						inputString = "::" + inputString;
 					if (inputString.startsWith("::"))
 					{
-						stream.writeEncryptedOpcode(103);
-						stream.writeByte(inputString.length() - 1);
-						stream.writeString(inputString.substring(2));
+						sendProto(GamePacket.newBuilder().setCommandMessage(CommandMessage.newBuilder().setCommand(inputString.substring(2))).build());
 					}
 					else
 					{
@@ -641,15 +629,7 @@ public class Chatbox extends Client{
 							i3 = 5;
 							inputString = inputString.substring(6);
 						}
-						stream.writeEncryptedOpcode(4);
-						stream.writeByte(0);
-						int j3 = stream.position;
-						stream.writeByte128Minus(i3);
-						stream.writeByte128Minus(j2);
-						incomingPacketBuffer.position = 0;
-						TextInput.method526(inputString, incomingPacketBuffer);
-						stream.writeBytesReversed128(0, incomingPacketBuffer.buffer, incomingPacketBuffer.position);
-						stream.writePacketLength(stream.position - j3);
+						sendProto(GamePacket.newBuilder().setPublicChatOut(PublicChatOut.newBuilder().setColor(j2).setEffects(i3).setText(ByteString.copyFrom(inputString.getBytes()))).build());
 						inputString = TextInput.processText(inputString);
 						myStoner.textSpoken = inputString;
 						myStoner.chatType = j2;
@@ -663,10 +643,7 @@ public class Chatbox extends Client{
 						if (publicChatMode == 2)
 						{
 							publicChatMode = 3;
-							stream.writeEncryptedOpcode(95);
-							stream.writeByte(publicChatMode);
-							stream.writeByte(privateChatMode);
-							stream.writeByte(tradeMode);
+							sendProto(GamePacket.newBuilder().setChatModeUpdate(ChatModeUpdate.newBuilder().setPublicMode(publicChatMode).setPrivateMode(privateChatMode).setTradeMode(tradeMode)).build());
 						}
 					}
 					inputString = "";

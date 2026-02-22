@@ -6,6 +6,8 @@ import static com.bestbudz.engine.core.login.Login.updateConfigValues;
 import com.bestbudz.cache.IdentityKit;
 import static com.bestbudz.ui.InterfaceManagement.updateInterfaceAnimations;
 import com.bestbudz.ui.interfaces.CustomInterfaces;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.PlayerProto.*;
 
 public class DialogHandling extends Client
 {
@@ -180,9 +182,11 @@ public class DialogHandling extends Client
 		if (j == 326)
 		{
 			System.out.println("[Dialog Handling] MATCHED: contentType 326 - Confirm character creation");
-			stream.writeEncryptedOpcode(101);
-			stream.writeByte(welcomeScreenVisible ? 0 : 1);
-			System.out.println("[Dialog Handling] Writing gender: " + (welcomeScreenVisible ? 0 : 1));
+			sendProto(GamePacket.newBuilder().setChangeAppearance(ChangeAppearance.newBuilder()
+				.setGender(welcomeScreenVisible ? 0 : 1)
+				.addLook(musicTrackIds[0]).addLook(musicTrackIds[1]).addLook(musicTrackIds[2]).addLook(musicTrackIds[3]).addLook(musicTrackIds[4]).addLook(musicTrackIds[5]).addLook(musicTrackIds[6])
+				.addColors(cameraShakeOffsets[0]).addColors(cameraShakeOffsets[1]).addColors(cameraShakeOffsets[2]).addColors(cameraShakeOffsets[3]).addColors(cameraShakeOffsets[4])
+			).build());
 
 			for (int i1 = 0; i1 < 7; i1++) {
 				stream.writeByte(musicTrackIds[i1]);

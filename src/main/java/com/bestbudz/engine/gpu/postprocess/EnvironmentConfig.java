@@ -56,6 +56,9 @@ public class EnvironmentConfig {
 	// ========== Color Grading ==========
 	public static float colorGradingStrength = 0.5f;
 
+	// ========== Animated Textures ==========
+	public static boolean enableAnimatedTextures = true;
+
 	/**
 	 * Compute normalized sun direction vector from azimuth/elevation angles.
 	 * Returns float[3] = {x, y, z} where +y = up.

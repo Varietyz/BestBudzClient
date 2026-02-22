@@ -1,0 +1,14 @@
+namespace bestbudz.config;
+
+table VarbitEntry {
+  id:int (key);
+  base_var:int;
+  start_bit:int;
+  end_bit:int;
+}
+
+table VarbitConfig {
+  entries:[VarbitEntry];
+}
+
+root_type VarbitConfig;

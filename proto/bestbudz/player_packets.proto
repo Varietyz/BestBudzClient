@@ -1,0 +1,213 @@
+syntax = "proto3";
+package bestbudz;
+option java_package = "com.bestbudz.net.proto";
+option java_outer_classname = "PlayerProto";
+
+import "bestbudz/common.proto";
+
+// Server -> Client
+message StonerOption {
+  int32 id = 1;
+  string option = 2;
+  bool top_priority = 3;
+}
+
+message EnergyUpdate {
+  int32 energy = 1;
+}
+
+message WeightUpdate {
+  int32 weight = 1;
+}
+
+message ProfessionUpdate {
+  int32 id = 1;
+  int32 advance = 2;
+  int32 exp = 3;
+  int32 grade = 4;
+}
+
+message ProfessionGoal {
+  int32 profession = 1;
+  int32 init = 2;
+  int32 goal = 3;
+  int32 type = 4;
+}
+
+message FriendUpdate {
+  int64 name_hash = 1;
+  int32 world = 2;
+}
+
+message IgnoreList {
+  repeated int64 name_hashes = 1;
+}
+
+message ExpCounter {
+  int32 profession = 1;
+  int32 exp = 2;
+  int32 counter_exp = 3;
+}
+
+message LoginResponseData {
+  int32 days_since_recovery = 1;
+  int32 unread_messages = 2;
+  int32 members = 3;
+  int32 last_ip = 4;
+  int32 days_since_login = 5;
+}
+
+message PlayerIndex {
+  int32 index = 1;
+}
+
+message KillFeed {
+  string killer = 1;
+  string victim = 2;
+  int32 weapon_id = 3;
+  bool is_special = 4;
+}
+
+message NpcDisplay {
+  int32 npc_id = 1;
+  int32 size = 2;
+}
+
+message BannerMessage {
+  string message = 1;
+  int32 color = 2;
+}
+
+message GameUpdateTimer {
+  int32 time = 1;
+}
+
+message ForceTab {
+  int32 tab_id = 1;
+}
+
+message SetTab {
+  int32 tab_id = 1;
+}
+
+message MultiCombatIcon {
+  bool multi = 1;
+}
+
+message Logout {}
+
+message SystemBan {}
+
+message ResetAnimations {}
+
+message ResetCamera {}
+
+message CharacterDetail {
+  int32 slot = 1;
+}
+
+message SpecialBarUpdate {
+  int32 amount = 1;
+  int32 id = 2;
+}
+
+message SpecialBar {
+  int32 main = 1;
+  int32 sub = 2;
+}
+
+// Camera packets
+message CameraShake {
+  int32 x = 1;
+  int32 y = 2;
+  int32 z = 3;
+  int32 rotation_x = 4;
+  int32 rotation_y = 5;
+}
+
+message CameraAngle {
+  int32 x = 1;
+  int32 y = 2;
+  int32 height = 3;
+  int32 speed = 4;
+  int32 angle = 5;
+}
+
+// Hint arrows
+message StonerHint {
+  int32 type = 1;
+  int32 id = 2;
+}
+
+message NpcHint {
+  int32 type = 1;
+  int32 id = 2;
+}
+
+message MinimapState {
+  int32 type = 1;
+  int32 target_index = 2;
+  int32 x = 3;
+  int32 y = 4;
+  int32 offset = 5;
+}
+
+message PrivateMessageServer {
+  int32 state = 1;
+}
+
+// Client -> Server
+message MovementRequest {
+  int32 dest_x = 1;
+  int32 dest_y = 2;
+  repeated int32 path_x = 3;
+  repeated int32 path_y = 4;
+  bool forced = 5;
+  int32 opcode = 6;
+}
+
+message NpcInteraction {
+  int32 npc_index = 1;
+  int32 action = 2;
+}
+
+message ObjectInteraction {
+  int32 object_id = 1;
+  int32 x = 2;
+  int32 y = 3;
+  int32 action = 4;
+}
+
+message StonerInteraction {
+  int32 stoner_index = 1;
+  int32 action = 2;
+}
+
+message ItemAction {
+  int32 interface_id = 1;
+  int32 item_id = 2;
+  int32 slot = 3;
+  int32 action = 4;
+  int32 opcode = 5;
+}
+
+message ChangeAppearance {
+  int32 gender = 1;
+  repeated int32 look = 2;
+  repeated int32 colors = 3;
+}
+
+message ChangeRegion {}
+
+message ResetCounterRequest {}
+
+message FlashingSideIcon {
+  int32 icon = 1;
+}
+
+message JoinChatRequest {
+  string channel = 1;
+}
+
+// Client -> Server: Keepalive (sent periodically to prevent timeout)
+message Keepalive {}

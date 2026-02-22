@@ -9,6 +9,8 @@ import static com.bestbudz.engine.config.ColorConfig.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.PlayerProto.*;
 
 public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatable {
 
@@ -417,21 +419,11 @@ public class AppearancePanel extends JPanel implements UIPanel, DockTextUpdatabl
 
 		System.out.println("Sending packet with jaw value: " + jawToSend + " (original: " + currentJaw + ")");
 
-		Client.stream.writeEncryptedOpcode(101);
-		Client.stream.writeByte(currentGender);
-		Client.stream.writeByte(currentHead);
-		Client.stream.writeByte(jawToSend);
-		Client.stream.writeByte(currentTorso);
-		Client.stream.writeByte(currentArms);
-		Client.stream.writeByte(currentHands);
-		Client.stream.writeByte(currentLegs);
-		Client.stream.writeByte(currentFeet);
-
-		Client.stream.writeByte(currentHairColor);
-		Client.stream.writeByte(currentTorsoColor);
-		Client.stream.writeByte(currentLegsColor);
-		Client.stream.writeByte(currentFeetColor);
-		Client.stream.writeByte(currentSkinColor);
+		Client.sendProto(GamePacket.newBuilder().setChangeAppearance(ChangeAppearance.newBuilder()
+			.setGender(currentGender)
+			.addLook(currentHead).addLook(jawToSend).addLook(currentTorso).addLook(currentArms).addLook(currentHands).addLook(currentLegs).addLook(currentFeet)
+			.addColors(currentHairColor).addColors(currentTorsoColor).addColors(currentLegsColor).addColors(currentFeetColor).addColors(currentSkinColor)
+		).build());
 
 		printCurrentAppearance();
 	}

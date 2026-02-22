@@ -5,6 +5,8 @@ import com.bestbudz.engine.core.Client;
 import javax.swing.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.InterfaceProto.*;
 
 public class EquipmentClickBatcher {
 
@@ -66,10 +68,7 @@ public class EquipmentClickBatcher {
 	private void executeUnequip(int equipmentSlot, int itemId) {
 		try {
 			if (Client.stream != null) {
-				Client.stream.writeEncryptedOpcode(145);
-				Client.stream.writeWordMixed(EquipmentConstants.EQUIPMENT_INTERFACE_ID);
-				Client.stream.writeWordMixed(equipmentSlot);
-				Client.stream.writeWordMixed(itemId);
+				Client.sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(EquipmentConstants.EQUIPMENT_INTERFACE_ID).setItemId(itemId).setSlot(equipmentSlot).setAction(1)).build());
 			}
 		} catch (Exception e) {
 			System.err.println("Error executing unequip: " + e.getMessage());

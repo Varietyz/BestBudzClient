@@ -419,7 +419,7 @@ public class LoadingErrorScreen extends Client {
 		g.drawString("Memory: " + memoryUsed + "MB / " + memoryMax + "MB", r.x + 30, startY + 15);
 		g.drawString("OS: " + System.getProperty("os.name"), r.x + 30, startY + 30);
 
-		g.drawString("Data: JSON (internal)", r.x + 30, startY + 45);
+		g.drawString("Data: FlatBuffer (internal)", r.x + 30, startY + 45);
 	}
 
 	private static void drawActionButtons(Graphics2D g, ErrorLayout layout) {
@@ -650,7 +650,7 @@ public class LoadingErrorScreen extends Client {
 			logs.append("Memory: ").append((runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024)
 				.append("MB / ").append(runtime.maxMemory() / 1024 / 1024).append("MB\n");
 
-			logs.append("Data Source: JSON (internal)\n");
+			logs.append("Data Source: FlatBuffer (internal)\n");
 
 			logs.append("\n=== Console Output ===\n");
 			for (String line : consoleOutput) {

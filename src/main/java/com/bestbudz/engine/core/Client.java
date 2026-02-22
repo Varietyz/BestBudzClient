@@ -6,13 +6,10 @@ import static com.bestbudz.engine.ClientLauncher.initializeGPUAfterGraphicsLoad;
 import com.bestbudz.engine.config.RenderSettings;
 import static com.bestbudz.engine.core.GameFrame.drawGameScreen;
 import static com.bestbudz.engine.core.GameState.runSceneRendering;
-import static com.bestbudz.engine.core.GameState.validateGPUStateIfNeeded;
 import static com.bestbudz.engine.core.login.logout.Reset.nullLoader;
 import com.bestbudz.engine.gpu.GPUContextManager;
 import com.bestbudz.engine.gpu.GPURenderingEngine;
-import com.bestbudz.engine.gpu.GPUToggleHandler;
 import static com.bestbudz.engine.gpu.GPURenderingEngine.initialized;
-import com.bestbudz.engine.gpu.RS317GPUInterface;
 import com.bestbudz.graphics.text.TextController;
 import com.bestbudz.network.CacheManager;
 import static com.bestbudz.ui.handling.input.Keyboard.console;
@@ -51,7 +48,6 @@ import com.bestbudz.entity.Npc;
 import com.bestbudz.entity.Stoner;
 import com.bestbudz.graphics.Background;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
-import com.bestbudz.graphics.FogHandler;
 import com.bestbudz.engine.core.gamerender.Texture;
 import com.bestbudz.graphics.buffer.ImageProducer;
 import com.bestbudz.graphics.sprite.Sprite;
@@ -66,7 +62,6 @@ import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
 import com.bestbudz.ui.RSInterface;
 import com.bestbudz.ui.interfaces.StatusOrbs;
-import com.bestbudz.util.ISAACRandomGen;
 import com.bestbudz.rendering.Projectile;
 import com.bestbudz.rendering.GraphicEffect;
 import com.bestbudz.world.SpotAnimationNode;
@@ -76,6 +71,8 @@ import com.bestbudz.world.ObjectDef;
 import com.bestbudz.engine.core.gamerender.ObjectManager;
 import com.bestbudz.world.Varp;
 import com.bestbudz.engine.core.gamerender.WorldController;
+import com.bestbudz.net.proto.PlayerProto.Keepalive;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -334,7 +331,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static Stoner[] stonerArray;
 	public static int stonerCount;
 	public static int[] stonerIndices;
-	public static Stream[] playerUpdateBuffers;
+
 	public static int cameraRotation;
 	public static int stonersCount;
 	public static int friendsListAction;
@@ -374,7 +371,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static int scrollableAreaHeight;
 	public static int scrollableAreaWidth;
 	public static int scrollPosition;
-	public static ISAACRandomGen encryption;
 	public static Sprite multiOverlay;
 	public static String amountOrNameInput;
 	public static int daysSinceLastLogin;
@@ -417,6 +413,10 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static Sprite mapDotTeam;
 	public static int minimapState;
 	public static boolean friendsListVisible;
+	public static boolean isMultiCombatArea;
+	public static int[] professionGoalInit = new int[25];
+	public static int[] professionGoalTarget = new int[25];
+	public static int[] professionGoalType = new int[25];
 	public static String[] stonersList;
 	public static Stream inStream;
 	public static int dragFromSlot;
@@ -540,7 +540,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static ImageProducer gameAreaImageProducer;
 	public static ImageProducer fullscreenImageProducer;
 	public static ImageProducer overlayImageProducer;
-	public static final FogHandler fogHandler = new FogHandler();
 	private static java.net.Socket aSocket832;
 	private static boolean connectionError;
 	private static int[] renderQueueX;
@@ -599,7 +598,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		stonerArray = new Stoner[maxStoners];
 		stonerIndices = new int[maxStoners];
 		updatedNpcIndices = new int[maxStoners];
-		playerUpdateBuffers = new Stream[maxStoners];
+
 		walkDirection = new int[104][104];
 		aByteArray912 = new byte[maxNpcs];
 		loadingError = false;
@@ -846,23 +845,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 			System.out.println("[Client] ✅ CPU resize complete");
 
 			if (wasGPUEnabled) {
-
-				if (GPURenderingEngine.isEnabled()) {
-					System.out.println("[Client] ✅ GPU resize complete - engine still enabled");
-
-					try {
-						RS317GPUInterface.setScreenSize(lockedW, lockedH);
-					} catch (Exception e) {
-						System.err.println("[Client] Error updating RS317 screen size: " + e.getMessage());
-					}
-				} else {
-					System.err.println("[Client] ⚠️ GPU became disabled during resize - this shouldn't happen");
-					gpuInitialized = false;
-				}
-			} else if (GPURenderingEngine.isEnabled()) {
-
-				gpuInitialized = true;
-				System.out.println("[Client] ✅ GPU discovered to be enabled after resize");
+				System.out.println("[Client] ✅ GPU resize complete");
 			}
 
 			System.out.println("[Client] === RESIZE COMPLETE: " + lockedW + "x" + lockedH + " ===");
@@ -941,8 +924,6 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 
 		if (!loggedIn) return;
 
-		validateGPUStateIfNeeded();
-
 		handleClickPacket(leftClick, rightClick);
 		handleMovementKeys();
 		handleFocusPacket();
@@ -955,13 +936,9 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		processMenuClick(leftClick, rightClick);
 		handleInputTick(leftClick, rightClick);
 
-		GPUToggleHandler.processPendingToggle();
-
-		if (EngineConfig.ENABLE_GPU){
-			if (!initialized) {
-				System.out.println("[Client] GPU not initialized, calling initializeGPUAfterGraphicsLoad()");
-				initializeGPUAfterGraphicsLoad();
-			}
+		if (!initialized) {
+			System.out.println("[Client] GPU not initialized, calling initializeGPUAfterGraphicsLoad()");
+			initializeGPUAfterGraphicsLoad();
 		}
 
 		runSceneRendering(g);
@@ -986,22 +963,15 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		if (aBoolean1017 && anInt1016 <= 0) {
 			anInt1016 = 20;
 			aBoolean1017 = false;
-			stream.writeEncryptedOpcode(86);
-			stream.writeWord(minCameraHeight);
-			stream.writeWordMixed(minimapRotation);
 		}
 	}
 
 	private void handleFocusPacket() {
 		if (awtFocus && !windowFocused) {
 			windowFocused = true;
-			stream.writeEncryptedOpcode(3);
-			stream.writeByte(1);
 		}
 		if (!awtFocus && windowFocused) {
 			windowFocused = false;
-			stream.writeEncryptedOpcode(3);
-			stream.writeByte(0);
 		}
 	}
 
@@ -1045,16 +1015,19 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		}
 	}
 
+	private static final GamePacket KEEPALIVE_PACKET = GamePacket.newBuilder()
+		.setKeepalive(Keepalive.getDefaultInstance()).build();
+
 	private void handleIdle() {
 		idleTime++;
 		if (idleTime > 4500) {
 			connectionTimeout = 250;
 			idleTime -= 500;
-			stream.writeEncryptedOpcode(202);
 		}
 		anInt1010++;
 		if (anInt1010 > 50) {
-			stream.writeEncryptedOpcode(0);
+			sendProto(KEEPALIVE_PACKET);
+			anInt1010 = 0;
 		}
 	}
 
@@ -1069,6 +1042,17 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 			dropClient(g, canvas);
 		} catch (Exception e) {
 			resetLogout();
+		}
+	}
+
+	/** Send a protobuf GamePacket to the server. Silently swallows IOException. */
+	public static void sendProto(GamePacket packet) {
+		try {
+			if (socketStream != null) {
+				socketStream.writeProto(packet);
+			}
+		} catch (IOException ignored) {
+			// Will be handled by the next tryFlushStream cycle
 		}
 	}
 
@@ -1183,7 +1167,7 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		stonerArray = null;
 		stonerIndices = null;
 		updatedNpcIndices = null;
-		playerUpdateBuffers = null;
+
 		removedNpcIndices = null;
 		npcArray = null;
 		npcIndices = null;

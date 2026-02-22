@@ -1,6 +1,10 @@
 package com.bestbudz.data.items;
 
 import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
+
+import bestbudz.config.ItemConfig;
+import bestbudz.config.ItemEntry;
+import com.bestbudz.cache.FlatBufferConfigLoader;
 import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
@@ -12,6 +16,7 @@ import com.bestbudz.util.LRUCache;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Objects;
 
@@ -26,6 +31,7 @@ public final class ItemDef {
 	public static int cacheHits = 0;
 	public static int cacheMisses = 0;
 	public static JsonObject[] jsonDefs;
+	public static ItemConfig fbConfig;
 	public int value;
 	public int[] modifiedModelColors;
 	public int id;
@@ -74,10 +80,32 @@ public final class ItemDef {
 		if (mruNodes2 != null) mruNodes2.clear();
 		if (mruNodes1 != null) mruNodes1.clear();
 		jsonDefs = null;
+		fbConfig = null;
 		cache = null;
 	}
 
 	public static void unpackConfig() {
+		// Try FlatBuffer first
+		ByteBuffer buf = FlatBufferConfigLoader.load("items.fb");
+		if (buf != null) {
+			fbConfig = ItemConfig.getRootAsItemConfig(buf);
+			int maxId = 0;
+			for (int i = 0; i < fbConfig.entriesLength(); i++) {
+				int id = fbConfig.entries(i).id();
+				if (id > maxId) maxId = id;
+			}
+			totalItems = maxId + 21;
+			jsonDefs = null;
+			System.out.println("Items Loaded (FlatBuffer): " + fbConfig.entriesLength());
+
+			int cacheSize = Math.max(64, Math.min(512, totalItems / 50));
+			cache = new ItemDef[cacheSize];
+			for (int k = 0; k < cacheSize; k++)
+				cache[k] = new ItemDef();
+			return;
+		}
+
+		// Fallback: JSON
 		JsonObject json = JsonCacheLoader.loadJsonObject("items.json");
 		if (json == null) {
 			System.err.println("Failed to load items.json");
@@ -106,6 +134,82 @@ public final class ItemDef {
 		cache = new ItemDef[cacheSize];
 		for (int k = 0; k < cacheSize; k++)
 			cache[k] = new ItemDef();
+	}
+
+	public void loadFromFlatBuffer(ItemEntry fb) {
+		if (fb.modelId() != 0) modelID = fb.modelId();
+		name = fb.name();
+		String desc = fb.description();
+		if (desc != null) description = desc.getBytes();
+		if (fb.modelZoom() != 2000) modelZoom = fb.modelZoom();
+		if (fb.modelRotationY() != 0) modelRotationY = fb.modelRotationY();
+		if (fb.modelRotationX() != 0) modelRotationX = fb.modelRotationX();
+		if (fb.modelOffset1() != 0) modelOffset1 = fb.modelOffset1();
+		if (fb.modelOffset2() != 0) modelOffset2 = fb.modelOffset2();
+		stackable = fb.stackable();
+		if (fb.value() != 1) value = fb.value();
+		membersObject = fb.members();
+		if (fb.maleWearModel1() != -1) anInt165 = fb.maleWearModel1();
+		if (fb.maleWearModel2() != -1) anInt188 = fb.maleWearModel2();
+		if (fb.maleWearModel3() != -1) anInt185 = fb.maleWearModel3();
+		if (fb.femaleWearModel1() != -1) anInt200 = fb.femaleWearModel1();
+		if (fb.femaleWearModel2() != -1) anInt164 = fb.femaleWearModel2();
+		if (fb.femaleWearModel3() != -1) anInt162 = fb.femaleWearModel3();
+		if (fb.maleHeadModel1() != -1) anInt175 = fb.maleHeadModel1();
+		if (fb.maleHeadModel2() != -1) anInt166 = fb.maleHeadModel2();
+		if (fb.femaleHeadModel1() != -1) anInt197 = fb.femaleHeadModel1();
+		if (fb.femaleHeadModel2() != -1) anInt173 = fb.femaleHeadModel2();
+		if (fb.modelRotation2() != 0) anInt204 = fb.modelRotation2();
+		if (fb.certId() != -1) certID = fb.certId();
+		if (fb.certTemplateId() != -1) certTemplateID = fb.certTemplateId();
+		if (fb.scaleX() != 128) anInt167 = fb.scaleX();
+		if (fb.scaleY() != 128) anInt192 = fb.scaleY();
+		if (fb.scaleZ() != 128) anInt191 = fb.scaleZ();
+		if (fb.lightModifier() != 0) anInt196 = fb.lightModifier();
+		if (fb.shadowModifier() != 0) anInt184 = fb.shadowModifier();
+		if (fb.team() != 0) team = fb.team();
+
+		if (fb.groundActionsLength() > 0) {
+			groundActions = new String[fb.groundActionsLength()];
+			for (int i = 0; i < fb.groundActionsLength(); i++) {
+				String s = fb.groundActions(i);
+				groundActions[i] = (s != null && !s.isEmpty()) ? s : null;
+			}
+		}
+		if (fb.itemActionsLength() > 0) {
+			itemActions = new String[fb.itemActionsLength()];
+			for (int i = 0; i < fb.itemActionsLength(); i++) {
+				String s = fb.itemActions(i);
+				itemActions[i] = (s != null && !s.isEmpty()) ? s : null;
+			}
+		}
+		if (fb.equipActionsLength() > 0) {
+			equipActions = new String[fb.equipActionsLength()];
+			for (int i = 0; i < fb.equipActionsLength(); i++) {
+				String s = fb.equipActions(i);
+				equipActions[i] = (s != null && !s.isEmpty()) ? s : null;
+			}
+		}
+		if (fb.originalColorsLength() > 0) {
+			originalModelColors = new int[fb.originalColorsLength()];
+			for (int i = 0; i < fb.originalColorsLength(); i++)
+				originalModelColors[i] = fb.originalColors(i);
+		}
+		if (fb.modifiedColorsLength() > 0) {
+			modifiedModelColors = new int[fb.modifiedColorsLength()];
+			for (int i = 0; i < fb.modifiedColorsLength(); i++)
+				modifiedModelColors[i] = fb.modifiedColors(i);
+		}
+		if (fb.stackIdsLength() > 0) {
+			stackIDs = new int[fb.stackIdsLength()];
+			for (int i = 0; i < fb.stackIdsLength(); i++)
+				stackIDs[i] = fb.stackIds(i);
+		}
+		if (fb.stackAmountsLength() > 0) {
+			stackAmounts = new int[fb.stackAmountsLength()];
+			for (int i = 0; i < fb.stackAmountsLength(); i++)
+				stackAmounts[i] = fb.stackAmounts(i);
+		}
 	}
 
 	public void readFromJson(JsonObject json) {
@@ -237,7 +341,6 @@ public final class ItemDef {
 		int l2 = DrawingArea.bottomX;
 		int i3 = DrawingArea.topY;
 		int j3 = DrawingArea.bottomY;
-		Rasterizer.enableDepthBuffer = false;
 		DrawingArea.initDrawingArea(32, 32, image.myPixels, new float[32 * 32]);
 		DrawingArea.drawPixels(32, 0, 0, 0, 32);
 		Rasterizer.initializeViewport();
@@ -259,7 +362,6 @@ public final class ItemDef {
 		Rasterizer.viewportCenterX = k1;
 		Rasterizer.viewportCenterY = l1;
 		Rasterizer.scanlineOffsets = ai;
-		Rasterizer.enableDepthBuffer = true;
 		if (item.stackable) {
 			image.originalWidth = 33;
 		} else {
@@ -318,7 +420,6 @@ public final class ItemDef {
 		int l2 = DrawingArea.bottomX;
 		int i3 = DrawingArea.topY;
 		int j3 = DrawingArea.bottomY;
-		Rasterizer.enableDepthBuffer = false;
 		DrawingArea.initDrawingArea(spriteSize, spriteSize, enabledSprite.myPixels, new float[32 * 32]);
 		DrawingArea.drawSolidRectangle(spriteSize, 0, 0, 0, spriteSize);
 		Rasterizer.initializeViewport();
@@ -329,13 +430,11 @@ public final class ItemDef {
 			k3 = (int) ((double) k3 * 1.04D);
 		int l3 = Rasterizer.sinTable[itemDef.modelRotationY] * k3 >> 16;
 		int i4 = Rasterizer.cosTable[itemDef.modelRotationY] * k3 >> 16;
-		Rasterizer.isRenderingItem = true;
 		model.renderAtFixedPosition(itemDef.modelRotationX, itemDef.anInt204,
 				itemDef.modelRotationY, itemDef.modelOffset1, l3
 						+ model.modelHeight / 2 + itemDef.modelOffset2,
 				i4
 						+ itemDef.modelOffset2);
-		Rasterizer.isRenderingItem = false;
 		for (int i5 = 31; i5 >= 0; i5--) {
 			for (int j4 = 31; j4 >= 0; j4--)
 				if (enabledSprite.myPixels[i5 + j4 * 32] == 0)
@@ -401,7 +500,6 @@ public final class ItemDef {
 		Rasterizer.viewportCenterX = k1;
 		Rasterizer.viewportCenterY = l1;
 		Rasterizer.scanlineOffsets = ai;
-		Rasterizer.enableDepthBuffer = true;
 		if (itemDef.stackable)
 			enabledSprite.originalWidth = 33;
 		else

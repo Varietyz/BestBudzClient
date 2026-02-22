@@ -1,6 +1,7 @@
 package com.bestbudz.network;
 
 import com.bestbudz.engine.core.ClientEngine;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -61,6 +62,33 @@ public final class Socket implements Runnable {
       if (k <= 0) throw new IOException("EOF");
       i += k;
     }
+  }
+
+  /** Write a length-prefixed protobuf GamePacket to the server. */
+  public void writeProto(GamePacket packet) throws IOException {
+    byte[] data = packet.toByteArray();
+    byte[] header = {
+      (byte)(data.length >> 24), (byte)(data.length >> 16),
+      (byte)(data.length >> 8),  (byte)data.length
+    };
+    queueBytes(4, header);
+    queueBytes(data.length, data);
+  }
+
+  /** Read a length-prefixed protobuf GamePacket from the server. */
+  public GamePacket readProto() throws IOException {
+    byte[] header = new byte[4];
+    flushInputStream(header, 4);
+    int len = ((header[0] & 0xFF) << 24) | ((header[1] & 0xFF) << 16) |
+              ((header[2] & 0xFF) << 8)  |  (header[3] & 0xFF);
+    byte[] data = new byte[len];
+    flushInputStream(data, len);
+    return GamePacket.parseFrom(data);
+  }
+
+  /** Check if at least 4 bytes (length prefix) are available for a protobuf read. */
+  public boolean hasProtoAvailable() throws IOException {
+    return available() >= 4;
   }
 
   public void queueBytes(int i, byte[] abyte0) throws IOException {

@@ -27,6 +27,10 @@ import com.bestbudz.world.ObjectDef;
 import static com.bestbudz.world.WalkTo.doWalkTo;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.InterfaceProto.*;
+import com.bestbudz.net.proto.PlayerProto.*;
+import com.bestbudz.net.proto.ChatProto.*;
 
 public class ActionHandler extends Client
 {
@@ -59,34 +63,24 @@ public class ActionHandler extends Client
 		}
 		if (l == 714)
 		{
-			stream.writeEncryptedOpcode(185);
-			stream.writeWord(714);
+			sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(714)).build());
 		}
 		if (l == 715)
 		{
-			stream.writeEncryptedOpcode(185);
-			stream.writeWord(715);
+			sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(715)).build());
 		}
 		if (l == 850)
 		{
-			stream.writeEncryptedOpcode(185);
-			stream.writeWord(1507);
+			sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(1507)).build());
 		}
 		if (l == 291)
 		{
-			stream.writeEncryptedOpcode(140);
-			stream.writeWordMixed(j);
-			stream.writeWord(k);
-			stream.writeWordMixed(i1);
+			sendProto(GamePacket.newBuilder().setBankAllButOne(BankAllButOneAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j)).build());
 		}
 
 		if (l == 300)
 		{
-			stream.writeEncryptedOpcode(141);
-			stream.writeWordMixed(j);
-			stream.writeWord(k);
-			stream.writeWordMixed(i1);
-			stream.writeDWord(modifiableXValue);
+			sendProto(GamePacket.newBuilder().setBankModifiableX(BankModifiableXAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAmount(modifiableXValue)).build());
 		}
 		if (l == 474)
 		{
@@ -95,7 +89,7 @@ public class ActionHandler extends Client
 		if (l == 475)
 		{
 			StatusOrbs.xpCounter = 0;
-			stream.writeEncryptedOpcode(148);
+			sendProto(GamePacket.newBuilder().setResetCounter(ResetCounterRequest.getDefaultInstance()).build());
 		}
 		if (l == 476)
 		{
@@ -107,14 +101,12 @@ public class ActionHandler extends Client
 		}
 		if (l == 1506)
 		{
-			stream.writeEncryptedOpcode(185);
-			stream.writeWord(5001);
+			sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(5001)).build());
 		}
 		if (l == 1500)
 		{
 			prayClicked = !prayClicked;
-			stream.writeEncryptedOpcode(185);
-			stream.writeWord(5000);
+			sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(5000)).build());
 		}
 		if (l == 104)
 		{
@@ -131,11 +123,7 @@ public class ActionHandler extends Client
 				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
-				stream.writeEncryptedOpcode(57);
-				stream.writeWordMixed(selectedItemIndex);
-				stream.writeWordMixed(i1);
-				stream.writeWordLittleEndian(selectedItemSlot);
-				stream.writeWordMixed(selectedItemInterfaceId);
+				sendProto(GamePacket.newBuilder().setNpcInteraction(NpcInteraction.newBuilder().setNpcIndex(i1).setAction(7)).build());
 			}
 		}
 		if (l == 234)
@@ -147,20 +135,11 @@ public class ActionHandler extends Client
 			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
-			stream.writeEncryptedOpcode(236);
-			stream.writeWordLittleEndian(k + baseY);
-			stream.writeWord(i1);
-			stream.writeWordLittleEndian(j + baseX);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1).setX(j + baseX).setY(k + baseY).setAction(10)).build());
 		}
 		if (l == 62 && componentIsClicked(i1, k, j))
 		{
-			stream.writeEncryptedOpcode(192);
-			stream.writeWord(selectedItemInterfaceId);
-			stream.writeWordLittleEndian(i1 >> 14 & 0x7fff);
-			stream.writeWordMixedLE(k + baseY);
-			stream.writeWordLittleEndian(selectedItemSlot);
-			stream.writeWordMixedLE(j + baseX);
-			stream.writeWord(selectedItemIndex);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1 >> 14 & 0x7fff).setX(j + baseX).setY(k + baseY).setAction(21)).build());
 		}
 		if (l == 511)
 		{
@@ -171,20 +150,11 @@ public class ActionHandler extends Client
 			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
-			stream.writeEncryptedOpcode(25);
-			stream.writeWordLittleEndian(selectedItemInterfaceId);
-			stream.writeWordMixed(selectedItemIndex);
-			stream.writeWord(i1);
-			stream.writeWordMixed(k + baseY);
-			stream.writeWordMixedLE(selectedItemSlot);
-			stream.writeWord(j + baseX);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1).setX(j + baseX).setY(k + baseY).setAction(21)).build());
 		}
 		if (l == 74)
 		{
-			stream.writeEncryptedOpcode(122);
-			stream.writeWordMixedLE(k);
-			stream.writeWordMixed(j);
-			stream.writeWordLittleEndian(i1);
+			sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAction(10)).build());
 			atBoxLoopCycle = 0;
 			atBoxInterface = k;
 			atBoxIndex = j;
@@ -230,16 +200,13 @@ public class ActionHandler extends Client
 					case 37543:
 						break;
 					case 36004:
-						stream.writeEncryptedOpcode(185);
-						stream.writeWord(28206);
+						sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(28206)).build());
 						break;
 					case 36007:
-						stream.writeEncryptedOpcode(185);
-						stream.writeWord(28207);
+						sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(28207)).build());
 						break;
 					case 36010:
-						stream.writeEncryptedOpcode(185);
-						stream.writeWord(28208);
+						sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(28208)).build());
 						break;
 
 					case 19144:
@@ -249,8 +216,7 @@ public class ActionHandler extends Client
 						break;
 
 					default:
-						stream.writeEncryptedOpcode(185);
-						stream.writeWord(k);
+						sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(k)).build());
 						if (k >= 61101 && k <= 61200)
 						{
 							int selected = k - 61101;
@@ -284,10 +250,7 @@ public class ActionHandler extends Client
 									num = Integer.MAX_VALUE;
 								}
 
-								stream.writeEncryptedOpcode(149);
-								stream.writeWord(id);
-								stream.writeDWord((int) num);
-								stream.writeByte(variousSettings[1075]);
+								sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(id)).build());
 								break;
 							}
 						}
@@ -310,11 +273,9 @@ public class ActionHandler extends Client
 				viewportIndex += i1;
 				if (viewportIndex >= 90)
 				{
-					stream.writeEncryptedOpcode(136);
 					viewportIndex = 0;
 				}
-				stream.writeEncryptedOpcode(128);
-				stream.writeWord(i1);
+				sendProto(GamePacket.newBuilder().setStonerInteraction(StonerInteraction.newBuilder().setStonerIndex(i1).setAction(1)).build());
 			}
 		}
 		if (l == 20)
@@ -328,8 +289,7 @@ public class ActionHandler extends Client
 				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
-				stream.writeEncryptedOpcode(155);
-				stream.writeWordLittleEndian(i1);
+				sendProto(GamePacket.newBuilder().setNpcInteraction(NpcInteraction.newBuilder().setNpcIndex(i1).setAction(1)).build());
 			}
 		}
 		if (l == 779)
@@ -343,8 +303,7 @@ public class ActionHandler extends Client
 				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
-				stream.writeEncryptedOpcode(153);
-				stream.writeWordLittleEndian(i1);
+				sendProto(GamePacket.newBuilder().setStonerInteraction(StonerInteraction.newBuilder().setStonerIndex(i1).setAction(2)).build());
 			}
 		}
 		if (l == 519)
@@ -357,28 +316,19 @@ public class ActionHandler extends Client
 			gameSubState += baseX;
 			if (gameSubState >= 113)
 			{
-				stream.writeEncryptedOpcode(183);
-				stream.writeDWordBigEndian(0xe63271);
 				gameSubState = 0;
 			}
 			componentIsClicked(i1, k, j);
-			stream.writeEncryptedOpcode(228);
-			stream.writeWordMixed(i1 >> 14 & 0x7fff);
-			stream.writeWordMixed(k + baseY);
-			stream.writeWord(j + baseX);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1 >> 14 & 0x7fff).setX(j + baseX).setY(k + baseY).setAction(5)).build());
 		}
 		if (l == 679 && !isPlayerBusy)
 		{
-			stream.writeEncryptedOpcode(40);
-			stream.writeWord(k);
+			sendProto(GamePacket.newBuilder().setChatInterfaceAction(ChatInterfaceAction.newBuilder().setInterfaceId(k).setOpcode(40)).build());
 			isPlayerBusy = true;
 		}
 		if (l == 431)
 		{
-			stream.writeEncryptedOpcode(129);
-			stream.writeWordMixed(j);
-			stream.writeWord(k);
-			stream.writeWordMixed(i1);
+			sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAction(4)).build());
 			atBoxLoopCycle = 0;
 			atBoxInterface = k;
 			atBoxIndex = j;
@@ -407,10 +357,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 53)
 		{
-			stream.writeEncryptedOpcode(135);
-			stream.writeWordLittleEndian(j);
-			stream.writeWordMixed(k);
-			stream.writeWordLittleEndian(i1);
+			sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAction(5)).build());
 			atBoxLoopCycle = 0;
 			atBoxInterface = k;
 			atBoxIndex = j;
@@ -422,10 +369,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 539)
 		{
-			stream.writeEncryptedOpcode(16);
-			stream.writeWordMixed(i1);
-			stream.writeWordMixedLE(j);
-			stream.writeWordMixedLE(k);
+			sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAction(9)).build());
 			atBoxLoopCycle = 0;
 			atBoxInterface = k;
 			atBoxIndex = j;
@@ -454,19 +398,16 @@ public class ActionHandler extends Client
 						myStoner.smallX[0], false, class30_sub2_sub4_sub1_sub2_7.smallX[0]);
 					if (l == 484)
 					{
-						stream.writeEncryptedOpcode(139);
-						stream.writeWordLittleEndian(stonerIndices[j3]);
+						sendProto(GamePacket.newBuilder().setStonerInteraction(StonerInteraction.newBuilder().setStonerIndex(stonerIndices[j3]).setAction(4)).build());
 					}
 					if (l == 6)
 					{
 						viewportIndex += i1;
 						if (viewportIndex >= 90)
 						{
-							stream.writeEncryptedOpcode(136);
 							viewportIndex = 0;
 						}
-						stream.writeEncryptedOpcode(128);
-						stream.writeWord(stonerIndices[j3]);
+						sendProto(GamePacket.newBuilder().setStonerInteraction(StonerInteraction.newBuilder().setStonerIndex(i1).setAction(1)).build());
 					}
 					flag9 = true;
 					break;
@@ -478,13 +419,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 870)
 		{
-			stream.writeEncryptedOpcode(53);
-			stream.writeWord(j);
-			stream.writeWordMixed(selectedItemSlot);
-			stream.writeWordMixedLE(i1);
-			stream.writeWord(selectedItemInterfaceId);
-			stream.writeWordLittleEndian(selectedItemIndex);
-			stream.writeWord(k);
+			sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAction(11)).build());
 			atBoxLoopCycle = 0;
 			atBoxInterface = k;
 			atBoxIndex = j;
@@ -496,10 +431,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 847)
 		{
-			stream.writeEncryptedOpcode(87);
-			stream.writeWordMixed(i1);
-			stream.writeWord(k);
-			stream.writeWordMixed(j);
+			sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAction(6)).build());
 			atBoxLoopCycle = 0;
 			atBoxInterface = k;
 			atBoxIndex = j;
@@ -533,10 +465,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 78)
 		{
-			stream.writeEncryptedOpcode(117);
-			stream.writeWordMixedLE(k);
-			stream.writeWordMixedLE(i1);
-			stream.writeWordLittleEndian(j);
+			sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAction(2)).build());
 			atBoxLoopCycle = 0;
 			atBoxInterface = k;
 			atBoxIndex = j;
@@ -560,12 +489,9 @@ public class ActionHandler extends Client
 				systemUpdateTimer += i1;
 				if (systemUpdateTimer >= 54)
 				{
-					stream.writeEncryptedOpcode(189);
-					stream.writeByte(234);
 					systemUpdateTimer = 0;
 				}
-				stream.writeEncryptedOpcode(73);
-				stream.writeWordLittleEndian(i1);
+				sendProto(GamePacket.newBuilder().setStonerInteraction(StonerInteraction.newBuilder().setStonerIndex(i1).setAction(3)).build());
 			}
 		}
 		if (l == 213)
@@ -577,17 +503,11 @@ public class ActionHandler extends Client
 			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
-			stream.writeEncryptedOpcode(79);
-			stream.writeWordLittleEndian(k + baseY);
-			stream.writeWord(i1);
-			stream.writeWordMixed(j + baseX);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1).setX(j + baseX).setY(k + baseY).setAction(11)).build());
 		}
 		if (l == 632)
 		{
-			stream.writeEncryptedOpcode(145);
-			stream.writeWordMixed(k);
-			stream.writeWordMixed(j);
-			stream.writeWordMixed(i1);
+			sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAction(1)).build());
 			atBoxLoopCycle = 0;
 			atBoxInterface = k;
 			atBoxIndex = j;
@@ -599,8 +519,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 1050)
 		{
-			stream.writeEncryptedOpcode(185);
-			stream.writeWord(152);
+			sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(152)).build());
 		}
 		if (l == 1004)
 		{
@@ -729,9 +648,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 647)
 		{
-			stream.writeEncryptedOpcode(213);
-			stream.writeWord(k);
-			stream.writeWord(j);
+			sendProto(GamePacket.newBuilder().setDockPanelAction(DockPanelAction.newBuilder().setPanelId(k).setAction(j)).build());
 			switch (k)
 			{
 				case 43704:
@@ -749,10 +666,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 493)
 		{
-			stream.writeEncryptedOpcode(75);
-			stream.writeWordMixedLE(k);
-			stream.writeWordLittleEndian(j);
-			stream.writeWordMixed(i1);
+			sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAction(7)).build());
 			atBoxLoopCycle = 0;
 			atBoxInterface = k;
 			atBoxIndex = j;
@@ -771,16 +685,11 @@ public class ActionHandler extends Client
 			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
-			stream.writeEncryptedOpcode(156);
-			stream.writeWordMixed(j + baseX);
-			stream.writeWordLittleEndian(k + baseY);
-			stream.writeWordMixedLE(i1);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1).setX(j + baseX).setY(k + baseY).setAction(13)).build());
 		}
 		if (l == 647)
 		{
-			stream.writeEncryptedOpcode(213);
-			stream.writeWord(k);
-			stream.writeWord(j);
+			sendProto(GamePacket.newBuilder().setDockPanelAction(DockPanelAction.newBuilder().setPanelId(k).setAction(j)).build());
 			switch (k)
 			{
 				case 43704:
@@ -805,16 +714,11 @@ public class ActionHandler extends Client
 			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
-			stream.writeEncryptedOpcode(181);
-			stream.writeWordLittleEndian(k + baseY);
-			stream.writeWord(i1);
-			stream.writeWordLittleEndian(j + baseX);
-			stream.writeWordMixed(spellTargetMask);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1).setX(j + baseX).setY(k + baseY).setAction(20)).build());
 		}
 		if (l == 646)
 		{
-			stream.writeEncryptedOpcode(185);
-			stream.writeWord(k);
+			sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(k)).build());
 			RSInterface class9_2 = RSInterface.interfaceCache[k];
 			if (class9_2.valueIndexArray != null && class9_2.valueIndexArray[0][0] == 5)
 			{
@@ -877,12 +781,9 @@ public class ActionHandler extends Client
 				lastMouseX += i1;
 				if (lastMouseX >= 85)
 				{
-					stream.writeEncryptedOpcode(230);
-					stream.writeByte(239);
 					lastMouseX = 0;
 				}
-				stream.writeEncryptedOpcode(17);
-				stream.writeWordMixedLE(i1);
+				sendProto(GamePacket.newBuilder().setNpcInteraction(NpcInteraction.newBuilder().setNpcIndex(i1).setAction(2)).build());
 			}
 		}
 		if (l == 965)
@@ -899,12 +800,9 @@ public class ActionHandler extends Client
 				interfaceDrawY++;
 				if (interfaceDrawY >= 96)
 				{
-					stream.writeEncryptedOpcode(152);
-					stream.writeByte(88);
 					interfaceDrawY = 0;
 				}
-				stream.writeEncryptedOpcode(21);
-				stream.writeWord(i1);
+				sendProto(GamePacket.newBuilder().setNpcInteraction(NpcInteraction.newBuilder().setNpcIndex(i1).setAction(3)).build());
 			}
 		}
 		if (l == 413)
@@ -918,9 +816,7 @@ public class ActionHandler extends Client
 				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
-				stream.writeEncryptedOpcode(131);
-				stream.writeWordMixedLE(i1);
-				stream.writeWordMixed(spellTargetMask);
+				sendProto(GamePacket.newBuilder().setNpcInteraction(NpcInteraction.newBuilder().setNpcIndex(i1).setAction(6)).build());
 			}
 		}
 		if (l == 200)
@@ -947,10 +843,7 @@ public class ActionHandler extends Client
 		if (l == 900)
 		{
 			componentIsClicked(i1, k, j);
-			stream.writeEncryptedOpcode(252);
-			stream.writeWordMixedLE(i1 >> 14 & 0x7fff);
-			stream.writeWordLittleEndian(k + baseY);
-			stream.writeWordMixed(j + baseX);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1 >> 14 & 0x7fff).setX(j + baseX).setY(k + baseY).setAction(2)).build());
 		}
 		if (l == 412)
 		{
@@ -963,8 +856,7 @@ public class ActionHandler extends Client
 				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
-				stream.writeEncryptedOpcode(72);
-				stream.writeWordMixed(i1);
+				sendProto(GamePacket.newBuilder().setNpcInteraction(NpcInteraction.newBuilder().setNpcIndex(i1).setAction(4)).build());
 			}
 		}
 		if (l == 365)
@@ -978,9 +870,7 @@ public class ActionHandler extends Client
 				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
-				stream.writeEncryptedOpcode(249);
-				stream.writeWordMixed(i1);
-				stream.writeWordLittleEndian(spellTargetMask);
+				sendProto(GamePacket.newBuilder().setStonerInteraction(StonerInteraction.newBuilder().setStonerIndex(i1).setAction(5)).build());
 			}
 		}
 		if (l == 729)
@@ -994,8 +884,7 @@ public class ActionHandler extends Client
 				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
-				stream.writeEncryptedOpcode(39);
-				stream.writeWordLittleEndian(i1);
+				sendProto(GamePacket.newBuilder().setStonerInteraction(StonerInteraction.newBuilder().setStonerIndex(i1).setAction(6)).build());
 			}
 		}
 		if (l == 577)
@@ -1009,17 +898,12 @@ public class ActionHandler extends Client
 				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
-				stream.writeEncryptedOpcode(139);
-				stream.writeWordLittleEndian(i1);
+				sendProto(GamePacket.newBuilder().setStonerInteraction(StonerInteraction.newBuilder().setStonerIndex(i1).setAction(4)).build());
 			}
 		}
 		if (l == 956 && componentIsClicked(i1, k, j))
 		{
-			stream.writeEncryptedOpcode(35);
-			stream.writeWordLittleEndian(j + baseX);
-			stream.writeWordMixed(spellTargetMask);
-			stream.writeWordMixed(k + baseY);
-			stream.writeWordLittleEndian(i1 >> 14 & 0x7fff);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1 >> 14 & 0x7fff).setX(j + baseX).setY(k + baseY).setAction(20)).build());
 		}
 		if (l == 567)
 		{
@@ -1030,10 +914,7 @@ public class ActionHandler extends Client
 			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
-			stream.writeEncryptedOpcode(23);
-			stream.writeWordLittleEndian(k + baseY);
-			stream.writeWordLittleEndian(i1);
-			stream.writeWordLittleEndian(j + baseX);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1).setX(j + baseX).setY(k + baseY).setAction(14)).build());
 		}
 		if (l == 867)
 		{
@@ -1041,14 +922,9 @@ public class ActionHandler extends Client
 				renderDistance++;
 			if (renderDistance >= 118)
 			{
-				stream.writeEncryptedOpcode(200);
-				stream.writeWord(25501);
 				renderDistance = 0;
 			}
-			stream.writeEncryptedOpcode(43);
-			stream.writeWordLittleEndian(k);
-			stream.writeWordMixed(i1);
-			stream.writeWordMixed(j);
+			sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAction(3)).build());
 			atBoxLoopCycle = 0;
 			atBoxInterface = k;
 			atBoxIndex = j;
@@ -1060,11 +936,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 543)
 		{
-			stream.writeEncryptedOpcode(237);
-			stream.writeWord(j);
-			stream.writeWordMixed(i1);
-			stream.writeWord(k);
-			stream.writeWordMixed(spellTargetMask);
+			sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAction(12)).build());
 			atBoxLoopCycle = 0;
 			atBoxInterface = k;
 			atBoxIndex = j;
@@ -1076,8 +948,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 606)
 		{
-			stream.writeEncryptedOpcode(185);
-			stream.writeWord(606);
+			sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(606)).build());
 		}
 		if (l == 491)
 		{
@@ -1090,11 +961,7 @@ public class ActionHandler extends Client
 				crossY = MouseState.y;
 				crossType = 2;
 				crossIndex = 0;
-				stream.writeEncryptedOpcode(14);
-				stream.writeWordMixed(selectedItemInterfaceId);
-				stream.writeWord(i1);
-				stream.writeWord(selectedItemIndex);
-				stream.writeWordLittleEndian(selectedItemSlot);
+				sendProto(GamePacket.newBuilder().setStonerInteraction(StonerInteraction.newBuilder().setStonerIndex(i1).setAction(7)).build());
 			}
 		}
 		if (l == 639)
@@ -1127,10 +994,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 454)
 		{
-			stream.writeEncryptedOpcode(41);
-			stream.writeWord(i1);
-			stream.writeWordMixed(j);
-			stream.writeWordMixed(k);
+			sendProto(GamePacket.newBuilder().setInterfaceAction(InterfaceAction.newBuilder().setInterfaceId(k).setItemId(i1).setSlot(j).setAction(8)).build());
 			atBoxLoopCycle = 0;
 			atBoxInterface = k;
 			atBoxIndex = j;
@@ -1155,37 +1019,25 @@ public class ActionHandler extends Client
 					interfaceDrawZ++;
 				if (interfaceDrawZ >= 53)
 				{
-					stream.writeEncryptedOpcode(85);
-					stream.writeByte(66);
 					interfaceDrawZ = 0;
 				}
-				stream.writeEncryptedOpcode(18);
-				stream.writeWordLittleEndian(i1);
+				sendProto(GamePacket.newBuilder().setNpcInteraction(NpcInteraction.newBuilder().setNpcIndex(i1).setAction(5)).build());
 			}
 		}
 		if (l == 113)
 		{
 			componentIsClicked(i1, k, j);
-			stream.writeEncryptedOpcode(70);
-			stream.writeWordLittleEndian(j + baseX);
-			stream.writeWord(k + baseY);
-			stream.writeWordMixedLE(i1 >> 14 & 0x7fff);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1 >> 14 & 0x7fff).setX(j + baseX).setY(k + baseY).setAction(3)).build());
 		}
 		if (l == 872)
 		{
 			componentIsClicked(i1, k, j);
-			stream.writeEncryptedOpcode(234);
-			stream.writeWordMixedLE(j + baseX);
-			stream.writeWordMixed(i1 >> 14 & 0x7fff);
-			stream.writeWordMixedLE(k + baseY);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1 >> 14 & 0x7fff).setX(j + baseX).setY(k + baseY).setAction(4)).build());
 		}
 		if (l == 502)
 		{
 			componentIsClicked(i1, k, j);
-			stream.writeEncryptedOpcode(132);
-			stream.writeWordMixedLE(j + baseX);
-			stream.writeWord(i1 >> 14 & 0x7fff);
-			stream.writeWordMixed(k + baseY);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1 >> 14 & 0x7fff).setX(j + baseX).setY(k + baseY).setAction(1)).build());
 		}
 		if (l == 1125)
 		{
@@ -1211,8 +1063,7 @@ public class ActionHandler extends Client
 		}
 		if (l == 169)
 		{
-			stream.writeEncryptedOpcode(185);
-			stream.writeWord(k);
+			sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(k)).build());
 			RSInterface class9_3 = RSInterface.interfaceCache[k];
 			if (class9_3.valueIndexArray != null && class9_3.valueIndexArray[0][0] == 5)
 			{
@@ -1251,10 +1102,7 @@ public class ActionHandler extends Client
 			crossY = MouseState.y;
 			crossType = 2;
 			crossIndex = 0;
-			stream.writeEncryptedOpcode(253);
-			stream.writeWordLittleEndian(j + baseX);
-			stream.writeWordMixedLE(k + baseY);
-			stream.writeWordMixed(i1);
+			sendProto(GamePacket.newBuilder().setObjectInteraction(ObjectInteraction.newBuilder().setObjectId(i1).setX(j + baseX).setY(k + baseY).setAction(12)).build());
 		}
 		if (l == 1448)
 		{

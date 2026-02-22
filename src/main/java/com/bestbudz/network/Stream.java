@@ -1,7 +1,6 @@
 package com.bestbudz.network;
 
 import com.bestbudz.cache.Signlink;
-import com.bestbudz.util.ISAACRandomGen;
 import java.math.BigInteger;
 
 public final class Stream
@@ -11,8 +10,6 @@ public final class Stream
 	public byte[] buffer;
 	public int position;
 	public int bitOffset;
-	public ISAACRandomGen encryption;
-
 	private Stream() {
 	}
 
@@ -49,11 +46,6 @@ public final class Stream
 			baseVal += 32767;
 		}
 		return baseVal + lastVal;
-	}
-
-	public void writeEncryptedOpcode(int i) {
-		 //System.out.println("Frame: " + i);
-		buffer[position++] = (byte) (i + encryption.getNextKey());
 	}
 
 	public void writeByte(int i) {

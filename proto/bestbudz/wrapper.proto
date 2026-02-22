@@ -1,0 +1,154 @@
+syntax = "proto3";
+package bestbudz;
+option java_package = "com.bestbudz.net.proto";
+option java_outer_classname = "WrapperProto";
+
+import "bestbudz/login.proto";
+import "bestbudz/entity_update.proto";
+import "bestbudz/chat.proto";
+import "bestbudz/interface_packets.proto";
+import "bestbudz/world_packets.proto";
+import "bestbudz/player_packets.proto";
+
+message GamePacket {
+  oneof payload {
+    // === Login (1-2) ===
+    LoginRequest login_request = 1;
+    LoginResponse login_response = 2;
+
+    // === Entity Updates (3-4) ===
+    StonerUpdate stoner_update = 3;
+    NpcUpdate npc_update = 4;
+
+    // === Chat (5-10) ===
+    ChatMessage chat_message = 5;
+    PrivateMessageOut private_message_out = 6;
+    ClanMessage clan_message = 7;
+    ChatSettings chat_settings = 8;
+    PublicChatOut public_chat_out = 9;
+    CommandMessage command_message = 10;
+    PrivateMessageSend private_message_send = 11;
+
+    // === Interface Operations (20-60) ===
+    InterfaceText interface_text = 20;
+    OpenInterface open_interface = 21;
+    CloseInterface close_interface = 22;
+    CloseAllInterfaces close_all_interfaces = 23;
+    RemoveInterfaces remove_interfaces = 24;
+    BoxInterface box_interface = 25;
+    InterfaceInventory interface_inventory = 26;
+    WalkableInterface walkable_interface = 27;
+    ChatBoxInterface chatbox_interface = 28;
+    BackDialog back_dialog = 29;
+    DialogWindow dialog_window = 30;
+    SidebarInterface sidebar_interface = 31;
+    TabInterface tab_interface = 32;
+    InterfaceConfig interface_config = 33;
+    InterfaceColor interface_color = 34;
+    InterfaceAnimation interface_animation = 35;
+    InterfaceModel interface_model = 36;
+    InterfaceNpcHead interface_npc_head = 37;
+    InterfaceItemModel interface_item_model = 38;
+    InterfaceModelRotation interface_model_rotation = 39;
+    InterfaceScroll interface_scroll = 40;
+    InterfaceScrollPosition interface_scroll_position = 41;
+    InterfaceOffset interface_offset = 42;
+    InterfaceHover interface_hover = 43;
+    InterfaceSettings interface_settings = 44;
+    MoveComponent move_component = 45;
+    ItemOnInterface item_on_interface = 46;
+
+    // === Inventory Updates (50-58) ===
+    InventoryUpdate inventory_update = 50;
+    InventoryItemUpdate inventory_item_update = 51;
+    ClearInventory clear_inventory = 52;
+    EquipmentUpdate equipment_update = 53;
+    DuelEquipment duel_equipment = 54;
+    UpdateItemsAlt update_items_alt = 55;
+
+    // === Config (60-62) ===
+    ConfigUpdate config_update = 60;
+    ConfigByteUpdate config_byte_update = 61;
+
+    // === Input Prompts (63-66) ===
+    InputAmount input_amount = 63;
+    InputName input_name = 64;
+    EnterString enter_string = 65;
+    EnterXInterface enter_x_interface = 66;
+
+    // === World Packets (70-85) ===
+    MapRegion map_region = 70;
+    MapRegionConstruction map_region_construction = 71;
+    MapState map_state = 72;
+    Coordinates coordinates = 73;
+    AltCoordinates alt_coordinates = 74;
+    GroundItemSpawn ground_item_spawn = 75;
+    GroundItemRemove ground_item_remove = 76;
+    ObjectSpawn object_spawn = 77;
+    ObjectAnimate object_animate = 78;
+    Projectile projectile = 79;
+    StillGraphic still_graphic = 80;
+    SoundEffect sound_effect = 81;
+    MusicChange music_change = 82;
+    MusicQueue music_queue = 83;
+    GroundItemUpdate ground_item_update = 84;
+    GroundArrayClear ground_array_clear = 85;
+
+    // === Player Packets (90-120) ===
+    StonerOption stoner_option = 90;
+    EnergyUpdate energy_update = 91;
+    WeightUpdate weight_update = 92;
+    ProfessionUpdate profession_update = 93;
+    ProfessionGoal profession_goal = 94;
+    FriendUpdate friend_update = 95;
+    IgnoreList ignore_list = 96;
+    ExpCounter exp_counter = 97;
+    LoginResponseData login_response_data = 98;
+    PlayerIndex player_index = 99;
+    KillFeed kill_feed = 100;
+    NpcDisplay npc_display = 101;
+    BannerMessage banner_message = 102;
+    GameUpdateTimer game_update_timer = 103;
+    ForceTab force_tab = 104;
+    SetTab set_tab = 105;
+    MultiCombatIcon multi_combat_icon = 106;
+    Logout logout = 107;
+    SystemBan system_ban = 108;
+    ResetAnimations reset_animations = 109;
+    ResetCamera reset_camera = 110;
+    CharacterDetail character_detail = 111;
+    SpecialBarUpdate special_bar_update = 112;
+    SpecialBar special_bar = 113;
+    CameraShake camera_shake = 114;
+    CameraAngle camera_angle = 115;
+    StonerHint stoner_hint = 116;
+    NpcHint npc_hint = 117;
+    MinimapState minimap_state = 118;
+    PrivateMessageServer private_message_server = 119;
+
+    // === Client -> Server Actions (130-160) ===
+    MovementRequest movement_request = 130;
+    NpcInteraction npc_interaction = 131;
+    ObjectInteraction object_interaction = 132;
+    StonerInteraction stoner_interaction = 133;
+    ItemAction item_action = 134;
+    ChangeAppearance change_appearance = 135;
+    ChangeRegion change_region = 136;
+    ResetCounterRequest reset_counter = 137;
+    FlashingSideIcon flashing_side_icon = 138;
+    ClickButton click_button = 139;
+    InterfaceAction interface_action = 140;
+    CloseInterfaceRequest close_interface_request = 141;
+    ChatInterfaceAction chat_interface_action = 142;
+    InputFieldAction input_field_action = 143;
+    StringInput string_input = 144;
+    ReceiveStringAction receive_string_action = 145;
+    DockPanelAction dock_panel_action = 146;
+    BankAllButOneAction bank_all_but_one = 147;
+    BankModifiableXAction bank_modifiable_x = 148;
+    JoinChatRequest join_chat_request = 149;
+    ChatModeUpdate chat_mode_update = 150;
+    InventorySwap inventory_swap = 151;
+    Keepalive keepalive = 152;
+  }
+}

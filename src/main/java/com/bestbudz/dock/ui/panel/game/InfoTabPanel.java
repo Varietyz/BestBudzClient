@@ -9,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
 import java.awt.*;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.InterfaceProto.*;
 
 public class InfoTabPanel implements UIPanel, DockTextUpdatable
 {
@@ -120,8 +122,7 @@ public class InfoTabPanel implements UIPanel, DockTextUpdatable
 					System.out.println("Clicked info line " + index + " (ID " + childId + ")");
 
 					try {
-						Client.stream.writeEncryptedOpcode(185);
-						Client.stream.writeWord(childId);
+						Client.sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(childId)).build());
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}

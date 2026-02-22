@@ -1,0 +1,24 @@
+namespace bestbudz.config;
+
+table AnimationEntry {
+  id:int (key);
+  frame_count:int;
+  frame_ids:[int];
+  frame_durations:[int];
+  loop_offset:int = -1;
+  interleave_order:[int];
+  reset_on_move:bool;
+  priority:int = 5;
+  player_offhand:int = -1;
+  player_mainhand:int = -1;
+  max_loops:int = 99;
+  animating_precedence:int = -1;
+  walking_precedence:int = -1;
+  replay_mode:int = 1;
+}
+
+table AnimationConfig {
+  entries:[AnimationEntry];
+}
+
+root_type AnimationConfig;

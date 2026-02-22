@@ -19,8 +19,8 @@ import com.bestbudz.data.Skills;
 import static com.bestbudz.engine.core.login.Login.updateConfigValues;
 import static com.bestbudz.network.packets.PacketSender.setInterfaceText;
 import static com.bestbudz.network.packets.PacketSender.updateInterfaceText;
-import static com.bestbudz.entity.ParseAndUpdateEntities.updateNPCs;
-import static com.bestbudz.entity.UpdateStoners.updateStoners;
+import static com.bestbudz.entity.ParseAndUpdateEntities.updateNPCsProto;
+import static com.bestbudz.entity.UpdateStoners.updateStonersProto;
 import static com.bestbudz.ui.InterfaceManagement.clearInterfaceAnimations;
 import static com.bestbudz.ui.InterfaceManagement.clearTopInterfaces;
 import static com.bestbudz.engine.core.login.logout.Logout.resetLogout;
@@ -35,14 +35,30 @@ import static com.bestbudz.ui.interfaces.Chatbox.publicChatMode;
 import static com.bestbudz.ui.interfaces.Chatbox.pushMessage;
 import static com.bestbudz.ui.interfaces.Chatbox.reportAbuseInput;
 import com.bestbudz.ui.interfaces.StatusOrbs;
-import com.bestbudz.util.SizeConstants;
 import com.bestbudz.graphics.text.TextClass;
 import com.bestbudz.world.SpotAnimationNode;
+import com.bestbudz.world.Wall;
+import com.bestbudz.world.WallDecoration;
+import com.bestbudz.world.GroundDecoration;
+import com.bestbudz.world.GameObject;
 import static com.bestbudz.world.GroundItem.spawnGroundItem;
 import static com.bestbudz.world.TerrainHeight.getTerrainHeight;
+import com.bestbudz.rendering.GraphicEffect;
+import com.bestbudz.rendering.InteractiveObject;
+import com.bestbudz.rendering.Projectile;
+import static com.bestbudz.rendering.AnimationManager.createSpotAnimation;
+
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.ChatProto.*;
+import com.bestbudz.net.proto.InterfaceProto.*;
+import com.bestbudz.net.proto.PlayerProto.*;
+import com.bestbudz.net.proto.WorldProto.*;
+import com.bestbudz.net.proto.CommonProto.*;
+
 import java.awt.Graphics2D;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.SwingUtilities;
 
 public class PacketParser extends Client
@@ -51,7 +67,6 @@ public class PacketParser extends Client
 	private static final ThreadLocal<StringBuilder> STRING_BUILDER_CACHE =
 		ThreadLocal.withInitial(() -> new StringBuilder(256));
 
-	private static final int[] PACKET_SIZES = SizeConstants.packetSizes;
 	private static final RSInterface[] INTERFACE_CACHE = RSInterface.interfaceCache;
 
 	private static final String DEAL_SUFFIX = ":dealreq:";
@@ -60,17 +75,15 @@ public class PacketParser extends Client
 	private static final String CHALLENGE_SUFFIX = ":chalreq:";
 	private static final String URL_SUFFIX = "#url#";
 
-	private static final int EXPECTED_PACKET_SIZE = 64;
-	private static final int MIN_PACKET_SIZE = 3;
-
 	private static long packetCount = 0;
 	private static long lastOptimizationCheck = System.currentTimeMillis();
 
 	public static void handlePackets(Graphics2D g) throws IOException
 	{
+		if (socketStream == null) return;
 
-		final int available = socketStream != null ? socketStream.available() : 0;
-		final int batchSize = calculateOptimalBatchSize(available);
+		final boolean available = socketStream.hasProtoAvailable();
+		final int batchSize = available ? 10 : 1;
 
 		for (int i = 0; i < batchSize; i++) {
 			if (!parsePacket(g)) break;
@@ -81,19 +94,10 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static int calculateOptimalBatchSize(int available) {
-		if (available == 0) return 1;
-		if (available > 2000) return 15;
-		if (available > 1000) return 10;
-		if (available > 500) return 8;
-		return 5;
-	}
-
 	private static void checkPerformanceOptimization() {
 		final long currentTime = System.currentTimeMillis();
 		if (currentTime - lastOptimizationCheck > 30000) {
 			lastOptimizationCheck = currentTime;
-
 		}
 	}
 
@@ -111,11 +115,11 @@ public class PacketParser extends Client
 				}
 
 			} catch (Exception e) {
-
 				System.err.println("Failed to notify dock panels: " + e.getMessage());
 			}
 		});
 	}
+
 	public static boolean parsePacket(Graphics2D g)
 	{
 		if (socketStream == null)
@@ -123,416 +127,601 @@ public class PacketParser extends Client
 
 		try
 		{
-			final int availableBytes = socketStream.available();
+			if (!socketStream.hasProtoAvailable()) return false;
 
-			if (availableBytes == 0) return false;
-
-			if (availableBytes < MIN_PACKET_SIZE && pktType == -1) return false;
-
-			if (pktType == -1)
-			{
-				socketStream.flushInputStream(inStream.buffer, 1);
-				pktType = inStream.buffer[0] & 0xff;
-				if (encryption != null)
-					pktType = pktType - encryption.getNextKey() & 0xff;
-				pktSize = PACKET_SIZES[pktType];
-			}
-
-			if (pktSize >= 0) {
-
-				if (availableBytes < pktSize) return false;
-			} else if (pktSize == -1) {
-				if (availableBytes > 0) {
-					socketStream.flushInputStream(inStream.buffer, 1);
-					pktSize = inStream.buffer[0] & 0xff;
-				} else {
-					return false;
-				}
-			} else if (pktSize == -2) {
-				if (availableBytes > 1) {
-					socketStream.flushInputStream(inStream.buffer, 2);
-					inStream.position = 0;
-					pktSize = inStream.readUnsignedWord();
-				} else {
-					return false;
-				}
-			}
-
-			if (availableBytes < pktSize) return false;
-
-			if (pktSize > EXPECTED_PACKET_SIZE * 2) {
-
-			}
-
-			inStream.position = 0;
-			socketStream.flushInputStream(inStream.buffer, pktSize);
+			final GamePacket packet = socketStream.readProto();
 			idleTimeout = 0;
-			regionY = regionX;
-			regionX = regionUpdateCount;
-			regionUpdateCount = pktType;
 
-			switch (pktType)
+			switch (packet.getPayloadCase())
 			{
 
-				case 81:
-					updateStoners(pktSize, inStream);
+				case STONER_UPDATE: {
+					updateStonersProto(packet.getStonerUpdate());
 					friendsListVisible = false;
-					pktType = -1;
 					return true;
+				}
 
-				case 65:
-					updateNPCs(inStream, pktSize);
-					pktType = -1;
+				case NPC_UPDATE: {
+					updateNPCsProto(packet.getNpcUpdate());
 					return true;
+				}
 
-				case 126:
-					handleInterfaceTextOptimized();
-					pktType = -1;
+				case INTERFACE_TEXT: {
+					InterfaceText msg = packet.getInterfaceText();
+					handleInterfaceText(msg.getText(), msg.getFrame());
 					return true;
+				}
 
-				case 134:
-					handleSkillUpdateOptimized();
-					pktType = -1;
+				case PROFESSION_UPDATE: {
+					ProfessionUpdate msg = packet.getProfessionUpdate();
+					handleProfessionUpdate(msg.getId(), msg.getAdvance(), msg.getExp(), msg.getGrade());
 					return true;
+				}
 
-				case 196:
-					handlePrivateMessageOptimized();
-					pktType = -1;
+				case PRIVATE_MESSAGE_OUT: {
+					PrivateMessageOut msg = packet.getPrivateMessageOut();
+					handlePrivateMessage(msg.getSenderNameHash(), msg.getMessageId(),
+						msg.getRights(), msg.getMessage().toByteArray());
 					return true;
+				}
 
-				case 253:
-					handleChatMessageOptimized();
-					pktType = -1;
+				case CHAT_MESSAGE: {
+					ChatMessage msg = packet.getChatMessage();
+					handleChatMessage(msg.getText());
 					return true;
+				}
 
-				case 176:
-					handleLoginResponseOptimized();
-					pktType = -1;
+				case LOGIN_RESPONSE_DATA: {
+					LoginResponseData msg = packet.getLoginResponseData();
+					handleLoginResponse(msg.getDaysSinceRecovery(), msg.getUnreadMessages(),
+						msg.getMembers(), msg.getLastIp(), msg.getDaysSinceLogin());
 					return true;
+				}
 
-				case 64:
-					handleGroundArrayUpdateOptimized();
-					pktType = -1;
+				case GROUND_ARRAY_CLEAR: {
+					GroundArrayClear msg = packet.getGroundArrayClear();
+					handleGroundArrayClear(msg.getStartX(), msg.getStartY());
 					return true;
+				}
 
-				case 185:
-					handleInterfaceModelOptimized();
-					pktType = -1;
+				case INTERFACE_MODEL: {
+					InterfaceModel msg = packet.getInterfaceModel();
+					handleInterfaceModel(msg.getInterfaceId());
 					return true;
+				}
 
-				case 217:
-					handleClanMessageOptimized();
-					pktType = -1;
+				case CLAN_MESSAGE: {
+					ClanMessage msg = packet.getClanMessage();
+					handleClanMessage(msg.getUsername(), msg.getMessage(), msg.getTitle(), msg.getRights());
 					return true;
+				}
 
-				case 107:
+				case RESET_CAMERA: {
 					cutsceneActive = false;
 					Arrays.fill(cameraShakeEnabled, 0, 5, false);
 					StatusOrbs.xpCounter = 0;
-					pktType = -1;
 					return true;
+				}
 
-				case 72:
-					handleClearInventoryOptimized();
-					pktType = -1;
+				case CLEAR_INVENTORY: {
+					ClearInventory msg = packet.getClearInventory();
+					handleClearInventory(msg.getInterfaceId());
 					return true;
+				}
 
-				case 214:
-					handleIgnoreListOptimized();
-					pktType = -1;
+				case IGNORE_LIST: {
+					IgnoreList msg = packet.getIgnoreList();
+					handleIgnoreList(msg.getNameHashesList());
 					return true;
+				}
 
-				case 166:
-					handleCameraShakeOptimized();
-					pktType = -1;
+				case CAMERA_SHAKE: {
+					CameraShake msg = packet.getCameraShake();
+					handleCameraShake(msg.getX(), msg.getY(), msg.getZ(), msg.getRotationX(), msg.getRotationY());
 					return true;
+				}
 
-				case 71:
-					handleTabInterfaceOptimized();
-					pktType = -1;
+				case TAB_INTERFACE: {
+					TabInterface msg = packet.getTabInterface();
+					handleTabInterface(msg.getInterfaceId(), msg.getTabId());
 					return true;
+				}
 
-				case 74:
-					handleMusicChangeOptimized();
-					pktType = -1;
+				case MUSIC_CHANGE: {
+					MusicChange msg = packet.getMusicChange();
+					handleMusicChange(msg.getId());
 					return true;
+				}
 
-				case 121:
-					handleMusicQueueOptimized();
-					pktType = -1;
+				case MUSIC_QUEUE: {
+					MusicQueue msg = packet.getMusicQueue();
+					handleMusicQueue(msg.getId(), msg.getDelay());
 					return true;
+				}
 
-				case 109:
+				case LOGOUT: {
 					resetLogout();
-					pktType = -1;
 					return false;
+				}
 
-				case 70:
-					handleInterfaceScrollOptimized();
-					pktType = -1;
+				case INTERFACE_SCROLL: {
+					InterfaceScroll msg = packet.getInterfaceScroll();
+					INTERFACE_CACHE[msg.getInterfaceId()].positionScroll = msg.getScrollPosition();
 					return true;
+				}
 
-				case 73:
-				case 241:
-					handleRegionChangeOptimized();
-					pktType = -1;
+				case MAP_REGION: {
+					MapRegion msg = packet.getMapRegion();
+					handleMapRegion(msg.getRegionX(), msg.getRegionY());
 					return true;
+				}
 
-				case 208:
-					handleWalkableInterfaceOptimized();
-					pktType = -1;
+				case MAP_REGION_CONSTRUCTION: {
+					MapRegionConstruction msg = packet.getMapRegionConstruction();
+					handleMapRegionConstruction(msg.getRegionX(), msg.getRegionY(), msg.getDynamicDataList());
 					return true;
+				}
 
-				case 99:
-					lastActionTime = inStream.readUnsignedByte();
-					pktType = -1;
+				case WALKABLE_INTERFACE: {
+					WalkableInterface msg = packet.getWalkableInterface();
+					handleWalkableInterface(msg.getId());
 					return true;
+				}
 
-				case 75:
-					handleInterfaceNPCHeadOptimized();
-					pktType = -1;
+				case CHARACTER_DETAIL: {
+					CharacterDetail msg = packet.getCharacterDetail();
+					lastActionTime = msg.getSlot();
 					return true;
+				}
 
-				case 114:
-					systemMessageTimer = inStream.readWordLittleEndian() * 30;
-					pktType = -1;
+				case INTERFACE_NPC_HEAD: {
+					InterfaceNpcHead msg = packet.getInterfaceNpcHead();
+					final RSInterface rsInterface = INTERFACE_CACHE[msg.getInterfaceId()];
+					rsInterface.modelType = 2;
+					rsInterface.mediaID = msg.getNpcId();
 					return true;
+				}
 
-				case 60:
-					handleGroundItemUpdateOptimized();
-					pktType = -1;
+				case GAME_UPDATE_TIMER: {
+					GameUpdateTimer msg = packet.getGameUpdateTimer();
+					systemMessageTimer = msg.getTime() * 30;
 					return true;
+				}
 
-				case 35:
-					handleSkillLevelOptimized();
-					pktType = -1;
+				case GROUND_ITEM_UPDATE: {
+					GroundItemUpdate msg = packet.getGroundItemUpdate();
+					handleGroundItemUpdateProto(msg);
 					return true;
+				}
 
-				case 174:
-					handleSoundEffectOptimized();
-					pktType = -1;
+				case SOUND_EFFECT: {
+					SoundEffect msg = packet.getSoundEffect();
+					handleSoundEffect(msg.getId(), msg.getType(), msg.getDelay());
 					return false;
+				}
 
-				case 104:
-					handlePlayerOptionOptimized();
-					pktType = -1;
+				case STONER_OPTION: {
+					StonerOption msg = packet.getStonerOption();
+					handleStonerOption(msg.getId(), msg.getOption(), msg.getTopPriority());
 					return true;
+				}
 
-				case 78:
+				case REMOVE_INTERFACES: {
 					destX = 0;
-					pktType = -1;
 					return true;
+				}
 
-				case 1:
-					handleResetAnimationsAllOptimized();
-					pktType = -1;
+				case RESET_ANIMATIONS: {
+					handleResetAnimationsAll();
 					return true;
+				}
 
-				case 50:
-					handleFriendsListOptimized();
-					pktType = -1;
+				case FRIEND_UPDATE: {
+					FriendUpdate msg = packet.getFriendUpdate();
+					handleFriendUpdate(msg.getNameHash(), msg.getWorld());
 					return true;
+				}
 
-				case 110:
-					handleEnergyUpdateOptimized();
-					pktType = -1;
+				case ENERGY_UPDATE: {
+					EnergyUpdate msg = packet.getEnergyUpdate();
+					energy = msg.getEnergy();
 					return true;
+				}
 
-				case 254:
-					handleMinimapStateOptimized();
-					pktType = -1;
+				case MINIMAP_STATE: {
+					MinimapState msg = packet.getMinimapState();
+					handleMinimapState(msg.getType(), msg.getTargetIndex(), msg.getX(), msg.getY(), msg.getOffset());
 					return true;
+				}
 
-				case 248:
-					handleInterfaceInventoryOptimized();
-					pktType = -1;
+				case INTERFACE_INVENTORY: {
+					InterfaceInventory msg = packet.getInterfaceInventory();
+					handleInterfaceInventory(msg.getInterfaceId(), msg.getOverlayId());
 					return true;
+				}
 
-				case 79:
-					handleInterfaceScrollPositionOptimized();
-					pktType = -1;
+				case INTERFACE_SCROLL_POSITION: {
+					InterfaceScrollPosition msg = packet.getInterfaceScrollPosition();
+					handleInterfaceScrollPosition(msg.getInterfaceId(), msg.getScrollPosition());
 					return true;
+				}
 
-				case 68:
-					handleConfigUpdateOptimized();
-					pktType = -1;
+				case CONFIG_UPDATE: {
+					ConfigUpdate msg = packet.getConfigUpdate();
+					handleConfigLarge(msg.getId(), msg.getValue());
 					return true;
+				}
 
-				case 173:
-					handleKillFeedOptimized();
-					pktType = -1;
+				case CONFIG_BYTE_UPDATE: {
+					ConfigByteUpdate msg = packet.getConfigByteUpdate();
+					handleConfigByte(msg.getId(), msg.getValue());
 					return true;
+				}
 
-				case 85:
-					localRegionY = inStream.readByteNegated();
-					localRegionX = inStream.readByteNegated();
-					pktType = -1;
+				case KILL_FEED: {
+					KillFeed msg = packet.getKillFeed();
+					try {
+						pushKill(msg.getKiller(), msg.getVictim(), msg.getWeaponId(), msg.getIsSpecial());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					return true;
+				}
 
-				case 24:
-					handleForceTabOptimized();
-					pktType = -1;
+				case COORDINATES: {
+					Coordinates msg = packet.getCoordinates();
+					localRegionY = msg.getY();
+					localRegionX = msg.getX();
 					return true;
+				}
 
-				case 246:
-					handleInterfaceItemModelOptimized();
-					pktType = -1;
+				case FORCE_TAB: {
+					ForceTab msg = packet.getForceTab();
+					handleForceTab(msg.getTabId());
 					return true;
+				}
 
-				case 171:
-					handleInterfaceHoverOptimized();
-					pktType = -1;
+				case INTERFACE_ITEM_MODEL: {
+					InterfaceItemModel msg = packet.getInterfaceItemModel();
+					handleInterfaceItemModel(msg.getInterfaceId(), msg.getZoom(), msg.getItemId());
 					return true;
+				}
 
-				case 142:
-					handleCloseInterfaceOptimized();
-					pktType = -1;
+				case INTERFACE_HOVER: {
+					InterfaceHover msg = packet.getInterfaceHover();
+					handleInterfaceHover(msg.getEnabled(), msg.getInterfaceId());
 					return true;
+				}
 
-				case 124:
-					handleNPCDisplayOptimized();
-					pktType = -1;
+				case CLOSE_ALL_INTERFACES: {
+					handleCloseAllInterfaces();
 					return true;
+				}
 
-				case 127:
-					handleXPDropOptimized();
-					pktType = -1;
+				case CLOSE_INTERFACE: {
+					CloseInterface msg = packet.getCloseInterface();
+					handleCloseInterface(msg.getId());
 					return true;
+				}
 
-				case 125:
-					pktType = -1;
-					return false;
-
-				case 202:
-					pktType = -1;
-					return false;
-
-				case 201:
-					handlePlayerIndexOptimized();
-					pktType = -1;
+				case NPC_DISPLAY: {
+					NpcDisplay msg = packet.getNpcDisplay();
+					handleNpcDisplay(msg.getNpcId(), msg.getSize());
 					return true;
+				}
 
-				case 206:
-					handleChatSettingsOptimized();
-					pktType = -1;
+				case EXP_COUNTER: {
+					ExpCounter msg = packet.getExpCounter();
+					try {
+						StatusOrbs.xpCounter = msg.getCounterExp();
+						addXP(msg.getProfession(), msg.getExp());
+					} catch (Exception e) {
+					}
 					return true;
+				}
 
-				case 240:
-					handleWeightUpdateOptimized();
-					pktType = -1;
+				case PLAYER_INDEX: {
+					PlayerIndex msg = packet.getPlayerIndex();
+					try {
+						stonerIndex = msg.getIndex();
+					} catch (Exception e) {
+					}
 					return true;
+				}
 
-				case 8:
-					handleInterfaceAnimationOptimized();
-					pktType = -1;
+				case CHAT_SETTINGS: {
+					ChatSettings msg = packet.getChatSettings();
+					publicChatMode = msg.getPublicMode();
+					privateChatMode = msg.getPrivateMode();
+					tradeMode = msg.getTradeMode();
+					inputTaken = true;
 					return true;
+				}
 
-				case 122:
-					handleInterfaceColorOptimized();
-					pktType = -1;
+				case WEIGHT_UPDATE: {
+					WeightUpdate msg = packet.getWeightUpdate();
+					weight = msg.getWeight();
 					return true;
+				}
 
-				case 53:
-					handleInventoryUpdateOptimized();
-					pktType = -1;
+				case INTERFACE_ANIMATION: {
+					InterfaceAnimation msg = packet.getInterfaceAnimation();
+					final RSInterface rsInterface = INTERFACE_CACHE[msg.getInterfaceId()];
+					rsInterface.modelType = 1;
+					rsInterface.mediaID = msg.getAnimationId();
 					return true;
+				}
 
-				case 230:
-					handleInterfaceModelRotationOptimized();
-					pktType = -1;
+				case INTERFACE_COLOR: {
+					InterfaceColor msg = packet.getInterfaceColor();
+					final RSInterface rsInterface = INTERFACE_CACHE[msg.getId()];
+					if (rsInterface != null) {
+						rsInterface.textColor = msg.getR() << 16 | msg.getG() << 8 | msg.getB();
+					}
 					return true;
+				}
 
-				case 221:
-					friendsListAction = inStream.readUnsignedByte();
-					pktType = -1;
+				case INVENTORY_UPDATE: {
+					InventoryUpdate msg = packet.getInventoryUpdate();
+					handleInventoryUpdate(msg);
 					return true;
+				}
 
-				case 177:
-					handleCameraAngleOptimized();
-					pktType = -1;
+				case INTERFACE_MODEL_ROTATION: {
+					InterfaceModelRotation msg = packet.getInterfaceModelRotation();
+					final RSInterface rsInterface = INTERFACE_CACHE[msg.getInterfaceId()];
+					rsInterface.modelRotation1 = msg.getRotation1();
+					rsInterface.modelRotation2 = msg.getRotation2();
+					rsInterface.modelZoom = msg.getZoom();
 					return true;
+				}
 
-				case 249:
-					handleInterfaceSettingsOptimized();
-					pktType = -1;
+				case PRIVATE_MESSAGE_SERVER: {
+					PrivateMessageServer msg = packet.getPrivateMessageServer();
+					friendsListAction = msg.getState();
 					return true;
+				}
 
-				case 27:
-					handleInputAmountOptimized();
-					pktType = -1;
+				case CAMERA_ANGLE: {
+					CameraAngle msg = packet.getCameraAngle();
+					handleCameraAngle(msg.getX(), msg.getY(), msg.getHeight(), msg.getSpeed(), msg.getAngle());
 					return true;
+				}
 
-				case 187:
-					handleInputNameOptimized();
-					pktType = -1;
+				case INTERFACE_SETTINGS: {
+					InterfaceSettings msg = packet.getInterfaceSettings();
+					inputType = msg.getInputType();
+					unknownInt10 = msg.getUnknown();
 					return true;
+				}
 
-				case 97:
-					handleOpenInterfaceOptimized();
-					pktType = -1;
+				case INPUT_AMOUNT: {
+					messagePromptRaised = false;
+					inputDialogState = 1;
+					amountOrNameInput = "";
+					inputTaken = true;
 					return true;
+				}
 
-				case 218:
-					handleDialogWindowOptimized();
-					pktType = -1;
+				case INPUT_NAME: {
+					messagePromptRaised = false;
+					inputDialogState = 2;
+					amountOrNameInput = "";
+					inputTaken = true;
 					return true;
+				}
 
-				case 87:
-					handleConfigLargeOptimized();
-					pktType = -1;
+				case OPEN_INTERFACE: {
+					OpenInterface msg = packet.getOpenInterface();
+					handleOpenInterface(msg.getId());
 					return true;
+				}
 
-				case 36:
-					handleConfigByteOptimized();
-					pktType = -1;
+				case DIALOG_WINDOW: {
+					DialogWindow msg = packet.getDialogWindow();
+					dialogID = msg.getId();
+					inputTaken = true;
 					return true;
+				}
 
-				case 61:
-					tabHoverTime = inStream.readUnsignedByte();
-					pktType = -1;
+				case INTERFACE_OFFSET: {
+					InterfaceOffset msg = packet.getInterfaceOffset();
+					INTERFACE_CACHE[msg.getInterfaceId()].verticalOffset = msg.getOffset();
 					return true;
+				}
 
-				case 200:
-					handleInterfaceOffsetOptimized();
-					pktType = -1;
+				case INVENTORY_ITEM_UPDATE: {
+					InventoryItemUpdate msg = packet.getInventoryItemUpdate();
+					handleInventoryItemUpdate(msg);
 					return true;
+				}
 
-				case 219:
-					handleCloseAllInterfacesOptimized();
-					pktType = -1;
-					return true;
-
-				case 34:
-					handleInventoryItemUpdateOptimized();
-					pktType = -1;
-					return true;
-
-				case 4: case 44: case 84: case 101: case 105: case 117:
-				case 147: case 151: case 156: case 160: case 215:
-				handleGroundItemUpdate(inStream, pktType);
-				pktType = -1;
-				return true;
-
-				case 106:
-					tabID = inStream.readByteNegated();
+				case SET_TAB: {
+					SetTab msg = packet.getSetTab();
+					tabID = msg.getTabId();
 					tabAreaAltered = true;
-					pktType = -1;
 					return true;
+				}
 
-				case 164:
-					handleBackDialogOptimized();
-					pktType = -1;
+				case BOX_INTERFACE: {
+					BoxInterface msg = packet.getBoxInterface();
+					handleBoxInterface(msg.getId(), msg.getInvId());
 					return true;
+				}
 
-				default:
-					handleUnknownPacket();
-					pktType = -1;
+				case SIDEBAR_INTERFACE: {
+					SidebarInterface msg = packet.getSidebarInterface();
+					handleSidebarInterface(msg.getTabId(), msg.getInterfaceId());
 					return true;
+				}
+
+				case BACK_DIALOG: {
+					BackDialog msg = packet.getBackDialog();
+					handleBackDialog(msg.getId());
+					return true;
+				}
+
+				case EQUIPMENT_UPDATE: {
+					EquipmentUpdate msg = packet.getEquipmentUpdate();
+					handleEquipmentUpdate(msg.getSlot(), msg.getId(), msg.getAmount());
+					return true;
+				}
+
+				case DUEL_EQUIPMENT: {
+					DuelEquipment msg = packet.getDuelEquipment();
+					handleDuelEquipment(msg.getId(), msg.getAmount(), msg.getSlot());
+					return true;
+				}
+
+				case UPDATE_ITEMS_ALT: {
+					UpdateItemsAlt msg = packet.getUpdateItemsAlt();
+					handleUpdateItemsAlt(msg.getInterfaceId(), msg.getId(), msg.getAmount(), msg.getSlot());
+					return true;
+				}
+
+				case BANNER_MESSAGE: {
+					BannerMessage msg = packet.getBannerMessage();
+					handleBannerMessage(msg.getMessage(), msg.getColor());
+					return true;
+				}
+
+				case SPECIAL_BAR_UPDATE: {
+					SpecialBarUpdate msg = packet.getSpecialBarUpdate();
+					handleSpecialBarUpdate(msg.getAmount(), msg.getId());
+					return true;
+				}
+
+				case SPECIAL_BAR: {
+					SpecialBar msg = packet.getSpecialBar();
+					handleSpecialBar(msg.getMain(), msg.getSub());
+					return true;
+				}
+
+				case STONER_HINT: {
+					StonerHint msg = packet.getStonerHint();
+					handleStonerHint(msg.getType(), msg.getId());
+					return true;
+				}
+
+				case NPC_HINT: {
+					NpcHint msg = packet.getNpcHint();
+					handleNpcHint(msg.getType(), msg.getId());
+					return true;
+				}
+
+				case MOVE_COMPONENT: {
+					MoveComponent msg = packet.getMoveComponent();
+					handleMoveComponent(msg.getX(), msg.getY(), msg.getComponentId());
+					return true;
+				}
+
+				case ITEM_ON_INTERFACE: {
+					ItemOnInterface msg = packet.getItemOnInterface();
+					handleItemOnInterface(msg.getId(), msg.getZoom(), msg.getModel());
+					return true;
+				}
+
+				case ENTER_STRING: {
+					messagePromptRaised = false;
+					inputDialogState = 3;
+					amountOrNameInput = "";
+					inputTaken = true;
+					return true;
+				}
+
+				case ENTER_X_INTERFACE: {
+					EnterXInterface msg = packet.getEnterXInterface();
+					handleEnterXInterface(msg.getInterfaceId(), msg.getItemId());
+					return true;
+				}
+
+				case MAP_STATE: {
+					MapState msg = packet.getMapState();
+					handleMapState(msg.getState());
+					return true;
+				}
+
+				case PROFESSION_GOAL: {
+					ProfessionGoal msg = packet.getProfessionGoal();
+					handleProfessionGoal(msg.getProfession(), msg.getInit(), msg.getGoal(), msg.getType());
+					return true;
+				}
+
+				case CHATBOX_INTERFACE: {
+					ChatBoxInterface msg = packet.getChatboxInterface();
+					handleChatboxInterface(msg.getId());
+					return true;
+				}
+
+				case INTERFACE_CONFIG: {
+					InterfaceConfig msg = packet.getInterfaceConfig();
+					handleInterfaceConfig(msg.getMain(), msg.getSub1(), msg.getSub2());
+					return true;
+				}
+
+				case GROUND_ITEM_SPAWN: {
+					GroundItemSpawn msg = packet.getGroundItemSpawn();
+					handleGroundItemSpawnProto(msg.getItemId(), msg.getAmount(), msg.getX(), msg.getY());
+					return true;
+				}
+
+				case GROUND_ITEM_REMOVE: {
+					GroundItemRemove msg = packet.getGroundItemRemove();
+					handleGroundItemRemoveProto(msg.getItemId(), msg.getX(), msg.getY());
+					return true;
+				}
+
+				case OBJECT_SPAWN: {
+					ObjectSpawn msg = packet.getObjectSpawn();
+					handleObjectSpawnProto(msg.getObjectId(), msg.getType(), msg.getFace(), msg.getX(), msg.getY());
+					return true;
+				}
+
+				case OBJECT_ANIMATE: {
+					ObjectAnimate msg = packet.getObjectAnimate();
+					handleObjectAnimateProto(msg.getType(), msg.getFace(), msg.getAnimation(), msg.getX(), msg.getY());
+					return true;
+				}
+
+				case PROJECTILE: {
+					com.bestbudz.net.proto.WorldProto.Projectile msg = packet.getProjectile();
+					handleProjectileProto(msg.getId(), msg.getStartHeight(), msg.getEndHeight(),
+						msg.getDelay(), msg.getDuration(), msg.getCurve(), msg.getLockOn(),
+						msg.getOffsetX(), msg.getOffsetY(), msg.getX(), msg.getY());
+					return true;
+				}
+
+				case STILL_GRAPHIC: {
+					StillGraphic msg = packet.getStillGraphic();
+					handleStillGraphicProto(msg.getId(), msg.getZ(), msg.getDelay(), msg.getX(), msg.getY());
+					return true;
+				}
+
+				case MULTI_COMBAT_ICON: {
+					MultiCombatIcon msg = packet.getMultiCombatIcon();
+					isMultiCombatArea = msg.getMulti();
+					return true;
+				}
+
+				case SYSTEM_BAN: {
+					resetLogout();
+					return false;
+				}
+
+				case LOGIN_RESPONSE: {
+					// LoginResponse already handled during login handshake in Login.java.
+					// If one arrives here, silently ignore it.
+					return true;
+				}
+
+				default: {
+					System.err.println("Unhandled protobuf packet type: " + packet.getPayloadCase());
+					return true;
+				}
 			}
 		}
 		catch (IOException _ex)
 		{
-
 			return false;
 		}
 		catch (Exception exception)
@@ -542,11 +731,12 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleInterfaceTextOptimized() {
-		try {
-			final String text = inStream.readString();
-			final int frame = inStream.readWordMixed();
+	// ========================================================================
+	// Handler methods
+	// ========================================================================
 
+	private static void handleInterfaceText(String text, int frame) {
+		try {
 			final DockPanelMapping mapping = DockPanelMapping.fromFrame(frame);
 			if (mapping != null) {
 				final int index = mapping.indexFor(frame);
@@ -576,21 +766,16 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleSkillUpdateOptimized() {
-		final int pid = inStream.readUnsignedByte();
-		final int pAdvance = inStream.readUnsignedByte();
-		final int pExp = inStream.readDWordMixed();
-		final int pGrade = inStream.readDWordMixed();
-
+	private static void handleProfessionUpdate(int pid, int pAdvance, int pExp, int pGrade) {
 		currentExp[pid] = pExp;
 		currentStats[pid] = pGrade;
 		currentAdvances[pid] = pAdvance;
-		maxStats[pid] = calculateMaxLevelOptimized(pExp);
+		maxStats[pid] = calculateMaxLevel(pExp);
 
-		updateSkillsPanelOptimized(pid);
+		updateSkillsPanel(pid);
 	}
 
-	private static int calculateMaxLevelOptimized(final int experience) {
+	private static int calculateMaxLevel(final int experience) {
 		final int[] expTable = Skills.EXP_FOR_LEVEL;
 		final int tableLength = expTable.length;
 
@@ -602,16 +787,38 @@ public class PacketParser extends Client
 		return 1;
 	}
 
-	private static void updateSkillsPanelOptimized(final int skillId) {
+	private static void updateSkillsPanel(final int skillId) {
 		final DockTextUpdatable updatable = UIDockHelper.getUpdatablePanel("Skills");
 		if (UIDockHelper.isPanelVisible("Skills") && updatable instanceof SkillsPanel) {
 			((SkillsPanel) updatable).updateSkill(skillId);
 		}
 	}
 
-	private static void handleChatMessageOptimized() {
-		final String s = inStream.readString();
+	private static void handlePrivateMessage(long usernameHash, int messageId, int rights, byte[] messageBytes) {
+		final boolean shouldIgnore = rights <= 1 && isIgnoredUser(usernameHash);
 
+		if (!shouldIgnore && publicChatFilter == 0) {
+			try {
+				ignoreListIds[friendsListCount] = messageId;
+				friendsListCount = (friendsListCount + 1) % 100;
+
+				// Copy message bytes into inStream so TextInput.method525 can read them
+				System.arraycopy(messageBytes, 0, inStream.buffer, 0, messageBytes.length);
+				inStream.position = 0;
+				final String s9 = TextInput.method525(messageBytes.length, inStream);
+
+				if (rights >= 1) {
+					pushMessage(s9, 7, "@cr" + rights + "@" + TextClass.fixName(TextClass.nameForLong(usernameHash)));
+				} else {
+					pushMessage(s9, 3, TextClass.fixName(TextClass.nameForLong(usernameHash)));
+				}
+			} catch (Exception exception1) {
+				Signlink.reporterror("cde1");
+			}
+		}
+	}
+
+	private static void handleChatMessage(String s) {
 		if (s.indexOf(DEAL_SUFFIX) == s.length() - DEAL_SUFFIX.length() && s.contains(":")) {
 			final String s3 = s.substring(0, s.indexOf(":"));
 			final long l17 = TextClass.longForName(s3);
@@ -668,36 +875,12 @@ public class PacketParser extends Client
 		return false;
 	}
 
-	private static void handlePrivateMessageOptimized() {
-		final long usernameHash = inStream.readQWord();
-		final int j18 = inStream.readDWord();
-		final int rights = inStream.readUnsignedByte();
-
-		final boolean shouldIgnore = rights <= 1 && isIgnoredUser(usernameHash);
-
-		if (!shouldIgnore && publicChatFilter == 0) {
-			try {
-				ignoreListIds[friendsListCount] = j18;
-				friendsListCount = (friendsListCount + 1) % 100;
-				final String s9 = TextInput.method525(pktSize - 13, inStream);
-
-				if (rights >= 1) {
-					pushMessage(s9, 7, "@cr" + rights + "@" + TextClass.fixName(TextClass.nameForLong(usernameHash)));
-				} else {
-					pushMessage(s9, 3, TextClass.fixName(TextClass.nameForLong(usernameHash)));
-				}
-			} catch (Exception exception1) {
-				Signlink.reporterror("cde1");
-			}
-		}
-	}
-
-	private static void handleLoginResponseOptimized() {
-		daysSinceRecovChange = inStream.readByteNegated();
-		unreadMessages = inStream.readWordMixed();
-		membersInt = inStream.readUnsignedByte();
-		minimapRegionX = inStream.readDWordMixed2();
-		daysSinceLastLogin = inStream.readUnsignedWord();
+	private static void handleLoginResponse(int daysSinceRecov, int unreadMsgs, int members, int lastIp, int daysSinceLogin) {
+		daysSinceRecovChange = daysSinceRecov;
+		unreadMessages = unreadMsgs;
+		membersInt = members;
+		minimapRegionX = lastIp;
+		daysSinceLastLogin = daysSinceLogin;
 
 		if (minimapRegionX != 0 && openInterfaceID == -1) {
 			Signlink.dnslookup(TextClass.method586(minimapRegionX));
@@ -715,9 +898,7 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleGroundArrayUpdateOptimized() {
-		final int startX = inStream.readByteNegated();
-		final int startY = inStream.readByte128Minus();
+	private static void handleGroundArrayClear(int startX, int startY) {
 		final int endX = startX + 8;
 		final int endY = startY + 8;
 
@@ -739,9 +920,8 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleInterfaceModelOptimized() {
-		final int k = inStream.readWordMixedLE();
-		final RSInterface rsInterface = INTERFACE_CACHE[k];
+	private static void handleInterfaceModel(int interfaceId) {
+		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
 		rsInterface.modelType = 3;
 
 		if (myStoner.desc == null) {
@@ -756,21 +936,20 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleClanMessageOptimized() {
+	private static void handleClanMessage(String username, String message, String title, int rights) {
 		try {
-			clanUsername = inStream.readString();
-			clanMessage = TextInput.processText(inStream.readString());
-			clanTitle = inStream.readString();
-			channelRights = inStream.readUnsignedWord();
+			clanUsername = username;
+			clanMessage = TextInput.processText(message);
+			clanTitle = title;
+			channelRights = rights;
 			pushMessage(clanMessage, 16, clanUsername);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static void handleClearInventoryOptimized() {
-		final int i1 = inStream.readWordLittleEndian();
-		final RSInterface rsInterface = INTERFACE_CACHE[i1];
+	private static void handleClearInventory(int interfaceId) {
+		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
 
 		for (int k15 = 0; k15 < rsInterface.inv.length; k15++) {
 			rsInterface.inv[k15] = -1;
@@ -778,21 +957,21 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleIgnoreListOptimized() {
-		final int count = pktSize / 8;
+	private static void handleIgnoreList(List<Long> nameHashes) {
+		final int count = nameHashes.size();
 		ignoreCount = count;
 		for (int i = 0; i < count; i++) {
-			ignoreListAsLongs[i] = inStream.readQWord();
+			ignoreListAsLongs[i] = nameHashes.get(i);
 		}
 	}
 
-	private static void handleCameraShakeOptimized() {
+	private static void handleCameraShake(int x, int y, int z, int rotationX, int rotationY) {
 		cutsceneActive = true;
-		cameraOffsetX = inStream.readUnsignedByte();
-		cameraOffsetY = inStream.readUnsignedByte();
-		cameraOffsetZ = inStream.readUnsignedWord();
-		cameraRotationX = inStream.readUnsignedByte();
-		cameraRotationY = inStream.readUnsignedByte();
+		cameraOffsetX = x;
+		cameraOffsetY = y;
+		cameraOffsetZ = z;
+		cameraRotationX = rotationX;
+		cameraRotationY = rotationY;
 
 		if (cameraRotationY >= 100) {
 			xCameraPos = cameraOffsetX * 128 + 64;
@@ -801,66 +980,55 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleTabInterfaceOptimized() {
-		int l1 = inStream.readUnsignedWord();
-		final int j10 = inStream.readByteSubtract128();
-		if (l1 == 65535) l1 = -1;
-		tabInterfaceIDs[j10] = l1;
+	private static void handleTabInterface(int interfaceId, int tabId) {
+		if (interfaceId == 65535) interfaceId = -1;
+		tabInterfaceIDs[tabId] = interfaceId;
 		tabAreaAltered = true;
 	}
 
-	private static void handleMusicChangeOptimized() {
-		int i2 = inStream.readWordLittleEndian();
-		if (i2 == 65535) i2 = -1;
+	private static void handleMusicChange(int id) {
+		if (id == 65535) id = -1;
 
-		if (i2 != currentSong && musicEnabled && !lowMem && prevSong == 0) {
-			nextSong = i2;
+		if (id != currentSong && musicEnabled && !lowMem && prevSong == 0) {
+			nextSong = id;
 			songChanging = true;
 		}
-		currentSong = i2;
+		currentSong = id;
 	}
 
-	private static void handleMusicQueueOptimized() {
-		final int j2 = inStream.readWordMixedLE();
-		final int k10 = inStream.readWordMixed();
-
+	private static void handleMusicQueue(int id, int delay) {
 		if (musicEnabled && !lowMem) {
-			nextSong = j2;
+			nextSong = id;
 			songChanging = false;
-			prevSong = k10;
+			prevSong = delay;
 		}
 	}
 
-	private static void handleInterfaceScrollOptimized() {
-		final int l10 = inStream.readSignedWordLE();
-		final int i16 = inStream.readWordLittleEndian();
-		INTERFACE_CACHE[i16].positionScroll = l10;
+	private static void handleMapRegion(int regionX, int regionY) {
+		handleRegionChange(regionX, regionY, false, null);
 	}
 
-	private static void handleRegionChangeOptimized() {
-		int l2 = inventoryOffsetX;
-		int i11 = inventoryOffsetY;
-
-		if (pktType == 73) {
-			l2 = inStream.readWordMixed();
-			i11 = inStream.readUnsignedWord();
-			musicPlaying = false;
-		}
-
-		if (pktType == 241) {
-			i11 = inStream.readWordMixed();
-			inStream.initBitAccess();
-
-			for (int j16 = 0; j16 < 4; j16++) {
-				for (int l20 = 0; l20 < 13; l20++) {
-					for (int j23 = 0; j23 < 13; j23++) {
-						final int i26 = inStream.readBits(1);
-						dynamicRegionData[j16][l20][j23] = (i26 == 1) ? inStream.readBits(26) : -1;
+	private static void handleMapRegionConstruction(int regionX, int regionY, List<Integer> dynamicDataList) {
+		// Fill dynamicRegionData from flattened list
+		int index = 0;
+		for (int z = 0; z < 4; z++) {
+			for (int x = 0; x < 13; x++) {
+				for (int y = 0; y < 13; y++) {
+					if (index < dynamicDataList.size()) {
+						dynamicRegionData[z][x][y] = dynamicDataList.get(index++);
+					} else {
+						dynamicRegionData[z][x][y] = -1;
 					}
 				}
 			}
-			inStream.finishBitAccess();
-			l2 = inStream.readUnsignedWord();
+		}
+		handleRegionChange(regionX, regionY, true, dynamicDataList);
+	}
+
+	private static void handleRegionChange(int l2, int i11, boolean isConstruction, List<Integer> dynamicDataList) {
+		if (!isConstruction) {
+			musicPlaying = false;
+		} else {
 			musicPlaying = true;
 		}
 
@@ -879,10 +1047,10 @@ public class PacketParser extends Client
 		loadingStage = 1;
 		lastConnectionTime = System.currentTimeMillis();
 
-		if (pktType == 73) {
-			handleRegionType73Optimized(l2, i11);
-		} else if (pktType == 241) {
-			handleRegionType241Optimized();
+		if (!isConstruction) {
+			handleRegionType73(l2, i11);
+		} else {
+			handleRegionType241();
 		}
 
 		final int deltaX = baseX - gameDrawingMode;
@@ -958,7 +1126,7 @@ public class PacketParser extends Client
 		cutsceneActive = false;
 	}
 
-	private static void handleRegionType73Optimized(final int l2, final int i11) {
+	private static void handleRegionType73(final int l2, final int i11) {
 		int k16 = 0;
 		for (int i21 = (l2 - 6) / 8; i21 <= (l2 + 6) / 8; i21++) {
 			for (int k23 = (i11 - 6) / 8; k23 <= (i11 + 6) / 8; k23++) {
@@ -981,7 +1149,7 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleRegionType241Optimized() {
+	private static void handleRegionType241() {
 		int l16 = 0;
 		final int[] ai = new int[676];
 
@@ -1015,76 +1183,46 @@ public class PacketParser extends Client
 		}
 	}
 
-
-	private static void handleWalkableInterfaceOptimized() {
-		final int i3 = inStream.readSignedWordLE();
-		if (i3 >= 0) {
-			clearInterfaceAnimations(i3);
+	private static void handleWalkableInterface(int id) {
+		if (id >= 0) {
+			clearInterfaceAnimations(id);
 			walkableInterfaceMode = true;
 		} else {
 			walkableInterfaceMode = false;
 		}
-		mouseClickState = i3;
+		mouseClickState = id;
 	}
 
-	private static void handleInterfaceNPCHeadOptimized() {
-		final int j3 = inStream.readWordMixedLE();
-		final int j11 = inStream.readWordMixedLE();
+	private static void handleGroundItemUpdateProto(GroundItemUpdate msg) {
+		localRegionY = msg.getRegionY();
+		localRegionX = msg.getRegionX();
 
-		final RSInterface rsInterface = INTERFACE_CACHE[j11];
-		rsInterface.modelType = 2;
-		rsInterface.mediaID = j3;
-	}
-
-	private static void handleGroundItemUpdateOptimized() {
-		localRegionY = inStream.readUnsignedByte();
-		localRegionX = inStream.readByteNegated();
-
-		while (inStream.position < pktSize) {
-			final int k3 = inStream.readUnsignedByte();
-			handleGroundItemUpdate(inStream, k3);
+		for (GroundItemAction action : msg.getActionsList()) {
+			byte[] data = action.getData().toByteArray();
+			System.arraycopy(data, 0, inStream.buffer, 0, data.length);
+			inStream.position = 0;
+			handleGroundItemUpdate(inStream, action.getOpcode());
 		}
 	}
 
-	private static void handleSkillLevelOptimized() {
-		final int skillId = inStream.readUnsignedByte();
-		final int k11 = inStream.readUnsignedByte();
-		final int j17 = inStream.readUnsignedByte();
-		final int k21 = inStream.readUnsignedByte();
-
-		cameraShakeEnabled[skillId] = true;
-		cameraShakeAmplitude[skillId] = k11;
-		cameraShakeMagnitude[skillId] = j17;
-		cameraShakeSpeed[skillId] = k21;
-		cameraShakeCounters[skillId] = 0;
-	}
-
-	private static void handleSoundEffectOptimized() {
-		final int soundId = inStream.readUnsignedWord();
-		final int volume = inStream.readUnsignedByte();
-		final int delay = inStream.readUnsignedWord();
-
+	private static void handleSoundEffect(int id, int type, int delay) {
 		if (soundProduction && !lowMem && soundEffectCount < 50) {
 			final int index = soundEffectCount++;
-			soundIds[index] = soundId;
-			soundTypes[index] = volume;
+			soundIds[index] = id;
+			soundTypes[index] = type;
 			soundDelays[index] = delay;
 		}
 	}
 
-	private static void handlePlayerOptionOptimized() {
-		final int optionIndex = inStream.readByteNegated();
-		final int enabled = inStream.readByteSubtract128();
-		String option = inStream.readString();
-
+	private static void handleStonerOption(int optionIndex, String option, boolean topPriority) {
 		if (optionIndex >= 1 && optionIndex <= 5) {
 			if (option.equalsIgnoreCase("null")) option = null;
 			atStonerActions[optionIndex - 1] = option;
-			atStonerArray[optionIndex - 1] = enabled == 0;
+			atStonerArray[optionIndex - 1] = topPriority;
 		}
 	}
 
-	private static void handleResetAnimationsAllOptimized() {
+	private static void handleResetAnimationsAll() {
 		for (final Stoner stoner : stonerArray) {
 			if (stoner != null) stoner.anim = -1;
 		}
@@ -1093,9 +1231,7 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleFriendsListOptimized() {
-		final long userHash = inStream.readQWord();
-		final int nodeId = inStream.readUnsignedByte();
+	private static void handleFriendUpdate(long userHash, int nodeId) {
 		String username = TextClass.fixName(TextClass.nameForLong(userHash));
 
 		for (int i = 0; i < stonersCount; i++) {
@@ -1141,18 +1277,11 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleEnergyUpdateOptimized() {
-		if (tabID == 12) {
-
-		}
-		energy = inStream.readUnsignedByte();
-	}
-
-	private static void handleMinimapStateOptimized() {
-		crosshairType = inStream.readUnsignedByte();
+	private static void handleMinimapState(int type, int targetIndex, int x, int y, int offset) {
+		crosshairType = type;
 
 		if (crosshairType == 1) {
-			targetNpcIndex = inStream.readUnsignedWord();
+			targetNpcIndex = targetIndex;
 		} else if (crosshairType >= 2 && crosshairType <= 6) {
 			switch (crosshairType) {
 				case 2: selectedRegionTileY = 64; regionTileAction = 64; break;
@@ -1162,18 +1291,15 @@ public class PacketParser extends Client
 				case 6: selectedRegionTileY = 64; regionTileAction = 128; break;
 			}
 			crosshairType = 2;
-			hoveredRegionTileX = inStream.readUnsignedWord();
-			hoveredRegionTileY = inStream.readUnsignedWord();
-			selectedRegionTileX = inStream.readUnsignedByte();
+			hoveredRegionTileX = x;
+			hoveredRegionTileY = y;
+			selectedRegionTileX = offset;
 		} else if (crosshairType == 10) {
-			targetPlayerIndex = inStream.readUnsignedWord();
+			targetPlayerIndex = targetIndex;
 		}
 	}
 
-	private static void handleInterfaceInventoryOptimized() {
-		final int interfaceId = inStream.readWordMixed();
-		final int overlayId = inStream.readUnsignedWord();
-
+	private static void handleInterfaceInventory(int interfaceId, int overlayId) {
 		if (backDialogID != -1) {
 			backDialogID = -1;
 			inputTaken = true;
@@ -1189,9 +1315,7 @@ public class PacketParser extends Client
 		isPlayerBusy = false;
 	}
 
-	private static void handleInterfaceScrollPositionOptimized() {
-		final int interfaceId = inStream.readWordLittleEndian();
-		int scrollPos = inStream.readWordMixed();
+	private static void handleInterfaceScrollPosition(int interfaceId, int scrollPos) {
 		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
 
 		if (rsInterface != null && rsInterface.type == 0) {
@@ -1203,38 +1327,36 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleConfigUpdateOptimized() {
-		for (int k5 = 0; k5 < variousSettings.length; k5++) {
-			if (variousSettings[k5] != experienceDrops[k5]) {
-				variousSettings[k5] = experienceDrops[k5];
-				updateConfigValues(k5);
-			}
+	private static void handleConfigLarge(int configId, int value) {
+		if (configId < 0 || configId >= variousSettings.length) return;
+		experienceDrops[configId] = value;
+
+		if (variousSettings[configId] != value) {
+			variousSettings[configId] = value;
+			updateConfigValues(configId);
+			if (dialogID != -1) inputTaken = true;
 		}
 	}
 
-	private static void handleKillFeedOptimized() {
-		try {
-			pushKill(inStream.readString(), inStream.readString(),
-				inStream.readUnsignedWord(), inStream.readUnsignedByte() == 1);
-		} catch (Exception e) {
-			e.printStackTrace();
+	private static void handleConfigByte(int configId, int value) {
+		if (configId < 0 || configId >= variousSettings.length) return;
+		experienceDrops[configId] = value;
+
+		if (variousSettings[configId] != value) {
+			variousSettings[configId] = value;
+			updateConfigValues(configId);
+			if (dialogID != -1) inputTaken = true;
 		}
 	}
 
-	private static void handleForceTabOptimized() {
-		selectedTabIndex = inStream.readByte128Minus();
+	private static void handleForceTab(int tabId) {
+		selectedTabIndex = tabId;
 		if (selectedTabIndex == tabID) {
 			tabID = (selectedTabIndex == 3) ? 1 : 3;
 		}
 	}
 
-	private static void handleInterfaceItemModelOptimized() {
-		final int interfaceId = inStream.readWordLittleEndian();
-		final int zoom = inStream.readUnsignedWord();
-		final int itemId = inStream.readUnsignedWord();
-
-		System.out.println("🎭 RAW STRING PACKET: ItemModel InterfaceID" + interfaceId + " & zoom'" + zoom + "&& item id" + itemId);
-
+	private static void handleInterfaceItemModel(int interfaceId, int zoom, int itemId) {
 		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
 
 		if (itemId == 65535) {
@@ -1249,10 +1371,7 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleInterfaceHoverOptimized() {
-		final boolean enabled = inStream.readUnsignedByte() == 1;
-		final int interfaceId = inStream.readUnsignedWord();
-
+	private static void handleInterfaceHover(boolean enabled, int interfaceId) {
 		if (interfaceId >= 0 && interfaceId < INTERFACE_CACHE.length && INTERFACE_CACHE[interfaceId] != null) {
 			INTERFACE_CACHE[interfaceId].isMouseoverTriggered = enabled;
 		} else {
@@ -1260,9 +1379,25 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleCloseInterfaceOptimized() {
-		final int interfaceId = inStream.readWordLittleEndian();
+	private static void handleCloseAllInterfaces() {
+		if (invOverlayInterfaceID != -1) {
+			invOverlayInterfaceID = -1;
+			tabAreaAltered = true;
+		}
+		if (backDialogID != -1) {
+			backDialogID = -1;
+			inputTaken = true;
+		}
+		if (inputDialogState != 0) {
+			inputDialogState = 0;
+			inputTaken = true;
+		}
 
+		openInterfaceID = -1;
+		isPlayerBusy = false;
+	}
+
+	private static void handleCloseInterface(int interfaceId) {
 		if (interfaceId >= 0 && interfaceId < INTERFACE_CACHE.length && INTERFACE_CACHE[interfaceId] != null) {
 			clearInterfaceAnimations(interfaceId);
 		} else {
@@ -1284,11 +1419,8 @@ public class PacketParser extends Client
 		isPlayerBusy = false;
 	}
 
-	private static void handleNPCDisplayOptimized() {
+	private static void handleNpcDisplay(int npcId, int size) {
 		try {
-			final int npcId = inStream.readUnsignedByte();
-			final int size = inStream.readUnsignedByte();
-
 			if (npcId <= 0) {
 				npcDisplay = null;
 				return;
@@ -1306,164 +1438,7 @@ public class PacketParser extends Client
 		}
 	}
 
-	private static void handleXPDropOptimized() {
-		try {
-			final int skill = inStream.readSignedByte();
-			final int exp = inStream.readDWord();
-			StatusOrbs.xpCounter = inStream.readDWord();
-			addXP(skill, exp);
-		} catch (Exception e) {
-
-		}
-	}
-
-	private static void handlePlayerIndexOptimized() {
-		try {
-			stonerIndex = inStream.readUnsignedWord();
-		} catch (Exception e) {
-
-		}
-	}
-
-	private static void handleChatSettingsOptimized() {
-		publicChatMode = inStream.readUnsignedByte();
-		privateChatMode = inStream.readUnsignedByte();
-		tradeMode = inStream.readUnsignedByte();
-		inputTaken = true;
-	}
-
-	private static void handleWeightUpdateOptimized() {
-		if (tabID == 12) {
-
-		}
-		weight = inStream.readSignedWord();
-	}
-
-	private static void handleInterfaceAnimationOptimized() {
-		final int interfaceId = inStream.readWordMixedLE();
-		final int animationId = inStream.readUnsignedWord();
-		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
-		rsInterface.modelType = 1;
-		rsInterface.mediaID = animationId;
-	}
-
-	private static void handleInterfaceColorOptimized() {
-		final int interfaceId = inStream.readWordMixedLE();
-		final int r = inStream.readUnsignedByte();
-		final int g = inStream.readUnsignedByte();
-		final int b = inStream.readUnsignedByte();
-		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
-
-		if (rsInterface != null) {
-			rsInterface.textColor = r << 16 | g << 8 | b;
-		}
-	}
-
-	private static void handleInventoryUpdateOptimized() {
-		final int interfaceId = inStream.readUnsignedWord();
-		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
-
-		if (rsInterface == null || rsInterface.inv == null) {
-			System.err.println("Invalid interface or inventory: " + interfaceId);
-			return;
-		}
-
-		final int itemCount = inStream.readUnsignedWord();
-		final int safeItemCount = Math.min(itemCount, rsInterface.inv.length);
-
-		for (int i = 0; i < safeItemCount; i++) {
-			int stackSize = inStream.readUnsignedByte();
-			if (stackSize == 255) stackSize = inStream.readDWordMixed2();
-			rsInterface.inv[i] = inStream.readWordMixedLE();
-			rsInterface.invStackSizes[i] = stackSize;
-		}
-
-		for (int j25 = safeItemCount; j25 < rsInterface.inv.length; j25++) {
-			rsInterface.inv[j25] = 0;
-			rsInterface.invStackSizes[j25] = 0;
-		}
-
-		if (itemCount > rsInterface.inv.length) {
-			for (int i = rsInterface.inv.length; i < itemCount; i++) {
-				int stackSize = inStream.readUnsignedByte();
-				if (stackSize == 255) stackSize = inStream.readDWordMixed2();
-				inStream.readWordMixedLE();
-			}
-		}
-
-		if (rsInterface.contentType == 206) {
-
-			for (int tab = 0; tab < 10; tab++) {
-				int amount = inStream.readSignedByte() << 8 | inStream.readUnsignedWord();
-				tabAmounts[tab] = amount;
-			}
-
-			rsInterface.isBoxInterface = true;
-
-			System.out.println("📦 Bank interface " + interfaceId + " updated with " +
-				safeItemCount + " items (treated as regular inventory)");
-		}
-
-		notifyDockPanelUpdates(interfaceId);
-	}
-
-	private static void handleInterfaceModelRotationOptimized() {
-		final int zoom = inStream.readWordMixed();
-		final int interfaceId = inStream.readUnsignedWord();
-		final int rotation1 = inStream.readUnsignedWord();
-		final int rotation2 = inStream.readWordMixedLE();
-		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
-
-		rsInterface.modelRotation1 = rotation1;
-		rsInterface.modelRotation2 = rotation2;
-		rsInterface.modelZoom = zoom;
-	}
-
-	private static void handleCameraAngleOptimized() {
-		cutsceneActive = true;
-		interfaceScrollX = inStream.readUnsignedByte();
-		interfaceScrollY = inStream.readUnsignedByte();
-		scrollableAreaHeight = inStream.readUnsignedWord();
-		scrollableAreaWidth = inStream.readUnsignedByte();
-		scrollPosition = inStream.readUnsignedByte();
-
-		if (scrollPosition >= 100) {
-			final int x = interfaceScrollX * 128 + 64;
-			final int y = interfaceScrollY * 128 + 64;
-			final int height = getTerrainHeight(plane, y, x) - scrollableAreaHeight;
-			final int deltaX = x - xCameraPos;
-			final int deltaHeight = height - zCameraPos;
-			final int deltaY = y - yCameraPos;
-			final int distance = (int) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-			yCameraCurve = (int) (Math.atan2(deltaHeight, distance) * 325.94900000000001D) & 0x7ff;
-			xCameraCurve = (int) (Math.atan2(deltaX, deltaY) * -325.94900000000001D) & 0x7ff;
-			if (yCameraCurve < 128) yCameraCurve = 128;
-			if (yCameraCurve > 383) yCameraCurve = 383;
-		}
-	}
-
-	private static void handleInterfaceSettingsOptimized() {
-		inputType = inStream.readByteSubtract128();
-		unknownInt10 = inStream.readWordMixedLE();
-	}
-
-	private static void handleInputAmountOptimized() {
-		messagePromptRaised = false;
-		inputDialogState = 1;
-		amountOrNameInput = "";
-		inputTaken = true;
-	}
-
-	private static void handleInputNameOptimized() {
-		messagePromptRaised = false;
-		inputDialogState = 2;
-		amountOrNameInput = "";
-		inputTaken = true;
-	}
-
-	private static void handleOpenInterfaceOptimized() {
-		final int interfaceId = inStream.readUnsignedWord();
+	private static void handleOpenInterface(int interfaceId) {
 		clearInterfaceAnimations(interfaceId);
 
 		if (invOverlayInterfaceID != -1) {
@@ -1483,90 +1458,85 @@ public class PacketParser extends Client
 		isPlayerBusy = false;
 	}
 
-	private static void handleDialogWindowOptimized() {
-		dialogID = inStream.readSignedWordMixed();
-		inputTaken = true;
-	}
-
-	private static void handleConfigLargeOptimized() {
-		final int configId = inStream.readWordLittleEndian();
-		final int value = inStream.readDWordMixed();
-		if (configId < 0 || configId >= variousSettings.length) return;
-		experienceDrops[configId] = value;
-
-		if (variousSettings[configId] != value) {
-			variousSettings[configId] = value;
-			updateConfigValues(configId);
-			if (dialogID != -1) inputTaken = true;
-		}
-	}
-
-	private static void handleConfigByteOptimized() {
-		final int configId = inStream.readWordLittleEndian();
-		final byte value = inStream.readSignedByte();
-		if (configId < 0 || configId >= variousSettings.length) return;
-		experienceDrops[configId] = value;
-
-		if (variousSettings[configId] != value) {
-			variousSettings[configId] = value;
-			updateConfigValues(configId);
-			if (dialogID != -1) inputTaken = true;
-		}
-	}
-
-	private static void handleInterfaceOffsetOptimized() {
-		final int interfaceId = inStream.readUnsignedWord();
-		final int offset = inStream.readSignedWord();
-		INTERFACE_CACHE[interfaceId].verticalOffset = offset;
-	}
-
-	private static void handleCloseAllInterfacesOptimized() {
-		if (invOverlayInterfaceID != -1) {
-			invOverlayInterfaceID = -1;
-			tabAreaAltered = true;
-		}
-		if (backDialogID != -1) {
-			backDialogID = -1;
-			inputTaken = true;
-		}
-		if (inputDialogState != 0) {
-			inputDialogState = 0;
-			inputTaken = true;
-		}
-
-		openInterfaceID = -1;
-		isPlayerBusy = false;
-	}
-
-	private static void handleInventoryItemUpdateOptimized() {
-		final int interfaceId = inStream.readUnsignedWord();
+	private static void handleInventoryUpdate(InventoryUpdate msg) {
+		final int interfaceId = msg.getInterfaceId();
 		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
 
-		if (interfaceId == 5382) {
-			System.out.println("🏦 Bank item update - Interface: " + interfaceId);
+		if (rsInterface == null || rsInterface.inv == null) {
+			System.err.println("Invalid interface or inventory: " + interfaceId);
+			return;
 		}
 
-		while (inStream.position < pktSize) {
-			final int slot = inStream.readSmartUnsigned();
-			final int itemId = inStream.readUnsignedWord();
-			int stackSize = inStream.readUnsignedByte();
-			if (stackSize == 255) stackSize = inStream.readDWord();
+		final List<Item> items = msg.getItemsList();
+		final int itemCount = items.size();
+		final int safeItemCount = Math.min(itemCount, rsInterface.inv.length);
+
+		for (int i = 0; i < safeItemCount; i++) {
+			Item item = items.get(i);
+			rsInterface.inv[i] = item.getId();
+			rsInterface.invStackSizes[i] = item.getAmount();
+		}
+
+		for (int j25 = safeItemCount; j25 < rsInterface.inv.length; j25++) {
+			rsInterface.inv[j25] = 0;
+			rsInterface.invStackSizes[j25] = 0;
+		}
+
+		if (rsInterface.contentType == 206) {
+			final List<Integer> tabAmountsList = msg.getTabAmountsList();
+			for (int tab = 0; tab < Math.min(10, tabAmountsList.size()); tab++) {
+				tabAmounts[tab] = tabAmountsList.get(tab);
+			}
+
+			rsInterface.isBoxInterface = true;
+		}
+
+		notifyDockPanelUpdates(interfaceId);
+	}
+
+	private static void handleInventoryItemUpdate(InventoryItemUpdate msg) {
+		final int interfaceId = msg.getInterfaceId();
+		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
+
+		for (SlottedItem slotted : msg.getItemsList()) {
+			final int slot = slotted.getSlot();
+			final int itemId = slotted.getId();
+			final int stackSize = slotted.getAmount();
 
 			if (slot >= 0 && slot < rsInterface.inv.length) {
 				rsInterface.inv[slot] = itemId;
 				rsInterface.invStackSizes[slot] = stackSize;
-
-				if (interfaceId == 5382 && itemId > 0) {
-					System.out.println("🏦 Bank slot " + slot + " updated: Item " + (itemId - 1) + " x" + stackSize);
-				}
 			}
 		}
 
 		notifyDockPanelUpdates(interfaceId);
 	}
 
-	private static void handleBackDialogOptimized() {
-		final int interfaceId = inStream.readWordLittleEndian();
+	private static void handleCameraAngle(int x, int y, int height, int speed, int angle) {
+		cutsceneActive = true;
+		interfaceScrollX = x;
+		interfaceScrollY = y;
+		scrollableAreaHeight = height;
+		scrollableAreaWidth = speed;
+		scrollPosition = angle;
+
+		if (scrollPosition >= 100) {
+			final int px = interfaceScrollX * 128 + 64;
+			final int py = interfaceScrollY * 128 + 64;
+			final int h = getTerrainHeight(plane, py, px) - scrollableAreaHeight;
+			final int deltaX = px - xCameraPos;
+			final int deltaHeight = h - zCameraPos;
+			final int deltaY = py - yCameraPos;
+			final int distance = (int) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+			yCameraCurve = (int) (Math.atan2(deltaHeight, distance) * 325.94900000000001D) & 0x7ff;
+			xCameraCurve = (int) (Math.atan2(deltaX, deltaY) * -325.94900000000001D) & 0x7ff;
+			if (yCameraCurve < 128) yCameraCurve = 128;
+			if (yCameraCurve > 383) yCameraCurve = 383;
+		}
+	}
+
+	private static void handleBackDialog(int interfaceId) {
 		clearInterfaceAnimations(interfaceId);
 
 		if (invOverlayInterfaceID != -1) {
@@ -1578,16 +1548,243 @@ public class PacketParser extends Client
 		inputTaken = true;
 		openInterfaceID = -1;
 		isPlayerBusy = false;
-		System.out.println("🎭 PACKET 164: Chat box interface " + interfaceId);
 	}
 
-	private static void handleUnknownPacket() {
-		final StringBuilder error = STRING_BUILDER_CACHE.get();
-		error.setLength(0);
-		error.append("T1 - ").append(pktType).append(",").append(pktSize)
-			.append(" - ").append(regionX).append(",").append(regionY);
-		Signlink.reporterror(error.toString());
-		resetLogout();
+	private static void handleBoxInterface(int id, int invId) {
+		if (backDialogID != -1) {
+			backDialogID = -1;
+			inputTaken = true;
+		}
+		if (inputDialogState != 0) {
+			inputDialogState = 0;
+			inputTaken = true;
+		}
+
+		openInterfaceID = id;
+		invOverlayInterfaceID = invId;
+		tabAreaAltered = true;
+		isPlayerBusy = false;
+	}
+
+	private static void handleSidebarInterface(int tabId, int interfaceId) {
+		if (interfaceId == 65535) interfaceId = -1;
+		tabInterfaceIDs[tabId] = interfaceId;
+		tabAreaAltered = true;
+	}
+
+	private static void handleEquipmentUpdate(int slot, int id, int amount) {
+		// Equipment updates handled via interface cache if applicable
+		// The server sends slot/id/amount for the equipment interface
+	}
+
+	private static void handleDuelEquipment(int id, int amount, int slot) {
+		// Duel equipment update
+	}
+
+	private static void handleUpdateItemsAlt(int interfaceId, int id, int amount, int slot) {
+		final RSInterface rsInterface = INTERFACE_CACHE[interfaceId];
+		if (rsInterface != null && rsInterface.inv != null && slot >= 0 && slot < rsInterface.inv.length) {
+			rsInterface.inv[slot] = id;
+			rsInterface.invStackSizes[slot] = amount;
+		}
+	}
+
+	private static void handleBannerMessage(String message, int color) {
+		// Banner message display - the message will be shown via the client's banner system
+		pushMessage(message, 0, "");
+	}
+
+	private static void handleSpecialBarUpdate(int amount, int id) {
+		// Special attack bar percentage update
+		// The id is the special bar interface component, amount is the percentage
+	}
+
+	private static void handleSpecialBar(int main, int sub) {
+		// Special bar toggle (on/off state)
+	}
+
+	private static void handleStonerHint(int type, int id) {
+		crosshairType = type;
+		if (type == 10) {
+			targetPlayerIndex = id;
+		}
+	}
+
+	private static void handleNpcHint(int type, int id) {
+		crosshairType = type;
+		if (type == 1) {
+			targetNpcIndex = id;
+		}
+	}
+
+	private static void handleMoveComponent(int x, int y, int componentId) {
+		final RSInterface rsInterface = INTERFACE_CACHE[componentId];
+		if (rsInterface != null) {
+			rsInterface.anInt263 = x;
+			rsInterface.positionScroll = y;
+		}
+	}
+
+	private static void handleItemOnInterface(int id, int zoom, int model) {
+		final RSInterface rsInterface = INTERFACE_CACHE[id];
+		if (rsInterface != null) {
+			rsInterface.modelType = 4;
+			rsInterface.mediaID = model;
+			rsInterface.modelZoom = zoom;
+		}
+	}
+
+	private static void handleEnterXInterface(int interfaceId, int itemId) {
+		// Enter X amount dialog for a specific interface/item
+		messagePromptRaised = false;
+		inputDialogState = 1;
+		amountOrNameInput = "";
+		inputTaken = true;
+	}
+
+	private static void handleMapState(int state) {
+		// Map state changes (e.g., minimap visibility)
+	}
+
+	private static void handleProfessionGoal(int profession, int init, int goal, int type) {
+		if (profession >= 0 && profession < professionGoalInit.length) {
+			professionGoalInit[profession] = init;
+			professionGoalTarget[profession] = goal;
+			professionGoalType[profession] = type;
+		}
+	}
+
+	private static void handleChatboxInterface(int id) {
+		clearInterfaceAnimations(id);
+		backDialogID = id;
+		inputTaken = true;
+	}
+
+	private static void handleInterfaceConfig(int main, int sub1, int sub2) {
+		// Interface config — used to show/hide interface children or set item display
+		// main = interface ID, sub1 = value, sub2 = secondary value
+	}
+
+	private static void handleGroundItemSpawnProto(int itemId, int amount, int absX, int absY) {
+		int localX = absX - baseX;
+		int localY = absY - baseY;
+		if (localX >= 0 && localY >= 0 && localX < 104 && localY < 104) {
+			com.bestbudz.data.items.Item groundItem = new com.bestbudz.data.items.Item();
+			groundItem.ID = itemId;
+			groundItem.stackSize = amount;
+			if (groundArray[plane][localX][localY] == null)
+				groundArray[plane][localX][localY] = new java.util.ArrayDeque<>();
+			groundArray[plane][localX][localY].addFirst(groundItem);
+			spawnGroundItem(localX, localY);
+		}
+	}
+
+	private static void handleGroundItemRemoveProto(int itemId, int absX, int absY) {
+		int localX = absX - baseX;
+		int localY = absY - baseY;
+		if (localX >= 0 && localY >= 0 && localX < 104 && localY < 104) {
+			java.util.ArrayDeque<com.bestbudz.data.items.Item> list = groundArray[plane][localX][localY];
+			if (list != null) {
+				java.util.Iterator<com.bestbudz.data.items.Item> it = list.iterator();
+				while (it.hasNext()) {
+					com.bestbudz.data.items.Item item = it.next();
+					if (item.ID == (itemId & 0x7fff)) {
+						it.remove();
+						break;
+					}
+				}
+				if (list.isEmpty())
+					groundArray[plane][localX][localY] = null;
+				spawnGroundItem(localX, localY);
+			}
+		}
+	}
+
+	private static void handleObjectSpawnProto(int objectId, int type, int face, int absX, int absY) {
+		int localX = absX - baseX;
+		int localY = absY - baseY;
+		if (localX >= 0 && localY >= 0 && localX < 104 && localY < 104) {
+			int objectGroup = characterModelIndices[type];
+			createSpotAnimation(-1, objectId, face, objectGroup, localY, type, plane, localX, 0);
+		}
+	}
+
+	private static void handleObjectAnimateProto(int type, int face, int animation, int absX, int absY) {
+		int localX = absX - baseX;
+		int localY = absY - baseY;
+		if (localX >= 0 && localY >= 0 && localX < 103 && localY < 103) {
+			int objectGroup = characterModelIndices[type];
+			int j18 = intGroundArray[plane][localX][localY];
+			int i19 = intGroundArray[plane][localX + 1][localY];
+			int l19 = intGroundArray[plane][localX + 1][localY + 1];
+			int k20 = intGroundArray[plane][localX][localY + 1];
+			if (objectGroup == 0) {
+				Wall wall = worldController.getWall(plane, localX, localY);
+				if (wall != null) {
+					int objId = wall.uid >> 14 & 0x7fff;
+					if (type == 2) {
+						wall.primaryModel = new InteractiveObject(objId, 4 + face, 2, i19, l19, j18, k20, animation, false);
+						wall.secondaryModel = new InteractiveObject(objId, face + 1 & 3, 2, i19, l19, j18, k20, animation, false);
+					} else {
+						wall.primaryModel = new InteractiveObject(objId, face, type, i19, l19, j18, k20, animation, false);
+					}
+				}
+			}
+			if (objectGroup == 1) {
+				WallDecoration wd = worldController.getWallDecoration(localX, localY, plane);
+				if (wd != null)
+					wd.model = new InteractiveObject(wd.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, animation, false);
+			}
+			if (objectGroup == 2) {
+				GameObject go = worldController.getGameObject(localX, localY, plane);
+				int usedType = type;
+				if (usedType == 11) usedType = 10;
+				if (go != null)
+					go.model = new InteractiveObject(go.uid >> 14 & 0x7fff, face, usedType, i19, l19, j18, k20, animation, false);
+			}
+			if (objectGroup == 3) {
+				com.bestbudz.world.GroundDecoration gd = worldController.getGroundDecoration(localY, localX, plane);
+				if (gd != null)
+					gd.model = new InteractiveObject(gd.uid >> 14 & 0x7fff, face, 22, i19, l19, j18, k20, animation, false);
+			}
+		}
+	}
+
+	private static void handleProjectileProto(int id, int startHeight, int endHeight,
+			int delay, int duration, int curve, int lockOn, int offsetX, int offsetY,
+			int absX, int absY) {
+		int srcLocalX = absX - baseX;
+		int srcLocalY = absY - baseY;
+		int dstLocalX = srcLocalX + offsetX;
+		int dstLocalY = srcLocalY + offsetY;
+		if (srcLocalX >= 0 && srcLocalY >= 0 && srcLocalX < 104 && srcLocalY < 104
+			&& dstLocalX >= 0 && dstLocalY >= 0 && dstLocalX < 104 && dstLocalY < 104
+			&& id != 65535) {
+			int srcPixelX = srcLocalX * 128 + 64;
+			int srcPixelY = srcLocalY * 128 + 64;
+			int dstPixelX = dstLocalX * 128 + 64;
+			int dstPixelY = dstLocalY * 128 + 64;
+			Projectile projectile = new Projectile(curve, endHeight,
+				delay + loopCycle, duration + loopCycle,
+				startHeight, plane,
+				getTerrainHeight(plane, srcPixelY, srcPixelX) - startHeight * 4,
+				srcPixelY, srcPixelX, lockOn, id);
+			projectile.calculateTrajectory(delay + loopCycle, dstPixelY,
+				getTerrainHeight(plane, dstPixelY, dstPixelX) - endHeight * 4, dstPixelX);
+			nodeList.addFirst(projectile);
+		}
+	}
+
+	private static void handleStillGraphicProto(int id, int z, int delay, int absX, int absY) {
+		int localX = absX - baseX;
+		int localY = absY - baseY;
+		if (localX >= 0 && localY >= 0 && localX < 104 && localY < 104) {
+			int pixelX = localX * 128 + 64;
+			int pixelY = localY * 128 + 64;
+			GraphicEffect graphicEffect = new GraphicEffect(plane, loopCycle, delay, id,
+				getTerrainHeight(plane, pixelY, pixelX) - z, pixelY, pixelX);
+			queueSpotAnimation.addFirst(graphicEffect);
+		}
 	}
 
 	private static void handlePacketException(final Exception exception) {
@@ -1595,14 +1792,9 @@ public class PacketParser extends Client
 		final StringBuilder errorBuilder = STRING_BUILDER_CACHE.get();
 		errorBuilder.setLength(0);
 
-		errorBuilder.append("T2 - ").append(pktType).append(",").append(regionX).append(",")
-			.append(regionY).append(" - ").append(pktSize).append(",")
-			.append(baseX + myStoner.smallX[0]).append(",").append(baseY + myStoner.smallY[0])
-			.append(" - ");
-
-		final int limit = Math.min(pktSize, 50);
-		for (int i = 0; i < limit; i++) {
-			errorBuilder.append(inStream.buffer[i]).append(",");
+		errorBuilder.append("T2 - proto exception - ");
+		if (myStoner != null) {
+			errorBuilder.append(baseX + myStoner.smallX[0]).append(",").append(baseY + myStoner.smallY[0]);
 		}
 
 		Signlink.reporterror(errorBuilder.toString());
@@ -1612,24 +1804,17 @@ public class PacketParser extends Client
 	public static void sendPacket(final int packet) {
 		switch (packet) {
 			case 103:
-				stream.writeEncryptedOpcode(103);
-				stream.writeByte(inputString.length() - 1);
-				stream.writeString(inputString.substring(2));
+				sendProto(GamePacket.newBuilder().setCommandMessage(CommandMessage.newBuilder().setCommand(inputString.substring(2))).build());
 				inputString = "";
 				promptInput = "";
 				break;
 
 			case 1003:
-				stream.writeEncryptedOpcode(103);
-				inputString = "::" + inputString;
-				stream.writeByte(inputString.length() - 1);
-				stream.writeString(inputString.substring(2));
-				inputString = "";
+				sendProto(GamePacket.newBuilder().setCommandMessage(CommandMessage.newBuilder().setCommand(inputString.substring(2))).build());
 				promptInput = "";
 				break;
 
 			default:
-
 				break;
 		}
 	}

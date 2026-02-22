@@ -15,11 +15,10 @@ public class SettingHandler
 {
 
 	public final static String[] strings = {
-		"Fog", "Mip Mapping", "Moving Textures", "Status Orbs",
+		"Status Orbs",
 		"Roofs", "Debit Card", "Kill Feed", "Hover Menus", "Entity Feed", "HP Bars",
 		"Hitmarkers",
-		"x10 Damage", "Attack Priority", "Time Stamps", "Ground Decorations", "Flat Shading",
-		"GPU Rendering"
+		"x10 Damage", "Attack Priority", "Time Stamps", "Ground Decorations"
 	};
 	private final static String DIR = Signlink.findCacheDir();
 	private final static String PATH = DIR + "settings.json";
@@ -27,9 +26,6 @@ public class SettingHandler
 
 	public static void defaultSettings()
 	{
-		SettingsConfig.enableDistanceFog = true;
-		SettingsConfig.enableMipMapping = true;
-		SettingsConfig.enableMovingTextures = true;
 		SettingsConfig.enableStatusOrbs = true;
 		SettingsConfig.enableRoofs = false;
 		SettingsConfig.enablePouch = true;
@@ -42,8 +38,6 @@ public class SettingHandler
 		SettingsConfig.entityAttackPriority = false;
 		SettingsConfig.enableTimeStamps = false;
 		SettingsConfig.enableGroundDecorations = true;
-		SettingsConfig.enableFlatShading = true;
-		SettingsConfig.enableGPU = false;
 		Client.loadingStage = 1;
 	}
 
@@ -57,9 +51,6 @@ public class SettingHandler
 			root.addProperty("rememberMe", Client.rememberMe);
 
 			JsonObject toggles = new JsonObject();
-			toggles.addProperty("fog", SettingsConfig.enableDistanceFog);
-			toggles.addProperty("mipMapping", SettingsConfig.enableMipMapping);
-			toggles.addProperty("movingTextures", SettingsConfig.enableMovingTextures);
 			toggles.addProperty("statusOrbs", SettingsConfig.enableStatusOrbs);
 			toggles.addProperty("roofs", SettingsConfig.enableRoofs);
 			toggles.addProperty("pouch", SettingsConfig.enablePouch);
@@ -72,8 +63,6 @@ public class SettingHandler
 			toggles.addProperty("attackPriority", SettingsConfig.entityAttackPriority);
 			toggles.addProperty("timeStamps", SettingsConfig.enableTimeStamps);
 			toggles.addProperty("groundDecorations", SettingsConfig.enableGroundDecorations);
-			toggles.addProperty("flatShading", SettingsConfig.enableFlatShading);
-			toggles.addProperty("gpuRendering", SettingsConfig.enableGPU);
 			root.add("toggles", toggles);
 
 			JsonObject dock = new JsonObject();
@@ -112,9 +101,6 @@ public class SettingHandler
 			if (root.has("toggles"))
 			{
 				JsonObject t = root.getAsJsonObject("toggles");
-				SettingsConfig.enableDistanceFog = getBool(t, "fog", true);
-				SettingsConfig.enableMipMapping = getBool(t, "mipMapping", true);
-				SettingsConfig.enableMovingTextures = getBool(t, "movingTextures", true);
 				SettingsConfig.enableStatusOrbs = getBool(t, "statusOrbs", true);
 				SettingsConfig.enableRoofs = getBool(t, "roofs", false);
 				SettingsConfig.enablePouch = getBool(t, "pouch", true);
@@ -127,8 +113,6 @@ public class SettingHandler
 				SettingsConfig.entityAttackPriority = getBool(t, "attackPriority", false);
 				SettingsConfig.enableTimeStamps = getBool(t, "timeStamps", false);
 				SettingsConfig.enableGroundDecorations = getBool(t, "groundDecorations", true);
-				SettingsConfig.enableFlatShading = getBool(t, "flatShading", true);
-				SettingsConfig.enableGPU = getBool(t, "gpuRendering", false);
 			}
 
 			if (root.has("dock"))

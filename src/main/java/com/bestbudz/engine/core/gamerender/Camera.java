@@ -249,26 +249,6 @@ public class Camera extends Client
 				}
 
 			}
-			packetTimer++;
-			if (packetTimer > 1512)
-			{
-				packetTimer = 0;
-				stream.writeEncryptedOpcode(77);
-				stream.writeByte(0);
-				int i2 = stream.position;
-				stream.writeByte((int) (Math.random() * 256D));
-				stream.writeByte(101);
-				stream.writeByte(233);
-				stream.writeWord(45092);
-				if ((int) (Math.random() * 2D) == 0)
-					stream.writeWord(35784);
-				stream.writeByte((int) (Math.random() * 256D));
-				stream.writeByte(64);
-				stream.writeByte(38);
-				stream.writeWord((int) (Math.random() * 65536D));
-				stream.writeWord((int) (Math.random() * 65536D));
-				stream.writePacketLength(stream.position - i2);
-			}
 			int j2 = k1 * 192;
 			if (j2 > 0x17f00)
 				j2 = 0x17f00;

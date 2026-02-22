@@ -1,0 +1,122 @@
+syntax = "proto3";
+package bestbudz;
+option java_package = "com.bestbudz.net.proto";
+option java_outer_classname = "WorldProto";
+
+import "bestbudz/common.proto";
+
+// Server -> Client: Map/Region
+message MapRegion {
+  int32 region_x = 1;
+  int32 region_y = 2;
+}
+
+message MapRegionConstruction {
+  int32 region_x = 1;
+  int32 region_y = 2;
+  repeated int32 dynamic_data = 3;  // flattened 4x13x13 array
+}
+
+message MapState {
+  int32 state = 1;
+}
+
+// Server -> Client: Coordinates (for ground items/objects)
+message Coordinates {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+message AltCoordinates {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+// Server -> Client: Ground items
+message GroundItemSpawn {
+  int32 item_id = 1;
+  int32 amount = 2;
+  int32 x = 3;
+  int32 y = 4;
+}
+
+message GroundItemRemove {
+  int32 item_id = 1;
+  int32 x = 2;
+  int32 y = 3;
+}
+
+// Server -> Client: Objects
+message ObjectSpawn {
+  int32 object_id = 1;
+  int32 type = 2;
+  int32 face = 3;
+  int32 x = 4;
+  int32 y = 5;
+}
+
+message ObjectAnimate {
+  int32 type = 1;
+  int32 face = 2;
+  int32 animation = 3;
+  int32 x = 4;
+  int32 y = 5;
+}
+
+// Server -> Client: Projectiles
+message Projectile {
+  int32 id = 1;
+  int32 start_height = 2;
+  int32 end_height = 3;
+  int32 delay = 4;
+  int32 duration = 5;
+  int32 curve = 6;
+  int32 lock_on = 7;
+  int32 offset_x = 8;
+  int32 offset_y = 9;
+  int32 x = 10;
+  int32 y = 11;
+}
+
+message StillGraphic {
+  int32 id = 1;
+  int32 z = 2;
+  int32 delay = 3;
+  int32 x = 4;
+  int32 y = 5;
+}
+
+// Server -> Client: Sound
+message SoundEffect {
+  int32 id = 1;
+  int32 type = 2;
+  int32 delay = 3;
+}
+
+// Server -> Client: Music
+message MusicChange {
+  int32 id = 1;
+}
+
+message MusicQueue {
+  int32 id = 1;
+  int32 delay = 2;
+}
+
+// Server -> Client: Ground item updates (batched, region-based)
+message GroundItemUpdate {
+  int32 region_x = 1;
+  int32 region_y = 2;
+  repeated GroundItemAction actions = 3;
+}
+
+message GroundItemAction {
+  int32 opcode = 1;
+  bytes data = 2;  // raw ground item update data, passed through
+}
+
+// Server -> Client: Ground array clear
+message GroundArrayClear {
+  int32 start_x = 1;
+  int32 start_y = 2;
+}

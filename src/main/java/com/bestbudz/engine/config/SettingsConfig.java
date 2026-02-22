@@ -11,13 +11,7 @@ public class SettingsConfig
 
   public static boolean menuHovers;
 
-  public static boolean enableDistanceFog;
-
-  public static boolean enableMipMapping;
-
   public static boolean enableRoofs;
-
-  public static boolean enableMovingTextures;
 
   public static boolean enableStatusOrbs;
 
@@ -43,7 +37,4 @@ public class SettingsConfig
 
   public static boolean enableGroundDecorations;
 
-	public static boolean enableFlatShading;
-
-	public static boolean enableGPU;
 }

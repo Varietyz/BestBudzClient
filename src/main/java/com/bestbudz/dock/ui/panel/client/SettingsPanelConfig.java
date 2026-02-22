@@ -1,9 +1,7 @@
 package com.bestbudz.dock.ui.panel.client;
 
-import com.bestbudz.engine.config.EngineConfig;
 import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.engine.gpu.GPUToggleHandler;
 import com.bestbudz.ui.handling.SettingHandler;
 
 import javax.swing.Timer;
@@ -51,18 +49,6 @@ public class SettingsPanelConfig {
 
 	private void initializeSettings() {
 
-		addSetting("Fog",
-			() -> SettingsConfig.enableDistanceFog,
-			value -> SettingsConfig.enableDistanceFog = value);
-
-		addSetting("Mip Mapping",
-			() -> SettingsConfig.enableMipMapping,
-			value -> SettingsConfig.enableMipMapping = value);
-
-		addSetting("Moving Textures",
-			() -> SettingsConfig.enableMovingTextures,
-			value -> SettingsConfig.enableMovingTextures = value);
-
 		addSetting("Roofs",
 			() -> SettingsConfig.enableRoofs,
 			value -> SettingsConfig.enableRoofs = value);
@@ -71,10 +57,6 @@ public class SettingsPanelConfig {
 			() -> SettingsConfig.enableGroundDecorations,
 			value -> SettingsConfig.enableGroundDecorations = value,
 			() -> Client.loadingStage = 1);
-
-		addSetting("Flat Shading",
-			() -> SettingsConfig.enableFlatShading,
-			value -> SettingsConfig.enableFlatShading = value);
 
 		addSetting("Status Orbs",
 			() -> SettingsConfig.enableStatusOrbs,
@@ -115,14 +97,6 @@ public class SettingsPanelConfig {
 		addSetting("Attack Priority",
 			() -> SettingsConfig.entityAttackPriority,
 			value -> SettingsConfig.entityAttackPriority = value);
-
-		addSetting("GPU Rendering",
-			() -> SettingsConfig.enableGPU,
-			value -> {
-				SettingsConfig.enableGPU = value;
-				EngineConfig.ENABLE_GPU = value;
-			},
-			() -> GPUToggleHandler.onGPUToggled(SettingsConfig.enableGPU));
 	}
 
 	private void addSetting(String name, Supplier<Boolean> getter, Consumer<Boolean> setter) {

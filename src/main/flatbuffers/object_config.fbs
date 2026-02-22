@@ -1,0 +1,47 @@
+namespace bestbudz.config;
+
+table ObjectEntry {
+  id:int (key);
+  name:string;
+  description:string;
+  model_ids:[int];
+  model_types:[int];
+  size_x:int = 1;
+  size_y:int = 1;
+  clip_flag:bool = true;
+  blocks_projectiles:bool = true;
+  has_actions:bool;
+  rotate_heights:bool;
+  non_flat_shading:bool;
+  blocks_movement:bool;
+  animation_id:int = -1;
+  wall_thickness:int = 16;
+  ambient:int;
+  contrast:int;
+  actions:[string];
+  original_colors:[int];
+  modified_colors:[int];
+  map_scene:int = -1;
+  mirrored:bool;
+  casts_shadow:bool = true;
+  scale_x:int = 128;
+  scale_y:int = 128;
+  scale_z:int = 128;
+  map_function:int = -1;
+  surroundings:int;
+  translate_x:int;
+  translate_y:int;
+  translate_z:int;
+  obstructs_ground:bool;
+  remove_clipping:bool;
+  support_items:int = -1;
+  varbit_id:int = -1;
+  config_id:int = -1;
+  child_ids:[int];
+}
+
+table ObjectConfig {
+  entries:[ObjectEntry];
+}
+
+root_type ObjectConfig;

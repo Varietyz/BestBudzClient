@@ -1,5 +1,8 @@
 package com.bestbudz.rendering;
 
+import bestbudz.config.SpotAnimConfig;
+import bestbudz.config.SpotAnimEntry;
+import com.bestbudz.cache.FlatBufferConfigLoader;
 import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.rendering.animation.Animation;
 import com.bestbudz.rendering.model.Model;
@@ -7,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.nio.ByteBuffer;
 import java.util.Map;
 
 public final class SpotAnim {
@@ -33,6 +37,43 @@ public final class SpotAnim {
 	}
 
 	public static void loadConfigurations() {
+		// Try FlatBuffer first
+		ByteBuffer buf = FlatBufferConfigLoader.load("graphics.fb");
+		if (buf != null) {
+			SpotAnimConfig config = SpotAnimConfig.getRootAsSpotAnimConfig(buf);
+			int maxId = 0;
+			for (int i = 0; i < config.entriesLength(); i++) {
+				int id = config.entries(i).id();
+				if (id > maxId) maxId = id;
+			}
+			int length = maxId + 1;
+			if (cache == null)
+				cache = new SpotAnim[length + 50000];
+			for (int i = 0; i < config.entriesLength(); i++) {
+				SpotAnimEntry fb = config.entries(i);
+				int id = fb.id();
+				if (cache[id] == null)
+					cache[id] = new SpotAnim();
+				SpotAnim s = cache[id];
+				s.id = id;
+				s.modelId = fb.modelId();
+				s.animationId = fb.animationId();
+				if (s.animationId >= 0 && Animation.anims != null && s.animationId < Animation.anims.length)
+					s.animation = Animation.anims[s.animationId];
+				s.resizeX = fb.resizeX();
+				s.resizeY = fb.resizeY();
+				s.rotation = fb.rotation();
+				s.ambient = fb.ambient();
+				s.contrast = fb.contrast();
+				for (int j = 0; j < Math.min(fb.originalColorsLength(), 6); j++)
+					s.originalColors[j] = fb.originalColors(j);
+				for (int j = 0; j < Math.min(fb.replacementColorsLength(), 6); j++)
+					s.replacementColors[j] = fb.replacementColors(j);
+			}
+			System.out.println("Graphics Loaded (FlatBuffer): " + config.entriesLength());
+			return;
+		}
+
 		JsonObject json = JsonCacheLoader.loadJsonObject("graphics.json");
 		if (json == null) {
 			System.err.println("Failed to load graphics.json");

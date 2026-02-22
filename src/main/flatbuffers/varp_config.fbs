@@ -1,0 +1,12 @@
+namespace bestbudz.config;
+
+table VarpEntry {
+  id:int (key);
+  config_type:int;
+}
+
+table VarpConfig {
+  entries:[VarpEntry];
+}
+
+root_type VarpConfig;

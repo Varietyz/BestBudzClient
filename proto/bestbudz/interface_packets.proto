@@ -1,0 +1,251 @@
+syntax = "proto3";
+package bestbudz;
+option java_package = "com.bestbudz.net.proto";
+option java_outer_classname = "InterfaceProto";
+
+import "bestbudz/common.proto";
+
+// Server -> Client: Interface operations
+message InterfaceText {
+  string text = 1;
+  int32 frame = 2;
+}
+
+message OpenInterface {
+  int32 id = 1;
+}
+
+message CloseInterface {
+  int32 id = 1;
+}
+
+message CloseAllInterfaces {}
+
+message RemoveInterfaces {}
+
+message BoxInterface {
+  int32 id = 1;
+  int32 inv_id = 2;
+}
+
+message InterfaceInventory {
+  int32 interface_id = 1;
+  int32 overlay_id = 2;
+}
+
+message WalkableInterface {
+  int32 id = 1;
+}
+
+message ChatBoxInterface {
+  int32 id = 1;
+}
+
+message BackDialog {
+  int32 id = 1;
+}
+
+message DialogWindow {
+  int32 id = 1;
+}
+
+message SidebarInterface {
+  int32 tab_id = 1;
+  int32 interface_id = 2;
+}
+
+message TabInterface {
+  int32 tab_id = 1;
+  int32 interface_id = 2;
+}
+
+message InterfaceConfig {
+  int32 main = 1;
+  int32 sub1 = 2;
+  int32 sub2 = 3;
+}
+
+message InterfaceColor {
+  int32 id = 1;
+  int32 r = 2;
+  int32 g = 3;
+  int32 b = 4;
+}
+
+message InterfaceAnimation {
+  int32 interface_id = 1;
+  int32 animation_id = 2;
+}
+
+message InterfaceModel {
+  int32 interface_id = 1;
+}
+
+message InterfaceNpcHead {
+  int32 npc_id = 1;
+  int32 interface_id = 2;
+}
+
+message InterfaceItemModel {
+  int32 interface_id = 1;
+  int32 zoom = 2;
+  int32 item_id = 3;
+}
+
+message InterfaceModelRotation {
+  int32 interface_id = 1;
+  int32 zoom = 2;
+  int32 rotation1 = 3;
+  int32 rotation2 = 4;
+}
+
+message InterfaceScroll {
+  int32 interface_id = 1;
+  int32 scroll_position = 2;
+}
+
+message InterfaceScrollPosition {
+  int32 interface_id = 1;
+  int32 scroll_position = 2;
+}
+
+message InterfaceOffset {
+  int32 interface_id = 1;
+  int32 offset = 2;
+}
+
+message InterfaceHover {
+  bool enabled = 1;
+  int32 interface_id = 2;
+}
+
+message InterfaceSettings {
+  int32 input_type = 1;
+  int32 unknown = 2;
+}
+
+message MoveComponent {
+  int32 x = 1;
+  int32 y = 2;
+  int32 component_id = 3;
+}
+
+message ItemOnInterface {
+  int32 id = 1;
+  int32 zoom = 2;
+  int32 model = 3;
+}
+
+// Inventory updates
+message InventoryUpdate {
+  int32 interface_id = 1;
+  repeated Item items = 2;
+  repeated int32 tab_amounts = 3;  // for bank tabs
+}
+
+message InventoryItemUpdate {
+  int32 interface_id = 1;
+  repeated SlottedItem items = 2;
+}
+
+message ClearInventory {
+  int32 interface_id = 1;
+}
+
+message EquipmentUpdate {
+  int32 slot = 1;
+  int32 id = 2;
+  int32 amount = 3;
+}
+
+message DuelEquipment {
+  int32 id = 1;
+  int32 amount = 2;
+  int32 slot = 3;
+}
+
+message UpdateItemsAlt {
+  int32 interface_id = 1;
+  int32 id = 2;
+  int32 amount = 3;
+  int32 slot = 4;
+}
+
+// Config
+message ConfigUpdate {
+  int32 id = 1;
+  int32 value = 2;
+}
+
+message ConfigByteUpdate {
+  int32 id = 1;
+  int32 value = 2;
+}
+
+// Input prompts
+message InputAmount {}
+message InputName {}
+message EnterString {}
+message EnterXInterface {
+  int32 interface_id = 1;
+  int32 item_id = 2;
+}
+
+// Client -> Server: Interface actions
+message ClickButton {
+  int32 button_id = 1;
+}
+
+message InterfaceAction {
+  int32 interface_id = 1;
+  int32 item_id = 2;
+  int32 slot = 3;
+  int32 action = 4;
+}
+
+message CloseInterfaceRequest {}
+
+message ChatInterfaceAction {
+  int32 interface_id = 1;
+  int32 opcode = 2;
+}
+
+message InputFieldAction {
+  string text = 1;
+  int32 id = 2;
+}
+
+message StringInput {
+  string text = 1;
+}
+
+message ReceiveStringAction {
+  string text = 1;
+}
+
+message DockPanelAction {
+  int32 panel_id = 1;
+  int32 action = 2;
+  string data = 3;
+}
+
+message BankAllButOneAction {
+  int32 interface_id = 1;
+  int32 item_id = 2;
+  int32 slot = 3;
+}
+
+message BankModifiableXAction {
+  int32 interface_id = 1;
+  int32 item_id = 2;
+  int32 slot = 3;
+  int32 amount = 4;
+}
+
+// Client -> Server: Inventory drag/swap
+message InventorySwap {
+  int32 interface_id = 1;
+  int32 mode = 2;
+  int32 from_slot = 3;
+  int32 to_slot = 4;
+}

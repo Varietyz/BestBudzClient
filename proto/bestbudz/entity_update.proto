@@ -1,0 +1,151 @@
+syntax = "proto3";
+package bestbudz;
+option java_package = "com.bestbudz.net.proto";
+option java_outer_classname = "EntityUpdateProto";
+
+import "bestbudz/common.proto";
+
+// ============ Stoner (Player) Updates ============
+
+message StonerUpdate {
+  LocalStonerMovement local_movement = 1;
+  repeated StonerSync synced_stoners = 2;
+  repeated StonerAdd added_stoners = 3;
+  repeated int32 removed_indices = 4;
+  StonerUpdateMask local_mask = 5;  // local player's own update mask
+}
+
+message LocalStonerMovement {
+  oneof movement {
+    bool no_update = 1;          // standing, no flags
+    StandUpdate standing = 2;    // standing with update flags
+    WalkMovement walk = 3;
+    RunMovement run = 4;
+    PlacementMovement placement = 5;
+  }
+}
+
+message StandUpdate {}
+
+message WalkMovement {
+  int32 direction = 1;
+  bool has_update = 2;
+}
+
+message RunMovement {
+  int32 direction1 = 1;
+  int32 direction2 = 2;
+  bool has_update = 3;
+}
+
+message PlacementMovement {
+  int32 local_x = 1;
+  int32 local_y = 2;
+  int32 z = 3;
+  bool discard_movement_queue = 4;
+  bool has_update = 5;
+}
+
+message StonerSync {
+  int32 index = 1;
+  oneof movement {
+    StandUpdate standing = 2;
+    WalkMovement walk = 3;
+    RunMovement run = 4;
+    bool removed = 5;
+    bool no_update = 6;
+  }
+  StonerUpdateMask mask = 7;
+}
+
+message StonerAdd {
+  int32 index = 1;
+  int32 delta_x = 2;
+  int32 delta_y = 3;
+  StonerUpdateMask mask = 4;
+}
+
+message StonerUpdateMask {
+  optional ForceMovementData force_movement = 1;
+  optional GraphicData graphic = 2;
+  optional AnimationData animation = 3;
+  optional string force_chat = 4;
+  optional StonerChatData chat = 5;
+  optional int32 face_entity = 6;
+  optional StonerAppearance appearance = 7;
+  optional FaceDirection face_direction = 8;
+  optional HitData hit1 = 9;
+  optional HitData hit2 = 10;
+}
+
+message StonerChatData {
+  int32 color = 1;
+  int32 effects = 2;
+  int32 rights = 3;
+  bytes text = 4;
+}
+
+message StonerAppearance {
+  int32 gender = 1;
+  int32 headicon = 2;
+  int32 rights = 3;
+  repeated int32 equipment = 4;    // equipment item IDs (slots)
+  repeated int32 look = 5;         // body appearance parts
+  int32 npc_appearance_id = 6;     // -1 if not transformed
+  repeated int32 colors = 7;       // 5 body colors
+  int32 stand_emote = 8;
+  int32 stand_turn_emote = 9;
+  int32 walk_emote = 10;
+  int32 turn180_emote = 11;
+  int32 turn90cw_emote = 12;
+  int32 turn90ccw_emote = 13;
+  int32 run_emote = 14;
+  string display_name = 15;
+  int32 combat_grade = 16;
+  StonerTitle title = 17;
+}
+
+message StonerTitle {
+  string color_hex = 1;
+  string title = 2;
+  bool is_suffix = 3;
+}
+
+// ============ NPC Updates ============
+
+message NpcUpdate {
+  repeated NpcSync synced_npcs = 1;
+  repeated NpcAdd added_npcs = 2;
+  repeated int32 removed_indices = 3;
+}
+
+message NpcSync {
+  int32 index = 1;
+  oneof movement {
+    StandUpdate standing = 2;
+    WalkMovement walk = 3;
+    bool removed = 4;
+    bool no_update = 5;
+  }
+  NpcUpdateMask mask = 6;
+}
+
+message NpcAdd {
+  int32 index = 1;
+  int32 npc_id = 2;
+  int32 delta_x = 3;
+  int32 delta_y = 4;
+  int32 face_direction = 5;
+  NpcUpdateMask mask = 6;
+}
+
+message NpcUpdateMask {
+  optional AnimationData animation = 1;
+  optional HitData hit1 = 2;
+  optional GraphicData graphic = 3;
+  optional int32 face_entity = 4;
+  optional string force_chat = 5;
+  optional HitData hit2 = 6;
+  optional int32 transform_id = 7;
+  optional FaceDirection face_direction = 8;
+}

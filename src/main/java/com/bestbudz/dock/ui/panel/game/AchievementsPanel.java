@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.InterfaceProto.*;
 
 public class AchievementsPanel implements UIPanel, DockTextUpdatable
 {
@@ -103,8 +105,7 @@ panel.setPreferredSize(null);
 				clickFadeTimer.start();
 
 				int frameId = 31006 + index;
-				Client.stream.writeEncryptedOpcode(185);
-				Client.stream.writeWord(frameId);
+				Client.sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(frameId)).build());
 			}
 		});
 
@@ -172,8 +173,7 @@ panel.setPreferredSize(null);
 	private void requestAchievements() {
 		if (!Client.loggedIn || Client.stream == null) return;
 		try {
-			Client.stream.writeEncryptedOpcode(185);
-			Client.stream.writeWord(29404);
+			Client.sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(29404)).build());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

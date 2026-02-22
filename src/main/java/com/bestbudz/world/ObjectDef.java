@@ -1,5 +1,8 @@
 package com.bestbudz.world;
 
+import bestbudz.config.ObjectConfig;
+import bestbudz.config.ObjectEntry;
+import com.bestbudz.cache.FlatBufferConfigLoader;
 import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.rendering.SequenceFrame;
@@ -9,6 +12,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Objects;
 
@@ -17,6 +21,7 @@ public final class ObjectDef {
 	public static final Model[] tempModels = new Model[4];
 	public static boolean lowMem;
 	public static JsonObject[] jsonDefs;
+	public static ObjectConfig fbConfig;
 	public static int totalObjects;
 	public static Client clientInstance;
 	public static int cacheIndex;
@@ -81,7 +86,12 @@ public final class ObjectDef {
 		ObjectDef objectDef = cache[cacheIndex];
 		objectDef.type = i;
 		objectDef.setDefaults();
-		if (jsonDefs != null && i >= 0 && i < jsonDefs.length && jsonDefs[i] != null) {
+		if (fbConfig != null) {
+			ObjectEntry fb = fbConfig.entriesByKey(i);
+			if (fb != null) {
+				objectDef.loadFromFlatBuffer(fb);
+			}
+		} else if (jsonDefs != null && i >= 0 && i < jsonDefs.length && jsonDefs[i] != null) {
 			objectDef.readFromJson(jsonDefs[i]);
 		}
 
@@ -391,10 +401,31 @@ public final class ObjectDef {
 		if (mruNodes1 != null) mruNodes1.clear();
 		if (mruNodes2 != null) mruNodes2.clear();
 		jsonDefs = null;
+		fbConfig = null;
 		cache = null;
 	}
 
 	public static void unpackConfig() {
+		// Try FlatBuffer first
+		ByteBuffer buf = FlatBufferConfigLoader.load("objects.fb");
+		if (buf != null) {
+			fbConfig = ObjectConfig.getRootAsObjectConfig(buf);
+			int maxId = 0;
+			for (int i = 0; i < fbConfig.entriesLength(); i++) {
+				int id = fbConfig.entries(i).id();
+				if (id > maxId) maxId = id;
+			}
+			totalObjects = maxId + 1;
+			jsonDefs = null;
+			int cacheSize = Math.max(64, Math.min(512, totalObjects / 50));
+			cache = new ObjectDef[cacheSize];
+			for (int k = 0; k < cacheSize; k++)
+				cache[k] = new ObjectDef();
+			System.out.println("Objects Loaded (FlatBuffer): " + fbConfig.entriesLength());
+			return;
+		}
+
+		// Fallback: JSON
 		JsonObject json = JsonCacheLoader.loadJsonObject("objects.json");
 		if (json == null) {
 			System.err.println("Failed to load objects.json");
@@ -516,6 +547,88 @@ public final class ObjectDef {
 		}
 
 		// Post-processing (same as binary readValues)
+		if (!Objects.equals(name, "null") && name != null) {
+			hasActions = anIntArray773 != null && (anIntArray776 == null || anIntArray776[0] == 10);
+			if (actions != null)
+				hasActions = true;
+		}
+		if (aBoolean766) {
+			clipFlag = false;
+			blocksProjectiles = false;
+		}
+		if (anInt760 == -1)
+			anInt760 = clipFlag ? 1 : 0;
+	}
+
+	public void loadFromFlatBuffer(ObjectEntry fb) {
+		if (fb.modelIdsLength() > 0) {
+			anIntArray773 = new int[fb.modelIdsLength()];
+			for (int i = 0; i < fb.modelIdsLength(); i++)
+				anIntArray773[i] = fb.modelIds(i);
+		}
+		if (fb.modelTypesLength() > 0) {
+			anIntArray776 = new int[fb.modelTypesLength()];
+			for (int i = 0; i < fb.modelTypesLength(); i++)
+				anIntArray776[i] = fb.modelTypes(i);
+		}
+		name = fb.name();
+		String desc = fb.description();
+		if (desc != null) description = desc.getBytes();
+		sizeX = fb.sizeX();
+		sizeY = fb.sizeY();
+		clipFlag = fb.clipFlag();
+		blocksProjectiles = fb.blocksProjectiles();
+		hasActions = fb.hasActions();
+		rotateHeights = fb.rotateHeights();
+		aBoolean769 = fb.nonFlatShading();
+		blocksMovement = fb.blocksMovement();
+		animationId = fb.animationId();
+		wallThickness = fb.wallThickness();
+		aByte737 = (byte) fb.ambient();
+		aByte742 = (byte) fb.contrast();
+		if (fb.actionsLength() > 0) {
+			actions = new String[fb.actionsLength()];
+			for (int i = 0; i < fb.actionsLength(); i++) {
+				String s = fb.actions(i);
+				if (s != null && !s.isEmpty() && !s.equalsIgnoreCase("hidden"))
+					actions[i] = s;
+				else
+					actions[i] = null;
+			}
+		}
+		if (fb.originalColorsLength() > 0) {
+			originalModelColors = new int[fb.originalColorsLength()];
+			for (int i = 0; i < fb.originalColorsLength(); i++)
+				originalModelColors[i] = fb.originalColors(i);
+		}
+		if (fb.modifiedColorsLength() > 0) {
+			modifiedModelColors = new int[fb.modifiedColorsLength()];
+			for (int i = 0; i < fb.modifiedColorsLength(); i++)
+				modifiedModelColors[i] = fb.modifiedColors(i);
+		}
+		anInt746 = fb.mapScene();
+		aBoolean751 = fb.mirrored();
+		castsShadow = fb.castsShadow();
+		anInt748 = fb.scaleX();
+		anInt772 = fb.scaleY();
+		anInt740 = fb.scaleZ();
+		anInt758 = fb.mapFunction();
+		anInt768 = fb.surroundings();
+		anInt738 = fb.translateX();
+		anInt745 = fb.translateY();
+		anInt783 = fb.translateZ();
+		aBoolean736 = fb.obstructsGround();
+		aBoolean766 = fb.removeClipping();
+		anInt760 = fb.supportItems();
+		varbitId = fb.varbitId();
+		configId = fb.configId();
+		if (fb.childIdsLength() > 0) {
+			childIds = new int[fb.childIdsLength()];
+			for (int i = 0; i < fb.childIdsLength(); i++)
+				childIds[i] = fb.childIds(i);
+		}
+
+		// Post-processing (same as readFromJson / binary readValues)
 		if (!Objects.equals(name, "null") && name != null) {
 			hasActions = anIntArray773 != null && (anIntArray776 == null || anIntArray776[0] == 10);
 			if (actions != null)

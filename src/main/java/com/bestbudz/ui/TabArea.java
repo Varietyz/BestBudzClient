@@ -8,6 +8,8 @@ import static com.bestbudz.ui.DrawInterface.drawInterface;
 import com.bestbudz.engine.core.gamerender.DrawingArea;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
 import java.util.Set;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.PlayerProto.*;
 
 public class TabArea extends Client
 {
@@ -218,8 +220,7 @@ public class TabArea extends Client
 	public static void commitTabState() {
 		if (selectedTabIndex != -1 && selectedTabIndex == tabID) {
 			selectedTabIndex = -1;
-			stream.writeEncryptedOpcode(120);
-			stream.writeByte(tabID);
+			sendProto(GamePacket.newBuilder().setFlashingSideIcon(FlashingSideIcon.newBuilder().setIcon(tabID)).build());
 		}
 		tabAreaAltered = false;
 		loginImageProducer.initDrawingArea();

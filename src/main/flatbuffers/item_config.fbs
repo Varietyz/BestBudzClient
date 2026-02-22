@@ -1,0 +1,48 @@
+namespace bestbudz.config;
+
+table ItemEntry {
+  id:int (key);
+  model_id:int;
+  name:string;
+  description:string;
+  model_zoom:int = 2000;
+  model_rotation_y:int;
+  model_rotation_x:int;
+  model_offset_1:int;
+  model_offset_2:int;
+  stackable:bool;
+  value:int = 1;
+  members:bool;
+  male_wear_model_1:int = -1;
+  male_wear_model_2:int = -1;
+  male_wear_model_3:int = -1;
+  female_wear_model_1:int = -1;
+  female_wear_model_2:int = -1;
+  female_wear_model_3:int = -1;
+  male_head_model_1:int = -1;
+  male_head_model_2:int = -1;
+  female_head_model_1:int = -1;
+  female_head_model_2:int = -1;
+  model_rotation_2:int;
+  cert_id:int = -1;
+  cert_template_id:int = -1;
+  scale_x:int = 128;
+  scale_y:int = 128;
+  scale_z:int = 128;
+  light_modifier:int;
+  shadow_modifier:int;
+  team:int;
+  ground_actions:[string];
+  item_actions:[string];
+  equip_actions:[string];
+  original_colors:[int];
+  modified_colors:[int];
+  stack_ids:[int];
+  stack_amounts:[int];
+}
+
+table ItemConfig {
+  entries:[ItemEntry];
+}
+
+root_type ItemConfig;

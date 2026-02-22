@@ -142,6 +142,8 @@ public class BuildScreenMenu extends Client
 			if (k1 == 0)
 			{
 				Stoner stoner = stonerArray[l1];
+				if (stoner == null)
+					return;
 				if ((stoner.x & 0x7f) == 64 && (stoner.y & 0x7f) == 64)
 				{
 					for (int k2 = 0; k2 < npcCount; k2++)

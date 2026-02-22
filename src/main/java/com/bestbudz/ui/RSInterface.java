@@ -1,6 +1,10 @@
 package com.bestbudz.ui;
 
 import static com.bestbudz.data.items.GetItemDef.getItemDefinition;
+import bestbudz.config.InterfaceConfig;
+import bestbudz.config.InterfaceEntry;
+import bestbudz.config.SpriteSlot;
+import com.bestbudz.cache.FlatBufferConfigLoader;
 import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.config.EngineConfig;
@@ -15,6 +19,8 @@ import com.bestbudz.graphics.text.TextClass;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import java.nio.ByteBuffer;
 
 public class RSInterface {
 
@@ -97,6 +103,262 @@ public class RSInterface {
 		aMRUNodes_238 = new LRUCache<>(50000);
 		interfaceCache = new RSInterface[70_000];
 
+		// Try FlatBuffer first
+		ByteBuffer buf = FlatBufferConfigLoader.load("interfaces.fb");
+		if (buf != null) {
+			unpackFromFlatBuffer(buf, textDrawingAreas);
+		} else {
+			unpackFromJson(textDrawingAreas);
+		}
+
+		try { constructLunar(); } catch (Exception e) { System.err.println("Error in constructLunar: " + e.getMessage()); }
+		try { configureLunar(textDrawingAreas); } catch (Exception e) { System.err.println("Error in configureLunar: " + e.getMessage()); }
+		try { homeTeleport(textDrawingAreas); } catch (Exception e) { System.err.println("Error in homeTeleport: " + e.getMessage()); }
+		try { itemsOnDeathDATA(textDrawingAreas); } catch (Exception e) { System.err.println("Error in itemsOnDeathDATA: " + e.getMessage()); }
+		try { CustomInterfaces.unpackInterfaces(textDrawingAreas); } catch (Exception e) { System.err.println("Error in CustomInterfaces: " + e.getMessage()); }
+
+		aMRUNodes_238 = null;
+	}
+
+	private static void unpackFromFlatBuffer(ByteBuffer buf, TextDrawingArea[] textDrawingAreas) {
+		InterfaceConfig config = InterfaceConfig.getRootAsInterfaceConfig(buf);
+		int loaded = 0;
+
+		for (int i = 0; i < config.entriesLength(); i++) {
+			try {
+				InterfaceEntry fb = config.entries(i);
+				int k = fb.id();
+				if (k < 0 || k >= interfaceCache.length) continue;
+
+				RSInterface rsInterface = interfaceCache[k] = new RSInterface();
+				rsInterface.id = k;
+				rsInterface.parentID = fb.parentId();
+				rsInterface.type = fb.type();
+				rsInterface.atActionType = fb.atActionType();
+				rsInterface.contentType = fb.contentType();
+				rsInterface.width = fb.width();
+				rsInterface.height = fb.height();
+				rsInterface.opacity = (byte) fb.opacity();
+				rsInterface.hoverType = fb.hoverType();
+
+				// Comparator ops + values
+				if (fb.comparatorOpsLength() > 0) {
+					int count = fb.comparatorOpsLength();
+					rsInterface.anIntArray245 = new int[count];
+					rsInterface.anIntArray212 = new int[count];
+					for (int j = 0; j < count; j++) {
+						rsInterface.anIntArray245[j] = fb.comparatorOps(j);
+						rsInterface.anIntArray212[j] = j < fb.comparatorValuesLength() ? fb.comparatorValues(j) : 0;
+					}
+				}
+
+				// Value index arrays (stored as comma-separated strings)
+				if (fb.valueIndexesLength() > 0) {
+					rsInterface.valueIndexArray = new int[fb.valueIndexesLength()][];
+					for (int j = 0; j < fb.valueIndexesLength(); j++) {
+						String csv = fb.valueIndexes(j);
+						if (csv != null && !csv.isEmpty()) {
+							String[] parts = csv.split(",");
+							rsInterface.valueIndexArray[j] = new int[parts.length];
+							for (int m = 0; m < parts.length; m++)
+								rsInterface.valueIndexArray[j][m] = Integer.parseInt(parts[m]);
+						} else {
+							rsInterface.valueIndexArray[j] = new int[0];
+						}
+					}
+				}
+
+				// Type 0: Container
+				if (rsInterface.type == 0) {
+					rsInterface.drawsTransparent = false;
+					rsInterface.scrollMax = fb.scrollMax();
+					rsInterface.isMouseoverTriggered = fb.mouseoverTriggered();
+					if (fb.childrenLength() > 0) {
+						int childCount = fb.childrenLength();
+						rsInterface.children = new int[childCount];
+						rsInterface.childX = new int[childCount];
+						rsInterface.childY = new int[childCount];
+						for (int j = 0; j < childCount; j++) {
+							rsInterface.children[j] = fb.children(j);
+							rsInterface.childX[j] = j < fb.childXLength() ? fb.childX(j) : 0;
+							rsInterface.childY[j] = j < fb.childYLength() ? fb.childY(j) : 0;
+						}
+					}
+				}
+
+				// Type 2: Inventory
+				if (rsInterface.type == 2) {
+					int slotCount = rsInterface.width * rsInterface.height;
+					if (slotCount > 0 && slotCount < 10000) {
+						rsInterface.inv = new int[slotCount];
+						rsInterface.invStackSizes = new int[slotCount];
+					}
+					rsInterface.aBoolean259 = fb.replaceItems();
+					rsInterface.isBoxInterface = fb.isBank();
+					rsInterface.usableItemInterface = fb.usableItems();
+					rsInterface.aBoolean235 = fb.aBoolean235();
+					rsInterface.invSpritePadX = fb.invSpritePadX();
+					rsInterface.invSpritePadY = fb.invSpritePadY();
+
+					// Sprite slots
+					rsInterface.spritesX = new int[20];
+					rsInterface.spritesY = new int[20];
+					rsInterface.sprites = new Sprite[20];
+					for (int j = 0; j < fb.spriteSlotsLength(); j++) {
+						SpriteSlot slot = fb.spriteSlots(j);
+						int slotIdx = slot.slot();
+						if (slotIdx >= 0 && slotIdx < 20) {
+							rsInterface.spritesX[slotIdx] = slot.x();
+							rsInterface.spritesY[slotIdx] = slot.y();
+							String spriteRef = slot.sprite();
+							if (spriteRef != null && !spriteRef.isEmpty()) {
+								rsInterface.sprites[slotIdx] = loadSpriteFromRef(spriteRef);
+							}
+						}
+					}
+
+					// Actions
+					rsInterface.actions = new String[5];
+					for (int j = 0; j < 5 && j < fb.actionsLength(); j++) {
+						String act = fb.actions(j);
+						if (act != null && !act.isEmpty())
+							rsInterface.actions[j] = act;
+					}
+					// Shop/equip overrides
+					if (rsInterface.parentID == 3824 && rsInterface.actions.length > 4)
+						rsInterface.actions[4] = "Buy X";
+					if (rsInterface.parentID == 3822 && rsInterface.actions.length > 4)
+						rsInterface.actions[4] = "Sell X";
+					if (rsInterface.parentID == 1644 && rsInterface.actions.length > 2)
+						rsInterface.actions[2] = "Operate";
+				}
+
+				// Type 3: Rectangle
+				if (rsInterface.type == 3) {
+					rsInterface.aBoolean227 = fb.filled();
+				}
+
+				// Type 4 / Type 1: Text properties
+				if (rsInterface.type == 4 || rsInterface.type == 1) {
+					rsInterface.centerText = fb.centerText();
+					int fontIdx = fb.fontId();
+					if (fontIdx >= 0 && textDrawingAreas != null && fontIdx < textDrawingAreas.length)
+						rsInterface.textDrawingAreas = textDrawingAreas[fontIdx];
+					rsInterface.textShadow = fb.textShadow();
+				}
+
+				// Type 4: Text messages
+				if (rsInterface.type == 4) {
+					String dm = fb.disabledMessage();
+					rsInterface.disabledMessage = dm != null ? dm.replaceAll("RuneScape", EngineConfig.TITLE) : "";
+					String em = fb.enabledMessage();
+					rsInterface.enabledMessage = em != null ? em : "";
+				}
+
+				// Types 1, 3, 4: textColor
+				if (rsInterface.type == 1 || rsInterface.type == 3 || rsInterface.type == 4) {
+					rsInterface.textColor = fb.textColor();
+				}
+
+				// Types 3, 4: color variants
+				if (rsInterface.type == 3 || rsInterface.type == 4) {
+					rsInterface.anInt219 = fb.enabledColor();
+					rsInterface.textHoverColor = fb.textHoverColor();
+					rsInterface.anInt239 = fb.enabledHoverColor();
+				}
+
+				// Type 5: Sprite
+				if (rsInterface.type == 5) {
+					rsInterface.drawsTransparent = false;
+					String disRef = fb.disabledSprite();
+					if (disRef != null && !disRef.isEmpty()) {
+						rsInterface.disabledSprite = loadSpriteFromRef(disRef);
+					}
+					String enRef = fb.enabledSprite();
+					if (enRef != null && !enRef.isEmpty()) {
+						rsInterface.enabledSprite = loadSpriteFromRef(enRef);
+					}
+				}
+
+				// Type 6: Model
+				if (rsInterface.type == 6) {
+					if (fb.modelType() != 0) {
+						rsInterface.modelType = fb.modelType();
+						rsInterface.mediaID = fb.mediaId();
+					}
+					if (fb.enabledModelType() != 0) {
+						rsInterface.anInt255 = fb.enabledModelType();
+						rsInterface.anInt256 = fb.enabledMediaId();
+					}
+					rsInterface.verticalOffset = fb.verticalOffset();
+					rsInterface.anInt258 = fb.enabledVerticalOffset();
+					rsInterface.modelZoom = fb.modelZoom();
+					rsInterface.modelRotation1 = fb.modelRotation1();
+					rsInterface.modelRotation2 = fb.modelRotation2();
+				}
+
+				// Type 7: Inventory text
+				if (rsInterface.type == 7) {
+					int slotCount = rsInterface.width * rsInterface.height;
+					if (slotCount > 0 && slotCount < 10000) {
+						rsInterface.inv = new int[slotCount];
+						rsInterface.invStackSizes = new int[slotCount];
+					}
+					rsInterface.centerText = fb.centerText();
+					int fontIdx = fb.fontId();
+					if (fontIdx >= 0 && textDrawingAreas != null && fontIdx < textDrawingAreas.length)
+						rsInterface.textDrawingAreas = textDrawingAreas[fontIdx];
+					rsInterface.textShadow = fb.textShadow();
+					rsInterface.textColor = fb.textColor();
+					rsInterface.invSpritePadX = fb.invSpritePadX();
+					rsInterface.invSpritePadY = fb.invSpritePadY();
+					rsInterface.isBoxInterface = fb.isBank();
+					rsInterface.actions = new String[5];
+					for (int j = 0; j < 5 && j < fb.actionsLength(); j++) {
+						String act = fb.actions(j);
+						if (act != null && !act.isEmpty())
+							rsInterface.actions[j] = act;
+					}
+				}
+
+				// Spell / usable on (atActionType == 2 || type == 2)
+				if (rsInterface.atActionType == 2 || rsInterface.type == 2) {
+					String san = fb.selectedActionName();
+					rsInterface.selectedActionName = san != null ? san : "";
+					String sn = fb.spellName();
+					rsInterface.spellName = sn != null ? sn : "";
+					rsInterface.spellUsableOn = fb.spellUsableOn();
+				}
+
+				// Type 8: Tooltip text
+				if (rsInterface.type == 8) {
+					String dm = fb.disabledMessage();
+					rsInterface.disabledMessage = dm != null ? dm : "";
+				}
+
+				// Tooltip for action types 1, 4, 5, 6
+				if (rsInterface.atActionType == 1 || rsInterface.atActionType == 4
+					|| rsInterface.atActionType == 5 || rsInterface.atActionType == 6) {
+					String tt = fb.tooltip();
+					rsInterface.tooltip = tt != null ? tt : "";
+					if (rsInterface.tooltip.isEmpty()) {
+						if (rsInterface.atActionType == 1) rsInterface.tooltip = "Ok";
+						if (rsInterface.atActionType == 4) rsInterface.tooltip = "Select";
+						if (rsInterface.atActionType == 5) rsInterface.tooltip = "Select";
+						if (rsInterface.atActionType == 6) rsInterface.tooltip = "Continue";
+					}
+				}
+
+				loaded++;
+			} catch (Exception e) {
+				System.err.println("Error loading interface from FB index " + i + ": " + e.getMessage());
+			}
+		}
+
+		System.out.println("[RSInterface] Loaded " + loaded + " widgets from FlatBuffer");
+	}
+
+	private static void unpackFromJson(TextDrawingArea[] textDrawingAreas) {
 		JsonObject allWidgets = JsonCacheLoader.loadJsonObject("interfaces.json");
 		if (allWidgets == null) {
 			System.err.println("[RSInterface] Failed to load interfaces.json");
@@ -360,14 +622,6 @@ public class RSInterface {
 		}
 
 		System.out.println("[RSInterface] Loaded " + loaded + " widgets from JSON");
-
-		try { constructLunar(); } catch (Exception e) { System.err.println("Error in constructLunar: " + e.getMessage()); }
-		try { configureLunar(textDrawingAreas); } catch (Exception e) { System.err.println("Error in configureLunar: " + e.getMessage()); }
-		try { homeTeleport(textDrawingAreas); } catch (Exception e) { System.err.println("Error in homeTeleport: " + e.getMessage()); }
-		try { itemsOnDeathDATA(textDrawingAreas); } catch (Exception e) { System.err.println("Error in itemsOnDeathDATA: " + e.getMessage()); }
-		try { CustomInterfaces.unpackInterfaces(textDrawingAreas); } catch (Exception e) { System.err.println("Error in CustomInterfaces: " + e.getMessage()); }
-
-		aMRUNodes_238 = null;
 	}
 
 	private static Sprite loadSpriteFromRef(String ref) {

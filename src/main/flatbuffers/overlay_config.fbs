@@ -1,0 +1,25 @@
+namespace bestbudz.config;
+
+table OverlayEntry {
+  id:int (key);
+  rgb:int;
+  texture_id:int = -1;
+  hide_underlay:bool;
+  has_hide_underlay:bool;
+  secondary_rgb:int;
+  blend_mode:int;
+  boolean_10:bool;
+  has_boolean_10:bool;
+  int_11:int;
+  boolean_12:bool;
+  tertiary_rgb:int;
+  int_14:int;
+  int_15:int;
+  int_16:int;
+}
+
+table OverlayConfig {
+  entries:[OverlayEntry];
+}
+
+root_type OverlayConfig;

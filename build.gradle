@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id 'edu.sc.seis.launch4j' version '2.5.0'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'com.google.protobuf' version '0.9.4'
 }
 
 group = 'com.bestbudz'
@@ -25,9 +26,21 @@ dependencies {
     implementation "org.lwjgl:lwjgl-opengl:3.3.3"
     implementation "org.lwjgl:lwjgl-glfw:3.3.3"
 
+    // Protobuf
+    implementation 'com.google.protobuf:protobuf-java:3.25.5'
+
+    // FlatBuffers
+    implementation 'com.google.flatbuffers:flatbuffers-java:24.3.25'
+
     runtimeOnly "org.lwjgl:lwjgl:3.3.3:natives-windows"
     runtimeOnly "org.lwjgl:lwjgl-opengl:3.3.3:natives-windows"
     runtimeOnly "org.lwjgl:lwjgl-glfw:3.3.3:natives-windows"
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.25.5'
+    }
 }
 
 java {
@@ -101,3 +114,46 @@ tasks.register('extractCache', JavaExec) {
     }
 }
 
+sourceSets {
+    main {
+        proto {
+            srcDirs = ['proto']
+        }
+        java {
+            srcDirs += "${buildDir}/generated/flatbuffers/java"
+        }
+    }
+}
+
+// FlatBuffers schema compilation
+task generateFlatBuffers(type: Exec) {
+    def schemaDir = file('src/main/flatbuffers')
+    def outputDir = file("${buildDir}/generated/flatbuffers/java")
+    doFirst { outputDir.mkdirs() }
+    def schemas = fileTree(schemaDir) { include '*.fbs' }
+    inputs.dir(schemaDir)
+    outputs.dir(outputDir)
+    commandLine 'tools/flatc', '--java', '-o', outputDir.absolutePath
+    args schemas.files.collect { it.absolutePath }
+}
+
+compileJava.dependsOn generateFlatBuffers, generateProto
+
+// Pack JSON configs into FlatBuffer binaries (.json → .fb)
+// JSONs are the dev-friendly source of truth; .fb files are generated build artifacts
+task packConfigs(type: JavaExec) {
+    dependsOn classes
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.bestbudz.tools.ConfigPacker'
+    def cacheDir = file('extracted_cache')
+    args = [cacheDir.absolutePath]
+    jvmArgs = ['-Xmx1g']
+
+    // Track JSON inputs so Gradle can skip when nothing changed
+    inputs.files(fileTree(cacheDir) { include '*.json' })
+    outputs.files(fileTree(cacheDir) { include '*.fb' })
+}
+
+// Always pack fresh .fb before running or building
+run.dependsOn packConfigs
+shadowJar.dependsOn packConfigs

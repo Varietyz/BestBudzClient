@@ -57,13 +57,7 @@ public final class ImageProducer {
 	}
 
 	private void initializeGPUBackend() {
-		if (!GPURenderingEngine.isEnabled()) {
-			isGPUBacked = false;
-			return;
-		}
-
 		try {
-
 			gpuPixelBuffer = ByteBuffer.allocateDirect(canvasWidth * canvasHeight * 4);
 			isGPUBacked = true;
 			gpuDataValid = false;
@@ -77,8 +71,7 @@ public final class ImageProducer {
 	}
 
 	public void drawGraphics(int y, Graphics2D graphics, int x) {
-		if (isGPUBacked && GPURenderingEngine.isEnabled()) {
-
+		if (isGPUBacked) {
 			syncGPUDataWhenNeeded();
 		}
 
@@ -172,7 +165,7 @@ public final class ImageProducer {
 
 	public void initDrawingArea() {
 
-		if (isGPUBacked && GPURenderingEngine.isEnabled()) {
+		if (isGPUBacked) {
 			int currentGPUWidth = GPURenderingEngine.getWidth();
 			int currentGPUHeight = GPURenderingEngine.getHeight();
 
@@ -203,7 +196,7 @@ public final class ImageProducer {
 	}
 
 	public void forceSyncGPU() {
-		if (!isGPUBacked || !GPURenderingEngine.isEnabled()) {
+		if (!isGPUBacked) {
 			return;
 		}
 
@@ -217,7 +210,7 @@ public final class ImageProducer {
 	}
 
 	public boolean isGPUBacked() {
-		return isGPUBacked && GPURenderingEngine.isEnabled();
+		return isGPUBacked;
 	}
 
 	public void handleContextRecreation() {
@@ -273,11 +266,6 @@ public final class ImageProducer {
 
 	public boolean validateGPUState() {
 		if (!isGPUBacked) {
-			return true;
-		}
-
-		if (!GPURenderingEngine.isEnabled()) {
-			isGPUBacked = false;
 			return true;
 		}
 

@@ -1,0 +1,16 @@
+namespace bestbudz.config;
+
+table FloorEntry {
+  id:int (key);
+  rgb:int;
+  texture_id:int = -1;
+  occlude:bool = true;
+  secondary_rgb:int;
+  has_secondary_rgb:bool;
+}
+
+table FloorConfig {
+  entries:[FloorEntry];
+}
+
+root_type FloorConfig;

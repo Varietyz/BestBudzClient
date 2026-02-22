@@ -1,0 +1,18 @@
+namespace bestbudz.config;
+
+table IdentityKitEntry {
+  id:int (key);
+  body_part:int = -1;
+  models:[int];
+  non_selectable:bool;
+  disabled:bool;
+  original_colors:[int];
+  replacement_colors:[int];
+  head_models:[int];
+}
+
+table IdentityKitConfig {
+  entries:[IdentityKitEntry];
+}
+
+root_type IdentityKitConfig;

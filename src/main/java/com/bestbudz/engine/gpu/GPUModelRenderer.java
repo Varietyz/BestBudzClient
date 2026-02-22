@@ -56,6 +56,14 @@ public class GPUModelRenderer {
 	private static int uFogStart;
 	private static int uFogEnd;
 
+	// Animated texture uniform locations
+	private static int uTime;
+	private static int uAnimateTextures;
+
+	// Frame time counter (seconds since GPU init)
+	private static long gpuStartTimeNanos = 0;
+	private static float currentFrameTime = 0.0f;
+
 	// Reusable vertex buffer (grows as needed)
 	private static IntBuffer vertexData;
 	private static int vertexDataCapacity;
@@ -135,7 +143,13 @@ public class GPUModelRenderer {
 			uFogStart = shader.getUniformLocation("uFogStart");
 			uFogEnd = shader.getUniformLocation("uFogEnd");
 
+			// Animated texture uniforms
+			uTime = shader.getUniformLocation("uTime");
+			uAnimateTextures = shader.getUniformLocation("uAnimateTextures");
+
 			shader.unbind();
+
+			gpuStartTimeNanos = System.nanoTime();
 
 			// Create color palette texture
 			createColorPaletteTexture();
@@ -201,6 +215,9 @@ public class GPUModelRenderer {
 		modelsRenderedThisFrame = 0;
 		trianglesRenderedThisFrame = 0;
 		inFrame = true;
+
+		// Compute elapsed time in seconds for animated textures
+		currentFrameTime = (float) ((System.nanoTime() - gpuStartTimeNanos) / 1_000_000_000.0);
 
 		if (!paletteUploaded) {
 			uploadColorPalette();
@@ -381,7 +398,7 @@ public class GPUModelRenderer {
 	 *
 	 * @return float[6]: {uA, vA, uB, vB, uC, vC}
 	 */
-	private static float[] computeUVs(Model model, int faceA, int faceB, int faceC,
+	static float[] computeUVs(Model model, int faceA, int faceB, int faceC,
 										int tA, int tB, int tC) {
 		// Texture triangle vertex positions (model space, no rotation)
 		float ax = model.verticesX[tA], ay = model.verticesY[tA], az = model.verticesZ[tA];
@@ -478,6 +495,12 @@ public class GPUModelRenderer {
 		s.setUniform3f(uFogColor, EnvironmentConfig.fogColorR, EnvironmentConfig.fogColorG, EnvironmentConfig.fogColorB);
 		s.setUniform1f(uFogStart, EnvironmentConfig.fogStart);
 		s.setUniform1f(uFogEnd, EnvironmentConfig.fogEnd);
+		s.setUniform1f(uTime, currentFrameTime);
+		s.setUniform1i(uAnimateTextures, EnvironmentConfig.enableAnimatedTextures ? 1 : 0);
+	}
+
+	public static float getCurrentFrameTime() {
+		return currentFrameTime;
 	}
 
 	public static void endFrame() {

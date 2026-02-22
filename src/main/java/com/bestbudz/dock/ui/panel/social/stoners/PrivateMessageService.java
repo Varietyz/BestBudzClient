@@ -7,6 +7,9 @@ import com.bestbudz.graphics.text.TextClass;
 
 import javax.swing.*;
 import java.awt.*;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.ChatProto.*;
+import com.google.protobuf.ByteString;
 
 public class PrivateMessageService implements MessageSender {
 	private final Component parentComponent;
@@ -41,20 +44,14 @@ public class PrivateMessageService implements MessageSender {
 				return;
 			}
 
-			Client.stream.writeEncryptedOpcode(126);
-			Client.stream.writeByte(0);
-			int frameStart = Client.stream.position;
-			Client.stream.writeQWord(recipientHash);
-			TextInput.method526(message, Client.stream);
-			Client.stream.writePacketLength(Client.stream.position - frameStart);
+			Client.sendProto(GamePacket.newBuilder().setPrivateMessageSend(PrivateMessageSend.newBuilder().setRecipientHash(recipientHash).setMessage(ByteString.copyFrom(message.getBytes()))).build());
 
 			String processedMessage = TextInput.processText(message);
 			Chatbox.pushMessage(processedMessage, 6, TextClass.fixName(TextClass.nameForLong(recipientHash)));
 
 			if (Chatbox.privateChatMode == 2) {
 				Chatbox.privateChatMode = 1;
-				Client.stream.writeEncryptedOpcode(95);
-				Client.stream.writeByte(Chatbox.privateChatMode);
+				Client.sendProto(GamePacket.newBuilder().setChatModeUpdate(ChatModeUpdate.newBuilder().setPublicMode(Chatbox.publicChatMode).setPrivateMode(Chatbox.privateChatMode).setTradeMode(0)).build());
 			}
 
 		} catch (Exception e) {

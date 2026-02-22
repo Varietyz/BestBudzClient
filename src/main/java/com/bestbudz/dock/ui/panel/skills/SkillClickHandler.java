@@ -4,6 +4,8 @@ import com.bestbudz.data.Skills;
 import com.bestbudz.engine.core.Client;
 import java.util.HashMap;
 import java.util.Map;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.InterfaceProto.*;
 
 public class SkillClickHandler {
 	private static long lastClickTime = 0;
@@ -47,8 +49,7 @@ public class SkillClickHandler {
 			int clientButtonId = calculateClientButtonId(serverButtonId);
 
 			try {
-				Client.stream.writeEncryptedOpcode(185);
-				Client.stream.writeWord(clientButtonId);
+				Client.sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(clientButtonId)).build());
 				System.out.println("Skill " + skillName + " clicked - sent ID: " + clientButtonId);
 			} catch (Exception ex) {
 				System.out.println("Error: " + ex.getMessage());
@@ -63,8 +64,7 @@ public class SkillClickHandler {
 
 		try {
 			int clientButtonId = calculateClientButtonId(94144);
-			Client.stream.writeEncryptedOpcode(185);
-			Client.stream.writeWord(clientButtonId);
+			Client.sendProto(GamePacket.newBuilder().setClickButton(ClickButton.newBuilder().setButtonId(clientButtonId)).build());
 			System.out.println("Total Stats clicked - sent button ID: " + clientButtonId);
 		} catch (Exception ex) {
 			System.out.println("Error: " + ex.getMessage());

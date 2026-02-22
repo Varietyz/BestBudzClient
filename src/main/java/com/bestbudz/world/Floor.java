@@ -1,10 +1,14 @@
 package com.bestbudz.world;
 
+import bestbudz.config.FloorConfig;
+import bestbudz.config.FloorEntry;
+import com.bestbudz.cache.FlatBufferConfigLoader;
 import com.bestbudz.cache.JsonCacheLoader;
 import com.bestbudz.engine.config.SettingsConfig;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.nio.ByteBuffer;
 import java.util.Map;
 
 public final class Floor {
@@ -26,6 +30,46 @@ public final class Floor {
 	}
 
 	public static void unpackConfig() {
+		// Try FlatBuffer first
+		ByteBuffer buf = FlatBufferConfigLoader.load("floors_underlay.fb");
+		if (buf != null) {
+			FloorConfig config = FloorConfig.getRootAsFloorConfig(buf);
+			int maxId = 0;
+			for (int i = 0; i < config.entriesLength(); i++) {
+				int id = config.entries(i).id();
+				if (id > maxId) maxId = id;
+			}
+			int cacheSize = maxId + 1;
+			if (cache == null)
+				cache = new Floor[cacheSize];
+			for (int i = 0; i < config.entriesLength(); i++) {
+				FloorEntry fb = config.entries(i);
+				int id = fb.id();
+				if (cache[id] == null)
+					cache[id] = new Floor();
+				int rgb = fb.rgb();
+				if (SettingsConfig.snow) rgb = 0xffffff;
+				cache[id].anInt390 = rgb;
+				cache[id].method262(rgb);
+				if (fb.textureId() != -1) cache[id].anInt391 = fb.textureId();
+				cache[id].aBoolean393 = fb.occlude();
+				if (fb.hasSecondaryRgb()) {
+					int j = cache[id].anInt394;
+					int k = cache[id].anInt395;
+					int l = cache[id].anInt396;
+					int i1 = cache[id].anInt397;
+					cache[id].method262(fb.secondaryRgb());
+					cache[id].anInt394 = j;
+					cache[id].anInt395 = k;
+					cache[id].anInt396 = l;
+					cache[id].anInt397 = i1;
+					cache[id].anInt398 = i1;
+				}
+			}
+			System.out.println("Underlays Loaded (FlatBuffer): " + config.entriesLength());
+			return;
+		}
+
 		JsonObject json = JsonCacheLoader.loadJsonObject("floors_underlay.json");
 		if (json == null) {
 			System.err.println("Failed to load floors_underlay.json");

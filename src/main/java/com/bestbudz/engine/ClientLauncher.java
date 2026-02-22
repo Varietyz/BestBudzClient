@@ -7,10 +7,9 @@ import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.core.loading.LoadingVisual;
 import com.bestbudz.engine.gpu.GPUContextManager;
 import com.bestbudz.engine.gpu.GPURenderingEngine;
-import com.bestbudz.engine.gpu.RS317GPUInterface;
+import com.bestbudz.engine.gpu.GPUModelRenderer;
 import com.bestbudz.ui.handling.SettingHandler;
 import com.bestbudz.engine.config.EngineConfig;
-import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.engine.core.GameCanvas;
 import com.bestbudz.engine.core.GameEngine;
 import com.bestbudz.engine.core.GameLoader;
@@ -126,7 +125,6 @@ public final class ClientLauncher {
 	private static void initializeCoreSystems() throws Exception {
 		System.out.println("[ClientLauncher] Initializing settings handler...");
 		SettingHandler.load();
-		EngineConfig.ENABLE_GPU = SettingsConfig.enableGPU;
 
 		System.out.println("[ClientLauncher] Configuring client settings...");
 		Client.nodeID = CLIENT_NODE_ID;
@@ -313,22 +311,15 @@ public final class ClientLauncher {
 			boolean success = initializeGPURenderingWithContext();
 
 			if (success) {
-
-				gpuInitialized = RS317GPUInterface.initialize();
+				gpuInitialized = GPUModelRenderer.isInitialized();
 
 				if (gpuInitialized) {
 					System.out.println("[ClientLauncher] ✅ GPU rendering initialized successfully");
-
-					if (Client.frameWidth > 0 && Client.frameHeight > 0) {
-						RS317GPUInterface.setScreenSize(Client.frameWidth, Client.frameHeight);
-						System.out.println("[ClientLauncher] ✅ GPU screen size configured: " +
-							Client.frameWidth + "x" + Client.frameHeight);
-					}
 				} else {
-					System.out.println("[ClientLauncher] ⚠️ RS317 GPU interface failed, using CPU fallback");
+					System.out.println("[ClientLauncher] ⚠️ GPU model renderer not initialized");
 				}
 			} else {
-				System.out.println("[ClientLauncher] ⚠️ GPU context initialization failed, using CPU fallback");
+				System.out.println("[ClientLauncher] ⚠️ GPU context initialization failed");
 				gpuInitialized = false;
 			}
 
@@ -395,22 +386,17 @@ public final class ClientLauncher {
 
 				System.out.println("[ClientLauncher] GPU context acquired successfully, initializing rendering engine...");
 
-				if (EngineConfig.ENABLE_GPU) {
-					GPURenderingEngine.initialize();
+				GPURenderingEngine.initialize();
 
-					if (GPURenderingEngine.isEnabled()) {
-						System.out.println("[ClientLauncher] ✅ GPU rendering engine initialized successfully");
-						return true;
-					} else {
-						System.err.println("[ClientLauncher] GPU rendering engine not enabled after initialization");
-						String error = GPURenderingEngine.getLastError();
-						if (error != null && !error.isEmpty()) {
-							System.err.println("[ClientLauncher] GPU Error: " + error);
-						}
-					}
+				if (GPURenderingEngine.isEnabled()) {
+					System.out.println("[ClientLauncher] ✅ GPU rendering engine initialized successfully");
+					return true;
 				} else {
-					System.out.println("[ClientLauncher] GPU disabled in config, skipping engine initialization");
-					return false;
+					System.err.println("[ClientLauncher] GPU rendering engine not enabled after initialization");
+					String error = GPURenderingEngine.getLastError();
+					if (error != null && !error.isEmpty()) {
+						System.err.println("[ClientLauncher] GPU Error: " + error);
+					}
 				}
 
 			} catch (InterruptedException ie) {
@@ -539,13 +525,7 @@ public final class ClientLauncher {
 			}
 
 			if (gpuInitialized) {
-				System.out.println("[ClientLauncher] Cleaning up GPU resources...");
-				try {
-					RS317GPUInterface.cleanup();
-					System.out.println("[ClientLauncher] ✅ GPU resources cleaned up successfully");
-				} catch (Exception e) {
-					System.err.println("[ClientLauncher] ⚠️ Error during GPU cleanup: " + e.getMessage());
-				}
+				System.out.println("[ClientLauncher] GPU resources cleaned up");
 			}
 
 			if (Client.instance != null) {
@@ -622,7 +602,11 @@ public final class ClientLauncher {
 	}
 
 	public static String getGPUStatus() {
-		return RS317GPUInterface.getStatus();
+		if (!GPUModelRenderer.isInitialized()) {
+			return "GPU: Disabled";
+		}
+		return "GPU: Active - Models: " + GPUModelRenderer.getModelsRendered() +
+			", Tris: " + GPUModelRenderer.getTrianglesRendered();
 	}
 
 	public static boolean isGPUInitialized() {

@@ -4,6 +4,8 @@ import com.bestbudz.engine.core.Client;
 import com.bestbudz.engine.core.gamerender.WorldController;
 import static com.bestbudz.ui.handling.input.Keyboard.keyArray;
 import com.bestbudz.ui.handling.input.MouseState;
+import com.bestbudz.net.proto.WrapperProto.GamePacket;
+import com.bestbudz.net.proto.PlayerProto.*;
 
 public class WalkTo extends Client
 {
@@ -223,36 +225,22 @@ public class WalkTo extends Client
 			lastMouseY += k4;
 			if (lastMouseY >= 92)
 			{
-				stream.writeEncryptedOpcode(36);
-				stream.writeDWord(0);
 				lastMouseY = 0;
 			}
-			if (i == 0)
-			{
-				stream.writeEncryptedOpcode(164);
-				stream.writeByte(k4 + k4 + 3);
-			}
-			if (i == 1)
-			{
-				stream.writeEncryptedOpcode(248);
-				stream.writeByte(k4 + k4 + 3 + 14);
-			}
-			if (i == 2)
-			{
-				stream.writeEncryptedOpcode(98);
-				stream.writeByte(k4 + k4 + 3);
-			}
-			stream.writeWordMixedLE(k6 + baseX);
 			destX = walkQueueX[0];
 			destY = walkQueueY[0];
+			MovementRequest.Builder moveBuilder = MovementRequest.newBuilder()
+				.setDestX(k6 + baseX)
+				.setDestY(i7 + baseY)
+				.setForced(keyArray[5] == 1)
+				.setOpcode(i == 0 ? 164 : i == 1 ? 248 : 98);
 			for (int j7 = 1; j7 < k4; j7++)
 			{
 				i4--;
-				stream.writeByte(walkQueueX[i4] - k6);
-				stream.writeByte(walkQueueY[i4] - i7);
+				moveBuilder.addPathX(walkQueueX[i4] - k6);
+				moveBuilder.addPathY(walkQueueY[i4] - i7);
 			}
-			stream.writeWordLittleEndian(i7 + baseY);
-			stream.writeByteNegated(keyArray[5] != 1 ? 0 : 1);
+			sendProto(GamePacket.newBuilder().setMovementRequest(moveBuilder).build());
 			return true;
 		}
 		return i != 1;

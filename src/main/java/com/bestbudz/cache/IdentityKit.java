@@ -1,10 +1,13 @@
 package com.bestbudz.cache;
 
+import bestbudz.config.IdentityKitConfig;
+import bestbudz.config.IdentityKitEntry;
 import com.bestbudz.rendering.model.Model;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.nio.ByteBuffer;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -37,6 +40,43 @@ public final class IdentityKit
 
 	public static void unpackConfig()
 	{
+		// Try FlatBuffer first
+		ByteBuffer buf = FlatBufferConfigLoader.load("identity_kits.fb");
+		if (buf != null) {
+			IdentityKitConfig config = IdentityKitConfig.getRootAsIdentityKitConfig(buf);
+			int maxId = 0;
+			for (int i = 0; i < config.entriesLength(); i++) {
+				int id = config.entries(i).id();
+				if (id > maxId) maxId = id;
+			}
+			length = maxId + 1;
+			if (cache == null)
+				cache = new IdentityKit[length];
+			for (int i = 0; i < config.entriesLength(); i++) {
+				IdentityKitEntry fb = config.entries(i);
+				int id = fb.id();
+				if (cache[id] == null)
+					cache[id] = new IdentityKit();
+				IdentityKit kit = cache[id];
+				kit.anInt657 = fb.bodyPart();
+				if (fb.modelsLength() > 0) {
+					kit.anIntArray658 = new int[fb.modelsLength()];
+					for (int j = 0; j < fb.modelsLength(); j++)
+						kit.anIntArray658[j] = fb.models(j);
+				}
+				kit.aBoolean662 = fb.nonSelectable() || fb.disabled();
+				for (int j = 0; j < Math.min(fb.originalColorsLength(), 6); j++)
+					kit.anIntArray659[j] = fb.originalColors(j);
+				for (int j = 0; j < Math.min(fb.replacementColorsLength(), 6); j++)
+					kit.anIntArray660[j] = fb.replacementColors(j);
+				for (int j = 0; j < Math.min(fb.headModelsLength(), 5); j++)
+					kit.anIntArray661[j] = fb.headModels(j);
+				kit.collectColors();
+			}
+			System.out.println("IdentityKits Loaded (FlatBuffer): " + config.entriesLength());
+			return;
+		}
+
 		JsonObject json = JsonCacheLoader.loadJsonObject("identity_kits.json");
 		if (json == null) {
 			System.err.println("Failed to load identity_kits.json");

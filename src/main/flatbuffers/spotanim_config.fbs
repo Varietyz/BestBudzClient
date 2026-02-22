@@ -1,0 +1,20 @@
+namespace bestbudz.config;
+
+table SpotAnimEntry {
+  id:int (key);
+  model_id:int;
+  animation_id:int = -1;
+  resize_x:int = 128;
+  resize_y:int = 128;
+  rotation:int;
+  ambient:int;
+  contrast:int;
+  original_colors:[int];
+  replacement_colors:[int];
+}
+
+table SpotAnimConfig {
+  entries:[SpotAnimEntry];
+}
+
+root_type SpotAnimConfig;

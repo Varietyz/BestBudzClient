@@ -1,7 +1,6 @@
 package com.bestbudz.graphics;
 
 import com.bestbudz.engine.core.Client;
-import com.bestbudz.engine.config.SettingsConfig;
 import com.bestbudz.engine.core.gamerender.Rasterizer;
 
 public class MovingTextures extends Client
@@ -14,7 +13,6 @@ public class MovingTextures extends Client
 
 	public static void updateMovingTextures(int j)
 	{
-		if (SettingsConfig.enableMovingTextures)
 		{
 			if (Rasterizer.textureLastUsed[17] >= j)
 			{
@@ -30,27 +28,7 @@ public class MovingTextures extends Client
 				background.textureData = abyte3;
 				aByteArray912 = abyte0;
 				Rasterizer.applyTexture(17);
-				packetCounter++;
-				if (packetCounter > 1235)
-				{
-					packetCounter = 0;
-					stream.writeEncryptedOpcode(226);
-					stream.writeByte(0);
-					int l2 = stream.position;
-					stream.writeWord(58722);
-					stream.writeByte(240);
-					stream.writeWord((int) (Math.random() * 65536D));
-					stream.writeByte((int) (Math.random() * 256D));
-					if ((int) (Math.random() * 2D) == 0)
-						stream.writeWord(51825);
-					stream.writeByte((int) (Math.random() * 256D));
-					stream.writeWord((int) (Math.random() * 65536D));
-					stream.writeWord(7130);
-					stream.writeWord((int) (Math.random() * 65536D));
-					stream.writeWord(61657);
-					stream.writePacketLength(stream.position - l2);
 				}
-			}
 			if (Rasterizer.textureLastUsed[24] >= j)
 			{
 				Background background_1 = Rasterizer.backgroundTextures[24];
