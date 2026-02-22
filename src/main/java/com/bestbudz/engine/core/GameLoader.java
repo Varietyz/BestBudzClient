@@ -379,7 +379,7 @@ public class GameLoader extends Client {
 			loadingScreen.addLogEntry(String.format("🎵 MIDI index loaded (%dms)", midiTime), LogLevel.SUCCESS);
 
 			metrics.startOperation("animation_setup");
-			SequenceFrame.animationlist = new SequenceFrame[2500][0];
+			SequenceFrame.animationlist = new SequenceFrame[2500][0]; // temporary, resized after Animation.unpackConfig()
 			int modelCount = cacheManager.getModelCount();
 			Model.initializeCache(modelCount);
 			metrics.modelsProcessed = modelCount;
@@ -623,6 +623,12 @@ public class GameLoader extends Client {
 				switch (configType) {
 					case "Animation":
 						Animation.unpackConfig();
+						int maxFrameFileId = Animation.getMaxFrameFileId();
+						int newAnimListSize = maxFrameFileId + 1;
+						if (newAnimListSize > SequenceFrame.animationlist.length) {
+							SequenceFrame.animationlist = new SequenceFrame[newAnimListSize][0];
+							loadingScreen.addLogEntry(String.format("📐 Animation frame list resized to %d (from max frame file ID)", newAnimListSize), LogLevel.INFO);
+						}
 						break;
 					case "ObjectDef":
 						ObjectDef.unpackConfig();
@@ -647,6 +653,7 @@ public class GameLoader extends Client {
 						break;
 					case "Varp":
 						Varp.unpackConfig();
+						Client.resizeConfigArrays(Varp.cache.length);
 						break;
 					case "VarBit":
 						VarBit.unpackConfig();
@@ -840,32 +847,66 @@ public class GameLoader extends Client {
 		}
 	}
 
+	private static Sprite[] loadSpritesDiscovered(String name) {
+		List<Sprite> list = new ArrayList<>();
+		for (int i = 0; ; i++) {
+			Sprite sprite = createSpriteOrNull(name, i);
+			if (sprite == null) break;
+			list.add(sprite);
+		}
+		return list.toArray(new Sprite[0]);
+	}
+
+	private static Background[] loadBackgroundsDiscovered(String name) {
+		List<Background> list = new ArrayList<>();
+		for (int i = 0; ; i++) {
+			try {
+				Background bg = Background.loadFromExtracted(name, i);
+				if (bg == null || bg.textureData == null) break;
+				list.add(bg);
+			} catch (Exception e) { break; }
+		}
+		return list.toArray(new Background[0]);
+	}
+
 	private static void loadOptionalSpritesBatch() {
 		metrics.startOperation("optional_sprites");
 
 		loadingScreen.updateDetail("Loading map scenes...");
-		int mapSceneCount = loadBackgroundArrayWithProgress(mapScenes, "mapscene", 100, 20);
+		mapScenes = loadBackgroundsDiscovered("mapscene");
+		int mapSceneCount = mapScenes.length;
 		metrics.backgroundsLoaded += mapSceneCount;
+		loadingScreen.updateDetailProgress(20);
 
 		loadingScreen.updateDetail("Loading map functions...");
-		int mapFunctionCount = loadSpriteArrayWithProgress(mapFunctions, "mapfunction", 100, 40);
+		mapFunctions = loadSpritesDiscovered("mapfunction");
+		int mapFunctionCount = mapFunctions.length;
+		loadingScreen.updateDetailProgress(40);
 
 		loadingScreen.updateDetail("Loading hit marks...");
-		int hitMarkCount = loadSpriteArrayWithProgress(hitMarks, "hitmarks", 20, 60);
+		hitMarks = loadSpritesDiscovered("hitmarks");
+		int hitMarkCount = hitMarks.length;
+		loadingScreen.updateDetailProgress(60);
 
 		loadingScreen.updateDetail("Loading hint icons...");
-		int hintIconCount = loadSpriteArrayWithProgress(headIconsHint, "headicons_hint", 6, 80);
+		headIconsHint = loadSpritesDiscovered("headicons_hint");
+		int hintIconCount = headIconsHint.length;
+		loadingScreen.updateDetailProgress(80);
 
 		loadingScreen.updateDetail("Loading prayer icons...");
-		int prayerIconCount = loadSpriteArrayWithProgress(headIcons, "headicons_prayer", 8, 90);
+		headIcons = loadSpritesDiscovered("headicons_prayer");
+		int prayerIconCount = headIcons.length;
+		loadingScreen.updateDetailProgress(90);
 
 		loadingScreen.updateDetail("Loading skull icons...");
-		int skullIconCount = loadSpriteArrayWithProgress(skullIcons, "headicons_pk", 3, 100);
+		skullIcons = loadSpritesDiscovered("headicons_pk");
+		int skullIconCount = skullIcons.length;
+		loadingScreen.updateDetailProgress(100);
 
 		metrics.endOperation("optional_sprites");
 		long optionalTime = metrics.operationTimes.get("optional_sprites_duration");
 		int totalLoaded = mapSceneCount + mapFunctionCount + hitMarkCount + hintIconCount + prayerIconCount + skullIconCount;
-		loadingScreen.addLogEntry(String.format("🎯 Optional sprites loaded: %d total (%dms)", totalLoaded, optionalTime), LogLevel.SUCCESS);
+		loadingScreen.addLogEntry(String.format("🎯 Optional sprites discovered: %d total (%dms)", totalLoaded, optionalTime), LogLevel.SUCCESS);
 		loadingScreen.addLogEntry(String.format("  • Map scenes: %d, Functions: %d, Hit marks: %d", mapSceneCount, mapFunctionCount, hitMarkCount), LogLevel.INFO);
 		loadingScreen.addLogEntry(String.format("  • Hint icons: %d, Prayer icons: %d, Skull icons: %d", hintIconCount, prayerIconCount, skullIconCount), LogLevel.INFO);
 	}
@@ -988,20 +1029,22 @@ public class GameLoader extends Client {
 		loadingScreen.updateDetail("Applying color adjustments...");
 		metrics.startOperation("color_application");
 
-		for (int i6 = 0; i6 < 100; i6++) {
+		for (int i6 = 0; i6 < mapFunctions.length; i6++) {
 			if (mapFunctions[i6] != null && mapFunctions[i6].myPixels != null) {
 				mapFunctions[i6].adjustBrightness(colorAdjust1, colorAdjust2, colorAdjust3);
 				functionsProcessed++;
 				totalPixelsProcessed += mapFunctions[i6].myPixels.length;
 			}
+		}
+		for (int i6 = 0; i6 < mapScenes.length; i6++) {
 			if (mapScenes[i6] != null && mapScenes[i6].textureData != null) {
 				mapScenes[i6].method360(colorAdjust1, colorAdjust2, colorAdjust3);
 				scenesProcessed++;
 				totalPixelsProcessed += mapScenes[i6].textureData.length;
 			}
 
-			if (i6 % 10 == 0) {
-				loadingScreen.updateDetailProgress(i6);
+			if (i6 % 100 == 0) {
+				loadingScreen.updateDetailProgress(i6 * 100 / mapScenes.length);
 			}
 		}
 

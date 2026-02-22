@@ -20,6 +20,8 @@ public final class ObjectDef {
 	public static int totalObjects;
 	public static Client clientInstance;
 	public static int cacheIndex;
+	public static int cacheHits = 0;
+	public static int cacheMisses = 0;
 	public static LRUCache<Model> mruNodes2 = new LRUCache<>(64);
 	public static ObjectDef[] cache;
 	public static LRUCache<Model> mruNodes1 = new LRUCache<>(1024);
@@ -69,10 +71,13 @@ public final class ObjectDef {
 	public static ObjectDef forID(int i) {
 		if (i > totalObjects - 1)
 			i = totalObjects - 1;
-		for (int j = 0; j < 20; j++)
-			if (cache[j].type == i)
+		for (int j = 0; j < cache.length; j++)
+			if (cache[j].type == i) {
+				cacheHits++;
 				return cache[j];
-		cacheIndex = (cacheIndex + 1) % 20;
+			}
+		cacheMisses++;
+		cacheIndex = (cacheIndex + 1) % cache.length;
 		ObjectDef objectDef = cache[cacheIndex];
 		objectDef.type = i;
 		objectDef.setDefaults();
@@ -414,8 +419,9 @@ public final class ObjectDef {
 
 		System.out.println("Objects Loaded (JSON): " + loaded);
 
-		cache = new ObjectDef[20];
-		for (int k = 0; k < 20; k++)
+		int cacheSize = Math.max(64, Math.min(512, totalObjects / 50));
+		cache = new ObjectDef[cacheSize];
+		for (int k = 0; k < cacheSize; k++)
 			cache[k] = new ObjectDef();
 	}
 
@@ -614,18 +620,22 @@ public final class ObjectDef {
 	public ObjectDef getChildObject() {
 		int i = -1;
 		if (varbitId != -1) {
-			VarBit varBit = VarBit.cache[varbitId];
-			int j = varBit.baseVar;
-			int k = varBit.startBit;
-			int l = varBit.endBit;
-			int i1 = Client.bitMasks[l - k];
-			i = client.variousSettings[j] >> k & i1;
-		} else if (configId != -1)
+			if (varbitId < VarBit.cache.length && VarBit.cache[varbitId] != null) {
+				VarBit varBit = VarBit.cache[varbitId];
+				int j = varBit.baseVar;
+				int k = varBit.startBit;
+				int l = varBit.endBit;
+				int i1 = Client.bitMasks[l - k];
+				if (j >= 0 && j < client.variousSettings.length) {
+					i = client.variousSettings[j] >> k & i1;
+				}
+			}
+		} else if (configId != -1 && configId < client.variousSettings.length) {
 			i = client.variousSettings[configId];
+		}
 		if (i < 0 || i >= childIds.length || childIds[i] == -1)
 			return null;
-		else
-			return forID(childIds[i]);
+		return forID(childIds[i]);
 	}
 
 	public Model getModel(int j, int k, int l) {

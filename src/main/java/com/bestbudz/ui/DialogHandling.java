@@ -216,6 +216,7 @@ public class DialogHandling extends Client
 	}
 	public static void sendFrame36(int id, int state)
 	{
+		if (id < 0 || id >= variousSettings.length) return;
 		experienceDrops[id] = state;
 		if (variousSettings[id] != state)
 		{

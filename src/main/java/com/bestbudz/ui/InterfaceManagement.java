@@ -427,12 +427,16 @@ public class InterfaceManagement extends Client
 						}
 					}
 				}
-				if (j1 == 5)
-					k1 = variousSettings[ai[l++]];
+				if (j1 == 5) {
+					int idx = ai[l++];
+					k1 = (idx >= 0 && idx < variousSettings.length) ? variousSettings[idx] : 0;
+				}
 				if (j1 == 6)
 					k1 = Skills.EXP_FOR_LEVEL[maxStats[ai[l++]] - 1];
-				if (j1 == 7)
-					k1 = (variousSettings[ai[l++]] * 100) / 46875;
+				if (j1 == 7) {
+					int idx = ai[l++];
+					k1 = (idx >= 0 && idx < variousSettings.length) ? (variousSettings[idx] * 100) / 46875 : 0;
+				}
 				if (j1 == 8)
 					k1 = myStoner.combatLevel;
 				if (j1 == 9)
@@ -469,19 +473,24 @@ public class InterfaceManagement extends Client
 					k1 = weight;
 				if (j1 == 13)
 				{
-					int i2 = variousSettings[ai[l++]];
+					int idx = ai[l++];
+					int i2 = (idx >= 0 && idx < variousSettings.length) ? variousSettings[idx] : 0;
 					int i3 = ai[l++];
 					k1 = (i2 & 1 << i3) == 0 ? 0 : 1;
 				}
 				if (j1 == 14)
 				{
 					int j2 = ai[l++];
-					VarBit varBit = VarBit.cache[j2];
-					int l3 = varBit.baseVar;
-					int i4 = varBit.startBit;
-					int j4 = varBit.endBit;
-					int k4 = bitMasks[j4 - i4];
-					k1 = variousSettings[l3] >> i4 & k4;
+					if (j2 >= 0 && j2 < VarBit.cache.length && VarBit.cache[j2] != null) {
+						VarBit varBit = VarBit.cache[j2];
+						int l3 = varBit.baseVar;
+						int i4 = varBit.startBit;
+						int j4 = varBit.endBit;
+						int k4 = bitMasks[j4 - i4];
+						if (l3 >= 0 && l3 < variousSettings.length) {
+							k1 = variousSettings[l3] >> i4 & k4;
+						}
+					}
 				}
 				if (j1 == 15)
 					byte0 = 1;

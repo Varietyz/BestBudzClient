@@ -27,6 +27,7 @@ public class DiagnosticManager {
 		registerDiagnostic(new WorldDiagnostic());
 		registerDiagnostic(new CameraDiagnostic());
 		registerDiagnostic(new CacheDiagnostic());
+		registerDiagnostic(new AllocationDiagnostic());
 		registerDiagnostic(new GPUDiagnostic());
 
 		diagnostics.sort(Comparator.comparingInt(BaseDiagnostic::getPriority));

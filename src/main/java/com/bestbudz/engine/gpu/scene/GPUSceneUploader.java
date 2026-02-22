@@ -4,6 +4,7 @@ import com.bestbudz.engine.core.gamerender.WorldController;
 import com.bestbudz.engine.gpu.GPUCameraSync;
 import com.bestbudz.engine.gpu.GPUModelRenderer;
 import com.bestbudz.engine.gpu.GPUTextureManager;
+import com.bestbudz.engine.gpu.postprocess.EnvironmentConfig;
 import com.bestbudz.engine.gpu.shader.ShaderProgram;
 import com.bestbudz.rendering.animation.FloorDecoration;
 import com.bestbudz.rendering.model.SimpleTile;
@@ -152,7 +153,7 @@ public class GPUSceneUploader {
 							emitSimpleTile(vertexData, lower.simpleTile,
 								heightMap, 0, tileX, tileY);
 						} else if (lower.floorDecoration != null) {
-							emitFloorDecoration(vertexData, lower.floorDecoration);
+							emitFloorDecoration(vertexData, lower.floorDecoration, 0);
 						}
 					}
 
@@ -161,7 +162,7 @@ public class GPUSceneUploader {
 						emitSimpleTile(vertexData, ground.simpleTile,
 							heightMap, plane, tileX, tileY);
 					} else if (ground.floorDecoration != null) {
-						emitFloorDecoration(vertexData, ground.floorDecoration);
+						emitFloorDecoration(vertexData, ground.floorDecoration, plane);
 					}
 				}
 			}
@@ -264,22 +265,22 @@ public class GPUSceneUploader {
 		// Triangle 1: NE, NW, SE
 		if (tile.anInt718 != HIDDEN_COLOR) {
 			emitVertex(buf, neX, neY, neZ, tile.anInt718, alpha, textureId,
-				textureId >= 0 ? 1.0f : 0, textureId >= 0 ? 1.0f : 0);
+				textureId >= 0 ? 1.0f : 0, textureId >= 0 ? 1.0f : 0, plane);
 			emitVertex(buf, nwX, nwY, nwZ, tile.anInt719, alpha, textureId,
-				textureId >= 0 ? 0.0f : 0, textureId >= 0 ? 1.0f : 0);
+				textureId >= 0 ? 0.0f : 0, textureId >= 0 ? 1.0f : 0, plane);
 			emitVertex(buf, seX, seY, seZ, tile.anInt717, alpha, textureId,
-				textureId >= 0 ? 1.0f : 0, textureId >= 0 ? 0.0f : 0);
+				textureId >= 0 ? 1.0f : 0, textureId >= 0 ? 0.0f : 0, plane);
 			totalTriangles++;
 		}
 
 		// Triangle 2: SW, SE, NW
 		if (tile.anInt716 != HIDDEN_COLOR) {
 			emitVertex(buf, swX, swY, swZ, tile.anInt716, alpha, textureId,
-				textureId >= 0 ? 0.0f : 0, textureId >= 0 ? 0.0f : 0);
+				textureId >= 0 ? 0.0f : 0, textureId >= 0 ? 0.0f : 0, plane);
 			emitVertex(buf, seX, seY, seZ, tile.anInt717, alpha, textureId,
-				textureId >= 0 ? 1.0f : 0, textureId >= 0 ? 0.0f : 0);
+				textureId >= 0 ? 1.0f : 0, textureId >= 0 ? 0.0f : 0, plane);
 			emitVertex(buf, nwX, nwY, nwZ, tile.anInt719, alpha, textureId,
-				textureId >= 0 ? 0.0f : 0, textureId >= 0 ? 1.0f : 0);
+				textureId >= 0 ? 0.0f : 0, textureId >= 0 ? 1.0f : 0, plane);
 			totalTriangles++;
 		}
 
@@ -290,7 +291,7 @@ public class GPUSceneUploader {
 	 * Emit triangles for a FloorDecoration (complex/shaped tile).
 	 * Vertices are already in world-space coordinates from the constructor.
 	 */
-	private static void emitFloorDecoration(IntBuffer buf, FloorDecoration fd) {
+	private static void emitFloorDecoration(IntBuffer buf, FloorDecoration fd, int plane) {
 		if (fd.anIntArray679 == null) return;
 
 		int triCount = fd.anIntArray679.length;
@@ -334,13 +335,13 @@ public class GPUSceneUploader {
 
 			emitVertex(buf,
 				fd.anIntArray673[idxA], fd.anIntArray674[idxA], fd.anIntArray675[idxA],
-				colorA, alpha, textureId, uA, vA);
+				colorA, alpha, textureId, uA, vA, plane);
 			emitVertex(buf,
 				fd.anIntArray673[idxB], fd.anIntArray674[idxB], fd.anIntArray675[idxB],
-				colorB, alpha, textureId, uB, vB);
+				colorB, alpha, textureId, uB, vB, plane);
 			emitVertex(buf,
 				fd.anIntArray673[idxC], fd.anIntArray674[idxC], fd.anIntArray675[idxC],
-				colorC, alpha, textureId, uC, vC);
+				colorC, alpha, textureId, uC, vC, plane);
 
 			totalTriangles++;
 		}
@@ -350,11 +351,11 @@ public class GPUSceneUploader {
 
 	private static void emitVertex(IntBuffer buf, int x, int y, int z,
 									int hsl, int alpha, int textureId,
-									float u, float v) {
+									float u, float v, int plane) {
 		buf.put(x);
 		buf.put(y);
 		buf.put(z);
-		buf.put(hsl & 0xFFFF);
+		buf.put((plane << 16) | (hsl & 0xFFFF));
 		buf.put(alpha);
 		buf.put(textureId);
 		buf.put(Float.floatToRawIntBits(u));
@@ -369,7 +370,7 @@ public class GPUSceneUploader {
 	 * @param cameraY RS2 zCameraPos (height)
 	 * @param cameraZ RS2 yCameraPos (horizontal Z)
 	 */
-	public static void renderTerrain(int cameraX, int cameraY, int cameraZ) {
+	public static void renderTerrain(int cameraX, int cameraY, int cameraZ, int currentPlane) {
 		if (!initialized || !terrainUploaded || terrainVertexCount == 0) {
 			return;
 		}
@@ -390,6 +391,13 @@ public class GPUSceneUploader {
 		// Set camera position: terrain is in world space, shader subtracts this
 		int camLoc = modelShader.getUniformLocation("uCameraPosition");
 		modelShader.setUniform3f(camLoc, (float) cameraX, (float) cameraY, (float) cameraZ);
+
+		// Set current plane for roof hiding (discard fragments above this plane)
+		int planeLoc = modelShader.getUniformLocation("uCurrentPlane");
+		modelShader.setUniform1i(planeLoc, currentPlane);
+
+		// Set lighting and fog uniforms
+		GPUModelRenderer.setLightingUniforms(modelShader);
 
 		// Bind color palette texture to unit 0
 		int palLoc = modelShader.getUniformLocation("uColorPalette");

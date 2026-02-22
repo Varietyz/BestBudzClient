@@ -57,13 +57,15 @@ public class GetItemDef
 			return getVariantItemDefinition(id);
 		}
 
-		for (int j = 0; j < 10; j++) {
+		for (int j = 0; j < ItemDef.cache.length; j++) {
 			if (ItemDef.cache[j].id == id) {
+				ItemDef.cacheHits++;
 				return ItemDef.cache[j];
 			}
 		}
 
-		ItemDef.cacheIndex = (ItemDef.cacheIndex + 1) % 10;
+		ItemDef.cacheMisses++;
+		ItemDef.cacheIndex = (ItemDef.cacheIndex + 1) % ItemDef.cache.length;
 		ItemDef itemDef = ItemDef.cache[ItemDef.cacheIndex];
 		itemDef.id = id;
 		itemDef.setDefaults();

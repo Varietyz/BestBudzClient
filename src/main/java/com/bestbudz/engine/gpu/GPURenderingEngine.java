@@ -1,5 +1,7 @@
 package com.bestbudz.engine.gpu;
 
+import com.bestbudz.engine.gpu.postprocess.PostProcessPipeline;
+import com.bestbudz.engine.gpu.postprocess.SkyRenderer;
 import com.bestbudz.engine.gpu.scene.GPUSceneUploader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -57,6 +59,14 @@ public class GPURenderingEngine {
 
 				if (!com.bestbudz.engine.gpu.scene.GPUStaticScene.initialize()) {
 					System.err.println("[GPU] GPUStaticScene init failed, continuing without static object upload");
+				}
+
+				if (!SkyRenderer.initialize()) {
+					System.err.println("[GPU] SkyRenderer init failed, continuing without sky");
+				}
+
+				if (!PostProcessPipeline.initialize(currentWidth, currentHeight)) {
+					System.err.println("[GPU] PostProcessPipeline init failed, continuing without post-processing");
 				}
 			}
 
@@ -147,8 +157,9 @@ public class GPURenderingEngine {
 
 		currentColorTexture = GL11.glGenTextures();
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, currentColorTexture);
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0,
-			GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, 0);
+		// RGBA16F for HDR light accumulation (Phase 5 lighting pipeline)
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_RGBA16F, width, height, 0,
+			GL11.GL_RGBA, GL11.GL_FLOAT, 0);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
@@ -225,6 +236,10 @@ public class GPURenderingEngine {
 		return currentColorTexture;
 	}
 
+	public static int getDepthTexture() {
+		return currentDepthTexture;
+	}
+
 	public static int getWidth() {
 		return currentWidth;
 	}
@@ -258,6 +273,7 @@ public class GPURenderingEngine {
 
 			try {
 				createFramebufferInternal(width, height);
+				PostProcessPipeline.resize(width, height);
 				System.out.println("[GPU] ✅ Framebuffer resized successfully to " + width + "x" + height);
 			} catch (Exception e) {
 				System.err.println("[GPU] ❌ Error resizing framebuffer: " + e.getMessage());
@@ -335,6 +351,8 @@ public class GPURenderingEngine {
 
 	private static void cleanupGPUResourcesInternal() {
 		try {
+			PostProcessPipeline.cleanup();
+			SkyRenderer.cleanup();
 			com.bestbudz.engine.gpu.scene.GPUStaticScene.cleanup();
 			GPUSceneUploader.cleanup();
 			GPUTextureManager.cleanup();

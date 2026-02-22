@@ -1,6 +1,7 @@
 package com.bestbudz.engine.gpu;
 
 import com.bestbudz.engine.core.gamerender.Rasterizer;
+import com.bestbudz.engine.gpu.postprocess.EnvironmentConfig;
 import com.bestbudz.engine.gpu.shader.ShaderProgram;
 import com.bestbudz.engine.gpu.shader.ShaderSources;
 import com.bestbudz.rendering.model.Model;
@@ -41,6 +42,19 @@ public class GPUModelRenderer {
 	private static int uCameraPosition;
 	private static int uColorPalette;
 	private static int uTextureArray;
+	private static int uCurrentPlane;
+
+	// Lighting uniform locations
+	private static int uSunDirection;
+	private static int uSunColor;
+	private static int uSunStrength;
+	private static int uAmbientColor;
+	private static int uAmbientStrength;
+
+	// Fog uniform locations
+	private static int uFogColor;
+	private static int uFogStart;
+	private static int uFogEnd;
 
 	// Reusable vertex buffer (grows as needed)
 	private static IntBuffer vertexData;
@@ -63,9 +77,9 @@ public class GPUModelRenderer {
 		}
 
 		try {
-			shader = new ShaderProgram(ShaderSources.MODEL_VERTEX, ShaderSources.MODEL_FRAGMENT);
+			shader = new ShaderProgram(ShaderSources.SCENE_VERTEX, ShaderSources.SCENE_GEOMETRY, ShaderSources.SCENE_FRAGMENT);
 			if (!shader.isValid()) {
-				System.err.println("[GPUModelRenderer] Shader compilation failed");
+				System.err.println("[GPUModelRenderer] Scene shader compilation failed");
 				return false;
 			}
 
@@ -107,6 +121,20 @@ public class GPUModelRenderer {
 			uCameraPosition = shader.getUniformLocation("uCameraPosition");
 			uColorPalette = shader.getUniformLocation("uColorPalette");
 			uTextureArray = shader.getUniformLocation("uTextureArray");
+			uCurrentPlane = shader.getUniformLocation("uCurrentPlane");
+
+			// Lighting uniforms
+			uSunDirection = shader.getUniformLocation("uSunDirection");
+			uSunColor = shader.getUniformLocation("uSunColor");
+			uSunStrength = shader.getUniformLocation("uSunStrength");
+			uAmbientColor = shader.getUniformLocation("uAmbientColor");
+			uAmbientStrength = shader.getUniformLocation("uAmbientStrength");
+
+			// Fog uniforms
+			uFogColor = shader.getUniformLocation("uFogColor");
+			uFogStart = shader.getUniformLocation("uFogStart");
+			uFogEnd = shader.getUniformLocation("uFogEnd");
+
 			shader.unbind();
 
 			// Create color palette texture
@@ -310,6 +338,12 @@ public class GPUModelRenderer {
 			// Models are already in camera-relative coordinates, no camera offset needed
 			shader.setUniform3f(uCameraPosition, 0.0f, 0.0f, 0.0f);
 
+			// Per-frame models (players, NPCs) show on all planes
+			shader.setUniform1i(uCurrentPlane, 3);
+
+			// Lighting uniforms
+			setLightingUniforms(shader);
+
 			// Bind color palette texture to unit 0
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorPaletteTexture);
@@ -428,6 +462,22 @@ public class GPUModelRenderer {
 			vertexDataCapacity = intsNeeded + 10000;
 			vertexData = BufferUtils.createIntBuffer(vertexDataCapacity);
 		}
+	}
+
+	/**
+	 * Set lighting and fog uniforms on the given shader from EnvironmentConfig.
+	 * Called by GPUModelRenderer.renderModel and by terrain/static renderers.
+	 */
+	public static void setLightingUniforms(ShaderProgram s) {
+		float[] sunDir = EnvironmentConfig.getSunDirection();
+		s.setUniform3f(uSunDirection, sunDir[0], sunDir[1], sunDir[2]);
+		s.setUniform3f(uSunColor, EnvironmentConfig.sunColorR, EnvironmentConfig.sunColorG, EnvironmentConfig.sunColorB);
+		s.setUniform1f(uSunStrength, EnvironmentConfig.sunStrength);
+		s.setUniform3f(uAmbientColor, EnvironmentConfig.ambientColorR, EnvironmentConfig.ambientColorG, EnvironmentConfig.ambientColorB);
+		s.setUniform1f(uAmbientStrength, EnvironmentConfig.ambientStrength);
+		s.setUniform3f(uFogColor, EnvironmentConfig.fogColorR, EnvironmentConfig.fogColorG, EnvironmentConfig.fogColorB);
+		s.setUniform1f(uFogStart, EnvironmentConfig.fogStart);
+		s.setUniform1f(uFogEnd, EnvironmentConfig.fogEnd);
 	}
 
 	public static void endFrame() {

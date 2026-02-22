@@ -23,6 +23,8 @@ public final class ItemDef {
 	public static int totalItems;
 	public static ItemDef[] cache;
 	public static int cacheIndex;
+	public static int cacheHits = 0;
+	public static int cacheMisses = 0;
 	public static JsonObject[] jsonDefs;
 	public int value;
 	public int[] modifiedModelColors;
@@ -100,8 +102,9 @@ public final class ItemDef {
 
 		System.out.println("Items Loaded (JSON): " + loaded);
 
-		cache = new ItemDef[10];
-		for (int k = 0; k < 10; k++)
+		int cacheSize = Math.max(64, Math.min(512, totalItems / 50));
+		cache = new ItemDef[cacheSize];
+		for (int k = 0; k < cacheSize; k++)
 			cache[k] = new ItemDef();
 	}
 

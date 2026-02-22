@@ -34,7 +34,7 @@ public class Model extends Animable {
 	private static class WorkSpace {
 		boolean[] aBooleanArray1663 = new boolean[8000];
 		boolean[] aBooleanArray1664 = new boolean[8000];
-		final int[] anIntArray1665 = new int[8000];
+		int[] anIntArray1665 = new int[8000];
 		int[] anIntArray1666 = new int[8000];
 		int[] anIntArray1667 = new int[8000];
 		int[] anIntArray1668 = new int[8000];
@@ -57,6 +57,25 @@ public class Model extends Animable {
 		private int[] tempAlphaBuffer = new int[2000];
 
 		void ensureCapacity(int vertices, int triangles) {
+			if (vertices > aBooleanArray1663.length) {
+				int newSize = vertices + 1000;
+				aBooleanArray1663 = new boolean[newSize];
+				aBooleanArray1664 = new boolean[newSize];
+				anIntArray1665 = new int[newSize];
+				anIntArray1666 = new int[newSize];
+				anIntArray1667 = new int[newSize];
+				anIntArray1668 = new int[newSize];
+				anIntArray1669 = new int[newSize];
+				anIntArray1670 = new int[newSize];
+			}
+			if (triangles > anIntArray1671.length) {
+				int newSize = triangles + 1000;
+				anIntArray1671 = new int[newSize];
+				anIntArrayArray1672 = new int[newSize][512];
+				anIntArrayArray1674 = new int[12][newSize];
+				anIntArray1675 = new int[newSize];
+				anIntArray1676 = new int[newSize];
+			}
 			if (tempVertexBuffer.length < vertices) {
 				tempVertexBuffer = new int[vertices + 1000];
 			}
@@ -68,10 +87,9 @@ public class Model extends Animable {
 		}
 
 		void clear() {
-
-			java.util.Arrays.fill(aBooleanArray1663, 0, Math.min(8000, aBooleanArray1663.length), false);
-			java.util.Arrays.fill(aBooleanArray1664, 0, Math.min(8000, aBooleanArray1664.length), false);
-			java.util.Arrays.fill(anIntArray1671, 0, Math.min(1500, anIntArray1671.length), 0);
+			java.util.Arrays.fill(aBooleanArray1663, 0, aBooleanArray1663.length, false);
+			java.util.Arrays.fill(aBooleanArray1664, 0, aBooleanArray1664.length, false);
+			java.util.Arrays.fill(anIntArray1671, 0, Math.min(anIntArray1671.length, anIntArray1671.length), 0);
 			java.util.Arrays.fill(anIntArray1673, 0, Math.min(12, anIntArray1673.length), 0);
 			java.util.Arrays.fill(anIntArray1677, 0, Math.min(12, anIntArray1677.length), 0);
 		}

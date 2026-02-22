@@ -111,10 +111,15 @@ public class Client extends ClientEngine
 	public static final boolean[] cameraShakeEnabled = new boolean[5];
 	public static final int maxStoners = 2048;
 	public static final int myStonerIndex = 2047;
+	public static final int maxNpcs = 16384;
+	public static final int MAX_CHAT_MESSAGES = 500;
+	public static final int MAX_FRIENDS = 200;
+	public static final int MAX_IGNORES = 100;
+	public static final int MAX_SOUND_QUEUE = 50;
 	public static final int[] currentStats = new int[Skills.SKILLS_COUNT];
-	public static final long[] ignoreListAsLongs = new long[100];
+	public static final long[] ignoreListAsLongs = new long[MAX_IGNORES];
 	public static final int[] cameraShakeSpeed = new int[5];
-	public static String[] chatMessages = new String[500];
+	public static String[] chatMessages = new String[MAX_CHAT_MESSAGES];
 	public static final String[] clanList = new String[100];
 	public static final int[] configuredChatColors = {
 		ColorConfig.CHAT_COLOR,
@@ -140,7 +145,7 @@ public class Client extends ClientEngine
 	public static final boolean aBoolean994 = false;
 	public static final int[] cameraShakeCounters = new int[5];
 	public static final int[] maxStats = new int[Skills.SKILLS_COUNT];
-	public static final int[] experienceDrops = new int[2000];
+	public static int[] experienceDrops;
 	public static final int[] professionGrades = new int[152];
 	public static final int[] questStates = new int[33];
 	public static final int[] musicTrackIds = new int[7];
@@ -150,11 +155,11 @@ public class Client extends ClientEngine
 	public static final int[][][] dynamicRegionData = new int[4][13][13];
 	public static final boolean genericLoadingError = false;
 	public static final int[] cameraShakeMagnitude = new int[5];
-	public static final int[] soundIds = new int[50];
-	public static final int[] friendsListIds = new int[152];
-public static final int[] ignoreListIds = new int[100];
-	public static final int[] soundTypes = new int[50];
-	public static final int[] soundDelays = new int[50];
+	public static final int[] soundIds = new int[MAX_SOUND_QUEUE];
+	public static final int[] friendsListIds = new int[MAX_FRIENDS];
+	public static final int[] ignoreListIds = new int[MAX_IGNORES];
+	public static final int[] soundTypes = new int[MAX_SOUND_QUEUE];
+	public static final int[] soundDelays = new int[MAX_SOUND_QUEUE];
 	public static final boolean gameAlreadyLoaded = false;
 	public static final boolean canGainXP = true;
 public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3};
@@ -191,6 +196,16 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 	public static Stream stream;
 	public static boolean inputTaken;
 	public static int[] bitMasks;
+
+	public static void resizeConfigArrays(int size) {
+		if (size > variousSettings.length) {
+			variousSettings = new int[size];
+		}
+		if (experienceDrops == null || size > experienceDrops.length) {
+			experienceDrops = new int[size];
+		}
+	}
+
 	public static Sprite minimapImage;
 	public static int[] fullScreenTextureArray;
 	public static TextDrawingArea smallText;
@@ -571,8 +586,8 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		groundArray = new java.util.ArrayDeque[4][104][104];
 		regionLoaded = false;
 		incomingPacketBuffer = new Stream(new byte[5000]);
-		npcArray = new Npc[16384];
-		npcIndices = new int[16384];
+		npcArray = new Npc[maxNpcs];
+		npcIndices = new int[maxNpcs];
 		removedNpcIndices = new int[1000];
 		networkBuffer = Stream.getPooledStream();
 		soundProduction = true;
@@ -586,10 +601,10 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		updatedNpcIndices = new int[maxStoners];
 		playerUpdateBuffers = new Stream[maxStoners];
 		walkDirection = new int[104][104];
-		aByteArray912 = new byte[16384];
+		aByteArray912 = new byte[maxNpcs];
 		loadingError = false;
 		renderGrid = new int[104][104];
-		chatNames = new String[500];
+		chatNames = new String[MAX_CHAT_MESSAGES];
 		sideIcons = new Sprite[17];
 		windowFocused = true;
 		stonersListAsLongs = new long[200];
@@ -598,22 +613,23 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		spriteDrawY = -1;
 		anIntArray969 = new int[256];
 		variousSettings = new int[2000];
+		experienceDrops = new int[2000];
 		menuVisible = false;
 
 		draggedInterfaceId = -1;
-		hitMarks = new Sprite[20];
+		hitMarks = new Sprite[0];
 		amountOrNameInput = "";
 		nodeList = new LinkedList<>();
 		aBoolean1017 = false;
 		mouseClickState = -1;
 		dragModeActive = false;
-		mapFunctions = new Sprite[100];
+		mapFunctions = new Sprite[0];
 		dialogID = -1;
 		welcomeScreenVisible = true;
 		selectedTabIndex = -1;
 		queueSpotAnimation = new LinkedList<>();
 
-		mapScenes = new Background[100];
+		mapScenes = new Background[0];
 		renderQueueX = new int[1000];
 		renderQueueY = new int[1000];
 		friendsListVisible = false;
@@ -623,9 +639,9 @@ public static final int[] characterModelIndices = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 		menuActionCmd3 = new int[500];
 		menuActionID = new int[500];
 		menuActionCmd1 = new int[500];
-		headIcons = new Sprite[20];
-		skullIcons = new Sprite[20];
-		headIconsHint = new Sprite[20];
+		headIcons = new Sprite[0];
+		skullIcons = new Sprite[0];
+		headIconsHint = new Sprite[0];
 		tabAreaAltered = false;
 		aString1121 = "";
 		spriteCache = new Sprite[1000];

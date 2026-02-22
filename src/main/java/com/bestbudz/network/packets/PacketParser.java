@@ -1491,6 +1491,7 @@ public class PacketParser extends Client
 	private static void handleConfigLargeOptimized() {
 		final int configId = inStream.readWordLittleEndian();
 		final int value = inStream.readDWordMixed();
+		if (configId < 0 || configId >= variousSettings.length) return;
 		experienceDrops[configId] = value;
 
 		if (variousSettings[configId] != value) {
@@ -1503,6 +1504,7 @@ public class PacketParser extends Client
 	private static void handleConfigByteOptimized() {
 		final int configId = inStream.readWordLittleEndian();
 		final byte value = inStream.readSignedByte();
+		if (configId < 0 || configId >= variousSettings.length) return;
 		experienceDrops[configId] = value;
 
 		if (variousSettings[configId] != value) {

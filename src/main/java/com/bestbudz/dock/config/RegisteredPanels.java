@@ -6,6 +6,7 @@ import com.bestbudz.dock.ui.panel.client.SettingsPanel;
 import com.bestbudz.dock.ui.panel.debug.DiagnosticPanel;
 import com.bestbudz.dock.ui.panel.emote.EmotePanel;
 import com.bestbudz.dock.ui.panel.game.AchievementsPanel;
+import com.bestbudz.dock.ui.panel.gpusettings.GPUSettingsPanel;
 import com.bestbudz.dock.ui.panel.skills.SkillsPanel;
 import com.bestbudz.dock.ui.panel.shops.ShopPanel;
 import com.bestbudz.dock.ui.panel.social.ChatPanel;
@@ -33,7 +34,8 @@ public class RegisteredPanels {
 		DiagnosticPanel::new,
 		EmotePanel::new,
 		BankPanel::new,
-		StonerPanel::new
+		StonerPanel::new,
+		GPUSettingsPanel::new
 	);
 
 	public static class DefaultLayout {
@@ -53,9 +55,8 @@ public class RegisteredPanels {
 			"Appearance",
 			"Settings",
 			"Achievements",
-
+			"GPU Settings",
 			"Debug"
-
 		};
 
 		public static String[] getAllPanelNames() {

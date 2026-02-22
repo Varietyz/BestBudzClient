@@ -127,11 +127,7 @@ public final class Background extends DrawingArea
 			System.err.println("[Background] Failed to load from extracted: " + name + "_" + index + ": " + e.getMessage());
 		}
 
-		bg.textureData = new byte[0];
-		bg.backgroundWidth = 0;
-		bg.backgroundHeight = 0;
-		bg.pixelData = new int[0];
-		return bg;
+		return null;
 	}
 
 	private Background() {

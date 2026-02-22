@@ -7,6 +7,8 @@ import com.bestbudz.engine.gpu.GPUContextManager;
 import com.bestbudz.engine.gpu.GPUModelRenderer;
 import com.bestbudz.engine.gpu.GPUMonitor;
 import com.bestbudz.engine.gpu.GPURenderingEngine;
+import com.bestbudz.engine.gpu.postprocess.PostProcessPipeline;
+import com.bestbudz.engine.gpu.postprocess.SkyRenderer;
 import com.bestbudz.engine.gpu.scene.GPUSceneUploader;
 import com.bestbudz.engine.gpu.scene.GPUStaticScene;
 import static com.bestbudz.engine.core.gamerender.Camera.calcCameraPos;
@@ -213,23 +215,29 @@ public class GameState extends Client {
 		// Sync camera: compute VP matrix from RS2 camera angles
 		GPUCameraSync.update(xCameraCurve, yCameraCurve, vpWidth, vpHeight);
 
-		// Bind FBO and clear
+		// Bind HDR scene FBO and clear
 		GPURenderingEngine.bindFramebuffer();
 		GPURenderingEngine.clear();
+
+		// Render sky FIRST (behind all geometry, depth write disabled)
+		if (SkyRenderer.isInitialized()) {
+			SkyRenderer.render();
+		}
 
 		// Begin model rendering frame
 		GPUModelRenderer.beginFrame();
 
 		// Render GPU terrain first (if uploaded)
 		// Camera mapping: xCameraPos=X, zCameraPos=height(Y), yCameraPos=Z
+		// j = current roof plane (0-3) from getRoofPlane()
 		if (GPUSceneUploader.isTerrainUploaded()) {
-			GPUSceneUploader.renderTerrain(xCameraPos, zCameraPos, yCameraPos);
+			GPUSceneUploader.renderTerrain(xCameraPos, zCameraPos, yCameraPos, j);
 			com.bestbudz.engine.core.gamerender.WorldController.gpuTerrainActive = true;
 		}
 
 		// Render baked static objects (walls, decorations, game objects)
 		if (GPUStaticScene.isUploaded()) {
-			GPUStaticScene.renderStaticObjects(xCameraPos, zCameraPos, yCameraPos);
+			GPUStaticScene.renderStaticObjects(xCameraPos, zCameraPos, yCameraPos, j);
 		}
 
 		// Render world (models will call GPUModelRenderer via RS317GPUInterface)
@@ -243,11 +251,33 @@ public class GameState extends Client {
 		// End frame
 		GPUModelRenderer.endFrame();
 
-		// Composite GPU-rendered content (terrain + models) onto CPU buffer
-		compositeFBOToCPU(vpWidth, vpHeight);
-
-		// Unbind FBO
+		// Unbind HDR scene FBO before post-processing
 		GPURenderingEngine.unbindFramebuffer();
+
+		// Run post-processing: bloom, SSAO, tone mapping, color grading
+		// Reads from HDR scene FBO texture, writes to LDR output FBO
+		if (PostProcessPipeline.isInitialized()) {
+			PostProcessPipeline.execute(
+				GPURenderingEngine.getColorTexture(),
+				GPURenderingEngine.getDepthTexture(),
+				vpWidth, vpHeight
+			);
+
+			// Read from post-processed LDR FBO
+			org.lwjgl.opengl.GL30.glBindFramebuffer(
+				org.lwjgl.opengl.GL30.GL_FRAMEBUFFER,
+				PostProcessPipeline.getLDRFramebuffer()
+			);
+			compositeFBOToCPU(vpWidth, vpHeight);
+			org.lwjgl.opengl.GL30.glBindFramebuffer(
+				org.lwjgl.opengl.GL30.GL_FRAMEBUFFER, 0
+			);
+		} else {
+			// Fallback: read directly from HDR FBO (clamped to LDR)
+			GPURenderingEngine.bindFramebuffer();
+			compositeFBOToCPU(vpWidth, vpHeight);
+			GPURenderingEngine.unbindFramebuffer();
+		}
 	}
 
 	/**

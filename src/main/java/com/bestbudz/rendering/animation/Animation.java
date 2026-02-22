@@ -70,6 +70,21 @@ public final class Animation {
         System.out.println("Animations Loaded (JSON): " + loaded);
     }
 
+    public static int getMaxFrameFileId() {
+        int max = 0;
+        if (anims == null) return max;
+        for (Animation anim : anims) {
+            if (anim != null && anim.frameIds != null) {
+                for (int frameId : anim.frameIds) {
+                    if (frameId < 0) continue;
+                    int fileId = frameId >> 16;
+                    if (fileId > max) max = fileId;
+                }
+            }
+        }
+        return max;
+    }
+
     public int getFrameDuration(int i) {
         int j = anIntArray355[i];
         if(j == 0)

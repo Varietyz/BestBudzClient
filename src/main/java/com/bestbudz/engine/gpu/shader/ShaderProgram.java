@@ -2,6 +2,7 @@ package com.bestbudz.engine.gpu.shader;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL32;
 
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
@@ -12,6 +13,10 @@ public class ShaderProgram {
 	private boolean valid;
 
 	public ShaderProgram(String vertexSource, String fragmentSource) {
+		this(vertexSource, null, fragmentSource);
+	}
+
+	public ShaderProgram(String vertexSource, String geometrySource, String fragmentSource) {
 		programId = 0;
 		valid = false;
 
@@ -20,14 +25,25 @@ public class ShaderProgram {
 			return;
 		}
 
+		int geometryShader = 0;
+		if (geometrySource != null) {
+			geometryShader = compileShader(GL32.GL_GEOMETRY_SHADER, geometrySource);
+			if (geometryShader == 0) {
+				GL20.glDeleteShader(vertexShader);
+				return;
+			}
+		}
+
 		int fragmentShader = compileShader(GL20.GL_FRAGMENT_SHADER, fragmentSource);
 		if (fragmentShader == 0) {
 			GL20.glDeleteShader(vertexShader);
+			if (geometryShader != 0) GL20.glDeleteShader(geometryShader);
 			return;
 		}
 
 		programId = GL20.glCreateProgram();
 		GL20.glAttachShader(programId, vertexShader);
+		if (geometryShader != 0) GL20.glAttachShader(programId, geometryShader);
 		GL20.glAttachShader(programId, fragmentShader);
 		GL20.glLinkProgram(programId);
 
@@ -37,11 +53,13 @@ public class ShaderProgram {
 			GL20.glDeleteProgram(programId);
 			programId = 0;
 			GL20.glDeleteShader(vertexShader);
+			if (geometryShader != 0) GL20.glDeleteShader(geometryShader);
 			GL20.glDeleteShader(fragmentShader);
 			return;
 		}
 
 		GL20.glDeleteShader(vertexShader);
+		if (geometryShader != 0) GL20.glDeleteShader(geometryShader);
 		GL20.glDeleteShader(fragmentShader);
 		valid = true;
 	}
@@ -53,7 +71,11 @@ public class ShaderProgram {
 
 		if (GL20.glGetShaderi(shader, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
 			String error = GL20.glGetShaderInfoLog(shader);
-			String typeName = type == GL20.GL_VERTEX_SHADER ? "vertex" : "fragment";
+			String typeName;
+			if (type == GL20.GL_VERTEX_SHADER) typeName = "vertex";
+			else if (type == GL20.GL_FRAGMENT_SHADER) typeName = "fragment";
+			else if (type == GL32.GL_GEOMETRY_SHADER) typeName = "geometry";
+			else typeName = "unknown(" + type + ")";
 			System.err.println("[ShaderProgram] " + typeName + " compile failed: " + error);
 			GL20.glDeleteShader(shader);
 			return 0;
@@ -88,6 +110,14 @@ public class ShaderProgram {
 
 	public void setUniform3f(int location, float x, float y, float z) {
 		GL20.glUniform3f(location, x, y, z);
+	}
+
+	public void setUniform4f(int location, float x, float y, float z, float w) {
+		GL20.glUniform4f(location, x, y, z, w);
+	}
+
+	public void setUniform2i(int location, int x, int y) {
+		GL20.glUniform2i(location, x, y);
 	}
 
 	public void setUniformMatrix4fv(int location, float[] matrix) {

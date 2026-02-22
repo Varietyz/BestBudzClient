@@ -114,7 +114,7 @@ public class GameFrame extends Client{
 		}
 		GameState.safeRenderWorld(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 		worldController.clearObj5Cache();
-		if (SettingsConfig.enableDistanceFog) {
+		if (SettingsConfig.enableDistanceFog && !com.bestbudz.engine.gpu.GPURenderingEngine.isEnabled()) {
 			fogHandler.renderFog(mainGameRendering.canvasRaster, mainGameRendering.depthBuffer);
 		}
 

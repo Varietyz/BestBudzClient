@@ -18,20 +18,25 @@ public final class EntityDef {
 	Client client;
 
 	public static JsonObject[] jsonDefs;
+	public static int totalNPCs;
+	public static int cacheHits = 0;
+	public static int cacheMisses = 0;
 
   public static EntityDef forID(int i, boolean cached) {
 
 	  if (PetVariantManager.isVariant(i)) {
 		  if (cached) {
 
-			  for (int j = 0; j < 20; j++) {
+			  for (int j = 0; j < cache.length; j++) {
 				  if (cache[j].interfaceType == (long) i) {
+					  cacheHits++;
 					  return cache[j];
 				  }
 			  }
 		  }
 
-		  cacheIndex = (cacheIndex + 1) % 20;
+		  cacheMisses++;
+		  cacheIndex = (cacheIndex + 1) % cache.length;
 		  EntityDef entityDef = cached ? cache[cacheIndex] : new EntityDef();
 		  entityDef.interfaceType = i;
 
@@ -41,14 +46,16 @@ public final class EntityDef {
 	  }
 
 	  if (cached) {
-		  for (int j = 0; j < 20; j++) {
+		  for (int j = 0; j < cache.length; j++) {
 			  if (cache[j].interfaceType == (long) i) {
+				  cacheHits++;
 				  return cache[j];
 			  }
 		  }
 	  }
 
-	  cacheIndex = (cacheIndex + 1) % 20;
+	  cacheMisses++;
+	  cacheIndex = (cacheIndex + 1) % cache.length;
 	  EntityDef entityDef = new EntityDef();
 	  if (cached) {
 		  cache[cacheIndex] = entityDef;
@@ -400,7 +407,7 @@ public final class EntityDef {
       if (id > maxId) maxId = id;
     }
 
-    int totalNPCs = maxId + 1;
+    totalNPCs = maxId + 1;
     jsonDefs = new JsonObject[totalNPCs + 50000];
 
     int loaded = 0;
@@ -412,8 +419,9 @@ public final class EntityDef {
 
     System.out.println("Npcs Loaded (JSON): " + loaded);
 
-    cache = new EntityDef[20];
-    for (int k = 0; k < 20; k++) cache[k] = new EntityDef();
+    int cacheSize = Math.max(64, Math.min(512, totalNPCs / 50));
+    cache = new EntityDef[cacheSize];
+    for (int k = 0; k < cacheSize; k++) cache[k] = new EntityDef();
     for (int index = 0; index < totalNPCs; index++) {
       EntityDef ed = forID(index);
       if (ed == null) continue;
@@ -540,15 +548,21 @@ public final class EntityDef {
   public EntityDef getTransformedEntity() {
     int j = -1;
     if (varbitId != -1) {
-      VarBit varBit = VarBit.cache[varbitId];
-      int k = varBit.baseVar;
-      int l = varBit.startBit;
-      int i1 = varBit.endBit;
-      int j1 = Client.bitMasks[i1 - l];
-      j = client.variousSettings[k] >> l & j1;
-    } else if (configId != -1) j = client.variousSettings[configId];
+      if (varbitId < VarBit.cache.length && VarBit.cache[varbitId] != null) {
+        VarBit varBit = VarBit.cache[varbitId];
+        int k = varBit.baseVar;
+        int l = varBit.startBit;
+        int i1 = varBit.endBit;
+        int j1 = Client.bitMasks[i1 - l];
+        if (k >= 0 && k < client.variousSettings.length) {
+          j = client.variousSettings[k] >> l & j1;
+        }
+      }
+    } else if (configId != -1 && configId < client.variousSettings.length) {
+      j = client.variousSettings[configId];
+    }
     if (j < 0 || j >= childrenIDs.length || childrenIDs[j] == -1) return null;
-    else return forID(childrenIDs[j]);
+    return forID(childrenIDs[j]);
   }
 
   public Model getAnimatedModel(
